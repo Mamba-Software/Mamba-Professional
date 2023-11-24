@@ -52,13 +52,14 @@ class ClientEventSelector extends StatelessWidget {
                 ],
               ),
               clientEventWidget(context, joinedMembersList),
+              /*
               dividerAddEditEvent(
                   context,
                   AppLocalizations.of(context)!.clients +
                       "    ( " +
                       joinedMembersList.length.toString() +
                       " )",
-                  true),
+                  true),*/
             ],
           );
         }),

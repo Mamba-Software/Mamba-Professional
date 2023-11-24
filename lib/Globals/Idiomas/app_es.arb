@@ -2755,6 +2755,14 @@
   "@userBuysBonoTrainerSubtitle": {
     "description": "userJoinsBrandUser message"
   },
+  "potentialClient": "Cliente potencial",
+  "@potentialClient": {
+    "description": "active client message"  
+  },
+  "potentialClients": "Clientes potenciales",
+  "@potentialClients": {
+    "description": "active client message"  
+  },
   "activeClients": "Clientes activos",
   "@activeClients": {
     "description": "active client message"

@@ -25,8 +25,10 @@ class InformationPage extends StatelessWidget {
             dividerAddEditEvent(
                 context, AppLocalizations.of(context)!.location, true),
             const EventBonosBlocSelector(),
+            /*
             dividerAddEditEvent(
                 context, AppLocalizations.of(context)!.bonos, true),
+                */
             SizedBox(height: MediaQuery.of(context).size.height * 0.15),
           ],
         );

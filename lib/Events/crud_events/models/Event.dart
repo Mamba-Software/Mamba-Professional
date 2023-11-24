@@ -29,6 +29,7 @@ class Event {
   String? locationId;
   int? numClients;
   int? numTrainers;
+  int? numFreeSessions;
   int? maxMembers;
   int? placesLeft;
   double? intensityScore;
@@ -70,6 +71,7 @@ class Event {
     this.locationId,
     this.numClients,
     this.numTrainers,
+    this.numFreeSessions,
     this.maxMembers,
     this.placesLeft,
     this.intensityScore,
@@ -106,6 +108,7 @@ class Event {
       'locationId': locationId,
       'numClients': joinedMembersList?.length,
       'numTrainers': selectedTrainersList?.length,
+      'numFreeSessions': numFreeSessions,
       'maxMembers': maxMembers,
       //'joinedMembersList': joinedMembersList,
       //'selectedTrainersList': selectedTrainersList,
@@ -192,6 +195,10 @@ class Event {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('numTrainers')) {
       numTrainers = documentSnapshot.get("numTrainers");
+    }    
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('numFreeSessions')) {
+      numFreeSessions = documentSnapshot.get("numFreeSessions");
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('maxMembers')) {
@@ -276,6 +283,10 @@ class Event {
       numClients = documentSnapshot.get("numClients");
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('numFreeSessions')) {
+      numFreeSessions = documentSnapshot.get("numFreeSessions");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('numTrainers')) {
       numTrainers = documentSnapshot.get("numTrainers");
     }
@@ -320,6 +331,7 @@ class Event {
     duration = event.duration;
     locationId = event.locationId;
     numClients = event.numClients;
+    numFreeSessions = event.numFreeSessions;
     numTrainers = event.numTrainers;
     maxMembers = event.maxMembers;
     intensityScore = event.intensityScore;
@@ -369,6 +381,7 @@ class Event {
     double? duration,
     String? locationId,
     int? numClients,
+    int? numFreeSessions,
     int? numTrainers,
     int? maxMembers,
     int? placesLeft,
@@ -408,6 +421,7 @@ class Event {
       duration: duration ?? this.duration,
       locationId: locationId ?? this.locationId,
       numClients: numClients ?? this.numClients,
+      numFreeSessions: numFreeSessions ?? this.numFreeSessions,
       numTrainers: numTrainers ?? this.numTrainers,
       maxMembers: maxMembers ?? this.maxMembers,
       placesLeft: placesLeft ?? this.placesLeft,

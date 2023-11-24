@@ -621,6 +621,8 @@
   "createFistBono": "Crea el teu primer val",
   "userBuysBonoTrainer": "{user} ha comprat el val {bono}",
   "userBuysBonoTrainerSubtitle": "Pots trobar tots els detalls del seu progrés en el perfil de l'usuari",
+  "potentialClient": "Client potencial",
+  "potentialClients": "Clients potencials",
   "activeClients": "Clients actius",
   "desactiveClient": "Clients inactius",
   "personalizedFieldsFirst": "S'han d'omplir tots els camps personalitzats",

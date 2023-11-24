@@ -37,9 +37,7 @@ var contactEmail = "contacto@mambafitness.es";
 var website = "https://mambafitness.es/";
 var termsAndConditions = "https://mambafitness.es/terminos-y-condiciones/";
 var privacy = "https://mambafitness.es/privacidad/";
-
-var functionalitiesES = "https://www.mambaapp.app/#funcionalidades";
-var functionalitiesCA = "https://www.mambaapp.app/#funcionalidades";
+var functionalities = "https://mambafitness.es/profesionales/";
 
 // API Keys
 var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";

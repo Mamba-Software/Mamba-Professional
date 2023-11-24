@@ -462,17 +462,9 @@ class _PayWallState extends State<PayWall> {
                 if (!currentFocus.hasPrimaryFocus) {
                   currentFocus.unfocus();
                 }
-                if (Localizations.localeOf(context).languageCode == 'es') {
-                  if (!await launchUrl(Uri.parse(functionalitiesES)))
-                    throw 'Could not launch $functionalitiesES';
-                } else if (Localizations.localeOf(context).languageCode ==
-                    'ca') {
-                  if (!await launchUrl(Uri.parse(functionalitiesCA)))
-                    throw 'Could not launch $functionalitiesCA';
-                } else {
-                  if (!await launchUrl(Uri.parse(functionalitiesES)))
-                    throw 'Could not launch $functionalitiesES';
-                }
+                if (!await launchUrl(Uri.parse(functionalities))) {
+                  throw 'Could not launch $functionalities';
+                }                
               },
               child: Container(
                 decoration: BoxDecoration(

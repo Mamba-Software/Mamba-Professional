@@ -340,6 +340,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                       size: MediaQuery.of(context).size.width * 0.05,
                       color: AppColors.red,
                     ),
+                    /*
                     Text(
                       AppLocalizations.of(context)!.full,
                       style: Theme.of(context)
@@ -348,6 +349,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                           ?.copyWith(fontSize: 5, color: AppColors.red),
                       textAlign: TextAlign.center,
                     ),
+                    */
                   ],
                 ),
               ),

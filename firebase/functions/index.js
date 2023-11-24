@@ -1984,6 +1984,7 @@ exports.userJoinsEvent = functions
       const eventUsersSnapshot = await db.collection("Events").doc(eventId).collection("Users").get();
       let numClients = 0;
       let numTrainers = 0;
+      let numFreeSessions = 0;
       for (var i in eventUsersSnapshot.docs) {
         const eventUsersDoc = eventUsersSnapshot.docs[i].data();
         if (eventUsersDoc.isTrainer) {
@@ -1992,6 +1993,13 @@ exports.userJoinsEvent = functions
           numClients += 1;
         }
       }
+      // Count Number of Free Sessions
+      if (freeSession) {
+        if (eventDoc.numberFreeSession != undefined) {
+          numFreeSessions = eventDoc.numberFreeSession;
+        }
+        numFreeSessions += 1;
+      }      
       // Update Event Assisting Members
       await db
       .collection("Events")
@@ -1999,6 +2007,7 @@ exports.userJoinsEvent = functions
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
+        "numFreeSessions": numFreeSessions,
       });
       var isPrivate = false;
       if (eventDoc.isPrivate != undefined) {
@@ -2026,6 +2035,7 @@ exports.userJoinsEvent = functions
         "duration": eventDoc.duration,
         "numTrainers": numTrainers,
         "numClients": numClients,
+        "numFreeSessions": numFreeSessions,                
         "maxMembers": eventDoc.maxMembers,
         "brandID": eventDoc.brandID,
         "freeSession": freeSession,
@@ -2052,6 +2062,7 @@ exports.userJoinsEvent = functions
         "duration": eventDoc.duration,
         "numTrainers": numTrainers,
         "numClients": numClients,
+        "numFreeSessions": numFreeSessions,
         "maxMembers": eventDoc.maxMembers,
         "brandID": eventDoc.brandID,
         "freeSession": freeSession,
@@ -2069,6 +2080,7 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
         // If Event Private
         // Update Cover Data Also
@@ -2083,6 +2095,7 @@ exports.userJoinsEvent = functions
           .update({
             "numClients": numClients,
             "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
           });
         }
       }
@@ -2107,6 +2120,7 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
         // If Event Private
         // Update Cover Data Also
@@ -2121,6 +2135,7 @@ exports.userJoinsEvent = functions
           .update({
             "numClients": numClients,
             "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
           });
         }
       }
@@ -2135,6 +2150,7 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
         // If Event Private
         // Update Cover Data Also
@@ -2149,6 +2165,7 @@ exports.userJoinsEvent = functions
           .update({
             "numClients": numClients,
             "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
           });
         }
       }

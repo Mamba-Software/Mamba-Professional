@@ -13,7 +13,6 @@ import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificatio
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/cubit/AllEventsCubit.dart';
 import 'package:mamba_castelldefels/Events/cubit/BrandEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
