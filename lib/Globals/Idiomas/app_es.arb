@@ -3450,7 +3450,7 @@
   "@freeSessionDescription": {
     "description": "directPurchase message"
   },
-  "freeSession": "Sesión gratuita",
+  "freeSession": "Sesión de prueba",
   "@freeSession": {
     "description": "directPurchasetext message"
   },

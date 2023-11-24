@@ -165,6 +165,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
   }
 
   void getEventInfo() async {
+    
     event = await _eventDataService.getSingleEvent(widget.eventId);
     titleController.text = "${event!.title}";
     titleString = "${event!.title}";
@@ -2123,7 +2124,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                       eventClients.length,
                                                   itemBuilder:
                                                       (context, int index) {
-                                                    var client =
+                                                    Usuario client =
                                                         eventClients[index];
                                                     if (userIsBlockedBy
                                                         .contains(client.id)) {
@@ -2190,7 +2191,9 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                               context)
                                                                           .primaryColor,
                                                                       borderWidth:
-                                                                          1,
+                                                                          client.freeSession != null && client.freeSession!
+                                                                              ? 5
+                                                                              : 1,
                                                                     ),
                                                                   ],
                                                                 ),
