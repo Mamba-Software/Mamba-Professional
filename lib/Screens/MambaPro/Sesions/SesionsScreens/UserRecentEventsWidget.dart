@@ -6,6 +6,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/Eve
 import '../../../../Events/crud_events/models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
+
 class UserRecentEventsWidget extends StatefulWidget {
   String userId;
   List<Event> events;

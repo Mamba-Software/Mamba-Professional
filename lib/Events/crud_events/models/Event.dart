@@ -29,6 +29,7 @@ class Event {
   String? locationId;
   int? numClients;
   int? numTrainers;
+  bool? freeSession;
   int? numFreeSessions;
   int? maxMembers;
   int? placesLeft;
@@ -71,6 +72,7 @@ class Event {
     this.locationId,
     this.numClients,
     this.numTrainers,
+    this.freeSession,
     this.numFreeSessions,
     this.maxMembers,
     this.placesLeft,
@@ -109,6 +111,7 @@ class Event {
       'numClients': joinedMembersList?.length,
       'numTrainers': selectedTrainersList?.length,
       'numFreeSessions': numFreeSessions,
+      'freeSession': freeSession,
       'maxMembers': maxMembers,
       //'joinedMembersList': joinedMembersList,
       //'selectedTrainersList': selectedTrainersList,
@@ -195,10 +198,16 @@ class Event {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('numTrainers')) {
       numTrainers = documentSnapshot.get("numTrainers");
-    }    
+    }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('numFreeSessions')) {
       numFreeSessions = documentSnapshot.get("numFreeSessions");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('freeSession')) {
+      freeSession = documentSnapshot.get("freeSession");
+    } else {
+      freeSession = false;
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('maxMembers')) {
@@ -287,6 +296,12 @@ class Event {
       numFreeSessions = documentSnapshot.get("numFreeSessions");
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('freeSession')) {
+      freeSession = documentSnapshot.get("freeSession");
+    } else {
+      freeSession = false;
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('numTrainers')) {
       numTrainers = documentSnapshot.get("numTrainers");
     }
@@ -332,6 +347,7 @@ class Event {
     locationId = event.locationId;
     numClients = event.numClients;
     numFreeSessions = event.numFreeSessions;
+    freeSession = event.freeSession;
     numTrainers = event.numTrainers;
     maxMembers = event.maxMembers;
     intensityScore = event.intensityScore;
@@ -382,6 +398,7 @@ class Event {
     String? locationId,
     int? numClients,
     int? numFreeSessions,
+    bool? freeSession,
     int? numTrainers,
     int? maxMembers,
     int? placesLeft,
@@ -422,6 +439,7 @@ class Event {
       locationId: locationId ?? this.locationId,
       numClients: numClients ?? this.numClients,
       numFreeSessions: numFreeSessions ?? this.numFreeSessions,
+      freeSession: freeSession ?? this.freeSession,
       numTrainers: numTrainers ?? this.numTrainers,
       maxMembers: maxMembers ?? this.maxMembers,
       placesLeft: placesLeft ?? this.placesLeft,
