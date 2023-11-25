@@ -3,7 +3,6 @@ class Constants {
   // App Name
   static String appName = "Mamba";
 
-
   // Constant Assets
   static String logoExtended = "assets/images/ExtendedWhite.png";
   static String logoExtendedYellow = "assets/images/ExtendedYellow.png";
@@ -18,19 +17,25 @@ class Constants {
   static String emptyPeople = "assets/images/emptyPeople.png";
   static String google = "assets/images/google.png";
   static String apple = "assets/images/apple.png";
-  //Force Conflict
+  static String mapsImg = "assets/images/maps.png";
+  static String mapsCrud = "assets/images/mapsCrud.png";
 
   // Onboarding Images
   static String onboardingApp = "assets/images/OnboardingApp.png";
   static String onboardingFindBrand = "assets/images/OnboardingFindBrand.png";
   static String onboardingExercise = "assets/images/OnboardingExercise.png";
-  static String clientOnboardingImage = "assets/images/clientOnboardingImage.png";
+  static String clientOnboardingImage =
+      "assets/images/clientOnboardingImage.png";
 
   // Create Brand Infro
-  static String portadaCreateBrandIntro = "assets/images/PortadaCreateBrandInfo.png";
-  static String informationCreateBrandIntro = "assets/images/InformationCreateBrandIntro.png";
-  static String locationCreateBrandIntro = "assets/images/LocationCreateBrandIntro.png";
-  static String horarioCreateBrandIntro = "assets/images/HorarioCreateBrandIntro.png";
+  static String portadaCreateBrandIntro =
+      "assets/images/PortadaCreateBrandInfo.png";
+  static String informationCreateBrandIntro =
+      "assets/images/InformationCreateBrandIntro.png";
+  static String locationCreateBrandIntro =
+      "assets/images/LocationCreateBrandIntro.png";
+  static String horarioCreateBrandIntro =
+      "assets/images/HorarioCreateBrandIntro.png";
 
   static String imageCash = "assets/images/imageCash.png";
   static String imageTransfer = "assets/images/imageTransfer.png";
@@ -73,5 +78,4 @@ class Constants {
   static String exhalingEmojiImage = "assets/images/exhalingEmojiImage.png";
   static String fireEmojiImage = "assets/images/fireEmojiImage.png";
   static String clockEmojiImage = "assets/images/clockEmojiImage.png";
-
 }

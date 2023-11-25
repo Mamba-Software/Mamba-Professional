@@ -31,7 +31,6 @@ part 'CrudEventState.dart';
 class CrudEventCubit extends Cubit<CrudEventLoaded> {
   final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
-  final _purchaseDataService = PurchaseDataService();
   final _notificationsEvents = NotificationsEvent();
   final _addEvents = AddEventFunctions();
   final _recurrentEvents = RecurrentEvents();
@@ -600,6 +599,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           _notificationsEvents.setEventNotificationBeforeRecurrent(updatedEvent,
               notificationBefore.title!, notificationBefore.body!));
     }
+
+    resetNewEvent();
   }
 
   Future<void> _updateEventFunction(
@@ -1141,6 +1142,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
             endTime.isAfter(endWorkDay)) {
       return false;
     } else {
+      /*
       // Can´t create event in break period of working hours
       for (var i = 2; i < currentBrand.workShift.length; i += 2) {
         // Breaks
@@ -1165,7 +1167,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
                     endTime.isAtSameMomentAs(endBreak)))) {
           return false;
         }
-      }
+      }*/
       return true;
     }
   }

@@ -5,18 +5,12 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/read_event/cubit/ReadEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/AddorEdtiEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
-
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
-
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -26,14 +20,12 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
@@ -102,7 +94,6 @@ class _EventPageTrainerState extends State<EventPageTrainer>
   double safeAreaWidth = 0;
   // App Bar and Scroll View
   ScrollController? _scrollController;
-  bool _isMapOffstage = false;
 
   bool get _isAppBarExpanded {
     return _scrollController!.hasClients &&
@@ -268,7 +259,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
     }
   }
 
-  void _onLaunchCoordinates(latLng) {
+  void _onLaunchCoordinates() {
     mixpanel!.track('event_view_location_tap',
         properties: {'isPrivate': event.isPrivate!});
     MapsLauncher.launchCoordinates(
@@ -452,63 +443,316 @@ class _EventPageTrainerState extends State<EventPageTrainer>
       isFirstBuild = false;
     }
 
-    return WillPopScope(
-      onWillPop: () async {
-        setState(() {
-          _isMapOffstage = true;
-        });
-        return true; // Return true to allow the pop to happen
-      },
-      child: isLoading
-          ? Scaffold(
-              appBar: null,
-              resizeToAvoidBottomInset: true,
-              body: Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  Container(
+    return isLoading
+        ? Scaffold(
+            appBar: null,
+            resizeToAvoidBottomInset: true,
+            body: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                ),
+                Shimmer.fromColors(
+                  baseColor: AppColors.grey,
+                  highlightColor: AppColors.grey.withOpacity(0.5),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                    ),
+                        color: Theme.of(context).scaffoldBackgroundColor),
                   ),
-                  Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
+                ),
+                Positioned(
+                    top: MediaQuery.of(context).size.height * 0.32,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor),
-                    ),
-                  ),
-                  Positioned(
-                      top: MediaQuery.of(context).size.height * 0.32,
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                        ),
-                        child: SingleChildScrollView(
-                          physics: const NeverScrollableScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.05),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.04),
-                                    Row(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      child: SingleChildScrollView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * 0.05),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.04),
+                                  Row(
+                                    children: [
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor:
+                                            AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.08,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.08,
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.grey,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.02),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Shimmer.fromColors(
+                                            baseColor: AppColors.grey,
+                                            highlightColor:
+                                                AppColors.grey.withOpacity(0.5),
+                                            child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.04,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.4,
+                                              decoration: const BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              15.0))),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.01),
+                                          Shimmer.fromColors(
+                                            baseColor: AppColors.grey,
+                                            highlightColor:
+                                                AppColors.grey.withOpacity(0.5),
+                                            child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.02,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.3,
+                                              decoration: const BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              15.0))),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.02),
+                                  Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor:
+                                        AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.03,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.6,
+                                      decoration: const BoxDecoration(
+                                          color: AppColors.grey,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0))),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.04),
+                                  Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor:
+                                        AppColors.grey.withOpacity(0.5),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.07,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.15,
+                                          decoration: const BoxDecoration(
+                                              color: AppColors.grey,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0))),
+                                        ),
+                                        Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.07,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.7,
+                                          decoration: const BoxDecoration(
+                                              color: AppColors.grey,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0))),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.02),
+                                  Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor:
+                                        AppColors.grey.withOpacity(0.5),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.07,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.15,
+                                          decoration: const BoxDecoration(
+                                              color: AppColors.grey,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0))),
+                                        ),
+                                        Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.07,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.7,
+                                          decoration: const BoxDecoration(
+                                              color: AppColors.grey,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0))),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.02),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * 0.05),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.02),
+                                  Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor:
+                                        AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.13,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      decoration: const BoxDecoration(
+                                          color: AppColors.grey,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0))),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * 0.05),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.025),
+                                  Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor:
+                                        AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.03,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.3,
+                                      decoration: const BoxDecoration(
+                                          color: AppColors.grey,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0))),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.025),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.height *
+                                        0.26,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
@@ -529,379 +773,400 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
+                                        Shimmer.fromColors(
+                                          baseColor: AppColors.grey,
+                                          highlightColor:
+                                              AppColors.grey.withOpacity(0.5),
+                                          child: Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.08,
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .height *
-                                                0.02),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Shimmer.fromColors(
-                                              baseColor: AppColors.grey,
-                                              highlightColor: AppColors.grey
-                                                  .withOpacity(0.5),
-                                              child: Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.04,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.4,
-                                                decoration: const BoxDecoration(
-                                                    color: AppColors.grey,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                15.0))),
-                                              ),
+                                                0.08,
+                                            decoration: const BoxDecoration(
+                                              color: AppColors.grey,
+                                              shape: BoxShape.circle,
                                             ),
-                                            SizedBox(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.01),
-                                            Shimmer.fromColors(
-                                              baseColor: AppColors.grey,
-                                              highlightColor: AppColors.grey
-                                                  .withOpacity(0.5),
-                                              child: Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.02,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.3,
-                                                decoration: const BoxDecoration(
-                                                    color: AppColors.grey,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                15.0))),
-                                              ),
+                                          ),
+                                        ),
+                                        Shimmer.fromColors(
+                                          baseColor: AppColors.grey,
+                                          highlightColor:
+                                              AppColors.grey.withOpacity(0.5),
+                                          child: Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.08,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.08,
+                                            decoration: const BoxDecoration(
+                                              color: AppColors.grey,
+                                              shape: BoxShape.circle,
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.02),
-                                    Shimmer.fromColors(
-                                      baseColor: AppColors.grey,
-                                      highlightColor:
-                                          AppColors.grey.withOpacity(0.5),
-                                      child: Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.03,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.6,
-                                        decoration: const BoxDecoration(
-                                            color: AppColors.grey,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15.0))),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.04),
-                                    Shimmer.fromColors(
-                                      baseColor: AppColors.grey,
-                                      highlightColor:
-                                          AppColors.grey.withOpacity(0.5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.07,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.15,
-                                            decoration: const BoxDecoration(
-                                                color: AppColors.grey,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15.0))),
-                                          ),
-                                          Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.07,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.7,
-                                            decoration: const BoxDecoration(
-                                                color: AppColors.grey,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15.0))),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.02),
-                                    Shimmer.fromColors(
-                                      baseColor: AppColors.grey,
-                                      highlightColor:
-                                          AppColors.grey.withOpacity(0.5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.07,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.15,
-                                            decoration: const BoxDecoration(
-                                                color: AppColors.grey,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15.0))),
-                                          ),
-                                          Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.07,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.7,
-                                            decoration: const BoxDecoration(
-                                                color: AppColors.grey,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15.0))),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.02),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.05),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.02),
-                                    Shimmer.fromColors(
-                                      baseColor: AppColors.grey,
-                                      highlightColor:
-                                          AppColors.grey.withOpacity(0.5),
-                                      child: Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.13,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.9,
-                                        decoration: const BoxDecoration(
-                                            color: AppColors.grey,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15.0))),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.05),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.025),
-                                    Shimmer.fromColors(
-                                      baseColor: AppColors.grey,
-                                      highlightColor:
-                                          AppColors.grey.withOpacity(0.5),
-                                      child: Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.03,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.3,
-                                        decoration: const BoxDecoration(
-                                            color: AppColors.grey,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15.0))),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.025),
-                                    SizedBox(
-                                      width:
-                                          MediaQuery.of(context).size.height *
-                                              0.26,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Shimmer.fromColors(
-                                            baseColor: AppColors.grey,
-                                            highlightColor:
-                                                AppColors.grey.withOpacity(0.5),
-                                            child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.08,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.08,
-                                              decoration: const BoxDecoration(
-                                                color: AppColors.grey,
-                                                shape: BoxShape.circle,
-                                              ),
-                                            ),
-                                          ),
-                                          Shimmer.fromColors(
-                                            baseColor: AppColors.grey,
-                                            highlightColor:
-                                                AppColors.grey.withOpacity(0.5),
-                                            child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.08,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.08,
-                                              decoration: const BoxDecoration(
-                                                color: AppColors.grey,
-                                                shape: BoxShape.circle,
-                                              ),
-                                            ),
-                                          ),
-                                          Shimmer.fromColors(
-                                            baseColor: AppColors.grey,
-                                            highlightColor:
-                                                AppColors.grey.withOpacity(0.5),
-                                            child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.08,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.08,
-                                              decoration: const BoxDecoration(
-                                                color: AppColors.grey,
-                                                shape: BoxShape.circle,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )),
-                ],
-              ),
-            )
-          : BlocBuilder<ReadEventCubit, ReadEventLoaded>(
-              builder: (context, state) {
-              if (!state.isLoaded) {
-                return Scaffold(
-                  appBar: null,
-                  resizeToAvoidBottomInset: true,
-                  body: Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                        ),
-                      ),
-                      Shimmer.fromColors(
-                        baseColor: AppColors.grey,
-                        highlightColor: AppColors.grey.withOpacity(0.5),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.3,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor),
-                        ),
-                      ),
-                      Positioned(
-                          top: MediaQuery.of(context).size.height * 0.32,
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
                             ),
-                            child: SingleChildScrollView(
-                              physics: const NeverScrollableScrollPhysics(),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            MediaQuery.of(context).size.width *
-                                                0.05),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.04),
-                                        Row(
+                          ],
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+          )
+        : BlocBuilder<ReadEventCubit, ReadEventLoaded>(
+            builder: (context, state) {
+            if (!state.isLoaded) {
+              return Scaffold(
+                appBar: null,
+                resizeToAvoidBottomInset: true,
+                body: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                    ),
+                    Shimmer.fromColors(
+                      baseColor: AppColors.grey,
+                      highlightColor: AppColors.grey.withOpacity(0.5),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor),
+                      ),
+                    ),
+                    Positioned(
+                        top: MediaQuery.of(context).size.height * 0.32,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                          ),
+                          child: SingleChildScrollView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.05),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.04),
+                                      Row(
+                                        children: [
+                                          Shimmer.fromColors(
+                                            baseColor: AppColors.grey,
+                                            highlightColor:
+                                                AppColors.grey.withOpacity(0.5),
+                                            child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.08,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.08,
+                                              decoration: const BoxDecoration(
+                                                color: AppColors.grey,
+                                                shape: BoxShape.circle,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.02),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Shimmer.fromColors(
+                                                baseColor: AppColors.grey,
+                                                highlightColor: AppColors.grey
+                                                    .withOpacity(0.5),
+                                                child: Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.04,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.4,
+                                                  decoration: const BoxDecoration(
+                                                      color: AppColors.grey,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  15.0))),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.01),
+                                              Shimmer.fromColors(
+                                                baseColor: AppColors.grey,
+                                                highlightColor: AppColors.grey
+                                                    .withOpacity(0.5),
+                                                child: Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.02,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.3,
+                                                  decoration: const BoxDecoration(
+                                                      color: AppColors.grey,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  15.0))),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.02),
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor:
+                                            AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.6,
+                                          decoration: const BoxDecoration(
+                                              color: AppColors.grey,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0))),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.04),
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor:
+                                            AppColors.grey.withOpacity(0.5),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.07,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.15,
+                                              decoration: const BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              15.0))),
+                                            ),
+                                            Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.07,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.7,
+                                              decoration: const BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              15.0))),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.02),
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor:
+                                            AppColors.grey.withOpacity(0.5),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.07,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.15,
+                                              decoration: const BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              15.0))),
+                                            ),
+                                            Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.07,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.7,
+                                              decoration: const BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              15.0))),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.02),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.05),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.02),
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor:
+                                            AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.13,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.9,
+                                          decoration: const BoxDecoration(
+                                              color: AppColors.grey,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0))),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.05),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.025),
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor:
+                                            AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.3,
+                                          decoration: const BoxDecoration(
+                                              color: AppColors.grey,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0))),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.025),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.26,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Shimmer.fromColors(
                                               baseColor: AppColors.grey,
@@ -922,625 +1187,570 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(
+                                            Shimmer.fromColors(
+                                              baseColor: AppColors.grey,
+                                              highlightColor: AppColors.grey
+                                                  .withOpacity(0.5),
+                                              child: Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.08,
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    0.02),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                    0.08,
+                                                decoration: const BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                              ),
+                                            ),
+                                            Shimmer.fromColors(
+                                              baseColor: AppColors.grey,
+                                              highlightColor: AppColors.grey
+                                                  .withOpacity(0.5),
+                                              child: Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.08,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.08,
+                                                decoration: const BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )),
+                  ],
+                ),
+              );
+            } else {
+              event = state.event;
+              setEventInfo(event);
+              return Scaffold(
+                appBar: null,
+                resizeToAvoidBottomInset: true,
+                body: ExtendedNestedScrollView(
+                  pinnedHeaderSliverHeightBuilder: () {
+                    return MediaQuery.of(context).size.height * 0.10;
+                  },
+                  physics: const BouncingScrollPhysics(),
+                  controller: _scrollController,
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return <Widget>[
+                      ValueListenableBuilder<bool>(
+                          valueListenable: appBarExpanded,
+                          builder: (context, appBarExpandedValue, child) {
+                            return SliverAppBar(
+                              expandedHeight:
+                                  MediaQuery.of(context).size.height * 0.22,
+                              elevation: 0,
+                              systemOverlayStyle:
+                                  returnSystemBarColor(appBarExpandedValue),
+                              floating: false,
+                              pinned: true,
+                              centerTitle: true,
+                              title: AnimatedOpacity(
+                                  opacity: appBarExpandedValue ? 1.0 : 0.0,
+                                  duration: const Duration(milliseconds: 100),
+                                  child: Text(titleController.text,
+                                      style: Theme.of(context)
+                                          .appBarTheme
+                                          .titleTextStyle)),
+                              flexibleSpace: FlexibleSpaceBar(
+                                background: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.transparent,
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: CachedNetworkImageProvider(
+                                            event.imageUrl!),
+                                      )),
+                                  child: const Center(),
+                                ),
+                                titlePadding: EdgeInsets.zero,
+                                //centerTitle: true,
+                              ),
+                              leadingWidth:
+                                  MediaQuery.of(context).size.width * 0.2,
+                              leading: Center(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Material(
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    child: InkWell(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(13),
+                                          child: Icon(
+                                            Icons.arrow_back,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.06,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          Navigator.pop(context, isUpdated);
+                                        }),
+                                  ),
+                                ),
+                              ),
+                              actions: [
+                                isLoadingBody == false &&
+                                        isBeforeEdit &&
+                                        event.isPrivate! == false
+                                    ? Padding(
+                                        padding: EdgeInsets.only(
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05),
+                                        child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.06,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.12,
+                                          decoration: BoxDecoration(
+                                              color: Theme.of(context)
+                                                  .scaffoldBackgroundColor,
+                                              shape: BoxShape.circle),
+                                          child:
+                                              buildPlacesLeftWidget(placesLeft),
+                                        ),
+                                      )
+                                    : !isBeforeEdit
+                                        ? Padding(
+                                            padding: EdgeInsets.only(
+                                                right: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.05),
+                                            child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.06,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.12,
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .scaffoldBackgroundColor,
+                                                  shape: BoxShape.circle),
+                                              child:
+                                                  buildAverageFeedbackWidget(),
+                                            ),
+                                          )
+                                        : Container(),
+                              ],
+                            );
+                          }),
+                    ];
+                  },
+                  body: SafeArea(
+                    top: false,
+                    bottom: false,
+                    child: Builder(
+                      builder: (context) => CustomScrollView(
+                        physics: const ClampingScrollPhysics(),
+                        slivers: [
+                          SliverToBoxAdapter(
+                              child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.03),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.05),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.01),
+                                      Form(
+                                        key: formKeyInfo,
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Shimmer.fromColors(
-                                                  baseColor: AppColors.grey,
-                                                  highlightColor: AppColors.grey
-                                                      .withOpacity(0.5),
-                                                  child: Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.04,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.4,
-                                                    decoration: const BoxDecoration(
-                                                        color: AppColors.grey,
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    15.0))),
-                                                  ),
+                                                CircularImage(
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.15,
+                                                  image: currentBrand.logoUrl,
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  borderWidth: 0.5,
                                                 ),
                                                 SizedBox(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.01),
-                                                Shimmer.fromColors(
-                                                  baseColor: AppColors.grey,
-                                                  highlightColor: AppColors.grey
-                                                      .withOpacity(0.5),
-                                                  child: Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.02,
                                                     width:
                                                         MediaQuery.of(context)
                                                                 .size
                                                                 .width *
-                                                            0.3,
-                                                    decoration: const BoxDecoration(
-                                                        color: AppColors.grey,
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    15.0))),
+                                                            0.03),
+                                                Expanded(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        titleController.text,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline1
+                                                            ?.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      const SizedBox(height: 2),
+                                                      Text(
+                                                        currentBrand.name!,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption,
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ],
                                             ),
+                                            SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.02),
+                                            Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 0),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: <Widget>[
+                                                    Flexible(
+                                                      child: TextFormField(
+                                                        controller:
+                                                            descriptionController,
+                                                        readOnly: true,
+                                                        minLines: 1,
+                                                        maxLines: 4,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText2,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintStyle:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .caption,
+                                                          hintText:
+                                                              AppLocalizations.of(
+                                                                      context)!
+                                                                  .noDescription,
+                                                          border:
+                                                              InputBorder.none,
+                                                          focusedBorder:
+                                                              InputBorder.none,
+                                                          enabledBorder:
+                                                              InputBorder.none,
+                                                          errorBorder:
+                                                              InputBorder.none,
+                                                          disabledBorder:
+                                                              InputBorder.none,
+                                                          contentPadding:
+                                                              const EdgeInsets
+                                                                  .all(0),
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.justify,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )),
                                           ],
                                         ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02),
-                                        Shimmer.fromColors(
-                                          baseColor: AppColors.grey,
-                                          highlightColor:
-                                              AppColors.grey.withOpacity(0.5),
-                                          child: Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.03,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.6,
-                                            decoration: const BoxDecoration(
-                                                color: AppColors.grey,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15.0))),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.04),
-                                        Shimmer.fromColors(
-                                          baseColor: AppColors.grey,
-                                          highlightColor:
-                                              AppColors.grey.withOpacity(0.5),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.07,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.15,
-                                                decoration: const BoxDecoration(
-                                                    color: AppColors.grey,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                15.0))),
-                                              ),
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.07,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.7,
-                                                decoration: const BoxDecoration(
-                                                    color: AppColors.grey,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                15.0))),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02),
-                                        Shimmer.fromColors(
-                                          baseColor: AppColors.grey,
-                                          highlightColor:
-                                              AppColors.grey.withOpacity(0.5),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.07,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.15,
-                                                decoration: const BoxDecoration(
-                                                    color: AppColors.grey,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                15.0))),
-                                              ),
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.07,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.7,
-                                                decoration: const BoxDecoration(
-                                                    color: AppColors.grey,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                15.0))),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            MediaQuery.of(context).size.width *
-                                                0.05),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02),
-                                        Shimmer.fromColors(
-                                          baseColor: AppColors.grey,
-                                          highlightColor:
-                                              AppColors.grey.withOpacity(0.5),
-                                          child: Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.13,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.9,
-                                            decoration: const BoxDecoration(
-                                                color: AppColors.grey,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15.0))),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            MediaQuery.of(context).size.width *
-                                                0.05),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.025),
-                                        Shimmer.fromColors(
-                                          baseColor: AppColors.grey,
-                                          highlightColor:
-                                              AppColors.grey.withOpacity(0.5),
-                                          child: Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.03,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.3,
-                                            decoration: const BoxDecoration(
-                                                color: AppColors.grey,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15.0))),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.025),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
+                                      ),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
                                                   .size
                                                   .height *
-                                              0.26,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Shimmer.fromColors(
-                                                baseColor: AppColors.grey,
-                                                highlightColor: AppColors.grey
-                                                    .withOpacity(0.5),
-                                                child: Container(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.08,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.08,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: AppColors.grey,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                              ),
-                                              Shimmer.fromColors(
-                                                baseColor: AppColors.grey,
-                                                highlightColor: AppColors.grey
-                                                    .withOpacity(0.5),
-                                                child: Container(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.08,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.08,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: AppColors.grey,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                              ),
-                                              Shimmer.fromColors(
-                                                baseColor: AppColors.grey,
-                                                highlightColor: AppColors.grey
-                                                    .withOpacity(0.5),
-                                                child: Container(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.08,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.08,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: AppColors.grey,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )),
-                    ],
-                  ),
-                );
-              } else {
-                event = state.event;
-                setEventInfo(event);
-                return Scaffold(
-                  appBar: null,
-                  resizeToAvoidBottomInset: true,
-                  body: ExtendedNestedScrollView(
-                    pinnedHeaderSliverHeightBuilder: () {
-                      return MediaQuery.of(context).size.height * 0.10;
-                    },
-                    physics: const BouncingScrollPhysics(),
-                    controller: _scrollController,
-                    headerSliverBuilder:
-                        (BuildContext context, bool innerBoxIsScrolled) {
-                      return <Widget>[
-                        ValueListenableBuilder<bool>(
-                            valueListenable: appBarExpanded,
-                            builder: (context, appBarExpandedValue, child) {
-                              return SliverAppBar(
-                                expandedHeight:
-                                    MediaQuery.of(context).size.height * 0.22,
-                                elevation: 0,
-                                systemOverlayStyle:
-                                    returnSystemBarColor(appBarExpandedValue),
-                                floating: false,
-                                pinned: true,
-                                centerTitle: true,
-                                title: AnimatedOpacity(
-                                    opacity: appBarExpandedValue ? 1.0 : 0.0,
-                                    duration: const Duration(milliseconds: 100),
-                                    child: Text(titleController.text,
-                                        style: Theme.of(context)
-                                            .appBarTheme
-                                            .titleTextStyle)),
-                                flexibleSpace: FlexibleSpaceBar(
-                                  background: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.transparent,
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(
-                                              event.imageUrl!),
-                                        )),
-                                    child: const Center(),
-                                  ),
-                                  titlePadding: EdgeInsets.zero,
-                                  //centerTitle: true,
-                                ),
-                                leadingWidth:
-                                    MediaQuery.of(context).size.width * 0.2,
-                                leading: Center(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: Material(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                      child: InkWell(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(13),
-                                            child: Icon(
-                                              Icons.arrow_back,
-                                              size: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.06,
-                                            ),
-                                          ),
-                                          onTap: () {
-                                            setState(() {
-                                              _isMapOffstage = true;
-                                            });
-
-                                            Navigator.pop(context, isUpdated);
-                                          }),
-                                    ),
-                                  ),
-                                ),
-                                actions: [
-                                  isLoadingBody == false &&
-                                          isBeforeEdit &&
-                                          event.isPrivate! == false
-                                      ? Padding(
-                                          padding: EdgeInsets.only(
-                                              right: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.05),
-                                          child: Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.06,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.12,
-                                            decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .scaffoldBackgroundColor,
-                                                shape: BoxShape.circle),
-                                            child: buildPlacesLeftWidget(
-                                                placesLeft),
-                                          ),
-                                        )
-                                      : !isBeforeEdit
+                                              0.02),
+                                      errorDate
                                           ? Padding(
-                                              padding: EdgeInsets.only(
-                                                  right: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.05),
-                                              child: Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.06,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.12,
-                                                decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .scaffoldBackgroundColor,
-                                                    shape: BoxShape.circle),
-                                                child:
-                                                    buildAverageFeedbackWidget(),
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8.0),
+                                              child: Center(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!
+                                                      .errorDate,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2
+                                                      ?.copyWith(
+                                                          color: AppColors.red),
+                                                  textAlign: TextAlign.center,
+                                                ),
                                               ),
                                             )
                                           : Container(),
-                                ],
-                              );
-                            }),
-                      ];
-                    },
-                    body: SafeArea(
-                      top: false,
-                      bottom: false,
-                      child: Builder(
-                        builder: (context) => CustomScrollView(
-                          physics: const ClampingScrollPhysics(),
-                          slivers: [
-                            SliverToBoxAdapter(
-                                child: Container(
-                              decoration: BoxDecoration(
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                              ),
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.03),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.08,
+                                        width:
                                             MediaQuery.of(context).size.width *
-                                                0.05),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.01),
-                                        Form(
-                                          key: formKeyInfo,
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  CircularImage(
-                                                    size: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        0.15,
-                                                    image: currentBrand.logoUrl,
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                    borderWidth: 0.5,
-                                                  ),
-                                                  SizedBox(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.03),
-                                                  Expanded(
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          titleController.text,
+                                                0.9,
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5.0))),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.06,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.06,
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                      .withOpacity(0.08),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(
+                                                              5.0))),
+                                              child: Center(
+                                                  child: Text(
+                                                      event.day.toString(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline1
+                                                          ?.copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .secondary),
+                                                      textAlign:
+                                                          TextAlign.center)),
+                                            ),
+                                            SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.04),
+                                            SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.08,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.64,
+                                                child: Center(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Flexible(
+                                                        child: TextFormField(
+                                                          controller:
+                                                              startDateController,
+                                                          readOnly: true,
+                                                          enabled: false,
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .headline1
+                                                              .bodyText1
                                                               ?.copyWith(
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold),
+                                                          decoration:
+                                                              InputDecoration(
+                                                            labelStyle: Theme
+                                                                    .of(context)
+                                                                .textTheme
+                                                                .bodyText1
+                                                                ?.copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                            border: InputBorder
+                                                                .none,
+                                                            focusedBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            enabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            errorBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            disabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                          ),
                                                           textAlign:
                                                               TextAlign.start,
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
                                                         ),
-                                                        const SizedBox(
-                                                            height: 2),
-                                                        Text(
-                                                          currentBrand.name!,
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .caption,
-                                                          textAlign:
-                                                              TextAlign.start,
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.02),
-                                              Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(horizontal: 0),
-                                                  child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    children: <Widget>[
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.08,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.9,
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5.0))),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.06,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.06,
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                      .withOpacity(0.08),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(
+                                                              5.0))),
+                                              child: Center(
+                                                  child: Icon(
+                                                Icons.timer_outlined,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                                size: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.06,
+                                              )),
+                                            ),
+                                            SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.04),
+                                            SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.08,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.64,
+                                                child: Center(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
                                                       Flexible(
                                                         child: TextFormField(
                                                           controller:
-                                                              descriptionController,
+                                                              durationController,
                                                           readOnly: true,
-                                                          minLines: 1,
-                                                          maxLines: 4,
+                                                          enabled: false,
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
                                                                   .bodyText2,
                                                           decoration:
-                                                              InputDecoration(
-                                                            hintStyle: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .caption,
-                                                            hintText: AppLocalizations
-                                                                    .of(context)!
-                                                                .noDescription,
+                                                              const InputDecoration(
                                                             border: InputBorder
                                                                 .none,
                                                             focusedBorder:
@@ -1556,1193 +1766,892 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                 InputBorder
                                                                     .none,
                                                             contentPadding:
-                                                                const EdgeInsets
-                                                                    .all(0),
+                                                                EdgeInsets.zero,
                                                           ),
                                                           textAlign:
-                                                              TextAlign.justify,
+                                                              TextAlign.start,
                                                         ),
                                                       ),
                                                     ],
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02),
-                                        errorDate
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 8.0),
-                                                child: Center(
-                                                  child: Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .errorDate,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText2
-                                                        ?.copyWith(
-                                                            color:
-                                                                AppColors.red),
-                                                    textAlign: TextAlign.center,
                                                   ),
-                                                ),
-                                              )
-                                            : Container(),
-                                        Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.08,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.9,
-                                          decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .scaffoldBackgroundColor,
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(5.0))),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Container(
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.08,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.90,
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5.0))),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.06,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.06,
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                      .withOpacity(0.08),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(
+                                                              5.0))),
+                                              child: Center(
+                                                  child: Icon(
+                                                event.isPrivate!
+                                                    ? Icons.person
+                                                    : Icons.groups,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                                size: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.06,
+                                              )),
+                                            ),
+                                            SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.04),
+                                            SizedBox(
                                                 height: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    0.06,
+                                                    0.08,
                                                 width: MediaQuery.of(context)
                                                         .size
-                                                        .height *
-                                                    0.06,
-                                                decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary
-                                                        .withOpacity(0.08),
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                5.0))),
+                                                        .width *
+                                                    0.64,
                                                 child: Center(
-                                                    child: Text(
-                                                        event.day.toString(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline1
-                                                            ?.copyWith(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .secondary),
-                                                        textAlign:
-                                                            TextAlign.center)),
-                                              ),
-                                              SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.04),
-                                              SizedBox(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.08,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.64,
-                                                  child: Center(
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Flexible(
-                                                          child: TextFormField(
-                                                            controller:
-                                                                startDateController,
-                                                            readOnly: true,
-                                                            enabled: false,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyText1
-                                                                ?.copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                            decoration:
-                                                                InputDecoration(
-                                                              labelStyle: Theme
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Flexible(
+                                                        child: TextFormField(
+                                                          initialValue: event
+                                                                  .isPrivate!
+                                                              ? AppLocalizations
                                                                       .of(
-                                                                          context)
+                                                                          context)!
+                                                                  .privateEvent
+                                                              : AppLocalizations
+                                                                      .of(context)!
+                                                                  .groupEvent,
+                                                          readOnly: true,
+                                                          enabled: false,
+                                                          style:
+                                                              Theme.of(context)
                                                                   .textTheme
-                                                                  .bodyText1
-                                                                  ?.copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                              border:
-                                                                  InputBorder
-                                                                      .none,
-                                                              focusedBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              enabledBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              errorBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              disabledBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                            ),
-                                                            textAlign:
-                                                                TextAlign.start,
+                                                                  .bodyText2,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            border: InputBorder
+                                                                .none,
+                                                            focusedBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            enabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            errorBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            disabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            contentPadding:
+                                                                EdgeInsets.zero,
                                                           ),
+                                                          textAlign:
+                                                              TextAlign.start,
                                                         ),
-                                                      ],
-                                                    ),
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.08,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.9,
-                                          decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .scaffoldBackgroundColor,
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(5.0))),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.06,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.06,
-                                                decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary
-                                                        .withOpacity(0.08),
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                5.0))),
-                                                child: Center(
-                                                    child: Icon(
-                                                  Icons.timer_outlined,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
-                                                  size: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.06,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 )),
-                                              ),
-                                              SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.04),
-                                              SizedBox(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.08,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.64,
-                                                  child: Center(
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Flexible(
-                                                          child: TextFormField(
-                                                            controller:
-                                                                durationController,
-                                                            readOnly: true,
-                                                            enabled: false,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyText2,
-                                                            decoration:
-                                                                const InputDecoration(
-                                                              border:
-                                                                  InputBorder
-                                                                      .none,
-                                                              focusedBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              enabledBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              errorBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              disabledBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              contentPadding:
-                                                                  EdgeInsets
-                                                                      .zero,
-                                                            ),
-                                                            textAlign:
-                                                                TextAlign.start,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )),
-                                            ],
-                                          ),
+                                          ],
                                         ),
-                                        Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.08,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.90,
-                                          decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .scaffoldBackgroundColor,
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(5.0))),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.06,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.06,
-                                                decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary
-                                                        .withOpacity(0.08),
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                5.0))),
-                                                child: Center(
-                                                    child: Icon(
-                                                  event.isPrivate!
-                                                      ? Icons.person
-                                                      : Icons.groups,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
-                                                  size: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.06,
-                                                )),
-                                              ),
-                                              SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.04),
-                                              SizedBox(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.08,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.64,
-                                                  child: Center(
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Flexible(
-                                                          child: TextFormField(
-                                                            initialValue: event
-                                                                    .isPrivate!
-                                                                ? AppLocalizations.of(
-                                                                        context)!
-                                                                    .privateEvent
-                                                                : AppLocalizations.of(
-                                                                        context)!
-                                                                    .groupEvent,
-                                                            readOnly: true,
-                                                            enabled: false,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyText2,
-                                                            decoration:
-                                                                const InputDecoration(
-                                                              border:
-                                                                  InputBorder
-                                                                      .none,
-                                                              focusedBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              enabledBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              errorBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              disabledBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              contentPadding:
-                                                                  EdgeInsets
-                                                                      .zero,
-                                                            ),
-                                                            textAlign:
-                                                                TextAlign.start,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02),
-                                      ],
-                                    ),
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
+                                      ),
                                       SizedBox(
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height *
-                                              0.01),
-                                      Container(
+                                              0.02),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                0.13,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.9,
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .backgroundColor,
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(15.0))),
-                                        child: Stack(
-                                          children: <Widget>[
-                                            Center(
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.only(
-                                                  topLeft: Radius.circular(15),
-                                                  topRight: Radius.circular(15),
-                                                  bottomRight:
-                                                      Radius.circular(15),
-                                                  bottomLeft:
-                                                      Radius.circular(15),
-                                                ),
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.bottomRight,
-                                                  heightFactor: 1,
-                                                  widthFactor: 2.5,
-                                                  child: Offstage(
-                                                    offstage: _isMapOffstage,
-                                                    child: GoogleMap(
-                                                      onMapCreated:
-                                                          _onMapCreated,
-                                                      initialCameraPosition:
-                                                          _initialPosition,
-                                                      scrollGesturesEnabled:
-                                                          false,
-                                                      zoomGesturesEnabled:
-                                                          false,
-                                                      rotateGesturesEnabled:
-                                                          false,
-                                                      mapToolbarEnabled: false,
-                                                      zoomControlsEnabled:
-                                                          false,
-                                                      minMaxZoomPreference:
-                                                          const MinMaxZoomPreference(
-                                                              17, 17),
-                                                      myLocationButtonEnabled:
-                                                          false,
-                                                      markers: markers,
-                                                      mapType: MapType.hybrid,
-                                                      onTap:
-                                                          _onLaunchCoordinates,
-                                                    ),
+                                                0.01),
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.13,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      decoration: BoxDecoration(
+                                          color:
+                                              Theme.of(context).backgroundColor,
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(15.0))),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Center(
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft: Radius.circular(15),
+                                                topRight: Radius.circular(15),
+                                                bottomRight:
+                                                    Radius.circular(15),
+                                                bottomLeft: Radius.circular(15),
+                                              ),
+                                              child: Align(
+                                                alignment:
+                                                    Alignment.bottomRight,
+                                                heightFactor: 1,
+                                                widthFactor: 2.5,
+                                                child: GestureDetector(
+                                                  onTap: _onLaunchCoordinates,
+                                                  child: Image(
+                                                    image: AssetImage(
+                                                        Constants.mapsImg),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                            Positioned(
-                                              left: 5.0,
-                                              bottom: 5.0,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15),
+                                          ),
+                                          Positioned(
+                                            left: 5.0,
+                                            bottom: 5.0,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  color: Theme.of(context)
+                                                      .scaffoldBackgroundColor),
+                                              padding: const EdgeInsets.all(10),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.location_on,
                                                     color: Theme.of(context)
-                                                        .scaffoldBackgroundColor),
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons.location_on,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary,
-                                                      size: 15,
+                                                        .colorScheme
+                                                        .secondary,
+                                                    size: 15,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 5.0),
+                                                    child: Text(
+                                                      location.description!,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2,
                                                     ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 5.0),
-                                                      child: Text(
-                                                        location.description!,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2,
-                                                      ),
-                                                    )
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    event.bonos.isNotEmpty
+                                        ? Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.025),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.05,
+                                                    vertical: 10),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .bonosNecesarios,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText1!
+                                                          .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                    ),
                                                   ],
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      event.bonos.isNotEmpty
-                                          ? Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SizedBox(
-                                                    height:
+                                              SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.01),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal:
                                                         MediaQuery.of(context)
                                                                 .size
-                                                                .height *
-                                                            0.025),
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.05,
-                                                      vertical: 10),
-                                                  child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .bonosNecesarios,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1!
-                                                            .copyWith(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                    height:
-                                                        MediaQuery.of(context)
+                                                                .width *
+                                                            0.05),
+                                                child: ListView.builder(
+                                                    physics:
+                                                        const NeverScrollableScrollPhysics(),
+                                                    padding: EdgeInsets.zero,
+                                                    shrinkWrap: true,
+                                                    itemCount:
+                                                        event.bonos.length,
+                                                    itemBuilder:
+                                                        (context, int index) {
+                                                      var bono =
+                                                          event.bonos[index];
+                                                      return SizedBox(
+                                                        height: MediaQuery.of(
+                                                                    context)
                                                                 .size
                                                                 .height *
-                                                            0.01),
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.05),
-                                                  child: ListView.builder(
-                                                      physics:
-                                                          const NeverScrollableScrollPhysics(),
-                                                      padding: EdgeInsets.zero,
-                                                      shrinkWrap: true,
-                                                      itemCount:
-                                                          event.bonos.length,
-                                                      itemBuilder:
-                                                          (context, int index) {
-                                                        var bono =
-                                                            event.bonos[index];
-                                                        return SizedBox(
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .height *
-                                                              0.075,
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.9,
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    BonoCard(
-                                                                      height: MediaQuery.of(context)
-                                                                              .size
-                                                                              .height *
-                                                                          0.05,
-                                                                      width: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.18,
-                                                                      bono:
-                                                                          bono,
-                                                                      brand:
-                                                                          currentBrand,
-                                                                      canExpand:
-                                                                          false,
-                                                                      onlyView:
-                                                                          true,
-                                                                      hideActive:
-                                                                          true,
-                                                                    ),
-                                                                  ]),
-                                                              SizedBox(
-                                                                  width: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width *
-                                                                      0.04),
-                                                              Expanded(
-                                                                child: Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                      bono.title!
-                                                                          .toUpperCase(),
+                                                            0.075,
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.9,
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  BonoCard(
+                                                                    height: MediaQuery.of(context)
+                                                                            .size
+                                                                            .height *
+                                                                        0.05,
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.18,
+                                                                    bono: bono,
+                                                                    brand:
+                                                                        currentBrand,
+                                                                    canExpand:
+                                                                        false,
+                                                                    onlyView:
+                                                                        true,
+                                                                    hideActive:
+                                                                        true,
+                                                                  ),
+                                                                ]),
+                                                            SizedBox(
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.04),
+                                                            Expanded(
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Text(
+                                                                    bono.title!
+                                                                        .toUpperCase(),
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .bodyText1,
+                                                                    maxLines: 1,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                  ),
+                                                                  Flexible(
+                                                                    child: Text(
+                                                                      (bono.sessions! == 10000
+                                                                              ? AppLocalizations.of(context)!.sessions + " " + AppLocalizations.of(context)!.ilimitadas
+                                                                              : bono.sessions!.toString() + " " + AppLocalizations.of(context)!.sessions.toLowerCase()) +
+                                                                          " desde " +
+                                                                          bono.price!.toStringAsFixed(2) +
+                                                                          "€",
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .bodyText1,
+                                                                          .caption,
                                                                       maxLines:
                                                                           1,
                                                                       overflow:
                                                                           TextOverflow
                                                                               .ellipsis,
                                                                     ),
-                                                                    Flexible(
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }),
+                                              ),
+                                            ],
+                                          )
+                                        : Container(),
+                                    SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.025),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.05,
+                                          vertical: 10),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          Text(
+                                            AppLocalizations.of(context)!
+                                                .trainers,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.01),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.92,
+                                      child: GridView.builder(
+                                        shrinkWrap: true,
+                                        padding: EdgeInsets.zero,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 4,
+                                          childAspectRatio: 0.75,
+                                        ),
+                                        itemCount:
+                                            event.selectedTrainersList!.length,
+                                        itemBuilder: (context, int index) {
+                                          var trainer = event
+                                              .selectedTrainersList![index];
+                                          return GestureDetector(
+                                            onTap: () {
+                                              mixpanel!.track(
+                                                  'event_view_trainer_tap',
+                                                  properties: {
+                                                    'isPrivate':
+                                                        event.isPrivate!
+                                                  });
+                                              Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute<void>(
+                                                      builder: (context) =>
+                                                          ProfileViewUser(
+                                                            userID: trainer.id!,
+                                                            viewOnly: false,
+                                                          )));
+                                            },
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Stack(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  children: [
+                                                    SizedBox(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.22,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          CircularImage(
+                                                            size: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.2,
+                                                            image: trainer
+                                                                .imageUrl,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                            borderWidth: 1,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.3,
+                                                  margin: const EdgeInsets.only(
+                                                      top: 3),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Flexible(
+                                                        child: Text(
+                                                          trainer.name! !=
+                                                                  AppLocalizations.of(
+                                                                          context)!
+                                                                      .notFoundUser
+                                                              ? trainer
+                                                                  .firstName!
+                                                              : trainer.name!,
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyText2,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          softWrap: true,
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.05,
+                                          vertical: 15),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          Text(
+                                            AppLocalizations.of(context)!
+                                                .clients,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          (event.isPrivate! == false)
+                                              ? Row(
+                                                  children: [
+                                                    Text(
+                                                      "( " +
+                                                          event.numClients
+                                                              .toString(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2,
+                                                    ),
+                                                    Text(
+                                                      " / ",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2,
+                                                    ),
+                                                    Text(
+                                                      event.maxMembers
+                                                              .toString() +
+                                                          " )",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2,
+                                                    ),
+                                                  ],
+                                                )
+                                              : Row(
+                                                  children: [
+                                                    Text(
+                                                      "( " +
+                                                          event.numClients
+                                                              .toString() +
+                                                          " )",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2,
+                                                    ),
+                                                  ],
+                                                ),
+                                        ],
+                                      ),
+                                    ),
+                                    event.joinedMembersList!.isEmpty
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  SizedBox(
+                                                      height: 100,
+                                                      child: Image.asset(
+                                                          Constants
+                                                              .emptyPeople)),
+                                                  Text(
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .noClientJoining,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .caption,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                        : SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.92,
+                                            child: GridView.builder(
+                                              shrinkWrap: true,
+                                              padding: EdgeInsets.zero,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              scrollDirection: Axis.vertical,
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 4,
+                                                childAspectRatio: 0.75,
+                                              ),
+                                              itemCount: event
+                                                  .joinedMembersList!.length,
+                                              itemBuilder:
+                                                  (context, int index) {
+                                                var client = event
+                                                    .joinedMembersList![index];
+                                                if (userIsBlockedBy
+                                                    .contains(client.id)) {
+                                                  client.isPrivate = true;
+                                                }
+                                                var clientFeedback =
+                                                    state.eventClientsFeedback[
+                                                        index];
+                                                return GestureDetector(
+                                                  onTap: () {
+                                                    mixpanel!.track(
+                                                        'event_view_client_tap',
+                                                        properties: {
+                                                          'isPrivate':
+                                                              event.isPrivate!,
+                                                          'hasFeedback':
+                                                              clientFeedback !=
+                                                                      null
+                                                                  ? true
+                                                                  : false,
+                                                        });
+                                                    Navigator.push(
+                                                        context,
+                                                        CupertinoPageRoute<
+                                                                void>(
+                                                            builder: (context) =>
+                                                                ProfileViewUser(
+                                                                    userID:
+                                                                        client
+                                                                            .id!,
+                                                                    viewOnly:
+                                                                        false)));
+                                                  },
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Stack(
+                                                        alignment: Alignment
+                                                            .bottomCenter,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.22,
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                CircularImage(
+                                                                  size: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      0.2,
+                                                                  image: client
+                                                                      .imageUrl,
+                                                                  color: client.freeSession !=
+                                                                              null &&
+                                                                          client
+                                                                              .freeSession!
+                                                                      ? Colors
+                                                                          .green
+                                                                      : Theme.of(
+                                                                              context)
+                                                                          .primaryColor,
+                                                                  borderWidth:
+                                                                      client.freeSession != null &&
+                                                                              client.freeSession!
+                                                                          ? 5
+                                                                          : 1,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          clientFeedback != null
+                                                              ? Container(
+                                                                  constraints:
+                                                                      BoxConstraints(
+                                                                    maxWidth: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.15,
+                                                                  ),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .scaffoldBackgroundColor,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            15),
+                                                                    border:
+                                                                        Border
+                                                                            .all(
+                                                                      width:
+                                                                          0.5,
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .primaryColor,
+                                                                    ),
+                                                                  ),
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          4,
+                                                                      vertical:
+                                                                          2),
+                                                                  child: Row(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .center,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Flexible(
+                                                                        child: Text(
+                                                                            clientFeedback
+                                                                                .toString(),
+                                                                            style: Theme.of(context)
+                                                                                .textTheme
+                                                                                .bodyText2,
+                                                                            maxLines:
+                                                                                1,
+                                                                            softWrap:
+                                                                                true,
+                                                                            textAlign:
+                                                                                TextAlign.center),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: MediaQuery.of(context).size.width *
+                                                                            0.04,
+                                                                        child: Image.asset(
+                                                                            Constants.fireEmojiImage),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                )
+                                                              : Container(),
+                                                        ],
+                                                      ),
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.3,
+                                                        margin: const EdgeInsets
+                                                            .only(top: 3),
+                                                        child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              client.freeSession !=
+                                                                          null &&
+                                                                      client
+                                                                          .freeSession!
+                                                                  ? Flexible(
                                                                       child:
                                                                           Text(
-                                                                        (bono.sessions! == 10000
-                                                                                ? AppLocalizations.of(context)!.sessions + " " + AppLocalizations.of(context)!.ilimitadas
-                                                                                : bono.sessions!.toString() + " " + AppLocalizations.of(context)!.sessions.toLowerCase()) +
-                                                                            " desde " +
-                                                                            bono.price!.toStringAsFixed(2) +
-                                                                            "€",
+                                                                        (client.name! != AppLocalizations.of(context)!.notFoundUser
+                                                                                ? client.firstName!
+                                                                                : client.name!) +
+                                                                            " (" +
+                                                                            AppLocalizations.of(context)!.freeSession.split(" ")[2].toUpperCase() +
+                                                                            ")",
                                                                         style: Theme.of(context)
                                                                             .textTheme
-                                                                            .caption,
+                                                                            .bodyText2
+                                                                            ?.copyWith(color: Colors.green),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        softWrap:
+                                                                            true,
                                                                         maxLines:
                                                                             1,
                                                                         overflow:
                                                                             TextOverflow.ellipsis,
                                                                       ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        );
-                                                      }),
-                                                ),
-                                              ],
-                                            )
-                                          : Container(),
-                                      SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.025),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.05,
-                                            vertical: 10),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Text(
-                                              AppLocalizations.of(context)!
-                                                  .trainers,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.01),
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.92,
-                                        child: GridView.builder(
-                                          shrinkWrap: true,
-                                          padding: EdgeInsets.zero,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 4,
-                                            childAspectRatio: 0.75,
-                                          ),
-                                          itemCount: event
-                                              .selectedTrainersList!.length,
-                                          itemBuilder: (context, int index) {
-                                            var trainer = event
-                                                .selectedTrainersList![index];
-                                            return GestureDetector(
-                                              onTap: () {
-                                                mixpanel!.track(
-                                                    'event_view_trainer_tap',
-                                                    properties: {
-                                                      'isPrivate':
-                                                          event.isPrivate!
-                                                    });
-                                                Navigator.push(
-                                                    context,
-                                                    CupertinoPageRoute<void>(
-                                                        builder: (context) =>
-                                                            ProfileViewUser(
-                                                              userID:
-                                                                  trainer.id!,
-                                                              viewOnly: false,
-                                                            )));
-                                              },
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Stack(
-                                                    alignment:
-                                                        Alignment.bottomCenter,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.22,
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            CircularImage(
-                                                              size: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.2,
-                                                              image: trainer
-                                                                  .imageUrl,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .primaryColor,
-                                                              borderWidth: 1,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.3,
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            top: 3),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Flexible(
-                                                          child: Text(
-                                                            trainer.name! !=
-                                                                    AppLocalizations.of(
-                                                                            context)!
-                                                                        .notFoundUser
-                                                                ? trainer
-                                                                    .firstName!
-                                                                : trainer.name!,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyText2,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            softWrap: true,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.05,
-                                            vertical: 15),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Text(
-                                              AppLocalizations.of(context)!
-                                                  .clients,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                            ),
-                                            const SizedBox(width: 16),
-                                            (event.isPrivate! == false)
-                                                ? Row(
-                                                    children: [
-                                                      Text(
-                                                        "( " +
-                                                            event.numClients
-                                                                .toString(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2,
-                                                      ),
-                                                      Text(
-                                                        " / ",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2,
-                                                      ),
-                                                      Text(
-                                                        event.maxMembers
-                                                                .toString() +
-                                                            " )",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2,
-                                                      ),
-                                                    ],
-                                                  )
-                                                : Row(
-                                                    children: [
-                                                      Text(
-                                                        "( " +
-                                                            event.numClients
-                                                                .toString() +
-                                                            " )",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2,
-                                                      ),
-                                                    ],
-                                                  ),
-                                          ],
-                                        ),
-                                      ),
-                                      event.joinedMembersList!.isEmpty
-                                          ? Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Column(
-                                                  children: [
-                                                    SizedBox(
-                                                        height: 100,
-                                                        child: Image.asset(
-                                                            Constants
-                                                                .emptyPeople)),
-                                                    Text(
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .noClientJoining,
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .caption,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            )
-                                          : SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.92,
-                                              child: GridView.builder(
-                                                shrinkWrap: true,
-                                                padding: EdgeInsets.zero,
-                                                physics:
-                                                    const NeverScrollableScrollPhysics(),
-                                                scrollDirection: Axis.vertical,
-                                                gridDelegate:
-                                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: 4,
-                                                  childAspectRatio: 0.75,
-                                                ),
-                                                itemCount: event
-                                                    .joinedMembersList!.length,
-                                                itemBuilder:
-                                                    (context, int index) {
-                                                  var client =
-                                                      event.joinedMembersList![
-                                                          index];
-                                                  if (userIsBlockedBy
-                                                      .contains(client.id)) {
-                                                    client.isPrivate = true;
-                                                  }
-                                                  var clientFeedback = state
-                                                          .eventClientsFeedback[
-                                                      index];
-                                                  return GestureDetector(
-                                                    onTap: () {
-                                                      mixpanel!.track(
-                                                          'event_view_client_tap',
-                                                          properties: {
-                                                            'isPrivate': event
-                                                                .isPrivate!,
-                                                            'hasFeedback':
-                                                                clientFeedback !=
-                                                                        null
-                                                                    ? true
-                                                                    : false,
-                                                          });
-                                                      Navigator.push(
-                                                          context,
-                                                          CupertinoPageRoute<
-                                                                  void>(
-                                                              builder: (context) =>
-                                                                  ProfileViewUser(
-                                                                      userID:
-                                                                          client
-                                                                              .id!,
-                                                                      viewOnly:
-                                                                          false)));
-                                                    },
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Stack(
-                                                          alignment: Alignment
-                                                              .bottomCenter,
-                                                          children: [
-                                                            SizedBox(
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.22,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  CircularImage(
-                                                                    size: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width *
-                                                                        0.2,
-                                                                    image: client
-                                                                        .imageUrl,
-                                                                    color: client.freeSession !=
-                                                                                null &&
-                                                                            client
-                                                                                .freeSession!
-                                                                        ? Colors
-                                                                            .green
-                                                                        : Theme.of(context)
-                                                                            .primaryColor,
-                                                                    borderWidth:
-                                                                        client.freeSession != null &&
-                                                                                client.freeSession!
-                                                                            ? 5
-                                                                            : 1,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            clientFeedback !=
-                                                                    null
-                                                                ? Container(
-                                                                    constraints:
-                                                                        BoxConstraints(
-                                                                      maxWidth: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.15,
-                                                                    ),
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Theme.of(
-                                                                              context)
-                                                                          .scaffoldBackgroundColor,
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              15),
-                                                                      border:
-                                                                          Border
-                                                                              .all(
-                                                                        width:
-                                                                            0.5,
-                                                                        color: Theme.of(context)
-                                                                            .primaryColor,
+                                                                    )
+                                                                  : Flexible(
+                                                                      child:
+                                                                          Text(
+                                                                        client.name! !=
+                                                                                AppLocalizations.of(context)!.notFoundUser
+                                                                            ? client.firstName!
+                                                                            : client.name!,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyText2,
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        softWrap:
+                                                                            true,
+                                                                        maxLines:
+                                                                            1,
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
                                                                       ),
-                                                                    ),
-                                                                    padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        horizontal:
-                                                                            4,
-                                                                        vertical:
-                                                                            2),
-                                                                    child: Row(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .center,
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        Flexible(
-                                                                          child: Text(
-                                                                              clientFeedback.toString(),
-                                                                              style: Theme.of(context).textTheme.bodyText2,
-                                                                              maxLines: 1,
-                                                                              softWrap: true,
-                                                                              textAlign: TextAlign.center),
-                                                                        ),
-                                                                        SizedBox(
-                                                                          width:
-                                                                              MediaQuery.of(context).size.width * 0.04,
-                                                                          child:
-                                                                              Image.asset(Constants.fireEmojiImage),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  )
-                                                                : Container(),
-                                                          ],
-                                                        ),
-                                                        Container(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.3,
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .only(top: 3),
-                                                          child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                client.freeSession !=
-                                                                            null &&
-                                                                        client
-                                                                            .freeSession!
-                                                                    ? Flexible(
-                                                                        child:
-                                                                            Text(
-                                                                          (client.name! != AppLocalizations.of(context)!.notFoundUser ? client.firstName! : client.name!) +
-                                                                              " (" +
-                                                                              AppLocalizations.of(context)!.freeSession.split(" ")[2].toUpperCase() +
-                                                                              ")",
-                                                                          style: Theme.of(context)
-                                                                              .textTheme
-                                                                              .bodyText2
-                                                                              ?.copyWith(color: Colors.green),
-                                                                          textAlign:
-                                                                              TextAlign.center,
-                                                                          softWrap:
-                                                                              true,
-                                                                          maxLines:
-                                                                              1,
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                        ),
-                                                                      )
-                                                                    : Flexible(
-                                                                        child:
-                                                                            Text(
-                                                                          client.name! != AppLocalizations.of(context)!.notFoundUser
-                                                                              ? client.firstName!
-                                                                              : client.name!,
-                                                                          style: Theme.of(context)
-                                                                              .textTheme
-                                                                              .bodyText2,
-                                                                          textAlign:
-                                                                              TextAlign.center,
-                                                                          softWrap:
-                                                                              true,
-                                                                          maxLines:
-                                                                              1,
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                        ),
-                                                                      )
-                                                              ]),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                },
-                                              ),
+                                                                    )
+                                                            ]),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
                                             ),
-                                      canEdit
-                                          ? SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.2)
-                                          : SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.05),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ))
-                          ],
-                        ),
+                                          ),
+                                    canEdit
+                                        ? SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.2)
+                                        : SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.05),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ))
+                        ],
                       ),
                     ),
                   ),
-                  floatingActionButton: whichFloatingActionButton(context),
-                );
-              }
-            }),
-    );
+                ),
+                floatingActionButton: whichFloatingActionButton(context),
+              );
+            }
+          });
   }
 
   Widget whichFloatingActionButton(BuildContext context) {
@@ -2833,9 +2742,6 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                         context.read<ReadEventCubit>().resetEvent();
                       }
                       if (result != null && !result) {
-                        setState(() {
-                          _isMapOffstage = true;
-                        });
                         Navigator.pop(context, false);
                       }
                       //TODO

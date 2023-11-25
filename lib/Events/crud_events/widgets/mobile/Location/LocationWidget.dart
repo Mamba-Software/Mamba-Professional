@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/MyLocationsSelect.dart';
 
@@ -83,23 +84,8 @@ class _LocationWidgetState extends State<LocationWidget> {
                           topLeft: Radius.circular(15),
                           bottomLeft: Radius.circular(15),
                         ),
-                        child: GoogleMap(
-                          onMapCreated: _onMapCreated,
-                          initialCameraPosition: location.initialPosition,
-                          scrollGesturesEnabled: false,
-                          zoomGesturesEnabled: false,
-                          rotateGesturesEnabled: false,
-                          mapToolbarEnabled: false,
-                          zoomControlsEnabled: false,
-                          minMaxZoomPreference:
-                              const MinMaxZoomPreference(16, 16),
-                          myLocationButtonEnabled: false,
-                          mapType: MapType.satellite,
-                          markers: location.markers!,
-                          trafficEnabled: false,
-                          indoorViewEnabled: false,
-                          buildingsEnabled: false,
-                          onTap: null,
+                        child: Image(
+                          image: AssetImage(Constants.mapsCrud),
                         ),
                       ),
                     ),

@@ -1746,11 +1746,12 @@ class FirebaseDatabaseService {
       }
       averageTime = eventsList.length.toDouble() / differenceInWeeks;
       // Week Streak
-        int currentWeek = Jiffy.parseFromDateTime(today).weekOfYear;
+      int currentWeek = Jiffy.parseFromDateTime(today).weekOfYear;
       eventsList = eventsList.reversed.toList();
       for (int i = 0; i < eventsList.length; i++) {
         // Numero de la Setmana del Evento
-        int eventWeek = Jiffy.parseFromDateTime(eventsList[i].doneAt!.toDate()).weekOfYear;
+        int eventWeek =
+            Jiffy.parseFromDateTime(eventsList[i].doneAt!.toDate()).weekOfYear;
         // Add Week to the Array
         if (weeksInRow.indexWhere((element) => element == eventWeek) == -1) {
           if (weeksInRow.isEmpty) {
@@ -2443,10 +2444,14 @@ class FirebaseDatabaseService {
 
   Future<int> addEventRecurrent(Event _event, List<String> bonos,
       List<String> trainers, ReceivedNotification receivedNotification) async {
+    String cloudFunction = 'CreateRecurrentEvent';
     try {
+      if (!isProduction) {
+        cloudFunction = 'zzzzCreateRecurrentEvent';
+      }
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'europe-west1')
-              .httpsCallable('zzzzCreateRecurrentEvent');
+              .httpsCallable(cloudFunction);
       print(_event.toJson());
       print(GeoFlutterUtils.getGeoPointJSON(
           _event.location!.latitude!, _event.location!.longitude!));

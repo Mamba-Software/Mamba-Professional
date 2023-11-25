@@ -6194,6 +6194,44 @@ exports.zzzzCreateRecurrentEvent = functions
     }
 });
 
+// Recurrent Event Function
+exports.CreateRecurrentEvent = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+    functions.logger.log("new data", data);
+
+    const { event, doneAtString, geoPosition, bonos, trainers, notification, firesAt} = data;  
+    const eventsCollection = 'Events';
+    const brandsCollection = 'Brands';
+    const usersCollection = 'Users';
+    const eventID = event.id;
+
+    const eventRef = admin.firestore().collection(eventsCollection).doc(eventID);
+    const userRef = admin.firestore().collection(usersCollection);
+    
+    functions.logger.log("EVENT", event);
+    functions.logger.log("EVENTID", eventID);
+
+    try {
+
+      const createdAt = admin.firestore.Timestamp.now();
+      const doneAt = admin.firestore.Timestamp.fromMillis(doneAtString);
+        // Add to "\Events"
+       
+        //await addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection);
+        addTrainers(trainers, eventRef, userRef, notification, firesAt);
+        addBonos(bonos, eventRef);
+
+        return { success: true, eventId: eventID };
+
+    } catch (error) {
+        console.error("Error adding event:", error);
+        return { success: false };
+    }
+});
+
 async function addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection) {
     await admin.firestore().collection(eventsCollection).doc(eventID).set({
       ...event,

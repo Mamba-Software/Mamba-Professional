@@ -108,6 +108,7 @@ bool validateDateAndTime(
           endTime.isAfter(endWorkDay)) {
     return false;
   } else {
+    /*
     // Can´t create event in break period of working hours
     for (var i = 2; i < currentBrand.workShift.length; i += 2) {
       // Breaks
@@ -132,7 +133,7 @@ bool validateDateAndTime(
                   endTime.isAtSameMomentAs(endBreak)))) {
         return false;
       }
-    }
+    }*/
     return true;
   }
 }

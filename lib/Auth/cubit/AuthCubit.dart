@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +11,6 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -20,13 +18,10 @@ import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'AuthState.dart';
 
-
 class AuthCubit extends Cubit<AuthState> {
-
   AuthCubit() : super(const AuthInitial());
 
   final _userDataService = UserDataService();
@@ -34,20 +29,20 @@ class AuthCubit extends Cubit<AuthState> {
   final _settingsDataService = SettingsDataService();
   List<Event> finishedEventsList = [];
   List<Event> upcomingEventsList = [];
-  late StreamSubscription<QuerySnapshot> _subscription;
   final googleSignIn = GoogleSignIn();
 
-  void generalSignIn(AuthProviderEnum provider, BuildContext context, [String? email, String? password]) {
+  void generalSignIn(AuthProviderEnum provider, BuildContext context,
+      [String? email, String? password]) {
     emit(AuthLoading(provider));
-    switch(provider) {
+    switch (provider) {
       case AuthProviderEnum.normal:
-          _signIn(email!, password!);
+        _signIn(email!, password!);
         break;
       case AuthProviderEnum.google:
-          _signInWithGoogle(context);
+        _signInWithGoogle(context);
         break;
       case AuthProviderEnum.apple:
-          _signInWithApple(context);
+        _signInWithApple(context);
         break;
       case AuthProviderEnum.register:
         // TODO: Handle this case.
@@ -97,13 +92,16 @@ class AuthCubit extends Cubit<AuthState> {
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-        UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(credential);
-        bool userExists = await _userDataService.checkIfUserExists(authResult.user!.uid);
+        UserCredential authResult =
+            await FirebaseAuth.instance.signInWithCredential(credential);
+        bool userExists =
+            await _userDataService.checkIfUserExists(authResult.user!.uid);
         if (userExists) {
           // Check it is no Trainer
           bool? isTrainer;
           try {
-            isTrainer = await _userDataService.checkIfUserIsTrainer(authResult.user!.uid);
+            isTrainer = await _userDataService
+                .checkIfUserIsTrainer(authResult.user!.uid);
             if (isTrainer != null && isTrainer == false) {
               await _userDataService.signOut();
               await googleSignIn.signOut();
@@ -117,7 +115,8 @@ class AuthCubit extends Cubit<AuthState> {
           }
         } else {
           // Create an account and a user for this new person from google
-          bool result = await _userDataService.addUserGoogleOrApple(authResult, Localizations.localeOf(context).languageCode);
+          bool result = await _userDataService.addUserGoogleOrApple(
+              authResult, Localizations.localeOf(context).languageCode);
           if (result) {
             mixpanel!.track('mamba_google_register_completed');
             emit(const AuthLoaded());
@@ -144,7 +143,8 @@ class AuthCubit extends Cubit<AuthState> {
         idToken: credential.identityToken,
         accessToken: credential.authorizationCode,
       );
-      UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+      UserCredential authResult =
+          await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
       String? fullName;
       if (credential.givenName != null && credential.familyName != null) {
         fullName = '${credential.givenName} ${credential.familyName}';
@@ -153,12 +153,14 @@ class AuthCubit extends Cubit<AuthState> {
         await authResult.user!.updateDisplayName(fullName);
         await authResult.user!.reload();
       }
-      bool userExists = await _userDataService.checkIfUserExists(authResult.user!.uid);
+      bool userExists =
+          await _userDataService.checkIfUserExists(authResult.user!.uid);
       if (userExists) {
         // Check it is no Trainer
         bool? isTrainer;
         try {
-          isTrainer = await _userDataService.checkIfUserIsTrainer(authResult.user!.uid);
+          isTrainer =
+              await _userDataService.checkIfUserIsTrainer(authResult.user!.uid);
           if (isTrainer != null && isTrainer == false) {
             await _userDataService.signOut();
             emit(const AuthError(AuthErrorEnum.wrongAppUser));
@@ -171,7 +173,8 @@ class AuthCubit extends Cubit<AuthState> {
         }
       } else {
         // Create an account and a user for this new person from Apple
-        bool result = await _userDataService.addUserGoogleOrApple(authResult, Localizations.localeOf(context).languageCode);
+        bool result = await _userDataService.addUserGoogleOrApple(
+            authResult, Localizations.localeOf(context).languageCode);
         if (result) {
           mixpanel!.track('mamba_apple_register_completed');
           emit(const AuthLoaded());
@@ -196,11 +199,13 @@ class AuthCubit extends Cubit<AuthState> {
       await _signUp(email, password1, context);
     } else {
       emit(const AuthError(AuthErrorEnum.validateErrorRegister));
-
     }
   }
-  Future<void> _signUp(String email, String password1, BuildContext context) async {
-    var result =  await _userDataService.addUser(email.trim(), password1, Localizations.localeOf(context).languageCode, true);
+
+  Future<void> _signUp(
+      String email, String password1, BuildContext context) async {
+    var result = await _userDataService.addUser(email.trim(), password1,
+        Localizations.localeOf(context).languageCode, true);
     if (result == 0) {
       mixpanel!.track('mamba_register_completed');
       emit(const AuthRegistered());
@@ -212,8 +217,9 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> forgotPassword(String email, String password1, BuildContext context) async {
-    if(email.isEmpty) {
+  Future<void> forgotPassword(
+      String email, String password1, BuildContext context) async {
+    if (email.isEmpty) {
       emit(const AuthError(AuthErrorEnum.forgotEmailError));
     } else {
       if (emailValidator(email)) {
@@ -228,8 +234,7 @@ class AuthCubit extends Cubit<AuthState> {
         } else {
           emit(const AuthError(AuthErrorEnum.forgotLoginError));
         }
-      }
-      else {
+      } else {
         emit(const AuthError(AuthErrorEnum.forgotValidateEmailError));
       }
     }
@@ -247,8 +252,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (result) {
         await Future.delayed(const Duration(milliseconds: 1500));
         emit(const AuthMaintenance());
-      }
-      else {
+      } else {
         // 2.1 User is logged in.
         // 3. Check if we are in production enviroment
         if (isProduction) {
@@ -256,13 +260,11 @@ class AuthCubit extends Cubit<AuthState> {
           if (firebaseUser.emailVerified) {
             // 3.1.1 Email has been verified
             // 4. Define Prod Config for FirebaseChatCore
-            FirebaseChatCore.instance.setConfig(
-                const FirebaseChatCoreConfig(
-                  null,
-                  'Rooms',
-                  'Users',
-                )
-            );
+            FirebaseChatCore.instance.setConfig(const FirebaseChatCoreConfig(
+              null,
+              'Rooms',
+              'Users',
+            ));
             // 5. Load Users Data
             String userId = firebaseUser.uid;
             //String userId = "GFrVbdR5WNSuFydb8i32g620Rle2";
@@ -272,7 +274,8 @@ class AuthCubit extends Cubit<AuthState> {
               print("Token: $token");
               if (token != currentUser.notificationToken) {
                 print("New token updated");
-                _userDataService.updateUserNotificationToken(currentUser.id!, token!);
+                _userDataService.updateUserNotificationToken(
+                    currentUser.id!, token!);
               }
             });
             // 7. Travel to Corresponding Screen
@@ -281,10 +284,9 @@ class AuthCubit extends Cubit<AuthState> {
             } else {
               if (!(currentUser.isFirst!)) {
                 _sendMixPanelDataUsers();
-                if(hasBrand) {
+                if (hasBrand) {
                   emit(AuthUserBrand(currentBrand));
-                }
-                else {
+                } else {
                   emit(const AuthUserNoBrand());
                 }
               } else {
@@ -295,17 +297,14 @@ class AuthCubit extends Cubit<AuthState> {
             // 3.1.2 Email has NOT been verified. Go back to Login.
             emit(const AuthNotLoged());
           }
-        }
-        else {
+        } else {
           // 3.2 We are in DEVELOPMENT
           // 4. Define Development Config for FirebaseCore
-          FirebaseChatCore.instance.setConfig(
-              const FirebaseChatCoreConfig(
-                null,
-                '7777 Rooms',
-                '7777 Users',
-              )
-          );
+          FirebaseChatCore.instance.setConfig(const FirebaseChatCoreConfig(
+            null,
+            '7777 Rooms',
+            '7777 Users',
+          ));
           // 5. Load Users Data
           await _getUserData(firebaseUser.uid, context);
           // 6. Get Token for FirebaseMessaging
@@ -313,19 +312,19 @@ class AuthCubit extends Cubit<AuthState> {
             print("Token: $token");
             if (token != currentUser.notificationToken) {
               print("New token updated");
-              _userDataService.updateUserNotificationToken(currentUser.id!, token!);
+              _userDataService.updateUserNotificationToken(
+                  currentUser.id!, token!);
             }
           });
           // 7. Travel to Corresponding Screen
           if (currentUser.isAdmin!) {
-              emit(const AuthAdmin());
+            emit(const AuthAdmin());
           } else {
             if (!(currentUser.isFirst!)) {
               _sendMixPanelDataUsers();
-              if(hasBrand) {
+              if (hasBrand) {
                 emit(AuthUserBrand(currentBrand));
-              }
-              else {
+              } else {
                 emit(const AuthUserNoBrand());
               }
             } else {
@@ -350,11 +349,13 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthNotLoged());
     }
     // Set App Locale To User Preferred Language
-    Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
+    Provider.of<LanguageProvider>(context, listen: false)
+        .setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
     // Set App Theme To User Preferred Theme Settings
     if (currentUser.isDark != null) {
-      print("This user has a Dark Mode: "+currentUser.isDark!.toString());
-      Provider.of<ThemeProvider>(context, listen: false).toggleTheme(currentUser.isDark!);
+      print("This user has a Dark Mode: " + currentUser.isDark!.toString());
+      Provider.of<ThemeProvider>(context, listen: false)
+          .toggleTheme(currentUser.isDark!);
     }
     print("This user has the System Theme On");
 
@@ -391,27 +392,32 @@ class AuthCubit extends Cubit<AuthState> {
     mixpanel!.getPeople().set("language", currentUser.idioma!);
     mixpanel!.getPeople().set("isProduction", isProduction);
     var dateOfBirthSplit = currentUser.dateOfBirth!.split("-");
-    DateTime dateOfBirth = DateTime(int.parse(dateOfBirthSplit[2]), int.parse(dateOfBirthSplit[1]), int.parse(dateOfBirthSplit[0]), 0, 0);
+    DateTime dateOfBirth = DateTime(int.parse(dateOfBirthSplit[2]),
+        int.parse(dateOfBirthSplit[1]), int.parse(dateOfBirthSplit[0]), 0, 0);
     mixpanel!.getPeople().set("dateOfBirth", dateOfBirth.toString());
     var firstLoginDateSplit = currentUser.dateJoined!.split("-");
-    DateTime firstLoginDate = DateTime(int.parse(firstLoginDateSplit[2]), int.parse(firstLoginDateSplit[1]), int.parse(firstLoginDateSplit[0]), 0, 0);
-    if (firstLoginDate.isBefore(DateTime(2022,11,15))) {
+    DateTime firstLoginDate = DateTime(
+        int.parse(firstLoginDateSplit[2]),
+        int.parse(firstLoginDateSplit[1]),
+        int.parse(firstLoginDateSplit[0]),
+        0,
+        0);
+    if (firstLoginDate.isBefore(DateTime(2022, 11, 15))) {
       /// Only update the First Login Date If Is Before the Mix Panel Update
       mixpanel!.getPeople().set("firstLoginDate", firstLoginDate.toString());
     }
     mixpanel!.getPeople().set("lastLoginDate", DateTime.now().toString());
   }
 
-  void logOut()
-  {
+  void logOut() {
     emit(const AuthLogOut());
   }
-
 }
 
 // Validate email and pwd format
 bool emailValidator(String value) {
-  Pattern pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
+  Pattern pattern =
+      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
   RegExp regex = RegExp(pattern.toString());
   if (!regex.hasMatch(value)) {
     return false;
