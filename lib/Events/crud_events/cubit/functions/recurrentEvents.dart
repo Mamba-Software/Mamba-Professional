@@ -31,6 +31,7 @@ class RecurrentEvents {
       ReceivedNotification notificationBefore,
       ReceivedNotification notificationAfter) async {
     String eventImageUrl;
+    List<String> trainersNoCurrent = List.from(trainers);
 
     // Get Random Photo if no Image Selected
     eventImageUrl =
@@ -81,13 +82,14 @@ class RecurrentEvents {
           currentUserId,
           _notificationsEvents.setEventNotificationBeforeRecurrent(
               event, notificationBefore.title!, notificationBefore.body!));
-      trainers.remove(currentUserId);
+      trainersNoCurrent.remove(currentUserId);
+      //trainers.remove(currentUserId);
     }
 
     _eventDataService.addEventRecurrent(
         event,
         bonos,
-        trainers,
+        trainersNoCurrent,
         _notificationsEvents.setEventNotificationBeforeRecurrent(
             event, notificationBefore.title!, notificationBefore.body!));
 
