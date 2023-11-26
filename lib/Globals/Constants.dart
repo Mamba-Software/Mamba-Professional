@@ -18,7 +18,7 @@ class Constants {
   static String google = "assets/images/google.png";
   static String apple = "assets/images/apple.png";
   static String mapsImg = "assets/images/maps.png";
-  static String mapsCrud = "assets/images/mapsCrud.png";
+  static String mapsCrud = "assets/images/maps2.png";
 
   // Onboarding Images
   static String onboardingApp = "assets/images/OnboardingApp.png";

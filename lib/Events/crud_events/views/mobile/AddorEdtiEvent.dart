@@ -146,65 +146,76 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                   !state.isNew
                       ? IconButton(
                           onPressed: () async {
-                            if (!state.oldEvent.joinedMembersList!
-                                .any((client) => client.purchaseId != "")) {
-                              if (!state.oldEvent.isRecurrent!) {
-                                // DeleteDialog
-                                var result = await showDialog(
-                                    context: context,
-                                    builder: (_) {
-                                      return DeleteConfirmationDialog(
-                                          text: AppLocalizations.of(context)!
-                                              .deleteEventConfirmation);
-                                    });
-                                if (result) {
-                                  context
-                                      .read<CrudEventCubit>()
-                                      .deleteEventFunction(context,
-                                          state.oldEvent, state.isPrivate);
-                                  // Pop to Last Page
-                                  Navigator.pop(context, false);
-                                }
-                              } else {
-                                var result = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return DeleteRecurrentEventDialog(
-                                      isCompleted: !state.isBeforeEdit,
-                                    );
-                                  },
-                                );
-                                if (result != null) {
-                                  if (result == 1) {
-                                    print("Deleting Only This Event..");
+                            if (context
+                                    .read<CrudEventCubit>()
+                                    .state
+                                    .isWorking >=
+                                100) {
+                              if (!state.oldEvent.joinedMembersList!
+                                  .any((client) => client.purchaseId != "")) {
+                                if (!state.oldEvent.isRecurrent!) {
+                                  // DeleteDialog
+                                  var result = await showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return DeleteConfirmationDialog(
+                                            text: AppLocalizations.of(context)!
+                                                .deleteEventConfirmation);
+                                      });
+                                  if (result) {
                                     context
                                         .read<CrudEventCubit>()
                                         .deleteEventFunction(context,
                                             state.oldEvent, state.isPrivate);
                                     // Pop to Last Page
                                     Navigator.pop(context, false);
-                                  } else {
-                                    print(
-                                        "Delete This Event and the Rest Forward ...");
-                                    context
-                                        .read<CrudEventCubit>()
-                                        .deleteRecurrentEventFunction(context,
-                                            state.oldEvent, state.isPrivate);
-                                    // Pop to Last Page
+                                  }
+                                } else {
+                                  var result = await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return DeleteRecurrentEventDialog(
+                                        isCompleted: !state.isBeforeEdit,
+                                      );
+                                    },
+                                  );
+                                  if (result != null) {
+                                    if (result == 1) {
+                                      print("Deleting Only This Event..");
+                                      context
+                                          .read<CrudEventCubit>()
+                                          .deleteEventFunction(context,
+                                              state.oldEvent, state.isPrivate);
+                                      // Pop to Last Page
+                                      Navigator.pop(context, false);
+                                    } else {
+                                      print(
+                                          "Delete This Event and the Rest Forward ...");
+                                      context
+                                          .read<CrudEventCubit>()
+                                          .deleteRecurrentEventFunction(context,
+                                              state.oldEvent, state.isPrivate);
+                                      // Pop to Last Page
 
-                                    Navigator.pop(context, false);
+                                      Navigator.pop(context, false);
+                                    }
                                   }
                                 }
+                              } else {
+                                var result = await showDialog(
+                                    context: context,
+                                    builder: (_) {
+                                      return DeleteConfirmationDialog(
+                                          text: AppLocalizations.of(context)!
+                                              .deleteClientsWithPurchases,
+                                          permitDelete: false);
+                                    });
                               }
                             } else {
-                              var result = await showDialog(
-                                  context: context,
-                                  builder: (_) {
-                                    return DeleteConfirmationDialog(
-                                        text: AppLocalizations.of(context)!
-                                            .deleteClientsWithPurchases,
-                                        permitDelete: false);
-                                  });
+                              _topSnackBar.showSnackBarTop(
+                                  context,
+                                  AppLocalizations.of(context)!.processOnWork,
+                                  AppColors.red);
                             }
                           },
                           icon: SizedBox(

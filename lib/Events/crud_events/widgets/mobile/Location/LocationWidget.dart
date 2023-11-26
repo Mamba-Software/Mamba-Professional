@@ -84,8 +84,12 @@ class _LocationWidgetState extends State<LocationWidget> {
                           topLeft: Radius.circular(15),
                           bottomLeft: Radius.circular(15),
                         ),
-                        child: Image(
-                          image: AssetImage(Constants.mapsCrud),
+                        child: FractionallySizedBox(
+                          widthFactor: 0.7, // 50% of the parent's width
+                          heightFactor: 0.7, // 50% of the parent's height
+                          child: Image(
+                            image: AssetImage(Constants.mapsCrud),
+                          ),
                         ),
                       ),
                     ),
