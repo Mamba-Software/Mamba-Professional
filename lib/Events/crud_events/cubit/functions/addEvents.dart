@@ -303,6 +303,26 @@ class AddEventFunctions {
     }
   }
 
+  Future<void> updateBonos(
+      List<Bono> originalBonos, List<Bono> newBonos, String eventId) async {
+    bool isDifferent = false;
+
+    if (originalBonos.length != newBonos.length) {
+      isDifferent = true;
+    } else {
+      bool hasNewBono = newBonos.any((bono) =>
+          !originalBonos.any((originalBono) => originalBono.id == bono.id));
+
+      bool hasRemovedBono = originalBonos.any((originalBono) =>
+          !newBonos.any((bono) => bono.id == originalBono.id));
+
+      isDifferent = hasNewBono || hasRemovedBono;
+    }
+    if (isDifferent) {
+      await _eventDataService.updateEventBonosObject(eventId, newBonos);
+    }
+  }
+
   Future<void> _updateUserPurchase(Event event) async {
     for (int i = 0; i < event.joinedMembersList!.length; ++i) {
       await _eventDataService.updateEventUserPurchase(

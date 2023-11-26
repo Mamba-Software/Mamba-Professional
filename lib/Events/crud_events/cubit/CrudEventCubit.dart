@@ -486,6 +486,11 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       ReceivedNotification notificationAfter) async {
     mixpanel!.timeEvent('edit_event_completed');
 
+    List<Bono> selectedBonos = _event.eventBonos!.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
     // Get Recurrent Group Ids ..
     var eventGroupIds =
         await _eventDataService.getRecurrentEventGroup(_event.eventGroupId!);
@@ -574,16 +579,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       List<Bono> originalBonos =
           await _eventDataService.getEventBonos(eventId, currentBrand.id!);
 
-      //Event Bonos
-      List<Bono> selectedBonos = _event.eventBonos!.entries
-          .where((entry) => entry.value)
-          .map((entry) => entry.key)
-          .toList();
-
-      if (!selectedBonos.every((bono) =>
-          originalBonos.any((originalBono) => originalBono.id == bono.id))) {
-        await _eventDataService.updateEventBonosObject(eventId, selectedBonos);
-      }
+      await _addEvents.updateBonos(originalBonos, selectedBonos, eventId);
 
       // Update Event Location
       if (originalEvent.locationId! != updatedEvent.locationId!) {
@@ -663,10 +659,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       originalBonos.add(bono);
     }
 
-    if (!selectedBonos.every((bono) =>
-        originalBonos.any((originalBono) => originalBono.id == bono.id))) {
-      await _eventDataService.updateEventBonosObject(event.id!, selectedBonos);
-    }
+    await _addEvents.updateBonos(originalBonos, selectedBonos, event.id!);
 
     // Update Event Location
     if (event.locationId! != _oldEvent.locationId!) {
@@ -808,6 +801,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     }
     mixpanel!.track('delete_event_completed',
         properties: {'isPrivate': isPrivate, 'isRecurrent': true});
+    resetNewEvent();
   }
 
   void setMustUpdateToFalse() {
