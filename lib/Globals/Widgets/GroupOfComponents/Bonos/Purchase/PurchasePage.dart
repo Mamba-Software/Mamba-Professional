@@ -300,6 +300,63 @@ class _PurchasePageState extends State<PurchasePage> {
     }
   }
 
+  // Check If User Bonos Have Expired
+  Future<void> checkIfUserBonosHaveExpiredOrBeenReactivated(Purchase purchase) async {
+    // Check if we have active or not active status now.
+    bool purchaseIsActive = purchase.isActive!;
+    if (purchaseIsActive) {
+      // Sessions Done
+      int sessionsDone = purchase.events.length;
+      if (purchase.sessions == sessionsDone) {
+        int index = purchase.events.indexWhere(
+            (element) => element.doneAt!.toDate().isAfter(DateTime.now()));
+        if (index == -1) {
+          await _userDataService.deleteUserBono(purchase.userId!,
+              purchase.brandId!, purchase.bonoId!, purchase.id!);
+        }
+      }
+      // After Expiration Date
+      if (purchase.condition!.expirationTime! != 0) {
+        DateTime purchasedDate = purchase.purchasedAt!.toDate();
+        purchasedDate = DateTime(
+          purchasedDate.year,
+          purchasedDate.month,
+          purchasedDate.day,
+        );
+        DateTime expirationDate =
+            purchasedDate.add(Duration(days: purchase.condition!.expirationTime!));
+        DateTime now = DateTime.now();
+        if (now.isAfter(expirationDate)) {          
+          await _userDataService.deleteUserBono(purchase.userId!,
+              purchase.brandId!, purchase.bonoId!, purchase.id!);
+        }
+      }
+    } else {
+      // Sessions Done
+      int sessionsDone = purchase.events.length;
+      if (purchase.sessions! != sessionsDone) {
+        await _userDataService.activateUserBono(
+            purchase.userId!, purchase.brandId!, purchase.bonoId!, purchase.id!);
+      }
+      // After Expiration Date
+      if (purchase.condition!.expirationTime! != 0) {
+        DateTime purchasedDate = purchase.purchasedAt!.toDate();
+        purchasedDate = DateTime(
+          purchasedDate.year,
+          purchasedDate.month,
+          purchasedDate.day,
+        );
+        DateTime expirationDate =
+            purchasedDate.add(Duration(days: purchase.condition!.expirationTime!));
+        DateTime now = DateTime.now();
+        if (now.isBefore(expirationDate)) {          
+          await _userDataService.activateUserBono(purchase.userId!,
+              purchase.brandId!, purchase.bonoId!, purchase.id!);
+        }
+      }      
+    }
+  }
+
   void executeFunctionWithPurchase(Purchase _purchase) {
     eventsUpdated = true;
     List<Event> deleteEvents = _purchase.initalEvents
@@ -643,774 +700,843 @@ class _PurchasePageState extends State<PurchasePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            elevation: 0,
-            scrolledUnderElevation: 2,
-            pinned: true,
-            floating: false,
-            centerTitle: false,
-            expandedHeight: MediaQuery.of(context).size.height * 0.08,
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                size: MediaQuery.of(context).size.width * 0.06,
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+        },
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverAppBar(
+              elevation: 0,
+              scrolledUnderElevation: 2,
+              pinned: true,
+              floating: false,
+              centerTitle: false,
+              expandedHeight: MediaQuery.of(context).size.height * 0.08,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: MediaQuery.of(context).size.width * 0.06,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            title: AnimatedOpacity(
-                opacity: appBarExpanded ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 200),
-                child: Text(
-                    editBono
-                        ? AppLocalizations.of(context)!.edit +
-                            " " +
-                            AppLocalizations.of(context)!
-                                .directPurchasetext
-                                .split(" ")[0]
-                                .toLowerCase()
-                        : isBonoRequest
-                            ? StringUtils().toCapitalized(
-                                AppLocalizations.of(context)!
-                                    .userSendsBonoRequestBrand("")
-                                    .split("una")[1]
-                                    .trim())
-                            : AppLocalizations.of(context)!.acceptBono,
-                    style: Theme.of(context).appBarTheme.titleTextStyle)),
-            actions: [
-              /// DELETE BONO REQUEST
-              isBonoRequest
-                  ? IconButton(
-                      onPressed: () async {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        var result = await showDialog(
-                            context: context,
-                            builder: (_) {
-                              return DeleteConfirmationDialog(
-                                  text: AppLocalizations.of(context)!
-                                      .deletePurchaseRequest);
-                            });
-                        if (result) {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          await _brandDataService.deleteBrandBonoRequest(
-                              widget.brand.id!,
-                              widget.user.id!,
-                              widget.bonoRequest?.id!);
-                          await Future.delayed(
-                              const Duration(milliseconds: 1500));
-                          mixpanel!.track('bono_confirmation_deleted');
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      icon: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.15,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.delete_outlined,
-                              color: AppColors.red,
-                              size: MediaQuery.of(context).size.width * 0.07,
-                            )
-                          ],
-                        ),
-                      ))
-                  : editBono
-                      ? IconButton(
-                          onPressed: () async {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            var result = await showDialog(
-                                context: context,
-                                builder: (_) {
-                                  return DeleteConfirmationDialog(
-                                      text: AppLocalizations.of(context)!
-                                          .deletePurchase);
-                                });
-                            if (result) {
-                              setState(() {
-                                isLoading = true;
+              title: AnimatedOpacity(
+                  opacity: appBarExpanded ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                      editBono
+                          ? AppLocalizations.of(context)!.edit +
+                              " " +
+                              AppLocalizations.of(context)!
+                                  .directPurchasetext
+                                  .split(" ")[0]
+                                  .toLowerCase()
+                          : isBonoRequest
+                              ? StringUtils().toCapitalized(
+                                  AppLocalizations.of(context)!
+                                      .userSendsBonoRequestBrand("")
+                                      .split("una")[1]
+                                      .trim())
+                              : AppLocalizations.of(context)!.acceptBono,
+                      style: Theme.of(context).appBarTheme.titleTextStyle)),
+              actions: [
+                /// DELETE BONO REQUEST
+                isBonoRequest
+                    ? IconButton(
+                        onPressed: () async {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          var result = await showDialog(
+                              context: context,
+                              builder: (_) {
+                                return DeleteConfirmationDialog(
+                                    text: AppLocalizations.of(context)!
+                                        .deletePurchaseRequest);
                               });
-                              await _purchaseDataService.deletePurchase(
-                                  purchase.id!,
-                                  widget.user.id!,
-                                  widget.brand.id!);
-                              mixpanel!.track('purchase_deleted');
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          icon: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.15,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.delete_outlined,
-                                  color: AppColors.red,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.07,
-                                )
-                              ],
-                            ),
-                          ))
-                      : Container(),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.03)
-            ],
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                /// TITLE
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            editBono
-                                ? AppLocalizations.of(context)!.edit +
-                                    " " +
-                                    AppLocalizations.of(context)!
-                                        .directPurchasetext
-                                        .split(" ")[0]
-                                        .toLowerCase()
-                                : isBonoRequest
-                                    ? StringUtils().toCapitalized(
-                                        AppLocalizations.of(context)!
-                                            .userSendsBonoRequestBrand("")
-                                            .split("una")[1]
-                                            .trim())
-                                    : AppLocalizations.of(context)!.acceptBono,
-                            style: Theme.of(context).textTheme.headline1,
-                            textAlign: TextAlign.left),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.015),
-                        isBonoRequest || editBono
-                            ? Column(
-                                children: [
-                                  buildDateDetails(),
-                                  SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.015),
-                                  buildStatusLabel(),
-                                ],
+                          if (result) {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            await _brandDataService.deleteBrandBonoRequest(
+                                widget.brand.id!,
+                                widget.user.id!,
+                                widget.bonoRequest?.id!);
+                            await Future.delayed(
+                                const Duration(milliseconds: 1500));
+                            mixpanel!.track('bono_confirmation_deleted');
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        icon: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.15,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.delete_outlined,
+                                color: AppColors.red,
+                                size: MediaQuery.of(context).size.width * 0.07,
                               )
-                            : Column(
+                            ],
+                          ),
+                        ))
+                    : editBono
+                        ? IconButton(
+                            onPressed: () async {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              var result = await showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return DeleteConfirmationDialog(
+                                        text: AppLocalizations.of(context)!
+                                            .deletePurchase);
+                                  });
+                              if (result) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                await _purchaseDataService.deletePurchase(
+                                    purchase.id!,
+                                    widget.user.id!,
+                                    widget.brand.id!);
+                                mixpanel!.track('purchase_deleted');
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            icon: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.15,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    AppLocalizations.of(context)!
-                                        .acceptBonoDesc,
-                                    style: Theme.of(context).textTheme.caption,
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.02),
-                                  isPaid == false
-                                      ? Column(
-                                          children: [
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8),
-                                              decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .backgroundColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .new_releases_outlined,
-                                                        color: AppColors.red,
-                                                        size: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.05,
-                                                      ),
-                                                      SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.01),
-                                                      Text(
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .unverfied,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1
-                                                            ?.copyWith(
-                                                                color: AppColors
-                                                                    .red,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.06,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.15,
-                                                    child: CupertinoSwitch(
-                                                      value: false,
-                                                      onChanged: (bool newVal) {
-                                                        setState(() {
-                                                          isPaid = !isPaid;
-                                                        });
-                                                      },
-                                                      trackColor: AppColors.red
-                                                          .withOpacity(0.4),
-                                                      thumbColor:
-                                                          AppColors.white,
-                                                      activeColor: Colors.green,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : Column(
-                                          children: [
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8),
-                                              decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .backgroundColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.verified_outlined,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        size: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.05,
-                                                      ),
-                                                      SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.01),
-                                                      Text(
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .verfied,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1
-                                                            ?.copyWith(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.06,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.15,
-                                                    child: CupertinoSwitch(
-                                                      value: true,
-                                                      onChanged: (bool newVal) {
-                                                        setState(() {
-                                                          isPaid = !isPaid;
-                                                        });
-                                                      },
-                                                      trackColor: AppColors.red
-                                                          .withOpacity(0.4),
-                                                      thumbColor:
-                                                          AppColors.white,
-                                                      activeColor: Colors.green,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                  Icon(
+                                    Icons.delete_outlined,
+                                    color: AppColors.red,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.07,
+                                  )
                                 ],
                               ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                /*
-                /// ACTIVATE PURCHASE
-                editBono ? Column(
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      width: MediaQuery.of(context).size.width * 0.9,
+                            ))
+                        : Container(),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03)
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  /// TITLE
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Flexible(
-                            child: Text(purchase.isActive! ? AppLocalizations.of(context)!.desactivarCompra : AppLocalizations.of(context)!.activarCompra,
-                                style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
-                                textAlign: TextAlign.center),
-                          ),
-
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              AppLocalizations.of(context)!.activePurchaseQuesDesc,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .caption,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 4.0),
-                            child: CupertinoSwitch(
-                              value: purchase.isActive!,
-                              onChanged: setPurchaseActivation,
-                              trackColor: Colors.green.withOpacity(0.4),
-                              thumbColor: AppColors.white,
-                              activeColor: Colors.green,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                  ],
-                ) : Container(),
-                 */
-                /// USER
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        child: Text(AppLocalizations.of(context)!.user,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1
-                                ?.copyWith(fontSize: 22),
-                            textAlign: TextAlign.center),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10))),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      dense: true,
-                      minLeadingWidth: MediaQuery.of(context).size.width * 0.1,
-                      leading: CircularImage(
-                        size: MediaQuery.of(context).size.width * 0.15,
-                        image: widget.user.imageUrl,
-                        color: Theme.of(context).primaryColor,
-                        borderWidth: 1.0,
-                      ),
-                      title: Text(
-                        widget.user.name!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyText1
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.left,
-                      ),
-                      subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            user.lastEventAt == null
-                                ? AppLocalizations.of(context)!.lastActiveIn(
-                                    DateTimeUtils()
-                                        .formatDateTimeToStringMMMYYYY(
-                                            dateJoined,
-                                            Localizations.localeOf(context)
-                                                .languageCode))
-                                : AppLocalizations.of(context)!.lastActiveIn(
-                                    DateTimeUtils()
-                                        .formatDateTimeToStringMMMYYYY(
-                                            user.lastEventAt!.toDate(),
-                                            Localizations.localeOf(context)
-                                                .languageCode)),
-                            style: Theme.of(context).textTheme.caption,
-                          ),
-                        ],
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(
-                          Icons.arrow_forward_ios,
-                          color: isBonoRequest || editBono
-                              ? Theme.of(context).primaryColor
-                              : Colors.transparent,
-                          size: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(0),
-                        onPressed: false ? () {} : null,
-                      ),
-                      onTap: isBonoRequest || editBono
-                          ? () async {
-                              await Navigator.push(
-                                  context,
-                                  CupertinoPageRoute<bool?>(
-                                      builder: (context) => ProfileViewUser(
-                                            userID: widget.user.id!,
-                                            viewOnly: false,
-                                          )));
-                            }
-                          : null,
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-
-                /// BONOS
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        child: Text(AppLocalizations.of(context)!.bono,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1
-                                ?.copyWith(fontSize: 22),
-                            textAlign: TextAlign.center),
-                      ),
-                    ],
-                  ),
-                ),
-                bonos.length > 1
-                    ? Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: _buildPageIndicator(),
-                          ),
+                              editBono
+                                  ? AppLocalizations.of(context)!.edit +
+                                      " " +
+                                      AppLocalizations.of(context)!
+                                          .directPurchasetext
+                                          .split(" ")[0]
+                                          .toLowerCase()
+                                  : isBonoRequest
+                                      ? StringUtils().toCapitalized(
+                                          AppLocalizations.of(context)!
+                                              .userSendsBonoRequestBrand("")
+                                              .split("una")[1]
+                                              .trim())
+                                      : AppLocalizations.of(context)!
+                                          .acceptBono,
+                              style: Theme.of(context).textTheme.headline1,
+                              textAlign: TextAlign.left),
                           SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.01),
-                        ],
-                      )
-                    : SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01),
-                !editBono || purchase.id == null
-                    ? Container(
-                        width: MediaQuery.of(context).size.width,
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height * 0.24,
-                          minHeight: MediaQuery.of(context).size.height * 0.24,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: PageView.builder(
-                                  physics: const BouncingScrollPhysics(),
-                                  controller: _pageController,
-                                  onPageChanged: (int page) {
-                                    setState(() {
-                                      bonoSelected.setBasicData = bonos[page];
-                                      bonoSelected.setConditionsData =
-                                          bonos[page].condition!;
-                                      isBonoSelected = true;
-                                      setBonoConditions(bonoSelected);
-                                      _currentPage = page;
-                                    });
-                                  },
-                                  itemCount: bonos.length,
-                                  itemBuilder: (context, index) {
-                                    Bono bono = bonos[index];
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                          right: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.08,
-                                          left: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.08,
-                                          bottom: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.02),
-                                      child: BonoCard(
+                                  MediaQuery.of(context).size.height * 0.015),
+                          isBonoRequest || editBono
+                              ? Column(
+                                  children: [
+                                    buildDateDetails(),
+                                    SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                0.22,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.84,
-                                        bono: bono,
-                                        brand: widget.brand,
-                                        canExpand: false,
-                                        onlyView: true,
-                                        hideActive: true,
-                                      ),
-                                    );
-                                  }),
+                                                0.015),
+                                    buildStatusLabel(),
+                                  ],
+                                )
+                              : Column(
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                          .acceptBonoDesc,
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.02),
+                                    isPaid == false
+                                        ? Column(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8),
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .backgroundColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .new_releases_outlined,
+                                                          color: AppColors.red,
+                                                          size: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.05,
+                                                        ),
+                                                        SizedBox(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.01),
+                                                        Text(
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .unverfied,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyText1
+                                                              ?.copyWith(
+                                                                  color:
+                                                                      AppColors
+                                                                          .red,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.06,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.15,
+                                                      child: CupertinoSwitch(
+                                                        value: false,
+                                                        onChanged:
+                                                            (bool newVal) {
+                                                          setState(() {
+                                                            isPaid = !isPaid;
+                                                          });
+                                                        },
+                                                        trackColor: AppColors
+                                                            .red
+                                                            .withOpacity(0.4),
+                                                        thumbColor:
+                                                            AppColors.white,
+                                                        activeColor:
+                                                            Colors.green,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Column(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8),
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .backgroundColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .verified_outlined,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                          size: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.05,
+                                                        ),
+                                                        SizedBox(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.01),
+                                                        Text(
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .verfied,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyText1
+                                                              ?.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.06,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.15,
+                                                      child: CupertinoSwitch(
+                                                        value: true,
+                                                        onChanged:
+                                                            (bool newVal) {
+                                                          setState(() {
+                                                            isPaid = !isPaid;
+                                                          });
+                                                        },
+                                                        trackColor: AppColors
+                                                            .red
+                                                            .withOpacity(0.4),
+                                                        thumbColor:
+                                                            AppColors.white,
+                                                        activeColor:
+                                                            Colors.green,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                  ],
+                                ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  /*
+                  /// ACTIVATE PURCHASE
+                  editBono ? Column(
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Flexible(
+                              child: Text(purchase.isActive! ? AppLocalizations.of(context)!.desactivarCompra : AppLocalizations.of(context)!.activarCompra,
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
+                                  textAlign: TextAlign.center),
                             ),
+      
                           ],
                         ),
-                      )
-                    : Container(
-                        width: MediaQuery.of(context).size.width,
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height * 0.24,
-                          minHeight: MediaQuery.of(context).size.height * 0.24,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  right:
-                                      MediaQuery.of(context).size.width * 0.08,
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.08,
-                                  bottom: MediaQuery.of(context).size.height *
-                                      0.02),
-                              child: ClientBonoCard(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.22,
-                                width: MediaQuery.of(context).size.width * 0.84,
-                                bono: bonoSelected,
-                                brand: widget.brand,
-                                purchase: Purchase.copy(purchase),
-                                isExpanded: false,
-                                canExpand: false,
-                                onlyView: true,
+                            Flexible(
+                              child: Text(
+                                AppLocalizations.of(context)!.activePurchaseQuesDesc,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .caption,
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 4.0),
+                              child: CupertinoSwitch(
+                                value: purchase.isActive!,
+                                onChanged: setPurchaseActivation,
+                                trackColor: Colors.green.withOpacity(0.4),
+                                thumbColor: AppColors.white,
+                                activeColor: Colors.green,
                               ),
                             )
                           ],
                         ),
                       ),
-
-                /// EVENTS
-                editBono
-                    ? PurchaseEvents(
-                        purchase: purchase,
-                        context: context,
-                        executeFunction: executeFunctionWithPurchase)
-                    : Container(),
-
-                /// CONDITIONS
-                !editBono
-                    ? Padding(
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.04,
-                            right: MediaQuery.of(context).size.width * 0.04),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: TextButton(
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        AppLocalizations.of(context)!
-                                            .personalizeBonoUser(
-                                                widget.user.firstName!),
-                                        //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline3
-                                            ?.copyWith(
-                                                fontWeight: FontWeight.normal),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Icon(
-                                        seeConditions
-                                            ? Icons.keyboard_arrow_up
-                                            : Icons.keyboard_arrow_down,
-                                        size:
-                                            MediaQuery.of(context).size.width *
-                                                0.08,
-                                        color: Theme.of(context).primaryColor),
-                                  ],
-                                ),
-                                style: TextButton.styleFrom(
-                                  primary: Theme.of(context).primaryColor,
-                                ),
-                                onPressed: editBono
-                                    ? null
-                                    : () async {
-                                        setState(() {
-                                          seeConditions = !seeConditions;
-                                        });
-                                      },
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.03,
-                            left: MediaQuery.of(context).size.width * 0.05,
-                            right: MediaQuery.of(context).size.width * 0.05,
-                            bottom: MediaQuery.of(context).size.height * 0.02),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.conditions,
-                              //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    ],
+                  ) : Container(),
+                   */
+                  /// USER
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: Text(AppLocalizations.of(context)!.user,
                               style: Theme.of(context)
                                   .textTheme
                                   .headline1
                                   ?.copyWith(fontSize: 22),
+                              textAlign: TextAlign.center),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 4),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).backgroundColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
+                        minLeadingWidth:
+                            MediaQuery.of(context).size.width * 0.1,
+                        leading: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.15,
+                          image: widget.user.imageUrl,
+                          color: Theme.of(context).primaryColor,
+                          borderWidth: 1.0,
+                        ),
+                        title: Text(
+                          widget.user.name!,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.lastEventAt == null
+                                  ? AppLocalizations.of(context)!.lastActiveIn(
+                                      DateTimeUtils()
+                                          .formatDateTimeToStringMMMYYYY(
+                                              dateJoined,
+                                              Localizations.localeOf(context)
+                                                  .languageCode))
+                                  : AppLocalizations.of(context)!.lastActiveIn(
+                                      DateTimeUtils()
+                                          .formatDateTimeToStringMMMYYYY(
+                                              user.lastEventAt!.toDate(),
+                                              Localizations.localeOf(context)
+                                                  .languageCode)),
+                              style: Theme.of(context).textTheme.caption,
                             ),
                           ],
                         ),
+                        trailing: IconButton(
+                          icon: Icon(
+                            Icons.arrow_forward_ios,
+                            color: isBonoRequest || editBono
+                                ? Theme.of(context).primaryColor
+                                : Colors.transparent,
+                            size: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(0),
+                          onPressed: false ? () {} : null,
+                        ),
+                        onTap: isBonoRequest || editBono
+                            ? () async {
+                                await Navigator.push(
+                                    context,
+                                    CupertinoPageRoute<bool?>(
+                                        builder: (context) => ProfileViewUser(
+                                              userID: widget.user.id!,
+                                              viewOnly: false,
+                                            )));
+                              }
+                            : null,
                       ),
-                seeConditions
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                MediaQuery.of(context).size.width * 0.05),
-                        child: Form(
-                          key: formKeyInfo,
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+
+                  /// BONOS
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: Text(AppLocalizations.of(context)!.bono,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1
+                                  ?.copyWith(fontSize: 22),
+                              textAlign: TextAlign.center),
+                        ),
+                      ],
+                    ),
+                  ),
+                  bonos.length > 1
+                      ? Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: _buildPageIndicator(),
+                            ),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.01),
+                          ],
+                        )
+                      : SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01),
+                  !editBono || purchase.id == null
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          constraints: BoxConstraints(
+                            maxHeight:
+                                MediaQuery.of(context).size.height * 0.24,
+                            minHeight:
+                                MediaQuery.of(context).size.height * 0.24,
+                          ),
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              /// SESSIONS
-                              Container(
-                                padding: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * 0.05),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).backgroundColor,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10))),
-                                child: optionTextWrite(
-                                    TextInputType.number,
-                                    AppLocalizations.of(context)!.sessions,
-                                    AppLocalizations.of(context)!
-                                        .sesionsBonoDesc,
-                                    AppLocalizations.of(context)!.sessionHint,
-                                    AppLocalizations.of(context)!.sessionPlease,
-                                    true,
-                                    sessionsController,
-                                    focusNodeSessionsController,
-                                    false,
-                                    'ses',
-                                    false),
+                              Expanded(
+                                child: PageView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    controller: _pageController,
+                                    onPageChanged: (int page) {
+                                      setState(() {
+                                        bonoSelected.setBasicData = bonos[page];
+                                        bonoSelected.setConditionsData =
+                                            bonos[page].condition!;
+                                        isBonoSelected = true;
+                                        setBonoConditions(bonoSelected);
+                                        _currentPage = page;
+                                      });
+                                    },
+                                    itemCount: bonos.length,
+                                    itemBuilder: (context, index) {
+                                      Bono bono = bonos[index];
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.08,
+                                            left: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.08,
+                                            bottom: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.02),
+                                        child: BonoCard(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.22,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.84,
+                                          bono: bono,
+                                          brand: widget.brand,
+                                          canExpand: false,
+                                          onlyView: true,
+                                          hideActive: true,
+                                        ),
+                                      );
+                                    }),
                               ),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.01),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          width: MediaQuery.of(context).size.width,
+                          constraints: BoxConstraints(
+                            maxHeight:
+                                MediaQuery.of(context).size.height * 0.24,
+                            minHeight:
+                                MediaQuery.of(context).size.height * 0.24,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    right: MediaQuery.of(context).size.width *
+                                        0.08,
+                                    left: MediaQuery.of(context).size.width *
+                                        0.08,
+                                    bottom: MediaQuery.of(context).size.height *
+                                        0.02),
+                                child: ClientBonoCard(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.22,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.84,
+                                  bono: bonoSelected,
+                                  brand: widget.brand,
+                                  purchase: Purchase.copy(purchase),
+                                  isExpanded: false,
+                                  canExpand: false,
+                                  onlyView: true,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
 
-                              /// PRICE
-                              Container(
-                                padding: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * 0.05),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).backgroundColor,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10))),
-                                child: optionTextWrite(
-                                    const TextInputType.numberWithOptions(
-                                        decimal: true),
-                                    AppLocalizations.of(context)!.price,
-                                    "",
-                                    AppLocalizations.of(context)!.priceHint,
-                                    AppLocalizations.of(context)!.pricePlease,
-                                    true,
-                                    priceController,
-                                    focusNodePriceController,
-                                    false,
-                                    'price',
-                                    false),
+                  /// EVENTS
+                  editBono
+                      ? PurchaseEvents(
+                          purchase: purchase,
+                          context: context,
+                          executeFunction: executeFunctionWithPurchase)
+                      : Container(),
+
+                  /// CONDITIONS
+                  !editBono
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.04,
+                              right: MediaQuery.of(context).size.width * 0.04),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: TextButton(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          AppLocalizations.of(context)!
+                                              .personalizeBonoUser(
+                                                  widget.user.firstName!),
+                                          //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline3
+                                              ?.copyWith(
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Icon(
+                                          seeConditions
+                                              ? Icons.keyboard_arrow_up
+                                              : Icons.keyboard_arrow_down,
+                                          size: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.08,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ],
+                                  ),
+                                  style: TextButton.styleFrom(
+                                    primary: Theme.of(context).primaryColor,
+                                  ),
+                                  onPressed: editBono
+                                      ? null
+                                      : () async {
+                                          setState(() {
+                                            seeConditions = !seeConditions;
+                                          });
+                                        },
+                                ),
                               ),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.01),
+                            ],
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.03,
+                              left: MediaQuery.of(context).size.width * 0.05,
+                              right: MediaQuery.of(context).size.width * 0.05,
+                              bottom:
+                                  MediaQuery.of(context).size.height * 0.02),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.conditions,
+                                //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline1
+                                    ?.copyWith(fontSize: 22),
+                              ),
+                            ],
+                          ),
+                        ),
+                  seeConditions
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.05),
+                          child: Form(
+                            key: formKeyInfo,
+                            child: Column(
+                              children: [
+                                /// SESSIONS
+                                Container(
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.of(context).size.width * 0.05),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: optionTextWrite(
+                                      TextInputType.number,
+                                      AppLocalizations.of(context)!.sessions,
+                                      AppLocalizations.of(context)!
+                                          .sesionsBonoDesc,
+                                      AppLocalizations.of(context)!.sessionHint,
+                                      AppLocalizations.of(context)!
+                                          .sessionPlease,
+                                      true,
+                                      sessionsController,
+                                      focusNodeSessionsController,
+                                      false,
+                                      'ses',
+                                      false),
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01),
 
-                              /// EXPIRATION DATE
-                              Container(
+                                /// PRICE
+                                Container(
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.of(context).size.width * 0.05),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: optionTextWrite(
+                                      const TextInputType.numberWithOptions(
+                                          decimal: true),
+                                      AppLocalizations.of(context)!.price,
+                                      "",
+                                      AppLocalizations.of(context)!.priceHint,
+                                      AppLocalizations.of(context)!.pricePlease,
+                                      true,
+                                      priceController,
+                                      focusNodePriceController,
+                                      false,
+                                      'price',
+                                      false),
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01),
+
+                                /// EXPIRATION DATE
+                                Container(
+                                    padding: EdgeInsets.all(
+                                        MediaQuery.of(context).size.width *
+                                            0.05),
+                                    decoration: BoxDecoration(
+                                        color:
+                                            Theme.of(context).backgroundColor,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: optionConditionsWrite(
+                                        TextInputType.text,
+                                        AppLocalizations.of(context)!
+                                            .expireDate,
+                                        AppLocalizations.of(context)!
+                                            .expiresAtDesc,
+                                        AppLocalizations.of(context)!
+                                            .titleError,
+                                        AppLocalizations.of(context)!
+                                            .titleError,
+                                        AppLocalizations.of(context)!
+                                            .titleError,
+                                        true,
+                                        titleController,
+                                        null,
+                                        'expEdit',
+                                        false)),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01),
+
+                                /// WEEKLY SESSIONS
+                                Container(
                                   padding: EdgeInsets.all(
                                       MediaQuery.of(context).size.width * 0.05),
                                   decoration: BoxDecoration(
@@ -1418,370 +1544,355 @@ class _PurchasePageState extends State<PurchasePage> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   child: optionConditionsWrite(
-                                      TextInputType.text,
-                                      AppLocalizations.of(context)!.expireDate,
+                                      TextInputType.number,
                                       AppLocalizations.of(context)!
-                                          .expiresAtDesc,
-                                      AppLocalizations.of(context)!.titleError,
-                                      AppLocalizations.of(context)!.titleError,
-                                      AppLocalizations.of(context)!.titleError,
+                                          .trainsPerWeek,
+                                      AppLocalizations.of(context)!
+                                          .trainsPerWeekDesc,
+                                      AppLocalizations.of(context)!.sessionHint,
+                                      AppLocalizations.of(context)!
+                                          .sessionPlease,
+                                      AppLocalizations.of(context)!
+                                          .trainsPerWeekError,
                                       true,
-                                      titleController,
-                                      null,
-                                      'expEdit',
-                                      false)),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.01),
+                                      weeklyController,
+                                      focusNodeWeeklyController,
+                                      'maxw',
+                                      false),
+                                ),
 
-                              /// WEEKLY SESSIONS
-                              Container(
-                                padding: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * 0.05),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).backgroundColor,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10))),
-                                child: optionConditionsWrite(
-                                    TextInputType.number,
-                                    AppLocalizations.of(context)!.trainsPerWeek,
-                                    AppLocalizations.of(context)!
-                                        .trainsPerWeekDesc,
-                                    AppLocalizations.of(context)!.sessionHint,
-                                    AppLocalizations.of(context)!.sessionPlease,
-                                    AppLocalizations.of(context)!
-                                        .trainsPerWeekError,
-                                    true,
-                                    weeklyController,
-                                    focusNodeWeeklyController,
-                                    'maxw',
-                                    false),
-                              ),
+                                /// CANCEL TIME
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01),
+                                Container(
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.of(context).size.width * 0.05),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: optionConditionsWrite(
+                                      TextInputType.number,
+                                      AppLocalizations.of(context)!.freeCancel,
+                                      AppLocalizations.of(context)!
+                                          .freeCancelDesc,
+                                      AppLocalizations.of(context)!
+                                          .freeCancelHint,
+                                      AppLocalizations.of(context)!
+                                          .freeCancelError,
+                                      AppLocalizations.of(context)!
+                                          .freeCancelErrorSecond,
+                                      true,
+                                      freeCancellController,
+                                      focusNodeFreeCancelController,
+                                      'canFree',
+                                      false),
+                                ),
+                              ],
+                            ),
+                          ))
+                      : Container(),
+                  editBono
+                      ? SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.04)
+                      : SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.04),
 
-                              /// CANCEL TIME
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.01),
-                              Container(
-                                padding: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * 0.05),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).backgroundColor,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10))),
-                                child: optionConditionsWrite(
-                                    TextInputType.number,
-                                    AppLocalizations.of(context)!.freeCancel,
-                                    AppLocalizations.of(context)!
-                                        .freeCancelDesc,
-                                    AppLocalizations.of(context)!
-                                        .freeCancelHint,
-                                    AppLocalizations.of(context)!
-                                        .freeCancelError,
-                                    AppLocalizations.of(context)!
-                                        .freeCancelErrorSecond,
-                                    true,
-                                    freeCancellController,
-                                    focusNodeFreeCancelController,
-                                    'canFree',
-                                    false),
+                  /// PAYMENT METHOD
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: Text(
+                              AppLocalizations.of(context)!.paymentMethod,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1
+                                  ?.copyWith(fontSize: 22),
+                              textAlign: TextAlign.center),
+                        ),
+                      ],
+                    ),
+                  ),
+                  !(editBono || isBonoRequest)
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.05),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              RichText(
+                                textAlign: TextAlign.left,
+                                text: TextSpan(
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                  children: [
+                                    TextSpan(
+                                      text: AppLocalizations.of(context)!
+                                          .paymentMethodConfirm,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption
+                                          ?.copyWith(height: 1.5),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        ))
-                    : Container(),
-                editBono
-                    ? SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.04)
-                    : SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.04),
-
-                /// PAYMENT METHOD
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        child: Text(AppLocalizations.of(context)!.paymentMethod,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1
-                                ?.copyWith(fontSize: 22),
-                            textAlign: TextAlign.center),
-                      ),
-                    ],
-                  ),
-                ),
-                !(editBono || isBonoRequest)
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                MediaQuery.of(context).size.width * 0.05),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            RichText(
-                              textAlign: TextAlign.left,
-                              text: TextSpan(
-                                style: Theme.of(context).textTheme.bodyText2,
-                                children: [
-                                  TextSpan(
+                        )
+                      : Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.05),
+                          child: RichText(
+                            text: TextSpan(
+                              style: Theme.of(context).textTheme.bodyText2,
+                              children: [
+                                TextSpan(
                                     text: AppLocalizations.of(context)!
-                                        .paymentMethodConfirm,
+                                        .paymentMethodOriginal,
                                     style: Theme.of(context)
                                         .textTheme
                                         .caption
-                                        ?.copyWith(height: 1.5),
+                                        ?.copyWith(height: 1.5)),
+                                TextSpan(
+                                  text: originalPaymentString,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          height: 1.5),
+                                ),
+                                TextSpan(
+                                    text: ". " +
+                                        AppLocalizations.of(context)!
+                                            .paymentMethodEdit,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption
+                                        ?.copyWith(height: 1.5)),
+                              ],
+                            ),
+                          ),
+                        ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(() {
+                              paymentMethod = 0;
+                            });
+                          },
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.05),
+                                height:
+                                    MediaQuery.of(context).size.width * 0.25,
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).backgroundColor,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
                                   ),
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor,
+                                      width: paymentMethod == 0 ? 5 : 1),
+                                ),
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: Image(
+                                    image: AssetImage(Constants.imageCash),
+                                    opacity: AlwaysStoppedAnimation(
+                                        paymentMethod == 1 ? 100 : 1),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .cashPaymentMethod,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline3
+                                        ?.copyWith(
+                                            color: paymentMethod == 1
+                                                ? Theme.of(context)
+                                                    .primaryColor
+                                                    .withOpacity(0.5)
+                                                : Theme.of(context)
+                                                    .primaryColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  paymentMethod == 0
+                                      ? Icon(
+                                          Icons.check_circle,
+                                          color: Theme.of(context).primaryColor,
+                                        )
+                                      : Container(),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                MediaQuery.of(context).size.width * 0.05),
-                        child: RichText(
-                          text: TextSpan(
-                            style: Theme.of(context).textTheme.bodyText2,
-                            children: [
-                              TextSpan(
-                                  text: AppLocalizations.of(context)!
-                                      .paymentMethodOriginal,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption
-                                      ?.copyWith(height: 1.5)),
-                              TextSpan(
-                                text: originalPaymentString,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        height: 1.5),
-                              ),
-                              TextSpan(
-                                  text: ". " +
-                                      AppLocalizations.of(context)!
-                                          .paymentMethodEdit,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption
-                                      ?.copyWith(height: 1.5)),
                             ],
                           ),
                         ),
-                      ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          setState(() {
-                            paymentMethod = 0;
-                          });
-                        },
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.05),
-                              height: MediaQuery.of(context).size.width * 0.25,
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                border: Border.all(
-                                    color: Theme.of(context).primaryColor,
-                                    width: paymentMethod == 0 ? 5 : 1),
-                              ),
-                              child: FittedBox(
-                                fit: BoxFit.cover,
-                                child: Image(
-                                  image: AssetImage(Constants.imageCash),
-                                  opacity: AlwaysStoppedAnimation(
-                                      paymentMethod == 1 ? 100 : 1),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
+                        GestureDetector(
+                          onTap: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(() {
+                              paymentMethod = 1;
+                            });
+                          },
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.05),
                                 height:
-                                    MediaQuery.of(context).size.height * 0.01),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .cashPaymentMethod,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline3
-                                      ?.copyWith(
-                                          color: paymentMethod == 1
-                                              ? Theme.of(context)
-                                                  .primaryColor
-                                                  .withOpacity(0.5)
-                                              : Theme.of(context).primaryColor),
-                                  textAlign: TextAlign.center,
+                                    MediaQuery.of(context).size.width * 0.25,
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).backgroundColor,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor,
+                                      width: paymentMethod == 1 ? 5 : 1),
                                 ),
-                                paymentMethod == 0
-                                    ? Icon(
-                                        Icons.check_circle,
-                                        color: Theme.of(context).primaryColor,
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ],
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: Image(
+                                    image: AssetImage(Constants.imageTransfer),
+                                    opacity: AlwaysStoppedAnimation(
+                                        paymentMethod == 0 ? 100 : 1),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .transferPaymentMethod,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline3
+                                        ?.copyWith(
+                                            color: paymentMethod == 0
+                                                ? Theme.of(context)
+                                                    .primaryColor
+                                                    .withOpacity(0.5)
+                                                : Theme.of(context)
+                                                    .primaryColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  paymentMethod == 1
+                                      ? Icon(
+                                          Icons.check_circle,
+                                          color: Theme.of(context).primaryColor,
+                                        )
+                                      : Container(),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          setState(() {
-                            paymentMethod = 1;
-                          });
-                        },
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.05),
-                              height: MediaQuery.of(context).size.width * 0.25,
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                border: Border.all(
-                                    color: Theme.of(context).primaryColor,
-                                    width: paymentMethod == 1 ? 5 : 1),
-                              ),
-                              child: FittedBox(
-                                fit: BoxFit.cover,
-                                child: Image(
-                                  image: AssetImage(Constants.imageTransfer),
-                                  opacity: AlwaysStoppedAnimation(
-                                      paymentMethod == 0 ? 100 : 1),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
+                        GestureDetector(
+                          onTap: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(() {
+                              paymentMethod = 2;
+                            });
+                          },
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.05),
                                 height:
-                                    MediaQuery.of(context).size.height * 0.01),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .transferPaymentMethod,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline3
-                                      ?.copyWith(
-                                          color: paymentMethod == 0
-                                              ? Theme.of(context)
-                                                  .primaryColor
-                                                  .withOpacity(0.5)
-                                              : Theme.of(context).primaryColor),
-                                  textAlign: TextAlign.center,
+                                    MediaQuery.of(context).size.width * 0.25,
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).backgroundColor,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor,
+                                      width: paymentMethod == 2 ? 5 : 1),
                                 ),
-                                paymentMethod == 1
-                                    ? Icon(
-                                        Icons.check_circle,
-                                        color: Theme.of(context).primaryColor,
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          setState(() {
-                            paymentMethod = 2;
-                          });
-                        },
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.05),
-                              height: MediaQuery.of(context).size.width * 0.25,
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                border: Border.all(
-                                    color: Theme.of(context).primaryColor,
-                                    width: paymentMethod == 2 ? 5 : 1),
-                              ),
-                              child: FittedBox(
-                                fit: BoxFit.cover,
-                                child: Image(
-                                  image: AssetImage(Constants.imageGift),
-                                  opacity: AlwaysStoppedAnimation(
-                                      paymentMethod != 2 ? 100 : 1),
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: Image(
+                                    image: AssetImage(Constants.imageGift),
+                                    opacity: AlwaysStoppedAnimation(
+                                        paymentMethod != 2 ? 100 : 1),
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.01),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .giftPaymentMethod,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline3
-                                      ?.copyWith(
-                                          color: paymentMethod != 2
-                                              ? Theme.of(context)
-                                                  .primaryColor
-                                                  .withOpacity(0.5)
-                                              : Theme.of(context).primaryColor),
-                                  textAlign: TextAlign.center,
-                                ),
-                                paymentMethod == 2
-                                    ? Icon(
-                                        Icons.check_circle,
-                                        color: Theme.of(context).primaryColor,
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ],
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .giftPaymentMethod,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline3
+                                        ?.copyWith(
+                                            color: paymentMethod != 2
+                                                ? Theme.of(context)
+                                                    .primaryColor
+                                                    .withOpacity(0.5)
+                                                : Theme.of(context)
+                                                    .primaryColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  paymentMethod == 2
+                                      ? Icon(
+                                          Icons.check_circle,
+                                          color: Theme.of(context).primaryColor,
+                                        )
+                                      : Container(),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.12),
-              ],
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.12),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       resizeToAvoidBottomInset: false,
       floatingActionButton: whichFloatingActionButton(context),
@@ -1818,13 +1929,17 @@ class _PurchasePageState extends State<PurchasePage> {
                     } catch (e) {
                       print(e);
                     }
+                    // Has Updated the Events of this Purchase
                     if (eventsUpdated) {
                       await _purchaseDataService.updatePurchaseEvents(
                           purchase.id!,
                           user.id!,
                           newPurchase.events,
                           newPurchase.initalEvents);
+                      purchase.events = newPurchase.events;
                     }
+                    // Update Purchase As active or not.
+                    await checkIfUserBonosHaveExpiredOrBeenReactivated(purchase);
 
                     /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
                     if (originalExpirationTime !=
@@ -2792,7 +2907,7 @@ class _PurchasePageState extends State<PurchasePage> {
   }
 
   void _show() async {
-    FocusManager.instance.primaryFocus?.unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();    
     List<DateTime>? result = await showModalBottomSheet<List<DateTime>>(
       context: context,
       isScrollControlled: true,

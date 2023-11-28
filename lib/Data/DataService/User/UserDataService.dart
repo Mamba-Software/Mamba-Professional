@@ -156,6 +156,8 @@ class UserDataService {
   Future<void> updateUserZoomScale(
           String userId, String brandId, double zoomScale) =>
       _firebase.updateUserZoomScale(brandId, userId, zoomScale);
+  Future<void> activateUserBono(String userId, String brandId, String bonoId, String purchaseId) =>
+      _firebase.activateUserBono(userId, brandId, bonoId, purchaseId);
 
   // Delete Data
   Future<void> deleteRequestToBrand(RequestToBrand request) =>
@@ -165,8 +167,8 @@ class UserDataService {
   Future<void> deleteUserBonoRequest(
           String userId, String brandId, String bonoId) =>
       _firebase.deleteUserBonoRequest(userId, brandId, bonoId);
-  Future<void> deleteUserBono(String userId, String brandId, String bonoId) =>
-      _firebase.deleteUserBono(userId, brandId, bonoId);
+  Future<void> deleteUserBono(String userId, String brandId, String bonoId, String purchaseId) =>
+      _firebase.deleteUserBono(userId, brandId, bonoId, purchaseId);
   Future<void> deleteLocalNotification(String userId, String notificationId) =>
       _firebase.deleteLocalNotification(userId, notificationId);
   Future<void> deleteUserBlocked(String currentUser, String userId) =>
