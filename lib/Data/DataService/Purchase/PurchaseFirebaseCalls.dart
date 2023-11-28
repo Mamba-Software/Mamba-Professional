@@ -431,7 +431,7 @@ class PurchaseFirebaseCalls {
       "cancelTime": bonoSelected.condition?.cancelTime,
       "expirationTime": bonoSelected.condition?.expirationTime,
       "paymentMethod": purchase.paymentMethod,
-      "directPurchase": false,
+      "directPurchase": purchase.directPurchase,
       "isActive": true,
     }).catchError((err) {
       print(err);
