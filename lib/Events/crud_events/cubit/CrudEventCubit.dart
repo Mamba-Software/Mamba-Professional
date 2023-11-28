@@ -31,7 +31,6 @@ part 'CrudEventState.dart';
 class CrudEventCubit extends Cubit<CrudEventLoaded> {
   final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
-  final _purchaseDataService = PurchaseDataService();
   final _notificationsEvents = NotificationsEvent();
   final _addEvents = AddEventFunctions();
   final _recurrentEvents = RecurrentEvents();
@@ -487,6 +486,11 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       ReceivedNotification notificationAfter) async {
     mixpanel!.timeEvent('edit_event_completed');
 
+    List<Bono> selectedBonos = _event.eventBonos!.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
     // Get Recurrent Group Ids ..
     var eventGroupIds =
         await _eventDataService.getRecurrentEventGroup(_event.eventGroupId!);
@@ -575,16 +579,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       List<Bono> originalBonos =
           await _eventDataService.getEventBonos(eventId, currentBrand.id!);
 
-      //Event Bonos
-      List<Bono> selectedBonos = _event.eventBonos!.entries
-          .where((entry) => entry.value)
-          .map((entry) => entry.key)
-          .toList();
-
-      if (!selectedBonos.every((bono) =>
-          originalBonos.any((originalBono) => originalBono.id == bono.id))) {
-        await _eventDataService.updateEventBonosObject(eventId, selectedBonos);
-      }
+      await _addEvents.updateBonos(originalBonos, selectedBonos, eventId);
 
       // Update Event Location
       if (originalEvent.locationId! != updatedEvent.locationId!) {
@@ -600,6 +595,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           _notificationsEvents.setEventNotificationBeforeRecurrent(updatedEvent,
               notificationBefore.title!, notificationBefore.body!));
     }
+
+    resetNewEvent();
   }
 
   Future<void> _updateEventFunction(
@@ -662,10 +659,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       originalBonos.add(bono);
     }
 
-    if (!selectedBonos.every((bono) =>
-        originalBonos.any((originalBono) => originalBono.id == bono.id))) {
-      await _eventDataService.updateEventBonosObject(event.id!, selectedBonos);
-    }
+    await _addEvents.updateBonos(originalBonos, selectedBonos, event.id!);
 
     // Update Event Location
     if (event.locationId! != _oldEvent.locationId!) {
@@ -807,6 +801,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     }
     mixpanel!.track('delete_event_completed',
         properties: {'isPrivate': isPrivate, 'isRecurrent': true});
+    resetNewEvent();
   }
 
   void setMustUpdateToFalse() {
@@ -1141,6 +1136,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
             endTime.isAfter(endWorkDay)) {
       return false;
     } else {
+      /*
       // Can´t create event in break period of working hours
       for (var i = 2; i < currentBrand.workShift.length; i += 2) {
         // Breaks
@@ -1165,7 +1161,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
                     endTime.isAtSameMomentAs(endBreak)))) {
           return false;
         }
-      }
+      }*/
       return true;
     }
   }
