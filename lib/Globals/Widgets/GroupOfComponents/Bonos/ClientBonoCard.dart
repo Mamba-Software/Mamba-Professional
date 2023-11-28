@@ -142,7 +142,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     purchasedDate = DateTime(
       purchasedDate.year,
       purchasedDate.month,
-      purchasedDate.day+1,
+      purchasedDate.day,
     );
     // Expiration Date
     expirationDate = purchasedDate.add(Duration(days:condition.expirationTime!));
