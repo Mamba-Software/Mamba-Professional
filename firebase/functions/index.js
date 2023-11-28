@@ -6232,6 +6232,79 @@ exports.CreateRecurrentEvent = functions
     }
 });
 
+// Recurrent Event Function
+exports.zzzzDeleteEventBono = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+    functions.logger.log("new data", data);
+
+    const { bonoId, brandId} = data;  
+    const eventsCollection = '7777 Events';
+    const brandsCollection = '7777 Brands';
+
+    const eventRef = admin.firestore().collection(eventsCollection);
+    const brandRef = admin.firestore().collection(brandsCollection).doc(brandId).collection('Events');
+    
+    functions.logger.log("brand", brandId);
+    functions.logger.log("bonoId", bonoId);
+
+    try {
+       
+        await deleteBonoEvents(brandRef, eventRef, bonoId);
+
+        return { success: true, eventId: bonoId };
+
+    } catch (error) {
+        console.error("Error updating event:", error);
+        return { success: false };
+    }
+});
+
+exports.DeleteEventBono = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+    functions.logger.log("new data", data);
+
+    const { bonoId, brandId} = data;  
+    const eventsCollection = 'Events';
+    const brandsCollection = 'Brands';
+
+    const eventRef = admin.firestore().collection(eventsCollection);
+    const brandRef = admin.firestore().collection(brandsCollection).doc(brandId).collection('Events');
+    
+    functions.logger.log("brand", brandId);
+    functions.logger.log("bonoId", bonoId);
+
+    try {
+        await deleteBonoEvents(brandRef, eventRef, bonoId);
+
+        return { success: true, eventId: bonoId };
+
+    } catch (error) {
+        console.error("Error updating event:", error);
+        return { success: false };
+    }
+});
+
+async function deleteBonoEvents(brandRef, eventRef, bonoId) {
+  const brandEventSnapshot = await brandRef.get();
+
+  // Iterate over the documents in the snapshot
+  for (const eventDoc of brandEventSnapshot.docs) {
+    const eventSnapshot = await eventRef.doc(eventDoc.id).collection('Bonos').doc(bonoId).get();
+
+    if (eventSnapshot.exists) {
+      functions.logger.log("WILL DELETE", bonoId);
+      //await eventRef.doc(eventDoc.id).collection('Bonos').doc(bonoId).delete();
+    }
+  }
+}
+
+
 async function addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection) {
     await admin.firestore().collection(eventsCollection).doc(eventID).set({
       ...event,
