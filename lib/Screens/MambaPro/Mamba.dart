@@ -291,13 +291,27 @@ class _MambaState extends State<Mamba> {
               color: AppColors.white,
             ),
           )
-        : context.read<AuthCubit>().state is AuthUserBrand
-            ? !brandIsActive
-                ? currentUser.id == currentBrand.adminID
-                    ? PayWall(
-                        brandId: currentBrand.id!, comesFromInitPage: true)
-                    : const BrandScreen()
-                : const BrandScreen()
-            : const NoBrandScreen();
+        : BlocSelector<AuthCubit, AuthState, AuthState>(selector: (state) {
+            return state;
+          }, builder: (context, state) {
+            if (state is AuthUserBrand) {
+              return !brandIsActive
+                  ? currentUser.id == currentBrand.adminID
+                      ? PayWall(
+                          brandId: currentBrand.id!, comesFromInitPage: true)
+                      : const BrandScreen()
+                  : const BrandScreen();
+            } else if (state is AuthUserNoBrand) {
+              return const NoBrandScreen();
+            } else {
+              return Scaffold(
+                  backgroundColor: AppColors.black,
+                  body: LoadingView(
+                    hasLogo: false,
+                    isSmall: true,
+                    color: AppColors.white,
+                  ));
+            }
+          });
   }
 }
