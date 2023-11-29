@@ -44,51 +44,66 @@ class Bono {
 
   Bono.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     id = documentId;
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('title')) {
       title = documentSnapshot.get("title").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('description')) {
       description = documentSnapshot.get("description").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('price')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('price')) {
       price = documentSnapshot.get("price").toDouble();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('sessions')) {
       sessions = documentSnapshot.get("sessions");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isActive')) {
       isActive = documentSnapshot.get("isActive");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('compras')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('compras')) {
       compras = documentSnapshot.get("compras");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('color')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('color')) {
       color = documentSnapshot.get("color");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('imageUrl')) {
       imageUrl = documentSnapshot.get("imageUrl").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isDegradate')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isDegradate')) {
       isDegradate = documentSnapshot.get("isDegradate");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('opacity')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('opacity')) {
       opacity = documentSnapshot.get("opacity");
     }
     // Conditions
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('expirationTime')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('expirationTime')) {
       condition!.expirationTime = documentSnapshot.get("expirationTime");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('cancelTime')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('cancelTime')) {
       condition!.cancelTime = documentSnapshot.get("cancelTime");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('weeklySessions')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('weeklySessions')) {
       condition!.weeklySessions = documentSnapshot.get("weeklySessions");
     }
     // Purchases
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchaseId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('purchaseId')) {
       purchaseId = documentSnapshot.get("purchaseId").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('brandId')) {
       brandId = documentSnapshot.get("brandId").toString();
     }
   }

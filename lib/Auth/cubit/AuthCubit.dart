@@ -27,8 +27,6 @@ class AuthCubit extends Cubit<AuthState> {
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
   final _settingsDataService = SettingsDataService();
-  List<Event> finishedEventsList = [];
-  List<Event> upcomingEventsList = [];
   final googleSignIn = GoogleSignIn();
 
   void generalSignIn(AuthProviderEnum provider, BuildContext context,

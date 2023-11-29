@@ -131,6 +131,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     state.oldEvent.isRecurrent = event.eventGroupId != null;
     state.newEvent.isRecurrent = event.eventGroupId != null;
 
+    emit(state.copyWith(isNew: true));
+
     emit(state.copyWith(
         oldEvent: state.oldEvent,
         newEvent: state.newEvent,
@@ -1043,7 +1045,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   }
 
   Map<Bono, bool> _setEventBonosMap() {
-    final Map<Bono, bool> bonosMap = {};
+    Map<Bono, bool> bonosMap = {};
 
     for (Bono bono in allBonos) {
       // Check if the current bono exists in eventBonos
