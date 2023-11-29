@@ -1224,7 +1224,7 @@ class BrandFirebaseCalls {
 
   // Delete Brand Bono Request
   Future<void> deleteBrandBono(String brandId, String bonoId) async {
-    String cloudFunction = 'zzzzDeleteEventBono';
+    String cloudFunction = 'DeleteEventBono';
     // Delete Brand Bono
     await _firestore
         .collection(brands)

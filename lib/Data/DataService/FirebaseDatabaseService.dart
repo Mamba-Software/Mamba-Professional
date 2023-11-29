@@ -993,8 +993,10 @@ class FirebaseDatabaseService {
               .collection("Bonos")
               .doc(bonoId)
               .get();
-      bonos
-          .add(Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot));
+      if (_documentSnapshot.exists) {
+        bonos.add(
+            Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot));
+      }
     }
     return bonos;
   }

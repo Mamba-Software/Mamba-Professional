@@ -6232,7 +6232,6 @@ exports.CreateRecurrentEvent = functions
     }
 });
 
-// Recurrent Event Function
 exports.zzzzDeleteEventBono = functions
 .region("europe-west1")
 .https
@@ -6251,8 +6250,7 @@ exports.zzzzDeleteEventBono = functions
     functions.logger.log("bonoId", bonoId);
 
     try {
-       
-        await deleteBonoEvents(brandRef, eventRef, bonoId);
+        deleteBonoEvents(brandRef, eventRef, bonoId);
 
         return { success: true, eventId: bonoId };
 
@@ -6298,8 +6296,9 @@ async function deleteBonoEvents(brandRef, eventRef, bonoId) {
     const eventSnapshot = await eventRef.doc(eventDoc.id).collection('Bonos').doc(bonoId).get();
 
     if (eventSnapshot.exists) {
-      functions.logger.log("WILL DELETE", bonoId);
-      //await eventRef.doc(eventDoc.id).collection('Bonos').doc(bonoId).delete();
+      functions.logger.log("WILL DELETE BONO", bonoId);
+      functions.logger.log("WILL DELETE FROM EVENT", eventDoc.id);
+      await eventRef.doc(eventDoc.id).collection('Bonos').doc(bonoId).delete();
     }
   }
 }
