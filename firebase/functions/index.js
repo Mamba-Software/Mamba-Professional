@@ -6252,7 +6252,7 @@ exports.zzzzDeleteEventBono = functions
     try {
         deleteBonoEvents(brandRef, eventRef, bonoId);
 
-        return { success: true, eventId: bonoId };
+        return { success: true, bonoId: bonoId };
 
     } catch (error) {
         console.error("Error updating event:", error);
@@ -6278,9 +6278,9 @@ exports.DeleteEventBono = functions
     functions.logger.log("bonoId", bonoId);
 
     try {
-        await deleteBonoEvents(brandRef, eventRef, bonoId);
+        deleteBonoEvents(brandRef, eventRef, bonoId);
 
-        return { success: true, eventId: bonoId };
+        return { success: true, bonoId: bonoId };
 
     } catch (error) {
         console.error("Error updating event:", error);
@@ -6293,15 +6293,16 @@ async function deleteBonoEvents(brandRef, eventRef, bonoId) {
 
   // Iterate over the documents in the snapshot
   for (const eventDoc of brandEventSnapshot.docs) {
-    const eventSnapshot = await eventRef.doc(eventDoc.id).collection('Bonos').doc(bonoId).get();
-
-    if (eventSnapshot.exists) {
-      functions.logger.log("WILL DELETE BONO", bonoId);
-      functions.logger.log("WILL DELETE FROM EVENT", eventDoc.id);
+    // Directly attempt to delete the bonoId document
+    try {
       await eventRef.doc(eventDoc.id).collection('Bonos').doc(bonoId).delete();
+      functions.logger.log("Deleted bono", bonoId, "from event", eventDoc.id);
+    } catch (error) {
+      functions.logger.error("Error deleting bono", bonoId, "from event", eventDoc.id, error);
     }
   }
 }
+
 
 
 async function addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection) {

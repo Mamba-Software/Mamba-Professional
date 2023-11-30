@@ -1239,13 +1239,12 @@ class BrandFirebaseCalls {
     final HttpsCallable callable =
         FirebaseFunctions.instanceFor(region: 'europe-west1')
             .httpsCallable(cloudFunction);
-    final HttpsCallableResult result = await callable.call(
+    await callable.call(
       <String, dynamic>{
         'bonoId': bonoId,
         'brandId': currentBrand.id!,
       },
     );
-    bool success = result.data['success'];
   }
 
   // Delete Brand Bono Request
