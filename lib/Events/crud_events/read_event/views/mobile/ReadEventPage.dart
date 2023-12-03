@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Events/crud_events/read_event/cubit/ReadEven
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/AddorEdtiEvent.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -88,6 +89,8 @@ class _EventPageTrainerState extends State<EventPageTrainer>
   final _locationDataService = LocationDataService();
   final _dynamicLinkUtils = DynamicLinkUtils();
   final _userDataService = UserDataService();
+
+  final _topSnackBar = TopSnackBarDef();
 
   // Screen Dimensions
   double safeAreaHeight = 0;
@@ -2712,42 +2715,44 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                 child: FloatingActionButton.extended(
                   heroTag: "10",
                   onPressed: () async {
-                    context.read<CrudEventCubit>().populateNewEvent(event);
-                    if (!brandIsActive) {
-                      await navigateToPayWall(context);
-                    } else {
-                      mixpanel!.track('event_view_edit_button',
-                          properties: {'isPrivate': event.isPrivate!});
-                      bool? result;
-                      result = await Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () {
-                                FocusScopeNode currentFocus =
-                                    FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus &&
-                                    currentFocus.focusedChild != null) {
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                }
-                              },
-                              child: AddOrEditEvent(
-                                locale: Localizations.localeOf(context),
+                    if (context.read<CrudEventCubit>().state.isWorking >= 100) {
+                      context.read<CrudEventCubit>().populateNewEvent(event);
+                      if (!brandIsActive) {
+                        await navigateToPayWall(context);
+                      } else {
+                        mixpanel!.track('event_view_edit_button',
+                            properties: {'isPrivate': event.isPrivate!});
+                        bool? result;
+                        result = await Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  FocusScopeNode currentFocus =
+                                      FocusScope.of(context);
+                                  if (!currentFocus.hasPrimaryFocus &&
+                                      currentFocus.focusedChild != null) {
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
+                                  }
+                                },
+                                child: AddOrEditEvent(
+                                  locale: Localizations.localeOf(context),
+                                ),
                               ),
-                            ),
-                          ));
+                            ));
 
-                      if (result != null && result) {
-                        context.read<ReadEventCubit>().resetEvent();
-                      }
-                      if (result != null && !result) {
-                        Navigator.pop(context, false);
-                      }
-                      //TODO
+                        if (result != null && result) {
+                          context.read<ReadEventCubit>().resetEvent();
+                        }
+                        if (result != null && !result) {
+                          Navigator.pop(context, false);
+                        }
+                        //TODO
 
-                      //TODO EDIT HERE
-                      /*
+                        //TODO EDIT HERE
+                        /*
                       if (result != null && result) {
                         setState(() {
                           isLoading = true;
@@ -2759,6 +2764,12 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                         print("Deleting Event ...");
                         Navigator.pop(context, false);
                       }*/
+                      }
+                    } else {
+                      _topSnackBar.showSnackBarTop(
+                          context,
+                          AppLocalizations.of(context)!.processOnWork,
+                          AppColors.red);
                     }
                   },
                   backgroundColor: Colors.green,

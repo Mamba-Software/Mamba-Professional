@@ -69,6 +69,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
 
   String selectedValue = '2';
   var items = ['0', '1', '2', '3', '4', '5', '6'];
+  final _topSnackBar = TopSnackBarDef();
 
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
@@ -1358,901 +1359,896 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _globalKey,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: CustomScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height * 0.15,
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-            elevation: 4,
-            floating: false,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                height: MediaQuery.of(context).size.height * 0.15,
-                color: AppColors.darkGrey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.05,
-                          right: MediaQuery.of(context).size.width * 0.025,
-                          bottom: MediaQuery.of(context).size.height * 0.01),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildTitleFromDate(displayDateTimeStart,
-                              displayDateTimeEnd, middleMonthDate),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  mixpanel!.track('brand_calendar_today');
-                                  setState(() {
-                                    //_controller.selectedDate = DateTime.now();
-                                    _controller.displayDate = DateTime.now()
-                                        .subtract(const Duration(hours: 1));
-                                  });
-                                },
-                                style: TextButton.styleFrom(
-                                  primary: AppColors.white,
+        key: _globalKey,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: CustomScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _scrollController,
+          slivers: [
+            SliverAppBar(
+              backgroundColor: AppColors.darkGrey,
+              expandedHeight: MediaQuery.of(context).size.height * 0.15,
+              systemOverlayStyle: SystemUiOverlayStyle.light,
+              elevation: 4,
+              floating: false,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  color: AppColors.darkGrey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.05,
+                            right: MediaQuery.of(context).size.width * 0.025,
+                            bottom: MediaQuery.of(context).size.height * 0.01),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _buildTitleFromDate(displayDateTimeStart,
+                                displayDateTimeEnd, middleMonthDate),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    mixpanel!.track('brand_calendar_today');
+                                    setState(() {
+                                      //_controller.selectedDate = DateTime.now();
+                                      _controller.displayDate = DateTime.now()
+                                          .subtract(const Duration(hours: 1));
+                                    });
+                                  },
+                                  style: TextButton.styleFrom(
+                                    primary: AppColors.white,
+                                  ),
+                                  child: Text(
+                                      AppLocalizations.of(context)!.todayString,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          ?.copyWith(color: AppColors.white),
+                                      textAlign: TextAlign.center),
                                 ),
-                                child: Text(
-                                    AppLocalizations.of(context)!.todayString,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        ?.copyWith(color: AppColors.white),
-                                    textAlign: TextAlign.center),
-                              ),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.width * 0.09,
-                                width: MediaQuery.of(context).size.width * 0.09,
-                                child: ClipOval(
-                                  child: Material(
-                                    color: hasFilter
-                                        ? AppColors.white
-                                        : Colors.transparent, // Button color
-                                    child: InkWell(
-                                      splashColor: Theme.of(context)
-                                          .backgroundColor, // Splash color
-                                      onTap: () async {
-                                        await showModalBottomSheet<int?>(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(20),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.09,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.09,
+                                  child: ClipOval(
+                                    child: Material(
+                                      color: hasFilter
+                                          ? AppColors.white
+                                          : Colors.transparent, // Button color
+                                      child: InkWell(
+                                        splashColor: Theme.of(context)
+                                            .backgroundColor, // Splash color
+                                        onTap: () async {
+                                          await showModalBottomSheet<int?>(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                top: Radius.circular(20),
+                                              ),
                                             ),
-                                          ),
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          builder: (BuildContext context) {
-                                            // Page View Controller
-                                            final PageController
-                                                _pageController =
-                                                PageController(initialPage: 0);
-                                            int _currentPage = 0;
-                                            bool isTypeEvent = true;
-                                            List<Usuario>
-                                                selectedTrainersBottom =
-                                                List.from(selectedTrainers);
-                                            // Widget
-                                            return StatefulBuilder(
-                                              builder: (BuildContext context,
-                                                  StateSetter setStateBottom) {
-                                                return FractionallySizedBox(
-                                                  heightFactor: 0.33,
-                                                  child: SizedBox(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.5,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    child: Padding(
-                                                      padding: EdgeInsets.all(
+                                            clipBehavior:
+                                                Clip.antiAliasWithSaveLayer,
+                                            builder: (BuildContext context) {
+                                              // Page View Controller
+                                              final PageController
+                                                  _pageController =
+                                                  PageController(
+                                                      initialPage: 0);
+                                              int _currentPage = 0;
+                                              bool isTypeEvent = true;
+                                              List<Usuario>
+                                                  selectedTrainersBottom =
+                                                  List.from(selectedTrainers);
+                                              // Widget
+                                              return StatefulBuilder(
+                                                builder: (BuildContext context,
+                                                    StateSetter
+                                                        setStateBottom) {
+                                                  return FractionallySizedBox(
+                                                    heightFactor: 0.33,
+                                                    child: SizedBox(
+                                                      height:
                                                           MediaQuery.of(context)
                                                                   .size
-                                                                  .width *
-                                                              0.02),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          ListTile(
-                                                            title: Text(
-                                                                AppLocalizations.of(
-                                                                        context)!
-                                                                    .filterBy,
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .caption,
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left),
-                                                            trailing:
-                                                                TextButton(
-                                                                    child: Text(
-                                                                        AppLocalizations.of(context)!
-                                                                            .clear,
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .caption),
-                                                                    onPressed:
-                                                                        () {
-                                                                      setStateBottom(
-                                                                          () {
-                                                                        filterByCalendar =
-                                                                            [
-                                                                          true,
-                                                                          true
-                                                                        ];
-                                                                        selectedTrainers =
-                                                                            List.from(_brandTrainers);
-                                                                      });
-                                                                      // Navigator Pop
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    }),
-                                                            dense: true,
-                                                            onTap:
-                                                                _currentPage ==
-                                                                        0
-                                                                    ? null
-                                                                    : () {
-                                                                        _pageController
-                                                                            .previousPage(
-                                                                          duration:
-                                                                              const Duration(milliseconds: 500),
-                                                                          curve:
-                                                                              Curves.ease,
-                                                                        );
-                                                                      },
-                                                          ),
-                                                          SizedBox(
-                                                            height: MediaQuery.of(
+                                                                  .height *
+                                                              0.5,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: Padding(
+                                                        padding: EdgeInsets.all(
+                                                            MediaQuery.of(
                                                                         context)
                                                                     .size
-                                                                    .height *
-                                                                0.21,
-                                                            width:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                            child: PageView(
-                                                              physics:
-                                                                  const NeverScrollableScrollPhysics(),
-                                                              controller:
-                                                                  _pageController,
-                                                              onPageChanged:
-                                                                  (int page) {
-                                                                setStateBottom(
-                                                                    () {
-                                                                  _currentPage =
-                                                                      page;
-                                                                });
-                                                              },
-                                                              children: <Widget>[
-                                                                Column(
-                                                                  children: [
-                                                                    ListTile(
-                                                                      onTap:
+                                                                    .width *
+                                                                0.02),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            ListTile(
+                                                              title: Text(
+                                                                  AppLocalizations.of(
+                                                                          context)!
+                                                                      .filterBy,
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .caption,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              trailing:
+                                                                  TextButton(
+                                                                      child: Text(
+                                                                          AppLocalizations.of(context)!
+                                                                              .clear,
+                                                                          style: Theme.of(context)
+                                                                              .textTheme
+                                                                              .caption),
+                                                                      onPressed:
                                                                           () {
                                                                         setStateBottom(
                                                                             () {
-                                                                          isTypeEvent =
-                                                                              true;
+                                                                          filterByCalendar =
+                                                                              [
+                                                                            true,
+                                                                            true
+                                                                          ];
+                                                                          selectedTrainers =
+                                                                              List.from(_brandTrainers);
                                                                         });
-                                                                        _pageController
-                                                                            .nextPage(
-                                                                          duration:
-                                                                              const Duration(milliseconds: 500),
-                                                                          curve:
-                                                                              Curves.ease,
-                                                                        );
-                                                                      },
-                                                                      title: Text(
-                                                                          "${AppLocalizations.of(context)!.typeProfile.split(" ")[0]} ${AppLocalizations.of(context)!.typeProfile.split(" ")[1]} ${AppLocalizations.of(context)!.events.toLowerCase()}",
-                                                                          style: Theme.of(context)
-                                                                              .textTheme
-                                                                              .bodyText1,
-                                                                          textAlign:
-                                                                              TextAlign.left),
-                                                                      subtitle: Text(
-                                                                          returnFilteredRolesString(),
+                                                                        // Navigator Pop
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      }),
+                                                              dense: true,
+                                                              onTap:
+                                                                  _currentPage ==
+                                                                          0
+                                                                      ? null
+                                                                      : () {
+                                                                          _pageController
+                                                                              .previousPage(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 500),
+                                                                            curve:
+                                                                                Curves.ease,
+                                                                          );
+                                                                        },
+                                                            ),
+                                                            SizedBox(
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height *
+                                                                  0.21,
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
+                                                              child: PageView(
+                                                                physics:
+                                                                    const NeverScrollableScrollPhysics(),
+                                                                controller:
+                                                                    _pageController,
+                                                                onPageChanged:
+                                                                    (int page) {
+                                                                  setStateBottom(
+                                                                      () {
+                                                                    _currentPage =
+                                                                        page;
+                                                                  });
+                                                                },
+                                                                children: <Widget>[
+                                                                  Column(
+                                                                    children: [
+                                                                      ListTile(
+                                                                        onTap:
+                                                                            () {
+                                                                          setStateBottom(
+                                                                              () {
+                                                                            isTypeEvent =
+                                                                                true;
+                                                                          });
+                                                                          _pageController
+                                                                              .nextPage(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 500),
+                                                                            curve:
+                                                                                Curves.ease,
+                                                                          );
+                                                                        },
+                                                                        title: Text(
+                                                                            "${AppLocalizations.of(context)!.typeProfile.split(" ")[0]} ${AppLocalizations.of(context)!.typeProfile.split(" ")[1]} ${AppLocalizations.of(context)!.events.toLowerCase()}",
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left),
+                                                                        subtitle: Text(
+                                                                            returnFilteredRolesString(),
+                                                                            style:
+                                                                                Theme.of(context).textTheme.caption,
+                                                                            textAlign: TextAlign.left),
+                                                                        trailing:
+                                                                            SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
+                                                                        ),
+                                                                      ),
+                                                                      ListTile(
+                                                                        onTap:
+                                                                            () {
+                                                                          setStateBottom(
+                                                                              () {
+                                                                            isTypeEvent =
+                                                                                false;
+                                                                          });
+                                                                          _pageController
+                                                                              .nextPage(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 500),
+                                                                            curve:
+                                                                                Curves.ease,
+                                                                          );
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!
+                                                                                .trainers,
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left),
+                                                                        subtitle:
+                                                                            Text(
+                                                                          returnFilteredStaffMembersString(),
                                                                           style: Theme.of(context)
                                                                               .textTheme
                                                                               .caption,
                                                                           textAlign:
-                                                                              TextAlign.left),
-                                                                      trailing:
-                                                                          SizedBox(
-                                                                        width: MediaQuery.of(context).size.width *
-                                                                            0.15,
-                                                                        child: Center(
-                                                                            child: Icon(Icons.arrow_forward_ios,
-                                                                                size: MediaQuery.of(context).size.width * 0.04,
-                                                                                color: AppColors.grey)),
+                                                                              TextAlign.left,
+                                                                          maxLines:
+                                                                              1,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                        ),
+                                                                        trailing:
+                                                                            SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
+                                                                        ),
                                                                       ),
-                                                                    ),
-                                                                    ListTile(
-                                                                      onTap:
-                                                                          () {
-                                                                        setStateBottom(
-                                                                            () {
-                                                                          isTypeEvent =
-                                                                              false;
-                                                                        });
-                                                                        _pageController
-                                                                            .nextPage(
-                                                                          duration:
-                                                                              const Duration(milliseconds: 500),
-                                                                          curve:
-                                                                              Curves.ease,
-                                                                        );
-                                                                      },
-                                                                      title: Text(
-                                                                          AppLocalizations.of(context)!
-                                                                              .trainers,
-                                                                          style: Theme.of(context)
-                                                                              .textTheme
-                                                                              .bodyText1,
-                                                                          textAlign:
-                                                                              TextAlign.left),
-                                                                      subtitle:
-                                                                          Text(
-                                                                        returnFilteredStaffMembersString(),
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .caption,
-                                                                        textAlign:
-                                                                            TextAlign.left,
-                                                                        maxLines:
-                                                                            1,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                      ),
-                                                                      trailing:
-                                                                          SizedBox(
-                                                                        width: MediaQuery.of(context).size.width *
-                                                                            0.15,
-                                                                        child: Center(
-                                                                            child: Icon(Icons.arrow_forward_ios,
-                                                                                size: MediaQuery.of(context).size.width * 0.04,
-                                                                                color: AppColors.grey)),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                isTypeEvent
-                                                                    ? Column(
-                                                                        children: [
-                                                                          ListTile(
-                                                                            onTap:
-                                                                                () {
-                                                                              // Check if the Only True
-                                                                              var filterActive = List.from(filterByCalendar);
-                                                                              filterActive.retainWhere((element) => element == true);
-                                                                              if (!(filterActive.length == 1 && filterByCalendar[0])) {
-                                                                                filterByCalendar[0] = !filterByCalendar[0];
-                                                                                // Navigator Pop
-                                                                                Navigator.pop(context);
-                                                                              }
-                                                                            },
-                                                                            title: Text(AppLocalizations.of(context)!.groupEvent,
-                                                                                style: Theme.of(context).textTheme.bodyText1,
-                                                                                textAlign: TextAlign.left),
-                                                                            trailing: filterByCalendar[0]
-                                                                                ? SizedBox(
-                                                                                    width: MediaQuery.of(context).size.width * 0.15,
-                                                                                    child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                  )
-                                                                                : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                          ),
-                                                                          ListTile(
-                                                                            onTap:
-                                                                                () {
-                                                                              // Check if the Only True
-                                                                              var filterActive = List.from(filterByCalendar);
-                                                                              filterActive.retainWhere((element) => element == true);
-                                                                              if (!(filterActive.length == 1 && filterByCalendar[1])) {
-                                                                                filterByCalendar[1] = !filterByCalendar[1];
-                                                                                // Navigator Pop
-                                                                                Navigator.pop(context);
-                                                                              }
-                                                                            },
-                                                                            title: Text(AppLocalizations.of(context)!.privateEvent,
-                                                                                style: Theme.of(context).textTheme.bodyText1,
-                                                                                textAlign: TextAlign.left),
-                                                                            trailing: filterByCalendar[1]
-                                                                                ? SizedBox(
-                                                                                    width: MediaQuery.of(context).size.width * 0.15,
-                                                                                    child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                  )
-                                                                                : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                          ),
-                                                                        ],
-                                                                      )
-                                                                    : Container(
-                                                                        height: MediaQuery.of(context).size.height *
-                                                                            0.21,
-                                                                        padding:
-                                                                            EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
-                                                                        child: GridView.builder(
-                                                                            shrinkWrap: true,
-                                                                            physics: const ClampingScrollPhysics(),
-                                                                            scrollDirection: Axis.vertical,
-                                                                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                              crossAxisCount: 2,
-                                                                              childAspectRatio: 3.5,
-                                                                              crossAxisSpacing: 15,
-                                                                              mainAxisSpacing: 15.0,
+                                                                    ],
+                                                                  ),
+                                                                  isTypeEvent
+                                                                      ? Column(
+                                                                          children: [
+                                                                            ListTile(
+                                                                              onTap: () {
+                                                                                // Check if the Only True
+                                                                                var filterActive = List.from(filterByCalendar);
+                                                                                filterActive.retainWhere((element) => element == true);
+                                                                                if (!(filterActive.length == 1 && filterByCalendar[0])) {
+                                                                                  filterByCalendar[0] = !filterByCalendar[0];
+                                                                                  // Navigator Pop
+                                                                                  Navigator.pop(context);
+                                                                                }
+                                                                              },
+                                                                              title: Text(AppLocalizations.of(context)!.groupEvent, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                              trailing: filterByCalendar[0]
+                                                                                  ? SizedBox(
+                                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                                      child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                                    )
+                                                                                  : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
                                                                             ),
-                                                                            itemCount: _brandTrainers.length,
-                                                                            itemBuilder: (context, int index) {
-                                                                              var trainer = _brandTrainers[index];
-                                                                              return GestureDetector(
-                                                                                onTap: () {
-                                                                                  setStateBottom(() {
-                                                                                    if (selectedTrainersBottom.contains(trainer)) {
-                                                                                      if (selectedTrainersBottom.length > 1) {
-                                                                                        selectedTrainersBottom.remove(trainer);
-                                                                                        selectedTrainers.remove(trainer);
+                                                                            ListTile(
+                                                                              onTap: () {
+                                                                                // Check if the Only True
+                                                                                var filterActive = List.from(filterByCalendar);
+                                                                                filterActive.retainWhere((element) => element == true);
+                                                                                if (!(filterActive.length == 1 && filterByCalendar[1])) {
+                                                                                  filterByCalendar[1] = !filterByCalendar[1];
+                                                                                  // Navigator Pop
+                                                                                  Navigator.pop(context);
+                                                                                }
+                                                                              },
+                                                                              title: Text(AppLocalizations.of(context)!.privateEvent, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                              trailing: filterByCalendar[1]
+                                                                                  ? SizedBox(
+                                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                                      child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                                    )
+                                                                                  : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                            ),
+                                                                          ],
+                                                                        )
+                                                                      : Container(
+                                                                          height:
+                                                                              MediaQuery.of(context).size.height * 0.21,
+                                                                          padding:
+                                                                              EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                                                                          child: GridView.builder(
+                                                                              shrinkWrap: true,
+                                                                              physics: const ClampingScrollPhysics(),
+                                                                              scrollDirection: Axis.vertical,
+                                                                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                crossAxisCount: 2,
+                                                                                childAspectRatio: 3.5,
+                                                                                crossAxisSpacing: 15,
+                                                                                mainAxisSpacing: 15.0,
+                                                                              ),
+                                                                              itemCount: _brandTrainers.length,
+                                                                              itemBuilder: (context, int index) {
+                                                                                var trainer = _brandTrainers[index];
+                                                                                return GestureDetector(
+                                                                                  onTap: () {
+                                                                                    setStateBottom(() {
+                                                                                      if (selectedTrainersBottom.contains(trainer)) {
+                                                                                        if (selectedTrainersBottom.length > 1) {
+                                                                                          selectedTrainersBottom.remove(trainer);
+                                                                                          selectedTrainers.remove(trainer);
+                                                                                          // Navigator Pop
+                                                                                          Navigator.pop(context);
+                                                                                        }
+                                                                                      } else {
+                                                                                        selectedTrainersBottom.add(trainer);
+                                                                                        selectedTrainers.add(trainer);
                                                                                         // Navigator Pop
                                                                                         Navigator.pop(context);
                                                                                       }
-                                                                                    } else {
-                                                                                      selectedTrainersBottom.add(trainer);
-                                                                                      selectedTrainers.add(trainer);
-                                                                                      // Navigator Pop
-                                                                                      Navigator.pop(context);
-                                                                                    }
-                                                                                  });
-                                                                                },
-                                                                                child: Container(
-                                                                                  margin: const EdgeInsets.only(right: 5),
-                                                                                  child: Row(
-                                                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                                                    children: [
-                                                                                      CircularImage(
-                                                                                        size: MediaQuery.of(context).size.width * 0.1,
-                                                                                        image: trainer.imageUrl,
-                                                                                        color: Theme.of(context).primaryColor,
-                                                                                        borderWidth: 1.0,
-                                                                                      ),
-                                                                                      const SizedBox(width: 8),
-                                                                                      Flexible(
-                                                                                        child: Text(
-                                                                                          "${trainer.firstName!} ${trainer.lastName![0]}.",
-                                                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                                                          overflow: TextOverflow.fade,
-                                                                                          maxLines: 1,
-                                                                                          softWrap: false,
+                                                                                    });
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    margin: const EdgeInsets.only(right: 5),
+                                                                                    child: Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                                      children: [
+                                                                                        CircularImage(
+                                                                                          size: MediaQuery.of(context).size.width * 0.1,
+                                                                                          image: trainer.imageUrl,
+                                                                                          color: Theme.of(context).primaryColor,
+                                                                                          borderWidth: 1.0,
                                                                                         ),
-                                                                                      ),
-                                                                                      const SizedBox(width: 8),
-                                                                                      SizedBox(
-                                                                                        height: MediaQuery.of(context).size.width * 0.06,
-                                                                                        width: MediaQuery.of(context).size.width * 0.06,
-                                                                                        child: MaterialButton(
-                                                                                          elevation: 4,
-                                                                                          color: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
-                                                                                          textColor: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
-                                                                                          child: selectedTrainersBottom.contains(trainer)
-                                                                                              ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width * 0.04)
-                                                                                              : SizedBox(
-                                                                                                  height: MediaQuery.of(context).size.width * 0.03,
-                                                                                                  width: MediaQuery.of(context).size.width * 0.03,
-                                                                                                ),
-                                                                                          padding: EdgeInsets.zero,
-                                                                                          shape: const CircleBorder(),
-                                                                                          onPressed: () {
-                                                                                            setStateBottom(() {
-                                                                                              if (selectedTrainersBottom.contains(trainer)) {
-                                                                                                if (selectedTrainersBottom.length > 1) {
-                                                                                                  selectedTrainersBottom.remove(trainer);
-                                                                                                  selectedTrainers.remove(trainer);
+                                                                                        const SizedBox(width: 8),
+                                                                                        Flexible(
+                                                                                          child: Text(
+                                                                                            "${trainer.firstName!} ${trainer.lastName![0]}.",
+                                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                                            overflow: TextOverflow.fade,
+                                                                                            maxLines: 1,
+                                                                                            softWrap: false,
+                                                                                          ),
+                                                                                        ),
+                                                                                        const SizedBox(width: 8),
+                                                                                        SizedBox(
+                                                                                          height: MediaQuery.of(context).size.width * 0.06,
+                                                                                          width: MediaQuery.of(context).size.width * 0.06,
+                                                                                          child: MaterialButton(
+                                                                                            elevation: 4,
+                                                                                            color: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
+                                                                                            textColor: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
+                                                                                            child: selectedTrainersBottom.contains(trainer)
+                                                                                                ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width * 0.04)
+                                                                                                : SizedBox(
+                                                                                                    height: MediaQuery.of(context).size.width * 0.03,
+                                                                                                    width: MediaQuery.of(context).size.width * 0.03,
+                                                                                                  ),
+                                                                                            padding: EdgeInsets.zero,
+                                                                                            shape: const CircleBorder(),
+                                                                                            onPressed: () {
+                                                                                              setStateBottom(() {
+                                                                                                if (selectedTrainersBottom.contains(trainer)) {
+                                                                                                  if (selectedTrainersBottom.length > 1) {
+                                                                                                    selectedTrainersBottom.remove(trainer);
+                                                                                                    selectedTrainers.remove(trainer);
+                                                                                                    // Navigator Pop
+                                                                                                    Navigator.pop(context);
+                                                                                                  }
+                                                                                                } else {
+                                                                                                  selectedTrainersBottom.add(trainer);
+                                                                                                  selectedTrainers.add(trainer);
                                                                                                   // Navigator Pop
                                                                                                   Navigator.pop(context);
                                                                                                 }
-                                                                                              } else {
-                                                                                                selectedTrainersBottom.add(trainer);
-                                                                                                selectedTrainers.add(trainer);
-                                                                                                // Navigator Pop
-                                                                                                Navigator.pop(context);
-                                                                                              }
-                                                                                            });
-                                                                                          },
-                                                                                        ),
-                                                                                      )
-                                                                                    ],
+                                                                                              });
+                                                                                            },
+                                                                                          ),
+                                                                                        )
+                                                                                      ],
+                                                                                    ),
                                                                                   ),
-                                                                                ),
-                                                                              );
-                                                                            }),
-                                                                      ),
-                                                              ],
+                                                                                );
+                                                                              }),
+                                                                        ),
+                                                                ],
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                        ).whenComplete(() {
-                                          setState(() {
-                                            // Filter By Type Of Events
-                                            if (filterByCalendar[0] &&
-                                                filterByCalendar[1]) {
-                                              // Group/Private Selected
-                                              hasFilter = false;
-                                              filterEventsNumber = 0;
-                                            } else if (filterByCalendar[0]) {
-                                              // Group Selected
-                                              filterEventsNumber = 1;
-                                              hasFilter = true;
-                                            } else if (filterByCalendar[1]) {
-                                              // Private Selected
-                                              filterEventsNumber = 2;
-                                              hasFilter = true;
-                                            }
-                                            // Filter By Staff Members
-                                            if (filterByCalendar[0] &&
-                                                filterByCalendar[1]) {
-                                              if (selectedTrainers.length ==
-                                                  _brandTrainers.length) {
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ).whenComplete(() {
+                                            setState(() {
+                                              // Filter By Type Of Events
+                                              if (filterByCalendar[0] &&
+                                                  filterByCalendar[1]) {
+                                                // Group/Private Selected
                                                 hasFilter = false;
-                                              } else {
+                                                filterEventsNumber = 0;
+                                              } else if (filterByCalendar[0]) {
+                                                // Group Selected
+                                                filterEventsNumber = 1;
+                                                hasFilter = true;
+                                              } else if (filterByCalendar[1]) {
+                                                // Private Selected
+                                                filterEventsNumber = 2;
                                                 hasFilter = true;
                                               }
-                                            }
+                                              // Filter By Staff Members
+                                              if (filterByCalendar[0] &&
+                                                  filterByCalendar[1]) {
+                                                if (selectedTrainers.length ==
+                                                    _brandTrainers.length) {
+                                                  hasFilter = false;
+                                                } else {
+                                                  hasFilter = true;
+                                                }
+                                              }
+                                            });
                                           });
-                                        });
-                                      },
-                                      child: SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.09,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.09,
-                                          child: Icon(
-                                            Icons.filter_list,
-                                            color: hasFilter
-                                                ? AppColors.darkGrey
-                                                : AppColors.white,
-                                            size: MediaQuery.of(context)
+                                        },
+                                        child: SizedBox(
+                                            width: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.07,
-                                          )),
+                                                0.09,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.09,
+                                            child: Icon(
+                                              Icons.filter_list,
+                                              color: hasFilter
+                                                  ? AppColors.darkGrey
+                                                  : AppColors.white,
+                                              size: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.07,
+                                            )),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                    Container(
-                      color: AppColors.grey,
-                      height: 1.0,
-                    ),
-                    const LinearProgressIndicatorWidget(),
-                  ],
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01),
+                      Container(
+                        color: AppColors.grey,
+                        height: 1.0,
+                      ),
+                      const LinearProgressIndicatorWidget(),
+                    ],
+                  ),
+                ),
+                titlePadding: EdgeInsets.zero,
+                //centerTitle: true,
+              ),
+              centerTitle: false,
+              leading: Builder(
+                builder: (BuildContext innerContext) => Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.02),
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.menu,
+                        color: AppColors.white,
+                        size: MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      onPressed: () =>
+                          mambaProScaffoldKey.currentState?.openDrawer()),
                 ),
               ),
-              titlePadding: EdgeInsets.zero,
-              //centerTitle: true,
-            ),
-            centerTitle: false,
-            leading: Builder(
-              builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.02),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: AppColors.white,
-                      size: MediaQuery.of(context).size.height * 0.04,
-                    ),
-                    onPressed: () =>
-                        mambaProScaffoldKey.currentState?.openDrawer()),
-              ),
-            ),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  unreadNotifiactions(context),
-                  unreadChats(context),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  GestureDetector(
-                    onTap: () => navigateToProfileScreen(context),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.08,
-                      child: Center(
-                        child: CircularImage(
-                          size: MediaQuery.of(context).size.width * 0.08,
-                          image: currentUser.imageUrl,
-                          color: AppColors.grey,
-                          borderWidth: 0,
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    unreadNotifiactions(context),
+                    unreadChats(context),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                    GestureDetector(
+                      onTap: () => navigateToProfileScreen(context),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.08,
+                        child: Center(
+                          child: CircularImage(
+                            size: MediaQuery.of(context).size.width * 0.08,
+                            image: currentUser.imageUrl,
+                            color: AppColors.grey,
+                            borderWidth: 0,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-            ],
-          ),
-          BlocBuilder<BrandEventsCubit, BrandEventsState>(
-            builder: (context, state) {
-              switch (state.runtimeType) {
-                case BrandEventsLoaded:
-                  if (isLoading == false) {
-                    // Handle loaded state
-                    BrandEventsLoaded loadedState = state as BrandEventsLoaded;
-                    return SliverFillRemaining(
-                        child: GestureDetector(
-                      onScaleStart: (ScaleStartDetails scaleStartDetails) {
-                        _baseTimeSlotViewScale = _timeSlotViewScale;
-                      },
-                      onScaleUpdate: _controller.view == CalendarView.week ||
-                              _controller.view == CalendarView.day
-                          ? (ScaleUpdateDetails scaleUpdateDetails) {
-                              // don't update the UI if the scale didn't change
-                              if (scaleUpdateDetails.scale == 1.0) {
-                                return;
+                  ],
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+              ],
+            ),
+            BlocBuilder<BrandEventsCubit, BrandEventsState>(
+              builder: (context, state) {
+                switch (state.runtimeType) {
+                  case BrandEventsLoaded:
+                    if (isLoading == false) {
+                      // Handle loaded state
+                      BrandEventsLoaded loadedState =
+                          state as BrandEventsLoaded;
+                      return SliverFillRemaining(
+                          child: GestureDetector(
+                        onScaleStart: (ScaleStartDetails scaleStartDetails) {
+                          _baseTimeSlotViewScale = _timeSlotViewScale;
+                        },
+                        onScaleUpdate: _controller.view == CalendarView.week ||
+                                _controller.view == CalendarView.day
+                            ? (ScaleUpdateDetails scaleUpdateDetails) {
+                                // don't update the UI if the scale didn't change
+                                if (scaleUpdateDetails.scale == 1.0) {
+                                  return;
+                                }
+                                setState(() {
+                                  _timeSlotViewScale = (_baseTimeSlotViewScale *
+                                          scaleUpdateDetails.scale)
+                                      .clamp(1, 4);
+                                  _timeSlotViewZoom = _timeSlotViewScale *
+                                      _baseTimeSlotViewZoom;
+                                });
                               }
-                              setState(() {
-                                _timeSlotViewScale = (_baseTimeSlotViewScale *
-                                        scaleUpdateDetails.scale)
-                                    .clamp(1, 4);
-                                _timeSlotViewZoom =
-                                    _timeSlotViewScale * _baseTimeSlotViewZoom;
-                              });
-                            }
-                          : null,
-                      onScaleEnd: (ScaleEndDetails scaleEndDetails) {
-                        _userDataService.updateUserZoomScale(widget.brandId,
-                            currentUser.id!, _timeSlotViewScale);
-                      },
-                      child: Stack(
-                        alignment: Alignment.bottomRight,
-                        children: [
-                          SfCalendarTheme(
-                            data: SfCalendarThemeData(
-                              brightness: Brightness.dark,
-                              backgroundColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
-                              todayHighlightColor:
-                                  Theme.of(context).primaryColor,
-                              todayBackgroundColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                            child: SfCalendar(
-                              // Controller
-                              controller: _controller,
-                              blackoutDates: [dateJoined],
-                              blackoutDatesTextStyle: Theme.of(context)
-                                  .textTheme
-                                  .headline3
-                                  ?.copyWith(
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.w600),
-                              // Data
-                              minDate: dateJoined,
-                              dataSource: _getCalendarDataSource(
-                                  loadedState.brandEventsList),
-                              specialRegions: _getTimeRegions(),
-                              // Config
-                              cellEndPadding: 0,
-                              firstDayOfWeek: 1,
-                              showCurrentTimeIndicator: true,
-                              cellBorderColor: AppColors.grey,
-                              todayTextStyle: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  ?.copyWith(
-                                      color:
-                                          Theme.of(context).primaryColorDark),
-                              // Style
-                              selectionDecoration:
-                                  _controller.view == CalendarView.month
-                                      ? BoxDecoration(
-                                          color: Colors.transparent,
-                                          border: Border.all(
-                                              width: 1,
-                                              color: Colors.transparent),
-                                        )
-                                      : BoxDecoration(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary
-                                              .withOpacity(0.08),
-                                          border: Border.all(
-                                              width: 1,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                          borderRadius: const BorderRadius.all(
-                                            Radius.circular(5.0),
-                                          ),
-                                        ),
-                              headerHeight: 0,
-                              headerStyle: CalendarHeaderStyle(
-                                textAlign: TextAlign.center,
-                                backgroundColor: Colors.transparent,
-                                textStyle: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    ?.copyWith(color: Colors.transparent),
-                              ),
-                              viewHeaderHeight: 50,
-                              viewHeaderStyle: ViewHeaderStyle(
+                            : null,
+                        onScaleEnd: (ScaleEndDetails scaleEndDetails) {
+                          _userDataService.updateUserZoomScale(widget.brandId,
+                              currentUser.id!, _timeSlotViewScale);
+                        },
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            SfCalendarTheme(
+                              data: SfCalendarThemeData(
+                                brightness: Brightness.dark,
                                 backgroundColor:
                                     Theme.of(context).scaffoldBackgroundColor,
-                                dateTextStyle:
-                                    Theme.of(context).textTheme.bodyText2,
-                                dayTextStyle: Theme.of(context)
+                                todayHighlightColor:
+                                    Theme.of(context).primaryColor,
+                                todayBackgroundColor:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                              ),
+                              child: SfCalendar(
+                                // Controller
+                                controller: _controller,
+                                blackoutDates: [dateJoined],
+                                blackoutDatesTextStyle: Theme.of(context)
+                                    .textTheme
+                                    .headline3
+                                    ?.copyWith(
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.w600),
+                                // Data
+                                minDate: dateJoined,
+                                dataSource: _getCalendarDataSource(
+                                    loadedState.brandEventsList),
+                                specialRegions: _getTimeRegions(),
+                                // Config
+                                cellEndPadding: 0,
+                                firstDayOfWeek: 1,
+                                showCurrentTimeIndicator: true,
+                                cellBorderColor: AppColors.grey,
+                                todayTextStyle: Theme.of(context)
                                     .textTheme
                                     .bodyText2
-                                    ?.copyWith(fontSize: 10),
-                              ),
-                              // Time Slot View Settings
-                              timeSlotViewSettings: TimeSlotViewSettings(
-                                timeIntervalHeight: _timeSlotViewZoom,
-                                timeIntervalWidth: 60,
-                                startHour: _startHour! != 0
-                                    ? _startHour! - 1
-                                    : _startHour!,
-                                endHour:
-                                    _endHour! != 24 ? _endHour! + 1 : _endHour!,
-                                timeFormat: 'HH:mm',
-                                dayFormat: 'EE',
-                                dateFormat: 'd',
-                                timeRulerSize: 50,
-                                //nonWorkingDays: _controller.view == CalendarView.week && isThreeDays ? [DateTime.friday, DateTime.saturday, DateTime.sunday] : nonWorkDays,
-                                nonWorkingDays: nonWorkDays,
-                                minimumAppointmentDuration:
-                                    const Duration(minutes: 30),
-                                timeTextStyle:
-                                    Theme.of(context).textTheme.bodyText2,
-                              ),
-                              // Monthly View
-                              monthViewSettings: MonthViewSettings(
-                                appointmentDisplayCount: 4,
-                                numberOfWeeksInView: 6,
-                                showTrailingAndLeadingDates: true,
-                                appointmentDisplayMode:
-                                    MonthAppointmentDisplayMode.appointment,
-                                monthCellStyle: MonthCellStyle(
-                                  textStyle:
-                                      Theme.of(context).textTheme.bodyText1,
-                                  trailingDatesTextStyle: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(color: AppColors.grey),
-                                  leadingDatesTextStyle: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(color: AppColors.grey),
-                                ),
-                              ),
-                              // Schedule View
-                              scheduleViewSettings: ScheduleViewSettings(
-                                  hideEmptyScheduleWeek: true,
-                                  appointmentItemHeight:
-                                      MediaQuery.of(context).size.height * 0.12,
-                                  appointmentTextStyle:
-                                      Theme.of(context).textTheme.bodyText2,
-                                  dayHeaderSettings: DayHeaderSettings(
-                                    dateTextStyle:
-                                        Theme.of(context).textTheme.bodyText2,
-                                    dayTextStyle: Theme.of(context)
-                                        .textTheme
-                                        .bodyText2
-                                        ?.copyWith(fontSize: 10),
-                                  ),
-                                  weekHeaderSettings: WeekHeaderSettings(
-                                    startDateFormat: 'd',
-                                    endDateFormat: 'd MMMM',
-                                    textAlign: TextAlign.start,
-                                    backgroundColor: Theme.of(context)
-                                        .scaffoldBackgroundColor,
-                                    weekTextStyle:
-                                        Theme.of(context).textTheme.caption,
-                                  ),
-                                  monthHeaderSettings: MonthHeaderSettings(
-                                    monthFormat: 'MMMM yyyy',
-                                    height: 70,
-                                    textAlign: TextAlign.start,
-                                    backgroundColor: Theme.of(context)
-                                        .scaffoldBackgroundColor,
-                                    monthTextStyle:
-                                        Theme.of(context).textTheme.headline1,
-                                  )),
-                              scheduleViewMonthHeaderBuilder:
-                                  (BuildContext buildContext,
-                                      ScheduleViewMonthHeaderDetails details) {
-                                return Container(
-                                  color:
-                                      Theme.of(context).scaffoldBackgroundColor,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical:
-                                          MediaQuery.of(context).size.width *
-                                              0.03,
-                                      horizontal:
-                                          MediaQuery.of(context).size.width *
-                                              0.05),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        StringUtils().toCapitalized(DateFormat(
-                                          'MMMM yyyy',
-                                          Localizations.localeOf(context)
-                                              .languageCode,
-                                        ).format(details.date)),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline1
-                                            ?.copyWith(
-                                                fontWeight: FontWeight.w500),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              onViewChanged: (ViewChangedDetails
-                                  viewChangedDetails) async {
-                                Future.delayed(Duration.zero, () async {
-                                  setState(() {
-                                    int indexMiddleMonthDate =
-                                        ((viewChangedDetails
-                                                    .visibleDates.length -
-                                                1) ~/
-                                            2);
-                                    middleMonthDate = viewChangedDetails
-                                        .visibleDates[indexMiddleMonthDate];
-                                    displayDateTimeStart =
-                                        viewChangedDetails.visibleDates[0];
-                                    displayDateTimeEnd = viewChangedDetails
-                                            .visibleDates[
-                                        viewChangedDetails.visibleDates.length -
-                                            1];
-                                  });
-                                });
-                                List<Event> eventsList =
-                                    loadedState.brandEventsList;
-                                if (eventsList.isNotEmpty) {
-                                  var startDateLastEvent = DateTime(
-                                    int.parse(eventsList.first.year!),
-                                    int.parse(eventsList.first.month!),
-                                    int.parse(eventsList.first.day!),
-                                    int.parse(eventsList.first.hour!),
-                                    int.parse(eventsList.first.minute!),
-                                  );
-                                  if (viewChangedDetails.visibleDates[0]
-                                          .difference(startDateLastEvent)
-                                          .inDays <
-                                      60) {
-                                    context
-                                        .read<BrandEventsCubit>()
-                                        .getMoreBrandEvents(
-                                            eventsList.first.id!,
-                                            _brandTrainers);
-                                  }
-                                }
-                              },
-                              onTap: onTapCalendar,
-                              appointmentTextStyle:
-                                  Theme.of(context).textTheme.bodyText2!,
-                              appointmentBuilder: (BuildContext context,
-                                  CalendarAppointmentDetails details) {
-                                return _buildEventContainer(
-                                    details, loadedState.brandEventsList);
-                              },
-                            ),
-                          ),
-                          _controller.view == CalendarView.week ||
-                                  _controller.view == CalendarView.day
-                              ? Padding(
-                                  padding: Platform.isAndroid
-                                      ? EdgeInsets.symmetric(
-                                          vertical: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.02,
-                                          horizontal: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.045)
-                                      : EdgeInsets.symmetric(
-                                          vertical: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.06,
-                                          horizontal: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.04),
-                                  child: Material(
-                                    elevation: 4,
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                      padding: EdgeInsets.all(
-                                          MediaQuery.of(context).size.width *
-                                              0.0115),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      decoration: BoxDecoration(
+                                    ?.copyWith(
                                         color:
-                                            Theme.of(context).backgroundColor,
+                                            Theme.of(context).primaryColorDark),
+                                // Style
+                                selectionDecoration: _controller.view ==
+                                        CalendarView.month
+                                    ? BoxDecoration(
+                                        color: Colors.transparent,
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.transparent),
+                                      )
+                                    : BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withOpacity(0.08),
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary),
                                         borderRadius: const BorderRadius.all(
-                                          Radius.circular(10),
+                                          Radius.circular(5.0),
                                         ),
                                       ),
-                                      child: Text(
-                                          "Zoom: ${(_timeSlotViewScale * 100).toStringAsFixed(0)} %",
+                                headerHeight: 0,
+                                headerStyle: CalendarHeaderStyle(
+                                  textAlign: TextAlign.center,
+                                  backgroundColor: Colors.transparent,
+                                  textStyle: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(color: Colors.transparent),
+                                ),
+                                viewHeaderHeight: 50,
+                                viewHeaderStyle: ViewHeaderStyle(
+                                  backgroundColor:
+                                      Theme.of(context).scaffoldBackgroundColor,
+                                  dateTextStyle:
+                                      Theme.of(context).textTheme.bodyText2,
+                                  dayTextStyle: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2
+                                      ?.copyWith(fontSize: 10),
+                                ),
+                                // Time Slot View Settings
+                                timeSlotViewSettings: TimeSlotViewSettings(
+                                  timeIntervalHeight: _timeSlotViewZoom,
+                                  timeIntervalWidth: 60,
+                                  startHour: _startHour! != 0
+                                      ? _startHour! - 1
+                                      : _startHour!,
+                                  endHour: _endHour! != 24
+                                      ? _endHour! + 1
+                                      : _endHour!,
+                                  timeFormat: 'HH:mm',
+                                  dayFormat: 'EE',
+                                  dateFormat: 'd',
+                                  timeRulerSize: 50,
+                                  //nonWorkingDays: _controller.view == CalendarView.week && isThreeDays ? [DateTime.friday, DateTime.saturday, DateTime.sunday] : nonWorkDays,
+                                  nonWorkingDays: nonWorkDays,
+                                  minimumAppointmentDuration:
+                                      const Duration(minutes: 30),
+                                  timeTextStyle:
+                                      Theme.of(context).textTheme.bodyText2,
+                                ),
+                                // Monthly View
+                                monthViewSettings: MonthViewSettings(
+                                  appointmentDisplayCount: 4,
+                                  numberOfWeeksInView: 6,
+                                  showTrailingAndLeadingDates: true,
+                                  appointmentDisplayMode:
+                                      MonthAppointmentDisplayMode.appointment,
+                                  monthCellStyle: MonthCellStyle(
+                                    textStyle:
+                                        Theme.of(context).textTheme.bodyText1,
+                                    trailingDatesTextStyle: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        ?.copyWith(color: AppColors.grey),
+                                    leadingDatesTextStyle: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        ?.copyWith(color: AppColors.grey),
+                                  ),
+                                ),
+                                // Schedule View
+                                scheduleViewSettings: ScheduleViewSettings(
+                                    hideEmptyScheduleWeek: true,
+                                    appointmentItemHeight:
+                                        MediaQuery.of(context).size.height *
+                                            0.12,
+                                    appointmentTextStyle:
+                                        Theme.of(context).textTheme.bodyText2,
+                                    dayHeaderSettings: DayHeaderSettings(
+                                      dateTextStyle:
+                                          Theme.of(context).textTheme.bodyText2,
+                                      dayTextStyle: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2
+                                          ?.copyWith(fontSize: 10),
+                                    ),
+                                    weekHeaderSettings: WeekHeaderSettings(
+                                      startDateFormat: 'd',
+                                      endDateFormat: 'd MMMM',
+                                      textAlign: TextAlign.start,
+                                      backgroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      weekTextStyle:
+                                          Theme.of(context).textTheme.caption,
+                                    ),
+                                    monthHeaderSettings: MonthHeaderSettings(
+                                      monthFormat: 'MMMM yyyy',
+                                      height: 70,
+                                      textAlign: TextAlign.start,
+                                      backgroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      monthTextStyle:
+                                          Theme.of(context).textTheme.headline1,
+                                    )),
+                                scheduleViewMonthHeaderBuilder: (BuildContext
+                                        buildContext,
+                                    ScheduleViewMonthHeaderDetails details) {
+                                  return Container(
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical:
+                                            MediaQuery.of(context).size.width *
+                                                0.03,
+                                        horizontal:
+                                            MediaQuery.of(context).size.width *
+                                                0.05),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          StringUtils()
+                                              .toCapitalized(DateFormat(
+                                            'MMMM yyyy',
+                                            Localizations.localeOf(context)
+                                                .languageCode,
+                                          ).format(details.date)),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .caption
-                                              ?.copyWith(fontSize: 11),
-                                          textAlign: TextAlign.center),
+                                              .headline1
+                                              ?.copyWith(
+                                                  fontWeight: FontWeight.w500),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                )
-                              : Container(),
-                        ],
-                      ),
-                    ));
-                  } else {
+                                  );
+                                },
+                                onViewChanged: (ViewChangedDetails
+                                    viewChangedDetails) async {
+                                  Future.delayed(Duration.zero, () async {
+                                    setState(() {
+                                      int indexMiddleMonthDate =
+                                          ((viewChangedDetails
+                                                      .visibleDates.length -
+                                                  1) ~/
+                                              2);
+                                      middleMonthDate = viewChangedDetails
+                                          .visibleDates[indexMiddleMonthDate];
+                                      displayDateTimeStart =
+                                          viewChangedDetails.visibleDates[0];
+                                      displayDateTimeEnd = viewChangedDetails
+                                          .visibleDates[viewChangedDetails
+                                              .visibleDates.length -
+                                          1];
+                                    });
+                                  });
+                                  List<Event> eventsList =
+                                      loadedState.brandEventsList;
+                                  if (eventsList.isNotEmpty) {
+                                    var startDateLastEvent = DateTime(
+                                      int.parse(eventsList.first.year!),
+                                      int.parse(eventsList.first.month!),
+                                      int.parse(eventsList.first.day!),
+                                      int.parse(eventsList.first.hour!),
+                                      int.parse(eventsList.first.minute!),
+                                    );
+                                    if (viewChangedDetails.visibleDates[0]
+                                            .difference(startDateLastEvent)
+                                            .inDays <
+                                        60) {
+                                      context
+                                          .read<BrandEventsCubit>()
+                                          .getMoreBrandEvents(
+                                              eventsList.first.id!,
+                                              _brandTrainers);
+                                    }
+                                  }
+                                },
+                                onTap: onTapCalendar,
+                                appointmentTextStyle:
+                                    Theme.of(context).textTheme.bodyText2!,
+                                appointmentBuilder: (BuildContext context,
+                                    CalendarAppointmentDetails details) {
+                                  return _buildEventContainer(
+                                      details, loadedState.brandEventsList);
+                                },
+                              ),
+                            ),
+                            _controller.view == CalendarView.week ||
+                                    _controller.view == CalendarView.day
+                                ? Padding(
+                                    padding: Platform.isAndroid
+                                        ? EdgeInsets.symmetric(
+                                            vertical: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.02,
+                                            horizontal: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.045)
+                                        : EdgeInsets.symmetric(
+                                            vertical: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.06,
+                                            horizontal: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.04),
+                                    child: Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                        padding: EdgeInsets.all(
+                                            MediaQuery.of(context).size.width *
+                                                0.0115),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.2,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Theme.of(context).backgroundColor,
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        child: Text(
+                                            "Zoom: ${(_timeSlotViewScale * 100).toStringAsFixed(0)} %",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .caption
+                                                ?.copyWith(fontSize: 11),
+                                            textAlign: TextAlign.center),
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                          ],
+                        ),
+                      ));
+                    } else {
+                      // Handle all other states aka Loading or Initial
+                      return SliverFillRemaining(
+                        child: LoadingView(),
+                      );
+                    }
+                  default:
                     // Handle all other states aka Loading or Initial
                     return SliverFillRemaining(
                       child: LoadingView(),
                     );
-                  }
-                default:
-                  // Handle all other states aka Loading or Initial
-                  return SliverFillRemaining(
-                    child: LoadingView(),
-                  );
-              }
-            },
-          ),
-        ],
-      ),
-      floatingActionButton: whichFloatingActionButton(),
-    );
+                }
+              },
+            ),
+          ],
+        ),
+        floatingActionButton: whichFloatingActionButton());
   }
 
   Widget whichFloatingActionButton() {
@@ -2301,11 +2297,19 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                         ),
                       ),
                       onTap: () {
-                        DateTime? eventDate = DateTime.now();
-                        if (_controller.selectedDate != null) {
-                          eventDate = _controller.selectedDate;
+                        if (context.read<CrudEventCubit>().state.isWorking >=
+                            100) {
+                          DateTime? eventDate = DateTime.now();
+                          if (_controller.selectedDate != null) {
+                            eventDate = _controller.selectedDate;
+                          }
+                          _addEvent(eventDate!, false);
+                        } else {
+                          _topSnackBar.showSnackBarTop(
+                              context,
+                              AppLocalizations.of(context)!.processOnWork,
+                              AppColors.red);
                         }
-                        _addEvent(eventDate!, false);
                       }),
                   SpeedDialChild(
                       child: const Icon(
@@ -2333,11 +2337,19 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                         ),
                       ),
                       onTap: () {
-                        DateTime? eventDate = DateTime.now();
-                        if (_controller.selectedDate != null) {
-                          eventDate = _controller.selectedDate;
+                        if (context.read<CrudEventCubit>().state.isWorking >=
+                            100) {
+                          DateTime? eventDate = DateTime.now();
+                          if (_controller.selectedDate != null) {
+                            eventDate = _controller.selectedDate;
+                          }
+                          _addEvent(eventDate!, true);
+                        } else {
+                          _topSnackBar.showSnackBarTop(
+                              context,
+                              AppLocalizations.of(context)!.processOnWork,
+                              AppColors.red);
                         }
-                        _addEvent(eventDate!, true);
                       }),
                 ],
               ),
