@@ -969,7 +969,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                 : Text(
                                                                     AppLocalizations.of(
                                                                                 context)!
-                                                                            .expiresAt +
+                                                                            .expiredAfter +
                                                                         " " +
                                                                         condition
                                                                             .expirationTime

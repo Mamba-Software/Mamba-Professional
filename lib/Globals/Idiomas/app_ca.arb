@@ -602,6 +602,7 @@
   "trainsPerWeekError": "El nombre màxim de sessions per setmana no pot ser superior a 7.",
   "trainsPerWeekDesc": "Nombre màxim de sessions que poden realitzar els teus clients en una mateixa setmana.",
   "expiresAt": "Data d'expiració",
+  "expiredAfter": "Expirat després de",
   "noExpireDate":  "No té data d'expiració",
   "freeCancel":  "Cancel·lació gratuïta",
   "cancelTimeAt":  "Cancel·lació gratuïta fins a",

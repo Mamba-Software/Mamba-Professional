@@ -2627,6 +2627,10 @@
   "@esgotat":{
     "description": "expiresAt Text"
   },
+  "expiredAfter": "Expirado después de",
+  "@expiredAfter":{
+    "description": "expiresAt Text"
+  },
   "expiresAt": "Expira el",
   "@expiresAt":{
     "description": "expiresAt Text"
