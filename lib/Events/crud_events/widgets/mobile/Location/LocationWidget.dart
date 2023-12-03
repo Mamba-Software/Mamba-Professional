@@ -73,27 +73,32 @@ class _LocationWidgetState extends State<LocationWidget> {
                     Container(
                       height: MediaQuery.of(context).size.height * 0.1,
                       width: MediaQuery.of(context).size.height * 0.1,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          bottomLeft: Radius.circular(15),
+                      margin: EdgeInsets.all(
+                          MediaQuery.of(context).size.height * 0.015),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        image: DecorationImage(
+                          image: AssetImage(Constants.mapsImg),
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          bottomLeft: Radius.circular(15),
-                        ),
-                        child: FractionallySizedBox(
-                          widthFactor: 0.7, // 50% of the parent's width
-                          heightFactor: 0.7, // 50% of the parent's height
-                          child: Image(
-                            image: AssetImage(Constants.mapsCrud),
+                      child: Stack(
+                        alignment: Alignment
+                            .center, // Align the child image to the center of the stack
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment
+                                .center, // Center the image within the container
+                            child: Image.asset(
+                              Constants.fitnessMapIcon,
+                              height: MediaQuery.of(context).size.height *
+                                  0.06, // 50% of the container's height
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

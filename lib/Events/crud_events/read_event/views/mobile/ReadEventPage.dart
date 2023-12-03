@@ -1912,48 +1912,32 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.01),
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.13,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.9,
-                                      decoration: BoxDecoration(
+                                    GestureDetector(
+                                      onTap: _onLaunchCoordinates,
+                                      child: Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.13,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.9,
+                                        decoration: BoxDecoration(
                                           color:
                                               Theme.of(context).backgroundColor,
                                           borderRadius: const BorderRadius.all(
-                                              Radius.circular(15.0))),
-                                      child: Stack(
-                                        children: <Widget>[
-                                          Center(
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                topLeft: Radius.circular(15),
-                                                topRight: Radius.circular(15),
-                                                bottomRight:
-                                                    Radius.circular(15),
-                                                bottomLeft: Radius.circular(15),
-                                              ),
-                                              child: Align(
-                                                alignment:
-                                                    Alignment.bottomRight,
-                                                heightFactor: 1,
-                                                widthFactor: 2.5,
-                                                child: GestureDetector(
-                                                  onTap: _onLaunchCoordinates,
-                                                  child: Image(
-                                                    image: AssetImage(
-                                                        Constants.mapsImg),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                                              Radius.circular(15.0)),
+                                          image: DecorationImage(
+                                            image:
+                                                AssetImage(Constants.mapsImg),
+                                            fit: BoxFit.cover,
                                           ),
-                                          Positioned(
-                                            left: 5.0,
-                                            bottom: 5.0,
-                                            child: Container(
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.all(10),
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(15),
@@ -1969,24 +1953,25 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .secondary,
-                                                    size: 15,
+                                                    size: 20,
                                                   ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 5.0),
+                                                  SizedBox(
+                                                      width:
+                                                          5), // Provides a consistent space between the icon and text
+                                                  Expanded(
+                                                    // Allows the text to wrap and occupy the available space
                                                     child: Text(
                                                       location.description!,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyText2,
                                                     ),
-                                                  )
+                                                  ),
                                                 ],
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],

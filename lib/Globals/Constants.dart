@@ -17,8 +17,6 @@ class Constants {
   static String emptyPeople = "assets/images/emptyPeople.png";
   static String google = "assets/images/google.png";
   static String apple = "assets/images/apple.png";
-  static String mapsImg = "assets/images/maps.png";
-  static String mapsCrud = "assets/images/maps6.png";
 
   // Onboarding Images
   static String onboardingApp = "assets/images/OnboardingApp.png";
@@ -63,7 +61,9 @@ class Constants {
   static String themeDarkImage = "assets/images/themeDarkImage.png";
   static String themeSystemImage = "assets/images/themeSystemImage.png";
   static String appUpdateImage = "assets/images/appUpdateImage.png";
-  static String subscriptionImage = "assets/images/MambaProLogo.png";
+  static String subscriptionImage = "assets/images/MambaProLogo.png";  
+  static String mapsImg = "assets/images/map.png";
+  static String fitnessMapIcon = "assets/images/fitnessMapIcon.png";
 
   // Animations
   static String runningFemale = "assets/animations/runningFemale.gif";
