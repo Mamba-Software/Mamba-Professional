@@ -347,7 +347,7 @@ class _BrandInfoState extends State<BrandInfo>
         slivers: [
           SliverAppBar(
             backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height * 0.15,          
+            expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: false,
@@ -360,7 +360,7 @@ class _BrandInfoState extends State<BrandInfo>
                     style:
                         Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
                               color: AppColors.white,
-                            ))),                
+                            ))),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.darkGrey,
@@ -381,7 +381,7 @@ class _BrandInfoState extends State<BrandInfo>
                             style:
                                 Theme.of(context).textTheme.headline1?.copyWith(
                                       color: AppColors.white,
-                                    ),                            
+                                    ),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
@@ -401,9 +401,6 @@ class _BrandInfoState extends State<BrandInfo>
                           )
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.01,
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.01,
@@ -438,8 +435,9 @@ class _BrandInfoState extends State<BrandInfo>
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  unreadNotifiactions(context), 
-                  unreadChats(context),                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  unreadNotifiactions(context),
+                  unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                   GestureDetector(
                     onTap: () => navigateToProfileScreen(context),
                     child: SizedBox(
@@ -1963,7 +1961,6 @@ class _BrandInfoState extends State<BrandInfo>
     return true;
   }
 
-  
   Widget freeTrialMamba() {
     return GestureDetector(
       onTap: () async {
@@ -1998,7 +1995,7 @@ class _BrandInfoState extends State<BrandInfo>
               style: Theme.of(context).textTheme.caption!.copyWith(
                   color: AppColors.mainColor,
                   fontWeight: FontWeight.normal,
-                  fontSize: 12),              
+                  fontSize: 12),
             ),
             trailing: GestureDetector(
               onTap: () async {
@@ -2013,7 +2010,6 @@ class _BrandInfoState extends State<BrandInfo>
                     Radius.circular(10),
                   ),
                 ),
-                
                 child: Center(
                     child: Text(
                   AppLocalizations.of(context)!.subscriptionsAppBar,
