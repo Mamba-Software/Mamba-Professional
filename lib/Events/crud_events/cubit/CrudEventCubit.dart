@@ -463,8 +463,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       Event _event,
       Event _oldEvent,
       ReceivedNotification notificationBefore,
-      ReceivedNotification notificationAfter) async {
-    emit(state.copyWith(isWorking: 30));
+      ReceivedNotification notificationAfter) async {    
+emit(state.copyWith(isWorking: 30));
     await _updateEventFunction(
         context, _event, _oldEvent, notificationBefore, notificationAfter);
   }
@@ -474,8 +474,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       Event _event,
       Event _oldEvent,
       ReceivedNotification notificationBefore,
-      ReceivedNotification notificationAfter) async {
-    emit(state.copyWith(isWorking: 30));
+      ReceivedNotification notificationAfter) async {  
+emit(state.copyWith(isWorking: 30));
     await _updateRecurrentEventFunction(context, _event, _oldEvent.isPrivate!,
         notificationBefore, notificationAfter);
   }
