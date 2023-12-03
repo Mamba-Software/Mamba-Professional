@@ -141,7 +141,7 @@ Future<void> navigateToPayWall(var context,
       );
     }
   } else {
-    _topSnackBar.showSnackBarBottom(
+    _topSnackBar.showSnackBarTop(
         context, AppLocalizations.of(context)!.notSubNotAdmin, 5);
   }
 }

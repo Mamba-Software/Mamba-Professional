@@ -112,7 +112,8 @@ Widget recurrentEventObjectWidget(
                       locale,
                       context,
                       recurrent.sixMonth!,
-                      AppLocalizations.of(context)!.wholeSixMonth),
+                      AppLocalizations.of(context)!.wholeSixMonth)
+                  /*
                   selectorRecurrent(
                       recurrent.value!,
                       39,
@@ -126,7 +127,7 @@ Widget recurrentEventObjectWidget(
                       locale,
                       context,
                       recurrent.twelveMonth!,
-                      AppLocalizations.of(context)!.wholeTwelveMonth),
+                      AppLocalizations.of(context)!.wholeTwelveMonth),*/
                 ],
               )
             ],

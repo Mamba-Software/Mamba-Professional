@@ -146,76 +146,65 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                   !state.isNew
                       ? IconButton(
                           onPressed: () async {
-                            if (context
-                                    .read<CrudEventCubit>()
-                                    .state
-                                    .isWorking >=
-                                100) {
-                              if (!state.oldEvent.joinedMembersList!
-                                  .any((client) => client.purchaseId != "")) {
-                                if (!state.oldEvent.isRecurrent!) {
-                                  // DeleteDialog
-                                  var result = await showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return DeleteConfirmationDialog(
-                                            text: AppLocalizations.of(context)!
-                                                .deleteEventConfirmation);
-                                      });
-                                  if (result) {
+                            if (!state.oldEvent.joinedMembersList!
+                                .any((client) => client.purchaseId != "")) {
+                              if (!state.oldEvent.isRecurrent!) {
+                                // DeleteDialog
+                                var result = await showDialog(
+                                    context: context,
+                                    builder: (_) {
+                                      return DeleteConfirmationDialog(
+                                          text: AppLocalizations.of(context)!
+                                              .deleteEventConfirmation);
+                                    });
+                                if (result) {
+                                  context
+                                      .read<CrudEventCubit>()
+                                      .deleteEventFunction(context,
+                                          state.oldEvent, state.isPrivate);
+                                  // Pop to Last Page
+                                  Navigator.pop(context, false);
+                                }
+                              } else {
+                                var result = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return DeleteRecurrentEventDialog(
+                                      isCompleted: !state.isBeforeEdit,
+                                    );
+                                  },
+                                );
+                                if (result != null) {
+                                  if (result == 1) {
+                                    print("Deleting Only This Event..");
                                     context
                                         .read<CrudEventCubit>()
                                         .deleteEventFunction(context,
                                             state.oldEvent, state.isPrivate);
                                     // Pop to Last Page
                                     Navigator.pop(context, false);
-                                  }
-                                } else {
-                                  var result = await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return DeleteRecurrentEventDialog(
-                                        isCompleted: !state.isBeforeEdit,
-                                      );
-                                    },
-                                  );
-                                  if (result != null) {
-                                    if (result == 1) {
-                                      print("Deleting Only This Event..");
-                                      context
-                                          .read<CrudEventCubit>()
-                                          .deleteEventFunction(context,
-                                              state.oldEvent, state.isPrivate);
-                                      // Pop to Last Page
-                                      Navigator.pop(context, false);
-                                    } else {
-                                      print(
-                                          "Delete This Event and the Rest Forward ...");
-                                      context
-                                          .read<CrudEventCubit>()
-                                          .deleteRecurrentEventFunction(context,
-                                              state.oldEvent, state.isPrivate);
-                                      // Pop to Last Page
+                                  } else {
+                                    print(
+                                        "Delete This Event and the Rest Forward ...");
+                                    context
+                                        .read<CrudEventCubit>()
+                                        .deleteRecurrentEventFunction(context,
+                                            state.oldEvent, state.isPrivate);
+                                    // Pop to Last Page
 
-                                      Navigator.pop(context, false);
-                                    }
+                                    Navigator.pop(context, false);
                                   }
                                 }
-                              } else {
-                                var result = await showDialog(
-                                    context: context,
-                                    builder: (_) {
-                                      return DeleteConfirmationDialog(
-                                          text: AppLocalizations.of(context)!
-                                              .deleteClientsWithPurchases,
-                                          permitDelete: false);
-                                    });
                               }
                             } else {
-                              _topSnackBar.showSnackBarTop(
-                                  context,
-                                  AppLocalizations.of(context)!.processOnWork,
-                                  AppColors.red);
+                              var result = await showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return DeleteConfirmationDialog(
+                                        text: AppLocalizations.of(context)!
+                                            .deleteClientsWithPurchases,
+                                        permitDelete: false);
+                                  });
                             }
                           },
                           icon: SizedBox(
@@ -475,95 +464,81 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                               state.isValidated[2] == true) {
                             if (state.isValidated
                                 .every((bool value) => value)) {
-                              if (context
-                                      .read<CrudEventCubit>()
-                                      .state
-                                      .isWorking >=
-                                  100) {
-                                String eventTimeTime = StringUtils()
-                                    .hourMinutesToString(
-                                        state.newEvent.startDate!.hour,
-                                        state.newEvent.startDate!.minute);
-                                if (state.isNew) {
+                              String eventTimeTime = StringUtils()
+                                  .hourMinutesToString(
+                                      state.newEvent.startDate!.hour,
+                                      state.newEvent.startDate!.minute);
+                              if (state.isNew) {
+                                context.read<CrudEventCubit>().addEventFunction(
+                                    context,
+                                    state.newEvent,
+                                    state.isPrivate,
+                                    _setNotificationBefore(
+                                        eventTimeTime, state.newEvent),
+                                    _setNotificationAfter(state.newEvent));
+                                Navigator.pop(context);
+                              } else {
+                                if (!state.newEvent.isRecurrent!) {
                                   context
                                       .read<CrudEventCubit>()
-                                      .addEventFunction(
+                                      .updateEventFunction(
                                           context,
                                           state.newEvent,
-                                          state.isPrivate,
+                                          state.oldEvent,
                                           _setNotificationBefore(
                                               eventTimeTime, state.newEvent),
                                           _setNotificationAfter(
                                               state.newEvent));
-                                  Navigator.pop(context);
+                                  Navigator.pop(context, true);
                                 } else {
-                                  if (!state.newEvent.isRecurrent!) {
-                                    context
-                                        .read<CrudEventCubit>()
-                                        .updateEventFunction(
-                                            context,
-                                            state.newEvent,
-                                            state.oldEvent,
-                                            _setNotificationBefore(
-                                                eventTimeTime, state.newEvent),
-                                            _setNotificationAfter(
-                                                state.newEvent));
-                                    Navigator.pop(context, true);
-                                  } else {
-                                    var result = await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return EditRecurrentEventDialog(
-                                          isCompleted: !context
-                                              .read<CrudEventCubit>()
-                                              .state
-                                              .isBeforeEdit,
-                                          clientsModified: context
-                                              .read<CrudEventCubit>()
-                                              .state
-                                              .clientsModified,
-                                        );
-                                      },
-                                    );
-                                    if (result != null) {
-                                      if (result == 1) {
-                                        print("Edit Only This Event..");
-                                        context
+                                  var result = await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return EditRecurrentEventDialog(
+                                        isCompleted: !context
                                             .read<CrudEventCubit>()
-                                            .updateEventFunction(
-                                                context,
-                                                state.newEvent,
-                                                state.oldEvent,
-                                                _setNotificationBefore(
-                                                    eventTimeTime,
-                                                    state.newEvent),
-                                                _setNotificationAfter(
-                                                    state.newEvent));
-                                        Navigator.pop(context, true);
-                                      } else {
-                                        print(
-                                            "Edit This Event and the Rest Forward ...");
-                                        context
+                                            .state
+                                            .isBeforeEdit,
+                                        clientsModified: context
                                             .read<CrudEventCubit>()
-                                            .updateRecurrentEventFunction(
-                                                context,
-                                                state.newEvent,
-                                                state.oldEvent,
-                                                _setNotificationBefore(
-                                                    eventTimeTime,
-                                                    state.newEvent),
-                                                _setNotificationAfter(
-                                                    state.newEvent));
-                                        Navigator.pop(context, false);
-                                      }
+                                            .state
+                                            .clientsModified,
+                                      );
+                                    },
+                                  );
+                                  if (result != null) {
+                                    if (result == 1) {
+                                      print("Edit Only This Event..");
+                                      context
+                                          .read<CrudEventCubit>()
+                                          .updateEventFunction(
+                                              context,
+                                              state.newEvent,
+                                              state.oldEvent,
+                                              _setNotificationBefore(
+                                                  eventTimeTime,
+                                                  state.newEvent),
+                                              _setNotificationAfter(
+                                                  state.newEvent));
+                                      Navigator.pop(context, true);
+                                    } else {
+                                      print(
+                                          "Edit This Event and the Rest Forward ...");
+                                      context
+                                          .read<CrudEventCubit>()
+                                          .updateRecurrentEventFunction(
+                                              context,
+                                              state.newEvent,
+                                              state.oldEvent,
+                                              _setNotificationBefore(
+                                                  eventTimeTime,
+                                                  state.newEvent),
+                                              _setNotificationAfter(
+                                                  state.newEvent));
+                                      Navigator.pop(context, false);
                                     }
                                   }
                                 }
-                              } else {
-                                _topSnackBar.showSnackBarTop(
-                                    context,
-                                    AppLocalizations.of(context)!.processOnWork,
-                                    AppColors.red);
                               }
                             }
                             /*if (widget.eventId == null) {
