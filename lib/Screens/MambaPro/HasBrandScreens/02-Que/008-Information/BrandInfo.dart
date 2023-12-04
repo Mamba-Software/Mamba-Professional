@@ -92,9 +92,9 @@ class _BrandInfoState extends State<BrandInfo>
   TextEditingController breakStartTimeController = TextEditingController();
   TextEditingController breakEndTimeController = TextEditingController();
   DateTime breakStartTime = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0);
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0);
   DateTime breakEndTime = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0);
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0);
   TimeOfDay _breakStartTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay _breakEndTime = const TimeOfDay(hour: 00, minute: 00);
   int? errorBreakTime;
@@ -1130,6 +1130,14 @@ class _BrandInfoState extends State<BrandInfo>
                             TextButton(
                               onPressed: canEdit
                                   ? () async {
+                                      if (breakStartTime.hour == 0) {
+                                        breakStartTime = DateTime(
+                                            DateTime.now().year,
+                                            DateTime.now().month,
+                                            DateTime.now().day,
+                                            13,
+                                            0);
+                                      }
                                       DateTime? pickedTimeTemp =
                                           await showCupertinoModalPopup(
                                               context: context,
@@ -1193,6 +1201,14 @@ class _BrandInfoState extends State<BrandInfo>
                             TextButton(
                               onPressed: canEdit
                                   ? () async {
+                                      if (breakEndTime.hour == 0) {
+                                        breakEndTime = DateTime(
+                                            DateTime.now().year,
+                                            DateTime.now().month,
+                                            DateTime.now().day,
+                                            14,
+                                            0);
+                                      }
                                       DateTime? pickedTimeTemp =
                                           await showCupertinoModalPopup(
                                               context: context,
@@ -1949,6 +1965,19 @@ class _BrandInfoState extends State<BrandInfo>
       if (toDouble(startBreak) >= toDouble(endBreak)) {
         setState(() {
           errorBreakTime = 2;
+        });
+        return false;
+      }
+    } else {
+      if (startBreak.hour == 0 && endBreak.hour != 0) {
+        setState(() {
+          errorBreakTime = 1;
+        });
+        return false;
+      }
+      if (startBreak.hour != 0 && endBreak.hour == 0) {
+        setState(() {
+          errorBreakTime = 1;
         });
         return false;
       }
