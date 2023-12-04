@@ -3558,5 +3558,9 @@
   "processOnWork": "Hay un proceso ejecutandose, espere hasta que termine o reinicie la app",
   "@processOnWork":{
     "description": "processOnWork text"
+  },
+  "betaFeature": "Función en fase Beta. Comparte tu experiencia para ayudarnos a perfeccionarla.",
+  "@betaFeature":{
+    "description": "processOnWork text"
   }
 }

@@ -17,10 +17,12 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/BetaBadge.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -106,6 +108,7 @@ class _BrandInfoState extends State<BrandInfo>
   // Subscription
   int difference = 0;
   bool ShowTextExpired = true;
+  final _topSnackBar = TopSnackBarDef();
 
   // App Bar and Scroll View
   bool appBarExpanded = false;
@@ -1115,12 +1118,24 @@ class _BrandInfoState extends State<BrandInfo>
                             height: MediaQuery.of(context).size.height * 0.03),
 
                         /// BREAK HOURS
-                        Text(
-                          AppLocalizations.of(context)!.lunchBreak,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              ?.copyWith(fontWeight: FontWeight.bold),
+                        Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.lunchBreak,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  _topSnackBar.showSnackBarBottom(
+                                      context,
+                                      AppLocalizations.of(context)!.betaFeature,
+                                      5);
+                                },
+                                child: BetaBadge())
+                          ],
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.015),
@@ -1476,12 +1491,26 @@ class _BrandInfoState extends State<BrandInfo>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text(
-                                  AppLocalizations.of(context)!.freeSession,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                Row(
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.freeSession,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          _topSnackBar.showSnackBarBottom(
+                                              context,
+                                              AppLocalizations.of(context)!
+                                                  .betaFeature,
+                                              5);
+                                        },
+                                        child: BetaBadge())
+                                  ],
                                 ),
                                 SizedBox(
                                   height: MediaQuery.of(context).size.height *

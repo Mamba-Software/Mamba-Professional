@@ -9,7 +9,6 @@ class TopSnackBarDef {
   void showSnackBarTop(var context, String? message, var color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: Colors.transparent,
         content: CustomSnackBar.success(
           icon: Container(),
           iconRotationAngle: 0,
@@ -86,5 +85,28 @@ class TopSnackBarDef {
         );
       }),
     ).show(context);
+  }
+
+  void showSnackBarBottomBeta(
+    BuildContext context,
+    String value,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.transparent,
+        content: CustomSnackBar.success(
+          icon: Container(),
+          iconRotationAngle: 0,
+          message: value!,
+          backgroundColor: Theme.of(context).primaryColor,
+          textStyle: Theme.of(context)
+              .textTheme
+              .bodyText1!
+              .copyWith(color: Theme.of(context).primaryColorDark),
+        ),
+        behavior: null, // Optional: makes it floating style
+        // Set other SnackBar properties as needed
+      ),
+    );
   }
 }

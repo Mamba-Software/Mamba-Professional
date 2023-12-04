@@ -7,7 +7,11 @@ import 'package:mamba_castelldefels/Events/crud_events/models/Recurrent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/BetaBadge.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:weekday_selector/weekday_selector.dart';
+
+final _topSnackBar = TopSnackBarDef();
 
 Widget recurrentEventObjectWidget(
     BuildContext context, Recurrent recurrent, Locale locale) {
@@ -105,14 +109,16 @@ Widget recurrentEventObjectWidget(
                       locale,
                       context,
                       recurrent.threeMonth!,
-                      AppLocalizations.of(context)!.wholeThreeMonth),
+                      AppLocalizations.of(context)!.wholeThreeMonth,
+                      true),
                   selectorRecurrent(
                       recurrent.value!,
                       26,
                       locale,
                       context,
                       recurrent.sixMonth!,
-                      AppLocalizations.of(context)!.wholeSixMonth)
+                      AppLocalizations.of(context)!.wholeSixMonth,
+                      true)
                   /*
                   selectorRecurrent(
                       recurrent.value!,
@@ -149,13 +155,19 @@ Color getColor(BuildContext context, Set<MaterialState> states) {
 }
 
 Widget selectorRecurrent(int _value, int group, Locale locale,
-    BuildContext context, DateTime durationRecurrent, String text) {
+    BuildContext context, DateTime durationRecurrent, String text,
+    [bool isBeta = false]) {
   return ListTile(
     dense: true,
     contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-    title: Text(
-      text,
-      style: Theme.of(context).textTheme.bodyText2,
+    title: Row(
+      children: [
+        Text(
+          text,
+          style: Theme.of(context).textTheme.bodyText2,
+        ),
+        isBeta ? BetaBadge() : Container(),
+      ],
     ),
     subtitle: Text(
       AppLocalizations.of(context)!.until(StringUtils().toCapitalized(
