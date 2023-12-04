@@ -126,6 +126,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('bookingWindowMin')) {
       bookingWindowMin = documentSnapshot.get("bookingWindowMin");
+    } else {
+      bookingWindowMin = 0;
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('freeSession')) {

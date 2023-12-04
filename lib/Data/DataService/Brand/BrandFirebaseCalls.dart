@@ -784,6 +784,7 @@ class BrandFirebaseCalls {
       int maxMembers,
       List<double> workShift,
       int bookingWindow,
+      int bookingWindowMin,
       bool? directPurchase,
       bool? freeSession) async {
     await _firestore.collection(brands).doc(brandID).update({
@@ -791,6 +792,7 @@ class BrandFirebaseCalls {
       "description": description,
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
+      "bookingWindowMin": bookingWindowMin,
       "workShift": workShift,
       "directPurchase": directPurchase,
       "freeSession": freeSession,
