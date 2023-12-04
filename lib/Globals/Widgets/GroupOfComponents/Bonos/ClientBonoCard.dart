@@ -997,10 +997,10 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             Text(
                                                               AppLocalizations.of(
                                                                           context)!
-                                                                      .buyDate +
+                                                                      .expireDate +
                                                                   ": " +
                                                                   DateTimeUtils().formatDateTimeToStringDDMMYYYY(
-                                                                      purchasedDate,
+                                                                      expirationDate,
                                                                       Localizations.localeOf(
                                                                               context)
                                                                           .languageCode),

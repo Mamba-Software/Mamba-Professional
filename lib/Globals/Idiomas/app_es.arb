@@ -2631,7 +2631,7 @@
   "@expiredAfter":{
     "description": "expiresAt Text"
   },
-  "expiresAt": "Expira el",
+  "expiresAt": "Expira en",
   "@expiresAt":{
     "description": "expiresAt Text"
   },
@@ -3131,10 +3131,6 @@
   "adminSubscriptionDesc": "Solo el creador de la marca puede suscribirte a los planes. El pago estará vinculado a su cuenta y todas las transacciones se gestionarán a través de esta para garantizar seguridad y transparencia.",
   "@adminSubscriptionDesc": {
     "description": "noSubscription message"
-  },
-  "expiresAt": "Expira el",
-  "@expiresAt": {
-    "description": "expiresAt message"
   },
   "seeyourSub": "Pulsa para ver tu plan",
   "@seeyourSub": {
