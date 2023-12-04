@@ -2544,7 +2544,57 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                     ],
                                                                   ),
                                                                 )
-                                                              : Container(),
+                                                              : client.freeSession !=
+                                                                          null &&
+                                                                      client
+                                                                          .freeSession!
+                                                                  ? Container(
+                                                                      constraints:
+                                                                          BoxConstraints(
+                                                                        maxWidth:
+                                                                            MediaQuery.of(context).size.width *
+                                                                                0.15,
+                                                                      ),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Colors
+                                                                            .green,
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(15),
+                                                                        border:
+                                                                            Border.all(
+                                                                          width:
+                                                                              1,
+                                                                          color:
+                                                                              Colors.green,
+                                                                        ),
+                                                                      ),
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              5,
+                                                                          vertical:
+                                                                              2),
+                                                                      child:
+                                                                          Text(
+                                                                        StringUtils().toCapitalized(AppLocalizations.of(context)!
+                                                                            .freeSession
+                                                                            .split(" ")[2]),
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyText2
+                                                                            ?.copyWith(color: AppColors.white),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        softWrap:
+                                                                            true,
+                                                                        maxLines:
+                                                                            1,
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                      ),
+                                                                    )
+                                                                  : Container(),
                                                         ],
                                                       ),
                                                       Container(
@@ -2560,53 +2610,30 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                 MainAxisAlignment
                                                                     .center,
                                                             children: [
-                                                              client.freeSession !=
-                                                                          null &&
-                                                                      client
-                                                                          .freeSession!
-                                                                  ? Flexible(
-                                                                      child:
-                                                                          Text(
-                                                                        (client.name! != AppLocalizations.of(context)!.notFoundUser
-                                                                                ? client.firstName!
-                                                                                : client.name!) +
-                                                                            " (" +
-                                                                            AppLocalizations.of(context)!.freeSession.split(" ")[2].toUpperCase() +
-                                                                            ")",
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .bodyText2
-                                                                            ?.copyWith(color: Colors.green),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        softWrap:
-                                                                            true,
-                                                                        maxLines:
-                                                                            1,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                      ),
-                                                                    )
-                                                                  : Flexible(
-                                                                      child:
-                                                                          Text(
-                                                                        client.name! !=
-                                                                                AppLocalizations.of(context)!.notFoundUser
-                                                                            ? client.firstName!
-                                                                            : client.name!,
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .bodyText2,
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        softWrap:
-                                                                            true,
-                                                                        maxLines:
-                                                                            1,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                      ),
-                                                                    )
+                                                              Flexible(
+                                                                child: Text(
+                                                                  client.name! !=
+                                                                          AppLocalizations.of(context)!
+                                                                              .notFoundUser
+                                                                      ? client
+                                                                          .firstName!
+                                                                      : client
+                                                                          .name!,
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodyText2,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  softWrap:
+                                                                      true,
+                                                                  maxLines: 1,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              )
                                                             ]),
                                                       ),
                                                     ],
