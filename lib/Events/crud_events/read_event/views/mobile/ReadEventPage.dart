@@ -219,7 +219,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
     members = _event.maxMembers!;
     membersController.text =
         "${_event.numClients.toString()} / ${_event.maxMembers.toString()}";
-
+    placesLeft = _event.maxMembers! - _event.numClients!;
     isFull = (_event.numClients! / _event.maxMembers! == 1);
   }
 
@@ -2491,9 +2491,14 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                   ),
                                                                   decoration:
                                                                       BoxDecoration(
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .scaffoldBackgroundColor,
+                                                                    color: client.freeSession !=
+                                                                                null &&
+                                                                            client
+                                                                                .freeSession!
+                                                                        ? Colors
+                                                                            .green
+                                                                        : Theme.of(context)
+                                                                            .scaffoldBackgroundColor,
                                                                     borderRadius:
                                                                         BorderRadius.circular(
                                                                             15),
@@ -2502,9 +2507,13 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                             .all(
                                                                       width:
                                                                           0.5,
-                                                                      color: Theme.of(
-                                                                              context)
-                                                                          .primaryColor,
+                                                                      color: client.freeSession != null &&
+                                                                              client
+                                                                                  .freeSession!
+                                                                          ? Colors
+                                                                              .green
+                                                                          : Theme.of(context)
+                                                                              .primaryColor,
                                                                     ),
                                                                   ),
                                                                   padding: const EdgeInsets
@@ -2525,15 +2534,11 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                         child: Text(
                                                                             clientFeedback
                                                                                 .toString(),
-                                                                            style: Theme.of(context)
-                                                                                .textTheme
-                                                                                .bodyText2,
-                                                                            maxLines:
-                                                                                1,
-                                                                            softWrap:
-                                                                                true,
-                                                                            textAlign:
-                                                                                TextAlign.center),
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodyText2?.copyWith(color: client.freeSession != null && client.freeSession! ? AppColors.white : Theme.of(context).primaryColor),
+                                                                            maxLines: 1,
+                                                                            softWrap: true,
+                                                                            textAlign: TextAlign.center),
                                                                       ),
                                                                       SizedBox(
                                                                         width: MediaQuery.of(context).size.width *

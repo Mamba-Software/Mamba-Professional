@@ -1995,8 +1995,8 @@ exports.userJoinsEvent = functions
       }
       // Count Number of Free Sessions
       if (freeSession) {
-        if (eventDoc.numberFreeSession != undefined) {
-          numFreeSessions = eventDoc.numberFreeSession;
+        if (eventDoc.numFreeSessions != undefined) {
+          numFreeSessions = eventDoc.numFreeSessions;
         }
         numFreeSessions += 1;
       }      
@@ -2427,7 +2427,7 @@ exports.userJoinsEvent = functions
           "Response",
           response
           );
-       }
+      }
 
       // Send Notification per Invidual User
       if (eventDoc.isPrivate != true && eventUserDoc.freeSession == true) {
@@ -2502,6 +2502,7 @@ exports.userLeavesEvent = functions
 .firestore
 .document("/Events/{eventId}/Users/{userId}")
 .onDelete( async (change, context) => {
+      console.log("Change object:", change);
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
@@ -2514,14 +2515,21 @@ exports.userLeavesEvent = functions
         );
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
+      // Get Event User Data            
+      const deletedUserEventDoc = change.data(); 
+      functions.logger.log(
+        "deletedUserEventDoc",
+        deletedUserEventDoc,
+        );     
+      let freeSession = false;
+      if (deletedUserEventDoc.freeSession != undefined && deletedUserEventDoc.freeSession) {
+        freeSession = true;
+      } 
       // Count the Number of Clients and Trainers
       const eventUsersSnapshot = await db.collection("Events").doc(eventId).collection("Users").get();
       // Get Data of the Event Locations
-      const eventLocationsSnapshot = await db.collection("Events").doc(eventId).collection("Locations").get();
-      functions.logger.log(
-        "eventLocationsSnapshot size",
-        eventLocationsSnapshot.size,
-        );
+      const eventLocationsSnapshot = await db.collection("Events").doc(eventId).collection("Locations").get();                       
+      // Count Number of Assiting Members
       let numClients = 0;
       let numTrainers = 0;
       for (var i in eventUsersSnapshot.docs) {
@@ -2532,6 +2540,14 @@ exports.userLeavesEvent = functions
           numClients += 1;
         }
       }
+      // Count Number of Free Sessions
+      let numFreeSessions = 0;
+      if (freeSession) {
+        if (eventDoc.numFreeSessions != undefined) {
+          numFreeSessions = eventDoc.numFreeSessions;
+        }
+        numFreeSessions -= 1;
+      } 
       // Delete Event To Users Event Subcollection
       await db
       .collection("Users")
@@ -2558,6 +2574,7 @@ exports.userLeavesEvent = functions
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
+        "numFreeSessions": numFreeSessions,
       });
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
@@ -2571,6 +2588,7 @@ exports.userLeavesEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
           // If Event Private
           // Update Cover Data Also
@@ -2585,6 +2603,7 @@ exports.userLeavesEvent = functions
             .update({
               "numClients": numClients,
               "numTrainers": numTrainers,
+              "numFreeSessions": numFreeSessions,
             });
           }
         }
@@ -2599,6 +2618,7 @@ exports.userLeavesEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
           // If Event Private
           // Update Cover Data Also
@@ -2613,6 +2633,7 @@ exports.userLeavesEvent = functions
             .update({
               "numClients": numClients,
               "numTrainers": numTrainers,
+              "numFreeSessions": numFreeSessions,
             });
           }
         }
@@ -2627,6 +2648,7 @@ exports.userLeavesEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
         // If Event Private
         // Update Cover Data Also
@@ -2641,6 +2663,7 @@ exports.userLeavesEvent = functions
           .update({
             "numClients": numClients,
             "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
           });
         }
       }
