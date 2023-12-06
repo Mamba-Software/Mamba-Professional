@@ -18,7 +18,7 @@ import '../Data/LibraryModels/lColor.dart';
 bool isProduction = true;
 
 // App Version
-var appVersion = "MAMBA v0.0.17";
+var appVersion = "MAMBA v0.0.19";
 
 List<lColor> currentColors = [];
 List<lDegradate> currentDegradates =
