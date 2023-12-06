@@ -10,7 +10,7 @@
         <package android:name="com.mamba.mambaprofessionalapp"/>
     </queries>
     <application
-        android:label="Mamba Pro"
+        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher">
        <!-- Required to fetch data from the internet. -->
        <activity

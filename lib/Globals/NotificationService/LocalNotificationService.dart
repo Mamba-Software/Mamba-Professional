@@ -14,7 +14,7 @@ import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotificati
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/main.dart';
+import 'package:mamba_castelldefels/main_development.dart';
 
 /// Streams are created so that app can respond to notification-related events
 /// since the plugin is initialised in the `main` function

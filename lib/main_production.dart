@@ -22,7 +22,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
-import 'package:mamba_castelldefels/firebase_options.dart';
+import 'package:mamba_castelldefels/firebase_options_production.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -36,7 +36,6 @@ import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'dart:io' show Platform;
 import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 

@@ -73,6 +73,20 @@ android {
         abortOnError false
     }
 
+    flavorDimensions "default"
+    productFlavors {
+        production {
+            dimension "default"
+            resValue "string", "app_name", "Mamba Pro"
+            applicationIdSuffix ""
+        }
+        development {
+            dimension "default"
+            resValue "string", "app_name", "DEV Mamba Pro"
+            applicationIdSuffix ".dev"
+        }        
+    }
+
 }
 
 flutter {
