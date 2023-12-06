@@ -16,6 +16,8 @@ import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 import 'package:provider/provider.dart';
@@ -50,13 +52,16 @@ class _BonosProState extends State<BonosPro> {
     if (!_scrollController!.hasClients) {
       return false;
     }
-    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+    if (_scrollController!.position.userScrollDirection ==
+        ScrollDirection.forward) {
       // User is down up, so AppBar should expand.
       return false;
     }
     // Use the same condition as before to check if AppBar is expanded.
-    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
+    return _scrollController!.offset >
+        (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
+
   // Brand Service
   final _brandDataService = BrandDataService();
   // Boolean Loading
@@ -80,31 +85,37 @@ class _BonosProState extends State<BonosPro> {
   int alphabeticOrder = 0;
   List<bool> orderByBonos = [true, false, true, false];
 
-
-
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController()
-    ..addListener(
-    () => _isAppBarExpanded
-    ? setState(() {
-        appBarExpanded = true;
-      })
-    : setState(() {
-        appBarExpanded = false;
-      }),
-    );
+      ..addListener(
+        () => _isAppBarExpanded
+            ? setState(() {
+                appBarExpanded = true;
+              })
+            : setState(() {
+                appBarExpanded = false;
+              }),
+      );
     canEdit = currentUser.brandRole < 3 ? true : false;
   }
 
   // Init Device Sizes
   initDeviceSizes() {
-    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
+    safeAreaHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
     isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
-    print("Device H and W: " + MediaQuery.of(context).size.height.toString() + " " + MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: " + safeAreaHeight.toString() + " " + safeAreaWidth.toString());
+    print("Device H and W: " +
+        MediaQuery.of(context).size.height.toString() +
+        " " +
+        MediaQuery.of(context).size.width.toString());
+    print("SafeArea H and W: " +
+        safeAreaHeight.toString() +
+        " " +
+        safeAreaWidth.toString());
   }
 
   // Navigate to Bonos Request Screen
@@ -116,51 +127,49 @@ class _BonosProState extends State<BonosPro> {
           builder: (context) => BrandPurchaseHistory(
             brandId: widget.brandId,
           ),
-        )
-    );
+        ));
   }
 
   // Navigate to Add Bonos
-  Future<void> navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) async {
-    if(!brandIsActive) {
+  Future<void> navigateToAddBonosScreen(
+      Bono bono, Brand _brand, bool edit) async {
+    if (!brandIsActive) {
       await navigateToPayWall(context);
-    }
-    else {
+    } else {
       await Navigator.push(
           context,
           CupertinoPageRoute<void>(
-            builder: (context) =>
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    FocusScopeNode currentFocus = FocusScope.of(context);
-                    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    }
-                  },
-                  child: AddEditBono(
-                    brand: _brand,
-                    bono: bono,
-                    edit: edit,
-                    duplicate: false,
-                    delete: false,
-                  ),
-                ),
+            builder: (context) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus &&
+                    currentFocus.focusedChild != null) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                }
+              },
+              child: AddEditBono(
+                brand: _brand,
+                bono: bono,
+                edit: edit,
+                duplicate: false,
+                delete: false,
+              ),
+            ),
           )).whenComplete(() => () {
-        setState(() {
-
-        });
-      });
+            setState(() {});
+          });
     }
   }
 
   Widget returnBono(Bono _bono) {
     //return _bonosUtils.bonoObject(context, _bono, brand, _lColor);
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.05),
       child: BonoCard(
-        height: MediaQuery.of(context).size.height*0.22,
-        width: MediaQuery.of(context).size.width*0.9,
+        height: MediaQuery.of(context).size.height * 0.22,
+        width: MediaQuery.of(context).size.width * 0.9,
         bono: _bono,
         brand: currentBrand,
         canExpand: true,
@@ -173,7 +182,7 @@ class _BonosProState extends State<BonosPro> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByBonos[0]) {
-      activeStaff += AppLocalizations.of(context)!.yes+", ";
+      activeStaff += AppLocalizations.of(context)!.yes + ", ";
       cnt += 1;
     }
     if (filterByBonos[1]) {
@@ -206,11 +215,11 @@ class _BonosProState extends State<BonosPro> {
             title: AnimatedOpacity(
                 opacity: appBarExpanded ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
-                child: Text(
-                  AppLocalizations.of(context)!.bonos,
-                  style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
-                )
-            ),
+                child: Text(AppLocalizations.of(context)!.bonos,
+                    style:
+                        Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
+                              color: AppColors.white,
+                            ))),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.darkGrey,
@@ -238,15 +247,19 @@ class _BonosProState extends State<BonosPro> {
                             width: MediaQuery.of(context).size.width * 0.40,
                           ),
                           SizedBox(
-                            height: MediaQuery.of(context).size.width*0.09,
-                            width: MediaQuery.of(context).size.width*0.09,
+                            height: MediaQuery.of(context).size.width * 0.09,
+                            width: MediaQuery.of(context).size.width * 0.09,
                             child: ClipOval(
                               child: Material(
-                                color: hasFilter ? AppColors.white : Colors.transparent, // Button color
+                                color: hasFilter
+                                    ? AppColors.white
+                                    : Colors.transparent, // Button color
                                 child: InkWell(
-                                  splashColor: Theme.of(context).backgroundColor, // Splash color
+                                  splashColor: Theme.of(context)
+                                      .backgroundColor, // Splash color
                                   onTap: () async {
-                                    mixpanel!.track('brand_bonos_filter_button');
+                                    mixpanel!
+                                        .track('brand_bonos_filter_button');
                                     await showModalBottomSheet<int?>(
                                       context: context,
                                       isScrollControlled: true,
@@ -258,61 +271,103 @@ class _BonosProState extends State<BonosPro> {
                                       clipBehavior: Clip.antiAliasWithSaveLayer,
                                       builder: (BuildContext context) {
                                         // Page View Controller
-                                        final PageController _pageController = PageController(initialPage: 0);
+                                        final PageController _pageController =
+                                            PageController(initialPage: 0);
                                         int _currentPage = 0;
                                         // Widget
                                         return StatefulBuilder(
-                                          builder: (BuildContext context, StateSetter setStateBottom) {
+                                          builder: (BuildContext context,
+                                              StateSetter setStateBottom) {
                                             return FractionallySizedBox(
                                               heightFactor: 0.25,
                                               child: SizedBox(
-                                                height: MediaQuery.of(context).size.height * 0.5,
-                                                width: MediaQuery.of(context).size.width,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.5,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
                                                 child: Padding(
-                                                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                                  padding: EdgeInsets.all(
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.02),
                                                   child: Column(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                        MainAxisAlignment.start,
                                                     children: [
                                                       ListTile(
                                                         title: Text(
-                                                            AppLocalizations.of(context)!.filterBy,
-                                                            style: Theme.of(context).textTheme.caption,
-                                                            textAlign: TextAlign.left
-                                                        ),
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .filterBy,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .caption,
+                                                            textAlign:
+                                                                TextAlign.left),
                                                         trailing: TextButton(
                                                           child: Text(
-                                                              AppLocalizations.of(context)!.clear,
-                                                              style: Theme.of(context).textTheme.caption
-                                                          ),
+                                                              AppLocalizations.of(
+                                                                      context)!
+                                                                  .clear,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .caption),
                                                           onPressed: () {
-                                                            mixpanel!.track('brand_bonos_filter_clean');
+                                                            mixpanel!.track(
+                                                                'brand_bonos_filter_clean');
                                                             setStateBottom(() {
-                                                              filterByBonos[0] = true;
-                                                              filterByBonos[1] = true;
+                                                              filterByBonos[0] =
+                                                                  true;
+                                                              filterByBonos[1] =
+                                                                  true;
                                                             });
                                                             // Navigator Pop
-                                                            Navigator.pop(context);
+                                                            Navigator.pop(
+                                                                context);
                                                           },
                                                         ),
                                                         dense: true,
-                                                        onTap: _currentPage == 0 ? null : () {
-                                                          mixpanel!.track('brand_bonos_filter_back');
-                                                          _pageController.previousPage(
-                                                            duration: const Duration(milliseconds: 500),
-                                                            curve: Curves.ease,
-                                                          );
-                                                        },
+                                                        onTap: _currentPage == 0
+                                                            ? null
+                                                            : () {
+                                                                mixpanel!.track(
+                                                                    'brand_bonos_filter_back');
+                                                                _pageController
+                                                                    .previousPage(
+                                                                  duration: const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                                  curve: Curves
+                                                                      .ease,
+                                                                );
+                                                              },
                                                       ),
                                                       SizedBox(
-                                                        height: MediaQuery.of(context).size.height * 0.15,
-                                                        width: MediaQuery.of(context).size.width,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.15,
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
                                                         child: PageView(
-                                                          physics: const NeverScrollableScrollPhysics(),
-                                                          controller: _pageController,
-                                                          onPageChanged: (int page) {
+                                                          physics:
+                                                              const NeverScrollableScrollPhysics(),
+                                                          controller:
+                                                              _pageController,
+                                                          onPageChanged:
+                                                              (int page) {
                                                             setStateBottom(() {
-                                                              _currentPage = page;
+                                                              _currentPage =
+                                                                  page;
                                                             });
                                                           },
                                                           children: <Widget>[
@@ -320,27 +375,54 @@ class _BonosProState extends State<BonosPro> {
                                                               children: [
                                                                 ListTile(
                                                                   onTap: () {
-                                                                    mixpanel!.track('brand_bonos_filter_active');
-                                                                    _pageController.nextPage(
-                                                                      duration: const Duration(milliseconds: 500),
-                                                                      curve: Curves.ease,
+                                                                    mixpanel!.track(
+                                                                        'brand_bonos_filter_active');
+                                                                    _pageController
+                                                                        .nextPage(
+                                                                      duration: const Duration(
+                                                                          milliseconds:
+                                                                              500),
+                                                                      curve: Curves
+                                                                          .ease,
                                                                     );
                                                                   },
                                                                   title: Text(
-                                                                      AppLocalizations.of(context)!.bono+" "+AppLocalizations.of(context)!.active+"s",
-                                                                      style: Theme.of(context).textTheme.bodyText1,
-                                                                      textAlign: TextAlign.left
-                                                                  ),
+                                                                      AppLocalizations.of(context)!
+                                                                              .bono +
+                                                                          " " +
+                                                                          AppLocalizations.of(context)!
+                                                                              .active +
+                                                                          "s",
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyText1,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
                                                                   subtitle: Text(
                                                                       returnFilteredActiveBonosString(),
-                                                                      style: Theme.of(context).textTheme.caption,
-                                                                      textAlign: TextAlign.left
-                                                                  ),
-                                                                  trailing: SizedBox(
-                                                                    width: MediaQuery.of(context).size.width * 0.15,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .caption,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing:
+                                                                      SizedBox(
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.15,
                                                                     child: Center(
-                                                                        child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
-                                                                    ),
+                                                                        child: Icon(
+                                                                            Icons
+                                                                                .arrow_forward_ios,
+                                                                            size: MediaQuery.of(context).size.width *
+                                                                                0.04,
+                                                                            color:
+                                                                                AppColors.grey)),
                                                                   ),
                                                                 ),
                                                               ],
@@ -350,47 +432,112 @@ class _BonosProState extends State<BonosPro> {
                                                                 ListTile(
                                                                   onTap: () {
                                                                     // Check if the Only True
-                                                                    var filterActive = List.from(filterByBonos);
-                                                                    filterActive.retainWhere((element) => element == true);
-                                                                    if (!(filterActive.length == 1 && filterByBonos[0])) {
-                                                                      filterByBonos[0] = !filterByBonos[0];
-                                                                      mixpanel!.track('brand_bonos_filter_active', properties: {'Values': [filterByBonos[0] ? 'Yes' : ' ', filterByBonos[1] ? 'No' : ' ' ]});
+                                                                    var filterActive =
+                                                                        List.from(
+                                                                            filterByBonos);
+                                                                    filterActive.retainWhere(
+                                                                        (element) =>
+                                                                            element ==
+                                                                            true);
+                                                                    if (!(filterActive.length ==
+                                                                            1 &&
+                                                                        filterByBonos[
+                                                                            0])) {
+                                                                      filterByBonos[
+                                                                              0] =
+                                                                          !filterByBonos[
+                                                                              0];
+                                                                      mixpanel!.track(
+                                                                          'brand_bonos_filter_active',
+                                                                          properties: {
+                                                                            'Values':
+                                                                                [
+                                                                              filterByBonos[0] ? 'Yes' : ' ',
+                                                                              filterByBonos[1] ? 'No' : ' '
+                                                                            ]
+                                                                          });
                                                                       // Navigator Pop
-                                                                      Navigator.pop(context);
+                                                                      Navigator.pop(
+                                                                          context);
                                                                     }
                                                                   },
                                                                   title: Text(
-                                                                      AppLocalizations.of(context)!.yes,
-                                                                      style: Theme.of(context).textTheme.bodyText1,
-                                                                      textAlign: TextAlign.left
-                                                                  ),
-                                                                  trailing: filterByBonos[0] ? SizedBox(
-                                                                    width: MediaQuery.of(context).size.width * 0.15,
-                                                                    child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                  ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      AppLocalizations.of(
+                                                                              context)!
+                                                                          .yes,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyText1,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing: filterByBonos[
+                                                                          0]
+                                                                      ? SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                        )
+                                                                      : SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15),
                                                                 ),
                                                                 ListTile(
                                                                   onTap: () {
                                                                     // Check if the Only True
-                                                                    var filterActive = List.from(filterByBonos);
-                                                                    filterActive.retainWhere((element) => element == true);
-                                                                    if (!(filterActive.length == 1 && filterByBonos[1])) {
-                                                                      filterByBonos[1] = !filterByBonos[1];
-                                                                      mixpanel!.track('brand_bonos_filter_active', properties: {'Values': [filterByBonos[0] ? 'Yes' : ' ', filterByBonos[1] ? 'No' : ' ' ]});
+                                                                    var filterActive =
+                                                                        List.from(
+                                                                            filterByBonos);
+                                                                    filterActive.retainWhere(
+                                                                        (element) =>
+                                                                            element ==
+                                                                            true);
+                                                                    if (!(filterActive.length ==
+                                                                            1 &&
+                                                                        filterByBonos[
+                                                                            1])) {
+                                                                      filterByBonos[
+                                                                              1] =
+                                                                          !filterByBonos[
+                                                                              1];
+                                                                      mixpanel!.track(
+                                                                          'brand_bonos_filter_active',
+                                                                          properties: {
+                                                                            'Values':
+                                                                                [
+                                                                              filterByBonos[0] ? 'Yes' : ' ',
+                                                                              filterByBonos[1] ? 'No' : ' '
+                                                                            ]
+                                                                          });
                                                                       // Navigator Pop
-                                                                      Navigator.pop(context);
+                                                                      Navigator.pop(
+                                                                          context);
                                                                     }
-
                                                                   },
                                                                   title: Text(
-                                                                      AppLocalizations.of(context)!.no,
-                                                                      style: Theme.of(context).textTheme.bodyText1,
-                                                                      textAlign: TextAlign.left
-                                                                  ),
-                                                                  trailing: filterByBonos[1] ? SizedBox(
-                                                                    width: MediaQuery.of(context).size.width * 0.15,
-                                                                    child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                  ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      AppLocalizations.of(
+                                                                              context)!
+                                                                          .no,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyText1,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing: filterByBonos[
+                                                                          1]
+                                                                      ? SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                        )
+                                                                      : SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15),
                                                                 ),
                                                               ],
                                                             ),
@@ -402,13 +549,14 @@ class _BonosProState extends State<BonosPro> {
                                                 ),
                                               ),
                                             );
-                                          } ,
+                                          },
                                         );
                                       },
                                     ).whenComplete(() {
                                       setState(() {
                                         // Filter By
-                                        if (filterByBonos[0] && filterByBonos[1]) {
+                                        if (filterByBonos[0] &&
+                                            filterByBonos[1]) {
                                           // Active/Inactive Selected
                                           hasFilter = false;
                                           filterBonosNumber = 0;
@@ -416,7 +564,7 @@ class _BonosProState extends State<BonosPro> {
                                           // Active Selected
                                           filterBonosNumber = 1;
                                           hasFilter = true;
-                                        } else if(filterByBonos[1]) {
+                                        } else if (filterByBonos[1]) {
                                           // Inactive Selected
                                           filterBonosNumber = 2;
                                           hasFilter = true;
@@ -427,11 +575,21 @@ class _BonosProState extends State<BonosPro> {
                                       });
                                     });
                                   },
-                                  child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
-                                    Icons.filter_list,
-                                    color: hasFilter ? AppColors.darkGrey :  AppColors.white,
-                                    size: MediaQuery.of(context).size.width*0.07,
-                                  )),
+                                  child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.09,
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.09,
+                                      child: Icon(
+                                        Icons.filter_list,
+                                        color: hasFilter
+                                            ? AppColors.darkGrey
+                                            : AppColors.white,
+                                        size:
+                                            MediaQuery.of(context).size.width *
+                                                0.07,
+                                      )),
                                 ),
                               ),
                             ),
@@ -472,29 +630,9 @@ class _BonosProState extends State<BonosPro> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CounterBadgeIcon(
-                    counter: unreadNotifications,
-                    top: 5,
-                    right: 7,
-                    child: IconButton(
-                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => navigateToNotificationsScreen(context),
-                    ),
-                  ),
-                  CounterBadgeIcon(
-                    counter: unreadChats,
-                    top: 5,
-                    right: 7,
-                    child: IconButton(
-                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => navigateToChatScreen(context),
-                    ),
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  unreadNotifiactions(context),
+                  unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                   GestureDetector(
                     onTap: () => navigateToProfileScreen(context),
                     child: SizedBox(
@@ -511,128 +649,191 @@ class _BonosProState extends State<BonosPro> {
                   ),
                 ],
               ),
-              SizedBox(width: MediaQuery.of(context).size.width*0.03),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
             ],
           ),
-          canEdit ? SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                  GestureDetector(
-                    onTap: navigateToPurchaseHistoryScreen,
-                    child: Container(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                      height: MediaQuery.of(context).size.height*0.1,
-                      width: MediaQuery.of(context).size.width*0.9,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                        border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.confirmation_number_outlined,
-                                  color: Theme.of(context).colorScheme.secondary,
-                                  size: MediaQuery.of(context).size.width*0.10,
-                                ),
-                                SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                                Flexible(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        AppLocalizations.of(context)!.purchaseHistory,
-                                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
-                                        textAlign: TextAlign.start,
-                                      ),
-                                      Text(
-                                        AppLocalizations.of(context)!.bonoRequestDescription,
-                                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                                        textAlign: TextAlign.start,
-                                        overflow: TextOverflow.fade,
-                                        maxLines: 1,
-                                        softWrap: false,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+          canEdit
+              ? SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.03),
+                      GestureDetector(
+                        onTap: navigateToPurchaseHistoryScreen,
+                        child: Container(
+                          padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.width * 0.05),
+                          height: MediaQuery.of(context).size.height * 0.1,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondary
+                                .withOpacity(0.2),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
                             ),
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.secondary,
+                                width: 2),
                           ),
-                          StreamBuilder<QuerySnapshot>(
-                              stream: _brandDataService.getBonosRequestsFromBrand(widget.brandId),
-                              builder: (context, snapshot) {
-                                if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
-                                  return Container(
-                                    height: MediaQuery.of(context).size.width * 0.08,
-                                    width: MediaQuery.of(context).size.width * 0.08,
-                                    decoration: const BoxDecoration(
-                                        color: AppColors.mainColor,
-                                        borderRadius: BorderRadius.all(Radius.circular(20))
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.confirmation_number_outlined,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      size: MediaQuery.of(context).size.width *
+                                          0.10,
                                     ),
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                          0.toString(),
-                                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
-                                          textAlign: TextAlign.center
+                                    SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.05),
+                                    Flexible(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            AppLocalizations.of(context)!
+                                                .purchaseHistory,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                          Text(
+                                            AppLocalizations.of(context)!
+                                                .bonoRequestDescription,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2!
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary),
+                                            textAlign: TextAlign.start,
+                                            overflow: TextOverflow.fade,
+                                            maxLines: 1,
+                                            softWrap: false,
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  );
-                                } else {
-                                  requests = _bonosUtils.documentsToBonosRequests(snapshot.data!.docs).length;
-                                  return Container(
-                                    height: MediaQuery.of(context).size.width * 0.08,
-                                    width: MediaQuery.of(context).size.width * 0.08,
-                                    decoration: const BoxDecoration(
-                                        color: AppColors.mainColor,
-                                        borderRadius: BorderRadius.all(Radius.circular(20))
-                                    ),
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                          requests.toString(),
-                                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
-                                          textAlign: TextAlign.center
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }
+                                  ],
+                                ),
+                              ),
+                              StreamBuilder<QuerySnapshot>(
+                                  stream: _brandDataService
+                                      .getBonosRequestsFromBrand(
+                                          widget.brandId),
+                                  builder: (context, snapshot) {
+                                    if (snapshot == null ||
+                                        snapshot.data == null ||
+                                        snapshot.data!.docs == null) {
+                                      return Container(
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.08,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.08,
+                                        decoration: const BoxDecoration(
+                                            color: AppColors.mainColor,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20))),
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(0.toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline3
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white),
+                                              textAlign: TextAlign.center),
+                                        ),
+                                      );
+                                    } else {
+                                      requests = _bonosUtils
+                                          .documentsToBonosRequests(
+                                              snapshot.data!.docs)
+                                          .length;
+                                      return Container(
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.08,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.08,
+                                        decoration: const BoxDecoration(
+                                            color: AppColors.mainColor,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20))),
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(requests.toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline3
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white),
+                                              textAlign: TextAlign.center),
+                                        ),
+                                      );
+                                    }
+                                  }),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02),
+                      Divider(
+                          color: AppColors.grey,
+                          thickness: 1,
+                          indent: MediaQuery.of(context).size.width * 0.05,
+                          endIndent: MediaQuery.of(context).size.width * 0.05),
+                    ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  Divider(color: AppColors.grey, thickness: 1, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
-                ],
-              ),
-          ) : SliverToBoxAdapter(
-            child: SizedBox(height: MediaQuery.of(context).size.height*0.0),
-          ),
+                )
+              : SliverToBoxAdapter(
+                  child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.0),
+                ),
           StreamBuilder<QuerySnapshot>(
               stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
               builder: (context, snapshot) {
-                if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
+                if (snapshot == null ||
+                    snapshot.data == null ||
+                    snapshot.data!.docs == null) {
                   return SliverFillRemaining(
                     hasScrollBody: true,
                     child: Center(
                         child: LoadingView(
-                          hasLogo: false,
-                        )
-                    ),
+                      hasLogo: false,
+                    )),
                   );
                 } else {
-                  bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs, filterBonosNumber, orderByBonosNumber, alphabeticOrder);
+                  bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs,
+                      filterBonosNumber, orderByBonosNumber, alphabeticOrder);
                   if (bonosList.isNotEmpty) {
                     return SliverList(
                       delegate: SliverChildBuilderDelegate(
@@ -640,12 +841,25 @@ class _BonosProState extends State<BonosPro> {
                           Bono bono = bonosList[index];
                           return Column(
                             children: [
-                              index == 0 ? SizedBox(height: MediaQuery.of(context).size.width * 0.02) : Container(),
+                              index == 0
+                                  ? SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.02)
+                                  : Container(),
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.02),
+                                padding: EdgeInsets.symmetric(
+                                    vertical:
+                                        MediaQuery.of(context).size.width *
+                                            0.02),
                                 child: returnBono(bono),
                               ),
-                              index == bonosList.length-1 ? SizedBox(height: MediaQuery.of(context).size.width * 0.1) : Container(),
+                              index == bonosList.length - 1
+                                  ? SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.1)
+                                  : Container(),
                             ],
                           );
                         },
@@ -664,7 +878,7 @@ class _BonosProState extends State<BonosPro> {
                               child: Image.asset(Constants.emptyCalendar)),
                           SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.005),
+                                  MediaQuery.of(context).size.height * 0.005),
                           Text(
                             AppLocalizations.of(context)!.noData,
                             style: Theme.of(context).textTheme.caption,
@@ -672,7 +886,7 @@ class _BonosProState extends State<BonosPro> {
                           ),
                           SizedBox(
                               height:
-                              MediaQuery.of(context).size.height * 0.12),
+                                  MediaQuery.of(context).size.height * 0.12),
                         ],
                       ),
                     );
@@ -681,25 +895,36 @@ class _BonosProState extends State<BonosPro> {
               })
         ],
       ),
-      floatingActionButton: canEdit ? Padding(
-        padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.width*0.15,
-          width: MediaQuery.of(context).size.width*0.15,
-          child: FloatingActionButton(
-            onPressed: () {
-              navigateToAddBonosScreen(
-                Bono(color: "0", isActive: true, sessions: 0, opacity: 1, imageUrl: '', isDegradate: false,),
-                currentBrand,
-                false
-              );
-            },
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            child: const Icon(Icons.add, color: AppColors.white,),
-          ),
-        )
-      ) : Container(),
+      floatingActionButton: canEdit
+          ? Padding(
+              padding: Platform.isAndroid
+                  ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
+                  : const EdgeInsets.all(10),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.width * 0.15,
+                width: MediaQuery.of(context).size.width * 0.15,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    navigateToAddBonosScreen(
+                        Bono(
+                          color: "0",
+                          isActive: true,
+                          sessions: 0,
+                          opacity: 1,
+                          imageUrl: '',
+                          isDegradate: false,
+                        ),
+                        currentBrand,
+                        false);
+                  },
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  child: const Icon(
+                    Icons.add,
+                    color: AppColors.white,
+                  ),
+                ),
+              ))
+          : Container(),
     );
   }
-
 }

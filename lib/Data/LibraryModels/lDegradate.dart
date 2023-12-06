@@ -1,6 +1,4 @@
 // This class represents the Object <Event> that will be showed in the Calendar Widget.
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 
@@ -9,7 +7,6 @@ class lDegradate {
   String? name;
   String? hexa1;
   String? hexa2;
-
 
   lDegradate({
     this.id,
@@ -20,28 +17,30 @@ class lDegradate {
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
-  lDegradate.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
+  lDegradate.fromObjectAllData(
+      String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('name')) {
       this.name = documentSnapshot.get("name").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('hexa1')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('hexa1')) {
       this.hexa1 = documentSnapshot.get("hexa1").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('hexa2')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('hexa2')) {
       this.hexa2 = documentSnapshot.get("hexa2").toString();
     }
   }
 
-  lDegradate getlDegradate(String id)
-  {
+  lDegradate getlDegradate(String id) {
     return currentDegradates[int.parse(id)];
   }
 
-  String getIdFromHexa(String hexa1, String hexa2)
-  {
-    return currentDegradates[currentDegradates.indexWhere((element) =>
-    element.hexa1 == hexa1 && element.hexa2 == hexa2)].id!;
+  String getIdFromHexa(String hexa1, String hexa2) {
+    return currentDegradates[currentDegradates.indexWhere(
+            (element) => element.hexa1 == hexa1 && element.hexa2 == hexa2)]
+        .id!;
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////

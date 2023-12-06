@@ -785,11 +785,15 @@
   "@workingHoursError1":{
     "description": "workingHours text"
   },
+  "workingHoursError2": "Tu descanso debe estar dentro de tu horario laboral",
+  "@workingHoursError2":{
+    "description": "workingHours text"
+  },
   "workingHoursDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando puedes ser contactado y cuando estás fuera de tu horario laboral.",
   "@workingHoursDescription":{
     "description": "workingHours text"
   },
-  "lunchBreak": "Descansos",
+  "lunchBreak": "Descanso",
   "@lunchBreak":{
     "description": "Descansos text"
   },
@@ -1109,9 +1113,29 @@
   "@nextTwoWeek":{
     "description": "Días text"
   },
-  "wholeMonth": "Cuatro semanas",
+  "wholeMonth": "Un mes",
   "@wholeMonth":{
     "description": "Días text"
+  },
+  "wholeTwoMonth": "Ocho semanas",
+  "@wholeTwoMonth":{
+    "description": "wholeTwoMonth text"
+  },
+  "wholeThreeMonth": "Tres meses",
+  "@wholeThreeMonth":{
+    "description": "wholeThreeMonth text"
+  },
+  "wholeSixMonth": "Seis meses",
+  "@wholeSixMonth":{
+    "description": "wholeSixMonth text"
+  },
+  "wholeNineMonth": "Nueve meses",
+  "@wholeNineMonth":{
+    "description": "wholeNineMonth text"
+  },
+  "wholeTwelveMonth": "Doce meses",
+  "@wholeTwelveMonth":{
+    "description": "wholeTwelveMonth text"
   },
   "until": "Hasta el {date}",
   "@until": {
@@ -2018,6 +2042,10 @@
   "termsAndConditions": "Términos y Condiciones",
   "@termsAndConditions": {
     "description": "membersOfBrand message"
+  },   
+  "privacy": "Privacidad",
+  "@privacy": {
+    "description": "membersOfBrand message"
   },
   "useMambaTermsAndConditions": "Utilizando Mamba aceptas nuestros ",
   "@useMambaTermsAndConditions": {
@@ -2339,6 +2367,10 @@
   "@visibleAge": {
     "description": "seeMap message"
   },
+  "hour": "Hora",
+  "@hour": {
+    "description": "seeMap message"
+  },
   "day": "Día",
   "@day": {
     "description": "seeMap message"
@@ -2599,7 +2631,11 @@
   "@esgotat":{
     "description": "expiresAt Text"
   },
-  "expiresAt": "Expira el",
+  "expiredAfter": "Expirado después de",
+  "@expiredAfter":{
+    "description": "expiresAt Text"
+  },
+  "expiresAt": "Expira en",
   "@expiresAt":{
     "description": "expiresAt Text"
   },
@@ -2726,6 +2762,14 @@
   "userBuysBonoTrainerSubtitle": "Puedes encontrar todos los detalles de su progreso en el perfil del usuario",
   "@userBuysBonoTrainerSubtitle": {
     "description": "userJoinsBrandUser message"
+  },
+  "potentialClient": "Cliente potencial",
+  "@potentialClient": {
+    "description": "active client message"  
+  },
+  "potentialClients": "Clientes potenciales",
+  "@potentialClients": {
+    "description": "active client message"  
   },
   "activeClients": "Clientes activos",
   "@activeClients": {
@@ -2927,9 +2971,17 @@
   "bookingWindow": "Ventana de reserva",
   "@bookingWindow": {
     "description": "boughts message"
-  },
+  },  
   "bookingWindowDescription": "Indica el tiempo de antelación con el que los clientes de tu marca pueden reservar una plaza en tus sesiones",
   "@bookingWindowDescription": {
+    "description": "boughts message"
+  },
+  "minimumBookingWindow": "Reservas de última hora",
+  "@minimumBookingWindow": {
+    "description": "boughts message"
+  },
+  "minimumBookingWindowDescription": "Establece el plazo mínimo antes de ser notificado. Por cada reserva inferior al plazo mínimo se te enviará una notificación personalizada",
+  "@minimumBookingWindowDescription": {
     "description": "boughts message"
   },
   "requestText": "Comprueba las solicitudes de la marca",
@@ -3091,10 +3143,6 @@
   "adminSubscriptionDesc": "Solo el creador de la marca puede suscribirte a los planes. El pago estará vinculado a su cuenta y todas las transacciones se gestionarán a través de esta para garantizar seguridad y transparencia.",
   "@adminSubscriptionDesc": {
     "description": "noSubscription message"
-  },
-  "expiresAt": "Expira el",
-  "@expiresAt": {
-    "description": "expiresAt message"
   },
   "seeyourSub": "Pulsa para ver tu plan",
   "@seeyourSub": {
@@ -3410,6 +3458,14 @@
   "@notAvailableClientsModifiedEvents": {
     "description": "cantEditText message"
   },
+  "freeSessionDescription": "Permite que los interesados disfruten de una sesión gratuita, con la posibilidad de reservar su plaza en uno de tus servicios sin costo alguno. Esta oferta es válida sólo una vez",
+  "@freeSessionDescription": {
+    "description": "directPurchase message"
+  },
+  "freeSession": "Sesión de prueba",
+  "@freeSession": {
+    "description": "directPurchasetext message"
+  },
   "directPurchaseDescription": "Permite que las compras de tus bonos se aprueben sin solicitud, el cliente obtendrá el bono al momento de hacer su compra",
   "@directPurchaseDescription": {
     "description": "directPurchase message"
@@ -3502,5 +3558,17 @@
   "cantEditRecurrent": "Elimina los clientes del evento para poder indicar si es un evento recurrente",
   "@addClientDescription":{
     "bonosClient": "addClientDescription client text"
+  },
+  "noActiveBonos": "No dispones de bonos activos para asignar al evento",
+  "@noActiveBonos":{
+    "noActiveBonos": "noActiveBonos text"
+  },
+  "processOnWork": "Hay un proceso ejecutandose, espere hasta que termine o reinicie la app",
+  "@processOnWork":{
+    "description": "processOnWork text"
+  },
+  "betaFeature": "Función en fase Beta. Comparte tu experiencia para ayudarnos a perfeccionarla.",
+  "@betaFeature":{
+    "description": "processOnWork text"
   }
 }

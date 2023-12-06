@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandFirebaseCalls.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
@@ -52,7 +52,7 @@ class BrandDataService {
   Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, var price, var classes, Timestamp timeRequested) => _firebase.addBonoRequestToBrand(brandId, userId, bonoId, title, price, classes, timeRequested);
 
   // Update Data
-  Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift, int bookingWindow, bool? directPurchase) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift, bookingWindow, directPurchase);
+  Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift, int bookingWindow, int bookingWindowMin, bool? directPurchase, bool? freeSession) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift, bookingWindow, bookingWindowMin, directPurchase, freeSession);
   Future<String> updateBrandPhoto(String brandID, File image) => _firebase.updateBrandPhoto(brandID, image);
   Future<void> updateBrandBaseImage(String brandID, ImageObject newBaseImage, String? oldBaseImage) => _firebase.updateBrandBaseImage(brandID, newBaseImage, oldBaseImage);
   Future<void> updateBrandBaseLocation(String brandID, String locationID) => _firebase.updateBrandBaseLocation(brandID, locationID);

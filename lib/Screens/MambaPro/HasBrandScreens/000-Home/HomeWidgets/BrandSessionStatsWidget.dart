@@ -18,7 +18,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import '../../../../../Data/Models/Event.dart';
+import '../../../../../Events/crud_events/models/Event.dart';
 import '../../../../../Globals/Constants.dart';
 
 typedef DateCallBack = void Function(int pageIndex);

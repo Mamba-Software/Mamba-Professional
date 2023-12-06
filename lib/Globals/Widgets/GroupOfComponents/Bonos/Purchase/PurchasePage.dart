@@ -12,7 +12,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,14 +32,12 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 
-
 class PurchasePage extends StatefulWidget {
   Usuario user;
   Brand brand;
   Bono? bono;
   BonoRequest? bonoRequest;
   Purchase? purchase;
-
 
   PurchasePage({
     Key? key,
@@ -66,7 +64,8 @@ class _PurchasePageState extends State<PurchasePage> {
   DateTime dateJoined = DateTime.now();
 
   final NotificationService _notificationService = NotificationService();
-  final LocalNotificationService _localNotificationService = LocalNotificationService();
+  final LocalNotificationService _localNotificationService =
+      LocalNotificationService();
 
   final formKeyInfo = GlobalKey<FormState>();
 
@@ -117,6 +116,7 @@ class _PurchasePageState extends State<PurchasePage> {
   bool weekSessions = false;
   bool cancelTimeSessions = false;
   bool isBonoRequest = false;
+  bool isPaid = true;
 
   // Page View Controller
   int _numPages = 0;
@@ -130,25 +130,31 @@ class _PurchasePageState extends State<PurchasePage> {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height * 0.1 - kToolbarHeight);
+    return _scrollController!.hasClients &&
+        _scrollController!.offset >
+            (MediaQuery.of(context).size.height * 0.1 - kToolbarHeight);
   }
 
   @override
   void initState() {
     super.initState();
     user = widget.user;
+
     /// EDIT PURCHASE
     if (widget.purchase != null) {
       mixpanel!.track('edit_bono_view');
       purchase = widget.purchase!;
       editBono = true;
     }
+
     /// ACCEPT PURCHASE
     if (widget.bonoRequest != null) {
       mixpanel!.track('bono_confirmation_view');
       isBonoRequest = true;
+      isPaid = true;
       paymentMethod = widget.bonoRequest?.paymentMethod;
     }
+
     /// GIFT PURCHASE
     if (widget.bono == null) {
       mixpanel!.track('give_bono_view');
@@ -156,25 +162,29 @@ class _PurchasePageState extends State<PurchasePage> {
     }
     getBonos();
     _scrollController = ScrollController()
-    ..addListener(() => _isAppBarExpanded
-      ? setState(() {
-          appBarExpanded = true;
-        })
-      : setState(() {
-          appBarExpanded = false;
-        }),
+      ..addListener(
+        () => _isAppBarExpanded
+            ? setState(() {
+                appBarExpanded = true;
+              })
+            : setState(() {
+                appBarExpanded = false;
+              }),
       );
   }
 
   Future<void> getBonos() async {
     // Otorgar Bono
     if (editBono == false && isBonoRequest == false) {
-      bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
-      userBonos = await _userDataService.getUserActiveBonosFromBrand(user.id!, currentBrand.id!);
+      bonos =
+          await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+      userBonos = await _userDataService.getUserActiveBonosFromBrand(
+          user.id!, currentBrand.id!);
       // Remove the ones that the user already has
       Bono bonoDelete;
       for (int i = 0; i < userBonos.length; ++i) {
-        bonoDelete = bonos.firstWhere((element) => element.id == userBonos[i].id);
+        bonoDelete =
+            bonos.firstWhere((element) => element.id == userBonos[i].id);
         if (bonoDelete.id != '') {
           bonos.remove(bonoDelete);
         }
@@ -211,23 +221,22 @@ class _PurchasePageState extends State<PurchasePage> {
       }
     }
     Future.delayed(Duration.zero, () async {
-      dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
+      dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(
+          user.dateJoined!, Localizations.localeOf(context).languageCode);
       originalPaymentString = AppLocalizations.of(context)!.giftPaymentMethod;
       if (paymentMethod == 0) {
         originalPaymentString = AppLocalizations.of(context)!.cashPaymentMethod;
-      } else if(paymentMethod == 1) {
-        originalPaymentString = AppLocalizations.of(context)!.transferPaymentMethod;
+      } else if (paymentMethod == 1) {
+        originalPaymentString =
+            AppLocalizations.of(context)!.transferPaymentMethod;
       }
     });
-    print("purchase.page");
-    print(purchase.events.length);
     setState(() {});
   }
 
   Future<void> getPurchase() async {
-    Purchase tempPurchase = await _purchaseDataService.getPurchaseInfo(purchase.id!);
-    print("tempPurchase.events");
-    print(tempPurchase.events.length);
+    Purchase tempPurchase =
+        await _purchaseDataService.getPurchaseInfo(purchase.id!);
     purchase.events = tempPurchase.events;
     purchase.setInitialEventsData = tempPurchase.events;
     startDate = purchase.purchasedAt!.toDate();
@@ -236,11 +245,11 @@ class _PurchasePageState extends State<PurchasePage> {
     isFirstBuild = true;
     setBonoConditions(bonoSelected);
   }
- 
+
   void setBonoConditions(Bono _bono) {
     int? days = _bono.condition?.expirationTime!;
     priceController.text = _bono.price.toString();
-    if(_bono.sessions! > 5000) {
+    if (_bono.sessions! > 5000) {
       sessionsController.text = '';
       noSessions = true;
     } else {
@@ -279,7 +288,8 @@ class _PurchasePageState extends State<PurchasePage> {
         }
       }
       if (weekSessions && cancelTimeSessions) {
-        if (freeCancellController.text.isNotEmpty && weeklyController.text.isNotEmpty) {
+        if (freeCancellController.text.isNotEmpty &&
+            weeklyController.text.isNotEmpty) {
           return true;
         }
       }
@@ -289,11 +299,72 @@ class _PurchasePageState extends State<PurchasePage> {
       return false;
     }
   }
-  
+
+  // Check If User Bonos Have Expired
+  Future<void> checkIfUserBonosHaveExpiredOrBeenReactivated(Purchase purchase) async {
+    // Check if we have active or not active status now.
+    bool purchaseIsActive = purchase.isActive!;
+    if (purchaseIsActive) {
+      // Sessions Done
+      int sessionsDone = purchase.events.length;
+      if (purchase.sessions == sessionsDone) {
+        int index = purchase.events.indexWhere(
+            (element) => element.doneAt!.toDate().isAfter(DateTime.now()));
+        if (index == -1) {
+          await _userDataService.deleteUserBono(purchase.userId!,
+              purchase.brandId!, purchase.bonoId!, purchase.id!);
+        }
+      }
+      // After Expiration Date
+      if (purchase.condition!.expirationTime! != 0) {
+        DateTime purchasedDate = purchase.purchasedAt!.toDate();
+        purchasedDate = DateTime(
+          purchasedDate.year,
+          purchasedDate.month,
+          purchasedDate.day,
+        );
+        DateTime expirationDate =
+            purchasedDate.add(Duration(days: purchase.condition!.expirationTime!));
+        DateTime now = DateTime.now();
+        if (now.isAfter(expirationDate)) {          
+          await _userDataService.deleteUserBono(purchase.userId!,
+              purchase.brandId!, purchase.bonoId!, purchase.id!);
+        }
+      }
+    } else {
+      // Sessions Done
+      int sessionsDone = purchase.events.length;
+      if (purchase.sessions! != sessionsDone) {
+        await _userDataService.activateUserBono(
+            purchase.userId!, purchase.brandId!, purchase.bonoId!, purchase.id!);
+      }
+      // After Expiration Date
+      if (purchase.condition!.expirationTime! != 0) {
+        DateTime purchasedDate = purchase.purchasedAt!.toDate();
+        purchasedDate = DateTime(
+          purchasedDate.year,
+          purchasedDate.month,
+          purchasedDate.day,
+        );
+        DateTime expirationDate =
+            purchasedDate.add(Duration(days: purchase.condition!.expirationTime!));
+        DateTime now = DateTime.now();
+        if (now.isBefore(expirationDate)) {          
+          await _userDataService.activateUserBono(purchase.userId!,
+              purchase.brandId!, purchase.bonoId!, purchase.id!);
+        }
+      }      
+    }
+  }
+
   void executeFunctionWithPurchase(Purchase _purchase) {
     eventsUpdated = true;
-    List<Event> deleteEvents = _purchase.initalEvents.where((b) => !_purchase.events.any((a) => a.id == b.id)).toList();
-    List<Event> newEvents = _purchase.events.where((b) => !_purchase.initalEvents.any((a) => a.id == b.id)).toList();
+    List<Event> deleteEvents = _purchase.initalEvents
+        .where((b) => !_purchase.events.any((a) => a.id == b.id))
+        .toList();
+    List<Event> newEvents = _purchase.events
+        .where((b) => !_purchase.initalEvents.any((a) => a.id == b.id))
+        .toList();
     newPurchase.setInitialEventsData = deleteEvents;
     newPurchase.setPurchasedEventsData = newEvents;
   }
@@ -302,6 +373,7 @@ class _PurchasePageState extends State<PurchasePage> {
     if (isBonoRequest) {
       return Column(
         children: [
+          /*
           Container(
             height: MediaQuery.of(context).size.height * 0.06,
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -322,7 +394,8 @@ class _PurchasePageState extends State<PurchasePage> {
                     SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                     Text(
                       AppLocalizations.of(context)!.toConfirm,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                          color: AppColors.red, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.right,
                     ),
                   ],
@@ -330,18 +403,129 @@ class _PurchasePageState extends State<PurchasePage> {
               ],
             ),
           ),
+          */
+          // Mark as not payed already from the start
+          isPaid == false
+              ? Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.new_releases_outlined,
+                                color: AppColors.red,
+                                size: MediaQuery.of(context).size.width * 0.05,
+                              ),
+                              SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.01),
+                              Text(
+                                AppLocalizations.of(context)!.unverfied,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(
+                                        color: AppColors.red,
+                                        fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.06,
+                            width: MediaQuery.of(context).size.width * 0.15,
+                            child: CupertinoSwitch(
+                              value: false,
+                              onChanged: (bool newVal) {
+                                setState(() {
+                                  isPaid = !isPaid;
+                                });
+                              },
+                              trackColor: AppColors.red.withOpacity(0.4),
+                              thumbColor: AppColors.white,
+                              activeColor: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.verified_outlined,
+                                color: Theme.of(context).primaryColor,
+                                size: MediaQuery.of(context).size.width * 0.05,
+                              ),
+                              SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.01),
+                              Text(
+                                AppLocalizations.of(context)!.verfied,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.06,
+                            width: MediaQuery.of(context).size.width * 0.15,
+                            child: CupertinoSwitch(
+                              value: true,
+                              onChanged: (bool newVal) {
+                                setState(() {
+                                  isPaid = !isPaid;
+                                });
+                              },
+                              trackColor: AppColors.red.withOpacity(0.4),
+                              thumbColor: AppColors.white,
+                              activeColor: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.005),
           Row(
             children: [
               Flexible(
                 child: Text(
                   AppLocalizations.of(context)!.toConfirmDesc,
-                  style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption
+                      ?.copyWith(fontSize: 12),
                   textAlign: TextAlign.left,
                 ),
               ),
             ],
           ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
         ],
       );
     } else {
@@ -367,7 +551,8 @@ class _PurchasePageState extends State<PurchasePage> {
                       SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                       Text(
                         AppLocalizations.of(context)!.unverfied,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            color: AppColors.red, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.right,
                       ),
                     ],
@@ -396,7 +581,10 @@ class _PurchasePageState extends State<PurchasePage> {
                 Flexible(
                   child: Text(
                     AppLocalizations.of(context)!.unverfiedDesc,
-                    style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
+                    style: Theme.of(context)
+                        .textTheme
+                        .caption
+                        ?.copyWith(fontSize: 12),
                     textAlign: TextAlign.left,
                   ),
                 ),
@@ -426,7 +614,10 @@ class _PurchasePageState extends State<PurchasePage> {
                       SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                       Text(
                         AppLocalizations.of(context)!.verfied,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1
+                            ?.copyWith(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.right,
                       ),
                     ],
@@ -455,7 +646,10 @@ class _PurchasePageState extends State<PurchasePage> {
                 Flexible(
                   child: Text(
                     AppLocalizations.of(context)!.verfiedDesc,
-                    style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
+                    style: Theme.of(context)
+                        .textTheme
+                        .caption
+                        ?.copyWith(fontSize: 12),
                     textAlign: TextAlign.left,
                   ),
                 ),
@@ -472,7 +666,10 @@ class _PurchasePageState extends State<PurchasePage> {
       return Row(
         children: [
           Text(
-            DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(widget.bonoRequest!.timeRequested!.toDate()).toUpperCase(),
+            DateFormat("E dd MMMM yy, HH:mm",
+                    Localizations.localeOf(context).languageCode)
+                .format(widget.bonoRequest!.timeRequested!.toDate())
+                .toUpperCase(),
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -484,7 +681,12 @@ class _PurchasePageState extends State<PurchasePage> {
       return Row(
         children: [
           Text(
-            purchase.id != null? DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate()).toUpperCase() : '',
+            purchase.id != null
+                ? DateFormat("E dd MMMM yy, HH:mm",
+                        Localizations.localeOf(context).languageCode)
+                    .format(purchase.purchasedAt!.toDate())
+                    .toUpperCase()
+                : '',
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -498,802 +700,1199 @@ class _PurchasePageState extends State<PurchasePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            elevation: 0,
-            scrolledUnderElevation: 2,
-            pinned: true,
-            floating: false,
-            centerTitle: false,
-            expandedHeight: MediaQuery.of(context).size.height * 0.08,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            title: AnimatedOpacity(
-                opacity: appBarExpanded ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 200),
-                child: Text(
-                    editBono ? AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase() :
-                    isBonoRequest ? StringUtils().toCapitalized(AppLocalizations.of(context)!.userSendsBonoRequestBrand("").split("una")[1].trim())
-                    : AppLocalizations.of(context)!.acceptBono,
-                    style: Theme.of(context).appBarTheme.titleTextStyle
-                )
-            ),
-            actions: [
-              /// DELETE BONO REQUEST
-              isBonoRequest ? IconButton(
-                  onPressed: () async {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    var result = await showDialog(
-                        context: context,
-                        builder: (_) {
-                          return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deletePurchaseRequest);
-                        }
-                    );
-                    if (result) {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
-                      await Future.delayed(const Duration(milliseconds: 1500));
-                      mixpanel!.track('bono_confirmation_deleted');
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  icon: SizedBox(
-                    width: MediaQuery.of(context).size.width*0.15,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,)
-                      ],
-                    ),
-                  )
-              ) : editBono ? IconButton(
-                  onPressed: () async {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    var result = await showDialog(
-                        context: context,
-                        builder: (_) {
-                          return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deletePurchase);
-                        }
-                    );
-                    if (result) {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      await _purchaseDataService.deletePurchase(purchase.id!, widget.user.id!, widget.brand.id!);
-                      mixpanel!.track('purchase_deleted');
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  icon: SizedBox(
-                    width: MediaQuery.of(context).size.width*0.15,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,)
-                      ],
-                    ),
-                  )
-              ) : Container(),
-              SizedBox(width: MediaQuery.of(context).size.width*0.03)
-            ],
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                /// TITLE
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          editBono ? AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase() :
-                          isBonoRequest ? StringUtils().toCapitalized(AppLocalizations.of(context)!.userSendsBonoRequestBrand("").split("una")[1].trim())
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+        },
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverAppBar(
+              elevation: 0,
+              scrolledUnderElevation: 2,
+              pinned: true,
+              floating: false,
+              centerTitle: false,
+              expandedHeight: MediaQuery.of(context).size.height * 0.08,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: MediaQuery.of(context).size.width * 0.06,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              title: AnimatedOpacity(
+                  opacity: appBarExpanded ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                      editBono
+                          ? AppLocalizations.of(context)!.edit +
+                              " " +
+                              AppLocalizations.of(context)!
+                                  .directPurchasetext
+                                  .split(" ")[0]
+                                  .toLowerCase()
+                          : isBonoRequest
+                              ? StringUtils().toCapitalized(
+                                  AppLocalizations.of(context)!
+                                      .userSendsBonoRequestBrand("")
+                                      .split("una")[1]
+                                      .trim())
                               : AppLocalizations.of(context)!.acceptBono,
-                          style: Theme.of(context).textTheme.headline1,
-                          textAlign: TextAlign.left
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-                        isBonoRequest || editBono ? Column(
-                          children: [
-                            buildDateDetails(),
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-                            buildStatusLabel(),
-                          ],
-                        ) : Text(
-                          AppLocalizations.of(context)!.acceptBonoDesc,
-                          style: Theme.of(context).textTheme.caption,
-                          textAlign: TextAlign.left,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                /*
-                /// ACTIVATE PURCHASE
-                editBono ? Column(
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      width: MediaQuery.of(context).size.width * 0.9,
+                      style: Theme.of(context).appBarTheme.titleTextStyle)),
+              actions: [
+                /// DELETE BONO REQUEST
+                isBonoRequest
+                    ? IconButton(
+                        onPressed: () async {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          var result = await showDialog(
+                              context: context,
+                              builder: (_) {
+                                return DeleteConfirmationDialog(
+                                    text: AppLocalizations.of(context)!
+                                        .deletePurchaseRequest);
+                              });
+                          if (result) {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            await _brandDataService.deleteBrandBonoRequest(
+                                widget.brand.id!,
+                                widget.user.id!,
+                                widget.bonoRequest?.id!);
+                            await Future.delayed(
+                                const Duration(milliseconds: 1500));
+                            mixpanel!.track('bono_confirmation_deleted');
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        icon: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.15,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.delete_outlined,
+                                color: AppColors.red,
+                                size: MediaQuery.of(context).size.width * 0.07,
+                              )
+                            ],
+                          ),
+                        ))
+                    : editBono
+                        ? IconButton(
+                            onPressed: () async {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              var result = await showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return DeleteConfirmationDialog(
+                                        text: AppLocalizations.of(context)!
+                                            .deletePurchase);
+                                  });
+                              if (result) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                await _purchaseDataService.deletePurchase(
+                                    purchase.id!,
+                                    widget.user.id!,
+                                    widget.brand.id!);
+                                mixpanel!.track('purchase_deleted');
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            icon: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.15,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.delete_outlined,
+                                    color: AppColors.red,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.07,
+                                  )
+                                ],
+                              ),
+                            ))
+                        : Container(),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03)
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  /// TITLE
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Flexible(
-                            child: Text(purchase.isActive! ? AppLocalizations.of(context)!.desactivarCompra : AppLocalizations.of(context)!.activarCompra,
-                                style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
-                                textAlign: TextAlign.center),
-                          ),
-
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              AppLocalizations.of(context)!.activePurchaseQuesDesc,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .caption,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 4.0),
-                            child: CupertinoSwitch(
-                              value: purchase.isActive!,
-                              onChanged: setPurchaseActivation,
-                              trackColor: Colors.green.withOpacity(0.4),
-                              thumbColor: AppColors.white,
-                              activeColor: Colors.green,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                  ],
-                ) : Container(),
-                 */
-                /// USER
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        child: Text(AppLocalizations.of(context)!.user,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
-                            textAlign: TextAlign.center),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.all(Radius.circular(10))
-                    ),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      dense: true,
-                      minLeadingWidth: MediaQuery.of(context).size.width * 0.1,
-                      leading: CircularImage(
-                        size: MediaQuery.of(context).size.width * 0.15,
-                        image: widget.user.imageUrl,
-                        color: Theme.of(context).primaryColor,
-                        borderWidth: 1.0,
-                      ),
-                      title: Text(
-                        widget.user.name!,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.left,
-                      ),
-                      subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
-                            AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
-                            style: Theme.of(context).textTheme.caption,
-                          ),
+                              editBono
+                                  ? AppLocalizations.of(context)!.edit +
+                                      " " +
+                                      AppLocalizations.of(context)!
+                                          .directPurchasetext
+                                          .split(" ")[0]
+                                          .toLowerCase()
+                                  : isBonoRequest
+                                      ? StringUtils().toCapitalized(
+                                          AppLocalizations.of(context)!
+                                              .userSendsBonoRequestBrand("")
+                                              .split("una")[1]
+                                              .trim())
+                                      : AppLocalizations.of(context)!
+                                          .acceptBono,
+                              style: Theme.of(context).textTheme.headline1,
+                              textAlign: TextAlign.left),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.015),
+                          isBonoRequest || editBono
+                              ? Column(
+                                  children: [
+                                    buildDateDetails(),
+                                    SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.015),
+                                    buildStatusLabel(),
+                                  ],
+                                )
+                              : Column(
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                          .acceptBonoDesc,
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.02),
+                                    isPaid == false
+                                        ? Column(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8),
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .backgroundColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .new_releases_outlined,
+                                                          color: AppColors.red,
+                                                          size: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.05,
+                                                        ),
+                                                        SizedBox(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.01),
+                                                        Text(
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .unverfied,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyText1
+                                                              ?.copyWith(
+                                                                  color:
+                                                                      AppColors
+                                                                          .red,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.06,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.15,
+                                                      child: CupertinoSwitch(
+                                                        value: false,
+                                                        onChanged:
+                                                            (bool newVal) {
+                                                          setState(() {
+                                                            isPaid = !isPaid;
+                                                          });
+                                                        },
+                                                        trackColor: AppColors
+                                                            .red
+                                                            .withOpacity(0.4),
+                                                        thumbColor:
+                                                            AppColors.white,
+                                                        activeColor:
+                                                            Colors.green,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Column(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8),
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .backgroundColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .verified_outlined,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                          size: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.05,
+                                                        ),
+                                                        SizedBox(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.01),
+                                                        Text(
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .verfied,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyText1
+                                                              ?.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.06,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.15,
+                                                      child: CupertinoSwitch(
+                                                        value: true,
+                                                        onChanged:
+                                                            (bool newVal) {
+                                                          setState(() {
+                                                            isPaid = !isPaid;
+                                                          });
+                                                        },
+                                                        trackColor: AppColors
+                                                            .red
+                                                            .withOpacity(0.4),
+                                                        thumbColor:
+                                                            AppColors.white,
+                                                        activeColor:
+                                                            Colors.green,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                  ],
+                                ),
                         ],
                       ),
-                      trailing: IconButton(
-                        icon: Icon(
-                          Icons.arrow_forward_ios,
-                          color: isBonoRequest || editBono ? Theme.of(context).primaryColor : Colors.transparent,
-                          size: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(0),
-                        onPressed: false ? () {} : null,
-                      ),
-                      onTap: isBonoRequest || editBono ? () async {
-                        await Navigator.push(
-                            context,
-                            CupertinoPageRoute<bool?>(
-                                builder: (context) =>
-                                    ProfileViewUser(
-                                      userID: widget.user.id!,
-                                      viewOnly: false,
-                                    )
-                            )
-                        );
-                      } : null,
                     ),
                   ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-
-                /// BONOS
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  /*
+                  /// ACTIVATE PURCHASE
+                  editBono ? Column(
                     children: [
-                      Flexible(
-                        child: Text(
-                            AppLocalizations.of(context)!.bono,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
-                            textAlign: TextAlign.center),
-                      ),
-                    ],
-                  ),
-                ),
-                bonos.length > 1 ? Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: _buildPageIndicator(),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                  ],
-                ) : SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                !editBono || purchase.id == null ? Container(
-                  width: MediaQuery.of(context).size.width,
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height*0.24,
-                    minHeight: MediaQuery.of(context).size.height*0.24,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: PageView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            controller: _pageController,
-                            onPageChanged: (int page) {
-                              setState(()  {
-                                bonoSelected.setBasicData = bonos[page];
-                                bonoSelected.setConditionsData = bonos[page].condition!;
-                                isBonoSelected = true;
-                                setBonoConditions(bonoSelected);
-                                _currentPage = page;
-                              });
-                            },
-                            itemCount: bonos.length,
-                            itemBuilder: (context, index) {
-                              Bono bono = bonos[index];
-                              return Padding(
-                                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.08, left: MediaQuery.of(context).size.width * 0.08, bottom: MediaQuery.of(context).size.height*0.02),
-                                child:  BonoCard(
-                                  height: MediaQuery.of(context).size.height * 0.22,
-                                  width: MediaQuery.of(context).size.width * 0.84,
-                                  bono: bono,
-                                  brand: widget.brand,
-                                  canExpand: false,
-                                  onlyView: true,
-                                  hideActive: true,
-                                ),
-                              );
-                            }
-                        ),
-                      ),
-                    ],
-                  ),
-                ) :
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height*0.24,
-                    minHeight: MediaQuery.of(context).size.height*0.24,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.08, left: MediaQuery.of(context).size.width * 0.08, bottom: MediaQuery.of(context).size.height*0.02),
-                        child: ClientBonoCard(
-                          height: MediaQuery.of(context).size.height*0.22,
-                          width: MediaQuery.of(context).size.width*0.84,
-                          bono: bonoSelected,
-                          brand: widget.brand,
-                          purchase: Purchase.copy(purchase),
-                          isExpanded: false,
-                          canExpand: false,
-                          onlyView: true,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                /// EVENTS
-                editBono ? PurchaseEvents(purchase: purchase, context: context, executeFunction: executeFunctionWithPurchase) : Container(),
-                /// CONDITIONS
-                !editBono ? Padding(
-                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  AppLocalizations.of(context)!.personalizeBonoUser(widget.user.firstName!),
-                                  //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
-                                  style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Icon(seeConditions ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: MediaQuery.of(context).size.width*0.08, color: Theme.of(context).primaryColor),
-                            ],
-                          ),
-                          style: TextButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                          ),
-                          onPressed: editBono? null : () async {
-                            setState(() {
-                              seeConditions = !seeConditions;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ) : Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.03,
-                      left: MediaQuery.of(context).size.width * 0.05,
-                      right: MediaQuery.of(context).size.width * 0.05,
-                      bottom: MediaQuery.of(context).size.height * 0.02
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.conditions,
-                        //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
-                        style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
-                      ),
-                    ],
-                  ),
-                ),
-                seeConditions ? Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                    child: Form(
-                      key: formKeyInfo,
-                      child: Column(
-                        children: [
-                          /// SESSIONS
-                          Container(
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: const BorderRadius.all(Radius.circular(10))
-                            ),
-                            child: optionTextWrite(
-                                TextInputType.number,
-                                AppLocalizations.of(context)!.sessions,
-                                AppLocalizations.of(context)!.sesionsBonoDesc,
-                                AppLocalizations.of(context)!.sessionHint,
-                                AppLocalizations.of(context)!.sessionPlease,
-                                true,
-                                sessionsController,
-                                focusNodeSessionsController,
-                                false,
-                                'ses',
-                                false),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                          /// PRICE
-                          Container(
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: const BorderRadius.all(Radius.circular(10))
-                            ),
-                            child: optionTextWrite(
-                                const TextInputType.numberWithOptions(decimal: true),
-                                AppLocalizations.of(context)!.price,
-                                "",
-                                AppLocalizations.of(context)!.priceHint,
-                                AppLocalizations.of(context)!.pricePlease,
-                                true,
-                                priceController,
-                                focusNodePriceController,
-                                false,
-                                'price',
-                                false),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                          /// EXPIRATION DATE
-                          Container(
-                              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).backgroundColor,
-                                  borderRadius: const BorderRadius.all(Radius.circular(10))
-                              ),
-                              child: optionConditionsWrite(
-                                  TextInputType.text,
-                                  AppLocalizations.of(context)!.expireDate,
-                                  AppLocalizations.of(context)!.expiresAtDesc,
-                                  AppLocalizations.of(context)!.titleError,
-                                  AppLocalizations.of(context)!.titleError,
-                                  AppLocalizations.of(context)!.titleError,
-                                  true,
-                                  titleController,
-                                  null,
-                                  'expEdit',
-                                  false
-                              )
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                          /// WEEKLY SESSIONS
-                          Container(
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: const BorderRadius.all(Radius.circular(10))
-                            ),
-                            child: optionConditionsWrite(
-                                TextInputType.number,
-                                AppLocalizations.of(context)!.trainsPerWeek,
-                                AppLocalizations.of(context)!.trainsPerWeekDesc,
-                                AppLocalizations.of(context)!.sessionHint,
-                                AppLocalizations.of(context)!.sessionPlease,
-                                AppLocalizations.of(context)!.trainsPerWeekError,
-                                true,
-                                weeklyController,
-                                focusNodeWeeklyController,
-                                'maxw',
-                                false
-                            ),
-                          ),
-                          /// CANCEL TIME
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                          Container(
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: const BorderRadius.all(Radius.circular(10))
-                            ),
-                            child: optionConditionsWrite(
-                                TextInputType.number,
-                                AppLocalizations.of(context)!.freeCancel,
-                                AppLocalizations.of(context)!.freeCancelDesc,
-                                AppLocalizations.of(context)!.freeCancelHint,
-                                AppLocalizations.of(context)!.freeCancelError,
-                                AppLocalizations.of(context)!.freeCancelErrorSecond,
-                                true,
-                                freeCancellController,
-                                focusNodeFreeCancelController,
-                                'canFree',
-                                false
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                ) : Container(),
-                editBono ? SizedBox(height: MediaQuery.of(context).size.height * 0.04): SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                /// PAYMENT METHOD
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        child: Text(
-                            AppLocalizations.of(context)!.paymentMethod,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
-                            textAlign: TextAlign.center),
-                      ),
-                    ],
-                  ),
-                ),
-                !(editBono || isBonoRequest) ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      RichText(
-                        textAlign: TextAlign.left,
-                        text: TextSpan(
-                          style: Theme.of(context).textTheme.bodyText2,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            TextSpan(
-                              text: AppLocalizations.of(context)!.paymentMethodConfirm,
-                              style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
-
+                            Flexible(
+                              child: Text(purchase.isActive! ? AppLocalizations.of(context)!.desactivarCompra : AppLocalizations.of(context)!.activarCompra,
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
+                                  textAlign: TextAlign.center),
                             ),
+      
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ) :
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: RichText(
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.bodyText2,
-                      children: [
-                        TextSpan(
-                            text: AppLocalizations.of(context)!.paymentMethodOriginal,
-                            style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)),
-                        TextSpan(
-                          text: originalPaymentString,
-                          style: Theme.of(context).textTheme.caption?.copyWith(fontWeight: FontWeight.bold, height: 1.5),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                AppLocalizations.of(context)!.activePurchaseQuesDesc,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .caption,
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 4.0),
+                              child: CupertinoSwitch(
+                                value: purchase.isActive!,
+                                onChanged: setPurchaseActivation,
+                                trackColor: Colors.green.withOpacity(0.4),
+                                thumbColor: AppColors.white,
+                                activeColor: Colors.green,
+                              ),
+                            )
+                          ],
                         ),
-                        TextSpan(
-                            text: ". " + AppLocalizations.of(context)!.paymentMethodEdit,
-                            style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    ],
+                  ) : Container(),
+                   */
+                  /// USER
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: Text(AppLocalizations.of(context)!.user,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1
+                                  ?.copyWith(fontSize: 22),
+                              textAlign: TextAlign.center),
                         ),
                       ],
                     ),
                   ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          setState(() {
-                            paymentMethod = 0;
-                          });
-                        },
-                        child: Column(
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 4),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).backgroundColor,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
+                        minLeadingWidth:
+                            MediaQuery.of(context).size.width * 0.1,
+                        leading: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.15,
+                          image: widget.user.imageUrl,
+                          color: Theme.of(context).primaryColor,
+                          borderWidth: 1.0,
+                        ),
+                        title: Text(
+                          widget.user.name!,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.05),
-                              height:
-                              MediaQuery.of(context).size.width * 0.25,
-                              width:
-                              MediaQuery.of(context).size.width * 0.25,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                border: Border.all(
-                                    color: Theme.of(context).primaryColor,
-                                    width: paymentMethod == 0 ? 5 : 1),
-                              ),
-                              child: FittedBox(
-                                fit: BoxFit.cover,
-                                child: Image(
-                                  image: AssetImage(Constants.imageCash),
-                                  opacity: AlwaysStoppedAnimation(
-                                      paymentMethod == 1 ? 100 : 1),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                                height: MediaQuery.of(context).size.height *
-                                    0.01),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .cashPaymentMethod,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline3
-                                      ?.copyWith(
-                                      color: paymentMethod == 1
-                                          ? Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(0.5)
-                                          : Theme.of(context)
-                                          .primaryColor),
-                                  textAlign: TextAlign.center,
-                                ),
-                                paymentMethod == 0
-                                    ? Icon(
-                                  Icons.check_circle,
-                                  color:
-                                  Theme.of(context).primaryColor,
-                                )
-                                    : Container(),
-                              ],
+                            Text(
+                              user.lastEventAt == null
+                                  ? AppLocalizations.of(context)!.lastActiveIn(
+                                      DateTimeUtils()
+                                          .formatDateTimeToStringMMMYYYY(
+                                              dateJoined,
+                                              Localizations.localeOf(context)
+                                                  .languageCode))
+                                  : AppLocalizations.of(context)!.lastActiveIn(
+                                      DateTimeUtils()
+                                          .formatDateTimeToStringMMMYYYY(
+                                              user.lastEventAt!.toDate(),
+                                              Localizations.localeOf(context)
+                                                  .languageCode)),
+                              style: Theme.of(context).textTheme.caption,
                             ),
                           ],
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          setState(() {
-                            paymentMethod = 1;
-                          });
-                        },
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.05),
-                              height:
-                              MediaQuery.of(context).size.width * 0.25,
-                              width:
-                              MediaQuery.of(context).size.width * 0.25,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                border: Border.all(
-                                    color: Theme.of(context).primaryColor,
-                                    width: paymentMethod == 1 ? 5 : 1),
-                              ),
-                              child: FittedBox(
-                                fit: BoxFit.cover,
-                                child: Image(
-                                  image:
-                                  AssetImage(Constants.imageTransfer),
-                                  opacity: AlwaysStoppedAnimation(
-                                      paymentMethod == 0 ? 100 : 1),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                                height: MediaQuery.of(context).size.height *
-                                    0.01),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .transferPaymentMethod,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline3
-                                      ?.copyWith(
-                                      color: paymentMethod == 0
-                                          ? Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(0.5)
-                                          : Theme.of(context)
-                                          .primaryColor),
-                                  textAlign: TextAlign.center,
-                                ),
-                                paymentMethod == 1
-                                    ? Icon(
-                                  Icons.check_circle,
-                                  color:
-                                  Theme.of(context).primaryColor,
-                                )
-                                    : Container(),
-                              ],
-                            ),
-                          ],
+                        trailing: IconButton(
+                          icon: Icon(
+                            Icons.arrow_forward_ios,
+                            color: isBonoRequest || editBono
+                                ? Theme.of(context).primaryColor
+                                : Colors.transparent,
+                            size: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(0),
+                          onPressed: false ? () {} : null,
                         ),
+                        onTap: isBonoRequest || editBono
+                            ? () async {
+                                await Navigator.push(
+                                    context,
+                                    CupertinoPageRoute<bool?>(
+                                        builder: (context) => ProfileViewUser(
+                                              userID: widget.user.id!,
+                                              viewOnly: false,
+                                            )));
+                              }
+                            : null,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          setState(() {
-                            paymentMethod = 2;
-                          });
-                        },
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.05),
-                              height:
-                              MediaQuery.of(context).size.width * 0.25,
-                              width:
-                              MediaQuery.of(context).size.width * 0.25,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                border: Border.all(
-                                    color: Theme.of(context).primaryColor,
-                                    width: paymentMethod == 2 ? 5 : 1),
-                              ),
-                              child: FittedBox(
-                                fit: BoxFit.cover,
-                                child: Image(
-                                  image: AssetImage(Constants.imageGift),
-                                  opacity: AlwaysStoppedAnimation(
-                                      paymentMethod != 2 ? 100 : 1),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                                height: MediaQuery.of(context).size.height *
-                                    0.01),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .giftPaymentMethod,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline3
-                                      ?.copyWith(
-                                      color: paymentMethod != 2
-                                          ? Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(0.5)
-                                          : Theme.of(context)
-                                          .primaryColor),
-                                  textAlign: TextAlign.center,
-                                ),
-                                paymentMethod == 2
-                                    ? Icon(
-                                  Icons.check_circle,
-                                  color:
-                                  Theme.of(context).primaryColor,
-                                )
-                                    : Container(),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.12),
-              ],
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+
+                  /// BONOS
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: Text(AppLocalizations.of(context)!.bono,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1
+                                  ?.copyWith(fontSize: 22),
+                              textAlign: TextAlign.center),
+                        ),
+                      ],
+                    ),
+                  ),
+                  bonos.length > 1
+                      ? Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: _buildPageIndicator(),
+                            ),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.01),
+                          ],
+                        )
+                      : SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01),
+                  !editBono || purchase.id == null
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          constraints: BoxConstraints(
+                            maxHeight:
+                                MediaQuery.of(context).size.height * 0.24,
+                            minHeight:
+                                MediaQuery.of(context).size.height * 0.24,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: PageView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    controller: _pageController,
+                                    onPageChanged: (int page) {
+                                      setState(() {
+                                        bonoSelected.setBasicData = bonos[page];
+                                        bonoSelected.setConditionsData =
+                                            bonos[page].condition!;
+                                        isBonoSelected = true;
+                                        setBonoConditions(bonoSelected);
+                                        _currentPage = page;
+                                      });
+                                    },
+                                    itemCount: bonos.length,
+                                    itemBuilder: (context, index) {
+                                      Bono bono = bonos[index];
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.08,
+                                            left: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.08,
+                                            bottom: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.02),
+                                        child: BonoCard(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.22,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.84,
+                                          bono: bono,
+                                          brand: widget.brand,
+                                          canExpand: false,
+                                          onlyView: true,
+                                          hideActive: true,
+                                        ),
+                                      );
+                                    }),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          width: MediaQuery.of(context).size.width,
+                          constraints: BoxConstraints(
+                            maxHeight:
+                                MediaQuery.of(context).size.height * 0.24,
+                            minHeight:
+                                MediaQuery.of(context).size.height * 0.24,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    right: MediaQuery.of(context).size.width *
+                                        0.08,
+                                    left: MediaQuery.of(context).size.width *
+                                        0.08,
+                                    bottom: MediaQuery.of(context).size.height *
+                                        0.02),
+                                child: ClientBonoCard(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.22,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.84,
+                                  bono: bonoSelected,
+                                  brand: widget.brand,
+                                  purchase: Purchase.copy(purchase),
+                                  isExpanded: false,
+                                  canExpand: false,
+                                  onlyView: true,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+
+                  /// EVENTS
+                  editBono
+                      ? PurchaseEvents(
+                          purchase: purchase,
+                          context: context,
+                          executeFunction: executeFunctionWithPurchase)
+                      : Container(),
+
+                  /// CONDITIONS
+                  !editBono
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.04,
+                              right: MediaQuery.of(context).size.width * 0.04),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: TextButton(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          AppLocalizations.of(context)!
+                                              .personalizeBonoUser(
+                                                  widget.user.firstName!),
+                                          //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline3
+                                              ?.copyWith(
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Icon(
+                                          seeConditions
+                                              ? Icons.keyboard_arrow_up
+                                              : Icons.keyboard_arrow_down,
+                                          size: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.08,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ],
+                                  ),
+                                  style: TextButton.styleFrom(
+                                    primary: Theme.of(context).primaryColor,
+                                  ),
+                                  onPressed: editBono
+                                      ? null
+                                      : () async {
+                                          setState(() {
+                                            seeConditions = !seeConditions;
+                                          });
+                                        },
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.03,
+                              left: MediaQuery.of(context).size.width * 0.05,
+                              right: MediaQuery.of(context).size.width * 0.05,
+                              bottom:
+                                  MediaQuery.of(context).size.height * 0.02),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.conditions,
+                                //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline1
+                                    ?.copyWith(fontSize: 22),
+                              ),
+                            ],
+                          ),
+                        ),
+                  seeConditions
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.05),
+                          child: Form(
+                            key: formKeyInfo,
+                            child: Column(
+                              children: [
+                                /// SESSIONS
+                                Container(
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.of(context).size.width * 0.05),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: optionTextWrite(
+                                      TextInputType.number,
+                                      AppLocalizations.of(context)!.sessions,
+                                      AppLocalizations.of(context)!
+                                          .sesionsBonoDesc,
+                                      AppLocalizations.of(context)!.sessionHint,
+                                      AppLocalizations.of(context)!
+                                          .sessionPlease,
+                                      true,
+                                      sessionsController,
+                                      focusNodeSessionsController,
+                                      false,
+                                      'ses',
+                                      false),
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01),
+
+                                /// PRICE
+                                Container(
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.of(context).size.width * 0.05),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: optionTextWrite(
+                                      const TextInputType.numberWithOptions(
+                                          decimal: true),
+                                      AppLocalizations.of(context)!.price,
+                                      "",
+                                      AppLocalizations.of(context)!.priceHint,
+                                      AppLocalizations.of(context)!.pricePlease,
+                                      true,
+                                      priceController,
+                                      focusNodePriceController,
+                                      false,
+                                      'price',
+                                      false),
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01),
+
+                                /// EXPIRATION DATE
+                                Container(
+                                    padding: EdgeInsets.all(
+                                        MediaQuery.of(context).size.width *
+                                            0.05),
+                                    decoration: BoxDecoration(
+                                        color:
+                                            Theme.of(context).backgroundColor,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: optionConditionsWrite(
+                                        TextInputType.text,
+                                        AppLocalizations.of(context)!
+                                            .expireDate,
+                                        AppLocalizations.of(context)!
+                                            .expiresAtDesc,
+                                        AppLocalizations.of(context)!
+                                            .titleError,
+                                        AppLocalizations.of(context)!
+                                            .titleError,
+                                        AppLocalizations.of(context)!
+                                            .titleError,
+                                        true,
+                                        titleController,
+                                        null,
+                                        'expEdit',
+                                        false)),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01),
+
+                                /// WEEKLY SESSIONS
+                                Container(
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.of(context).size.width * 0.05),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: optionConditionsWrite(
+                                      TextInputType.number,
+                                      AppLocalizations.of(context)!
+                                          .trainsPerWeek,
+                                      AppLocalizations.of(context)!
+                                          .trainsPerWeekDesc,
+                                      AppLocalizations.of(context)!.sessionHint,
+                                      AppLocalizations.of(context)!
+                                          .sessionPlease,
+                                      AppLocalizations.of(context)!
+                                          .trainsPerWeekError,
+                                      true,
+                                      weeklyController,
+                                      focusNodeWeeklyController,
+                                      'maxw',
+                                      false),
+                                ),
+
+                                /// CANCEL TIME
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.01),
+                                Container(
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.of(context).size.width * 0.05),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: optionConditionsWrite(
+                                      TextInputType.number,
+                                      AppLocalizations.of(context)!.freeCancel,
+                                      AppLocalizations.of(context)!
+                                          .freeCancelDesc,
+                                      AppLocalizations.of(context)!
+                                          .freeCancelHint,
+                                      AppLocalizations.of(context)!
+                                          .freeCancelError,
+                                      AppLocalizations.of(context)!
+                                          .freeCancelErrorSecond,
+                                      true,
+                                      freeCancellController,
+                                      focusNodeFreeCancelController,
+                                      'canFree',
+                                      false),
+                                ),
+                              ],
+                            ),
+                          ))
+                      : Container(),
+                  editBono
+                      ? SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.04)
+                      : SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.04),
+
+                  /// PAYMENT METHOD
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: Text(
+                              AppLocalizations.of(context)!.paymentMethod,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1
+                                  ?.copyWith(fontSize: 22),
+                              textAlign: TextAlign.center),
+                        ),
+                      ],
+                    ),
+                  ),
+                  !(editBono || isBonoRequest)
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.05),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              RichText(
+                                textAlign: TextAlign.left,
+                                text: TextSpan(
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                  children: [
+                                    TextSpan(
+                                      text: AppLocalizations.of(context)!
+                                          .paymentMethodConfirm,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption
+                                          ?.copyWith(height: 1.5),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.05),
+                          child: RichText(
+                            text: TextSpan(
+                              style: Theme.of(context).textTheme.bodyText2,
+                              children: [
+                                TextSpan(
+                                    text: AppLocalizations.of(context)!
+                                        .paymentMethodOriginal,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption
+                                        ?.copyWith(height: 1.5)),
+                                TextSpan(
+                                  text: originalPaymentString,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          height: 1.5),
+                                ),
+                                TextSpan(
+                                    text: ". " +
+                                        AppLocalizations.of(context)!
+                                            .paymentMethodEdit,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption
+                                        ?.copyWith(height: 1.5)),
+                              ],
+                            ),
+                          ),
+                        ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(() {
+                              paymentMethod = 0;
+                            });
+                          },
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.05),
+                                height:
+                                    MediaQuery.of(context).size.width * 0.25,
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).backgroundColor,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor,
+                                      width: paymentMethod == 0 ? 5 : 1),
+                                ),
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: Image(
+                                    image: AssetImage(Constants.imageCash),
+                                    opacity: AlwaysStoppedAnimation(
+                                        paymentMethod == 1 ? 100 : 1),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .cashPaymentMethod,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline3
+                                        ?.copyWith(
+                                            color: paymentMethod == 1
+                                                ? Theme.of(context)
+                                                    .primaryColor
+                                                    .withOpacity(0.5)
+                                                : Theme.of(context)
+                                                    .primaryColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  paymentMethod == 0
+                                      ? Icon(
+                                          Icons.check_circle,
+                                          color: Theme.of(context).primaryColor,
+                                        )
+                                      : Container(),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(() {
+                              paymentMethod = 1;
+                            });
+                          },
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.05),
+                                height:
+                                    MediaQuery.of(context).size.width * 0.25,
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).backgroundColor,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor,
+                                      width: paymentMethod == 1 ? 5 : 1),
+                                ),
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: Image(
+                                    image: AssetImage(Constants.imageTransfer),
+                                    opacity: AlwaysStoppedAnimation(
+                                        paymentMethod == 0 ? 100 : 1),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .transferPaymentMethod,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline3
+                                        ?.copyWith(
+                                            color: paymentMethod == 0
+                                                ? Theme.of(context)
+                                                    .primaryColor
+                                                    .withOpacity(0.5)
+                                                : Theme.of(context)
+                                                    .primaryColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  paymentMethod == 1
+                                      ? Icon(
+                                          Icons.check_circle,
+                                          color: Theme.of(context).primaryColor,
+                                        )
+                                      : Container(),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(() {
+                              paymentMethod = 2;
+                            });
+                          },
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.05),
+                                height:
+                                    MediaQuery.of(context).size.width * 0.25,
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).backgroundColor,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor,
+                                      width: paymentMethod == 2 ? 5 : 1),
+                                ),
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: Image(
+                                    image: AssetImage(Constants.imageGift),
+                                    opacity: AlwaysStoppedAnimation(
+                                        paymentMethod != 2 ? 100 : 1),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .giftPaymentMethod,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline3
+                                        ?.copyWith(
+                                            color: paymentMethod != 2
+                                                ? Theme.of(context)
+                                                    .primaryColor
+                                                    .withOpacity(0.5)
+                                                : Theme.of(context)
+                                                    .primaryColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  paymentMethod == 2
+                                      ? Icon(
+                                          Icons.check_circle,
+                                          color: Theme.of(context).primaryColor,
+                                        )
+                                      : Container(),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.12),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       resizeToAvoidBottomInset: false,
       floatingActionButton: whichFloatingActionButton(context),
@@ -1302,112 +1901,168 @@ class _PurchasePageState extends State<PurchasePage> {
 
   Widget whichFloatingActionButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.03, horizontal: MediaQuery.of(context).size.width*0.01),
+      padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.width * 0.03,
+          horizontal: MediaQuery.of(context).size.width * 0.01),
       child: FloatingActionButton.extended(
         heroTag: "10",
-        onPressed: isLoading ? null : () async {
-          if (checkIfAllBonoConditionsAreCorrect()) {
-            FocusManager.instance.primaryFocus?.unfocus();
-            setState(() {
-              isLoading = true;
-            });
-            if (noSessions) {
-              bonoSelected.sessions = 10000;
-            }
-            if (editBono) {
-              /// EDIT BONO REQUEST
-              mixpanel!.track('edit_bono_confirmed');
-              try {
-                purchase.paymentMethod = paymentMethod;
-                await _userDataService.updateUserPurchase(user.id!, currentBrand.id!, bonoSelected, purchase);
-                await _purchaseDataService.updatePurchasePaymentStatus(purchase.id!, purchase.directPurchase!);
-              } catch (e) {
-                print(e);
-              }
-              if (eventsUpdated) {
-                await _purchaseDataService.updatePurchaseEvents(purchase.id!, user.id!, newPurchase.events, newPurchase.initalEvents);
-              }
-              /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
-              if (originalExpirationTime != bonoSelected.condition!.expirationTime!) {
-                // Delete Local Notifications if Expiration Time has change in Update
-                await _localNotificationService.deleteRemoteBonoExpirationLocalNotification(user.id!, currentBrand.id!, bonoSelected.purchaseId!);
-                // Local Notifications Service
-                await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, bonoSelected.purchaseId!);
-              }
-              mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
-              await Future.delayed(const Duration(milliseconds: 1500));
-            }
-            else if (isBonoRequest) {
-              /// CONFIRM BONO REQUEST
-              // Build Purchase Object
-              Purchase purchase = Purchase();
-              purchase.purchasedAt = Timestamp.now();
-              purchase.brandId = widget.brand.id!;
-              purchase.bonoId = widget.bonoRequest?.bonoId;
-              purchase.price = bonoSelected.price;
-              purchase.userId = widget.bonoRequest?.userId!;
-              purchase.paymentMethod = paymentMethod;
-              //Add user to brand
-              Brand? userBrand = await _userDataService.getUserBrandsToAdd( widget.user.id!, widget.brand.id!);
-              if (userBrand == null) {
-                NotificationService().userJoinsBrand(widget.user.id!, widget.brand.id!);
-                _brandDataService.addUserToBrand(widget.user.id!, widget.brand.id!, 0);
-              }
-              // Notifications Service
-              _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
-              // Build Purchase Object
-              String purchaseId = await _purchaseDataService.addPurchase(purchase, bonoSelected);
-              await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
-              await _brandDataService.updateBonoCompras(widget.brand.id!, purchase.bonoId!);
-              // Local Notifications Service
-              await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
-              mixpanel!.track('bono_confirmation_accepted', properties: {'Payment Method': purchase.paymentMethod.toString()});
-            } else {
-              /// OTORGAR BONO
-              // Build Purchase Object
-              Purchase purchase = Purchase();
-              purchase.purchasedAt = Timestamp.now();
-              purchase.brandId = widget.brand.id!;
-              purchase.bonoId = bonoSelected.id!;
-              purchase.price = bonoSelected.price!;
-              purchase.userId = user.id!;
-              purchase.paymentMethod = paymentMethod;
-              // Build Purchase Object
-              _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
-              // Save Purchase Object
-              String purchaseId = await _purchaseDataService.addPurchase(purchase, bonoSelected);
-              await _brandDataService.updateBonoCompras(widget.brand.id!, bonoSelected.id!);
-              await Future.delayed(const Duration(seconds: 2));
-              // Local Notifications Service
-              await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
-              mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
-            }
-            Navigator.of(context).pop();
-          }
-        },
+        onPressed: isLoading
+            ? null
+            : () async {
+                if (checkIfAllBonoConditionsAreCorrect()) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  setState(() {
+                    isLoading = true;
+                  });
+                  if (noSessions) {
+                    bonoSelected.sessions = 10000;
+                  }
+                  if (editBono) {
+                    /// EDIT BONO REQUEST
+                    mixpanel!.track('edit_bono_confirmed');
+                    try {
+                      purchase.paymentMethod = paymentMethod;
+                      await _userDataService.updateUserPurchase(
+                          user.id!, currentBrand.id!, bonoSelected, purchase);
+                      await _purchaseDataService.updatePurchasePaymentStatus(
+                          purchase.id!, purchase.directPurchase!);
+                    } catch (e) {
+                      print(e);
+                    }
+                    // Has Updated the Events of this Purchase
+                    if (eventsUpdated) {
+                      await _purchaseDataService.updatePurchaseEvents(
+                          purchase.id!,
+                          user.id!,
+                          newPurchase.events,
+                          newPurchase.initalEvents);
+                      purchase.events = newPurchase.events;
+                    }
+                    // Update Purchase As active or not.
+                    await checkIfUserBonosHaveExpiredOrBeenReactivated(purchase);
+
+                    /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
+                    if (originalExpirationTime !=
+                        bonoSelected.condition!.expirationTime!) {
+                      // Delete Local Notifications if Expiration Time has change in Update
+                      await _localNotificationService
+                          .deleteRemoteBonoExpirationLocalNotification(user.id!,
+                              currentBrand.id!, bonoSelected.purchaseId!);
+                      // Local Notifications Service
+                      await _localNotificationService
+                          .addRemoteBonoExpirationLocalNotification(
+                              context, bonoSelected.purchaseId!);
+                    }
+                    mixpanel!.track('give_bono_view', properties: {
+                      'Payment Method': purchase.paymentMethod.toString()
+                    });
+                    await Future.delayed(const Duration(milliseconds: 1500));
+                  } else if (isBonoRequest) {
+                    /// CONFIRM BONO REQUEST
+                    // Build Purchase Object
+                    Purchase purchase = Purchase();
+                    purchase.purchasedAt = Timestamp.now();
+                    purchase.brandId = widget.brand.id!;
+                    purchase.bonoId = widget.bonoRequest?.bonoId;
+                    purchase.price = bonoSelected.price;
+                    purchase.userId = widget.bonoRequest?.userId!;
+                    purchase.paymentMethod = paymentMethod;
+                    if (isPaid == false) {
+                      purchase.directPurchase = true;
+                    }
+                    //Add user to brand
+                    Brand? userBrand = await _userDataService
+                        .getUserBrandsToAdd(widget.user.id!, widget.brand.id!);
+                    if (userBrand == null) {
+                      NotificationService()
+                          .userJoinsBrand(widget.user.id!, widget.brand.id!);
+                      _brandDataService.addUserToBrand(
+                          widget.user.id!, widget.brand.id!, 0);
+                    }
+                    // Notifications Service
+                    _notificationService.userBuysBono(
+                        widget.user.id!, widget.brand.id!, bonoSelected);
+                    // Build Purchase Object
+                    String purchaseId = await _purchaseDataService.addPurchase(
+                        purchase, bonoSelected);
+                    await _brandDataService.deleteBrandBonoRequest(
+                        widget.brand.id!,
+                        widget.user.id!,
+                        widget.bonoRequest?.id!);
+                    await _brandDataService.updateBonoCompras(
+                        widget.brand.id!, purchase.bonoId!);
+                    // Local Notifications Service
+                    await _localNotificationService
+                        .addRemoteBonoExpirationLocalNotification(
+                            context, purchaseId);
+                    mixpanel!.track('bono_confirmation_accepted', properties: {
+                      'Payment Method': purchase.paymentMethod.toString()
+                    });
+                  } else {
+                    /// OTORGAR BONO
+                    // Build Purchase Object
+                    Purchase purchase = Purchase();
+                    purchase.purchasedAt = Timestamp.now();
+                    purchase.brandId = widget.brand.id!;
+                    purchase.bonoId = bonoSelected.id!;
+                    purchase.price = bonoSelected.price!;
+                    purchase.userId = user.id!;
+                    purchase.paymentMethod = paymentMethod;
+                    if (isPaid == false) {
+                      purchase.directPurchase = true;
+                    }
+                    // Build Purchase Object
+                    _notificationService.userBuysBono(
+                        widget.user.id!, widget.brand.id!, bonoSelected);
+                    // Save Purchase Object
+                    String purchaseId = await _purchaseDataService.addPurchase(
+                        purchase, bonoSelected);
+                    await _brandDataService.updateBonoCompras(
+                        widget.brand.id!, bonoSelected.id!);
+                    await Future.delayed(const Duration(seconds: 2));
+                    // Local Notifications Service
+                    await _localNotificationService
+                        .addRemoteBonoExpirationLocalNotification(
+                            context, purchaseId);
+                    mixpanel!.track('give_bono_view', properties: {
+                      'Payment Method': purchase.paymentMethod.toString()
+                    });
+                  }
+                  Navigator.of(context).pop();
+                }
+              },
         backgroundColor: Colors.green,
-        icon: isLoading ? Container(
-          height: MediaQuery.of(context).size.width*0.04,
-          width: MediaQuery.of(context).size.width*0.04,
-          margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.01),
-          decoration: const BoxDecoration(
-              shape: BoxShape.circle
-          ),
-          child: const CircularProgressIndicator(
-            color: AppColors.white,
-            strokeWidth: 1.5,
-          ),
-        ) : editBono ? Icon(Icons.save, color: Colors.white, size: MediaQuery.of(context).size.width*0.05) : Icon(Icons.check_circle_outline, color: Colors.white, size: MediaQuery.of(context).size.width*0.05),
+        icon: isLoading
+            ? Container(
+                height: MediaQuery.of(context).size.width * 0.04,
+                width: MediaQuery.of(context).size.width * 0.04,
+                margin: EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.01),
+                decoration: const BoxDecoration(shape: BoxShape.circle),
+                child: const CircularProgressIndicator(
+                  color: AppColors.white,
+                  strokeWidth: 1.5,
+                ),
+              )
+            : editBono
+                ? Icon(Icons.save,
+                    color: Colors.white,
+                    size: MediaQuery.of(context).size.width * 0.05)
+                : Icon(Icons.check_circle_outline,
+                    color: Colors.white,
+                    size: MediaQuery.of(context).size.width * 0.05),
         label: Text(
-          editBono ? AppLocalizations.of(context)!.save : AppLocalizations.of(context)!.confirm,
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white)
-        ),
+            editBono
+                ? AppLocalizations.of(context)!.save
+                : AppLocalizations.of(context)!.confirm,
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2!
+                .copyWith(color: Colors.white)),
       ),
     );
   }
 
-
-  
   Widget optionTextWrite(
       var keyboard,
       var titleText,
@@ -1423,226 +2078,285 @@ class _PurchasePageState extends State<PurchasePage> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(top: wantPadding ? MediaQuery.of(context).size.height * 0.03 : 0),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              !checkBox && variable != 'ses' ? Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      titleText,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1?.copyWith(fontWeight: FontWeight.bold)
-                    ),
-                    subtitleText != "" ?  Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        subtitleText,
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                    ) :  Container(),
-                  ],
-                ),
-              ) : Container(),
-              variable == 'ses' ? Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      titleText,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.copyWith(
-                          fontWeight: FontWeight.bold)
-                    ),
-                    subtitleText != "" ?
-                    variable != 'ses' ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        subtitleText,
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                    ) : Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+            padding: EdgeInsets.only(
+                top: wantPadding
+                    ? MediaQuery.of(context).size.height * 0.03
+                    : 0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                !checkBox && variable != 'ses'
+                    ? Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(titleText,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(fontWeight: FontWeight.bold)),
+                            subtitleText != ""
+                                ? Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      subtitleText,
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                    ),
+                                  )
+                                : Container(),
+                          ],
+                        ),
+                      )
+                    : Container(),
+                variable == 'ses'
+                    ? Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(titleText,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(fontWeight: FontWeight.bold)),
+                            subtitleText != ""
+                                ? variable != 'ses'
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
+                                        child: Text(
+                                          subtitleText,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption,
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                subtitleText,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .caption,
+                                              ),
+                                            ),
+                                            Container(
+                                                margin: const EdgeInsets.only(
+                                                    left: 4.0),
+                                                child: CupertinoSwitch(
+                                                  value: noSessions,
+                                                  onChanged: setSeeSessions,
+                                                  thumbColor: AppColors.white,
+                                                  activeColor: editable
+                                                      ? Colors.green
+                                                      : Colors.green
+                                                          .withOpacity(0.4),
+                                                  trackColor: editable
+                                                      ? Colors.green
+                                                          .withOpacity(0.4)
+                                                      : Theme.of(context)
+                                                          .disabledColor,
+                                                ))
+                                          ],
+                                        ),
+                                      )
+                                : Container(),
+                          ],
+                        ),
+                      )
+                    : Container(),
+              ],
+            )),
+        !checkBox && variable != 'ses'
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.00),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
                           Flexible(
-                            child: Text(
-                              subtitleText,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .caption,
+                            child: TextFormField(
+                              focusNode: focusNode,
+                              keyboardType: keyboard,
+                              inputFormatters:
+                                  variable == 'ses' || variable == 'price'
+                                      ? [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp('[0-9.,]')),
+                                        ]
+                                      : null,
+                              minLines: 1,
+                              controller: controller,
+                              validator: (val) =>
+                                  val!.isEmpty ? errorText : null,
+                              textCapitalization: TextCapitalization.sentences,
+                              onChanged: (val) {
+                                setState(() {
+                                  if (variable == 'ses') {
+                                    bonoSelected.sessions = int.parse(val);
+                                  } else if (variable == 'price') {
+                                    double price =
+                                        double.parse(val.replaceAll(',', '.'));
+                                    bonoSelected.price = roundDouble(price, 2);
+                                  }
+                                });
+                              },
+                              style: editable
+                                  ? Theme.of(context).textTheme.bodyText1
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(
+                                          color:
+                                              Theme.of(context).disabledColor),
+                              decoration: InputDecoration(
+                                suffixText: variable == 'ses'
+                                    ? AppLocalizations.of(context)!
+                                        .sessions
+                                        .toLowerCase()
+                                    : variable == 'price'
+                                        ? "euros (€)"
+                                        : "",
+                                suffixStyle:
+                                    Theme.of(context).textTheme.caption,
+                                hintStyle: Theme.of(context).textTheme.caption,
+                                hintText: hintText,
+                                errorBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
+                                disabledBorder: InputBorder.none,
+                                enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                              ),
+                              enabled: editable,
                             ),
                           ),
-                          Container(
-                              margin: const EdgeInsets.only(left: 4.0),
-                              child: CupertinoSwitch(
-                                value: noSessions,
-                                onChanged: setSeeSessions,
-                                thumbColor: AppColors.white,
-                                activeColor: editable ? Colors.green : Colors.green.withOpacity(0.4),
-                                trackColor: editable ? Colors.green.withOpacity(0.4) : Theme.of(context).disabledColor,
-                              )
-                          )
                         ],
-                      ),
-                    )
-                        : Container(),
-                  ],
-                ),
-              ) : Container(),
-            ],
-          )
-        ),
-        !checkBox && variable != 'ses' ?
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.00),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Flexible(
-                    child: TextFormField(
-                      focusNode: focusNode,
-                      keyboardType: keyboard,
-                      inputFormatters:
-                      variable == 'ses' || variable == 'price' ? [FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),] : null,
-                      minLines: 1,
-                      controller: controller,
-                      validator: (val) => val!.isEmpty ? errorText : null,
-                      textCapitalization: TextCapitalization.sentences,
-                      onChanged: (val) {
-                        setState(() {
-                          if (variable == 'ses') {
-                            bonoSelected.sessions = int.parse(val);
-                          } else if (variable == 'price') {
-                            double price = double.parse(val.replaceAll(',', '.'));
-                            bonoSelected.price = roundDouble(price, 2);
-                          }
-                        });
-                      },
-                      style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                      decoration: InputDecoration(
-                        suffixText: variable == 'ses' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'price' ? "euros (€)" : "",
-                        suffixStyle: Theme.of(context).textTheme.caption,
-                        hintStyle: Theme.of(context).textTheme.caption,
-                        hintText: hintText,
-                        errorBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
-                        ),
-                        disabledBorder: InputBorder.none,
-                        enabledBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      enabled: editable,
-                    ),
-                  ),
+                      )),
+                  variable == 'price' &&
+                          priceController.text.isNotEmpty &&
+                          priceController.text != "0" &&
+                          sessionsController.text != "" &&
+                          sessionsController.text != "0" &&
+                          noSessions == false
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.01),
+                          child: Text(
+                            (bonoSelected.price! / bonoSelected.sessions!)
+                                    .toStringAsFixed(2) +
+                                " € / " +
+                                AppLocalizations.of(context)!.session,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.left,
+                          ),
+                        )
+                      : Container(),
                 ],
               )
-            ),
-            variable == 'price' && priceController.text.isNotEmpty && priceController.text != "0" && sessionsController.text != "" && sessionsController.text != "0" && noSessions == false  ? Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
-              child: Text(
-                (bonoSelected.price! / bonoSelected.sessions!).toStringAsFixed(2) + " € / " + AppLocalizations.of(context)!.session,
-                style: Theme.of(context).textTheme.caption,
-                textAlign: TextAlign.left,
-              ),
-            ) : Container(),
-          ],
-        )
-        : variable == 'ses' && !noSessions ?
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.00),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Flexible(
-                    child: TextFormField(
-                      focusNode: focusNode,
-                      keyboardType: keyboard,
-                      inputFormatters:
-                      variable == 'ses' || variable == 'price'
-                          ? [
-                        FilteringTextInputFormatter.allow(
-                            RegExp('[0-9.,]')),
-                      ]
-                          : null,
-                      maxLines: variable == 'desc' ? 5 : null,
-                      minLines: 1,
-                      maxLength: variable == 'title'
-                          ? 20
-                          : variable == 'desc'
-                          ? 100
-                          : null,
-                      controller:
-                       controller,
-                      validator: (val) =>
-                      val!.isEmpty ? errorText : null,
-                      textCapitalization: variable == 'title'
-                          ? TextCapitalization.words
-                          : TextCapitalization.sentences,
-                      onChanged: (val) {
-                        setState(() {
-                          if (variable == 'ses') {
-                            bonoSelected.sessions = int.parse(val);
-                          } else if (variable == 'price') {
-                            double price = double.parse(val.replaceAll(',', '.'));
-                            bonoSelected.price = roundDouble(price, 2);
-                          }
-                        });
-                      },
-                      style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(
-                          color: Theme.of(context).disabledColor),
-                      decoration: InputDecoration(
-                        suffixText: variable == 'ses'
-                            ? "sesiones"
-                            : variable == 'price'
-                            ? "euros (€)"
-                            : "",
-                        hintStyle:
-                        Theme.of(context).textTheme.caption,
-                        hintText: hintText,
-                        //border: InputBorder.none,
-                        errorBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
-                        ),
-                        disabledBorder: InputBorder.none,
-                        enabledBorder: const UnderlineInputBorder(
-                          borderSide:
-                          BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: const UnderlineInputBorder(
-                          borderSide:
-                          BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      enabled: editable,
-                    ),
-                  ),
-                ],
-              )
-            ),
-          ],
-        )
-        : Container(),
+            : variable == 'ses' && !noSessions
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.only(
+                              bottom:
+                                  MediaQuery.of(context).size.height * 0.00),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Flexible(
+                                child: TextFormField(
+                                  focusNode: focusNode,
+                                  keyboardType: keyboard,
+                                  inputFormatters:
+                                      variable == 'ses' || variable == 'price'
+                                          ? [
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp('[0-9.,]')),
+                                            ]
+                                          : null,
+                                  maxLines: variable == 'desc' ? 5 : null,
+                                  minLines: 1,
+                                  maxLength: variable == 'title'
+                                      ? 20
+                                      : variable == 'desc'
+                                          ? 100
+                                          : null,
+                                  controller: controller,
+                                  validator: (val) =>
+                                      val!.isEmpty ? errorText : null,
+                                  textCapitalization: variable == 'title'
+                                      ? TextCapitalization.words
+                                      : TextCapitalization.sentences,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      if (variable == 'ses') {
+                                        bonoSelected.sessions = int.parse(val);
+                                      } else if (variable == 'price') {
+                                        double price = double.parse(
+                                            val.replaceAll(',', '.'));
+                                        bonoSelected.price =
+                                            roundDouble(price, 2);
+                                      }
+                                    });
+                                  },
+                                  style: editable
+                                      ? Theme.of(context).textTheme.bodyText1
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .disabledColor),
+                                  decoration: InputDecoration(
+                                    suffixText: variable == 'ses'
+                                        ? "sesiones"
+                                        : variable == 'price'
+                                            ? "euros (€)"
+                                            : "",
+                                    hintStyle:
+                                        Theme.of(context).textTheme.caption,
+                                    hintText: hintText,
+                                    //border: InputBorder.none,
+                                    errorBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    disabledBorder: InputBorder.none,
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                  ),
+                                  enabled: editable,
+                                ),
+                              ),
+                            ],
+                          )),
+                    ],
+                  )
+                : Container(),
       ],
     );
   }
@@ -1662,204 +2376,282 @@ class _PurchasePageState extends State<PurchasePage> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(top: wantPadding ? MediaQuery.of(context).size.height * 0.03 : 0),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      titleText,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    variable == 'exp' || variable == 'expEdit' ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        subtitleText,
-                        style: Theme.of(context).textTheme.caption,
+            padding: EdgeInsets.only(
+                top: wantPadding
+                    ? MediaQuery.of(context).size.height * 0.03
+                    : 0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        titleText,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                    ) :
-                    variable == 'canFree' ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: noSessions == true ? Text(
-                                  AppLocalizations.of(context)!.freeCancelInfo,
-                                  style: Theme.of(context).textTheme.caption,
-                                ) : Text(
-                                  subtitleText,
-                                  style: Theme.of(context)
+                      variable == 'exp' || variable == 'expEdit'
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                subtitleText,
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                            )
+                          : variable == 'canFree'
+                              ? Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: noSessions == true
+                                                ? Text(
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .freeCancelInfo,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .caption,
+                                                  )
+                                                : Text(
+                                                    subtitleText,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .caption,
+                                                  ),
+                                          ),
+                                          Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 4.0),
+                                              child: CupertinoSwitch(
+                                                value: cancelTimeSessions,
+                                                onChanged: noSessions == true
+                                                    ? null
+                                                    : setCancelHours,
+                                                thumbColor: AppColors.white,
+                                                activeColor: editable
+                                                    ? Colors.green
+                                                    : Colors.green
+                                                        .withOpacity(0.4),
+                                                trackColor:
+                                                    !noSessions && editable
+                                                        ? Colors.green
+                                                            .withOpacity(0.4)
+                                                        : Theme.of(context)
+                                                            .disabledColor,
+                                              ))
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : variable == 'maxw'
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              subtitleText,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
+                                          ),
+                                          Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 4.0),
+                                              child: CupertinoSwitch(
+                                                value: weekSessions,
+                                                onChanged: setWeekSessions,
+                                                thumbColor: AppColors.white,
+                                                activeColor: editable
+                                                    ? Colors.green
+                                                    : Colors.green
+                                                        .withOpacity(0.4),
+                                                trackColor: editable
+                                                    ? Colors.green
+                                                        .withOpacity(0.4)
+                                                    : Theme.of(context)
+                                                        .disabledColor,
+                                              ))
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
+                    ],
+                  ),
+                ),
+              ],
+            )),
+        variable == 'exp'
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                  daysSelectorWidget(0, '0', editable, noSessions),
+                  daysSelectorWidget(1, '30', editable, false),
+                  daysSelectorWidget(2, '60', editable, false),
+                  daysSelectorWidget(3, '90', editable, false),
+                ],
+              )
+            : variable == 'expEdit'
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.015),
+                      daysSelectorWidget(0, '0', editable, noSessions),
+                      daysSelectorWidget(4, 'Edit', editable, false),
+                    ],
+                  )
+                : variable == 'canFree' && cancelTimeSessions
+                    ? Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Flexible(
+                            child: TextFormField(
+                              keyboardType: keyboard,
+                              focusNode: focusNode,
+                              controller: controller,
+                              maxLines: null,
+                              minLines: 1,
+                              validator: (val) => val!.isEmpty
+                                  ? errorText
+                                  : int.parse(val) > 72
+                                      ? errorTextSecond
+                                      : null,
+                              onChanged: (val) {
+                                setState(() {
+                                  if (variable == 'maxw') {
+                                    bonoSelected.condition?.weeklySessions =
+                                        int.parse(val);
+                                  } else if (variable == 'canFree') {
+                                    bonoSelected.condition?.cancelTime =
+                                        int.parse(val);
+                                  }
+                                });
+                              },
+                              style: editable
+                                  ? Theme.of(context).textTheme.bodyText1
+                                  : Theme.of(context)
                                       .textTheme
-                                      .caption,
+                                      .bodyText1
+                                      ?.copyWith(
+                                          color:
+                                              Theme.of(context).disabledColor),
+                              decoration: InputDecoration(
+                                suffixText: variable == 'maxw'
+                                    ? AppLocalizations.of(context)!
+                                        .trainsPerWeek
+                                        .toLowerCase()
+                                    : variable == 'canFree'
+                                        ? AppLocalizations.of(context)!
+                                            .hoursString
+                                            .toLowerCase()
+                                        : "",
+                                suffixStyle:
+                                    Theme.of(context).textTheme.caption,
+                                hintStyle: Theme.of(context).textTheme.caption,
+                                hintText: hintText,
+                                errorBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
+                                disabledBorder: InputBorder.none,
+                                enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
                                 ),
                               ),
-                              Container(
-                                  margin: const EdgeInsets.only(left: 4.0),
-                                  child: CupertinoSwitch(
-                                    value: cancelTimeSessions,
-                                    onChanged: noSessions == true ? null : setCancelHours,
-                                    thumbColor: AppColors.white,
-                                    activeColor: editable ? Colors.green : Colors.green.withOpacity(0.4),
-                                    trackColor: !noSessions && editable ? Colors.green.withOpacity(0.4) : Theme.of(context).disabledColor,
-                                  )
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ) :
-                    variable == 'maxw' ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              subtitleText,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .caption,
+                              enabled: editable,
                             ),
                           ),
-                          Container(
-                              margin: const EdgeInsets.only(left: 4.0),
-                              child: CupertinoSwitch(
-                                value: weekSessions,
-                                onChanged: setWeekSessions,
-                                thumbColor: AppColors.white,
-                                activeColor: editable ? Colors.green : Colors.green.withOpacity(0.4),
-                                trackColor: editable ? Colors.green.withOpacity(0.4) : Theme.of(context).disabledColor,
-                              )
-                          )
                         ],
-                      ),
-                    ) :
-                    Container(),
-                  ],
-                ),
-              ),
-            ],
-          )
-        ),
-        variable == 'exp' ?
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-            daysSelectorWidget(0, '0', editable, noSessions),
-            daysSelectorWidget(1, '30', editable, false),
-            daysSelectorWidget(2, '60', editable, false),
-            daysSelectorWidget(3, '90', editable, false),
-          ],
-        )
-        : variable == 'expEdit' ?
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-            daysSelectorWidget(0, '0', editable, noSessions),
-            daysSelectorWidget(4, 'Edit', editable, false),
-          ],
-        )
-        : variable == 'canFree' && cancelTimeSessions ?
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Flexible(
-              child: TextFormField(
-                keyboardType: keyboard,
-                focusNode: focusNode,
-                controller: controller,
-                maxLines: null,
-                minLines: 1,
-                validator: (val) => val!.isEmpty ? errorText : int.parse(val) > 72 ? errorTextSecond : null,
-                onChanged: (val) {
-                  setState(() {
-                    if (variable == 'maxw') {
-                      bonoSelected.condition?.weeklySessions = int.parse(val);
-                    } else if (variable == 'canFree') {
-                      bonoSelected.condition?.cancelTime = int.parse(val);
-                    }
-                  });
-                },
-                style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                decoration: InputDecoration(
-                  suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.trainsPerWeek.toLowerCase() : variable == 'canFree' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
-                  suffixStyle: Theme.of(context).textTheme.caption,
-                  hintStyle: Theme.of(context).textTheme.caption,
-                  hintText: hintText,
-                  errorBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red),
-                  ),
-                  disabledBorder: InputBorder.none,
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                enabled: editable,
-              ),
-            ),
-          ],
-        )
-        : variable == 'maxw' && weekSessions ?
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Flexible(
-              child: TextFormField(
-                keyboardType: keyboard,
-                focusNode: focusNode,
-                controller: controller,
-                maxLines: null,
-                minLines: 1,
-                validator: (val) => val!.isEmpty ? errorText : null,
-                onChanged: (val) {
-                  setState(() {
-                    if (variable == 'maxw') {
-                      bonoSelected.condition?.weeklySessions = int.parse(val);
-                    } else if (variable == 'canFree') {
-                      bonoSelected.condition?.cancelTime = int.parse(val);
-                    }
-                  });
-                },
-                style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                decoration: InputDecoration(
-                  suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'canFree' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
-                  suffixStyle: Theme.of(context).textTheme.caption,
-                  hintStyle: Theme.of(context).textTheme.caption,
-                  hintText: hintText,
-                  errorBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red),
-                  ),
-                  disabledBorder: InputBorder.none,
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                enabled: editable,
-              ),
-            ),
-          ],
-        )
-        : Container(),
+                      )
+                    : variable == 'maxw' && weekSessions
+                        ? Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Flexible(
+                                child: TextFormField(
+                                  keyboardType: keyboard,
+                                  focusNode: focusNode,
+                                  controller: controller,
+                                  maxLines: null,
+                                  minLines: 1,
+                                  validator: (val) =>
+                                      val!.isEmpty ? errorText : null,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      if (variable == 'maxw') {
+                                        bonoSelected.condition?.weeklySessions =
+                                            int.parse(val);
+                                      } else if (variable == 'canFree') {
+                                        bonoSelected.condition?.cancelTime =
+                                            int.parse(val);
+                                      }
+                                    });
+                                  },
+                                  style: editable
+                                      ? Theme.of(context).textTheme.bodyText1
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .disabledColor),
+                                  decoration: InputDecoration(
+                                    suffixText: variable == 'maxw'
+                                        ? AppLocalizations.of(context)!
+                                            .sessions
+                                            .toLowerCase()
+                                        : variable == 'canFree'
+                                            ? AppLocalizations.of(context)!
+                                                .hoursString
+                                                .toLowerCase()
+                                            : "",
+                                    suffixStyle:
+                                        Theme.of(context).textTheme.caption,
+                                    hintStyle:
+                                        Theme.of(context).textTheme.caption,
+                                    hintText: hintText,
+                                    errorBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    disabledBorder: InputBorder.none,
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                  ),
+                                  enabled: editable,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
       ],
     );
   }
@@ -1923,13 +2715,16 @@ class _PurchasePageState extends State<PurchasePage> {
       height: isActive ? 6.0 : 4.0,
       width: isActive ? 6.0 : 4.0,
       decoration: BoxDecoration(
-        color: isActive ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5),
+        color: isActive
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).primaryColor.withOpacity(0.5),
         borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
     );
   }
-  
-  Widget daysSelectorWidget(int index, String numberDays, bool editable, bool notShow) {
+
+  Widget daysSelectorWidget(
+      int index, String numberDays, bool editable, bool notShow) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.06,
       width: MediaQuery.of(context).size.width * 0.9,
@@ -1942,94 +2737,165 @@ class _PurchasePageState extends State<PurchasePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                numberDays == "Edit" ? InkWell(
-                  onTap: _show,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                AppLocalizations.of(context)!.expiresAt+" "+StringUtils().toCapitalized(DateFormat('EEEE - d MMM yyyy', Localizations.localeOf(context).languageCode).format(endDate)),
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: notShow == false ? Theme.of(context).primaryColor : Theme.of(context).disabledColor),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Flexible(
-                              child: Text(
-                                AppLocalizations.of(context)!.from+" "+StringUtils().toCapitalized(DateFormat('d/M/yy', Localizations.localeOf(context).languageCode).format(startDate))
-                                +" "+AppLocalizations.of(context)!.to.toLowerCase()+" "+StringUtils().toCapitalized(DateFormat('d/M/yy', Localizations.localeOf(context).languageCode).format(endDate)),
-                                style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
-                                textAlign: TextAlign.left,
+                numberDays == "Edit"
+                    ? InkWell(
+                        onTap: _show,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.06,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.expiresAt +
+                                          " " +
+                                          StringUtils().toCapitalized(
+                                              DateFormat(
+                                                      'EEEE - d MMM yyyy',
+                                                      Localizations.localeOf(
+                                                              context)
+                                                          .languageCode)
+                                                  .format(endDate)),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2
+                                          ?.copyWith(
+                                              color: notShow == false
+                                                  ? Theme.of(context)
+                                                      .primaryColor
+                                                  : Theme.of(context)
+                                                      .disabledColor),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Flexible(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.from +
+                                          " " +
+                                          StringUtils().toCapitalized(
+                                              DateFormat(
+                                                      'd/M/yy',
+                                                      Localizations.localeOf(
+                                                              context)
+                                                          .languageCode)
+                                                  .format(startDate)) +
+                                          " " +
+                                          AppLocalizations.of(context)!
+                                              .to
+                                              .toLowerCase() +
+                                          " " +
+                                          StringUtils().toCapitalized(
+                                              DateFormat(
+                                                      'd/M/yy',
+                                                      Localizations.localeOf(
+                                                              context)
+                                                          .languageCode)
+                                                  .format(endDate)),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .caption
+                                          ?.copyWith(fontSize: 12),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
+                      )
+                    : Text(
+                        numberDays != "0"
+                            ? numberDays +
+                                " " +
+                                AppLocalizations.of(context)!.days.toLowerCase()
+                            : "No expira",
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                            color: notShow == false
+                                ? Theme.of(context).primaryColor
+                                : Theme.of(context).disabledColor),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ),
-                ) :
-                Text(
-                  numberDays != "0" ? numberDays+" "+AppLocalizations.of(context)!.days.toLowerCase() : "No expira",
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: notShow == false ? Theme.of(context).primaryColor : Theme.of(context).disabledColor),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                numberDays != "0" && numberDays != "Edit" ? Text(
-                AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(startDate.add(Duration(days: int.parse(numberDays)))))),
-
-                style: Theme.of(context).textTheme.caption,
-                textAlign: TextAlign.left,
-                ) : Container(),
+                numberDays != "0" && numberDays != "Edit"
+                    ? Text(
+                        AppLocalizations.of(context)!.until(StringUtils()
+                            .toCapitalized(DateFormat(
+                                    'EEEE - d/M/yy',
+                                    Localizations.localeOf(context)
+                                        .languageCode)
+                                .format(startDate.add(
+                                    Duration(days: int.parse(numberDays)))))),
+                        style: Theme.of(context).textTheme.caption,
+                        textAlign: TextAlign.left,
+                      )
+                    : Container(),
               ],
             ),
           ),
-          notShow == false ? SizedBox(
-            height: MediaQuery.of(context).size.height * 0.034,
-            width: MediaQuery.of(context).size.height * 0.06,
-            child: MaterialButton(
-              elevation: 2,
-              color: isSelectedDays[index] == true ? editable ? Theme.of(context).primaryColor : Theme.of(context).disabledColor : Theme.of(context).scaffoldBackgroundColor,
-              child: isSelectedDays[index] == true ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.06) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
-              padding: EdgeInsets.zero,
-              shape: const CircleBorder(),
-              onPressed: editable == false ? () {} : () {
-                FocusScopeNode currentFocus = FocusScope.of(context);
-                if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                }
-                isSelectedDays[0] = false;
-                isSelectedDays[1] = false;
-                isSelectedDays[2] = false;
-                isSelectedDays[3] = false;
-                isSelectedDays[4] = false;
-                isSelectedDays[index] = true;
-                if (isSelectedDays[0]) {
-                  bonoSelected.condition!.expirationTime = 0;
-                }
-                if (isSelectedDays[1]) {
-                  bonoSelected.condition!.expirationTime = 30;
-                }
-                if (isSelectedDays[2]) {
-                  bonoSelected.condition!.expirationTime = 60;
-                }
-                if (isSelectedDays[3]) {
-                  bonoSelected.condition!.expirationTime = 90;
-                }
-                if (isSelectedDays[4]) {
-                  bonoSelected.condition?.expirationTime = endDate.difference(startDate).inDays + 1;
-                }
-                setState(() {});
-              },
-            ),
-          ) : Container(),
+          notShow == false
+              ? SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.034,
+                  width: MediaQuery.of(context).size.height * 0.06,
+                  child: MaterialButton(
+                    elevation: 2,
+                    color: isSelectedDays[index] == true
+                        ? editable
+                            ? Theme.of(context).primaryColor
+                            : Theme.of(context).disabledColor
+                        : Theme.of(context).scaffoldBackgroundColor,
+                    child: isSelectedDays[index] == true
+                        ? Icon(Icons.check,
+                            color: Theme.of(context).primaryColorDark,
+                            size: MediaQuery.of(context).size.width * 0.06)
+                        : SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.03,
+                            width: MediaQuery.of(context).size.width * 0.03,
+                          ),
+                    padding: EdgeInsets.zero,
+                    shape: const CircleBorder(),
+                    onPressed: editable == false
+                        ? () {}
+                        : () {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus &&
+                                currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
+                            isSelectedDays[0] = false;
+                            isSelectedDays[1] = false;
+                            isSelectedDays[2] = false;
+                            isSelectedDays[3] = false;
+                            isSelectedDays[4] = false;
+                            isSelectedDays[index] = true;
+                            if (isSelectedDays[0]) {
+                              bonoSelected.condition!.expirationTime = 0;
+                            }
+                            if (isSelectedDays[1]) {
+                              bonoSelected.condition!.expirationTime = 30;
+                            }
+                            if (isSelectedDays[2]) {
+                              bonoSelected.condition!.expirationTime = 60;
+                            }
+                            if (isSelectedDays[3]) {
+                              bonoSelected.condition!.expirationTime = 90;
+                            }
+                            if (isSelectedDays[4]) {
+                              bonoSelected.condition?.expirationTime =
+                                  endDate.difference(startDate).inDays + 1;
+                            }
+                            setState(() {});
+                          },
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
@@ -2041,7 +2907,7 @@ class _PurchasePageState extends State<PurchasePage> {
   }
 
   void _show() async {
-    FocusManager.instance.primaryFocus?.unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();    
     List<DateTime>? result = await showModalBottomSheet<List<DateTime>>(
       context: context,
       isScrollControlled: true,
@@ -2084,7 +2950,8 @@ class _PurchasePageState extends State<PurchasePage> {
         bonoSelected.condition!.expirationTime = 90;
       }
       if (isSelectedDays[4]) {
-        bonoSelected.condition?.expirationTime = endDate.difference(startDate).inDays + 1;
+        bonoSelected.condition?.expirationTime =
+            endDate.difference(startDate).inDays + 1;
       }
       setState(() {});
     }
@@ -2095,5 +2962,4 @@ class _PurchasePageState extends State<PurchasePage> {
       purchase.isActive = activation;
     });
   }
-
 }

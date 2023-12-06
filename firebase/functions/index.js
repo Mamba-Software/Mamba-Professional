@@ -40,6 +40,20 @@ exports.scheduledDailyFunction = functions
           "and Name:",
           userDoc.name,
         );
+        //JMF NOTIFICATIONS TO READ
+        if(userDoc.isTrainer == true) {
+        const notificationsUnreadUser = await db
+                .collection("Users")
+                .doc(userId)
+                .collection("Notifications")
+                .where('isRead', '==', false)
+                .get();
+            for (var j in notificationsUnreadUser.docs) {
+                      await db.collection('Users').doc(userId).collection("Notifications").doc(notificationsUnreadUser.docs[j].id).update({ isRead: true });
+            }
+        }
+        //JMF NOTIFICATIONS TO READ
+
         // Get the Users events today
         const userEventsSnapshot = await db
         .collection("Users")
@@ -1957,15 +1971,50 @@ exports.userJoinsEvent = functions
       const userDoc = userSnapshot.data();
       // Get Event User Data
       const eventUserSnapshot = await db.collection("Events").doc(eventId).collection("Users").doc(userId).get();
-      const eventUserDoc = eventUserSnapshot.data();
+      const eventUserDoc = eventUserSnapshot.data();      
+      let freeSession = false;
+      if (eventUserDoc.freeSession == true) {
+        freeSession = true;
+      }      
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
+      // Get the first Brand document      
+      const firstBrandId = eventBrandsSnapshot.docs[0].id;      
+      const brandSnapshot = await db.collection("Brands").doc(firstBrandId).get();
+      const brandDoc = brandSnapshot.data();
+      functions.logger.log(
+        "Brand Doc:",
+        brandDoc,
+      ); 
+      // Check if bookingWindowMin is defined       
+      let bookingWindowMinNotifcations = false;
+      let bookingWindowMin = 0;       
+      if (brandDoc.bookingWindowMin != undefined) {
+          bookingWindowMin = brandDoc.bookingWindowMin;
+      }
+      // If minBookingWindow is defined
+      if (bookingWindowMin != 0) {
+        // Assuming eventDoc.doneAt is a Firestore timestamp
+        const eventStartTime = eventDoc.doneAt.toDate(); // Convert Firestore timestamp to JavaScript Date
+        const currentTime = new Date(); // Current time
+        console.log("eventStartTime", eventStartTime);
+        console.log("currentTime", currentTime);
+        // Calculate the difference in hours
+        const timeDifferenceInHours = (eventStartTime - currentTime) / (1000 * 60 * 60); // Convert milliseconds to hours
+        console.log("timeDifferenceInHours", timeDifferenceInHours);
+        // Check if the time difference is less than bookingWindowMin
+        if (timeDifferenceInHours <= bookingWindowMin) {
+            bookingWindowMinNotifcations = true;
+        }
+      }
+      console.log("Booking Window Min Notifications:", bookingWindowMinNotifcations);
       // Get Data of the Event Locations
       const eventLocationsSnapshot = await db.collection("Events").doc(eventId).collection("Locations").get();
       // Count the Number of Clients and Trainers
       const eventUsersSnapshot = await db.collection("Events").doc(eventId).collection("Users").get();
       let numClients = 0;
       let numTrainers = 0;
+      let numFreeSessions = 0;
       for (var i in eventUsersSnapshot.docs) {
         const eventUsersDoc = eventUsersSnapshot.docs[i].data();
         if (eventUsersDoc.isTrainer) {
@@ -1974,6 +2023,13 @@ exports.userJoinsEvent = functions
           numClients += 1;
         }
       }
+      // Count Number of Free Sessions
+      if (freeSession) {
+        if (eventDoc.numFreeSessions != undefined) {
+          numFreeSessions = eventDoc.numFreeSessions;
+        }
+        numFreeSessions += 1;
+      }      
       // Update Event Assisting Members
       await db
       .collection("Events")
@@ -1981,6 +2037,7 @@ exports.userJoinsEvent = functions
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
+        "numFreeSessions": numFreeSessions,
       });
       var isPrivate = false;
       if (eventDoc.isPrivate != undefined) {
@@ -2008,8 +2065,10 @@ exports.userJoinsEvent = functions
         "duration": eventDoc.duration,
         "numTrainers": numTrainers,
         "numClients": numClients,
+        "numFreeSessions": numFreeSessions,                
         "maxMembers": eventDoc.maxMembers,
         "brandID": eventDoc.brandID,
+        "freeSession": freeSession,
       });
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
@@ -2033,8 +2092,10 @@ exports.userJoinsEvent = functions
         "duration": eventDoc.duration,
         "numTrainers": numTrainers,
         "numClients": numClients,
+        "numFreeSessions": numFreeSessions,
         "maxMembers": eventDoc.maxMembers,
         "brandID": eventDoc.brandID,
+        "freeSession": freeSession,
       });
      }
       // Update Number of Client and Trainers on Each of Event Subcollection
@@ -2049,6 +2110,7 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
         // If Event Private
         // Update Cover Data Also
@@ -2063,6 +2125,7 @@ exports.userJoinsEvent = functions
           .update({
             "numClients": numClients,
             "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
           });
         }
       }
@@ -2087,6 +2150,7 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
         // If Event Private
         // Update Cover Data Also
@@ -2101,6 +2165,7 @@ exports.userJoinsEvent = functions
           .update({
             "numClients": numClients,
             "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
           });
         }
       }
@@ -2115,28 +2180,95 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
-          // If Event Private
-          // Update Cover Data Also
-          if (eventDoc.isPrivate == true) {
-            await db
-            .collection("Locations")
-            .doc(id)
-            .collection("Events")
-            .doc("Private Events")
-            .collection("Private Events")
-            .doc(eventId)
-            .update({
-              "numClients": numClients,
-              "numTrainers": numTrainers,
-            });
-          }
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
+          });
         }
+      }
       
       // Send Notifications
       if (userDoc.isTrainer == false) {
         // Don´t Send Full Notification When it is a Private Event
-        if (eventDoc.isPrivate != true) {
+        if (eventDoc.isPrivate != true) {          
+          // Send Notification per Invidual User if Under Booking Window
+          if (bookingWindowMinNotifcations) {
+            functions.logger.log(
+              "Send Notification per Invidual User Under Booking Window",
+            );
+            for (var i in eventUsersSnapshot.docs) {
+              const id = eventUsersSnapshot.docs[i].id;
+              const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+              if (eventUsersDoc.isTrainer) {
+                const trainerSnapshot = await db.collection("Users").doc(id).get();
+                const trainerDoc = trainerSnapshot.data();
+                functions.logger.log(
+                  "trainerDoc",
+                  trainerDoc,
+                  );
+                var payload = 0;
+                let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+                if (trainerDoc.idioma == "es") {
+                  // Date To String
+                  let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+                  // Hour and Minutes to String
+                  let eventTimeTime = eventDoc.hour+":";
+                  let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                  eventTimeTime += minutes;
+                  // Send Payload
+                  payload = {
+                    notification: {
+                      title: userDoc.name+" ha reservado su plaza 📆",
+                      body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
+                    },
+                    data: {
+                      route: eventId,
+                    },
+                  };
+                } else {
+                  // Date To String
+                  let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+                  // Hour and Minutes to String
+                  let eventTimeTime = eventDoc.hour+":";
+                  let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                  eventTimeTime += minutes;
+                  // Send Payload
+                  payload = {
+                    notification: {
+                      title: userDoc.name+" ha reservat la seva plaça 📆",                  
+                      body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
+                    },
+                    data: {
+                      route: eventId,
+                    },
+                  };
+                }
+                functions.logger.log(
+                  "Payload",
+                  payload
+                  );
+                try {
+                    const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                    functions.logger.log("Notification sent successfully", response);
+                } catch (error) {
+                    functions.logger.error("Error sending notification", error);
+                }
+              }
+            }
+          }          
           // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
           if (eventDoc.maxMembers == numClients) {
               // Event is full
@@ -2194,11 +2326,12 @@ exports.userJoinsEvent = functions
                     "Payload",
                     payload
                     );
-                  response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-                  functions.logger.log(
-                    "Response",
-                    response
-                    );
+                  try {
+                      const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                      functions.logger.log("Notification sent successfully", response);
+                  } catch (error) {
+                      functions.logger.error("Error sending notification", error);
+                  }
                 }
               }
           } else {
@@ -2259,17 +2392,18 @@ exports.userJoinsEvent = functions
                       "Payload",
                       payload
                       );
-                    response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-                    functions.logger.log(
-                      "Response",
-                      response
-                      );
+                    try {
+                        const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                        functions.logger.log("Notification sent successfully", response);
+                    } catch (error) {
+                        functions.logger.error("Error sending notification", error);
+                    }
                   }
                 }
             }
           }
         } else {
-          // Event is full
+          // Send Notification to Trainers Clients Join Private Event
           functions.logger.log(
             "NOTIFICATION PRIVATE EVENT",
           );
@@ -2324,11 +2458,12 @@ exports.userJoinsEvent = functions
                 "Payload",
                 payload
                 );
-              response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-              functions.logger.log(
-                "Response",
-                response
-                );
+              try {
+                  const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                  functions.logger.log("Notification sent successfully", response);
+              } catch (error) {
+                  functions.logger.error("Error sending notification", error);
+              }
             }
           }
         }
@@ -2385,12 +2520,79 @@ exports.userJoinsEvent = functions
           "Payload",
           payload
           );
-         response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-         functions.logger.log(
-          "Response",
-          response
-          );
-       }
+        try {
+            const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+            functions.logger.log("Notification sent successfully", response);
+        } catch (error) {
+            functions.logger.error("Error sending notification", error);
+        }
+      }
+
+      // Send Notification per Invidual User
+      if (eventDoc.isPrivate != true && eventUserDoc.freeSession == true) {
+        functions.logger.log(
+          "Send Notification per Invidual User",
+        );
+        for (var i in eventUsersSnapshot.docs) {
+          const id = eventUsersSnapshot.docs[i].id;
+          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+          if (eventUsersDoc.isTrainer) {
+            const trainerSnapshot = await db.collection("Users").doc(id).get();
+            const trainerDoc = trainerSnapshot.data();
+            functions.logger.log(
+              "trainerDoc",
+              trainerDoc,
+              );
+            var payload = 0;
+            let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+            if (trainerDoc.idioma == "es") {
+              // Date To String
+              let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+              // Hour and Minutes to String
+              let eventTimeTime = eventDoc.hour+":";
+              let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+              eventTimeTime += minutes;
+              // Send Payload
+              payload = {
+                notification: {
+                  title: userDoc.name+" ha reservado su sesión gratuita 📆",
+                  body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
+                },
+                data: {
+                  route: eventId,
+                },
+              };
+            } else {
+              // Date To String
+              let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+              // Hour and Minutes to String
+              let eventTimeTime = eventDoc.hour+":";
+              let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+              eventTimeTime += minutes;
+              // Send Payload
+              payload = {
+                notification: {
+                  title: userDoc.name+" ha reservat la seva sessió gratuïta 📆",                  
+                  body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
+                },
+                data: {
+                  route: eventId,
+                },
+              };
+            }
+            functions.logger.log(
+              "Payload",
+              payload
+              );
+            try {
+                const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                functions.logger.log("Notification sent successfully", response);
+            } catch (error) {
+                functions.logger.error("Error sending notification", error);
+            }
+          }
+        }
+      }
        return null;
      });
 
@@ -2400,6 +2602,7 @@ exports.userLeavesEvent = functions
 .firestore
 .document("/Events/{eventId}/Users/{userId}")
 .onDelete( async (change, context) => {
+      console.log("Change object:", change);
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
@@ -2412,14 +2615,21 @@ exports.userLeavesEvent = functions
         );
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
+      // Get Event User Data            
+      const deletedUserEventDoc = change.data(); 
+      functions.logger.log(
+        "deletedUserEventDoc",
+        deletedUserEventDoc,
+        );     
+      let freeSession = false;
+      if (deletedUserEventDoc.freeSession != undefined && deletedUserEventDoc.freeSession) {
+        freeSession = true;
+      } 
       // Count the Number of Clients and Trainers
       const eventUsersSnapshot = await db.collection("Events").doc(eventId).collection("Users").get();
       // Get Data of the Event Locations
-      const eventLocationsSnapshot = await db.collection("Events").doc(eventId).collection("Locations").get();
-      functions.logger.log(
-        "eventLocationsSnapshot size",
-        eventLocationsSnapshot.size,
-        );
+      const eventLocationsSnapshot = await db.collection("Events").doc(eventId).collection("Locations").get();                       
+      // Count Number of Assiting Members
       let numClients = 0;
       let numTrainers = 0;
       for (var i in eventUsersSnapshot.docs) {
@@ -2430,6 +2640,14 @@ exports.userLeavesEvent = functions
           numClients += 1;
         }
       }
+      // Count Number of Free Sessions
+      let numFreeSessions = 0;
+      if (freeSession) {
+        if (eventDoc.numFreeSessions != undefined) {
+          numFreeSessions = eventDoc.numFreeSessions;
+        }
+        numFreeSessions -= 1;
+      } 
       // Delete Event To Users Event Subcollection
       await db
       .collection("Users")
@@ -2456,6 +2674,7 @@ exports.userLeavesEvent = functions
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
+        "numFreeSessions": numFreeSessions,
       });
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
@@ -2469,6 +2688,7 @@ exports.userLeavesEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
           // If Event Private
           // Update Cover Data Also
@@ -2483,6 +2703,7 @@ exports.userLeavesEvent = functions
             .update({
               "numClients": numClients,
               "numTrainers": numTrainers,
+              "numFreeSessions": numFreeSessions,
             });
           }
         }
@@ -2497,6 +2718,7 @@ exports.userLeavesEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
           // If Event Private
           // Update Cover Data Also
@@ -2511,6 +2733,7 @@ exports.userLeavesEvent = functions
             .update({
               "numClients": numClients,
               "numTrainers": numTrainers,
+              "numFreeSessions": numFreeSessions,
             });
           }
         }
@@ -2525,6 +2748,7 @@ exports.userLeavesEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
         // If Event Private
         // Update Cover Data Also
@@ -2539,6 +2763,7 @@ exports.userLeavesEvent = functions
           .update({
             "numClients": numClients,
             "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
           });
         }
       }
@@ -4227,6 +4452,10 @@ exports.zzzzUserJoinsEvent = functions
       // Get Event User Data
       const eventUserSnapshot = await db.collection("7777 Events").doc(eventId).collection("Users").doc(userId).get();
       const eventUserDoc = eventUserSnapshot.data();
+      let freeSession = false;
+      if (eventUserDoc.freeSession == true) {
+        freeSession = true;
+      } 
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
       // Get Data of the Event Locations
@@ -4270,6 +4499,7 @@ exports.zzzzUserJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        "freeSession": freeSession,
         //TODO INTEGRATION .12
         "brandID": eventDoc.brandID,
       });
@@ -4297,6 +4527,7 @@ exports.zzzzUserJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        "freeSession": freeSession,
         //TODO INTEGRATION .12
         "brandID": eventDoc.brandID,
       });
@@ -4404,7 +4635,7 @@ exports.zzzzUserJoinsEvent = functions
       // Send Notifications
       if (userDoc.isTrainer == false) {
         // Don´t Send Full Notification When it is a Private Event
-        if (eventDoc.isPrivate != true) {
+        if (eventDoc.isPrivate != true) {          
           // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
           if (eventDoc.maxMembers == numClients) {
               // Event is full
@@ -4660,6 +4891,71 @@ exports.zzzzUserJoinsEvent = functions
             response
             );
        }
+
+      // Send Notification per Invidual User
+      if (eventDoc.isPrivate != true && eventUserDoc.freeSession == true) {
+        functions.logger.log(
+          "Send Notification per Invidual User",
+        );
+        for (var i in eventUsersSnapshot.docs) {
+          const id = eventUsersSnapshot.docs[i].id;
+          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+          if (eventUsersDoc.isTrainer) {
+            const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
+            const trainerDoc = trainerSnapshot.data();
+            functions.logger.log(
+              "trainerDoc",
+              trainerDoc,
+              );
+            var payload = 0;
+            let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+            if (trainerDoc.idioma == "es") {
+              // Date To String
+              let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+              // Hour and Minutes to String
+              let eventTimeTime = eventDoc.hour+":";
+              let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+              eventTimeTime += minutes;
+              // Send Payload
+              payload = {
+                notification: {
+                  title: userDoc.name+" ha reservado su sesión gratuita 📆",
+                  body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
+                },
+                data: {
+                  route: eventId,
+                },
+              };
+            } else {
+              // Date To String
+              let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+              // Hour and Minutes to String
+              let eventTimeTime = eventDoc.hour+":";
+              let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+              eventTimeTime += minutes;
+              // Send Payload
+              payload = {
+                notification: {
+                  title: userDoc.name+" ha reservat la seva sessió gratuïta 📆",                  
+                  body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
+                },
+                data: {
+                  route: eventId,
+                },
+              };
+            }
+            functions.logger.log(
+              "Payload",
+              payload
+              );
+            response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+            functions.logger.log(
+              "Response",
+              response
+              );
+          }
+        }
+      }
        return null;
      });
 
@@ -5982,5 +6278,312 @@ exports.zzzzUserDeletesPurchase = functions
             });
           return null;
         });
+
+// Recurrent Event Function
+exports.zzzzCreateRecurrentEvent = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+    functions.logger.log("new data", data);
+
+    const { event, doneAtString, geoPosition, bonos, trainers, notification, firesAt} = data;  
+    const eventsCollection = '7777 Events';
+    const brandsCollection = '7777 Brands';
+    const usersCollection = '7777 Users';
+    const eventID = event.id;
+
+    const eventRef = admin.firestore().collection(eventsCollection).doc(eventID);
+    const userRef = admin.firestore().collection(usersCollection);
+    
+    functions.logger.log("EVENT", event);
+    functions.logger.log("EVENTID", eventID);
+
+    try {
+
+      const createdAt = admin.firestore.Timestamp.now();
+      const doneAt = admin.firestore.Timestamp.fromMillis(doneAtString);
+        // Add to "\Events"
+       
+        //await addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection);
+        addTrainers(trainers, eventRef, userRef, notification, firesAt);
+        addBonos(bonos, eventRef);
+
+        return { success: true, eventId: eventID };
+
+    } catch (error) {
+        console.error("Error adding event:", error);
+        return { success: false };
+    }
+});
+
+// Recurrent Event Function
+exports.CreateRecurrentEvent = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+    functions.logger.log("new data", data);
+
+    const { event, doneAtString, geoPosition, bonos, trainers, notification, firesAt} = data;  
+    const eventsCollection = 'Events';
+    const brandsCollection = 'Brands';
+    const usersCollection = 'Users';
+    const eventID = event.id;
+
+    const eventRef = admin.firestore().collection(eventsCollection).doc(eventID);
+    const userRef = admin.firestore().collection(usersCollection);
+    
+    functions.logger.log("EVENT", event);
+    functions.logger.log("EVENTID", eventID);
+
+    try {
+
+      const createdAt = admin.firestore.Timestamp.now();
+      const doneAt = admin.firestore.Timestamp.fromMillis(doneAtString);
+        // Add to "\Events"
+       
+        //await addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection);
+        addTrainers(trainers, eventRef, userRef, notification, firesAt);
+        addBonos(bonos, eventRef);
+
+        return { success: true, eventId: eventID };
+
+    } catch (error) {
+        console.error("Error adding event:", error);
+        return { success: false };
+    }
+});
+
+exports.zzzzDeleteEventBono = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+    functions.logger.log("new data", data);
+
+    const { bonoId, brandId} = data;  
+    const eventsCollection = '7777 Events';
+    const brandsCollection = '7777 Brands';
+
+    const eventRef = admin.firestore().collection(eventsCollection);
+    const brandRef = admin.firestore().collection(brandsCollection).doc(brandId).collection('Events');
+    
+    functions.logger.log("brand", brandId);
+    functions.logger.log("bonoId", bonoId);
+
+    try {
+        deleteBonoEvents(brandRef, eventRef, bonoId);
+
+        return { success: true, bonoId: bonoId };
+
+    } catch (error) {
+        console.error("Error updating event:", error);
+        return { success: false };
+    }
+});
+
+exports.DeleteEventBono = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+    functions.logger.log("new data", data);
+
+    const { bonoId, brandId} = data;  
+    const eventsCollection = 'Events';
+    const brandsCollection = 'Brands';
+
+    const eventRef = admin.firestore().collection(eventsCollection);
+    const brandRef = admin.firestore().collection(brandsCollection).doc(brandId).collection('Events');
+    
+    functions.logger.log("brand", brandId);
+    functions.logger.log("bonoId", bonoId);
+
+    try {
+        deleteBonoEvents(brandRef, eventRef, bonoId);
+
+        return { success: true, bonoId: bonoId };
+
+    } catch (error) {
+        console.error("Error updating event:", error);
+        return { success: false };
+    }
+});
+
+async function deleteBonoEvents(brandRef, eventRef, bonoId) {
+  const brandEventSnapshot = await brandRef.get();
+
+  // Iterate over the documents in the snapshot
+  for (const eventDoc of brandEventSnapshot.docs) {
+    // Directly attempt to delete the bonoId document
+    try {
+      await eventRef.doc(eventDoc.id).collection('Bonos').doc(bonoId).delete();
+      functions.logger.log("Deleted bono", bonoId, "from event", eventDoc.id);
+    } catch (error) {
+      functions.logger.error("Error deleting bono", bonoId, "from event", eventDoc.id, error);
+    }
+  }
+}
+
+
+
+async function addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection) {
+    await admin.firestore().collection(eventsCollection).doc(eventID).set({
+      ...event,
+      createdAt,
+      doneAt,
+      ...geoPosition,
+  });
+
+  functions.logger.log("STEP 1", event);
+
+  // Add to Private Events if event is private
+  if (event.isPrivate) {
+      await admin.firestore()
+          .collection(eventsCollection)
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventID)
+          .set({
+              ...event,
+              createdAt,
+              doneAt,
+              ...geoPosition,
+          });
+  }
+
+  functions.logger.log("STEP 2", event);
+
+  // Add to "\Events\Brands"
+  await admin.firestore()
+      .collection(eventsCollection)
+      .doc(eventID)
+      .collection("Brands")
+      .doc(event.brandID)
+      .set({
+          name: event.brandName,
+          logoUrl: event.brandLogo,
+      });
+      functions.logger.log("STEP 3", event);
+
+  // Add to "\Events\Location"
+  await admin.firestore()
+      .collection(eventsCollection)
+      .doc(eventID)
+      .collection("Locations")
+      .doc(event.locationId)
+      .set({
+          description: event.locationDescription,
+          longitude: geoPosition.geopoint.longitude,
+          latitude: geoPosition.geopoint.latitude,
+          ...geoPosition,
+      });
+      functions.logger.log("STEP 4", event);
+  // Add Event To Brands/Events Subcollection
+  await admin.firestore()
+      .collection(brandsCollection)
+      .doc(event.brandID)
+      .collection("Events")
+      .doc(eventID)
+      .set({
+          ...event,
+          createdAt,
+          doneAt,
+          ...geoPosition,
+      });
+
+      functions.logger.log("STEP 5", event);
+
+  // Add to Brands/Events/Private Events if event is private
+  if (event.isPrivate) {
+      await admin.firestore()
+          .collection(brandsCollection)
+          .doc(event.brandID)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventID)
+          .set({
+              ...event,
+              createdAt,
+              doneAt,
+              ...geoPosition,
+          });
+          
+  }
+  functions.logger.log("STEP 6", event);
+}
+
+function addBonos(bonos, eventRef) {
+
+  if (bonos && bonos.length > 0) {
+
+    const batch = admin.firestore().batch();
+
+    bonos.forEach(bonoId => {
+        const bonoRef = eventRef.collection("Bonos").doc(bonoId);
+        batch.set(bonoRef, { "bonoId": bonoId });
+    });
+
+    batch.commit();
+  }
+}
+
+async function addTrainers(trainers, eventRef, userRef, notification, firesAt) {
+
+  if (trainers && trainers.length > 0) {
+    const joinedAt = admin.firestore.Timestamp.now();
+
+    for (const trainerId of trainers) {
+      const userSnapshot = await userRef.doc(trainerId).get();
+      const user = userSnapshot.data();
+      if (user) {
+        const trainerRef = eventRef.collection("Users").doc(trainerId);
+        const userData = {
+          name: user.name,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          nick: user.nick,
+          imageUrl: user.imageUrl,
+          noImageUrl: user.noImageUrl,
+          isTrainer: user.isTrainer,
+          isPrivate: user.isPrivate,
+          joinedAt: joinedAt,
+          notificationToken: user.notificationToken,
+        };
+        await trainerRef.set(userData); // Direct set for each trainer
+        addLocalNotification(userRef, trainerId, notification, firesAt);
+      }
+    }
+  }
+}
+
+async function addLocalNotification(userRef, userId, notification, firesAt) {
+
+  if (!userId || !notification) {
+      throw new Error('Invalid arguments. UserId and notification are required.');
+  }
+  try {
+      const now = admin.firestore.Timestamp.now();
+      const userRefComplete = userRef
+                        .doc(userId)
+                        .collection('Local Notifications') // Adjust the subcollection name as necessary
+                        .doc(notification.id.toString());
+
+      await userRefComplete.set({
+          eventId: notification.eventId,
+          bonoId: notification.bonoId,
+          purchaseId: notification.purchaseId,
+          payload: notification.payload,
+          createdAt: now,
+          firesAt: admin.firestore.Timestamp.fromMillis(firesAt),
+      });
+  } catch (error) {
+      console.error('Error adding local notification:', error);
+      throw error;
+  }
+}
+
 
 

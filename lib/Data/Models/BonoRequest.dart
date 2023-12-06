@@ -1,9 +1,6 @@
 // This class represents the Object <Bono Rquest>
-import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
 
 class BonoRequest {
   String? id;
@@ -30,30 +27,39 @@ class BonoRequest {
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
-  BonoRequest.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
+  BonoRequest.fromObjectAllData(
+      String documentId, DocumentSnapshot documentSnapshot) {
     id = documentId;
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('brandId')) {
       brandId = documentSnapshot.get("brandId");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('userId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('userId')) {
       userId = documentSnapshot.get("userId");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonoId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('bonoId')) {
       bonoId = documentSnapshot.get("bonoId");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('title')) {
       title = documentSnapshot.get("title").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('price')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('price')) {
       price = documentSnapshot.get("price");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('sessions')) {
       sessions = documentSnapshot.get("sessions");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('paymentMethod')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('paymentMethod')) {
       paymentMethod = documentSnapshot.get("paymentMethod");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('timeRequested')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('timeRequested')) {
       timeRequested = documentSnapshot.get("timeRequested");
     }
   }

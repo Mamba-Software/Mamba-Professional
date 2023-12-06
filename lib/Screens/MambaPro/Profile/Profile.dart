@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
@@ -977,7 +977,7 @@ class _ProfileState extends State<Profile> {
 
   Future<void> launchEmail() async {
     mixpanel!.track('user_profile_email_mamba');
-    const url = 'mailto:mambastylecastelldefels@gmail.com';
+    String url = 'mailto:$contactEmail';
     if (await canLaunchUrlString(url)) {
       await launchUrlString(url);
     }

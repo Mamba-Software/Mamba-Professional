@@ -4,7 +4,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
-import '../../Models/Event.dart';
+import '../../../Events/crud_events/models/Event.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class PurchaseDataService {
