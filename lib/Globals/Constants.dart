@@ -3,7 +3,6 @@ class Constants {
   // App Name
   static String appName = "Mamba";
 
-
   // Constant Assets
   static String logoExtended = "assets/images/ExtendedWhite.png";
   static String logoExtendedYellow = "assets/images/ExtendedYellow.png";
@@ -23,13 +22,18 @@ class Constants {
   static String onboardingApp = "assets/images/OnboardingApp.png";
   static String onboardingFindBrand = "assets/images/OnboardingFindBrand.png";
   static String onboardingExercise = "assets/images/OnboardingExercise.png";
-  static String clientOnboardingImage = "assets/images/clientOnboardingImage.png";
+  static String clientOnboardingImage =
+      "assets/images/clientOnboardingImage.png";
 
   // Create Brand Infro
-  static String portadaCreateBrandIntro = "assets/images/PortadaCreateBrandInfo.png";
-  static String informationCreateBrandIntro = "assets/images/InformationCreateBrandIntro.png";
-  static String locationCreateBrandIntro = "assets/images/LocationCreateBrandIntro.png";
-  static String horarioCreateBrandIntro = "assets/images/HorarioCreateBrandIntro.png";
+  static String portadaCreateBrandIntro =
+      "assets/images/PortadaCreateBrandInfo.png";
+  static String informationCreateBrandIntro =
+      "assets/images/InformationCreateBrandIntro.png";
+  static String locationCreateBrandIntro =
+      "assets/images/LocationCreateBrandIntro.png";
+  static String horarioCreateBrandIntro =
+      "assets/images/HorarioCreateBrandIntro.png";
 
   static String imageCash = "assets/images/imageCash.png";
   static String imageTransfer = "assets/images/imageTransfer.png";
@@ -57,7 +61,9 @@ class Constants {
   static String themeDarkImage = "assets/images/themeDarkImage.png";
   static String themeSystemImage = "assets/images/themeSystemImage.png";
   static String appUpdateImage = "assets/images/appUpdateImage.png";
-  static String subscriptionImage = "assets/images/MambaProLogo.png";
+  static String subscriptionImage = "assets/images/MambaProLogo.png";  
+  static String mapsImg = "assets/images/map.png";
+  static String fitnessMapIcon = "assets/images/fitnessMapIcon.png";
 
   // Animations
   static String runningFemale = "assets/animations/runningFemale.gif";
@@ -72,5 +78,4 @@ class Constants {
   static String exhalingEmojiImage = "assets/images/exhalingEmojiImage.png";
   static String fireEmojiImage = "assets/images/fireEmojiImage.png";
   static String clockEmojiImage = "assets/images/clockEmojiImage.png";
-
 }

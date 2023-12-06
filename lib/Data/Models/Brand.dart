@@ -1,13 +1,13 @@
 // Model for a Brand in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 import 'ImageObject.dart';
 import 'RequestToBrand.dart';
 
 class Brand {
-
   String? id;
   String? adminID;
   String? logoUrl;
@@ -21,17 +21,27 @@ class Brand {
   var workShift;
   int? maxMembers;
   int? bookingWindow;
+  int? bookingWindowMin;
+  bool? freeSession;
+  double? distance;
+  String? city;
+  String? zipCode;
   String? baseImage;
+  double? longitude;
+  double? latitude;
+  bool? notShow;
+  bool? directPurchase;
+
   Timestamp? endDatePay;
   String? subscriptionId;
   Map<String, dynamic>? subscription;
-  bool? directPurchase;
-
   List<String> promotions = [];
+
   List<ImageObject> imagesList = [];
   List<RequestToBrand> requestsList = [];
   List<Usuario> usersList = [];
   List<Event> eventsList = [];
+  List<Location> locationList = [];
 
   Brand({
     this.id,
@@ -47,79 +57,116 @@ class Brand {
     this.workShift,
     this.maxMembers,
     this.bookingWindow,
+    this.bookingWindowMin,
+    this.freeSession,
+    this.city,
+    this.zipCode,
     this.baseImage,
+    this.longitude,
+    this.latitude,
+    this.notShow,
+    this.directPurchase,
     this.endDatePay,
     this.subscriptionId,
     this.subscription,
-    this.directPurchase
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
-  Brand.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
+  Brand.fromObjectAllData(
+      String documentId, DocumentSnapshot documentSnapshot) {
     id = documentId;
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('adminID')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('adminID')) {
       adminID = documentSnapshot.get("adminID").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('logoUrl')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('logoUrl')) {
       logoUrl = documentSnapshot.get("logoUrl").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('name')) {
       name = documentSnapshot.get("name").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('description')) {
       description = documentSnapshot.get("description").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('dateJoined')) {
       dateJoined = documentSnapshot.get("dateJoined").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('roomId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('roomId')) {
       roomId = documentSnapshot.get("roomId").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('baseLocation')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('baseLocation')) {
       baseLocation = documentSnapshot.get("baseLocation").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numClients')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('numClients')) {
       numClients = documentSnapshot.get("numClients");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numTrainers')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('numTrainers')) {
       numTrainers = documentSnapshot.get("numTrainers");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('workShift')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('workShift')) {
       workShift = documentSnapshot.get("workShift");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('maxMembers')) {
       maxMembers = documentSnapshot.get("maxMembers");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bookingWindow')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('bookingWindow')) {
       bookingWindow = documentSnapshot.get("bookingWindow");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('baseImage')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('bookingWindowMin')) {
+      bookingWindowMin = documentSnapshot.get("bookingWindowMin");
+    } else {
+      bookingWindowMin = 0;
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('freeSession')) {
+      freeSession = documentSnapshot.get("freeSession");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('directPurchase')) {
+      directPurchase = documentSnapshot.get("directPurchase");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('baseImage')) {
       baseImage = documentSnapshot.get("baseImage").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('endDatePay')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('endDatePay')) {
       endDatePay = documentSnapshot.get("endDatePay");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('subscriptionId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('subscriptionId')) {
       subscriptionId = documentSnapshot.get("subscriptionId").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('subscription')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('subscription')) {
       subscription = documentSnapshot.get("subscription");
-    }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('directPurchase')) {
-      directPurchase = documentSnapshot.get("directPurchase");
     }
   }
 
-  Brand.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
+  Brand.fromObjectOnlyCoverData(
+      String documentId, DocumentSnapshot documentSnapshot) {
     id = documentId;
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('name')) {
       name = documentSnapshot.get("name").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('logoUrl')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('logoUrl')) {
       logoUrl = documentSnapshot.get("logoUrl").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('dateJoined')) {
       dateJoined = documentSnapshot.get("dateJoined").toString();
     }
   }
@@ -140,12 +187,19 @@ class Brand {
     workShift = brand.workShift;
     maxMembers = brand.maxMembers;
     bookingWindow = brand.bookingWindow;
+    bookingWindowMin = brand.bookingWindowMin;
+    directPurchase = brand.directPurchase;
+    freeSession = brand.freeSession;
     baseImage = brand.baseImage;
     endDatePay = brand.endDatePay;
     subscriptionId = brand.subscriptionId;
     subscription = brand.subscription;
-    directPurchase = brand.directPurchase;
-
+    city = brand.city;
+    zipCode = brand.zipCode;
+    baseImage = brand.baseImage;
+    latitude = brand.latitude;
+    longitude = brand.longitude;
+    notShow = brand.notShow;
   }
 
   // Requests
@@ -163,8 +217,13 @@ class Brand {
     this.eventsList = eventsList;
   }
 
-  // Events
+  // Images
   set setImageList(List<ImageObject> imagesList) {
     this.imagesList = imagesList;
+  }
+
+  // Locations
+  set setLocationList(List<Location> locationList) {
+    this.locationList = locationList;
   }
 }

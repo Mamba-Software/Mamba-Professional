@@ -8,16 +8,16 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../Models/Purchase.dart';
-
 
 // Firebase User Service Class. All calls to Firebase are in this class.
 class UserFirebaseCalls {
@@ -44,7 +44,10 @@ class UserFirebaseCalls {
 
   Future<String?> getUserUIDWithEmail(String email) async {
     // Query Firestore for the email
-    QuerySnapshot querySnapshot = await _firestore.collection(users).where('email', isEqualTo: email).get();
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .where('email', isEqualTo: email)
+        .get();
     // Check if we got any matches
     if (querySnapshot.docs.isNotEmpty) {
       return querySnapshot.docs.first.id;
@@ -57,7 +60,8 @@ class UserFirebaseCalls {
     bool error = false;
     UserCredential? authResult;
     try {
-      authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      authResult = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
     } catch (e) {
       error = true;
     }
@@ -82,7 +86,9 @@ class UserFirebaseCalls {
 
   Future<int> resendEmail(String email) async {
     try {
-      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('sendVerificationEmail');
+      final HttpsCallable callable =
+          FirebaseFunctions.instanceFor(region: 'europe-west1')
+              .httpsCallable('sendVerificationEmail');
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
           'email': email,
@@ -100,7 +106,9 @@ class UserFirebaseCalls {
 
   Future<int> resetPassword(String email) async {
     try {
-      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('sendResetPasswordEmail');
+      final HttpsCallable callable =
+          FirebaseFunctions.instanceFor(region: 'europe-west1')
+              .httpsCallable('sendResetPasswordEmail');
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
           'email': email,
@@ -131,8 +139,12 @@ class UserFirebaseCalls {
         await deleteUserPhoto(user.uid);
       }
       // Delete Notifications
-      await _firestore.collection(users).doc(user.uid).collection(
-          "Notifications").get().then((snapshot) {
+      await _firestore
+          .collection(users)
+          .doc(user.uid)
+          .collection("Notifications")
+          .get()
+          .then((snapshot) {
         for (DocumentSnapshot ds in snapshot.docs) {
           batch.delete(ds.reference);
         }
@@ -151,11 +163,17 @@ class UserFirebaseCalls {
   Future<bool> deleteUserGoogle() async {
     try {
       User user = _auth.currentUser!;
-      if (currentUser.imageUrl != "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
+      if (currentUser.imageUrl !=
+          "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
         await deleteUserPhoto(user.uid);
       }
       // Delete Notifications
-      await _firestore.collection(users).doc(user.uid).collection("Notifications").get().then((snapshot) {
+      await _firestore
+          .collection(users)
+          .doc(user.uid)
+          .collection("Notifications")
+          .get()
+          .then((snapshot) {
         for (DocumentSnapshot ds in snapshot.docs) {
           batch.delete(ds.reference);
         }
@@ -177,7 +195,6 @@ class UserFirebaseCalls {
 
   //Checkers
 
-
   // Check If User Exists
   Future<bool> checkIfUserExists(String uid) async {
     var userDocRef = _firestore.collection(users).doc(uid);
@@ -192,7 +209,10 @@ class UserFirebaseCalls {
   // Check If User Exists
   Future<bool> checkIfEmailExists(String email) async {
     // Query Firestore for the email
-    QuerySnapshot querySnapshot = await _firestore.collection(users).where('email', isEqualTo: email).get();
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .where('email', isEqualTo: email)
+        .get();
     // Check if we got any matches
     if (querySnapshot.docs.isEmpty) {
       return false;
@@ -202,9 +222,8 @@ class UserFirebaseCalls {
   }
 
   Future<bool> checkIfNicknameExists(String nickname) async {
-    DocumentSnapshot documentSnapshot = await _firestore.collection(nicknames)
-        .doc(nickname)
-        .get();
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection(nicknames).doc(nickname).get();
     if (documentSnapshot.exists) {
       return false;
     } else {
@@ -214,26 +233,26 @@ class UserFirebaseCalls {
 
   // Check If User is Trainer
   Future<bool?> checkIfUserIsTrainer(String userId) async {
-    DocumentSnapshot documentSnapshot = await _firestore.collection(users)
-        .doc(userId)
-        .get();
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection(users).doc(userId).get();
     return documentSnapshot.get("isTrainer");
   }
 
   // Check If User is Blocked
   Future<bool> checkUserBlocked(String currentUser, String userId) async {
     try {
-      var userDocRef = _firestore.collection(users).doc(currentUser).collection(
-          "BlockedUsers").doc(userId);
+      var userDocRef = _firestore
+          .collection(users)
+          .doc(currentUser)
+          .collection("BlockedUsers")
+          .doc(userId);
       var doc = await userDocRef.get();
       if (!doc.exists) {
         return false;
       } else {
         return true;
       }
-    }
-    catch(e)
-    {
+    } catch (e) {
       return false;
     }
   }
@@ -241,20 +260,18 @@ class UserFirebaseCalls {
   //Getters
 
   Future<Usuario> getUserDetails(String uid) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
-        .collection(users).doc(uid).get();
-      print(uid);
-      return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        await _firestore.collection(users).doc(uid).get();
+    print(uid);
+    return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
   Future<Brand?> getUserBrands(String uid) async {
-    QuerySnapshot querySnapshot = await _firestore
-    .collection(users)
-    .doc(uid)
-    .collection("Brands")
-    .get();
+    QuerySnapshot querySnapshot =
+        await _firestore.collection(users).doc(uid).collection("Brands").get();
     if (querySnapshot.docs.isNotEmpty) {
-      return Brand.fromObjectOnlyCoverData(querySnapshot.docs[0].id, querySnapshot.docs[0]);
+      return Brand.fromObjectOnlyCoverData(
+          querySnapshot.docs[0].id, querySnapshot.docs[0]);
     } else {
       return null;
     }
@@ -264,7 +281,8 @@ class UserFirebaseCalls {
     DocumentSnapshot<Map<String, dynamic>> brandUser = await _firestore
         .collection(users)
         .doc(uid)
-        .collection("Brands").doc(brandId)
+        .collection("Brands")
+        .doc(brandId)
         .get();
     if (brandUser.exists) {
       return Brand.fromObjectOnlyCoverData(brandUser.id, brandUser);
@@ -275,9 +293,8 @@ class UserFirebaseCalls {
 
   Future<Usuario> getUserCoverDetails(String uid) async {
     try {
-      DocumentSnapshot<
-          Map<String, dynamic>> _documentSnapshot = await _firestore.collection(
-          users).doc(uid).get();
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+          await _firestore.collection(users).doc(uid).get();
       return Usuario.fromObjectOnlyCoverData(
           _documentSnapshot.id, _documentSnapshot);
     } catch (e) {
@@ -300,7 +317,8 @@ class UserFirebaseCalls {
     return requestList;
   }
 
-  Future <List<NotificationEvent>> getUserFirstNotificationsLimit10(String userId) async {
+  Future<List<NotificationEvent>> getUserFirstNotificationsLimit10(
+      String userId) async {
     List<NotificationEvent> notis = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection(users)
@@ -324,12 +342,14 @@ class UserFirebaseCalls {
           .get();
        */
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      notis.add(NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      notis.add(NotificationEvent.fromObjectAllData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return notis;
   }
 
-  Future <List<NotificationEvent>> getUserMoreNotificationsLimit10(String userId, String lastNotifId) async {
+  Future<List<NotificationEvent>> getUserMoreNotificationsLimit10(
+      String userId, String lastNotifId) async {
     // Get Last Notification document
     DocumentSnapshot docu = await _firestore
         .collection(users)
@@ -348,7 +368,8 @@ class UserFirebaseCalls {
         .limit(10)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      notis.add(NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      notis.add(NotificationEvent.fromObjectAllData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return notis;
   }
@@ -368,8 +389,7 @@ class UserFirebaseCalls {
     List<Conversation> conv = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection(conversations)
-        .where(
-        "messagesRead", arrayContains: toMapisMessageRead(userId, true))
+        .where("messagesRead", arrayContains: toMapisMessageRead(userId, true))
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       conv.add(Conversation.fromObject(
@@ -385,7 +405,6 @@ class UserFirebaseCalls {
     };
   }
 
-
   Future<String> getBonoRequest(String userId, String brandId) async {
     QuerySnapshot querySnapshot = await _firestore
         .collection(users)
@@ -394,43 +413,51 @@ class UserFirebaseCalls {
         .doc(brandId)
         .collection("Bonos Requests")
         .get();
-    if(querySnapshot.docs.length != 0) {
+    if (querySnapshot.docs.length != 0) {
       return querySnapshot.docs[0].get("bonoId").toString();
     } else {
       return '';
     }
-
-
   }
-
 
   Future<List<int>> getUserFavourites(String brandId, String userId) async {
     var favourites;
     List<int> favouritesList = [];
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).get();
-    if ((_documentSnapshot.data() as Map<String,dynamic>).containsKey('favourites')) {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .get();
+    if ((_documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('favourites')) {
       favourites = _documentSnapshot.get("favourites");
-      for(int i = 0; i < favourites.length; ++i)
-      {
+      for (int i = 0; i < favourites.length; ++i) {
         favouritesList.add(favourites[i]);
       }
       return favouritesList;
-    }
-    else {
+    } else {
       return [];
     }
   }
 
   Future<double> getUserZoomScale(String brandId, String userId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).get();
-    if ((_documentSnapshot.data() as Map<String,dynamic>).containsKey('zoomScale')) {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .get();
+    if ((_documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('zoomScale')) {
       return _documentSnapshot.get("zoomScale");
     } else {
       return 1.0;
     }
   }
 
-  Future<List<ReceivedNotification>> getLocalNotifications(String userId) async {
+  Future<List<ReceivedNotification>> getLocalNotifications(
+      String userId) async {
     List<ReceivedNotification> notis = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection(users)
@@ -438,28 +465,31 @@ class UserFirebaseCalls {
         .collection("Local Notifications")
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      notis.add(
-          ReceivedNotification.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i])
-      );
+      notis.add(ReceivedNotification.fromObjectAllData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return notis;
   }
 
-  Future<ReceivedNotification?> getIndividualLocalNotification(String userId, String notificationId) async {
+  Future<ReceivedNotification?> getIndividualLocalNotification(
+      String userId, String notificationId) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-      await _firestore.collection(users)
-          .doc(userId)
-          .collection("Local Notifications")
-          .doc(notificationId)
-          .get();
-      return ReceivedNotification.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+          await _firestore
+              .collection(users)
+              .doc(userId)
+              .collection("Local Notifications")
+              .doc(notificationId)
+              .get();
+      return ReceivedNotification.fromObjectAllData(
+          _documentSnapshot.id, _documentSnapshot);
     } catch (e) {
       return null;
     }
   }
 
-  Future<List<ReceivedNotification>> findEventLocalNotification(String userId, String eventId) async {
+  Future<List<ReceivedNotification>> findEventLocalNotification(
+      String userId, String eventId) async {
     List<ReceivedNotification> notis = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection(users)
@@ -468,15 +498,15 @@ class UserFirebaseCalls {
         .where("eventId", isEqualTo: eventId)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      notis.add(
-          ReceivedNotification.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i])
-      );
+      notis.add(ReceivedNotification.fromObjectAllData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return notis;
   }
 
   // Get First Notifications
-  Future<List<ReceivedNotification>> findBonoLocalNotification(String userId, String bonoId, String purchaseId) async {
+  Future<List<ReceivedNotification>> findBonoLocalNotification(
+      String userId, String bonoId, String purchaseId) async {
     List<ReceivedNotification> notis = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection(users)
@@ -486,14 +516,14 @@ class UserFirebaseCalls {
         .where("purchaseId", isEqualTo: purchaseId)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      notis.add(
-          ReceivedNotification.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i])
-      );
+      notis.add(ReceivedNotification.fromObjectAllData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return notis;
   }
 
-  Future<List<Bono>> getUserActiveBonosFromBrand(String userId, String brandId) async {
+  Future<List<Bono>> getUserActiveBonosFromBrand(
+      String userId, String brandId) async {
     List<Bono> userBonos = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection(brands)
@@ -504,12 +534,20 @@ class UserFirebaseCalls {
         .where("isActive", isEqualTo: true)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      Purchase purchase = Purchase.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      Purchase purchase = Purchase.fromObjectAllData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]);
       int index = userBonos.indexWhere((element) => element.id == purchase.id);
       if (index == -1) {
         // Get Bono From Purchase
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot3 = await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(purchase.bonoId).get();
-        Bono bono = Bono.fromObjectAllData(_documentSnapshot3.id, _documentSnapshot3);
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot3 =
+            await _firestore
+                .collection(brands)
+                .doc(brandId)
+                .collection("Bonos")
+                .doc(purchase.bonoId)
+                .get();
+        Bono bono =
+            Bono.fromObjectAllData(_documentSnapshot3.id, _documentSnapshot3);
         // Add Conditions of This purchase
         bono.setBrandId = brandId;
         bono.setBonoPrice = purchase.price!.toDouble();
@@ -529,20 +567,28 @@ class UserFirebaseCalls {
   Future<Event> getLastUserEvent(String? userId) async {
     List<Event> events = [];
     List<Event> privateEvents = [];
-    QuerySnapshot querySnapshot = await _firestore.collection(users)
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
         .doc(userId)
-        .collection("Events").get();
-    QuerySnapshot querySnapshotPrivate = await _firestore.collection(users)
+        .collection("Events")
+        .get();
+    QuerySnapshot querySnapshotPrivate = await _firestore
+        .collection(users)
         .doc(userId)
-        .collection("Events").doc('Private Events').collection('Private Events').get();
+        .collection("Events")
+        .doc('Private Events')
+        .collection('Private Events')
+        .get();
 
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       if (querySnapshot.docs[i].id != "Private Events") {
-        events.add(Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+        events.add(Event.fromObjectAllData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
       }
     }
     for (int i = 0; i < querySnapshotPrivate.docs.length; i++) {
-      privateEvents.add(Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      privateEvents.add(Event.fromObjectAllData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
 
     print(events.length);
@@ -556,40 +602,34 @@ class UserFirebaseCalls {
       return b.doneAt!.toDate().compareTo(a.doneAt!.toDate());
     });
 
-    if(privateEvents.isEmpty)
-      {
-        if(events.isEmpty) {
-          return Event();
-        }
-        else {
-          return events[0];
-        }
-
+    if (privateEvents.isEmpty) {
+      if (events.isEmpty) {
+        return Event();
+      } else {
+        return events[0];
       }
-
-    else {
-      if(events.isEmpty) {
+    } else {
+      if (events.isEmpty) {
         return privateEvents[0];
-      }
-      else {
-        if(events[0].doneAt!.toDate().compareTo(privateEvents[0].doneAt!.toDate()) == 0)
-        {
+      } else {
+        if (events[0]
+                .doneAt!
+                .toDate()
+                .compareTo(privateEvents[0].doneAt!.toDate()) ==
+            0) {
           return events[0];
-        }
-        else {
+        } else {
           return privateEvents[0];
         }
-
       }
     }
-
-
   }
 
   //Get blocked by users
-  Future<List<String>>  getBlockedByUsers(String userId) async {
+  Future<List<String>> getBlockedByUsers(String userId) async {
     List<String> listUserIds = [];
-    QuerySnapshot querySnapshot = await _firestore.collection(users)
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
         .doc(userId)
         .collection("BlockedByUsers")
         .get();
@@ -597,27 +637,28 @@ class UserFirebaseCalls {
       listUserIds.add(querySnapshot.docs[i].id);
     }
     return listUserIds;
-
   }
 
-  Future<List<Bono>> getUserActiveBonos(String userId, String purchaseId) async {
+  Future<List<Bono>> getUserActiveBonos(
+      String userId, String purchaseId) async {
     List<Bono> userBonos = [];
-    if(purchaseId != "") {
-      DocumentSnapshot<
-          Map<String, dynamic>> _documentSnapshotPurchase = await _firestore
-          .collection(purchases).doc(purchaseId).get();
+    if (purchaseId != "") {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshotPurchase =
+          await _firestore.collection(purchases).doc(purchaseId).get();
       Purchase purchase = Purchase.fromObjectAllData(
           _documentSnapshotPurchase.id, _documentSnapshotPurchase);
-      int index = userBonos.indexWhere((element) =>
-      element.id == purchase.id);
+      int index = userBonos.indexWhere((element) => element.id == purchase.id);
       if (index == -1) {
         // Get Bono From Purchase
-        DocumentSnapshot<
-            Map<String, dynamic>> _documentSnapshot3 = await _firestore
-            .collection(brands).doc(purchase.brandId).collection("Bonos").doc(
-            purchase.bonoId).get();
-        Bono bono = Bono.fromObjectAllData(
-            _documentSnapshot3.id, _documentSnapshot3);
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot3 =
+            await _firestore
+                .collection(brands)
+                .doc(purchase.brandId)
+                .collection("Bonos")
+                .doc(purchase.bonoId)
+                .get();
+        Bono bono =
+            Bono.fromObjectAllData(_documentSnapshot3.id, _documentSnapshot3);
         // Add Conditions of This purchase
         bono.setPurchaseId = purchase.id!;
         bono.setBrandId = purchase.brandId!;
@@ -631,8 +672,7 @@ class UserFirebaseCalls {
         // Bono Object Build
         userBonos.add(bono);
       }
-    }
-    else {
+    } else {
       QuerySnapshot querySnapshot = await _firestore
           .collection(users)
           .doc(userId)
@@ -643,16 +683,19 @@ class UserFirebaseCalls {
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         Purchase purchase = Purchase.fromObjectAllData(
             querySnapshot.docs[i].id, querySnapshot.docs[i]);
-        int index = userBonos.indexWhere((element) =>
-        element.id == purchase.id);
+        int index =
+            userBonos.indexWhere((element) => element.id == purchase.id);
         if (index == -1) {
           // Get Bono From Purchase
-          DocumentSnapshot<
-              Map<String, dynamic>> _documentSnapshot3 = await _firestore
-              .collection(brands).doc(purchase.brandId).collection("Bonos").doc(
-              purchase.bonoId).get();
-          Bono bono = Bono.fromObjectAllData(
-              _documentSnapshot3.id, _documentSnapshot3);
+          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot3 =
+              await _firestore
+                  .collection(brands)
+                  .doc(purchase.brandId)
+                  .collection("Bonos")
+                  .doc(purchase.bonoId)
+                  .get();
+          Bono bono =
+              Bono.fromObjectAllData(_documentSnapshot3.id, _documentSnapshot3);
           // Add Conditions of This purchase
           bono.setPurchaseId = purchase.id!;
           bono.setBrandId = purchase.brandId!;
@@ -673,54 +716,57 @@ class UserFirebaseCalls {
 
   Future<String> getUserActiveSessions(String userId) async {
     int sessions = -1;
-      QuerySnapshot querySnapshot = await _firestore
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Purchases")
+        .where("isActive", isEqualTo: true)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      if (sessions == -1) {
+        sessions = 0;
+      }
+      Purchase purchase = Purchase.fromObjectAllData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      QuerySnapshot querySnapshotEvents = await _firestore
           .collection(users)
           .doc(userId)
           .collection("Purchases")
-          .where("isActive", isEqualTo: true)
+          .doc(querySnapshot.docs[i].id)
+          .collection('Events')
           .get();
-      for (int i = 0; i < querySnapshot.docs.length; i++) {
-        if(sessions == -1)
-          {
-            sessions = 0;
-          }
-        Purchase purchase = Purchase.fromObjectAllData(
-            querySnapshot.docs[i].id, querySnapshot.docs[i]);
-        QuerySnapshot querySnapshotEvents = await _firestore
-            .collection(users)
-            .doc(userId)
-            .collection("Purchases")
-            .doc(querySnapshot.docs[i].id)
-            .collection('Events')
-            .get();
 
-        sessions = sessions + (purchase.sessions! - querySnapshotEvents.size);
-        if(sessions > 9) {
-          return '10';
-        }
+      sessions = sessions + (purchase.sessions! - querySnapshotEvents.size);
+      if (sessions > 9) {
+        return '10';
       }
-      if(sessions == -1) {
-        QuerySnapshot querySnapshot2 = await _firestore
-            .collection(users)
-            .doc(userId)
-            .collection("Purchases")
-            .where("isActive", isEqualTo: false)
-            .get();
-        if(querySnapshot2.size > 0) {
-          sessions = 0;
-        }
+    }
+    if (sessions == -1) {
+      QuerySnapshot querySnapshot2 = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Purchases")
+          .where("isActive", isEqualTo: false)
+          .get();
+      if (querySnapshot2.size > 0) {
+        sessions = 0;
       }
-      return sessions.toString();
+    }
+    return sessions.toString();
   }
 
   //Add
 
-  Future<int> addUser(String email, String password, String idioma, bool isTrainer, [bool definePassword = false]) async {
+  Future<int> addUser(
+      String email, String password, String idioma, bool isTrainer,
+      [bool definePassword = false]) async {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
     try {
-      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('createAuthUser');
+      final HttpsCallable callable =
+          FirebaseFunctions.instanceFor(region: 'europe-west1')
+              .httpsCallable('createAuthUser');
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
           'email': email,
@@ -729,10 +775,7 @@ class UserFirebaseCalls {
           'isTrainer': isTrainer,
         },
       );
-      await _firestore
-      .collection(users)
-      .doc(result.data['userId'])
-      .set({
+      await _firestore.collection(users).doc(result.data['userId']).set({
         "name": null,
         "firstName": null,
         "lastName": null,
@@ -740,7 +783,8 @@ class UserFirebaseCalls {
         "notificationToken": null,
         "email": email,
         "imageUrl": null,
-        "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+        "noImageUrl":
+            "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
         "isFirst": true,
         "isTrainer": isTrainer,
         "isPrivate": true,
@@ -754,7 +798,8 @@ class UserFirebaseCalls {
       print("All Correctly Created");
       return 0;
     } on FirebaseFunctionsException catch (e) {
-      print('Error code: ${e.code}\nError message: ${e.message}\nDetails: ${e.details}');
+      print(
+          'Error code: ${e.code}\nError message: ${e.message}\nDetails: ${e.details}');
       return -1;
     } catch (e) {
       print('Error: $e');
@@ -765,17 +810,18 @@ class UserFirebaseCalls {
   }
 
   // Register User
-  Future<bool> addUserGoogleOrApple(UserCredential authResult, String idioma) async {
+  Future<bool> addUserGoogleOrApple(
+      UserCredential authResult, String idioma) async {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
     // Get First and Last Name
     String? firstName;
     String? lastName;
-    if (authResult.user!.displayName != null ) {
+    if (authResult.user!.displayName != null) {
       firstName = authResult.user!.displayName!.split(" ")[0];
       int length = authResult.user!.displayName!.split(" ")[0].length;
-      lastName = authResult.user!.displayName!.substring(length+1);
+      lastName = authResult.user!.displayName!.substring(length + 1);
     }
     try {
       await _firestore.collection(users).doc(authResult.user!.uid).set({
@@ -786,7 +832,8 @@ class UserFirebaseCalls {
         "notificationToken": null,
         "email": authResult.user!.email,
         "imageUrl": authResult.user!.photoURL,
-        "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+        "noImageUrl":
+            "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
         "isFirst": true,
         "isTrainer": true,
         "isPrivate": true,
@@ -810,7 +857,8 @@ class UserFirebaseCalls {
   }
 
   // Add Local Notification
-  Future<void> addLocalNotification(String userId, ReceivedNotification notification) async {
+  Future<void> addLocalNotification(
+      String userId, ReceivedNotification notification) async {
     String id = notification.id!.toString();
     Timestamp now = Timestamp.now();
     // Firebase Query
@@ -829,8 +877,8 @@ class UserFirebaseCalls {
     });
   }
 
-  Future<void> sendNotificationToUser(String userId, String type,
-      var parameters) async {
+  Future<void> sendNotificationToUser(
+      String userId, String type, var parameters) async {
     var uid = Uuid().v1();
     DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yy');
@@ -857,8 +905,8 @@ class UserFirebaseCalls {
     });
   }
 
-  Future<void> sendRequestToBrand(String brandId, String name,
-      bool isTrainer) async {
+  Future<void> sendRequestToBrand(
+      String brandId, String name, bool isTrainer) async {
     User? currentUser = await getCurrentUser();
     var uid = Uuid().v1();
     DateTime now = DateTime.now();
@@ -868,7 +916,8 @@ class UserFirebaseCalls {
         .collection(users)
         .doc(currentUser!.uid)
         .collection("Requests")
-        .doc(uid).set({
+        .doc(uid)
+        .set({
       "brandId": brandId,
       "userId": currentUser.uid,
       "name": name,
@@ -880,7 +929,8 @@ class UserFirebaseCalls {
     });
   }
 
-  Future<void> addBonoRequestToUser(String brandId, String userId, String bonoId) async {
+  Future<void> addBonoRequestToUser(
+      String brandId, String userId, String bonoId) async {
     var uid = Uuid().v4();
     await _firestore
         .collection(users)
@@ -896,7 +946,8 @@ class UserFirebaseCalls {
     });
   }
 
-  Future<void> addBonoToUser(String brandId, String userId, String bonoId, int sessions, Timestamp time) async {
+  Future<void> addBonoToUser(String brandId, String userId, String bonoId,
+      int sessions, Timestamp time) async {
     var uid = Uuid().v4();
     await _firestore
         .collection(users)
@@ -914,14 +965,26 @@ class UserFirebaseCalls {
     });
   }
 
-  Future<void> addFavouriteToUser(String brandID, String userId, List<int> favourites) async {
-    await _firestore.collection(brands).doc(brandID).collection("Users").doc(userId).update({
+  Future<void> addFavouriteToUser(
+      String brandID, String userId, List<int> favourites) async {
+    await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Users")
+        .doc(userId)
+        .update({
       "favourites": favourites,
     });
   }
 
-  Future<void> updateUserZoomScale(String userId, String brandId, double zoomScale) async {
-    await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).update({
+  Future<void> updateUserZoomScale(
+      String userId, String brandId, double zoomScale) async {
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .update({
       "zoomScale": zoomScale,
     });
   }
@@ -949,8 +1012,18 @@ class UserFirebaseCalls {
   //Update
 
 // Add User
-  Future<void> updateUser(String uid, String name, String firstName, String lastName, String dateOfBirth, int gender, File? image, String? googleImageUrl, bool isTrainer) async {
-    String imageUrl = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
+  Future<void> updateUser(
+      String uid,
+      String name,
+      String firstName,
+      String lastName,
+      String dateOfBirth,
+      int gender,
+      File? image,
+      String? googleImageUrl,
+      bool isTrainer) async {
+    String imageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
     if (image != null) {
       imageUrl = await updateUserPhoto(uid, image);
     } else if (googleImageUrl != null) {
@@ -969,8 +1042,6 @@ class UserFirebaseCalls {
       print(err);
     });
   }
-
-
 
   Future<void> updateUserThemePreferences(String uid, bool? isDark) async {
     if (isDark == null) {
@@ -994,10 +1065,8 @@ class UserFirebaseCalls {
       "notificationToken": token,
     });
     // Check If User in Brands too update notificationToken there as well.
-    var brandsCollection = await _firestore.collection(users)
-        .doc(uid)
-        .collection("Brands")
-        .get();
+    var brandsCollection =
+        await _firestore.collection(users).doc(uid).collection("Brands").get();
     if (brandsCollection.docs.length > 0) {
       for (var i = 0; i < brandsCollection.docs.length; i++) {
         var brandDocument = brandsCollection.docs[i];
@@ -1022,7 +1091,9 @@ class UserFirebaseCalls {
 
   Future<String> updateUserPhoto(String userId, File image) async {
     String imageURL = "";
-    var storageRef = _firebaseStorage.ref().child("users/"+ userId +"/images/" + userId + ".jpeg");
+    var storageRef = _firebaseStorage
+        .ref()
+        .child("users/" + userId + "/images/" + userId + ".jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -1047,8 +1118,8 @@ class UserFirebaseCalls {
     });
   }
 
-  Future<void> updateCurrentUserSettingsPerifl(bool isPrivate,
-      String idioma) async {
+  Future<void> updateCurrentUserSettingsPerifl(
+      bool isPrivate, String idioma) async {
     User? currentUser = await getCurrentUser();
     await _firestore.collection(users).doc(currentUser!.uid).update({
       "isPrivate": isPrivate,
@@ -1056,8 +1127,8 @@ class UserFirebaseCalls {
     });
   }
 
-  Future<void> markNotificationAsRead(String userId,
-      String notificationId) async {
+  Future<void> markNotificationAsRead(
+      String userId, String notificationId) async {
     await _firestore
         .collection(users)
         .doc(userId)
@@ -1076,17 +1147,26 @@ class UserFirebaseCalls {
         .where("isRead", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      await markNotificationAsRead(userId, querySnapshot.docs[i].id,);
+      await markNotificationAsRead(
+        userId,
+        querySnapshot.docs[i].id,
+      );
     }
   }
 
-  Future<void> updateUserPurchase(String userId, String brandId, Bono bono, Purchase purchase) async {
+  Future<void> updateUserPurchase(
+      String userId, String brandId, Bono bono, Purchase purchase) async {
     // TODO: TO BE DELETED - USER BONO
     // Update User Bono
-    await _firestore.collection(users).doc(userId).collection("Bonos").doc(bono.id).update({
+    await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Bonos")
+        .doc(bono.id)
+        .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition?.expirationTime,
+      "expirationTime": bono.condition!.expirationTime!-1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
@@ -1096,47 +1176,71 @@ class UserFirebaseCalls {
     await _firestore.collection(purchases).doc(bono.purchaseId).update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition?.expirationTime,
+      "expirationTime": bono.condition!.expirationTime!-1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
       "isActive": purchase.isActive,
     });
     // Update the User/Purchase Collection
-    await _firestore.collection(users).doc(userId).collection("Purchases").doc(bono.purchaseId).update({
+    await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Purchases")
+        .doc(bono.purchaseId)
+        .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition?.expirationTime,
+      "expirationTime": bono.condition!.expirationTime!-1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
       "isActive": purchase.isActive,
     });
     // Update the Brand/Bonos/Purchase Collection
-    await _firestore.collection(brands).doc(brandId).collection("Purchases").doc(bono.purchaseId).update({
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Purchases")
+        .doc(bono.purchaseId)
+        .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition?.expirationTime,
+      "expirationTime": bono.condition!.expirationTime!-1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
       "isActive": purchase.isActive,
     });
     // Update the Brand/Bonos/Purchase Collection
-    await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bono.id).collection("Purchases").doc(bono.purchaseId).update({
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bono.id)
+        .collection("Purchases")
+        .doc(bono.purchaseId)
+        .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition?.expirationTime,
+      "expirationTime": bono.condition!.expirationTime!-1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
       "isActive": purchase.isActive,
     });
     // Update the Brand/Bonos/Purchase Collection
-    await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(bono.purchaseId).update({
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .collection("Purchases")
+        .doc(bono.purchaseId)
+        .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition?.expirationTime,
+      "expirationTime": bono.condition!.expirationTime!-1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
@@ -1159,40 +1263,136 @@ class UserFirebaseCalls {
     await _firestore.collection(nicknames).doc(nickname).delete();
   }
 
-  Future<void> deleteUserBonoRequest(String userId, String brandId, String bonoId) async {
-    QuerySnapshot querySnapshot = await _firestore.collection(users).doc(userId).collection("Brands").doc(brandId).collection(
-        "Bonos Requests").where("bonoId", isEqualTo: bonoId).get();
-    await _firestore.collection(users).doc(userId).collection("Brands").doc(brandId).collection(
-        "Bonos Requests").doc(querySnapshot.docs[0].id).delete();
+  Future<void> deleteUserBonoRequest(
+      String userId, String brandId, String bonoId) async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Brands")
+        .doc(brandId)
+        .collection("Bonos Requests")
+        .where("bonoId", isEqualTo: bonoId)
+        .get();
+    await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Brands")
+        .doc(brandId)
+        .collection("Bonos Requests")
+        .doc(querySnapshot.docs[0].id)
+        .delete();
   }
 
   //Get the user bonos
-  Future<void> deleteUserBono(String userId, String brandId, String bonoId) async {
-    // Borrar a Users
-    await _firestore.collection(users)
+  Future<void> deleteUserBono(
+      String userId, String brandId, String bonoId, String purchaseId) async {
+    // Update the IsActive Field on all Collections
+    /// Purchases/{purchaseId}
+    await _firestore.collection(purchases).doc(purchaseId).update({
+      "isActive": false,
+    });
+
+    /// Users/{userId}/Purchases/{purchaseId}
+    await _firestore
+        .collection(users)
         .doc(userId)
+        .collection("Purchases")
+        .doc(purchaseId)
+        .update({
+      "isActive": false,
+    });
+
+    /// Brands/{brandId}/Purchases/{purchaseId}
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Purchases")
+        .doc(purchaseId)
+        .update({
+      "isActive": false,
+    });
+
+    /// Brands/{brandId}/Bonos/{bonoId}/Purchases/{purchaseId}
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
         .collection("Bonos")
         .doc(bonoId)
-        .delete();
-    // Borrar a la Brand/Users/Bonos
-    await _firestore.collection(brands)
+        .collection("Purchases")
+        .doc(purchaseId)
+        .update({
+      "isActive": false,
+    });
+
+    /// Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}
+    await _firestore
+        .collection(brands)
         .doc(brandId)
         .collection("Users")
         .doc(userId)
-        .collection("Bonos")
-        .doc(bonoId)
-        .delete();
-    // Borrar a la Brand/Bonos/Users
-    await _firestore.collection(brands)
-        .doc(brandId)
-        .collection("Bonos")
-        .doc(bonoId)
-        .collection("Users")
-        .doc(userId)
-        .delete();
+        .collection("Purchases")
+        .doc(purchaseId)
+        .update({
+      "isActive": false,
+    });    
   }
 
-  Future<void> deleteLocalNotification(String userId, String notificationId) async {
+  //Get the user bonos
+  Future<void> activateUserBono(
+      String userId, String brandId, String bonoId, String purchaseId) async {
+    // Update the IsActive Field on all Collections
+    /// Purchases/{purchaseId}
+    await _firestore.collection(purchases).doc(purchaseId).update({
+      "isActive": true,
+    });
+
+    /// Users/{userId}/Purchases/{purchaseId}
+    await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Purchases")
+        .doc(purchaseId)
+        .update({
+      "isActive": true,
+    });
+
+    /// Brands/{brandId}/Purchases/{purchaseId}
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Purchases")
+        .doc(purchaseId)
+        .update({
+      "isActive": true,
+    });
+
+    /// Brands/{brandId}/Bonos/{bonoId}/Purchases/{purchaseId}
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bonoId)
+        .collection("Purchases")
+        .doc(purchaseId)
+        .update({
+      "isActive": true,
+    });
+
+    /// Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .collection("Purchases")
+        .doc(purchaseId)
+        .update({
+      "isActive": true,
+    });
+  }
+
+  Future<void> deleteLocalNotification(
+      String userId, String notificationId) async {
     await _firestore
         .collection(users)
         .doc(userId)
@@ -1217,7 +1417,7 @@ class UserFirebaseCalls {
         .delete();
   }
 
-  //STREAMS
+  //STREAMS  
 
   Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) {
     return _firestore
@@ -1227,10 +1427,9 @@ class UserFirebaseCalls {
         .snapshots();
   }
 
-
-
   //Get bono Requests from brand
-  Stream<QuerySnapshot> getUserActivePurchasesFromBrandStream(String userId, String brandId) {
+  Stream<QuerySnapshot> getUserActivePurchasesFromBrandStream(
+      String userId, String brandId) {
     return _firestore
         .collection(brands)
         .doc(brandId)
@@ -1251,8 +1450,8 @@ class UserFirebaseCalls {
         .snapshots();
   }
 
-
-  Stream<QuerySnapshot> getUserBrandPurchasesStream(String userId, String brandId) {
+  Stream<QuerySnapshot> getUserBrandPurchasesStream(
+      String userId, String brandId) {
     return _firestore
         .collection(brands)
         .doc(brandId)
@@ -1262,5 +1461,28 @@ class UserFirebaseCalls {
         .snapshots();
   }
 
+  Stream<List<int>> getCombinedUnreadStreams(String userId) {
+    return CombineLatestStream.list<int>([
+      getUnreadNotificationsUserStream(userId),
+      getUnreadConversationsUserStream(userId),
+    ]);
+  }
 
+  Stream<int> getUnreadNotificationsUserStream(String userId) {
+    return _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Notifications")
+        .where("isRead", isEqualTo: false)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
+  Stream<int> getUnreadConversationsUserStream(String userId) {
+    return _firestore
+        .collection(conversations)
+        .where("messagesRead", arrayContains: toMapisMessageRead(userId, true))
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
 }

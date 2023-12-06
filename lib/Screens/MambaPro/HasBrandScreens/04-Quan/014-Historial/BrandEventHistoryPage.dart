@@ -10,7 +10,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../../../../../Data/Models/Event.dart';
+import '../../../../../Events/crud_events/models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BrandEventHistoryPage extends StatefulWidget {

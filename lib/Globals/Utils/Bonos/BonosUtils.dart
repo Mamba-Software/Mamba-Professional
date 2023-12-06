@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import '../../../Data/LibraryModels/lDegradate.dart';
 
 //BonosUtils Class is used to administrate all the bonos
@@ -70,6 +70,14 @@ class BonosUtils {
       bonosRequests.add(bonoRequest);
     }
     return bonosRequests;
+  }
+
+  List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
+    List<Event> events = [];
+    for(int i = 0; i < documents.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(documents[i].id, documents[i]));
+    }
+    return events;
   }
 
   //Function to transform documents to bonos

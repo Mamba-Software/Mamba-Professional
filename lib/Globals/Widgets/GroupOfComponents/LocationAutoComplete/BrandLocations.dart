@@ -125,7 +125,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                                       onPressed: () async {
                                         Clipboard.setData(new ClipboardData(text: location.description!)).then((_){
                                           showTopSnackBar(
-                                            context,
+                                            Overlay.of(context), 
                                             CustomSnackBar.info(
                                               icon: Container(),
                                               iconRotationAngle: 0,
@@ -176,7 +176,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                                   onPressed: () async {
                                     Clipboard.setData(new ClipboardData(text: location.description!)).then((_){
                                       showTopSnackBar(
-                                        context,
+                                        Overlay.of(context),
                                         CustomSnackBar.info(
                                           icon: Container(),
                                           iconRotationAngle: 0,

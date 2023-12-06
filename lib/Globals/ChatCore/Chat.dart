@@ -419,7 +419,6 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
     Scaffold(
       appBar: AppBar(
         elevation: 4,
-        brightness: Brightness.light,
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),

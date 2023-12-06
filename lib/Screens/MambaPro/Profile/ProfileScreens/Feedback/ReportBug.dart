@@ -49,7 +49,7 @@ class _ReportBugState extends State<ReportBug> {
         isLoading = false;
       });
       showTopSnackBar(
-        context,
+        Overlay.of(context),
         CustomSnackBar.success(
           icon: Container(),
           iconRotationAngle: 0,

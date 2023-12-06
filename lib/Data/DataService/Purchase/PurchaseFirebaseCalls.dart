@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -431,7 +431,7 @@ class PurchaseFirebaseCalls {
       "cancelTime": bonoSelected.condition?.cancelTime,
       "expirationTime": bonoSelected.condition?.expirationTime,
       "paymentMethod": purchase.paymentMethod,
-      "directPurchase": false,
+      "directPurchase": purchase.directPurchase,
       "isActive": true,
     }).catchError((err) {
       print(err);

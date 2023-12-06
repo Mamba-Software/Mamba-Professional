@@ -6,17 +6,17 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/Pa
 
 import 'EventPageTrainer.dart';
 
-class EventPage extends StatefulWidget {
+class EventPageOld extends StatefulWidget {
   String eventId;
   bool? onlyView;
 
-  EventPage({Key? key, required this.eventId, this.onlyView}) : super(key: key);
+  EventPageOld({Key? key, required this.eventId, this.onlyView}) : super(key: key);
 
   @override
   _EventPageState createState() => _EventPageState();
 }
 
-class _EventPageState extends State<EventPage> {
+class _EventPageState extends State<EventPageOld> {
 
   // init Widget state. Loading user info.
   @override

@@ -8,7 +8,6 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminTool.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminFeedBack.dart';
 
-
 class Admin extends StatefulWidget {
   const Admin({Key? key}) : super(key: key);
 
@@ -17,11 +16,8 @@ class Admin extends StatefulWidget {
 }
 
 class _AdminState extends State<Admin> {
-
   // List strings
-  List<String> Names = [
-    'Usuaris','Errors','FeedBack', 'Migration'
-  ];
+  List<String> Names = ['Usuaris', 'Errors', 'FeedBack', 'Migration'];
 
   @override
   void initState() {
@@ -30,41 +26,43 @@ class _AdminState extends State<Admin> {
 
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
-          appBar: AppBar(
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  Constants.logoExtended,
-                  fit: BoxFit.contain,
-                  height: 32,
-                ),
-                const SizedBox(width: 15),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text("ADMIN", style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
-                ),
-              ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              Constants.logoExtended,
+              fit: BoxFit.contain,
+              height: 32,
             ),
-            centerTitle: true,
-            elevation: 10,
-            automaticallyImplyLeading: false,
-            iconTheme: const IconThemeData(
-              color: Colors.white, //change your color here
+            const SizedBox(width: 15),
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text("ADMIN",
+                  style: Styles.whiteTextStyle
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
             ),
-          ),
-          backgroundColor: Colors.white,
-          body: ListView.builder(
-            itemCount: this.Names.length,
-            itemBuilder: (context,int index) => EachList(this.Names[index], index),
-          ),
-      );
+          ],
+        ),
+        centerTitle: true,
+        elevation: 10,
+        automaticallyImplyLeading: false,
+        iconTheme: const IconThemeData(
+          color: Colors.white, //change your color here
+        ),
+      ),
+      backgroundColor: Colors.white,
+      body: ListView.builder(
+        itemCount: this.Names.length,
+        itemBuilder: (context, int index) => EachList(this.Names[index], index),
+      ),
+    );
   }
 }
 
-class EachList extends StatelessWidget{
+class EachList extends StatelessWidget {
   // Script Service
   final _script = ScriptsDatabaseService();
   final String name;
@@ -81,32 +79,30 @@ class EachList extends StatelessWidget{
           backgroundColor: Styles.mainColorTrans,
         ),
         trailing: const Icon(Icons.east),
-        title: Text(name,style: const TextStyle(fontSize: 20.0),),
+        title: Text(
+          name,
+          style: const TextStyle(fontSize: 20.0),
+        ),
         subtitle: const Text("Admin Tool"),
-        onTap: (){
+        onTap: () {
           this.returnPage(this.index, context);
-
         },
       ),
     );
   }
 
-  returnPage(int index, BuildContext context)
-  async {
-    switch(index)
-    {
+  returnPage(int index, BuildContext context) async {
+    switch (index) {
       case 0:
         Navigator.push(
             context,
             CupertinoPageRoute<void>(
               builder: (context) => AdminTool(title: name),
               settings: const RouteSettings(name: 'AdminTool'),
-            )
-        );
+            ));
         break;
 
       case 1:
-
         break;
 
       case 2:
@@ -115,15 +111,13 @@ class EachList extends StatelessWidget{
             CupertinoPageRoute<void>(
               builder: (context) => AdminFeedBack(title: name),
               settings: const RouteSettings(name: 'AdminFeedBack'),
-            )
-        );
+            ));
         break;
       case 3:
-       // var result = await _script.getStatisticsSpecific();
-        var result = await _script.JMFupdateEventUserPurchaseIdJuly20th();
-        print("RESULT: "+result.toString());
+        // var result = await _script.getStatisticsSpecific();
+        var result = await _script.JBparcheUserJoinsEventNovembre23th();
+        print("RESULT: " + result.toString());
         break;
     }
-
   }
 }

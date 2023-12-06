@@ -98,6 +98,14 @@
           }
         },
         {
+          "client_id": "331547241606-rliqcsecquh653govo0tddt8f71c5vkp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mamba.mambastyleapp",
+            "certificate_hash": "f77b9eee859fd793718801327336b80f7a57f7ff"
+          }
+        },
+        {
           "client_id": "331547241606-kan54dkiql9kp2cgk41fata2nubl239s.apps.googleusercontent.com",
           "client_type": 3
         }
