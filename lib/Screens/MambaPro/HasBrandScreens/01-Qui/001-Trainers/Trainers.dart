@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -10,12 +14,14 @@ import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -37,7 +43,15 @@ class _Trainers extends State<Trainers> {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+    if (!_scrollController!.hasClients) {
+      return false;
+    }
+    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+      // User is down up, so AppBar should expand.
+      return false;
+    }
+    // Use the same condition as before to check if AppBar is expanded.
+    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
 
   // Brand Data Service
@@ -47,6 +61,7 @@ class _Trainers extends State<Trainers> {
 
   // Boolean Loading
   bool isLoading = false;
+  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
   // Boolean isUpdated
   bool isUpdated = false;
   // Search Controller
@@ -233,26 +248,6 @@ class _Trainers extends State<Trainers> {
     return activeStaff;
   }
 
-  // Navigate to Bonos Request Screen
-  Future<void> navigateToRolesScreen() async {
-    mixpanel!.track('brand_trainers_roles_view');
-    var result = await Navigator.push(
-      context,
-      CupertinoPageRoute<bool?>(
-        builder: (context) => BrandRoles(
-          brandId: widget.brandId,
-          trainers: allMembers,
-        ),
-      )
-    );
-    if (result == null || result == true) {
-      setState(() {
-        isLoading = true;
-      });
-      getAllUsers();
-    }
-  }
-
   @override
   initState() {
     super.initState();
@@ -281,8 +276,9 @@ class _Trainers extends State<Trainers> {
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: false,
+            floating: true,
             pinned: true,
+            snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 height: MediaQuery.of(context).size.height*0.2,
@@ -700,7 +696,7 @@ class _Trainers extends State<Trainers> {
                     style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
                 )
             ),
-            centerTitle: true,
+            centerTitle: false,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
@@ -715,27 +711,50 @@ class _Trainers extends State<Trainers> {
               ),
             ),
             actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CounterBadgeIcon(
+                    counter: unreadNotifications,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToNotificationsScreen(context),
+                    ),
                   ),
-                  onPressed: () {
-                    if (widget.pinned == true) {
-                      mixpanel!.track('brand_trainers_pinned_off');
-                    } else {
-                      mixpanel!.track('brand_trainers_pinned_on');
-                    }
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
+                  CounterBadgeIcon(
+                    counter: unreadChats,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToChatScreen(context),
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  GestureDetector(
+                    onTap: () => navigateToProfileScreen(context),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.08,
+                      child: Center(
+                        child: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.08,
+                          image: currentUser.imageUrl,
+                          color: AppColors.grey,
+                          borderWidth: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
             ],
           ),
           currentUser.brandRole < 2 ? SliverToBoxAdapter(
@@ -770,7 +789,7 @@ class _Trainers extends State<Trainers> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
+                                AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
                                 style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
                               ),
                               Text(
@@ -789,78 +808,79 @@ class _Trainers extends State<Trainers> {
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                Divider(color: AppColors.grey, thickness: 1, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01)
               ],
             ),
           ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
           isLoading ? SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: ListTile(
-                  dense: true,
-                  leading: Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.08,
-                      width: MediaQuery.of(context).size.height*0.08,
-                      decoration: const BoxDecoration(
-                        color: AppColors.grey,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                  title: Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.03,
-                      width: MediaQuery.of(context).size.width*0.02,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
+              return Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.02),
+                child: Row(
+                  children: [
+                    Shimmer.fromColors(
+                      baseColor: AppColors.grey,
+                      highlightColor: AppColors.grey.withOpacity(0.5),
+                      child: Container(
+                        height: MediaQuery.of(context).size.width*0.14,
+                        width: MediaQuery.of(context).size.width*0.14,
+                        decoration: const BoxDecoration(
+                          color: AppColors.grey,
+                          shape: BoxShape.circle,
                         ),
-                        color: AppColors.grey,
                       ),
                     ),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Shimmer.fromColors(
-                        baseColor: AppColors.grey,
-                        highlightColor: AppColors.grey.withOpacity(0.5),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height*0.02,
-                          width: MediaQuery.of(context).size.width*0.2,
-                          decoration: const BoxDecoration(
-                            color: AppColors.grey,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.04), // adjust this value as needed
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// USER
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height*0.02,
+                              width: MediaQuery.of(context).size.width*0.25,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5.0),
+                                ),
+                                color: AppColors.grey,
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  trailing: Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.04,
-                      width: MediaQuery.of(context).size.height*0.04,
-                      decoration: const BoxDecoration(
-                        color: AppColors.grey,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.007),
+                          /// BONO
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height*0.015,
+                              width: MediaQuery.of(context).size.width*0.45,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5.0),
+                                ),
+                                color: AppColors.grey,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.007),
+                        ],
                       ),
                     ),
-                  ),
-                  onTap: null,
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                    Shimmer.fromColors(
+                      baseColor: AppColors.grey,
+                      highlightColor: AppColors.grey.withOpacity(0.5),
+                      child: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                    ),
+
+                  ],
                 ),
               );
             },
@@ -941,10 +961,7 @@ class _Trainers extends State<Trainers> {
                       )
                   );
                   if (result == true) {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    getAllUsers();
+                    await getAllUsers();
                   }
                 },
               );
@@ -970,6 +987,165 @@ class _Trainers extends State<Trainers> {
           const SliverToBoxAdapter(child: SizedBox(height: 10,)),
         ],
       ),
+      floatingActionButton: whichFloatingActionButton(),
+    );
+  }
+
+  Widget whichFloatingActionButton() {
+    return currentUser.brandRole < 2 ? Padding(
+      padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.width*0.15,
+        width: MediaQuery.of(context).size.width*0.15,
+        child: SpeedDial(
+          heroTag: "106",
+          child: const Icon(Icons.add),
+          activeChild: const Icon(Icons.group_add_outlined),
+          animationDuration: const Duration(milliseconds: 100),
+          foregroundColor: AppColors.white,
+          overlayColor: Theme.of(context).scaffoldBackgroundColor,
+          overlayOpacity: 0.95,
+          spacing: MediaQuery.of(context).size.height*0.02,
+          spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
+          openCloseDial: isDialOpen,
+          children: [
+            SpeedDialChild(
+                child: const Icon(
+                  Icons.edit_note_outlined,
+                  size: 30,
+                ),
+                elevation: 10,
+                backgroundColor: Theme.of(context).backgroundColor,
+                labelWidget: Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                  height: MediaQuery.of(context).size.height*0.1,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff,
+                          style: Theme.of(context).textTheme.headline3,
+                          textAlign: TextAlign.right
+                      ),
+                      Text(
+                          AppLocalizations.of(context)!.addClientsManually.split(AppLocalizations.of(context)!.client.toLowerCase())[0]+AppLocalizations.of(context)!.staff.toLowerCase()+AppLocalizations.of(context)!.addClientsManually.split(AppLocalizations.of(context)!.client.toLowerCase())[1],
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.right
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  navigateToAddMember();
+                }
+            ),
+            SpeedDialChild(
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 5.0),
+                  child: Icon(
+                    Icons.share,
+                  ),
+                ),
+                elevation: 10,
+                backgroundColor: Theme.of(context).backgroundColor,
+                labelWidget: Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                  height: MediaQuery.of(context).size.height*0.1,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          AppLocalizations.of(context)!.invite+" "+AppLocalizations.of(context)!.staff,
+                          style: Theme.of(context).textTheme.headline3,
+                          textAlign: TextAlign.right
+                      ),
+                      Text(
+                          AppLocalizations.of(context)!.copyCodeMessage,
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.right
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  navigateShareBrandLink();
+                }
+            ),
+          ],
+        ),
+      ),
+    ) : Container();
+  }
+
+  // Navigate to Roles Screen
+  Future<void> navigateToRolesScreen() async {
+    mixpanel!.track('brand_trainers_roles_view');
+    var result = await Navigator.push(
+        context,
+        CupertinoPageRoute<bool?>(
+          builder: (context) => BrandRoles(
+            brandId: widget.brandId,
+            trainers: allMembers,
+          ),
+        )
+    );
+    if (result == null || result == true) {
+      setState(() {
+        isLoading = true;
+      });
+      getAllUsers();
+    }
+  }
+
+  Future<void> navigateToAddMember() async {
+    var result = await Navigator.push(
+        context,
+        CupertinoPageRoute<bool?>(
+          builder: (context) =>
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus &&
+                      currentFocus.focusedChild != null) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
+                },
+                child: const RegisterBrandMember(
+                  isTrainer: true,
+                ),
+              ),
+        )
+    );
+    if (result == true) {
+      await getAllUsers();
+    }
+  }
+
+  Future<void> navigateShareBrandLink() async {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return const FractionallySizedBox(
+          heightFactor: 0.8,
+          child: ShareBrandLink(
+            onlyStaff: true,
+          ),
+        );
+      },
     );
   }
 

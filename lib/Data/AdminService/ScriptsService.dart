@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
@@ -33,6 +36,7 @@ class ScriptsDatabaseService {
   final _userDataService = UserDataService();
   final _eventDataService = EventDataService();
   final _libraryDataService = LibraryDataService();
+  final _purchaseDataService = PurchaseDataService();
 
   // Firebase collections
   String users = isProduction ? 'Users' : '7777 Users';
@@ -50,6 +54,7 @@ class ScriptsDatabaseService {
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
   String library = isProduction ? 'Library' : 'Library';
+  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
 
   Future<bool> migrateUserDataFebruary6th() async {
     try {
@@ -2738,6 +2743,412 @@ class ScriptsDatabaseService {
       return true;
     } catch (e) {
       print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> JBmigratePurchaseDataJune16th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 16TH JUNE 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+purchases+' collection:\n');
+      print('--------------');
+      print('\n');
+
+      /// THE GOAL OF THIS FUNCTION Eliminar Payments/Purchases/Purchases → Passar Purchases/{purchaseId}
+      String brandsCollection = "7777 Brands";
+      String paymentsCollection = "7777 Payments";
+      String purchasesCollection = "7777 Purchases";
+      QuerySnapshot querySnapshotPurchases = await _firestore.collection(paymentsCollection).doc("Purchases").collection("Purchases").get();
+      for (int i = 0; i < querySnapshotPurchases.size; i++) {
+        String purchaseId = querySnapshotPurchases.docs[i].id;
+        Purchase purchase = Purchase.fromObjectAllData(purchaseId, querySnapshotPurchases.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('PURCHASE WITH ID: ' + purchase.id! + " AND USER: " + purchase.userId!);
+        print('\n');
+        // Build Bono From Purchase
+        Bono bono = Bono();
+        bono.setBonoSessions = querySnapshotPurchases.docs[i].get("sessions");
+        bono.setConditionsData = Condition(
+          expirationTime: querySnapshotPurchases.docs[i].get("expirationTime"),
+          cancelTime: querySnapshotPurchases.docs[i].get("cancelTime"),
+          weeklySessions: querySnapshotPurchases.docs[i].get("weeklySessions"),
+        );
+        // Add Pruchase to new Collection
+        await _firestore
+        .collection(purchasesCollection)
+        .doc(purchase.id!)
+        .set({
+          "purchasedAt": purchase.purchasedAt!,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId!,
+          "bonoId": purchase.bonoId,
+          "price": purchase.price, //bonoSelected.price
+          "sessions": bono.sessions,
+          "weeklySessions": bono.condition?.weeklySessions,
+          "cancelTime": bono.condition?.cancelTime,
+          "expirationTime": bono.condition?.expirationTime,
+          "paymentMethod": purchase.paymentMethod,
+        }).catchError((err) {
+          print(err);
+        });
+        // Add Pruchase to Brands Collection
+        await _firestore
+        .collection(brandsCollection)
+        .doc(purchase.brandId!)
+        .collection("Purchases")
+        .doc(purchase.id!)
+        .set({
+          "purchasedAt": purchase.purchasedAt!,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId!,
+          "bonoId": purchase.bonoId,
+          "price": purchase.price, //bonoSelected.price
+          "sessions": bono.sessions,
+          "weeklySessions": bono.condition?.weeklySessions,
+          "cancelTime": bono.condition?.cancelTime,
+          "expirationTime": bono.condition?.expirationTime,
+          "paymentMethod": purchase.paymentMethod,
+        }).catchError((err) {
+          print(err);
+        });
+        // Check Purchase Has Events
+        QuerySnapshot querySnapshotEvents = await _firestore.collection(paymentsCollection).doc("Purchases").collection("Purchases").doc(purchase.id!).collection("Events").get();
+        if (querySnapshotEvents.size > 0) {
+          print('THIS PURCHASE HAS EVENTS');
+          // WE NEED TO ADD THIS TO THE EVENTS SUB COLLECTION
+          for (int i = 0; i < querySnapshotEvents.size; i++) {
+            String eventId = querySnapshotEvents.docs[i].id;
+            Event event = Event.fromObjectOnlyCoverData(eventId, querySnapshotEvents.docs[i]);
+            // Add This to Purchases Collection
+            await _firestore
+            .collection(purchasesCollection)
+            .doc(purchaseId)
+            .collection("Events")
+            .doc(eventId)
+            .set({
+              "isPrivate": event.isPrivate,
+              "title": event.title,
+              "imageUrl": event.imageUrl,
+              "doneAt": event.doneAt,
+              "year": event.year,
+              "month": event.month,
+              "day": event.day,
+              "hour": event.hour,
+              "minute": event.minute,
+              "duration": event.duration,
+              "numTrainers": event.numTrainers,
+              "numClients": event.numClients,
+              "maxMembers": event.maxMembers,
+            });
+            // Add Pruchase to Brands Collection
+            await _firestore
+            .collection(brandsCollection)
+            .doc(purchase.brandId!)
+            .collection("Purchases")
+            .doc(purchase.id!)
+            .collection("Events")
+            .doc(eventId)
+            .set({
+              "isPrivate": event.isPrivate,
+              "title": event.title,
+              "imageUrl": event.imageUrl,
+              "doneAt": event.doneAt,
+              "year": event.year,
+              "month": event.month,
+              "day": event.day,
+              "hour": event.hour,
+              "minute": event.minute,
+              "duration": event.duration,
+              "numTrainers": event.numTrainers,
+              "numClients": event.numClients,
+              "maxMembers": event.maxMembers,
+            }).catchError((err) {
+              print(err);
+            });
+          }
+          print('All ${querySnapshotEvents.size} Events Moved');
+        } else {
+          print('THIS PURCHASE HAS NO EVENTS');
+        }
+        print('\n');
+      }
+      print('All Purchases Moved');
+      print('\n');
+      print('=================================================================================');
+      print('=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> JBupdatePurchaseDataJune16th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 16TH JUNE 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+purchases+' collection:\n');
+      print('--------------');
+      print('\n');
+
+      /// THE GOAL IS TO ADD isActive = true or false on the purchase on not use Users/Bonos anymore
+      /// Aslo we wan to populate all /Purchases/{purchaseId} documents with bonoId, brandId and userId
+      String usersCollection = "7777 Users";
+      String brandsCollection = "7777 Brands";
+      String purchasesCollection = "7777 Purchases";
+      QuerySnapshot querySnapshotPurchases = await _firestore.collection(purchasesCollection).get();
+      for (int i = 0; i < querySnapshotPurchases.size; i++) {
+        String purchaseId = querySnapshotPurchases.docs[i].id;
+        Purchase purchase = Purchase.fromObjectAllData(purchaseId, querySnapshotPurchases.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('PURCHASE WITH ID: ' + purchase.id! + ' AND USER IS: ' + purchase.userId! + ' FROM BRAND: ' + purchase.brandId!);
+        print('\n');
+        /// Check if Purchase is active by checking if Users/{userId}/Bonos/{bonoId} exists
+        DocumentSnapshot doc = await _firestore
+        .collection(usersCollection)
+        .doc(purchase.userId)
+        .collection("Bonos")
+        .doc(purchase.bonoId)
+        .get();
+        // Get Purhcase Id
+        bool bonoIsActive = false;
+        String purchaseIdFromBono = doc.get("purchaseId");
+        if (purchaseId == purchaseIdFromBono) bonoIsActive = true;
+        /// Update with IsActive the following:
+        /// Purchases/{purchaseId}
+        await _firestore.collection(purchasesCollection).doc(purchase.id!).update({
+          "isActive": bonoIsActive,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId,
+          "bonoId": purchase.bonoId,
+        });
+        /// Users/{userId}/Purchases/{purchaseId}
+        await _firestore.collection(usersCollection).doc(purchase.userId!).collection("Purchases").doc(purchase.id!).update({
+          "isActive": bonoIsActive,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId,
+          "bonoId": purchase.bonoId,
+        });
+        /// Brands/{brandId}/Purchases/{purchaseId}
+        await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Purchases").doc(purchase.id!).update({
+          "isActive": bonoIsActive,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId,
+          "bonoId": purchase.bonoId,
+        });
+        /// Brands/{brandId}/Bonos/{bonoId}/Purchases/{purchaseId}
+        await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Bonos").doc(purchase.bonoId!).collection("Purchases").doc(purchase.id!).update({
+          "isActive": bonoIsActive,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId,
+          "bonoId": purchase.bonoId,
+        });
+        /// Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}
+        await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Users").doc(purchase.userId!).collection("Purchases").doc(purchase.id!).update({
+          "isActive": bonoIsActive,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId,
+          "bonoId": purchase.bonoId,
+        });
+        print('IsActive already added');
+        print('bonoId, brandId and userId populated on all');
+        print('\n');
+      }
+      print('All Purchases Moved');
+      print('\n');
+      print('=================================================================================');
+      print('=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> JMFupdateEventUserPurchaseIdJuly20th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 20TH JULY 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying events/users collection:\n');
+      print('--------------');
+      print('\n');
+
+      /// THE GOAL IS TO ADD purchaseId on the Event/Users if it has, just to know which purchase the user has used
+      String usersCollection = "7777 Users";
+      String eventsCollection = "7777 Events";
+      bool found = false;
+      QuerySnapshot querySnapshotEvents = await _firestore.collection(eventsCollection).get();
+      for (int i = 0; i < querySnapshotEvents.size; i++) {
+        found = false;
+        String eventId = querySnapshotEvents.docs[i].id;
+        QuerySnapshot querySnapshotBonos = await _firestore.collection(eventsCollection).doc(eventId).collection('Bonos').get();
+        QuerySnapshot querySnapshotUsers = await _firestore.collection(eventsCollection).doc(eventId).collection('Users').where('isTrainer', isEqualTo: false).get();
+
+        for (int j = 0; j < querySnapshotUsers.size; j++) {
+          found = false;
+          String userId = querySnapshotUsers.docs[j].id;
+          if (querySnapshotBonos.size > 0) {
+            QuerySnapshot querySnapshotUsersPurchases = await _firestore
+                .collection(usersCollection).doc(userId).collection(
+                'Purchases').get();
+            for (int x = 0; x < querySnapshotUsersPurchases.size; x++) {
+              String purchaseId = querySnapshotUsersPurchases.docs[x].id;
+              DocumentSnapshot doc = await _firestore
+                  .collection(usersCollection)
+                  .doc(userId)
+                  .collection("Purchases")
+                  .doc(purchaseId)
+                  .collection("Events")
+                  .doc(eventId)
+                  .get();
+              if (doc.exists && !found) {
+                found = true;
+                print(
+                    '=================================================================================');
+                print(
+                    '=================================================================================');
+                print('PURCHASE WITH ID: ' + purchaseId + ' AND USER IS: ' +
+                    userId + ' HAS IT ON EVENT: ' + eventId);
+                print('\n');
+                await _firestore.collection(eventsCollection).doc(eventId)
+                    .collection('Users').doc(userId)
+                    .update({
+                  "purchaseId": purchaseId,
+                });
+                break;
+              }
+            }
+            if (!found) {
+              await _firestore.collection(eventsCollection).doc(eventId)
+                  .collection('Users').doc(userId)
+                  .update({
+                "purchaseId": "",
+              });
+            }
+          }
+          else {
+            await _firestore.collection(eventsCollection).doc(eventId)
+                .collection('Users').doc(userId)
+                .update({
+              "purchaseId": "",
+            });
+          }
+        }
+      }
+      print('All Purchases added to Users');
+      print('\n');
+      print('=================================================================================');
+      print('=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+
+  Future<bool> JBPremoveBonoDeletedFromEventOctober2nd() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('JB RemoveBonoDeletedFromEvent October2nd');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying events/users collection:\n');
+      print('--------------');
+      print('\n');
+
+      /// THE GOAL IS TO REMOVE DE DELETED BONOS FROM THE EVENT, THIS IS A BUG WE DISCOVERED TODAY
+      String brandsCollection = "Brands";
+      String eventsCollection = "Events";
+      String brandId = "f88204e3-a2a9-4261-8799-8a4673571eaf";
+
+      // Get All Bonos From Brand
+      List<String> bonosIds = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(brandsCollection)
+          .doc(brandId)
+          .collection("Bonos")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        bonosIds.add(querySnapshot.docs[i].id);
+      }
+      print('--------------');
+      print("ACTIVE BONOS");
+      for (String bonoId in bonosIds) {
+        print(bonoId);
+      }
+      print('--------------');
+      print('\n');
+      // Get All Events From Brand
+      QuerySnapshot querySnapshot2 = await _firestore
+          .collection(brandsCollection)
+          .doc(brandId)
+          .collection("Events")
+          .get();
+
+      print('--------------');
+      print("CREATED EVENTS");
+      print(querySnapshot2.size);
+      print('--------------');
+      print('\n');
+
+      // For Each Event Check
+      for (int i = 0; i < querySnapshot2.docs.length; i++) {
+        print('-----');
+        String eventId = querySnapshot2.docs[i].id;
+        print("EVENT $eventId");
+        // Get the Event Bonos
+        QuerySnapshot querySnapshot3 = await _firestore
+            .collection(eventsCollection)
+            .doc(eventId)
+            .collection("Bonos")
+            .get();
+        // Check if all Bonos exist
+        List<String> deletedBonosIds = [];
+        for (int i = 0; i < querySnapshot3.docs.length; i++) {
+          String eventBonoId = querySnapshot3.docs[i].get("bonoId");
+          if (bonosIds.contains(eventBonoId) == false) {
+            deletedBonosIds.add(eventBonoId);
+          }
+        }
+        // Remove Bonos that does not exist
+        for (String bonoId in deletedBonosIds) {
+          print('Deleting $bonoId');
+          await _firestore
+          .collection(eventsCollection)
+          .doc(eventId)
+          .collection("Bonos")
+          .doc(bonoId)
+          .delete();
+        }
+        print('Next Event');
+        print('-----');
+        print('\n');
+      }
+      print('All Deleted Bonos Removed');
+      print('\n');
+      print('=================================================================================');
+      print('=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
       return false;
     }
   }

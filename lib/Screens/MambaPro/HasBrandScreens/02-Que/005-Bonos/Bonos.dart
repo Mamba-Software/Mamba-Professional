@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -9,13 +13,15 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../../Globals/GlobalVars.dart';
 import '../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'BonosRequests.dart';
 
 class BonosPro extends StatefulWidget {
   String brandId;
@@ -41,7 +47,15 @@ class _BonosProState extends State<BonosPro> {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
+    if (!_scrollController!.hasClients) {
+      return false;
+    }
+    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+      // User is down up, so AppBar should expand.
+      return false;
+    }
+    // Use the same condition as before to check if AppBar is expanded.
+    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
   // Brand Service
   final _brandDataService = BrandDataService();
@@ -94,12 +108,12 @@ class _BonosProState extends State<BonosPro> {
   }
 
   // Navigate to Bonos Request Screen
-  void navigateToBonosRequestScreen() {
+  void navigateToPurchaseHistoryScreen() {
     mixpanel!.track('brand_bonos_confirmation_requests');
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-          builder: (context) => BonosRequests(
+          builder: (context) => BrandPurchaseHistory(
             brandId: widget.brandId,
           ),
         )
@@ -187,7 +201,7 @@ class _BonosProState extends State<BonosPro> {
             expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: false,
+            floating: true,
             pinned: true,
             title: AnimatedOpacity(
                 opacity: appBarExpanded ? 1.0 : 0.0,
@@ -438,7 +452,7 @@ class _BonosProState extends State<BonosPro> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            centerTitle: true,
+            centerTitle: false,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
                 padding: EdgeInsets.only(
@@ -454,30 +468,50 @@ class _BonosProState extends State<BonosPro> {
               ),
             ),
             actions: [
-              Padding(
-                padding: EdgeInsets.only(
-                    right: MediaQuery.of(context).size.width * 0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned
-                        ? AppColors.red
-                        : AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width * 0.06,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CounterBadgeIcon(
+                    counter: unreadNotifications,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToNotificationsScreen(context),
+                    ),
                   ),
-                  onPressed: () {
-                    if (widget.pinned == true) {
-                      mixpanel!.track('brand_bonos_pinned_off');
-                    } else {
-                      mixpanel!.track('brand_bonos_pinned_on');
-                    }
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
+                  CounterBadgeIcon(
+                    counter: unreadChats,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToChatScreen(context),
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  GestureDetector(
+                    onTap: () => navigateToProfileScreen(context),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.08,
+                      child: Center(
+                        child: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.08,
+                          image: currentUser.imageUrl,
+                          color: AppColors.grey,
+                          borderWidth: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
             ],
           ),
           canEdit ? SliverToBoxAdapter(
@@ -485,7 +519,7 @@ class _BonosProState extends State<BonosPro> {
                 children: [
                   SizedBox(height: MediaQuery.of(context).size.height*0.03),
                   GestureDetector(
-                    onTap: navigateToBonosRequestScreen,
+                    onTap: navigateToPurchaseHistoryScreen,
                     child: Container(
                       padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
                       height: MediaQuery.of(context).size.height*0.1,
@@ -579,7 +613,7 @@ class _BonosProState extends State<BonosPro> {
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                  Divider(color: AppColors.grey, thickness: 1, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
                 ],
               ),
           ) : SliverToBoxAdapter(
@@ -606,9 +640,9 @@ class _BonosProState extends State<BonosPro> {
                           Bono bono = bonosList[index];
                           return Column(
                             children: [
-                              index == 0 ? SizedBox(height: MediaQuery.of(context).size.width * 0.04) : Container(),
+                              index == 0 ? SizedBox(height: MediaQuery.of(context).size.width * 0.02) : Container(),
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.04),
+                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.02),
                                 child: returnBono(bono),
                               ),
                               index == bonosList.length-1 ? SizedBox(height: MediaQuery.of(context).size.width * 0.1) : Container(),
@@ -648,7 +682,7 @@ class _BonosProState extends State<BonosPro> {
         ],
       ),
       floatingActionButton: canEdit ? Padding(
-        padding: const EdgeInsets.all(20),
+        padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
         child: SizedBox(
           height: MediaQuery.of(context).size.width*0.15,
           width: MediaQuery.of(context).size.width*0.15,

@@ -29,7 +29,7 @@ class SuscriptionFirebaseCalls {
   String users = isProduction ? 'Users' : '7777 Users';
   String events = isProduction ? 'Events' : '7777 Events';
   String locations = isProduction ? 'Locations' : '7777 Locations';
-  String payments = isProduction ? 'Payments' : '7777 Payments';
+  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
   String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
   String subscriptionsRevenueCat = isProduction ? '111testSubs' : '111testSubs';
 

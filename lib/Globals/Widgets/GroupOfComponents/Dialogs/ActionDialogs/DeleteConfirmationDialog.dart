@@ -5,7 +5,8 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class DeleteConfirmationDialog extends StatelessWidget {
   final String text;
-  const DeleteConfirmationDialog({Key? key, required this.text}) : super(key: key);
+  final bool? permitDelete;
+  const DeleteConfirmationDialog({Key? key, required this.text, this.permitDelete}) : super(key: key);
 
 
   @override
@@ -41,7 +42,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           elevation: 4.0,
-                          backgroundColor: Colors.red,
+                          backgroundColor: permitDelete == null? Colors.red : Colors.red.withOpacity(0.4),
                           fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
@@ -55,7 +56,12 @@ class DeleteConfirmationDialog extends StatelessWidget {
                         ),
                         icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
-                          Navigator.pop(context, true);
+                          if(permitDelete == null) {
+                            Navigator.pop(context, true);
+                          }
+                          else {
+                            Navigator.pop(context, false);
+                          }
                         },
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width*0.01),

@@ -36,11 +36,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final _brandDataService = BrandDataService();
   final PermisionsService _permisionsService = PermisionsService();
   NotificationService? _notificationService;
+  // Boolean
+  bool isLoading = false;
   // Wellcome Pages
   final PageController _pageController = PageController(initialPage: 0);
   final PageController _pageControllerData = PageController(initialPage: 0);
   // Tab Controller
-  double addEventTabValue = 0.199;
+  double addEventTabValue = 0.249;
   // Title Controller
   var firstNameController = TextEditingController();
   var lastNameController = TextEditingController();
@@ -63,15 +65,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int? gender;
   // GoogleLogIn
   bool isGoogle = false;
+  // AppleLogIn
+  bool isApple = false;
+  bool isLoadingBody = false;
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
     mixpanel!.timeEvent("onboarding_userdata_image");
-    File? temp = await ImageUtils().pickImage();
     setState(() {
-      _image = temp;
+      isLoadingBody = true;
     });
-    mixpanel!.track('onboarding_userdata_image');
+    try {
+      File? temp = await ImageUtils().pickImage();
+      setState(() {
+        _image = temp;
+        isLoadingBody = false;
+      });
+      mixpanel!.track('onboarding_userdata_image');
+    } catch (e) {
+      setState(() {
+        isLoadingBody = false;
+      });
+    }
   }
 
   DateTime? convertToDate(String input, String format, BuildContext context) {
@@ -151,6 +166,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     mixpanel!.getPeople().set("isProduction", isProduction);
   }
 
+  int calculateAge(DateTime birthDate, DateTime currentDate) {
+    int age = currentDate.year - birthDate.year;
+    int month1 = birthDate.month;
+    int month2 = currentDate.month;
+    int day1 = birthDate.day;
+    int day2 = currentDate.day;
+    // If the current year's month is less than the birth year's month, then decrease year by 1
+    if (month2 < month1) {
+      age--;
+    }
+    // If the birth month is this month, but the day is later than the current day, decrease year by 1
+    else if (month2 == month1 && day2 < day1) {
+      age--;
+    }
+    return age;
+  }
+
   @override
   void initState() {
     mixpanel!.track('onboarding_find_trainers');
@@ -172,9 +204,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         if (firebaseUser.photoURL != null ) {
           imageUrl = firebaseUser.photoURL;
         }
+      } else if (firebaseUser.providerData[0].providerId == "apple.com") {
+        isApple = true;
+        if (firebaseUser.displayName != null ) {
+          firstNameController.text = firebaseUser.displayName!.split(" ")[0];
+          int length = firebaseUser.displayName!.split(" ")[0].length;
+          lastNameController.text = firebaseUser.displayName!.substring(length+1);
+          canGoNextName = true;
+        }
       }
     } catch (e) {
       isGoogle = false;
+      isApple = false;
     }
   }
 
@@ -504,7 +545,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: null,
+                        onPressed: () {
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.ease,
+                          );
+                        },
                         child: Text(
                           AppLocalizations.of(context)!.next,
                           style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
@@ -552,7 +598,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       controller: _pageControllerData,
                       onPageChanged: (int page) {
                         setState(() {
-                          addEventTabValue += 0.20;
+                          addEventTabValue += 0.25;
                         });
                         if (page == 0) {
                           mixpanel!.track('onboarding_data_name');
@@ -562,7 +608,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           mixpanel!.track('onboarding_data_birthday');
                         } else if (page == 3) {
                           mixpanel!.track('onboarding_data_gender');
-                        } else if (page == 4) {
                           mixpanel!.track('onboarding_finish');
                         }
                       },
@@ -616,9 +661,39 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           ),
                                         ),
                                       ) : Container(),
+                                      isApple ? FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.width*0.1,
+                                          padding: const EdgeInsets.all(8),
+                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                          decoration: BoxDecoration(
+                                              color: AppColors.darkGrey, borderRadius: BorderRadius.circular(30)
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              SizedBox(
+                                                width: MediaQuery.of(context).size.width*0.04,
+                                                child: Image(
+                                                    image: AssetImage(Constants.apple)
+                                                ),
+                                              ),
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                              Flexible(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!.googleInfo.split("Google")[0]+" Apple",
+                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ) : Container(),
                                       SizedBox(height: MediaQuery.of(context).size.height*0.05),
                                       Material(
-                                        elevation: 8,
+                                        elevation: 4,
                                         borderRadius: BorderRadius.circular(15.0),
                                         child: Row(
                                           children: [
@@ -674,7 +749,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       ),
                                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                       Material(
-                                        elevation: 8,
+                                        elevation: 4,
                                         borderRadius: BorderRadius.circular(15.0),
                                         child: Row(
                                           children: [
@@ -731,9 +806,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ],
                             ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.height*0.10,
+                                height: MediaQuery.of(context).size.height*0.12,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.04),
                                   child: Row(
                                     children: [
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -783,120 +858,138 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height*0.6,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)!.uploadPhoto.split(" ")[0]+" "+AppLocalizations.of(context)!.profilePhoto.toLowerCase(),
-                                          style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                        Text(
-                                          AppLocalizations.of(context)!.changeLater,
-                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        isGoogle ? FittedBox(
-                                          fit: BoxFit.contain,
-                                          child: Container(
-                                            height: MediaQuery.of(context).size.width*0.1,
-                                            padding: const EdgeInsets.all(8),
-                                            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
-                                            decoration: BoxDecoration(
-                                                color: AppColors.darkGrey, borderRadius: BorderRadius.circular(30)
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Image(
-                                                    image: AssetImage(Constants.google)
+                            Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.uploadPhoto.split(" ")[0]+" "+AppLocalizations.of(context)!.profilePhoto.toLowerCase(),
+                                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                      Text(
+                                        AppLocalizations.of(context)!.changeLater,
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      isGoogle ? FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.width*0.1,
+                                          padding: const EdgeInsets.all(8),
+                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                          decoration: BoxDecoration(
+                                              color: AppColors.darkGrey, borderRadius: BorderRadius.circular(30)
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Image(
+                                                  image: AssetImage(Constants.google)
+                                              ),
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                              Flexible(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!.googleInfo,
+                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                  textAlign: TextAlign.left,
                                                 ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Flexible(
-                                                  child: Text(
-                                                    AppLocalizations.of(context)!.googleInfo,
-                                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                                    textAlign: TextAlign.left,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ) : Container(),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                                      Container(
+                                        height: MediaQuery.of(context).size.height * 0.15,
+                                        color: Colors.transparent,
+                                        child: _image == null && imageUrl == null ? Center(
+                                          child: OutlinedButton(
+                                            onPressed: getImage,
+                                            child: !isLoadingBody ? Icon(
+                                              Icons.add,
+                                              color: AppColors.grey,
+                                              size: MediaQuery.of(context).size.width * 0.1,
+                                            ) : SizedBox(
+                                              height: MediaQuery.of(context).size.width * 0.1,
+                                              width: MediaQuery.of(context).size.width * 0.1,
+                                              child: Center(
+                                                child: SizedBox(
+                                                  height: MediaQuery.of(context).size.width * 0.05,
+                                                  width: MediaQuery.of(context).size.width * 0.05,
+                                                  child: const CircularProgressIndicator(
+                                                    color: AppColors.grey,
+                                                    strokeWidth: 2,
                                                   ),
                                                 ),
-                                              ],
+                                              ),
+                                            ),
+                                            style: OutlinedButton.styleFrom(
+                                              backgroundColor: AppColors.white,
+                                              elevation: 4,
+                                              shape: const CircleBorder(),
+                                              padding: const EdgeInsets.all(40),
                                             ),
                                           ),
-                                        ) : Container(),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                                        Container(
-                                          height: MediaQuery.of(context).size.height * 0.15,
-                                          color: Colors.transparent,
-                                          child: _image == null && imageUrl == null ? Center(
-                                            child: OutlinedButton(
-                                              onPressed: getImage,
-                                              child: Icon(
-                                                Icons.add,
-                                                color: AppColors.grey,
-                                                size: MediaQuery.of(context).size.width * 0.1,
-                                              ),
-                                              style: OutlinedButton.styleFrom(
-                                                backgroundColor: AppColors.white,
-                                                elevation: 4,
-                                                shape: const CircleBorder(),
-                                                padding: const EdgeInsets.all(40),
-                                              ),
-                                            ),
-                                          )
-                                              :
-                                          _image != null ? GestureDetector(
-                                            onTap: getImage,
-                                            child: Stack(
-                                              children: <Widget>[
-                                                const Center(child: CircularProgressIndicator(
-                                                    color: AppColors.black
-                                                )),
-                                                Center(
+                                        )
+                                            :
+                                        _image != null ? GestureDetector(
+                                          onTap: getImage,
+                                          child: Stack(
+                                            children: <Widget>[
+                                              const Center(child: CircularProgressIndicator(
+                                                  color: AppColors.black
+                                              )),
+                                              Center(
+                                                child: Material(
+                                                  elevation: 4,
+                                                  shape: const CircleBorder(),
                                                   child: CircularImage(
                                                     size: MediaQuery.of(context).size.height * 0.15,
                                                     file: _image,
                                                     borderWidth: 1,
                                                     color: AppColors.grey,
-                                                  )
-                                                ),
-                                              ],
-                                            ),
-                                          ) :
-                                          GestureDetector(
-                                            onTap: getImage,
-                                            child: Stack(
-                                              children: <Widget>[
-                                                const Center(child: CircularProgressIndicator(
-                                                    color: AppColors.black
-                                                )),
-                                                Center(child: CircularImage(
+                                                  ),
+                                                )
+                                              ),
+                                            ],
+                                          ),
+                                        ) :
+                                        GestureDetector(
+                                          onTap: getImage,
+                                          child: Stack(
+                                            children: <Widget>[
+                                              const Center(child: CircularProgressIndicator(
+                                                  color: AppColors.black
+                                              )),
+                                              Center(child: Material(
+                                                elevation: 4,
+                                                shape: const CircleBorder(),
+                                                child: CircularImage(
                                                   size: MediaQuery.of(context).size.height * 0.15,
                                                   image: imageUrl,
                                                   borderWidth: 1,
                                                   color: AppColors.grey,
-                                                )
                                                 ),
-                                              ],
-                                            ),
+                                              )
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.height*0.10,
+                                height: MediaQuery.of(context).size.height*0.12,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.04),
                                   child: Row(
                                     children: [
                                       SizedBox(width: MediaQuery.of(context).size.width*0.02),
@@ -973,7 +1066,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               SizedBox(
                                                 width: MediaQuery.of(context).size.width*0.15,
                                                 child: Material(
-                                                  elevation: 8,
+                                                  elevation: 4,
                                                   borderRadius: BorderRadius.circular(15.0),
                                                   child: TextFormField(
                                                     autofocus: true,
@@ -993,7 +1086,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           confirmAge = false;
                                                         });
                                                       }
-                                                      if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      //if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      if (yearController.text.length == 4) {
                                                         setState(() {
                                                           canGoNextDate = true;
                                                         });
@@ -1056,7 +1150,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               SizedBox(
                                                 width: MediaQuery.of(context).size.width*0.15,
                                                 child: Material(
-                                                  elevation: 8,
+                                                  elevation: 4,
                                                   borderRadius: BorderRadius.circular(15.0),
                                                   child: TextFormField(
                                                     focusNode: focusNodeMonth,
@@ -1076,7 +1170,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           confirmAge = false;
                                                         });
                                                       }
-                                                      if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      //if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      if (yearController.text.length == 4) {
                                                         setState(() {
                                                           canGoNextDate = true;
                                                         });
@@ -1129,7 +1224,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(context)!.year,
+                                                    AppLocalizations.of(context)!.year+" (*)",
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                                     textAlign: TextAlign.left,
                                                   ),
@@ -1139,7 +1234,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               SizedBox(
                                                 width: MediaQuery.of(context).size.width*0.18,
                                                 child: Material(
-                                                  elevation: 8,
+                                                  elevation: 4,
                                                   borderRadius: BorderRadius.circular(15.0),
                                                   child: TextFormField(
                                                     focusNode: focusNodeYear,
@@ -1156,7 +1251,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           confirmAge = false;
                                                         });
                                                       }
-                                                      if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      //if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      if (yearController.text.length == 4) {
                                                         setState(() {
                                                           canGoNextDate = true;
                                                         });
@@ -1241,8 +1337,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
                                                     textAlign: TextAlign.left,
                                                   ),
-                                                  Text(
+                                                  (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) ? Text(
                                                     DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDate, Localizations.localeOf(context).languageCode),
+                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
+                                                    textAlign: TextAlign.left,
+                                                  ) : Text(
+                                                    startDate.year.toString(),
                                                     style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
                                                     textAlign: TextAlign.left,
                                                   ),
@@ -1257,7 +1357,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     textAlign: TextAlign.left,
                                                   ),
                                                   Text(
-                                                    (DateTime.now().difference(startDate).inDays/365).toStringAsFixed(0),
+                                                    calculateAge(startDate, DateTime.now()).toStringAsFixed(0),
                                                     style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
                                                     textAlign: TextAlign.left,
                                                   ),
@@ -1273,9 +1373,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ],
                             ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.height*0.10,
+                                height: MediaQuery.of(context).size.height*0.12,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.04),
                                   child: Row(
                                     children: [
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -1301,15 +1401,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           }
                                           if (confirmAge == false) {
                                             // Check if Date is Valid
-                                            String dateString = yearController.text+"-"+monthController.text+"-"+dayController.text;
-                                            DateTime? date = convertToDate(dateString, "yyyy-MM-dd", context);
-                                            if (date == null || date.isAfter(DateTime.now())) {
+                                            DateTime? date;
+                                            if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                              // Full Date
+                                              String dateString = yearController.text+"-"+monthController.text+"-"+dayController.text;
+                                              date = convertToDate(dateString, "yyyy-MM-dd", context);
+                                            } else {
+                                              // Only Year
+                                              dayController.text = "";
+                                              monthController.text = "";
+                                              String dateString = yearController.text+"-1-1";
+                                              date = convertToDate(dateString, "yyyy-MM-dd", context);
+                                            }
+                                            if (date == null || date.isAfter(DateTime.now()) || DateTime.now().difference(date).inDays > 36500) {
                                               setState(() {
                                                 errorAge = true;
                                               });
                                             } else {
                                               setState(() {
-                                                startDate = date;
+                                                startDate = date!;
                                                 confirmAge = true;
                                                 canGoNextDate = false;
                                               });
@@ -1324,10 +1434,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               curve: Curves.ease,
                                             );
                                           }
-
-
-
-
                                         },
                                         child: Icon(
                                           Icons.arrow_forward_ios,
@@ -1373,7 +1479,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         ),
                                         SizedBox(height: MediaQuery.of(context).size.height*0.05),
                                         Material(
-                                          elevation: 8,
+                                          elevation: 4,
                                           borderRadius: BorderRadius.circular(15.0),
                                           child: Container(
                                             height: MediaQuery.of(context).size.height*0.07,
@@ -1414,7 +1520,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         ),
                                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                         Material(
-                                          elevation: 8,
+                                          elevation: 4,
                                           borderRadius: BorderRadius.circular(15.0),
                                           child: Container(
                                             height: MediaQuery.of(context).size.height*0.07,
@@ -1455,7 +1561,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         ),
                                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                         Material(
-                                          elevation: 8,
+                                          elevation: 4,
                                           borderRadius: BorderRadius.circular(15.0),
                                           child: Container(
                                             height: MediaQuery.of(context).size.height*0.07,
@@ -1501,9 +1607,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ),
                             ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.height*0.10,
+                                height: MediaQuery.of(context).size.height*0.12,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.04),
                                   child: Row(
                                     children: [
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -1522,17 +1628,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       ),
                                       ElevatedButton(
                                         onPressed: gender == null ? null : () async {
-                                          _pageControllerData.nextPage(
-                                            duration: const Duration(milliseconds: 500),
-                                            curve: Curves.ease,
-                                          );
+                                          setState(() {
+                                            isLoading = true;
+                                          });
                                           await Future.delayed(const Duration(seconds: 1));
                                           addUser();
                                         },
-                                        child: Icon(
+                                        child: !isLoading ? Icon(
                                           Icons.arrow_forward_ios,
                                           color: gender != null ? AppColors.black : AppColors.white.withOpacity(0.2),
                                           size: MediaQuery.of(context).size.width*0.06,
+                                        ) : SizedBox(
+                                          height: MediaQuery.of(context).size.width * 0.06,
+                                          width: MediaQuery.of(context).size.width * 0.06,
+                                          child: Center(
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context).size.width * 0.04,
+                                              width: MediaQuery.of(context).size.width * 0.04,
+                                              child: const CircularProgressIndicator(
+                                                color: AppColors.black,
+                                                strokeWidth: 2,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                         style: ElevatedButton.styleFrom(
                                           elevation: 0,
@@ -1546,24 +1664,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 )
                             ),
                           ],
-                        ),
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              LoadingView(
-                                color: AppColors.white,
-                                hasLogo: false,
-                                isSmall: true,
-                              ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                              Text(
-                                AppLocalizations.of(context)!.creatingProfile,
-                                style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
-                                textAlign: TextAlign.left,
-                              ),
-                            ],
-                          ),
                         ),
                       ],
                     ),

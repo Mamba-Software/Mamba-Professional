@@ -100,8 +100,8 @@ class _MambaState extends State<Mamba> {
     }).onError((error) {
       print(error.toString());
     });
-    // Setting default open to Homepage
-    pageIndex = 0;
+    // Setting default open to Brand Calendar
+    pageIndex = 10;
     // Getting User Information
     getUserAndBrand();
     // On StartUp Dialogs
@@ -155,8 +155,8 @@ class _MambaState extends State<Mamba> {
   // Check version and Update App Dialog
   void checkMinimumAppVersion() async {
     // Check version
-    List<bool> result = await _settingsDataService.checkIfMinimumAppVersion(appVersion);
-    if (result[0] == false) {
+    List<bool> result = await _settingsDataService.checkAppVersion();
+    if (result[0] == true) {
       mixpanel!.track('minimum_app_version_open', properties: {'isMandatory': result[1]});
       if (result[1]) {
         Future.delayed(Duration.zero, () async {
@@ -216,7 +216,6 @@ class _MambaState extends State<Mamba> {
 
   // Gets the user info from firebase.
   void getUserAndBrand() async {
-
     // Get User Main Data
     currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
     // Get User Brand
@@ -268,7 +267,12 @@ class _MambaState extends State<Mamba> {
   Widget build(BuildContext context) {
     return isLoading ?
       Scaffold(
-        body: LoadingView(),
+        backgroundColor: AppColors.black,
+        body: LoadingView(
+          hasLogo: false,
+          isSmall: true,
+          color: AppColors.white,
+        ),
       )
      :
       hasBrand ? !brandIsActive? currentUser.id == currentBrand.adminID? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();

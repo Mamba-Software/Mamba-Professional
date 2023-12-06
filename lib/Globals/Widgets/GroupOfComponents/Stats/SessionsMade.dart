@@ -139,9 +139,9 @@ class SessionsMadeState extends State<SessionsMade> {
         children: [
           SfCartesianChart(
               margin: const EdgeInsets.all(0),
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               //borderColor: AppColors.grey,
-              plotAreaBackgroundColor: Theme.of(context).backgroundColor,
+              plotAreaBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
               plotAreaBorderColor: AppColors.grey,
               plotAreaBorderWidth: 0,
               primaryXAxis: CategoryAxis(

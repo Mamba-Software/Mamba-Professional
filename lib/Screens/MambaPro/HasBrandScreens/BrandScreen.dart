@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,8 +15,10 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -39,6 +42,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import '../../../Globals/Widgets/GroupOfComponents/PayWall/BrandSubscription.dart';
 import '../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -51,12 +55,8 @@ class BrandScreen extends StatefulWidget {
 }
 
 class _BrandScreenState extends State<BrandScreen> {
-
-  // Screen Dimensions
-  double safeAreaHeight = 0;
-  double safeAreaWidth = 0;
-
-  bool isLoading = true;
+  
+  bool isLoading = false;
 
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
@@ -93,98 +93,7 @@ class _BrandScreenState extends State<BrandScreen> {
   @override
   void initState() {
     super.initState();
-    getFavourites();
-  }
-
-  // Init Device Sizes
-  initDeviceSizes() {
-    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
-    print("MediaQuery.of(context).padding.bottom");
-    print(MediaQuery.of(context).padding.bottom);
-    safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
-  }
-
-  // Function to get the favourites of the user
-  void getFavourites() async {
-    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
-    if (favourites.contains(pageIndex)) {
-      iconStar = true;
-    }
-    if (isLoading) {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  //Function to set the favourites of the user
-  void setFavourites() {
-    if(favourites.isNotEmpty && favourites.contains(pageIndex)) {
-      iconStar = true;
-    } else {
-      iconStar = false;
-    }
-  }
-
-  // Navigate to Notifications Screen
-  Future<void> navigateToNotificationsScreen() async {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<void>(
-            builder: (context) => const Notifications(),
-            settings: const RouteSettings(name: 'Notifications'),
-          )
-      ).whenComplete(() async {
-        var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
-        setState(() {
-          unreadNotifications = temp;
-        });
-      });
-  }
-
-  // Navigate to Notifications Screen
-  Future<void> navigateToChatScreen() async {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<void>(
-            builder: (context) => const ChatCore(),
-            settings: const RouteSettings(name: 'ChatCore'),
-          )
-      ).whenComplete(() async {
-        var temp = await _userDataService.getUnreadConversations(
-            currentUser.id!);
-        setState(() {
-          unreadChats = temp;
-        });
-      });
-  }
-
-  // Navigate to Notifications Screen
-  void navigateToProfileScreen() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => const Profile(),
-          settings: const RouteSettings(name: 'Profile'),
-        )
-    );
-  }
-
-  // Function to Handle Favourites when User clicks on them
-  void handleChangedFavourites() {
-    setState(() {
-      iconStar = !iconStar;
-      if (iconStar == true) {
-        favourites.add(pageIndex);
-      }
-      else {
-        favourites.remove(pageIndex);
-      }
-      favourites.sort();
-      _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
-    });
+    //getFavourites();
   }
 
   //Return the ListTile of each screen of Mamba Pro
@@ -215,8 +124,9 @@ class _BrandScreenState extends State<BrandScreen> {
       return ListTile(
           leading: _mambaProUtils.iconSelectorListView(context, _pageIndex),
           title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
+          /*
           trailing: isFavourite ? SizedBox(
-            width: safeAreaWidth*0.15,
+            width: MediaQuery.of(context).size.width*0.15,
             child: IconButton(
                 onPressed: () {
                   setState(() {
@@ -270,8 +180,9 @@ class _BrandScreenState extends State<BrandScreen> {
                 )
             ),
           ) : SizedBox(
-            width: safeAreaWidth*0.15,
+            width: MediaQuery.of(context).size.width*0.15,
           ),
+           */
           onTap: () =>  {
             Navigator.pop(context),
             setBrandActive(),
@@ -286,63 +197,153 @@ class _BrandScreenState extends State<BrandScreen> {
 
   Widget buildHeader() {
     return Container(
-      height: safeAreaHeight*0.32,
+      height: MediaQuery.of(context).size.height*0.25,
       width: double.infinity,
       decoration: const BoxDecoration(
         color: AppColors.darkGrey,
       ),
-      child: Column(
+      child: Stack(
+        alignment: Alignment.topCenter,
         children: [
+          Container(
+            decoration:
+            BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: CachedNetworkImageProvider(currentBrand.baseImage!),
+                )
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height*0.25,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              gradient: LinearGradient(
+                begin: FractionalOffset.bottomCenter,
+                end: FractionalOffset.topCenter,
+                colors: [
+                  AppColors.darkerGrey,
+                  AppColors.darkerGrey.withOpacity(0.95),
+                  AppColors.darkerGrey.withOpacity(0.9),
+                  AppColors.darkerGrey.withOpacity(0.85),
+                  AppColors.darkerGrey.withOpacity(0.8),
+                  AppColors.darkerGrey.withOpacity(0.7),
+                ],
+                stops: const [
+                  0.2,
+                  0.3,
+                  0.4,
+                  0.5,
+                  0.75,
+                  1.0,
+                ],
+              ),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03, vertical: MediaQuery.of(context).size.width*0.05),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  CircularImage(
+                    size: MediaQuery.of(context).size.width*0.15,
+                    image: currentBrand.logoUrl,
+                    borderWidth: 0.5,
+                    color: AppColors.white,
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03,),
+                  Expanded(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width*0.15,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              currentBrand.name!,
+                              style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: GestureDetector(
+                                  onTap: navigateToRolesInformationModal,
+                                  child: Text(
+                                    returnBrandRoleString(),
+                                    textAlign: TextAlign.left,
+                                    style: Theme.of(context).textTheme.caption,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              TextButton(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.qr_code, color: AppColors.white, size: 14,),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      AppLocalizations.of(context)!.invite,
+                                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
+                                    ),
+                                  ],
+                                ),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: AppColors.white.withOpacity(0.3),
+                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                  shape: RoundedRectangleBorder(  // add this
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  minimumSize: Size(30, 20),
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                onPressed: () => navigateShareBrandLink(),
+                              )
+                            ],
+                          ),
+
+
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          /*
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: safeAreaHeight * 0.07),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.07),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
                       onTap: navigateToProfileScreen,
                       child: CircularImage(
-                        size: safeAreaHeight * 0.1,
+                        size: MediaQuery.of(context).size.height * 0.1,
                         image: currentUser.imageUrl,
                         color: AppColors.white,
                         borderWidth: 1,
                       ),
                     ),
-                    Row(
-                      children: [
-                        CounterBadgeIcon(
-                          counter: unreadNotifications,
-                          child: IconButton(
-                            icon: Icon(Icons.notifications, color: AppColors.white , size: safeAreaWidth*0.07),
-                            alignment: Alignment.centerRight,
-                            onPressed: navigateToNotificationsScreen,
-                          ),
-                        ),
-                        SizedBox(width: safeAreaWidth * 0.03),
-                        CounterBadgeIcon(
-                          counter: unreadChats,
-                          child: IconButton(
-                            icon: Icon(Icons.chat, color:  AppColors.white, size: safeAreaWidth*0.07),
-                            alignment: Alignment.centerRight,
-                            onPressed: navigateToChatScreen,
-                          ),
-                        ),
-                        /*
-                        IconButton(
-                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
-                          alignment: Alignment.centerRight,
-                          onPressed: navigateToSettingsScreen,
-                        ),
-                         */
-                      ],
-                    ),
+
                   ],
                 ),
-                SizedBox(height: safeAreaHeight * 0.03),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 Text(
                     currentUser.firstName! + ' ' + currentUser.lastName!,
                     textAlign: TextAlign.left,
@@ -350,7 +351,7 @@ class _BrandScreenState extends State<BrandScreen> {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                 ),
-                SizedBox(height: safeAreaHeight * 0.02),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 TextButton(
                   onPressed: navigateToRolesInformationModal,
                   style: TextButton.styleFrom(
@@ -368,36 +369,20 @@ class _BrandScreenState extends State<BrandScreen> {
               ],
             ),
           ),
+           */
         ],
       ),
-    );
-  }
-
-  // Navigate to Bonos Request Screen
-  void navigateToRolesInformationModal() async {
-    mixpanel!.track('drawer_trainer_roles_info');
-    showModalBottomSheet<bool?>(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (BuildContext context) {
-        return const FractionallySizedBox(
-            heightFactor: 0.935,
-            child: RolesInfo()
-        );
-      },
     );
   }
 
   String returnBrandRoleString() {
     switch (currentUser.brandRole) {
       case 1:
-        return AppLocalizations.of(context)!.owner;
+        if (currentBrand.adminID == currentUser.id) {
+          return StringUtils().toCapitalized(AppLocalizations.of(context)!.paySubscriptionDesc.split(" ")[2]);
+        } else {
+          return AppLocalizations.of(context)!.owner;
+        }
       case 2:
         return AppLocalizations.of(context)!.administrador;
       case 3:
@@ -411,6 +396,7 @@ class _BrandScreenState extends State<BrandScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        /*
         listTilePro(0),
         ListView.builder(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
@@ -422,56 +408,54 @@ class _BrandScreenState extends State<BrandScreen> {
               return listTilePro(favourite, true);
             }
         ),
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 2),
-        SizedBox(height: safeAreaHeight * 0.01),
-
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+         */
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.04),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
           child: Text(
             AppLocalizations.of(context)!.management,
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
           ),
         ),
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         listTilePro(10),
         listTilePro(5),
         listTilePro(9),
 
 
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.04),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
           child: Text(
             AppLocalizations.of(context)!.members,
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
           ),
         ),
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         listTilePro(2),
         listTilePro(1),
         //currentUser.brandRole < 3 ? listTilePro(15) : Container(),
 
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.04),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
           child: Text(
             AppLocalizations.of(context)!.yourBrand,
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
           ),
         ),
-        SizedBox(height: safeAreaHeight * 0.01),
-        listTilePro(8),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+        listTilePro(17),
         listTilePro(7),
         listTilePro(11),
+        listTilePro(8),
         //listTilePro(14),
-
-
-
         /*
         ListTile(
           title: Row(
@@ -727,7 +711,7 @@ class _BrandScreenState extends State<BrandScreen> {
             setState(() {
               isLoading = true;
             });
-            pageIndex = 0;
+            pageIndex = 10;
             NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
             await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
             await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
@@ -747,6 +731,7 @@ class _BrandScreenState extends State<BrandScreen> {
     switch (pageIndex) {
       case 0:
         mixpanel!.track('brand_homepage_view');
+        updateChatsAndNotifications();
         return HomePro(
             brandId: currentBrand.id!,
             numTrainers: currentBrand.numTrainers!,
@@ -766,6 +751,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 9:
         mixpanel!.track('brand_stats_view');
+        updateChatsAndNotifications();
         return Stats(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -776,6 +762,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 2:
         mixpanel!.track('brand_clients_view');
+        updateChatsAndNotifications();
         return Clients(
           brandId: currentBrand.id!,
           numClients: currentBrand.numClients!,
@@ -786,6 +773,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 1:
         mixpanel!.track('brand_trainers_view');
+        updateChatsAndNotifications();
         return Trainers(
           brandId: currentBrand.id!,
           numTrainers: currentBrand.numTrainers!,
@@ -794,13 +782,9 @@ class _BrandScreenState extends State<BrandScreen> {
             handleChangedFavourites();
           },
         );
-    //  case 15:
-        mixpanel!.track('brand_membership_requests_view');
-        return MembershipRequestsPro(
-          brandId: currentBrand.id!,
-        );
       case 8:
         mixpanel!.track('brand_info_view');
+        updateChatsAndNotifications();
         return BrandInfo(
           locale: Localizations.localeOf(context),
           brandId: currentBrand.id!,
@@ -811,6 +795,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 5:
         mixpanel!.track('brand_bonos_view');
+        updateChatsAndNotifications();
         return BonosPro(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -820,6 +805,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 10:
         mixpanel!.track('brand_calendar_view');
+        updateChatsAndNotifications();
         return BrandCalendarWidget(
           brandId: currentBrand.id!,
           dateTime: calendarDateTime,
@@ -829,17 +815,9 @@ class _BrandScreenState extends State<BrandScreen> {
             handleChangedFavourites();
           },
         );
-      //case 14:
-        mixpanel!.track('brand_event_history_view');
-        return BrandEventHistoryPage(
-          brandId: currentBrand.id!,
-          pinned: iconStar,
-          pinnedChanged: (boolean) {
-            handleChangedFavourites();
-          },
-        );
       case 7:
         mixpanel!.track('brand_images_view');
+        updateChatsAndNotifications();
         return BrandImages(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -849,7 +827,19 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 11:
         mixpanel!.track('brand_locations_view');
+        updateChatsAndNotifications();
         return Locations(
+          brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
+        );
+      case 17:
+        mixpanel!.track('brand_subscription_view');
+        updateChatsAndNotifications();
+        return BrandSubscription(
+          locale: Localizations.localeOf(context),
           brandId: currentBrand.id!,
           pinned: iconStar,
           pinnedChanged: (boolean) {
@@ -858,6 +848,16 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       default:
         mixpanel!.track('brand_homepage_view');
+        updateChatsAndNotifications();
+        return BrandCalendarWidget(
+          brandId: currentBrand.id!,
+          dateTime: calendarDateTime,
+          calendarView: calendarView,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
+        );
         return HomePro(
           brandId: currentBrand.id!,
           numTrainers: currentBrand.numTrainers!,
@@ -878,6 +878,55 @@ class _BrandScreenState extends State<BrandScreen> {
     }
   }
 
+  // updateChatsAndNotifications
+  void updateChatsAndNotifications() async {
+    // Unread Chats
+    unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
+    // Unread Notifications
+    unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
+    setState(() {});
+  }
+
+  // Navigate to Bonos Request Screen
+  void navigateToRolesInformationModal() async {
+    mixpanel!.track('drawer_trainer_roles_info');
+    showModalBottomSheet<bool?>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return const FractionallySizedBox(
+            heightFactor: 0.935,
+            child: RolesInfo()
+        );
+      },
+    );
+  }
+
+  Future<void> navigateShareBrandLink() async {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return const FractionallySizedBox(
+          heightFactor: 0.8,
+          child: ShareBrandLink(),
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     didReceiveLocalNotificationSubject.close();
@@ -886,10 +935,6 @@ class _BrandScreenState extends State<BrandScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (isFirstBuild) {
-      initDeviceSizes();
-      isFirstBuild = false;
-    }
     return MultiBlocProvider(
       providers: [
         BlocProvider<BrandSuscriptionCubit>(
@@ -913,16 +958,17 @@ class _BrandScreenState extends State<BrandScreen> {
               // Header
               buildHeader(),
               const Divider(color: AppColors.grey, thickness: 0, height: 1,),
-              SizedBox(height: safeAreaHeight * 0.02),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               // Brand Options
-              // TODO: Passer Rol en aquesta funció
               buildBrandListOptions(),
-              SizedBox(height: safeAreaHeight * 0.015),
-              Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              //Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
+              /*
               // Leave/Delete Brand
-              SizedBox(height: safeAreaHeight * 0.015),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
               buildBrandLeaveOption(),
-              SizedBox(height: safeAreaHeight * 0.05),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              */
             ],
           ),
         ),
@@ -949,6 +995,78 @@ class _BrandScreenState extends State<BrandScreen> {
       });
     }
   }
+
+  /// DEPRECATED FAVOURITES
+
+  // Function to get the favourites of the user
+  void getFavourites() async {
+    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
+    if (favourites.contains(pageIndex)) {
+      iconStar = true;
+    }
+    if (isLoading) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  //Function to set the favourites of the user
+  void setFavourites() {
+    if(favourites.isNotEmpty && favourites.contains(pageIndex)) {
+      iconStar = true;
+    } else {
+      iconStar = false;
+    }
+  }
+
+  // Function to Handle Favourites when User clicks on them
+  void handleChangedFavourites() {
+    setState(() {
+      iconStar = !iconStar;
+      if (iconStar == true) {
+        favourites.add(pageIndex);
+      }
+      else {
+        favourites.remove(pageIndex);
+      }
+      favourites.sort();
+      _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
+    });
+  }
+
+  // ICON Notifications Chat
+  /*
+  Row(
+                      children: [
+                        CounterBadgeIcon(
+                          counter: unreadNotifications,
+                          child: IconButton(
+                            icon: Icon(Icons.notifications, color: AppColors.white , size: MediaQuery.of(context).size.width*0.07),
+                            alignment: Alignment.centerRight,
+                            onPressed: navigateToNotificationsScreen,
+                          ),
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                        CounterBadgeIcon(
+                          counter: unreadChats,
+                          child: IconButton(
+                            icon: Icon(Icons.chat, color:  AppColors.white, size: MediaQuery.of(context).size.width*0.07),
+                            alignment: Alignment.centerRight,
+                            onPressed: navigateToChatScreen,
+                          ),
+                        ),
+                        /*
+                        IconButton(
+                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
+                          alignment: Alignment.centerRight,
+                          onPressed: navigateToSettingsScreen,
+                        ),
+                         */
+                      ],
+                    ),
+   */
+
 }
 
 

@@ -49,6 +49,7 @@ class _PayWallState extends State<PayWall> {
 
   //PayWall
   bool seePromotions = true;
+  bool isDark = true;
   bool loadingPromotions = false;
   int activeSubscription = -1;
   var promotionController = TextEditingController();
@@ -67,6 +68,7 @@ class _PayWallState extends State<PayWall> {
   initState() {
     super.initState();
     _scrollController = ScrollController();
+    isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
   }
 
   Future<void> getSubscriptions()
@@ -222,7 +224,8 @@ class _PayWallState extends State<PayWall> {
             ),
           ),
         ),
-        persistentFooterButtons:   <Widget>[Container(
+        backgroundColor: isDark ? Theme.of(context).scaffoldBackgroundColor : Theme.of(context).backgroundColor,
+        persistentFooterButtons: <Widget>[Container(
           child:
           seePromotions
               ? Padding(
@@ -883,7 +886,7 @@ class _PayWallState extends State<PayWall> {
                 height: MediaQuery.of(context).size.height *
                     0.02),
             Material(
-              elevation: 8,
+              elevation: 4,
               borderRadius: BorderRadius.circular(15.0),
               child: Row(
                 children: [
@@ -979,9 +982,7 @@ class _PayWallState extends State<PayWall> {
 
   Widget buildContactUsContainer() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.height *
-          0.005, vertical: MediaQuery.of(context).size.height *
-          0.02),
+      padding: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.height * 0.005, vertical: MediaQuery.of(context).size.height * 0.02),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -1004,14 +1005,13 @@ class _PayWallState extends State<PayWall> {
               onPressed: () => launchEmail(),
               child: Text(
                 AppLocalizations.of(context)!.getInTouch,
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600, color: Theme.of(context).primaryColorDark),
                 textAlign: TextAlign.center,
               ),
               style: OutlinedButton.styleFrom(
                 elevation: 4,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: Theme.of(context).primaryColor,
                 fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(30),

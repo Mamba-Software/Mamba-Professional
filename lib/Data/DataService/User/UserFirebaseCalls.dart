@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
@@ -13,6 +15,8 @@ import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../Models/Purchase.dart';
 
 
 // Firebase User Service Class. All calls to Firebase are in this class.
@@ -28,9 +32,7 @@ class UserFirebaseCalls {
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String payments = isProduction ? 'Payments' : '7777 Payments';
-
-
+  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
 
   // Authentication Services
 
@@ -38,6 +40,17 @@ class UserFirebaseCalls {
     User? currentUser;
     currentUser = await _auth.currentUser;
     return currentUser;
+  }
+
+  Future<String?> getUserUIDWithEmail(String email) async {
+    // Query Firestore for the email
+    QuerySnapshot querySnapshot = await _firestore.collection(users).where('email', isEqualTo: email).get();
+    // Check if we got any matches
+    if (querySnapshot.docs.isNotEmpty) {
+      return querySnapshot.docs.first.id;
+    } else {
+      return null;
+    }
   }
 
   Future<int> signIn(String email, String password) async {
@@ -49,13 +62,15 @@ class UserFirebaseCalls {
       error = true;
     }
     if (error) return -1;
-    if (authResult == null)
+    if (authResult == null) {
       return -1;
+    }
     if (authResult.user != null && isProduction) {
-      if (authResult.user!.emailVerified)
+      if (authResult.user!.emailVerified) {
         return 0;
-      else
+      } else {
         return -2;
+      }
     } else {
       return 0;
     }
@@ -65,21 +80,36 @@ class UserFirebaseCalls {
     return await _auth.signOut();
   }
 
-  Future<int> resetPassword(String email) async {
+  Future<int> resendEmail(String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
-      return 1;
+      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('sendVerificationEmail');
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'email': email,
+          'isTrainer': true,
+        },
+      );
+      bool success = result.data['isSuccessful'];
+      if (success) return 1;
+      return -1;
     } catch (e) {
       print(e.toString());
       return -1;
     }
   }
 
-  Future<int> resendEmail(String email) async {
+  Future<int> resetPassword(String email) async {
     try {
-      User? currentUser = await getCurrentUser();
-      currentUser!.sendEmailVerification();
-      return 1;
+      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('sendResetPasswordEmail');
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'email': email,
+          'isTrainer': true,
+        },
+      );
+      bool success = result.data['isSuccessful'];
+      if (success) return 1;
+      return -1;
     } catch (e) {
       print(e.toString());
       return -1;
@@ -98,7 +128,7 @@ class UserFirebaseCalls {
       if (error) return false;
       if (currentUser.imageUrl !=
           "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
-        await this.deleteUserPhoto(user.uid);
+        await deleteUserPhoto(user.uid);
       }
       // Delete Notifications
       await _firestore.collection(users).doc(user.uid).collection(
@@ -159,6 +189,18 @@ class UserFirebaseCalls {
     }
   }
 
+  // Check If User Exists
+  Future<bool> checkIfEmailExists(String email) async {
+    // Query Firestore for the email
+    QuerySnapshot querySnapshot = await _firestore.collection(users).where('email', isEqualTo: email).get();
+    // Check if we got any matches
+    if (querySnapshot.docs.isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   Future<bool> checkIfNicknameExists(String nickname) async {
     DocumentSnapshot documentSnapshot = await _firestore.collection(nicknames)
         .doc(nickname)
@@ -201,7 +243,8 @@ class UserFirebaseCalls {
   Future<Usuario> getUserDetails(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
         .collection(users).doc(uid).get();
-    return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      print(uid);
+      return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
   Future<Brand?> getUserBrands(String uid) async {
@@ -351,24 +394,15 @@ class UserFirebaseCalls {
         .doc(brandId)
         .collection("Bonos Requests")
         .get();
-    if(querySnapshot.docs.length != 0) return querySnapshot.docs[0].get("bonoId").toString();
-    else return '';
+    if(querySnapshot.docs.length != 0) {
+      return querySnapshot.docs[0].get("bonoId").toString();
+    } else {
+      return '';
+    }
 
 
   }
 
-  Future<String> getBonoUser(String userId, String brandId) async {
-    QuerySnapshot querySnapshot = await _firestore
-        .collection(users)
-        .doc(userId)
-        .collection("Brands")
-        .doc(brandId)
-        .collection("Bonos")
-        .get();
-    if(querySnapshot.docs.length != 0) return querySnapshot.docs[0].get("bonoId").toString();
-    else return '';
-
-  }
 
   Future<List<int>> getUserFavourites(String brandId, String userId) async {
     var favourites;
@@ -382,7 +416,9 @@ class UserFirebaseCalls {
       }
       return favouritesList;
     }
-    else return [];
+    else {
+      return [];
+    }
   }
 
   Future<double> getUserZoomScale(String brandId, String userId) async {
@@ -457,15 +493,34 @@ class UserFirebaseCalls {
     return notis;
   }
 
-  Future<List<Bono>> getUserBonos(String? userId) async {
+  Future<List<Bono>> getUserActiveBonosFromBrand(String userId, String brandId) async {
     List<Bono> userBonos = [];
-    QuerySnapshot querySnapshot = await _firestore.collection(users)
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
         .doc(userId)
-        .collection("Bonos")
+        .collection("Purchases")
+        .where("isActive", isEqualTo: true)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      if (querySnapshot.docs[i].id != "Bono Requests") {
-        userBonos.add(Bono.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      Purchase purchase = Purchase.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      int index = userBonos.indexWhere((element) => element.id == purchase.id);
+      if (index == -1) {
+        // Get Bono From Purchase
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot3 = await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(purchase.bonoId).get();
+        Bono bono = Bono.fromObjectAllData(_documentSnapshot3.id, _documentSnapshot3);
+        // Add Conditions of This purchase
+        bono.setBrandId = brandId;
+        bono.setBonoPrice = purchase.price!.toDouble();
+        bono.setBonoSessions = purchase.sessions!;
+        bono.setConditionsData = Condition(
+          expirationTime: querySnapshot.docs[i].get("expirationTime"),
+          cancelTime: querySnapshot.docs[i].get("cancelTime"),
+          weeklySessions: querySnapshot.docs[i].get("weeklySessions"),
+        );
+        // Bono Object Build
+        userBonos.add(bono);
       }
     }
     return userBonos;
@@ -545,94 +600,166 @@ class UserFirebaseCalls {
 
   }
 
+  Future<List<Bono>> getUserActiveBonos(String userId, String purchaseId) async {
+    List<Bono> userBonos = [];
+    if(purchaseId != "") {
+      DocumentSnapshot<
+          Map<String, dynamic>> _documentSnapshotPurchase = await _firestore
+          .collection(purchases).doc(purchaseId).get();
+      Purchase purchase = Purchase.fromObjectAllData(
+          _documentSnapshotPurchase.id, _documentSnapshotPurchase);
+      int index = userBonos.indexWhere((element) =>
+      element.id == purchase.id);
+      if (index == -1) {
+        // Get Bono From Purchase
+        DocumentSnapshot<
+            Map<String, dynamic>> _documentSnapshot3 = await _firestore
+            .collection(brands).doc(purchase.brandId).collection("Bonos").doc(
+            purchase.bonoId).get();
+        Bono bono = Bono.fromObjectAllData(
+            _documentSnapshot3.id, _documentSnapshot3);
+        // Add Conditions of This purchase
+        bono.setPurchaseId = purchase.id!;
+        bono.setBrandId = purchase.brandId!;
+        bono.setBonoPrice = purchase.price!.toDouble();
+        bono.setBonoSessions = purchase.sessions!;
+        bono.setConditionsData = Condition(
+          expirationTime: _documentSnapshotPurchase.get("expirationTime"),
+          cancelTime: _documentSnapshotPurchase.get("cancelTime"),
+          weeklySessions: _documentSnapshotPurchase.get("weeklySessions"),
+        );
+        // Bono Object Build
+        userBonos.add(bono);
+      }
+    }
+    else {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Purchases")
+          .where("isActive", isEqualTo: true)
+          .get();
+      print(querySnapshot.docs.length);
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        Purchase purchase = Purchase.fromObjectAllData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        int index = userBonos.indexWhere((element) =>
+        element.id == purchase.id);
+        if (index == -1) {
+          // Get Bono From Purchase
+          DocumentSnapshot<
+              Map<String, dynamic>> _documentSnapshot3 = await _firestore
+              .collection(brands).doc(purchase.brandId).collection("Bonos").doc(
+              purchase.bonoId).get();
+          Bono bono = Bono.fromObjectAllData(
+              _documentSnapshot3.id, _documentSnapshot3);
+          // Add Conditions of This purchase
+          bono.setPurchaseId = purchase.id!;
+          bono.setBrandId = purchase.brandId!;
+          bono.setBonoPrice = purchase.price!.toDouble();
+          bono.setBonoSessions = purchase.sessions!;
+          bono.setConditionsData = Condition(
+            expirationTime: querySnapshot.docs[i].get("expirationTime"),
+            cancelTime: querySnapshot.docs[i].get("cancelTime"),
+            weeklySessions: querySnapshot.docs[i].get("weeklySessions"),
+          );
+          // Bono Object Build
+          userBonos.add(bono);
+        }
+      }
+    }
+    return userBonos;
+  }
+
+  Future<String> getUserActiveSessions(String userId) async {
+    int sessions = -1;
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Purchases")
+          .where("isActive", isEqualTo: true)
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        if(sessions == -1)
+          {
+            sessions = 0;
+          }
+        Purchase purchase = Purchase.fromObjectAllData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        QuerySnapshot querySnapshotEvents = await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Purchases")
+            .doc(querySnapshot.docs[i].id)
+            .collection('Events')
+            .get();
+
+        sessions = sessions + (purchase.sessions! - querySnapshotEvents.size);
+        if(sessions > 9) {
+          return '10';
+        }
+      }
+      if(sessions == -1) {
+        QuerySnapshot querySnapshot2 = await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Purchases")
+            .where("isActive", isEqualTo: false)
+            .get();
+        if(querySnapshot2.size > 0) {
+          sessions = 0;
+        }
+      }
+      return sessions.toString();
+  }
+
   //Add
 
-  Future<int> addUser(String email, String password, String idioma) async {
-    bool authError = false;
-    bool firestoreError = false;
+  Future<int> addUser(String email, String password, String idioma, bool isTrainer, [bool definePassword = false]) async {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
-    UserCredential? authResult;
-
     try {
-      authResult = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((userCredential) async {
-        if (userCredential != null && userCredential.user != null) {
-          await _firestore.collection(users).doc(userCredential.user!.uid).set({
-            "name": null,
-            "firstName": null,
-            "lastName": null,
-            "nick": null,
-            "notificationToken": null,
-            "email": email,
-            "imageUrl": null,
-            "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
-            "isFirst": true,
-            "isTrainer": true,
-            "isPrivate": true,
-            "gender": null,
-            "dateJoined": formatted,
-            "dateOfBirth": null,
-            "idioma": idioma,
-            "brandID": null,
-            "isAdmin": false,
-          }).catchError((err) {
-            print(err);
-            firestoreError = true;
-          });
-          await userCredential.user!.sendEmailVerification();
-        }
-        return userCredential;
+      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('createAuthUser');
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'email': email,
+          'password': password,
+          'definePassword': definePassword,
+          'isTrainer': isTrainer,
+        },
+      );
+      await _firestore
+      .collection(users)
+      .doc(result.data['userId'])
+      .set({
+        "name": null,
+        "firstName": null,
+        "lastName": null,
+        "nick": null,
+        "notificationToken": null,
+        "email": email,
+        "imageUrl": null,
+        "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+        "isFirst": true,
+        "isTrainer": isTrainer,
+        "isPrivate": true,
+        "gender": null,
+        "dateJoined": formatted,
+        "dateOfBirth": null,
+        "idioma": idioma,
+        "brandID": null,
+        "isAdmin": false,
       });
+      print("All Correctly Created");
+      return 0;
+    } on FirebaseFunctionsException catch (e) {
+      print('Error code: ${e.code}\nError message: ${e.message}\nDetails: ${e.details}');
+      return -1;
     } catch (e) {
-      authError = true;
-    }
-
-    /*
-    UserCredential? authResult = await _auth
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .then((userCredential) async {
-      if (userCredential != null && userCredential.user != null) {
-        await _firestore.collection(users).doc(userCredential.user!.uid).set({
-          "name": null,
-          "firstName": null,
-          "lastName": null,
-          "nick": null,
-          "notificationToken": null,
-          "email": email,
-          "imageUrl": null,
-          "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
-          "isFirst": true,
-          "isTrainer": null,
-          "isPrivate": true,
-          "gender": null,
-          "dateJoined": formatted,
-          "dateOfBirth": null,
-          "idioma": idioma,
-          "brandID": null,
-          "isAdmin": false,
-        }).catchError((err) {
-          print(err);
-          firestoreError = true;
-        });
-        await userCredential.user!.sendEmailVerification();
-      }
-      return userCredential;
-    }).catchError((err) {
-      authError = true;
-    });
-     */
-
-    if (authResult != null && authResult.user != null) {
-      if (authError) {
-        return -1;
-      } else if (firestoreError)
-        return -2;
-      else
-        return 0;
-    } else {
+      print('Error: $e');
+      bool emailExists = await checkIfEmailExists(email);
+      if (emailExists) return -2;
       return -1;
     }
   }
@@ -949,11 +1076,12 @@ class UserFirebaseCalls {
         .where("isRead", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      await this.markNotificationAsRead(userId, querySnapshot.docs[i].id,);
+      await markNotificationAsRead(userId, querySnapshot.docs[i].id,);
     }
   }
 
-  Future<void> updateUserBono(String userId, String brandId, Bono bono) async {
+  Future<void> updateUserPurchase(String userId, String brandId, Bono bono, Purchase purchase) async {
+    // TODO: TO BE DELETED - USER BONO
     // Update User Bono
     await _firestore.collection(users).doc(userId).collection("Bonos").doc(bono.id).update({
       "sessions": bono.sessions,
@@ -961,14 +1089,18 @@ class UserFirebaseCalls {
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
     });
     // Update the Purchase Collection
-    await _firestore.collection(payments).doc("Purchases").collection("Purchases").doc(bono.purchaseId).update({
+    await _firestore.collection(purchases).doc(bono.purchaseId).update({
       "sessions": bono.sessions,
       "price": bono.price,
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
     });
     // Update the User/Purchase Collection
     await _firestore.collection(users).doc(userId).collection("Purchases").doc(bono.purchaseId).update({
@@ -977,6 +1109,18 @@ class UserFirebaseCalls {
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
+    });
+    // Update the Brand/Bonos/Purchase Collection
+    await _firestore.collection(brands).doc(brandId).collection("Purchases").doc(bono.purchaseId).update({
+      "sessions": bono.sessions,
+      "price": bono.price,
+      "expirationTime": bono.condition?.expirationTime,
+      "cancelTime": bono.condition?.cancelTime,
+      "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
     });
     // Update the Brand/Bonos/Purchase Collection
     await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bono.id).collection("Purchases").doc(bono.purchaseId).update({
@@ -985,6 +1129,18 @@ class UserFirebaseCalls {
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
+    });
+    // Update the Brand/Bonos/Purchase Collection
+    await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(bono.purchaseId).update({
+      "sessions": bono.sessions,
+      "price": bono.price,
+      "expirationTime": bono.condition?.expirationTime,
+      "cancelTime": bono.condition?.cancelTime,
+      "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
     });
   }
 
@@ -1074,12 +1230,37 @@ class UserFirebaseCalls {
 
 
   //Get bono Requests from brand
-  Stream<QuerySnapshot> getAllBonosFromUser(String userId) {
+  Stream<QuerySnapshot> getUserActivePurchasesFromBrandStream(String userId, String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .collection("Purchases")
+        .where("isActive", isEqualTo: true)
+        .snapshots();
+  }
+
+  //Get bono Requests from brand
+  Stream<DocumentSnapshot> getBonoFromEventUser(String userId, String bonoId) {
     return _firestore
         .collection(users)
         .doc(userId)
         .collection("Bonos")
+        .doc(bonoId)
         .snapshots();
   }
+
+
+  Stream<QuerySnapshot> getUserBrandPurchasesStream(String userId, String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .collection("Purchases")
+        .snapshots();
+  }
+
 
 }

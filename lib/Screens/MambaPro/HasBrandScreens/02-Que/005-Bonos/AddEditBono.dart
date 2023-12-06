@@ -299,26 +299,27 @@ class _AddEditBonoState extends State<AddEditBono>
                 preferredSize: const Size.fromHeight(0),
                 child: IgnorePointer(
                     child: Column(
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.symmetric(vertical:
-                        MediaQuery.of(context).size.height * 0.01),
-                        child: Container(
-                          margin: EdgeInsets.symmetric(vertical:
-                                  MediaQuery.of(context).size.height * 0.01), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * 0.015,
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
-                            child: LinearProgressIndicator(
-                              value: addBonosTabValue,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  Theme.of(context).colorScheme.secondary),
-                              backgroundColor: Colors.grey.shade100,
+                      children: [
+                        Padding(padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.015,
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+                            child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10)),
+                              child: LinearProgressIndicator(
+                                value: addBonosTabValue,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).colorScheme.secondary),
+                                backgroundColor: Colors.grey.shade100,
+                              ),
                             ),
-                          ),
-                        )),
-                  ],
-                )),
+                        )
+                      ),
+                    ],
+                  )
+                ),
               ),
             ),
             body: LoadingView(),

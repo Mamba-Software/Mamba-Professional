@@ -1,14 +1,25 @@
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
+
+// Variables
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
-
 // Required NPM Packages
 const uuidv4 = require("uuid")
-
 // Firebase DataBase
 const db = admin.firestore();
+// Firebase Storage
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
+// Firebase Firestore
+// You need to require Google Cloud Firestore library
+const {FirestoreAdminClient} = require('@google-cloud/firestore').v1;
+const client = new FirestoreAdminClient();
+// Send Grid Integration
+const sgMail = require('@sendgrid/mail');
+const { user } = require("firebase-functions/v1/auth");
+sgMail.setApiKey("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");
 
 // Daily Notification For Events
 exports.scheduledDailyFunction = functions
@@ -28,151 +39,410 @@ exports.scheduledDailyFunction = functions
           userId,
           "and Name:",
           userDoc.name,
+        );
+        // Get the Users events today
+        const userEventsSnapshot = await db
+        .collection("Users")
+        .doc(userId)
+        .collection("Events")
+        .where('year', '==', today.getFullYear().toString())
+        .where('month', '==', (today.getMonth()+1).toString())
+        .where('day', '==', today.getDate().toString())
+        .get();
+        functions.logger.log(
+          "User Events Num =",
+          userEventsSnapshot.size,
           );
-          // Get the Users events today
-          const userEventsSnapshot = await db
-          .collection("Users")
-          .doc(userId)
-          .collection("Events")
-          .where('year', '==', today.getFullYear().toString())
-          .where('month', '==', (today.getMonth()+1).toString())
-          .where('day', '==', today.getDate().toString())
-          .get();
-          functions.logger.log(
-            "User Events Num =",
-            userEventsSnapshot.size,
-            );
-          // Get The Time of the First Event
-          let firstHour = 100;
-          let firstMinute = 100;
-          let firstEventDoc;
-          for (var i in userEventsSnapshot.docs) {
-            const eventDoc = userEventsSnapshot.docs[i].data();
-            if (eventDoc.hour < firstHour) {
+        // Get The Time of the First Event
+        let firstHour = 100;
+        let firstMinute = 100;
+        let firstEventDoc;
+        for (var i in userEventsSnapshot.docs) {
+          const eventDoc = userEventsSnapshot.docs[i].data();
+          if (eventDoc.hour < firstHour) {
+            firstEventDoc = eventDoc;
+          } else if (eventDoc.hour == firstHour) {
+            if (eventDoc.minute < firstMinute) {
               firstEventDoc = eventDoc;
-            } else if (eventDoc.hour == firstHour) {
-              if (eventDoc.minute < firstMinute) {
-                firstEventDoc = eventDoc;
-              }
             }
           }
-          // Send Notification if there is an Event Today
-          if (userEventsSnapshot.size > 0) {
-            if (userEventsSnapshot.size == 1) {
-              functions.logger.log(
-                "One Event this User"
-                );
-                  // Send Good Morning Notification
-                  var payload = 0;
-                  if (userDoc.isTrainer == true) {
-                    functions.logger.log(
-                      "isTrainer"
-                      );
-                    let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                    if (userDoc.idioma == "es") {
-                      payload = {
-                        notification: {
-                          title: "Buenos días "+userDoc.firstName + " ☀️",
-                          body: "⏰ Hoy tienes 1 sesión prevista. Empiezas a las "+firstEventDoc.hour+":"+minutes,
-                        },
-                        data: {
-                          route: "SplashScreen",
-                        },
-                      };
-                    } else {
-                      payload = {
-                        notification: {
-                          title: "Bon dia "+userDoc.firstName + " ☀️",
-                          body: "⏰ Avui tens 1 sessió prevista. Comences a les "+firstEventDoc.hour+":"+minutes,
-                        },
-                        data: {
-                          route: "SplashScreen",
-                        },
-                      };
-                    }
-                  } else {
-                    functions.logger.log(
-                      "isClient"
-                      );
-                    let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                    if (userDoc.idioma == "es") {
-                      payload = {
-                        notification: {
-                          title: "Buenos días "+userDoc.firstName+ " ☀️",
-                          body: "⚠️ ¡Recuerda! Hoy a las "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
-                        },
-                        data: {
-                          route: "SplashScreen",
-                        },
-                      };
-                    } else {
-                      payload = {
-                        notification: {
-                          title: "Bon dia "+userDoc.firstName+ " ☀️",
-                          body: "⚠️ Recorda! Avui a les "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
-                        },
-                        data: {
-                          route: "SplashScreen",
-                        },
-                      };
-                    }
-                  }
+        }
+        // Send Notification if there is an Event Today
+        if (userEventsSnapshot.size > 0) {
+          if (userEventsSnapshot.size == 1) {
+            functions.logger.log(
+              "One Event this User"
+              );
+                // Send Good Morning Notification
+                var payload = 0;
+                if (userDoc.isTrainer == true) {
                   functions.logger.log(
-                    "Payload",
-                    payload
-                    );
-                  var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-                  functions.logger.log(
-                    "Response",
-                    response
-                    );
-                } else {
-                  functions.logger.log(
-                    "More Than Event this User"
-                    );
-                  // Send Good Morning Notification
-                  var payload = 0;
-                  if (userDoc.isTrainer == true) {
-                   functions.logger.log(
                     "isTrainer"
                     );
-                   let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                   if (userDoc.idioma == "es") {
+                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
+                  if (userDoc.idioma == "es") {
+                    payload = {
+                      notification: {
+                        title: "Buenos días "+userDoc.firstName + " ☀️",
+                        body: "⏰ Hoy tienes 1 sesión prevista. Empiezas a las "+firstEventDoc.hour+":"+minutes,
+                      },
+                      data: {
+                        route: "SplashScreen",
+                      },
+                    };
+                  } else {
+                    payload = {
+                      notification: {
+                        title: "Bon dia "+userDoc.firstName + " ☀️",
+                        body: "⏰ Avui tens 1 sessió prevista. Comences a les "+firstEventDoc.hour+":"+minutes,
+                      },
+                      data: {
+                        route: "SplashScreen",
+                      },
+                    };
+                  }
+                } else {
+                  functions.logger.log(
+                    "isClient"
+                    );
+                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
+                  if (userDoc.idioma == "es") {
                     payload = {
                       notification: {
                         title: "Buenos días "+userDoc.firstName+ " ☀️",
-                        body: "⏰ Hoy tienes "+userEventsSnapshot.size+" sesiones previstas. Empiezas a las "+firstEventDoc.hour+":"+minutes,
+                        body: "⚠️ ¡Recuerda! Hoy a las "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
                       },
                       data: {
-                        route: "SplashScreen0",
+                        route: "SplashScreen",
                       },
                     };
                   } else {
                     payload = {
                       notification: {
                         title: "Bon dia "+userDoc.firstName+ " ☀️",
-                        body: "⏰ Avui tens "+userEventsSnapshot.size+" sessions previstes. Comences a les "+firstEventDoc.hour+":"+minutes,
+                        body: "⚠️ Recorda! Avui a les "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
                       },
                       data: {
-                        route: "SplashScreen0",
+                        route: "SplashScreen",
                       },
                     };
                   }
-                  functions.logger.log(
-                    "Payload",
-                    payload
-                    );
-                  var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-                  functions.logger.log(
-                    "Response",
-                    response
-                    );
                 }
+                functions.logger.log(
+                  "Payload",
+                  payload
+                  );
+                var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+                functions.logger.log(
+                  "Response",
+                  response
+                  );
+              } else {
+                functions.logger.log(
+                  "More Than Event this User"
+                  );
+                // Send Good Morning Notification
+                var payload = 0;
+                if (userDoc.isTrainer == true) {
+                  functions.logger.log(
+                  "isTrainer"
+                  );
+                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
+                  if (userDoc.idioma == "es") {
+                  payload = {
+                    notification: {
+                      title: "Buenos días "+userDoc.firstName+ " ☀️",
+                      body: "⏰ Hoy tienes "+userEventsSnapshot.size+" sesiones previstas. Empiezas a las "+firstEventDoc.hour+":"+minutes,
+                    },
+                    data: {
+                      route: "SplashScreen0",
+                    },
+                  };
+                } else {
+                  payload = {
+                    notification: {
+                      title: "Bon dia "+userDoc.firstName+ " ☀️",
+                      body: "⏰ Avui tens "+userEventsSnapshot.size+" sessions previstes. Comences a les "+firstEventDoc.hour+":"+minutes,
+                    },
+                    data: {
+                      route: "SplashScreen0",
+                    },
+                  };
+                }
+                functions.logger.log(
+                  "Payload",
+                  payload
+                  );
+                var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+                functions.logger.log(
+                  "Response",
+                  response
+                  );
               }
             }
-          }
-          return null;
-        });
+        }
+      }
+      
+      // Check if today is Monday, then backup the Firebase data       
+      let date = new Date();    
+      if (date.getDay() === 1) {
+          console.log("It's Monday, it's time for ... AUTOMATIC BACKUP");
+          const projectId = process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT; 
+          console.log("Project ID: "+projectId);
+          const databaseName = client.databasePath(projectId, '(default)');
+          console.log("Database Name: "+databaseName);    
+          return client.exportDocuments({
+              name: databaseName,
+              outputUriPrefix: 'gs://mamba_app_backup',
+              // Leave collectionIds empty to export all collections
+              // or specify the collections you want to export
+              collectionIds: []
+          })
+          .then(responses => {
+              const response = responses[0];
+              console.log(`Operation Finished with Name: ${response['name']}`);
+          })
+          .catch(err => {
+              console.error(err);
+              throw new Error('Export operation failed');
+          });
+      }
+
+    });
+
+// Daily Notification For Events
+exports.monthlyProductUpdates = functions
+.region("europe-west1")
+.firestore
+.document("/Settings/ProductUpdates")
+.onUpdate( async (change, context) => {
+    // Variables
+    let lastDocumentFetched = null;
+    // Get Value of the Change      
+    const updatesData = change.after.data();                        
+    // Enter only if SendProduct Updates == true
+    if (updatesData.sendProductUpdates == true) {        
+        console.log("Product Updates Email Batch is starting...");
+        // Get the Last Email Fetched From Previous Cloud Function if Any
+        if (updatesData.lastEmailFetched) {
+            let lastDocumentFetchedQuery  = await db.collection("Users").where("email", "=", updatesData.lastEmailFetched).get();
+            lastDocumentFetched = lastDocumentFetchedQuery.docs[0];     
+            console.log("Picking up from ..."+lastDocumentFetched.data().email);         
+        }
+        // Send Email Function  
+        function sendEmail(user, updatesData, retryCount = 0) {
+            // Determine the base email content
+            let baseContent = user.isTrainer ? updatesData.emailContentPro : updatesData.emailContent;
+            // Replace macros with actual data
+            let content = baseContent.replace(/{{firstName}}/g, user.firstName);
+            content = content.replace(/{{email}}/g, user.email);
+            const msg = {
+                to: user.email,
+                from: 'Joan de Mamba <info@mambaapp.app>',
+                subject: updatesData.emailTitle,
+                html: content,
+            };
+            // Send Email
+            try {
+                sgMail.send(msg);
+                console.log('Email sent to ', user.email);
+                // delay between email sends
+                new Promise(resolve => setTimeout(resolve, 100));
+            } catch (error) {
+                console.error('Error sending email to', user.email, error);
+                if (retryCount < 3) {
+                    console.log('Retrying in 5 seconds...');
+                    setTimeout(() => sendEmail(user, updatesData, retryCount + 1), 5000);
+                } else {
+                    console.log('Failed to send email after 3 attempts, giving up.');
+                }
+            }
+        }      
+        // Fetch All Users
+        let usersQuery = db.collection("Users").orderBy('email');
+        // Start after Last Document Fetched if Any
+        if (lastDocumentFetched) {
+            usersQuery = usersQuery.startAfter(lastDocumentFetched);
+        }
+        // Get The Query Of All The Users after lastDocumentFetched if any
+        const limitPerCloudFunction = 100;
+        const usersSnapshot = await usersQuery.limit(limitPerCloudFunction).get();        
+        // Check if this will be the last Cloud Function
+        if (usersSnapshot.docs.length === limitPerCloudFunction) {
+            // This means we have at least the number of limitPerCloudFunction users left
+            let lastUserEmail = null;
+            for (let i = 0; i < limitPerCloudFunction; i++) {
+                const doc = usersSnapshot.docs[i];
+                // Get User Data
+                const user = doc.data();
+                lastUserEmail = user.email;
+                // Build & Send Email
+                sendEmail(user, updatesData);
+            }
+            // There are more users lefts so, we save the new last email sent
+            await db.collection('Settings').doc('ProductUpdates').update({ lastEmailFetched: lastUserEmail });                    
+        } else {
+            // This means we have less than 300 users left and this will be the last Cloud Function
+            for (let i = 0; i < usersSnapshot.docs.length; i++) {
+                const doc = usersSnapshot.docs[i];
+                // Get User Data
+                const user = doc.data();
+                // Build & Send Email
+                await sendEmail(user, updatesData);
+            }
+            // Reset lastEmailFetched to null since we've sent to all users
+            await db.collection('Settings').doc('ProductUpdates').update({
+                sendProductUpdates: false,
+                lastEmailFetched: null
+            });
+        }
+    } else {
+        console.log("Product updates email not sent because 'sendProductUpdates' is false.");
+    }
+});
+
+// Create User Via Server Side Cloud Function
+exports.sendVerificationEmail = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+  // Get the Variables
+  const { email, isTrainer} = data;  
+  // Create the user verifiaction email link Firebase Admin SDK  
+  const verificationLink = await admin.auth().generateEmailVerificationLink(email);  
+  // Get Email Template
+  const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+  const templateDoc = templateSnapshot.data();          
+  // Determine the base email content      
+  let baseContent = templateDoc.wellcomeVerify; 
+  if (isTrainer == true) {
+    baseContent = templateDoc.wellcomeVerifyPro;
+  }          
+  // Replace macros with actual data
+  const emailTitleString = "📧 Verifica tu cuenta 📧";  
+  let content = baseContent.replace(/{{link}}/g, verificationLink);
+  content = content.replace(/{{email}}/g, email); 
+  const msg = {
+      to: email,
+      from: 'Equipo de Mamba <info@mambaapp.app>',
+      subject: emailTitleString,
+      html: content,        
+  };  
+  // Send Email
+  let success = true;
+  try {
+    await sgMail.send(msg);
+    console.log('Email sent to ', email);
+  } catch (error) {
+    console.error('Error sending email to', email, error);
+    success = false;
+  }
+  return { isSuccessful: success};
+});
+
+// Create User Via Server Side Cloud Function
+exports.sendResetPasswordEmail = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+  // Get the Variables
+  const { email, isTrainer} = data;  
+  // Create the user password reset link Firebase Admin SDK  
+  const passwordResetLink = await admin.auth().generatePasswordResetLink(email);
+  // Get Email Template
+  const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+  const templateDoc = templateSnapshot.data();
+  // Determine the base email content      
+  let baseContent = templateDoc.resetPassword; 
+  if (isTrainer == true) {
+    baseContent = templateDoc.resetPasswordPro;
+  }          
+  // Replace macros with actual data
+  const emailTitleString = "🔐 Restablece tu contraseña 🔐";  
+  let content = baseContent.replace(/{{link}}/g, passwordResetLink);
+  content = content.replace(/{{email}}/g, email);     
+  const passwordMsg = {
+      to: email,
+      from: 'Equipo de Mamba <info@mambaapp.app>',        
+      subject: emailTitleString,
+      html: content,
+  };  
+  // Send Email
+  let success = true;
+  try {
+    await sgMail.send(passwordMsg);
+    console.log('Email sent to ', email);
+  } catch (error) {
+    console.error('Error sending email to', email, error);
+    success = false;
+  }
+  return { isSuccessful: success};
+});
+
+// Create User Via Server Side Cloud Function
+exports.createAuthUser = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+  // Get the Variables
+  const { email, password, definePassword, isTrainer} = data;  
+  // Create the user using Firebase Admin SDK
+  const userRecord = await admin.auth().createUser({ email, password });
+  const verificationLink = await admin.auth().generateEmailVerificationLink(email);
+  // Send Verification Email
+  // Get Email Template
+  const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+  const templateDoc = templateSnapshot.data();          
+  // Determine the base email content      
+  let baseContent = templateDoc.wellcomeVerify; 
+  if (isTrainer == true) {
+    baseContent = templateDoc.wellcomeVerifyPro;
+  }          
+  // Replace macros with actual data
+  const emailTitleString = "📧 Verifica tu cuenta 📧";  
+  let content = baseContent.replace(/{{link}}/g, verificationLink);
+  content = content.replace(/{{email}}/g, email); 
+  const msg = {
+      to: email,
+      from: 'Equipo de Mamba <info@mambaapp.app>',
+      subject: emailTitleString,
+      html: content,        
+  };  
+  // Send Email
+  try {
+    await sgMail.send(msg);
+    console.log('Email sent to ', email);
+  } catch (error) {
+      console.error('Error sending email to', email, error);
+  }
+  // If the user needs to define their password, send them a password reset email
+  if (definePassword) {
+    // Determine the base email content      
+    let baseContent = templateDoc.resetPassword; 
+    if (isTrainer == true) {
+      baseContent = templateDoc.resetPasswordPro;
+    }          
+    const passwordResetLink = await admin.auth().generatePasswordResetLink(email);
+    // Replace macros with actual data
+    const emailTitleString = "🔐 Restablece tu contraseña 🔐";  
+    let content = baseContent.replace(/{{link}}/g, passwordResetLink);
+    content = content.replace(/{{email}}/g, email);     
+    const passwordMsg = {
+        to: email,
+        from: 'Equipo de Mamba <info@mambaapp.app>',        
+        subject: emailTitleString,
+        html: content,
+    };
+    // Send Email
+    try {
+      await sgMail.send(passwordMsg);
+      console.log('Email sent to ', email);
+    } catch (error) {
+        console.error('Error sending email to', email, error);
+    }
+  }
+  return { userId: userRecord.uid };
+});
 
 // New User Situate in Test Group
 exports.newUserAddsTestGroup = functions
@@ -775,6 +1045,46 @@ exports.locationUpdatesCoverData = functions
       return null;
     });
 
+// User Adds Brand
+exports.userAddsBrand = functions
+.region("europe-west1")
+.firestore
+.document("/Brands/{brandId}")
+.onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const brandId = context.params.brandId;
+      // Get Data of the Brand
+      const brandSnapshot = await db.collection("Brands").doc(brandId).get();
+      const brandDoc = brandSnapshot.data();
+      // Get Data of the Brand Admin Id
+      const userSnapshot = await db.collection("Users").doc(brandDoc.adminID).get();
+      const userDoc = userSnapshot.data();  
+      // Get Email Template
+      const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+      const templateDoc = templateSnapshot.data();          
+      // Determine the base email content
+      let baseContent = templateDoc.basicMessagePro;
+      let text = "Hola,<br><br>Se ha registrado un nuevo profesional. Aquí sus detalles:<br><br>Nombre: "+brandDoc.name+"<br>Descripción: "+brandDoc.description+"<br>Localización: "+brandDoc.city+", "+brandDoc.zipCode+"<br>Creador: "+userDoc.name+"<br>Email: "+userDoc.email+"<br><br>";    
+      // Replace macros with actual data
+      let content = baseContent.replace(/{{title}}/g, "Nuevo Profesional Registrado");
+      content = content.replace(/{{text}}/g, text);
+      const msg = {
+          to: 'mambastylecastelldefels@gmail.com',
+          from: 'Equipo de Mamba <info@mambaapp.app>',
+          subject: 'Nuevo Profesional Registrado',
+          html: content,
+      };
+      // Send Email
+      try {
+          sgMail.send(msg);
+          console.log('Email sent to ', user.email);
+      } catch (error) {
+          console.error('Error sending email to', user.email, error);
+      }
+      return null;
+   });
+
+
 // User Joins Brand
 exports.userJoinsBrand = functions
 .region("europe-west1")
@@ -790,6 +1100,9 @@ exports.userJoinsBrand = functions
         "has joined Brand with ID:",
         brandId
         );
+      // Get the data from the created document
+      const data = snap.data();
+      let invitedDirectly = data.invitedDirectly;  
       // Get Data of the User
       const userSnapshot = await db.collection("Users").doc(userId).get();
       const userDoc = userSnapshot.data();
@@ -928,46 +1241,48 @@ exports.userJoinsBrand = functions
         functions.logger.log(
           "Payload",
           payload
-          );
+          );          
         response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
         functions.logger.log(
           "Response",
           response
           );
       } else {
-      // Someone just joined the Brand
-      // Send Notification To User Joining Brand
-      var payload = 0;
-      if (userDoc.idioma == "es") {
-        payload = {
-          notification: {
-            title: "Te has unido a "+brandDoc.name+" ✅",
-            body: "Consulta el calendario para participar en tu primera sesión",
-          },
-          data: {
-            route: "BrandPage",
-          },
-        };
-      } else {
-        payload = {
-          notification: {
-            title: "T'has unit a "+brandDoc.name+" ✅",
-            body: "Consulta el calendari per participar en la teva primera sessió",
-          },
-          data: {
-            route: "BrandPage",
-          },
-        };
-      }
-      functions.logger.log(
-        "Payload",
-        payload
-        );
-      var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-      functions.logger.log(
-        "Response",
-        response
-        );
+        // Someone just joined the Brand
+        // Send Notification To User Joining Brand
+        var payload = 0;
+        if (userDoc.idioma == "es") {
+          payload = {
+            notification: {
+              title: "Te has unido a "+brandDoc.name+" ✅",
+              body: "Consulta el calendario para participar en tu primera sesión",
+            },
+            data: {
+              route: "BrandPage",
+            },
+          };
+        } else {
+          payload = {
+            notification: {
+              title: "T'has unit a "+brandDoc.name+" ✅",
+              body: "Consulta el calendari per participar en la teva primera sessió",
+            },
+            data: {
+              route: "BrandPage",
+            },
+          };
+        }
+        if (userDoc.notificationToken && userDoc.notificationToken !== "") {
+          functions.logger.log(
+            "Payload",
+            payload
+          );
+          var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);        
+          functions.logger.log(
+            "Response",
+            response
+          );
+        }
         // Send Notification To Brand Owner
         const adminSnapshot = await db.collection("Users").doc(brandDoc.adminID).get();
         const adminDoc = adminSnapshot.data();
@@ -1010,7 +1325,7 @@ exports.userJoinsBrand = functions
         functions.logger.log(
           "Payload",
           payload
-          );
+          );          
         response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
         functions.logger.log(
           "Response",
@@ -1043,6 +1358,40 @@ exports.userJoinsBrand = functions
         "numClients": numClients,
         "numTrainers": numTrainers,
       });
+
+      // Send Email if Needed      
+      if (invitedDirectly) {
+        // Get Email Template
+        const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+        const templateDoc = templateSnapshot.data();          
+        // Determine the base email content      
+        let baseContent = templateDoc.joinBrandMessage; 
+        if (userDoc.isTrainer == true) {
+          baseContent = templateDoc.joinBrandMessagePro;
+        }          
+        // Replace macros with actual data
+        const emailTitleString = "👋 Te damos la bienvenida a "+brandDoc.name+" 👋";
+        const firstNameString = userDoc.firstName.charAt(0).toUpperCase() + userDoc.firstName.slice(1);
+        let content = baseContent.replace(/{{firstName}}/g, firstNameString);
+        content = content.replace(/{{email}}/g, userDoc.email);
+        content = content.replace(/{{brandName}}/g, brandDoc.name);
+        content = content.replace(/{{logoUrl}}/g, brandDoc.logoUrl);
+        content = content.replace(/{{imageUrl}}/g, brandDoc.baseImage);                  
+        const msg = {
+            to: userDoc.email,
+            from: 'Equipo de Mamba <info@mambaapp.app>',
+            subject: emailTitleString,
+            html: content,
+        };
+        // Send Email
+        try {
+            sgMail.send(msg);
+            console.log('Email sent to ', userDoc.email);
+        } catch (error) {
+            console.error('Error sending email to', userDoc.email);
+        }
+      }
+
       return null;
     });
 
@@ -1625,14 +1974,14 @@ exports.userJoinsEvent = functions
           numClients += 1;
         }
       }
-      /* Update Event Assisting Members
+      // Update Event Assisting Members
       await db
       .collection("Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });*/
+      });
       var isPrivate = false;
       if (eventDoc.isPrivate != undefined) {
         isPrivate = eventDoc.isPrivate;
@@ -2100,14 +2449,14 @@ exports.userLeavesEvent = functions
        .doc(eventId)
        .delete();
      }
-      /* Update Event Assisting Members
+      //Update Event Assisting Members
       await db
       .collection("Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });*/
+      });
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -2314,6 +2663,101 @@ exports.changeMessageStatus = functions
     }
   })
 
+  // User Deletes Purchase
+  exports.UserDeletesPurchase = functions
+    .region("europe-west1")
+    .firestore
+    .document("/Purchases/{purchaseId}")
+    .onDelete( async (snap, context) => {
+        // Get the value of the context triggers.
+         const purchaseId = context.params.purchaseId;
+
+         const purchaseDoc = snap.data();
+         //const purchaseDoc = purchaseSnapShot.data();
+
+           const userId = purchaseDoc.userId;
+           const bonoId = purchaseDoc.bonoId;
+           const brandId =  purchaseDoc.brandId;
+
+            await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).delete();
+
+           await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+
+           await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+
+           await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).delete();
+
+        return null;
+    });
+
+    //  User Cancels User Purchase Event
+    exports.UserCancelsUserPurchaseEvent = functions
+    .region("europe-west1")
+    .firestore
+    .document("/Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}/Events/{eventId}")
+    .onDelete( async (snap, context) => {
+
+       const purchaseId = context.params.purchaseId;
+       const eventId = context.params.eventId;
+
+       // Get data of the purchase
+
+       const purchaseSnapShot = await db.collection("Purchases").doc(purchaseId).get();
+       const purchaseDoc = purchaseSnapShot.data();
+
+       const userId = purchaseDoc.userId;
+       const bonoId = purchaseDoc.bonoId;
+       const brandId =  purchaseDoc.brandId;
+
+       // Delete Event from Purchases
+
+       await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+       await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+       await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+      return null;
+      });
+
+// User Updates Purchase Data
+exports.purchaseUpdatesCoverData = functions
+.region("europe-west1")
+.firestore
+.document("/Purchases/{purchaseId}")
+.onUpdate( async (change, context) => {
+     const purchaseId = context.params.purchaseId;
+      const before = change.before.data();
+      const after = change.after.data();
+
+      const userId = after.userId;
+      const bonoId = after.bonoId;
+      const brandId =  after.brandId;
+
+      let coverDataChange = false;
+      if (before.directPurchase != after.directPurchase) {
+        coverDataChange = true;
+      }
+      if (before.isActive != after.isActive) {
+            coverDataChange = true;
+      }
+
+    await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).update({
+           "directPurchase": after.directPurchase,
+           "isActive": after.isActive,
+        });
+
+    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+           "directPurchase": after.directPurchase,
+           "isActive": after.isActive,
+        });
+
+        await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+           "directPurchase": after.directPurchase,
+           "isActive": after.isActive,
+        });
+      return null;
+    });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // 7777 TEST ENVIRONMENT CLOUD FUNCTIONS
@@ -2937,7 +3381,11 @@ exports.zzzzUserJoinsBrand = functions
         userId,
         "has joined Brand with ID:",
         brandId
-        );
+      );
+      // Get the data from the created document
+      const data = snap.data();
+      let invitedDirectly = data.invitedDirectly;      
+      
       // Get Data of the User
       const userSnapshot = await db.collection("7777 Users").doc(userId).get();
       const userDoc = userSnapshot.data();
@@ -2948,39 +3396,34 @@ exports.zzzzUserJoinsBrand = functions
         userDoc.imageUrl,
         userDoc.isTrainer,
         userDoc.notificationToken,
-        );
-        if(userDoc.isTrainer == true)
-        {
-            await db
-                    .collection("7777 Users")
-                    .doc(userId)
-                    .collection("BlockedByUsers")
-                    .doc("test")
-                    .set({
-                  "userId": "test",
-                });
-        }
+      );
+      if(userDoc.isTrainer == true) {
+          await db
+          .collection("7777 Users")
+          .doc(userId)
+          .collection("BlockedByUsers")
+          .doc("test")
+          .set({
+            "userId": "test",
+          });
+      }
       // Get Data of the Brand
       const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
       const brandDoc = brandSnapshot.data();
       functions.logger.log(
         "Brand Cover Data:",
         brandDoc,
-        );
-
+      );
       // Get Data of the Brand Room
       const roomSnapshot = await db.collection("7777 Rooms").doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
-
       var metadataMessage = {};
       var metadataRoom = {};
-
       functions.logger.log(
        "UserIds",
        roomDoc.userIds,
        );
       roomDoc.userIds.push(userId);
-
       if (roomDoc.lastMessages != undefined) {
         metadataMessage = roomDoc.lastMessages[0].metadata;
         metadataMessage[userId] = "delivered";
@@ -2990,7 +3433,6 @@ exports.zzzzUserJoinsBrand = functions
           status: "delivered",
         })
       }
-
       // Creates metadata for new user and adds it.
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
@@ -2999,7 +3441,6 @@ exports.zzzzUserJoinsBrand = functions
         metadata: metadataRoom,
         userIds: roomDoc.userIds,
       })
-
       // Add the Brand Cover Data to Users/Brands Collection
       let date = new Date();
       let day = date.getDate();
@@ -3010,11 +3451,9 @@ exports.zzzzUserJoinsBrand = functions
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
       var formatted = day+"-"+month+"-"+result;
-
       //JMF 05052023 POR SI VIENEN DE LA WEB
-      if (brandDoc.adminID == userId)
-      {
-           // Update Date Joined Users/Brand
+      if (brandDoc.adminID == userId) {
+          // Update Date Joined Users/Brand
           await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
             "name": brandDoc.name,
             "logoUrl": brandDoc.logoUrl,
@@ -3022,24 +3461,22 @@ exports.zzzzUserJoinsBrand = functions
             "myMonthlySessions": 0,
             "myTotalSessions": 0,
           });
-      }
-      else
-      {
-            // Update Date Joined Users/Brand
-            await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
-              "name": brandDoc.name,
-              "logoUrl": brandDoc.logoUrl,
-              "dateJoined": formatted,
-              "myMonthlySessions": 0,
-              "myTotalSessions": 0,
-              //TODO INTEGRATION VERSION .12
-              "zipCode": brandDoc.zipCode,
-              "city": brandDoc.city,
-              "longitude": brandDoc.longitude,
-              "latitude": brandDoc.latitude,
-              "baseImage": brandDoc.baseImage,
-              "geoPosition": brandDoc.geoPosition,
-            });
+      } else {
+          // Update Date Joined Users/Brand
+          await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
+            "name": brandDoc.name,
+            "logoUrl": brandDoc.logoUrl,
+            "dateJoined": formatted,
+            "myMonthlySessions": 0,
+            "myTotalSessions": 0,
+            //TODO INTEGRATION VERSION .12
+            "zipCode": brandDoc.zipCode,
+            "city": brandDoc.city,
+            "longitude": brandDoc.longitude,
+            "latitude": brandDoc.latitude,
+            "baseImage": brandDoc.baseImage,
+            "geoPosition": brandDoc.geoPosition,
+          });
       }
       // Update Date Joined Users/Brand
       await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
@@ -3050,7 +3487,7 @@ exports.zzzzUserJoinsBrand = functions
       functions.logger.log(
         "userId",
         userId,
-        );
+      );
       // Brand Was Just Created By Admin
       if (brandDoc.adminID == userId) {
         if (userDoc.idioma == "es") {
@@ -3084,39 +3521,43 @@ exports.zzzzUserJoinsBrand = functions
           response
           );
       } else {
-      // Someone just joined the Brand
-      // Send Notification To User Joining Brand
-      var payload = 0;
-      if (userDoc.idioma == "es") {
-        payload = {
-          notification: {
-            title: "Te has unido a "+brandDoc.name+" ✅",
-            body: "Consulta el calendario para participar en tu primera sesión",
-          },
-          data: {
-            route: "BrandPage",
-          },
-        };
-      } else {
-        payload = {
-          notification: {
-            title: "T'has unit a "+brandDoc.name+" ✅",
-            body: "Consulta el calendari per participar en la teva primera sessió",
-          },
-          data: {
-            route: "BrandPage",
-          },
-        };
-      }
-      functions.logger.log(
-        "Payload",
-        payload
-        );
-      var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-      functions.logger.log(
-        "Response",
-        response
-        );
+        // Someone just joined the Brand 
+        // Send Notification To User Joining Brand
+        var payload = 0;
+        if (userDoc.idioma == "es") {
+          payload = {
+            notification: {
+              title: "Te has unido a "+brandDoc.name+" ✅",
+              body: "Consulta el calendario para participar en tu primera sesión",
+            },
+            data: {
+              route: "BrandPage",
+            },
+          };
+        } else {
+          payload = {
+            notification: {
+              title: "T'has unit a "+brandDoc.name+" ✅",
+              body: "Consulta el calendari per participar en la teva primera sessió",
+            },
+            data: {
+              route: "BrandPage",
+            },
+          };
+        }
+        
+        if (userDoc.notificationToken && userDoc.notificationToken !== "") {
+          functions.logger.log(
+            "Payload",
+            payload
+          );
+          var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);        
+          functions.logger.log(
+            "Response",
+            response
+          );
+        }
+        
         // Send Notification To Brand Owner
         const adminSnapshot = await db.collection("7777 Users").doc(brandDoc.adminID).get();
         const adminDoc = adminSnapshot.data();
@@ -3134,38 +3575,38 @@ exports.zzzzUserJoinsBrand = functions
         functions.logger.log(
           "Number Members",
           numberMembers,
-          );
+        );
         if (adminDoc.idioma == "es") {
-         payload = {
-          notification: {
-            title: "Nuevo miembro en "+brandDoc.name+" ➕1️⃣ ",
-            body: userDoc.name+" se ha unido. Ya sois un total de "+numberMembers.toString()+" miembros",
-          },
-          data: {
-            route: "Notifications",
-          },
-        };
-      } else {
-        payload = {
-          notification: {
-            title: "Nou membre a "+brandDoc.name+" ➕1️⃣ ",
-            body: userDoc.name+" s'ha unit. Ja sou un total de "+numberMembers.toString()+" membres",
-          },
-          data: {
-            route: "Notifications",
-          },
+          payload = {
+            notification: {
+              title: "Nuevo miembro en "+brandDoc.name+" ➕1️⃣ ",
+              body: userDoc.name+" se ha unido. Ya sois un total de "+numberMembers.toString()+" miembros",
+            },
+            data: {
+              route: "Notifications",
+            },
+          };
+        } else {
+          payload = {
+            notification: {
+              title: "Nou membre a "+brandDoc.name+" ➕1️⃣ ",
+              body: userDoc.name+" s'ha unit. Ja sou un total de "+numberMembers.toString()+" membres",
+            },
+            data: {
+              route: "Notifications",
+            },
+          }
         }
+        functions.logger.log(
+          "Payload",
+          payload
+        );
+        response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
+        functions.logger.log(
+          "Response",
+          response
+        );
       }
-      functions.logger.log(
-        "Payload",
-        payload
-        );
-      response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
-      functions.logger.log(
-        "Response",
-        response
-        );
-    }
       // Count Brand Members
       brandUsersSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Users").get();
       let numClients = 0;
@@ -3178,12 +3619,6 @@ exports.zzzzUserJoinsBrand = functions
           numClients += 1;
         }
       }
-      functions.logger.log(
-        "numClients",
-        numClients,
-        "numTrainers",
-        numTrainers,
-        );
       // Update Brand Members
       await db
       .collection("7777 Brands")
@@ -3191,7 +3626,40 @@ exports.zzzzUserJoinsBrand = functions
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });
+      }); 
+      
+      // Send Email if Needed      
+      if (invitedDirectly) {
+        // Get Email Template
+        const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+        const templateDoc = templateSnapshot.data();          
+        // Determine the base email content      
+        let baseContent = templateDoc.joinBrandMessage; 
+        if (userDoc.isTrainer == true) {
+          baseContent = templateDoc.joinBrandMessagePro;
+        }          
+        // Replace macros with actual data
+        const emailTitleString = "👋 Te damos la bienvenida a "+brandDoc.name+" 👋";
+        const firstNameString = userDoc.firstName.charAt(0).toUpperCase() + userDoc.firstName.slice(1);
+        let content = baseContent.replace(/{{firstName}}/g, firstNameString);
+        content = content.replace(/{{email}}/g, userDoc.email);
+        content = content.replace(/{{brandName}}/g, brandDoc.name);
+        content = content.replace(/{{logoUrl}}/g, brandDoc.logoUrl);
+        content = content.replace(/{{imageUrl}}/g, brandDoc.baseImage);                  
+        const msg = {
+            to: userDoc.email,
+            from: 'Equipo de Mamba <info@mambaapp.app>',
+            subject: emailTitleString,
+            html: content,
+        };
+        // Send Email
+        try {
+            sgMail.send(msg);
+            console.log('Email sent to ', userDoc.email);
+        } catch (error) {
+            console.error('Error sending email to', userDoc.email);
+        }
+      }
       return null;
     });
 
@@ -3775,14 +4243,14 @@ exports.zzzzUserJoinsEvent = functions
           numClients += 1;
         }
       }
-      /* Update Event Assisting Members
+      // Update Event Assisting Members
       await db
       .collection("7777 Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });*/
+      });
       // Add Event To Users Event Subcollection
       await db
       .collection("7777 Users")
@@ -3805,32 +4273,6 @@ exports.zzzzUserJoinsEvent = functions
         //TODO INTEGRATION .12
         "brandID": eventDoc.brandID,
       });
-
-      //TODO AFEGIT JOAN MANEL INTEGRACIÓ BONOS
-      /* Add event to purchase collection
-      await db
-        .collection("7777 Payments")
-        .doc("Purchases")
-        .collection("Purchases")
-        .doc(eventUserDoc.purchaseId)
-        .collection("Events")
-        .doc(eventId)
-        .set({
-          "isPrivate": eventDoc.isPrivate,
-          "title": eventDoc.title,
-          "imageUrl": eventDoc.imageUrl,
-          "doneAt": eventDoc.doneAt,
-          "year": eventDoc.year,
-          "month": eventDoc.month,
-          "day": eventDoc.day,
-          "hour": eventDoc.hour,
-          "minute": eventDoc.minute,
-          "duration": eventDoc.duration,
-          "numTrainers": numTrainers,
-          "numClients": numClients,
-          "maxMembers": eventDoc.maxMembers,
-      });
-      */
 
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
@@ -4276,14 +4718,14 @@ exports.zzzzUserLeavesEvent = functions
        .doc(eventId)
        .delete();
      }
-      /* Update Event Assisting Members
+       //Update Event Assisting Members
       await db
       .collection("7777 Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });*/
+      });
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -4556,7 +4998,7 @@ exports.UserSendsBonoRequest = functions
 exports.UserPurchasesBono = functions
 .region("europe-west1")
 .firestore
-.document("/Payments/Purchases/Purchases/{purchaseId}")
+.document("/Purchases/{purchaseId}")
 .onCreate( async (snap, context) => {
 
   const purchaseId = context.params.purchaseId;
@@ -4577,37 +5019,63 @@ exports.UserPurchasesBono = functions
   //Add purchases
 
    await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "userId": purchaseDoc.userId,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "sessions": purchaseDoc.sessions,
-     "weeklySessions": purchaseDoc.weeklySessions,
-     "cancelTime": purchaseDoc.cancelTime,
-     "expirationTime": purchaseDoc.expirationTime,
+      "userId": purchaseDoc.userId,
+      "brandId": brandId,
+      "bonoId": bonoId,
+      "isActive": true,
+      "purchasedAt": purchaseDoc.purchasedAt,
+      "price": purchaseDoc.price,
+      "paymentMethod": purchaseDoc.paymentMethod,
+      "sessions": purchaseDoc.sessions,
+      "weeklySessions": purchaseDoc.weeklySessions,
+      "cancelTime": purchaseDoc.cancelTime,
+      "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
+   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
+      "userId": purchaseDoc.userId,
+      "brandId": brandId,
+      "bonoId": bonoId,
+      "isActive": true,
+      "purchasedAt": purchaseDoc.purchasedAt,
+      "price": purchaseDoc.price,
+      "paymentMethod": purchaseDoc.paymentMethod,
+      "sessions": purchaseDoc.sessions,
+      "weeklySessions": purchaseDoc.weeklySessions,
+      "cancelTime": purchaseDoc.cancelTime,
+      "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
+  });
+
    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "bonoId": purchaseDoc.bonoId,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "sessions": purchaseDoc.sessions,
-     "weeklySessions": purchaseDoc.weeklySessions,
-     "cancelTime": purchaseDoc.cancelTime,
-     "expirationTime": purchaseDoc.expirationTime,
+      "userId": purchaseDoc.userId,
+      "brandId": brandId,
+      "bonoId": bonoId,
+      "isActive": true,
+      "purchasedAt": purchaseDoc.purchasedAt,
+      "price": purchaseDoc.price,
+      "paymentMethod": purchaseDoc.paymentMethod,
+      "sessions": purchaseDoc.sessions,
+      "weeklySessions": purchaseDoc.weeklySessions,
+      "cancelTime": purchaseDoc.cancelTime,
+      "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "bonoId": purchaseDoc.bonoId,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "brandId": purchaseDoc.brandId,
-     "sessions": purchaseDoc.sessions,
-     "weeklySessions": purchaseDoc.weeklySessions,
-     "cancelTime": purchaseDoc.cancelTime,
-     "expirationTime": purchaseDoc.expirationTime,
+    "userId": purchaseDoc.userId,
+    "brandId": brandId,
+    "bonoId": bonoId,
+    "isActive": true,
+    "purchasedAt": purchaseDoc.purchasedAt,
+    "price": purchaseDoc.price,
+    "paymentMethod": purchaseDoc.paymentMethod,
+    "sessions": purchaseDoc.sessions,
+    "weeklySessions": purchaseDoc.weeklySessions,
+    "cancelTime": purchaseDoc.cancelTime,
+    "expirationTime": purchaseDoc.expirationTime,
+    "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
@@ -4751,7 +5219,7 @@ exports.DeleteUserBono = functions
 exports.UserPurchasesEvent = functions
 .region("europe-west1")
 .firestore
-.document("/Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.document("/Purchases/{purchaseId}/Events/{eventId}")
 .onCreate( async (snap, context) => {
 
   const purchaseId = context.params.purchaseId;
@@ -4761,7 +5229,7 @@ exports.UserPurchasesEvent = functions
 
    //Get data of the purchase
 
-   const purchaseSnapShot = await db.collection("Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+   const purchaseSnapShot = await db.collection("Purchases").doc(purchaseId).get();
    const purchaseDoc = purchaseSnapShot.data();
 
    const userId = purchaseDoc.userId;
@@ -4796,6 +5264,23 @@ exports.UserPurchasesEvent = functions
      "numClients": eventDoc.numClients,
      "maxMembers": eventDoc.maxMembers,
    });
+
+   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+    "isPrivate": eventDoc.isPrivate,
+    "imageUrl": eventDoc.imageUrl,
+    "title": eventDoc.title,
+    "doneAt": eventDoc.doneAt,
+    "year": eventDoc.year,
+    "month": eventDoc.month,
+    "day": eventDoc.day,
+    "hour": eventDoc.hour,
+    "minute": eventDoc.minute,
+    "duration": eventDoc.duration,
+    "numTrainers": eventDoc.numTrainers,
+    "numClients": eventDoc.numClients,
+    "maxMembers": eventDoc.maxMembers,
+  });
+
    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
     "isPrivate": eventDoc.isPrivate,
     "imageUrl": eventDoc.imageUrl,
@@ -4841,7 +5326,7 @@ exports.UserPurchasesEvent = functions
 exports.UserCancelsPurchaseEvent = functions
 .region("europe-west1")
 .firestore
-.document("/Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.document("/Purchases/{purchaseId}/Events/{eventId}")
 .onDelete( async (snap, context) => {
 
    const purchaseId = context.params.purchaseId;
@@ -4849,7 +5334,7 @@ exports.UserCancelsPurchaseEvent = functions
 
    // Get data of the purchase
 
-   const purchaseSnapShot = await db.collection("Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+   const purchaseSnapShot = await db.collection("Purchases").doc(purchaseId).get();
    const purchaseDoc = purchaseSnapShot.data();
 
    const userId = purchaseDoc.userId;
@@ -4858,11 +5343,13 @@ exports.UserCancelsPurchaseEvent = functions
 
    // Delete Event from Purchases
 
-   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
    await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
   return null;
   });
@@ -4935,7 +5422,7 @@ exports.zzzzUserSendsBonoRequest = functions
 exports.zzzzUserPurchasesBono = functions
 .region("europe-west1")
 .firestore
-.document("/7777 Payments/Purchases/Purchases/{purchaseId}")
+.document("/7777 Purchases/{purchaseId}")
 .onCreate( async (snap, context) => {
 
   const purchaseId = context.params.purchaseId;
@@ -4955,38 +5442,64 @@ exports.zzzzUserPurchasesBono = functions
 
   //Add purchases
 
-   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
+   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({     
      "userId": purchaseDoc.userId,
+     "brandId": brandId,
+     "bonoId": bonoId,
+     "isActive": true,
+     "purchasedAt": purchaseDoc.purchasedAt,
      "price": purchaseDoc.price,
      "paymentMethod": purchaseDoc.paymentMethod,
      "sessions": purchaseDoc.sessions,
      "weeklySessions": purchaseDoc.weeklySessions,
      "cancelTime": purchaseDoc.cancelTime,
      "expirationTime": purchaseDoc.expirationTime,
+     "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "bonoId": purchaseDoc.bonoId,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "sessions": purchaseDoc.sessions,
+      "userId": purchaseDoc.userId,
+      "brandId": brandId,
+      "bonoId": bonoId,
+      "isActive": true,
+      "purchasedAt": purchaseDoc.purchasedAt,
+      "price": purchaseDoc.price,
+      "paymentMethod": purchaseDoc.paymentMethod,
+      "sessions": purchaseDoc.sessions,
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
-   await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "bonoId": purchaseDoc.bonoId,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "brandId": purchaseDoc.brandId,
+   await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
+    "userId": purchaseDoc.userId,
+    "brandId": brandId,
+    "bonoId": bonoId,
+    "isActive": true,
+    "purchasedAt": purchaseDoc.purchasedAt,
+    "price": purchaseDoc.price,
+    "paymentMethod": purchaseDoc.paymentMethod,
     "sessions": purchaseDoc.sessions,
-   "weeklySessions": purchaseDoc.weeklySessions,
-   "cancelTime": purchaseDoc.cancelTime,
-   "expirationTime": purchaseDoc.expirationTime,
+    "weeklySessions": purchaseDoc.weeklySessions,
+    "cancelTime": purchaseDoc.cancelTime,
+    "expirationTime": purchaseDoc.expirationTime,
+    "directPurchase": purchaseDoc.directPurchase,
+  });
+
+   await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
+      "userId": purchaseDoc.userId,
+      "brandId": brandId,
+      "bonoId": bonoId,
+      "isActive": true,
+      "purchasedAt": purchaseDoc.purchasedAt,
+      "price": purchaseDoc.price,
+      "paymentMethod": purchaseDoc.paymentMethod,
+      "sessions": purchaseDoc.sessions,
+      "weeklySessions": purchaseDoc.weeklySessions,
+      "cancelTime": purchaseDoc.cancelTime,
+      "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).set({
@@ -4999,13 +5512,14 @@ exports.zzzzUserPurchasesBono = functions
      "cancelTime": purchaseDoc.cancelTime,
      "weeklySessions": purchaseDoc.weeklySessions,
    });
-    let stringSessions = "";
-    if(purchaseDoc.sessions != 10000)
-    {
-        stringSessions = purchaseDoc.sessions + " ";
-    }
-   // Send Notification to User
-   if (userDoc.idioma == "es") {
+
+  let stringSessions = "";
+  if(purchaseDoc.sessions != 10000)
+  {
+      stringSessions = purchaseDoc.sessions + " ";
+  }
+  // Send Notification to User
+  if (userDoc.idioma == "es") {
     payload = {
       notification: {
         title: "Bono "+bonoDoc.title.toUpperCase()+" otorgado 🤙",
@@ -5131,7 +5645,7 @@ exports.zzzzDeleteUserBono = functions
 exports.zzzzUserPurchasesEvent = functions
 .region("europe-west1")
 .firestore
-.document("/7777 Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.document("/7777 Purchases/{purchaseId}/Events/{eventId}")
 .onCreate( async (snap, context) => {
 
   const purchaseId = context.params.purchaseId;
@@ -5141,7 +5655,7 @@ exports.zzzzUserPurchasesEvent = functions
 
        //Get data of the purchase
 
-       const purchaseSnapShot = await db.collection("7777 Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+       const purchaseSnapShot = await db.collection("7777 Purchases").doc(purchaseId).get();
        const purchaseDoc = purchaseSnapShot.data();
 
        const userId = purchaseDoc.userId;
@@ -5175,6 +5689,24 @@ exports.zzzzUserPurchasesEvent = functions
           "numClients": eventDoc.numClients,
           "maxMembers": eventDoc.maxMembers,
        });
+
+       await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({        
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": eventDoc.numTrainers,
+          "numClients": eventDoc.numClients,
+          "maxMembers": eventDoc.maxMembers,
+        });
+
+
        await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({        
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
@@ -5222,7 +5754,7 @@ exports.zzzzUserPurchasesEvent = functions
 exports.zzzzUserCancelsPurchaseEvent = functions
 .region("europe-west1")
 .firestore
-.document("/7777 Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.document("/7777 Purchases/{purchaseId}/Events/{eventId}")
 .onDelete( async (snap, context) => {
 
    const purchaseId = context.params.purchaseId;
@@ -5230,7 +5762,7 @@ exports.zzzzUserCancelsPurchaseEvent = functions
 
    // Get data of the purchase
 
-   const purchaseSnapShot = await db.collection("7777 Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+   const purchaseSnapShot = await db.collection("7777 Purchases").doc(purchaseId).get();
    const purchaseDoc = purchaseSnapShot.data();
 
    const userId = purchaseDoc.userId;
@@ -5239,11 +5771,13 @@ exports.zzzzUserCancelsPurchaseEvent = functions
 
    // Delete Event from Purchases
 
-   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+   await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
    await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
   return null;
   });
@@ -5360,6 +5894,93 @@ exports.updateBrandSubscription = functions
     return null
 })
 
+// User Deletes Purchase
+exports.zzzzUserDeletesPurchase = functions
+  .region("europe-west1")
+  .firestore
+  .document("/7777 Purchases/{purchaseId}")
+  .onDelete( async (snap, context) => {
+      // Get the value of the context triggers.
+       const purchaseId = context.params.purchaseId;
 
+       const purchaseDoc = snap.data();
+       //const purchaseDoc = purchaseSnapShot.data();
+
+         const userId = purchaseDoc.userId;
+         const bonoId = purchaseDoc.bonoId;
+         const brandId =  purchaseDoc.brandId;
+
+         await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).delete();
+
+         await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+
+         await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+
+         await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).delete();
+
+      return null;
+  });
+
+  //  User Cancels User Purchase Event
+      exports.zzzzUserCancelsUserPurchaseEvent = functions
+      .region("europe-west1")
+      .firestore
+      .document("/7777 Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}/Events/{eventId}")
+      .onDelete( async (snap, context) => {
+
+         const purchaseId = context.params.purchaseId;
+         const eventId = context.params.eventId;
+         const userId = context.params.userId;
+         const brandId =  context.params.brandId;
+
+         // Delete Event from Purchases
+
+         await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+         //await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+         await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+        return null;
+        });
+
+    // 7777 User Updates Purchase Data
+    exports.zzzzpurchaseUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/7777 Purchases/{purchaseId}")
+    .onUpdate( async (change, context) => {
+         const purchaseId = context.params.purchaseId;
+           const before = change.before.data();
+           const after = change.after.data();
+
+           const userId = after.userId;
+           const bonoId = after.bonoId;
+           const brandId =  after.brandId;
+
+          let coverDataChange = false;
+          if (before.directPurchase != after.directPurchase) {
+            coverDataChange = true;
+          }
+          if (before.isActive != after.isActive) {
+                      coverDataChange = true;
+            }
+
+            await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).update({
+               "directPurchase": after.directPurchase,
+               "isActive": after.isActive,
+            });
+
+            await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+               "directPurchase": after.directPurchase,
+               "isActive": after.isActive,
+            });
+
+            await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+               "directPurchase": after.directPurchase,
+               "isActive": after.isActive,
+            });
+          return null;
+        });
 
 

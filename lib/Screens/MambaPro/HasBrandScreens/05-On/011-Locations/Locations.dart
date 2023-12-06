@@ -11,6 +11,8 @@ import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataServic
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Location/LocationImageTile.dart';
@@ -115,22 +117,31 @@ class _LocationsState extends State<Locations> {
       locationContainers.clear();
     });
     var tempList = locationList.map((i) =>
-      LocationImageTile(
-        height: MediaQuery.of(context).size.height*0.16,
-        width: MediaQuery.of(context).size.width,
-        locationId: i.id!,
-        brandId: currentBrand.id!,
-        canEdit: canEdit,
-        locationChanged: (boolean) async {
-          if (boolean == true) {
-            setState(() {
-              isLoading = true;
-              loadingText = AppLocalizations.of(context)!.updating +" "+ AppLocalizations.of(context)!.locations.toLowerCase() + "...";
-            });
-            await Future.delayed(const Duration(seconds: 4));
-            getAllLocations();
-          }
-        },
+      Column(
+        children: [
+          Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(15.0),
+            child: LocationImageTile(
+              height: MediaQuery.of(context).size.height*0.16,
+              width: MediaQuery.of(context).size.width,
+              locationId: i.id!,
+              brandId: currentBrand.id!,
+              canEdit: canEdit,
+              locationChanged: (boolean) async {
+                if (boolean == true) {
+                  setState(() {
+                    isLoading = true;
+                    loadingText = AppLocalizations.of(context)!.updating +" "+ AppLocalizations.of(context)!.locations.toLowerCase() + "...";
+                  });
+                  await Future.delayed(const Duration(seconds: 4));
+                  getAllLocations();
+                }
+              },
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.01)
+        ],
       )
     ).toList();
     setState(() {
@@ -143,6 +154,104 @@ class _LocationsState extends State<Locations> {
         isLoading = false;
       });
     });
+  }
+
+  Future<void> addNewLocation() async {
+    if (!brandIsActive) {
+      await navigateToPayWall(context);
+    } else {
+      mixpanel!.timeEvent('brand_locations_added');
+      // Generate a new token here
+      final sessionToken = const Uuid().v4();
+      final language = currentUser.idioma;
+      final Suggestion? result = await showSearch(
+        context: context,
+        delegate: AddressSearch(
+            sessionToken, language!),
+      );
+      // We have a result for our locations search
+      if (result!.placeId != "") {
+        // Reload the Map
+        setState(() {
+          isLoading = true;
+          loadingText =
+              AppLocalizations.of(context)!
+                  .updating + " " +
+                  AppLocalizations.of(context)!
+                      .locations.toLowerCase() +
+                  "...";
+        });
+        Location location = Location();
+        location.placeId = result.placeId;
+        final placeDetails = await LocationPlacesSearch(
+            sessionToken, language)
+            .getPlaceDetailFromId(
+            location.placeId!);
+        // Get the information on Strings
+        if (placeDetails.street != null) {
+          location.street =
+          placeDetails.street!;
+        } else {
+          location.street = "N/A";
+        }
+        if (placeDetails.streetNumber != null) {
+          location.streetNumber =
+          placeDetails.streetNumber!;
+        } else {
+          location.streetNumber = "N/A";
+        }
+        if (placeDetails.city != null) {
+          location.city = placeDetails.city!;
+        } else {
+          location.city = "N/A";
+        }
+        if (placeDetails.zipCode != null) {
+          location.zipCode =
+          placeDetails.zipCode!;
+        } else {
+          location.zipCode = "N/A";
+        }
+        // Build Correct Description
+        location.description =
+        "${location.street} ${location
+            .streetNumber}, ${location
+            .city}, ${location.zipCode}";
+        // Get Latitude/Longitude
+        var temp = await gPlace!.details.get(
+            location.placeId!);
+        if (temp != null &&
+            temp.result != null && mounted) {
+          detailsResult = temp.result;
+          location.latitude =
+          detailsResult!.geometry!.location!
+              .lat!;
+          location.longitude =
+          detailsResult!.geometry!.location!
+              .lng!;
+        }
+        // Save location to DataBase
+        await _locationDataService.addLocation(
+            widget.brandId,
+            false,
+            location.placeId!,
+            location.description!,
+            location.street!,
+            location.streetNumber!,
+            location.city!,
+            location.zipCode!,
+            location.latitude!,
+            location.longitude!);
+        await Future.delayed(
+            const Duration(seconds: 4));
+        getAllLocations();
+        mixpanel!.track(
+            'brand_locations_added');
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -180,6 +289,7 @@ class _LocationsState extends State<Locations> {
             elevation: 4,
             floating: false,
             pinned: true,
+            //snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.darkGrey,
@@ -197,118 +307,12 @@ class _LocationsState extends State<Locations> {
                             AppLocalizations.of(context)!.locations,
                             style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                           ),
+
                           FittedBox(
                             fit: BoxFit.fitHeight,
                             child: SizedBox(
                                 height: MediaQuery.of(context).size.height*0.08,
-                                child: canEdit ? IconButton(
-                                  onPressed: () async {
-                                    if(!brandIsActive) {
-                                      await navigateToPayWall(context);
-                                    }
-                                    else {
-                                      mixpanel!.timeEvent(
-                                          'brand_locations_added');
-                                      // Generate a new token here
-                                      final sessionToken = const Uuid().v4();
-                                      final language = currentUser.idioma;
-                                      final Suggestion? result = await showSearch(
-                                        context: context,
-                                        delegate: AddressSearch(
-                                            sessionToken, language!),
-                                      );
-                                      // We have a result for our locations search
-                                      if (result!.placeId != "") {
-                                        // Reload the Map
-                                        setState(() {
-                                          isLoading = true;
-                                          loadingText =
-                                              AppLocalizations.of(context)!
-                                                  .updating + " " +
-                                                  AppLocalizations.of(context)!
-                                                      .locations.toLowerCase() +
-                                                  "...";
-                                        });
-                                        Location location = Location();
-                                        location.placeId = result.placeId;
-                                        final placeDetails = await LocationPlacesSearch(
-                                            sessionToken, language)
-                                            .getPlaceDetailFromId(
-                                            location.placeId!);
-                                        // Get the information on Strings
-                                        if (placeDetails.street != null) {
-                                          location.street =
-                                          placeDetails.street!;
-                                        } else {
-                                          location.street = "N/A";
-                                        }
-                                        if (placeDetails.streetNumber != null) {
-                                          location.streetNumber =
-                                          placeDetails.streetNumber!;
-                                        } else {
-                                          location.streetNumber = "N/A";
-                                        }
-                                        if (placeDetails.city != null) {
-                                          location.city = placeDetails.city!;
-                                        } else {
-                                          location.city = "N/A";
-                                        }
-                                        if (placeDetails.zipCode != null) {
-                                          location.zipCode =
-                                          placeDetails.zipCode!;
-                                        } else {
-                                          location.zipCode = "N/A";
-                                        }
-                                        // Build Correct Description
-                                        location.description =
-                                        "${location.street} ${location
-                                            .streetNumber}, ${location
-                                            .city}, ${location.zipCode}";
-                                        // Get Latitude/Longitude
-                                        var temp = await gPlace!.details.get(
-                                            location.placeId!);
-                                        if (temp != null &&
-                                            temp.result != null && mounted) {
-                                          detailsResult = temp.result;
-                                          location.latitude =
-                                          detailsResult!.geometry!.location!
-                                              .lat!;
-                                          location.longitude =
-                                          detailsResult!.geometry!.location!
-                                              .lng!;
-                                        }
-                                        // Save location to DataBase
-                                        await _locationDataService.addLocation(
-                                            widget.brandId,
-                                            false,
-                                            location.placeId!,
-                                            location.description!,
-                                            location.street!,
-                                            location.streetNumber!,
-                                            location.city!,
-                                            location.zipCode!,
-                                            location.latitude!,
-                                            location.longitude!);
-                                        await Future.delayed(
-                                            const Duration(seconds: 4));
-                                        getAllLocations();
-                                        mixpanel!.track(
-                                            'brand_locations_added');
-                                      } else {
-                                        setState(() {
-                                          isLoading = false;
-                                        });
-                                      }
-                                    }
-                                  },
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(
-                                    Icons.add_location_alt_outlined,
-                                    color: AppColors.white,
-                                    size: MediaQuery.of(context).size.width*0.08,
-                                  ),
-                                ) : IconButton(
+                                child: IconButton(
                                   onPressed: null,
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.zero,
@@ -335,7 +339,7 @@ class _LocationsState extends State<Locations> {
               //centerTitle: true,
             ),
             title: appBarExpanded ? Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,) : Container(),
-            centerTitle: true,
+            centerTitle: false,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
@@ -350,27 +354,50 @@ class _LocationsState extends State<Locations> {
               ),
             ),
             actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CounterBadgeIcon(
+                    counter: unreadNotifications,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToNotificationsScreen(context),
+                    ),
                   ),
-                  onPressed: () {
-                    if (widget.pinned == true) {
-                      mixpanel!.track('brand_locations_pinned_off');
-                    } else {
-                      mixpanel!.track('brand_locations_pinned_on');
-                    }
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
+                  CounterBadgeIcon(
+                    counter: unreadChats,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToChatScreen(context),
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  GestureDetector(
+                    onTap: () => navigateToProfileScreen(context),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.08,
+                      child: Center(
+                        child: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.08,
+                          image: currentUser.imageUrl,
+                          color: AppColors.grey,
+                          borderWidth: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
             ],
           ),
           isLoading ? SliverFillRemaining(
@@ -392,7 +419,7 @@ class _LocationsState extends State<Locations> {
           ) : SliverFillRemaining(
             hasScrollBody: false,
             child: Stack(
-              alignment: Platform.isAndroid ? Alignment.bottomCenter : Alignment.topCenter,
+              alignment: Alignment.topCenter,
               children: [
                 GoogleMap(
                   onMapCreated: _onMapCreated,
@@ -403,7 +430,7 @@ class _LocationsState extends State<Locations> {
                   mapToolbarEnabled: false,
                   zoomControlsEnabled: false,
                   myLocationEnabled: true,
-                  myLocationButtonEnabled: true,
+                  myLocationButtonEnabled: false,
                   minMaxZoomPreference: const MinMaxZoomPreference(5,20),
                   buildingsEnabled: false,
                   markers: markers,
@@ -413,7 +440,7 @@ class _LocationsState extends State<Locations> {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height*0.16,
+                    height: MediaQuery.of(context).size.height*0.18,
                     width: MediaQuery.of(context).size.width,
                     child: GestureDetector(
                       child: CarouselSlider(
@@ -448,6 +475,18 @@ class _LocationsState extends State<Locations> {
           )
         ],
       ),
+      floatingActionButton: canEdit ? Padding(
+          padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.width*0.15,
+            width: MediaQuery.of(context).size.width*0.15,
+            child: FloatingActionButton(
+              onPressed: addNewLocation,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              child: const Icon(Icons.add, color: AppColors.white,),
+            ),
+          )
+      ) : Container(),
     );
   }
 

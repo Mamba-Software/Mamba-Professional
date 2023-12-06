@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Payments/Purchase/PurchaseDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -15,17 +14,18 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 
 class UserBonosHistoryPage extends StatefulWidget {
   String userId;
+  String brandId;
   String? purchaseId;
 
-  UserBonosHistoryPage({Key? key, required this.userId, this.purchaseId}) : super(key: key);
+  UserBonosHistoryPage({Key? key, required this.userId, required this.brandId, this.purchaseId}) : super(key: key);
 
   @override
   _UserBonosHistoryPageState createState() => _UserBonosHistoryPageState();
@@ -85,14 +85,12 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
 
   // Gets the Events Done by the User
   Future<void> getUserPurchases() async {
-    final List<Purchase> listPurchases = await _purchaseDataService.getAllUserPurchases(widget.userId);
+    final List<Purchase> listPurchases = await _purchaseDataService.getAllUserPurchasesFromBrand(widget.userId, widget.brandId);
     listPurchases.sort((a,b) {
       var aDate =  a.purchasedAt!.toDate();
       var bDate =  b.purchasedAt!.toDate();
       return bDate.compareTo(aDate);
     });
-    // Remove Purchases not from the current Brand
-    listPurchases.removeWhere((element) => element.brandId != currentBrand.id!);
     // Create PageView List
     for (Purchase purchase in listPurchases) {
       var result = [];
@@ -101,8 +99,8 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
       result.add(purchase.bono);
       result.add(purchase.brand);
       // Add Event List
-      List<Event> events = List.from(purchase.events);
-      result.add(events);
+      //List<Event> events = List.from(purchase.events);
+      //result.add(events);
       // Add to Final pageview
       pageViewList.add(result);
     }
@@ -230,7 +228,6 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                         Purchase purchase = pageViewList[index][0];
                         Bono bono = pageViewList[index][1];
                         Brand brand = pageViewList[index][2];
-                        List<Event> events = pageViewList[index][3];
                         return SingleChildScrollView(
                           physics: const ClampingScrollPhysics(),
                           child: Column(
@@ -336,73 +333,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                 ),
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                        AppLocalizations.of(context)!.sessions,
-                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-                                        textAlign: TextAlign.center
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                            AppLocalizations.of(context)!.newerFirst,
-                                            style: Theme.of(context).textTheme.caption,
-                                            textAlign: TextAlign.center
-                                        ),
-                                        const SizedBox(width: 2),
-                                        Icon(
-                                          Icons.arrow_downward,
-                                          size: MediaQuery.of(context).size.width*0.04,
-                                          color: AppColors.grey,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                              events.isNotEmpty ? Container(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: events.length,
-                                    itemBuilder: (context, index) {
-                                      Event event = events[index];
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            navigateToEventScreen(event.id!);
-                                          },
-                                          child: UserEventCard(
-                                            event: event,
-                                            height: MediaQuery.of(context).size.height*0.15,
-                                            width: MediaQuery.of(context).size.width*0.9,
-                                            isMyEvent: true,
-                                            showEmoji: false,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                ),
-                              ) : Padding(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.05),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        AppLocalizations.of(context)!.noData,
-                                        style: Theme.of(context).textTheme.bodyText2,
-                                        textAlign: TextAlign.center
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              //PurchaseEvents(purchase: purchase,context: context),
                               SizedBox(height: MediaQuery.of(context).size.height*0.1),
                             ],
                           ),
@@ -499,14 +430,20 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        ClientBonoCard(
-                                          height: MediaQuery.of(context).size.height*0.08,
-                                          width: MediaQuery.of(context).size.width*0.27,
-                                          bono: bono,
-                                          brand: brand,
-                                          purchase: purchase,
-                                          canExpand: false,
-                                          onlyView: true,
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            ClientBonoCard(
+                                              height: MediaQuery.of(context).size.height*0.08,
+                                              width: MediaQuery.of(context).size.width*0.27,
+                                              bono: bono,
+                                              brand: brand,
+                                              purchase: purchase,
+                                              canExpand: false,
+                                              onlyView: true,
+                                            ),
+
+                                          ],
                                         ),
                                         FittedBox(
                                           fit: BoxFit.fitHeight,
@@ -625,7 +562,36 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                           height: MediaQuery.of(context).size.height*0.2,
                           width: MediaQuery.of(context).size.width,
                           color: Colors.transparent,
-                        )
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deletePurchase);
+                                }
+                            );
+                            if (result) {
+                              print(purchase.id!);
+                              await _deletePurchaseFunction(purchase.id!, widget.userId, widget.brandId);
+                              setState(() {
+                                isLoading = false;
+                                pageViewList.removeAt(index);
+                              });
+                            }
+                          },
+                          child: Padding(
+                          padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.width*0.03),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Icon(
+                                  Icons.delete_outlined,
+                                  size: MediaQuery.of(context).size.width*0.1,
+                                  color: Theme.of(context).primaryColor
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   );
@@ -636,5 +602,16 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
         ],
       )
     );
+  }
+
+  Future<void> _deletePurchaseFunction(String purchaseId, String userId, String brandId) async {
+    mixpanel!.timeEvent("delete_purchase_completed");
+    setState(() {
+      isLoading = true;
+    });
+    // Delete Event Call
+    await _purchaseDataService.deletePurchase(purchaseId, userId, brandId);
+    mixpanel!.track('delete_purchase_completed');
+    // Pop to Last Page
   }
 }

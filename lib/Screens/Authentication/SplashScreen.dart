@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -40,6 +40,9 @@ class _SplashScreenState extends State<SplashScreen> {
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
   final _libraryDataService = LibraryDataService();
+  final _settingsDataService = SettingsDataService();
+  // Boolean
+  bool isMaintenance = false;
 
   @override
   initState() {
@@ -82,19 +85,88 @@ class _SplashScreenState extends State<SplashScreen> {
     // 2. Check if we have a user logged in.
     if (firebaseUser != null) {
       mixpanel?.identify(firebaseUser.uid);
-      // 2.1 User is logged in.
-      // 3. Check if we are in production enviroment
-      if (isProduction) {
-        // 3.1 We are in PROD. We checked if email has been verified.
-        if (firebaseUser.emailVerified) {
-          // 3.1.1 Email has been verified
-          // 4. Define Prod Config for FirebaseChatCore
+      // Check If Maintenance
+      var result = await _settingsDataService.checkIfIsMaintenance();
+      if (result) {
+        await Future.delayed(const Duration(milliseconds: 1500));
+        setState(() {
+          isMaintenance = true;
+        });
+      } else {
+        // 2.1 User is logged in.
+        // 3. Check if we are in production enviroment
+        if (isProduction) {
+          // 3.1 We are in PROD. We checked if email has been verified.
+          if (firebaseUser.emailVerified) {
+            // 3.1.1 Email has been verified
+            // 4. Define Prod Config for FirebaseChatCore
+            FirebaseChatCore.instance.setConfig(
+                const FirebaseChatCoreConfig(
+                  null,
+                  'Rooms',
+                  'Users',
+                )
+            );
+            // 5. Load Users Data
+            await getUserData(firebaseUser.uid);
+            // 6. Get Token for FirebaseMessaging
+            FirebaseMessaging.instance.getToken().then((token) {
+              print("Token: $token");
+              if (token != currentUser.notificationToken) {
+                print("New token updated");
+                _userDataService.updateUserNotificationToken(currentUser.id!, token!);
+              }
+            });
+            // 7. Travel to Corresponding Screen
+            if (currentUser.isAdmin!) {
+              Navigator.pushReplacement(
+                  context,
+                  CupertinoPageRoute<void>(
+                    builder: (context) => const Admin(),
+                    settings: const RouteSettings(name: 'Admin'),
+                  )
+              );
+            } else {
+              if (!(currentUser.isFirst!)) {
+                sendMixPanelDataUsers();
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute<void>(
+                      builder: (context) => const Mamba(),
+                      settings: const RouteSettings(name: 'Mamba'),
+                    )
+                );
+              } else {
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute<void>(
+                      builder: (context) =>
+                      const OnboardingScreen(),
+                      settings: const RouteSettings(name: 'OnboardingScreen'),
+                    )
+                );
+              }
+            }
+          } else {
+            // 3.1.2 Email has NOT been verified. Go back to Login.
+            Navigator.pushAndRemoveUntil(
+              context,
+              CupertinoPageRoute<void>(
+                builder: (context) => const Login(),
+                settings: const RouteSettings(name: 'Login'),
+              ),
+                  (_) => false,
+            );
+          }
+        } else {
+          // 3.2 We are in DEVELOPMENT
+          // 4. Define Development Config for FirebaseCore
           FirebaseChatCore.instance.setConfig(
-            const FirebaseChatCoreConfig(
+              const FirebaseChatCoreConfig(
                 null,
-              'Rooms',
-              'Users',
-            )
+                '7777 Rooms',
+                '7777 Users',
+              )
           );
           // 5. Load Users Data
           await getUserData(firebaseUser.uid);
@@ -129,71 +201,11 @@ class _SplashScreenState extends State<SplashScreen> {
               Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute<void>(
-                    builder: (context) =>
-                    const OnboardingScreen(),
+                    builder: (context) => const OnboardingScreen(),
                     settings: const RouteSettings(name: 'OnboardingScreen'),
                   )
               );
             }
-          }
-        } else {
-          // 3.1.2 Email has NOT been verified. Go back to Login.
-          Navigator.pushAndRemoveUntil(
-            context,
-            CupertinoPageRoute<void>(
-              builder: (context) => const Login(),
-              settings: const RouteSettings(name: 'Login'),
-            ),
-                (_) => false,
-          );
-        }
-      } else {
-        // 3.2 We are in DEVELOPMENT
-        // 4. Define Development Config for FirebaseCore
-        FirebaseChatCore.instance.setConfig(
-            const FirebaseChatCoreConfig(
-              null,
-              '7777 Rooms',
-              '7777 Users',
-            )
-        );
-        // 5. Load Users Data
-        await getUserData(firebaseUser.uid);
-        // 6. Get Token for FirebaseMessaging
-        FirebaseMessaging.instance.getToken().then((token) {
-          print("Token: $token");
-          if (token != currentUser.notificationToken) {
-            print("New token updated");
-            _userDataService.updateUserNotificationToken(currentUser.id!, token!);
-          }
-        });
-        // 7. Travel to Corresponding Screen
-        if (currentUser.isAdmin!) {
-          Navigator.pushReplacement(
-              context,
-              CupertinoPageRoute<void>(
-                builder: (context) => const Admin(),
-                settings: const RouteSettings(name: 'Admin'),
-              )
-          );
-        } else {
-          if (!(currentUser.isFirst!)) {
-            sendMixPanelDataUsers();
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute<void>(
-                  builder: (context) => const Mamba(),
-                  settings: const RouteSettings(name: 'Mamba'),
-                )
-            );
-          } else {
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute<void>(
-                  builder: (context) => const OnboardingScreen(),
-                  settings: const RouteSettings(name: 'OnboardingScreen'),
-                )
-            );
           }
         }
       }
@@ -259,9 +271,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       appBar: null,
-      body: SplashScreenView(),
+      body: SplashScreenView(
+        isMaintenance: isMaintenance,
+      )
     );
 
   }

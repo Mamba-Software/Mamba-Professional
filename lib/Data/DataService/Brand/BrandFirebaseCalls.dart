@@ -19,6 +19,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -36,7 +37,7 @@ class BrandFirebaseCalls {
   String users = isProduction ? 'Users' : '7777 Users';
   String events = isProduction ? 'Events' : '7777 Events';
   String locations = isProduction ? 'Locations' : '7777 Locations';
-  String payments = isProduction ? 'Payments' : '7777 Payments';
+  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
   String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
 
   //Utils
@@ -468,11 +469,12 @@ class BrandFirebaseCalls {
   }
 
   Future<List<Purchase>> getBrandPurchases(String brandId) async {
-    List<Purchase> purchases = [];
+    List<Purchase> purchasesList = [];
     Purchase purchase;
     try {
-      await _firestore.collection(payments).doc('Purchases')
-          .collection("Purchases").where("brandId", isEqualTo: brandId)
+      await _firestore
+          .collection(purchases)
+          .where("brandId", isEqualTo: brandId)
           .get()
           .then((snapshot) async {
         for (DocumentSnapshot doc in snapshot.docs) {
@@ -480,13 +482,13 @@ class BrandFirebaseCalls {
           //user = await getUserDetails(doc.id);
           //brandList = await getAllBrandsFromUser(doc.id);
           //brand = brandList.firstWhere((element) => element.id == brandId);
-          purchases.add(purchase);
+          purchasesList.add(purchase);
         }
       });
-      return purchases;
+      return purchasesList;
     } catch (e) {
       print(e.toString());
-      return purchases;
+      return purchasesList;
     }
   }
 
@@ -549,7 +551,8 @@ class BrandFirebaseCalls {
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
       "isActive": false,
-      "baseImage": ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!
+      "baseImage": ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!,
+      "directPurchase": false,
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -563,7 +566,8 @@ class BrandFirebaseCalls {
     }
   }
 
-  Future<void> addUserToBrand(String userId, String brandId, int role) async {
+  Future<void> addUserToBrand(String userId, String brandId, int role, [bool invitedDirectly = false]) async {
+    DateTime now = DateTime.now();
     Usuario user = await getUserDetails(userId);
     await _firestore
         .collection(brands)
@@ -580,7 +584,9 @@ class BrandFirebaseCalls {
       "isTrainer": user.isTrainer,
       "isPrivate": user.isPrivate,
       "notificationToken": user.notificationToken,
+      "invitedDirectly": invitedDirectly,
       "role": role,
+      "dateJoined": DateTimeUtils().formatDateTimeToStringDDMMYY(now),
     }).catchError((err) {
       print(err);
     });
@@ -694,13 +700,14 @@ class BrandFirebaseCalls {
   //Update
 
   Future<void> updateBrandInfo(String brandID, String name, String description,
-      int maxMembers, List<double> workShift, int bookingWindow) async {
+      int maxMembers, List<double> workShift, int bookingWindow, bool? directPurchase) async {
     await _firestore.collection(brands).doc(brandID).update({
       "name": name,
       "description": description,
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
       "workShift": workShift,
+      "directPurchase": directPurchase,
     });
   }
 
@@ -945,6 +952,53 @@ class BrandFirebaseCalls {
     }
   }
 
+  Future<void> deleteBrandCoverPicture(String brandID, String imageId, String? imageUrl) async {
+    // Delete Image From Storage
+    _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + imageId + ".jpeg").delete();
+    // Delete Image From Firebase Firestore
+    await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Images")
+        .doc(imageId)
+        .delete();
+    // Get a new Image of the Brand
+    String newImageUrl = await getRandomBrandPhoto(brandID);
+    // Set as the new cover Image
+    await _firestore.collection(brands).doc(brandID).update({
+      "baseImage": newImageUrl,
+    });
+    // Get all places where we can find the picture in Events
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Events")
+        .where("imageUrl", isEqualTo: imageUrl)
+        .get();
+    // Update all places where we can find the picture in Events
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      Event event = Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      await _firestore.collection(events).doc(event.id).update({
+        "imageUrl": newImageUrl,
+      });
+    }
+    // Get all places where we can find the picture in Bonos
+    QuerySnapshot querySnapshotBonos = await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Bonos")
+        .where("imageUrl", isEqualTo: imageUrl)
+        .get();
+    // Update all places where we can find the picture in Bonos
+    for (int i = 0; i < querySnapshotBonos.docs.length; i++) {
+      Bono bono = Bono.fromObjectAllData(querySnapshotBonos.docs[i].id, querySnapshotBonos.docs[i]);
+      await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bono.id!).update({
+        "imageUrl": newImageUrl,
+      });
+    }
+  }
+
+
   Future<void> deleteBrandUsers(String brandId) async {
     await _firestore
         .collection(brands)
@@ -1025,35 +1079,38 @@ class BrandFirebaseCalls {
 
   // Delete Brand Bono Request
   Future<void> deleteUserBrandBonos(String brandId, String userId) async {
-    // Get Active Bonos From Brand
-    QuerySnapshot querySnapshot = await _firestore.collection(users)
+    /// Get Active Purhcases
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
         .doc(userId)
-        .collection("Bonos")
-        .where("brandId", isEqualTo: brandId)
+        .collection("Purchases")
+        .where("isActive", isEqualTo: true)
         .get();
+    /// Update the IsActive Field
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      // Delete in Users/Bonos from Brand Id
-      await _firestore.collection(users)
-          .doc(userId)
-          .collection("Bonos")
-          .doc(querySnapshot.docs[i].id)
-          .delete();
-      // Borrar a la Brand/Users/Bonos
-      await _firestore.collection(brands)
-          .doc(brandId)
-          .collection("Users")
-          .doc(userId)
-          .collection("Bonos")
-          .doc(querySnapshot.docs[i].id)
-          .delete();
-      // Delete in Brand/Bonos/Users
-      await _firestore.collection(brands)
-          .doc(brandId)
-          .collection("Bonos")
-          .doc(querySnapshot.docs[i].id)
-          .collection("Users")
-          .doc(userId)
-          .delete();
+      Purchase purchase = Purchase.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      /// Purchases/{purchaseId}
+      await _firestore.collection(purchases).doc(purchase.id!).update({
+        "isActive": false,
+      });
+      /// Users/{userId}/Purchases/{purchaseId}
+      await _firestore.collection(users).doc(userId).collection("Purchases").doc(purchase.id!).update({
+        "isActive": false,
+      });
+      /// Brands/{brandId}/Purchases/{purchaseId}
+      await _firestore.collection(brands).doc(brandId).collection("Purchases").doc(purchase.id!).update({
+        "isActive": false,
+      });
+      /// Brands/{brandId}/Bonos/{bonoId}/Purchases/{purchaseId}
+      await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(purchase.bonoId!).collection("Purchases").doc(purchase.id!).update({
+        "isActive": false,
+      });
+      /// Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}
+      await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchase.id!).update({
+        "isActive": false,
+      });
     }
   }
 
@@ -1099,6 +1156,14 @@ class BrandFirebaseCalls {
         .collection("Bonos")
         .doc("Bonos Requests")
         .collection("Bonos Requests")
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getBrandPurchasesStream(String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Purchases")
         .snapshots();
   }
 

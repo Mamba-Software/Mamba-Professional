@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -59,9 +61,9 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
           Container(
             height: MediaQuery.of(context).size.height*0.007,
             width: MediaQuery.of(context).size.width*0.15,
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-              borderRadius: const BorderRadius.all(
+            decoration: const BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.all(
                 Radius.circular(5),
               ),
             ),
@@ -74,7 +76,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
               children: [
                 Flexible(
                   child: Text(
-                      AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.clients,
+                      AppLocalizations.of(context)!.invite+" "+AppLocalizations.of(context)!.clients,
                       style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
                       textAlign: TextAlign.left
                   ),
@@ -99,28 +101,57 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-          Container(
-              height: MediaQuery.of(context).size.width*0.6,
-              width: MediaQuery.of(context).size.width*0.6,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                  height: MediaQuery.of(context).size.width*0.7,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                  ),
+                  child: QrImage(
+                    data: brandUrlClient,
+                    version: QrVersions.auto,
+                    size: MediaQuery.of(context).size.width*0.5,
+                    gapless: true,
+                    /*
+                    embeddedImage: Image.asset(Constants.logoQRMamba).image,
+                    embeddedImageStyle: QrEmbeddedImageStyle(
+                      size: const Size(65, 65),
+                    ),
+                     */
+                  )
               ),
-              child: QrImage(
-                data: brandUrlClient,
-                version: QrVersions.auto,
-                size: MediaQuery.of(context).size.width*0.5,
-                gapless: true,
-                /*
-                embeddedImage: Image.asset(Constants.logoQRMamba).image,
-                embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: const Size(65, 65),
+              Visibility(
+                visible: brandUrlClient == "",
+                child: Container(
+                  height: MediaQuery.of(context).size.width*0.7,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  decoration: BoxDecoration(
+                    color: AppColors.lightGrey.withOpacity(0.5),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                  ),
+                  child: Center(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.07,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
+                        strokeWidth: 3,
+                      ),
+                    ),
+                  ),
                 ),
-                 */
-              )
+              ),
+            ],
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.03),
           Row(
@@ -144,25 +175,25 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
               await Share.share(brandUrlClient, subject: currentBrand.logoUrl!);
             },
             child: Container(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
               height: MediaQuery.of(context).size.height*0.1,
               width: MediaQuery.of(context).size.width*0.8,
               decoration: BoxDecoration(
                 color: Colors.green.withOpacity(0.2),
                 borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
+                  Radius.circular(20),
                 ),
                 border: Border.all(color: Colors.green, width: 2),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Icon(
                     Icons.share,
                     color: Colors.green,
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                  const SizedBox(width: 8),
                   Flexible(
                     child: Text(
                       AppLocalizations.of(context)!.copyCodeMessage,
@@ -170,17 +201,24 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                  Icon(Icons.mobile_screen_share, color: Colors.green, size: MediaQuery.of(context).size.width*0.06,)
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.send_to_mobile_outlined,
+                    color: Colors.green,
+                    size: MediaQuery.of(context).size.width*0.06,
+                  ),
                 ],
               ),
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.02),
-          (widget.addStaff != null && widget.addStaff == false)? Container() : currentUser.brandRole < 3 ? TextButton(
+          (widget.addStaff != null && widget.addStaff == false) ? Container() : currentUser.brandRole < 3 ? TextButton(
               child: Text(
-                  AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
-                  style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
+                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff,
+                style: Theme.of(context).textTheme.caption?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              style: TextButton.styleFrom(
+                primary: Theme.of(context).primaryColor,
               ),
               onPressed: () {
                 setState(() {
@@ -215,7 +253,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
               children: [
                 Flexible(
                   child: Text(
-                      AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff,
+                      AppLocalizations.of(context)!.invite+" "+AppLocalizations.of(context)!.staff,
                       style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
                       textAlign: TextAlign.left
                   ),
@@ -240,28 +278,57 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-          Container(
-              height: MediaQuery.of(context).size.width*0.6,
-              width: MediaQuery.of(context).size.width*0.6,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                  height: MediaQuery.of(context).size.width*0.7,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                  ),
+                  child: QrImage(
+                    data: brandUrlTrainer,
+                    version: QrVersions.auto,
+                    size: MediaQuery.of(context).size.width*0.5,
+                    gapless: true,
+                    /*
+                    embeddedImage: Image.asset(Constants.logoQRMamba).image,
+                    embeddedImageStyle: QrEmbeddedImageStyle(
+                      size: const Size(65, 65),
+                    ),
+                     */
+                  )
               ),
-              child: QrImage(
-                data: brandUrlTrainer,
-                version: QrVersions.auto,
-                size: MediaQuery.of(context).size.width*0.5,
-                gapless: true,
-                /*
-                embeddedImage: Image.asset(Constants.logoQRMamba).image,
-                embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: const Size(65, 65),
+              Visibility(
+                visible: brandUrlTrainer == "",
+                child: Container(
+                  height: MediaQuery.of(context).size.width*0.7,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  decoration: BoxDecoration(
+                    color: AppColors.lightGrey.withOpacity(0.5),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                  ),
+                  child: Center(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.07,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
+                        strokeWidth: 3,
+                      ),
+                    ),
+                  ),
                 ),
-                 */
-              )
+              ),
+            ],
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.03),
           Row(
@@ -285,25 +352,25 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
               await Share.share(brandUrlTrainer, subject: currentBrand.logoUrl!);
             },
             child: Container(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
               height: MediaQuery.of(context).size.height*0.1,
               width: MediaQuery.of(context).size.width*0.8,
               decoration: BoxDecoration(
                 color: Colors.green.withOpacity(0.2),
                 borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
+                  Radius.circular(20),
                 ),
                 border: Border.all(color: Colors.green, width: 2),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Icon(
                     Icons.share,
                     color: Colors.green,
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                  const SizedBox(width: 8),
                   Flexible(
                     child: Text(
                       AppLocalizations.of(context)!.copyCodeMessage,
@@ -311,8 +378,12 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                  Icon(Icons.mobile_screen_share, color: Colors.green, size: MediaQuery.of(context).size.width*0.06,)
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.send_to_mobile_outlined,
+                    color: Colors.green,
+                    size: MediaQuery.of(context).size.width*0.06,
+                  ),
                 ],
               ),
             ),
@@ -320,8 +391,11 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
           SizedBox(height: MediaQuery.of(context).size.height*0.02),
           (widget.onlyStaff != null && widget.onlyStaff == true) ? Container() : currentUser.brandRole < 3 ? TextButton(
               child: Text(
-                  AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.client.toLowerCase(),
-                  style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
+                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.clients,
+                style: Theme.of(context).textTheme.caption?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              style: TextButton.styleFrom(
+                primary: Theme.of(context).primaryColor,
               ),
               onPressed: () {
                 setState(() {

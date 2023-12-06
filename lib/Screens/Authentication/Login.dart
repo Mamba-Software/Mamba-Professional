@@ -16,8 +16,6 @@ import 'package:mamba_castelldefels/Screens/Authentication/ForgotPassword.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.
@@ -50,7 +48,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   final googleSignIn = GoogleSignIn();
   bool isLoadingGoogle = false;
   // Apple Sign In
-  final appleSignIn = GoogleSignIn();
   bool isLoadingApple = false;
 
   @override
@@ -779,6 +776,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         accessToken: credential.authorizationCode,
       );
       UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+      String? fullName;
+      if (credential.givenName != null && credential.familyName != null) {
+        fullName = '${credential.givenName} ${credential.familyName}';
+      }
+      if (fullName != null) {
+        await authResult.user!.updateDisplayName(fullName);
+        await authResult.user!.reload();
+      }
       bool userExists = await _userDataService.checkIfUserExists(authResult.user!.uid);
       if (userExists) {
         // Check it is no Trainer

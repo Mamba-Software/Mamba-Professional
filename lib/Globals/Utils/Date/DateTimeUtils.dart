@@ -24,9 +24,17 @@ class DateTimeUtils {
     return StringUtils().toCapitalized(DateFormat("MMM yyyy", languageCode).format(date));
   }
 
+  String formatDateTimeToStringDDMMMMYYYY(DateTime date, String languageCode) {
+    return StringUtils().toCapitalized(DateFormat("d", languageCode).format(date))+" "+StringUtils().toCapitalized(DateFormat("MMMM yyyy", languageCode).format(date));
+  }
+
   String formatDateTimeToStringMMYYYY(DateTime date, String languageCode) {
     String result = DateFormat("yyyy", languageCode).format(date);
     return StringUtils().toCapitalized(result);
+  }
+
+  String formatDateTimeToStringDDMMYY(DateTime date) {
+    return StringUtils().toCapitalized(DateFormat("dd-MM-yy").format(date));
   }
 
 }
