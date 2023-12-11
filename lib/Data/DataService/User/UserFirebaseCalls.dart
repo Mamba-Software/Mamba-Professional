@@ -763,7 +763,7 @@ class UserFirebaseCalls {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
-    try {
+    try {      
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'europe-west1')
               .httpsCallable('createAuthUser');
