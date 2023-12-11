@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart'
 ///
 /// Example:
 /// ```dart
-/// import 'firebase_options_dev.dart';
+/// import 'firebase_options_development.dart';
 /// // ...
 /// await Firebase.initializeApp(
 ///   options: DefaultFirebaseOptions.currentPlatform,
@@ -21,9 +21,15 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return android;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for android - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -54,22 +60,5 @@ class DefaultFirebaseOptions {
     authDomain: 'mamba-fitness-dev.firebaseapp.com',
     storageBucket: 'mamba-fitness-dev.appspot.com',
     measurementId: 'G-LMC57506WG',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDWCBS1a-48hOlL8fdRwxeva7h3_NiBA7s',
-    appId: '1:1075297360172:android:a1463f7fe9d8c6033c3489',
-    messagingSenderId: '1075297360172',
-    projectId: 'mamba-fitness-dev',
-    storageBucket: 'mamba-fitness-dev.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCF8wjJw9jrwjUcgitbKHGP8KDL4qz1LoQ',
-    appId: '1:1075297360172:ios:bf047898fe82d2b93c3489',
-    messagingSenderId: '1075297360172',
-    projectId: 'mamba-fitness-dev',
-    storageBucket: 'mamba-fitness-dev.appspot.com',
-    iosBundleId: 'com.mamba.mambaprofessionalapp.dev',
   );
 }

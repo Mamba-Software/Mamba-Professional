@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,7 +48,8 @@ LocalNotificationService localNotificationService = LocalNotificationService();
 late AndroidNotificationChannel channel;
 
 // BackGroundNotificationHandler
-Future<void> _backgroundMessageHandler(RemoteMessage message) async {  if (message.data.containsKey('route')) {
+Future<void> _backgroundMessageHandler(RemoteMessage message) async {
+  if (message.data.containsKey('route')) {
     String route = message.data['route'];
     localNotificationService.onNotifications.add(route);
   }
@@ -74,9 +76,14 @@ Future<void> main() async {
   await runZonedGuarded(() async {
     // Initialize App
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    // Initialize Firebase
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );  
+    } else {
+      await Firebase.initializeApp();
+    }
     // Initialise TimeZone
     timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
     // Firebase Messaging Back Ground Message Handler
