@@ -17,10 +17,14 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/BetaBadge.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectHoursDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -92,20 +96,22 @@ class _BrandInfoState extends State<BrandInfo>
   TextEditingController breakStartTimeController = TextEditingController();
   TextEditingController breakEndTimeController = TextEditingController();
   DateTime breakStartTime = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0);
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0);
   DateTime breakEndTime = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0);
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0);
   TimeOfDay _breakStartTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay _breakEndTime = const TimeOfDay(hour: 00, minute: 00);
   int? errorBreakTime;
   // Booking Window
   int bookingWindow = 3;
+  int bookingWindowMin = 0;
   // Purchase
   bool freeSession = false;
   bool directPurchase = false;
   // Subscription
   int difference = 0;
   bool ShowTextExpired = true;
+  final _topSnackBar = TopSnackBarDef();
 
   // App Bar and Scroll View
   bool appBarExpanded = false;
@@ -230,6 +236,7 @@ class _BrandInfoState extends State<BrandInfo>
     ));
     // Booking Window
     bookingWindow = currentBrand.bookingWindow!;
+    bookingWindowMin = currentBrand.bookingWindowMin!;
     // Direct Purchase
     if (currentBrand.directPurchase != null) {
       directPurchase = currentBrand.directPurchase!;
@@ -329,6 +336,9 @@ class _BrandInfoState extends State<BrandInfo>
       } else if (currentBrand.bookingWindow! != bookingWindow) {
         isUpdated = true;
         mixpanel!.track('brand_info_booking_window_change');
+      } else if (currentBrand.bookingWindowMin! != bookingWindowMin) {
+        isUpdated = true;
+        mixpanel!.track('brand_info_booking_window_change');
       } else if (currentBrand.directPurchase! != directPurchase) {
         isUpdated = true;
         mixpanel!.track('brand_info_direct_purchase_change');
@@ -347,7 +357,7 @@ class _BrandInfoState extends State<BrandInfo>
         slivers: [
           SliverAppBar(
             backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height * 0.15,          
+            expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: false,
@@ -360,7 +370,7 @@ class _BrandInfoState extends State<BrandInfo>
                     style:
                         Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
                               color: AppColors.white,
-                            ))),                
+                            ))),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.darkGrey,
@@ -381,7 +391,7 @@ class _BrandInfoState extends State<BrandInfo>
                             style:
                                 Theme.of(context).textTheme.headline1?.copyWith(
                                       color: AppColors.white,
-                                    ),                            
+                                    ),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
@@ -401,9 +411,6 @@ class _BrandInfoState extends State<BrandInfo>
                           )
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.01,
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.01,
@@ -438,8 +445,9 @@ class _BrandInfoState extends State<BrandInfo>
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  unreadNotifiactions(context), 
-                  unreadChats(context),                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  unreadNotifiactions(context),
+                  unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                   GestureDetector(
                     onTap: () => navigateToProfileScreen(context),
                     child: SizedBox(
@@ -1117,12 +1125,24 @@ class _BrandInfoState extends State<BrandInfo>
                             height: MediaQuery.of(context).size.height * 0.03),
 
                         /// BREAK HOURS
-                        Text(
-                          AppLocalizations.of(context)!.lunchBreak,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              ?.copyWith(fontWeight: FontWeight.bold),
+                        Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.lunchBreak,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  _topSnackBar.showSnackBarBottom(
+                                      context,
+                                      AppLocalizations.of(context)!.betaFeature,
+                                      5);
+                                },
+                                child: BetaBadge())
+                          ],
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.015),
@@ -1132,6 +1152,14 @@ class _BrandInfoState extends State<BrandInfo>
                             TextButton(
                               onPressed: canEdit
                                   ? () async {
+                                      if (breakStartTime.hour == 0) {
+                                        breakStartTime = DateTime(
+                                            DateTime.now().year,
+                                            DateTime.now().month,
+                                            DateTime.now().day,
+                                            13,
+                                            0);
+                                      }
                                       DateTime? pickedTimeTemp =
                                           await showCupertinoModalPopup(
                                               context: context,
@@ -1195,6 +1223,14 @@ class _BrandInfoState extends State<BrandInfo>
                             TextButton(
                               onPressed: canEdit
                                   ? () async {
+                                      if (breakEndTime.hour == 0) {
+                                        breakEndTime = DateTime(
+                                            DateTime.now().year,
+                                            DateTime.now().month,
+                                            DateTime.now().day,
+                                            14,
+                                            0);
+                                      }
                                       DateTime? pickedTimeTemp =
                                           await showCupertinoModalPopup(
                                               context: context,
@@ -1405,6 +1441,83 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
+
+                        /// MINIMUM BOOKING WINDOW
+                        Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!
+                                  .minimumBookingWindow,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  _topSnackBar.showSnackBarBottom(
+                                      context,
+                                      AppLocalizations.of(context)!.betaFeature,
+                                      5);
+                                },
+                                child: BetaBadge())
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.015),
+                        GestureDetector(
+                          onTap: canEdit
+                              ? () {
+                                  selectNumberOfHours();
+                                }
+                              : null,
+                          child: Material(
+                            elevation: 4,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15)),
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                color: Theme.of(context).backgroundColor,
+                              ),
+                              height: MediaQuery.of(context).size.width * 0.1,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    bookingWindowMin > 1
+                                        ? "$bookingWindowMin ${AppLocalizations.of(context)!.hoursString.toLowerCase()}"
+                                        : "$bookingWindowMin ${AppLocalizations.of(context)!.hour.toLowerCase()}",
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.015),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .minimumBookingWindowDescription,
+                                style: Theme.of(context).textTheme.caption,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
                       ],
                     ),
                   ),
@@ -1462,12 +1575,26 @@ class _BrandInfoState extends State<BrandInfo>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text(
-                                  AppLocalizations.of(context)!.freeSession,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                Row(
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.freeSession,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          _topSnackBar.showSnackBarBottom(
+                                              context,
+                                              AppLocalizations.of(context)!
+                                                  .betaFeature,
+                                              5);
+                                        },
+                                        child: BetaBadge())
+                                  ],
                                 ),
                                 SizedBox(
                                   height: MediaQuery.of(context).size.height *
@@ -1854,6 +1981,7 @@ class _BrandInfoState extends State<BrandInfo>
                         members,
                         _workShift,
                         bookingWindow,
+                        bookingWindowMin,
                         directPurchase,
                         freeSession);
                     await getBrand();
@@ -1891,6 +2019,21 @@ class _BrandInfoState extends State<BrandInfo>
     if (pickedMembers != null) {
       setState(() {
         bookingWindow = pickedMembers;
+      });
+    }
+  }
+
+  Future selectNumberOfHours() async {
+    int? pickedMembers = await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectHoursDialog(
+              title:
+                  "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.hoursString.toLowerCase()}",
+              intialDays: bookingWindowMin,
+            ));
+    if (pickedMembers != null) {
+      setState(() {
+        bookingWindowMin = pickedMembers;
       });
     }
   }
@@ -1954,6 +2097,19 @@ class _BrandInfoState extends State<BrandInfo>
         });
         return false;
       }
+    } else {
+      if (startBreak.hour == 0 && endBreak.hour != 0) {
+        setState(() {
+          errorBreakTime = 1;
+        });
+        return false;
+      }
+      if (startBreak.hour != 0 && endBreak.hour == 0) {
+        setState(() {
+          errorBreakTime = 1;
+        });
+        return false;
+      }
     }
     setState(() {
       errorTime == null;
@@ -1963,7 +2119,6 @@ class _BrandInfoState extends State<BrandInfo>
     return true;
   }
 
-  
   Widget freeTrialMamba() {
     return GestureDetector(
       onTap: () async {
@@ -1998,7 +2153,7 @@ class _BrandInfoState extends State<BrandInfo>
               style: Theme.of(context).textTheme.caption!.copyWith(
                   color: AppColors.mainColor,
                   fontWeight: FontWeight.normal,
-                  fontSize: 12),              
+                  fontSize: 12),
             ),
             trailing: GestureDetector(
               onTap: () async {
@@ -2013,7 +2168,6 @@ class _BrandInfoState extends State<BrandInfo>
                     Radius.circular(10),
                   ),
                 ),
-                
                 child: Center(
                     child: Text(
                   AppLocalizations.of(context)!.subscriptionsAppBar,

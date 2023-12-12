@@ -3618,6 +3618,7 @@ class ScriptsDatabaseService {
     }
   }
 
+
   Future<bool> JMFparcheNotificationsSeptember09th() async {
     int i = 0;
     try {
@@ -3675,8 +3676,8 @@ class ScriptsDatabaseService {
       return false;
     }
   }
-
-  Future<bool> JBparcheUserJoinsEventNovembre23th() async {
+  
+Future<bool> JBparcheUserJoinsEventNovembre23th() async {
     int i = 0;
     try {
       print('\n');
@@ -3894,4 +3895,96 @@ class ScriptsDatabaseService {
       return false;
     }
   }
+
+  Future<bool> JBPremoveBonoDeletedFromEventOctober2nd() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('JB RemoveBonoDeletedFromEvent October2nd');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying events/users collection:\n');
+      print('--------------');
+      print('\n');
+
+      /// THE GOAL IS TO REMOVE DE DELETED BONOS FROM THE EVENT, THIS IS A BUG WE DISCOVERED TODAY
+      String brandsCollection = "Brands";
+      String eventsCollection = "Events";
+      String brandId = "f88204e3-a2a9-4261-8799-8a4673571eaf";
+
+      // Get All Bonos From Brand
+      List<String> bonosIds = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(brandsCollection)
+          .doc(brandId)
+          .collection("Bonos")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        bonosIds.add(querySnapshot.docs[i].id);
+      }
+      print('--------------');
+      print("ACTIVE BONOS");
+      for (String bonoId in bonosIds) {
+        print(bonoId);
+      }
+      print('--------------');
+      print('\n');
+      // Get All Events From Brand
+      QuerySnapshot querySnapshot2 = await _firestore
+          .collection(brandsCollection)
+          .doc(brandId)
+          .collection("Events")
+          .get();
+
+      print('--------------');
+      print("CREATED EVENTS");
+      print(querySnapshot2.size);
+      print('--------------');
+      print('\n');
+
+      // For Each Event Check
+      for (int i = 0; i < querySnapshot2.docs.length; i++) {
+        print('-----');
+        String eventId = querySnapshot2.docs[i].id;
+        print("EVENT $eventId");
+        // Get the Event Bonos
+        QuerySnapshot querySnapshot3 = await _firestore
+            .collection(eventsCollection)
+            .doc(eventId)
+            .collection("Bonos")
+            .get();
+        // Check if all Bonos exist
+        List<String> deletedBonosIds = [];
+        for (int i = 0; i < querySnapshot3.docs.length; i++) {
+          String eventBonoId = querySnapshot3.docs[i].get("bonoId");
+          if (bonosIds.contains(eventBonoId) == false) {
+            deletedBonosIds.add(eventBonoId);
+          }
+        }
+        // Remove Bonos that does not exist
+        for (String bonoId in deletedBonosIds) {
+          print('Deleting $bonoId');
+          await _firestore
+          .collection(eventsCollection)
+          .doc(eventId)
+          .collection("Bonos")
+          .doc(bonoId)
+          .delete();
+        }
+        print('Next Event');
+        print('-----');
+        print('\n');
+      }
+      print('All Deleted Bonos Removed');
+      print('\n');
+      print('=================================================================================');
+      print('=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+  
 }

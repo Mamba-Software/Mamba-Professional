@@ -15,10 +15,10 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
 // IS PRODUCTION ?
-bool isProduction = true;
+bool isProduction = false;
 
 // App Version
-var appVersion = "MAMBA v0.0.17";
+var appVersion = "MAMBA v0.0.19";
 
 List<lColor> currentColors = [];
 List<lDegradate> currentDegradates =

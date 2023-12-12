@@ -2367,6 +2367,10 @@
   "@visibleAge": {
     "description": "seeMap message"
   },
+  "hour": "Hora",
+  "@hour": {
+    "description": "seeMap message"
+  },
   "day": "Día",
   "@day": {
     "description": "seeMap message"
@@ -2627,7 +2631,11 @@
   "@esgotat":{
     "description": "expiresAt Text"
   },
-  "expiresAt": "Expira el",
+  "expiredAfter": "Expirado después de",
+  "@expiredAfter":{
+    "description": "expiresAt Text"
+  },
+  "expiresAt": "Expira en",
   "@expiresAt":{
     "description": "expiresAt Text"
   },
@@ -2963,9 +2971,17 @@
   "bookingWindow": "Ventana de reserva",
   "@bookingWindow": {
     "description": "boughts message"
-  },
+  },  
   "bookingWindowDescription": "Indica el tiempo de antelación con el que los clientes de tu marca pueden reservar una plaza en tus sesiones",
   "@bookingWindowDescription": {
+    "description": "boughts message"
+  },
+  "minimumBookingWindow": "Reservas de última hora",
+  "@minimumBookingWindow": {
+    "description": "boughts message"
+  },
+  "minimumBookingWindowDescription": "Establece el plazo mínimo antes de ser notificado. Por cada reserva inferior al plazo mínimo se te enviará una notificación personalizada",
+  "@minimumBookingWindowDescription": {
     "description": "boughts message"
   },
   "requestText": "Comprueba las solicitudes de la marca",
@@ -3127,10 +3143,6 @@
   "adminSubscriptionDesc": "Solo el creador de la marca puede suscribirte a los planes. El pago estará vinculado a su cuenta y todas las transacciones se gestionarán a través de esta para garantizar seguridad y transparencia.",
   "@adminSubscriptionDesc": {
     "description": "noSubscription message"
-  },
-  "expiresAt": "Expira el",
-  "@expiresAt": {
-    "description": "expiresAt message"
   },
   "seeyourSub": "Pulsa para ver tu plan",
   "@seeyourSub": {
@@ -3446,7 +3458,7 @@
   "@notAvailableClientsModifiedEvents": {
     "description": "cantEditText message"
   },
-  "freeSessionDescription": "Permite que los interesados disfruten de una sesión gratuita, con la posibilidad de reservar su plaza en uno de tus servicios sin costo alguno. Esta oferta es válida sólo una vez.",
+  "freeSessionDescription": "Permite que los interesados disfruten de una sesión gratuita, con la posibilidad de reservar su plaza en uno de tus servicios sin costo alguno. Esta oferta es válida sólo una vez",
   "@freeSessionDescription": {
     "description": "directPurchase message"
   },
@@ -3553,6 +3565,10 @@
   },
   "processOnWork": "Hay un proceso ejecutandose, espere hasta que termine o reinicie la app",
   "@processOnWork":{
+    "description": "processOnWork text"
+  },
+  "betaFeature": "Función en fase Beta. Comparte tu experiencia para ayudarnos a perfeccionarla.",
+  "@betaFeature":{
     "description": "processOnWork text"
   }
 }
