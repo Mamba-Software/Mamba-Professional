@@ -252,7 +252,7 @@ exports.monthlyProductUpdates = functions
             content = content.replace(/{{email}}/g, user.email);
             const msg = {
                 to: user.email,
-                from: 'Joan de Mamba <info@mambaapp.app>',
+                from: updatesData.emailFrom,
                 subject: updatesData.emailTitle,
                 html: content,
             };
@@ -311,6 +311,52 @@ exports.monthlyProductUpdates = functions
             });
         }
     } else {
+        //TODO TEST UNIQUE USER
+        
+        //PROFESSIONAL
+        // Determine the base email content
+        let baseContent = updatesData.emailContentPro;
+        // Replace macros with actual data
+        let content = baseContent.replace(/{{firstName}}/g, 'Joan');
+        content = content.replace(/{{email}}/g, updatesData.emailTest);
+        const msg = {
+            to: updatesData.emailTest,
+            from: updatesData.emailFrom,
+            subject: updatesData.emailTitle,
+            html: content,
+        };
+        // Send Email
+        try {
+            sgMail.send(msg);
+            console.log('Email sent to ', updatesData.emailTest);
+            // delay between email sends
+            new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+          console.log('Email not sent to ', updatesData.emailTest);
+        }
+
+        //STYLE
+        // Determine the base email content
+        baseContent = updatesData.emailContent;
+        // Replace macros with actual data
+        content = baseContent.replace(/{{firstName}}/g, 'Joan');
+        content = content.replace(/{{email}}/g, updatesData.emailTest);
+        const msgStyle = {
+            to: updatesData.emailTest,
+            from: updatesData.emailFrom,
+            subject: updatesData.emailTitle,
+            html: content,
+        };
+        // Send Email
+        try {
+            sgMail.send(msgStyle);
+            console.log('Email sent to ', updatesData.emailTest);
+            // delay between email sends
+            new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+          console.log('Email not sent to ', updatesData.emailTest);
+        }
+
         console.log("Product updates email not sent because 'sendProductUpdates' is false.");
     }
 });
@@ -338,7 +384,7 @@ exports.sendVerificationEmail = functions
   content = content.replace(/{{email}}/g, email); 
   const msg = {
       to: email,
-      from: 'Equipo de Mamba <info@mambaapp.app>',
+      from: 'Equipo de Mamba <contacto@mambafitness.es>',
       subject: emailTitleString,
       html: content,        
   };  
@@ -377,7 +423,7 @@ exports.sendResetPasswordEmail = functions
   content = content.replace(/{{email}}/g, email);     
   const passwordMsg = {
       to: email,
-      from: 'Equipo de Mamba <info@mambaapp.app>',        
+      from: 'Equipo de Mamba <contacto@mambafitness.es>',        
       subject: emailTitleString,
       html: content,
   };  
@@ -418,7 +464,7 @@ exports.createAuthUser = functions
   content = content.replace(/{{email}}/g, email); 
   const msg = {
       to: email,
-      from: 'Equipo de Mamba <info@mambaapp.app>',
+      from: 'Equipo de Mamba <contacto@mambafitness.es>',
       subject: emailTitleString,
       html: content,        
   };  
@@ -443,7 +489,7 @@ exports.createAuthUser = functions
     content = content.replace(/{{email}}/g, email);     
     const passwordMsg = {
         to: email,
-        from: 'Equipo de Mamba <info@mambaapp.app>',        
+        from: 'Equipo de Mamba <contacto@mambafitness.es>',        
         subject: emailTitleString,
         html: content,
     };
@@ -1084,7 +1130,7 @@ exports.userAddsBrand = functions
       content = content.replace(/{{text}}/g, text);
       const msg = {
           to: 'mambastylecastelldefels@gmail.com',
-          from: 'Equipo de Mamba <info@mambaapp.app>',
+          from: 'Equipo de Mamba <contacto@mambafitness.es>',
           subject: 'Nuevo Profesional Registrado',
           html: content,
       };
@@ -1393,7 +1439,7 @@ exports.userJoinsBrand = functions
         content = content.replace(/{{imageUrl}}/g, brandDoc.baseImage);                  
         const msg = {
             to: userDoc.email,
-            from: 'Equipo de Mamba <info@mambaapp.app>',
+            from: 'Equipo de Mamba <contacto@mambafitness.es>',
             subject: emailTitleString,
             html: content,
         };
@@ -3750,7 +3796,7 @@ exports.zzzzUserJoinsBrand = functions
         content = content.replace(/{{imageUrl}}/g, brandDoc.baseImage);                  
         const msg = {
             to: userDoc.email,
-            from: 'Equipo de Mamba <info@mambaapp.app>',
+            from: 'Equipo de Mamba <contacto@mambafitness.es>',
             subject: emailTitleString,
             html: content,
         };
