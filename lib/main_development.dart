@@ -39,6 +39,7 @@ import 'dart:io' show Platform;
 import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
@@ -80,7 +81,7 @@ Future<void> main() async {
     if (kIsWeb) {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
-      );  
+      );
     } else {
       await Firebase.initializeApp();
     }
@@ -95,8 +96,6 @@ Future<void> main() async {
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     }
     // Init MixPanel
-    mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
-        trackAutomaticEvents: true, optOutTrackingDefault: false);
     mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
         trackAutomaticEvents: true, optOutTrackingDefault: false);
     await initPlatformState();
