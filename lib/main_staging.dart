@@ -23,7 +23,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
-import 'package:mamba_castelldefels/firebase_options_production.dart';
+import 'package:mamba_castelldefels/firebase_options_staging.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -95,8 +95,6 @@ Future<void> main() async {
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     }
     // Init MixPanel
-    mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
-        trackAutomaticEvents: true, optOutTrackingDefault: false);
     mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
         trackAutomaticEvents: true, optOutTrackingDefault: false);
     await initPlatformState();

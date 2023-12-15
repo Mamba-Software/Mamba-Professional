@@ -80,6 +80,11 @@ android {
             resValue "string", "app_name", "Mamba Pro"
             applicationIdSuffix ""
         }
+        staging {
+            dimension "default"
+            resValue "string", "app_name", "STG Mamba Pro"
+            applicationIdSuffix ".stg"
+        } 
         development {
             dimension "default"
             resValue "string", "app_name", "DEV Mamba Pro"

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "51239300573",
+    "project_id": "mamba-fitness-test",
+    "storage_bucket": "mamba-fitness-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51239300573:android:9575dd9a874e05642fda34",
+        "android_client_info": {
+          "package_name": "com.mamba.mambaprofessionalapp.stg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoNXmrQtLnZr7Da-sRqTZyarbJMVr9h9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -97,8 +97,6 @@ Future<void> main() async {
     // Init MixPanel
     mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
         trackAutomaticEvents: true, optOutTrackingDefault: false);
-    mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
-        trackAutomaticEvents: true, optOutTrackingDefault: false);
     await initPlatformState();
     // Run App
     runApp(MultiProvider(
