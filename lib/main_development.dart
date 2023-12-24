@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 Future<void> main() async {
   // Load Environment Variables
   try {
-    await dotenv.load(fileName: ".env.production"); // Or .env.staging for other flavors
+    await dotenv.load(fileName: ".env.development"); // Or .env.staging for other flavors
   } catch (e) {
     // If the specified .env file is not found, load the development environment
     await dotenv.load(fileName: ".env.development");
