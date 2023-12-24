@@ -17,14 +17,11 @@ switch (environment) {
       envConfig = require('./config/config.development.js');
       break;    
 }
+
 // Initialize Functions
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const { user } = require("firebase-functions/v1/auth");
-
-// External Dependencies
-//const uuidv4 = require("uuid")
-
 // Initialize Firebase Admin
 admin.initializeApp();
 
@@ -34,7 +31,7 @@ const {FirestoreAdminClient} = require('@google-cloud/firestore').v1;
 const client = new FirestoreAdminClient();
 // GCP Storage
 const { Storage } = require('@google-cloud/storage');
-const storage = new Storage({ bucket: envConfig.storageBucket });
+const storage = new Storage();
 // SendGrid
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(envConfig.sendGridApiKey);
@@ -46,7 +43,8 @@ exports.scheduledDailyFunction = functions
 .schedule('every day 7:00')
 .timeZone('Europe/Madrid')
 .onRun( async (context) => {
-      // For each User get Events of Today
+      
+      /* For each User get Events of Today, commented right now to test de Storage Backup!j
       let today = new Date();
       const usersSnapshot = await db.collection("Users").get();
       for (var i in usersSnapshot.docs) {
@@ -214,32 +212,43 @@ exports.scheduledDailyFunction = functions
             }
         }
       }
-      
-      // Check if today is Monday, then backup the Firebase data       
-      let date = new Date();    
-      if (date.getDay() === 1) {
-          console.log("It's Monday, it's time for ... AUTOMATIC BACKUP");
-          const projectId = process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT; 
-          console.log("Project ID: "+projectId);
-          const databaseName = client.databasePath(projectId, '(default)');
-          console.log("Database Name: "+databaseName);    
-          return client.exportDocuments({
-              name: databaseName,
-              outputUriPrefix: 'gs://mamba_app_backup',
-              // Leave collectionIds empty to export all collections
-              // or specify the collections you want to export
-              collectionIds: []
-          })
-          .then(responses => {
-              const response = responses[0];
-              console.log(`Operation Finished with Name: ${response['name']}`);
-          })
-          .catch(err => {
-              console.error(err);
-              throw new Error('Export operation failed');
-          });
-      }
+      */
 
+      // Check if today is Monday, then backup the Firebase data only if on PRODUCTION      
+      let date = new Date();          
+      if (date.getDay() === 1 && environment === 'mamba-style') {      
+          console.log("It's Monday, it's time for ... AUTOMATIC BACKUP");
+          console.log("Environment: "+environment);
+          const projectId = process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT; 
+          console.log("Project ID: "+projectId);          
+          // Firestore Backup
+          const databaseName = client.databasePath(projectId, envConfig.firestoreDatabase);
+          console.log("Database Name: "+databaseName);    
+          try {
+              const responses = await client.exportDocuments({
+                  name: databaseName,
+                  outputUriPrefix: `gs://${envConfig.firestoreBackupBucket}`,
+                  collectionIds: []
+              });
+              const response = responses[0];
+              console.log(`Firestore Backup Finished with Name: ${response['name']}`);
+          } catch (err) {
+              console.error("Firestore Backup Error:", err);
+              throw new Error('Firestore Export operation failed');
+          }
+          // Storage Backup
+          const sourceBucketName = envConfig.storageBucket;
+          const destinationBucketName = envConfig.storageBucketBackup;          
+          try {
+              const [files] = await storage.bucket(sourceBucketName).getFiles();
+              for (const file of files) {
+                  await storage.bucket(sourceBucketName).file(file.name).copy(storage.bucket(destinationBucketName).file(file.name));
+              }
+              console.log('Storage Backup completed successfully');
+          } catch (error) {
+              console.error('Storage Backup Error:', error);
+          }
+      }
     });
 
 // Daily Notification For Events
