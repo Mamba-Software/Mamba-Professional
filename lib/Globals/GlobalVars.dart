@@ -39,11 +39,6 @@ var termsAndConditions = "https://mambafitness.es/terminos-y-condiciones/";
 var privacy = "https://mambafitness.es/privacidad/";
 var functionalities = "https://mambafitness.es/profesionales/";
 
-// API Keys
-var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
-var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";
-var googleMapsAPIAndroid = "AIzaSyBv6FwSFMHrhQE6w5i7bIW_DcOOW08FVR8";
-var googleMapsAPIIOS = "AIzaSyCHiJWFQzsfD-lO34bbctas1No0Kgxn9i4";
 
 // User & Brand Global Variables
 var currentUser = Usuario();
@@ -70,13 +65,21 @@ final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
 // Dynamic Links Path
 var dynamicLinkBrandId;
 
-//Mix Panel
-const mixpanelKey = 'c573538be2d62355bb2f0968ff42c181';
+// API Keys
+
+// Google Maps
+var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
+var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";
+var googleMapsAPIAndroid = "AIzaSyBv6FwSFMHrhQE6w5i7bIW_DcOOW08FVR8";
+var googleMapsAPIIOS = "AIzaSyCHiJWFQzsfD-lO34bbctas1No0Kgxn9i4";
 
 //Revenue Cat
 const googleApiKey = 'goog_xHoFXqoNpoesuLjeweHEqSuEvXy';
 const appleApiKey = 'appl_WdXLePsgLfQWTsDgYXYWYkdbDCj';
 const entitlementID = 'AllFeatures';
+
+//Mix Panel
+const mixpanelKey = 'c573538be2d62355bb2f0968ff42c181';
 
 //JMF 18042023 REVENUECAT
 void setBrandActive() {
