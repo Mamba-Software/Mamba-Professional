@@ -70,6 +70,9 @@ final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
 // Dynamic Links Path
 var dynamicLinkBrandId;
 
+//Mix Panel
+const mixpanelKey = 'c573538be2d62355bb2f0968ff42c181';
+
 //Revenue Cat
 const googleApiKey = 'goog_xHoFXqoNpoesuLjeweHEqSuEvXy';
 const appleApiKey = 'appl_WdXLePsgLfQWTsDgYXYWYkdbDCj';
