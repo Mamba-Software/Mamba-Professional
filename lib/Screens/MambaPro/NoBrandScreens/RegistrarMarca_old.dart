@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
@@ -176,8 +177,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
   @override
   void initState() {
     mixpanel!.track('register_brand_cover');
-    gPlace = googlePlace.GooglePlace(
-        Platform.isAndroid ? placesAPIAndroid : placesAPIIOS);
+    gPlace = googlePlace.GooglePlace(Platform.isAndroid
+        ? dotenv.env['PLACES_API_ANDROID']!
+        : dotenv.env['PLACES_API_IOS']!);
     startTimeController.text =
         DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
       DateTime.now().year,

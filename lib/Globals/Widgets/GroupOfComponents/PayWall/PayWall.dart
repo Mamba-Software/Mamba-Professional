@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/BrandNavigation/views/BrandScreen.dart';
@@ -464,7 +465,7 @@ class _PayWallState extends State<PayWall> {
                 }
                 if (!await launchUrl(Uri.parse(functionalities))) {
                   throw 'Could not launch $functionalities';
-                }                
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -508,17 +509,28 @@ class _PayWallState extends State<PayWall> {
                   var purchaserInfo = await Purchases.purchasePackage(
                       subscriptionList[index].package!);
                   if (purchaserInfo.entitlements.active.isNotEmpty &&
-                      purchaserInfo.entitlements.all[entitlementID]!.isActive) {
+                      purchaserInfo
+                          .entitlements
+                          .all[dotenv.env['REVCAT_ENTITLEMENT_ID']!]!
+                          .isActive) {
                     mixpanel!.track('brand_subscribed');
                     _brandDataService.updateBrandSubscriptionRevenueCat(
                         currentBrand.id!,
                         purchaserInfo
-                            .entitlements.all[entitlementID]!.expirationDate,
-                        purchaserInfo.entitlements.all[entitlementID]!
+                            .entitlements
+                            .all[dotenv.env['REVCAT_ENTITLEMENT_ID']!]!
+                            .expirationDate,
+                        purchaserInfo
+                            .entitlements
+                            .all[dotenv.env['REVCAT_ENTITLEMENT_ID']!]!
                             .originalPurchaseDate,
                         purchaserInfo
-                            .entitlements.all[entitlementID]!.productIdentifier,
-                        purchaserInfo.entitlements.all[entitlementID]!
+                            .entitlements
+                            .all[dotenv.env['REVCAT_ENTITLEMENT_ID']!]!
+                            .productIdentifier,
+                        purchaserInfo
+                            .entitlements
+                            .all[dotenv.env['REVCAT_ENTITLEMENT_ID']!]!
                             .unsubscribeDetectedAt);
                     Navigator.pop(context);
                   }

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 
 enum Store { appleStore, googlePlay, amazonAppstore }
 

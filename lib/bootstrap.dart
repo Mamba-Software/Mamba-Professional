@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -57,20 +58,25 @@ Future<void> backgroundLocalMessageHandler(
 }
 
 // Bootstrap
-class Bootstrap {  
+class Bootstrap {
   // Vars
   final String flavor;
-  final FirebaseOptions firebaseOptions;
+  final FirebaseOptions? firebaseOptions;
+
   // Init
-  Bootstrap({required this.flavor, required this.firebaseOptions}) {    
+  Bootstrap({required this.flavor, required this.firebaseOptions}) {
     bootstrap();
   }
 
   // Starting app function. After initialization, we define the global providers:
   Future<void> bootstrap() async {
-    await runZonedGuarded(() async {
+    runZonedGuarded(() async {
       // Initialize App
       WidgetsFlutterBinding.ensureInitialized();
+      // Load Env Variables
+      print("Loading Environment Variables...");
+      String envFileName = ".env.$flavor";
+      await dotenv.load(fileName: envFileName);
       // Initialize Firebase
       if (kIsWeb) {
         await Firebase.initializeApp(
@@ -90,17 +96,17 @@ class Bootstrap {
         FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
       }
       // Init MixPanel
-      mixpanel = await Mixpanel.init(mixpanelKey,
+      mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!,
           trackAutomaticEvents: true, optOutTrackingDefault: false);
       // Init Revenue Cat
       await Purchases.setLogLevel(LogLevel.debug);
       if (Platform.isAndroid) {
         PurchasesConfiguration configuration =
-            PurchasesConfiguration(googleApiKey);
+            PurchasesConfiguration(dotenv.env['REVCAT_GOOGLE_API_KEY']!);
         await Purchases.configure(configuration);
       } else if (Platform.isIOS) {
         PurchasesConfiguration configuration =
-            PurchasesConfiguration(appleApiKey);
+            PurchasesConfiguration(dotenv.env['REVCAT_APPLE_API_KEY']!);
         await Purchases.configure(configuration);
       }
       // Run App

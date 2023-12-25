@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -36,40 +37,43 @@ class SuscriptionFirebaseCalls {
   Future<Subscription> getBrandSubscription(String adminAppUserId) async {
     print('subscription');
     try {
-    Subscription subscription = new Subscription();
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(subscriptionsRevenueCat).doc(adminAppUserId).get();
-    if (_documentSnapshot.exists) {
-      final data = _documentSnapshot.data()!;
-      if (data.containsKey('entitlements')) {
-        final entitlements = _documentSnapshot.get("entitlements");
-        if (entitlements.containsKey(entitlementID)) {
-          String expireDate = entitlements[entitlementID]['expires_date'];
-          if ((DateTime.parse(expireDate).isAfter(DateTime.now()) ||
-              DateTime.parse(expireDate).isAtSameMomentAs(DateTime.now()))) {
-            String subId = entitlements[entitlementID]['product_identifier'];
-            if (data.containsKey('subscriptions')) {
-              final subscriptions = _documentSnapshot.get("subscriptions");
-              print(subscriptions[subId]['expires_date']);
-              final subscription = Subscription.fromRevenueSubscription(
-                  subscriptions[subId], subId);
-              return subscription;
+      Subscription subscription = new Subscription();
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+          await _firestore
+              .collection(subscriptionsRevenueCat)
+              .doc(adminAppUserId)
+              .get();
+      if (_documentSnapshot.exists) {
+        final data = _documentSnapshot.data()!;
+        if (data.containsKey('entitlements')) {
+          final entitlements = _documentSnapshot.get("entitlements");
+          if (entitlements.containsKey(dotenv.env['REVCAT_ENTITLEMENT_ID']!)) {
+            String expireDate =
+                entitlements[dotenv.env['REVCAT_ENTITLEMENT_ID']!]
+                    ['expires_date'];
+            if ((DateTime.parse(expireDate).isAfter(DateTime.now()) ||
+                DateTime.parse(expireDate).isAtSameMomentAs(DateTime.now()))) {
+              String subId = entitlements[dotenv.env['REVCAT_ENTITLEMENT_ID']!]
+                  ['product_identifier'];
+              if (data.containsKey('subscriptions')) {
+                final subscriptions = _documentSnapshot.get("subscriptions");
+                print(subscriptions[subId]['expires_date']);
+                final subscription = Subscription.fromRevenueSubscription(
+                    subscriptions[subId], subId);
+                return subscription;
+              }
             }
           }
-        }
 
-        /*final subscriptionAux = (subscriptions.values).firstWhere(
+          /*final subscriptionAux = (subscriptions.values).firstWhere(
                 (subscription) => (DateTime.parse(subscription['expires_date']).isAfter(DateTime.now()) || DateTime.parse(subscription['expires_date']).isAtSameMomentAs(DateTime.now())));
         final subscription = Subscription.fromRevenueSubscription(subscriptions['month_sub']);*/
+        }
       }
-    }
-    return subscription;
-    }
-    catch(e)
-    {
+      return subscription;
+    } catch (e) {
       print(e);
       return new Subscription();
     }
-    
-    
   }
 }
