@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -45,7 +43,7 @@ class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
   double _timeSlotViewZoom = -1;
   double _baseTimeSlotViewZoom = -1;
   double _timeSlotViewScale = 1;
-  double _baseTimeSlotViewScale = 1;
+  final double _baseTimeSlotViewScale = 1;
   // Descansos
   DateTime dateJoined = DateTime.now();
 
@@ -172,13 +170,13 @@ class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
 }
 
 
-List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> _brandTrainers) {
+List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> brandTrainers) {
   List<Event> events = [];
   List<Usuario> eventTrainers = [];
   for(int i = 0; i < documents.length; i++) {
     Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
     // Check Trainers in Event
-    for (Usuario trainer in _brandTrainers) {
+    for (Usuario trainer in brandTrainers) {
       int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
       if (index != -1) {
         eventTrainers.add(trainer);
@@ -198,11 +196,11 @@ List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> _b
   return events;
 }
 
-Event documentToEvent(DocumentSnapshot document, List<Usuario> _brandTrainers) {
+Event documentToEvent(DocumentSnapshot document, List<Usuario> brandTrainers) {
   List<Usuario> eventTrainers = [];
   Event evt = Event.fromObjectOnlyCoverData(document.id, document);
   // Check Trainers in Event
-  for (Usuario trainer in _brandTrainers) {
+  for (Usuario trainer in brandTrainers) {
     int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
     if (index != -1) {
       eventTrainers.add(trainer);

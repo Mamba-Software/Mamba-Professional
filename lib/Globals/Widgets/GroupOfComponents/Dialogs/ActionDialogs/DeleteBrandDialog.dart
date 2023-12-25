@@ -4,7 +4,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class DeleteBrandDialog extends StatefulWidget {
-  const DeleteBrandDialog({Key? key}) : super(key: key);
+  const DeleteBrandDialog({super.key});
 
   @override
   _DeleteDialogState createState() => _DeleteDialogState();
@@ -44,14 +44,14 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 25, bottom: 10.0),
-                  child: Text(AppLocalizations.of(context)!.deleteBrandConfirmation, style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.red, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context)!.deleteBrandConfirmation, style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Colors.red, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                 ),
                 Flexible(
-                  child: Text("${AppLocalizations.of(context)!.writeDeleteBrand} ", style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.center,),
+                  child: Text("${AppLocalizations.of(context)!.writeDeleteBrand} ", style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                 Flexible(
-                  child: Text(currentBrand.name!, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                  child: Text(currentBrand.name!, style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
@@ -62,23 +62,20 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                         child: TextFormField(
                           controller: deleteController,
                           onChanged: (val) {
-                            setState(() => {
-                              deleteTemp = val
-                            });
+                            setState(() => deleteTemp = val
+                            );
                             if (deleteTemp != currentBrand.name) {
-                              setState(() => {
-                                canDelete = false
-                              });
+                              setState(() => canDelete = false
+                              );
                             } else {
-                              setState(() => {
-                                canDelete = true
-                              });
+                              setState(() => canDelete = true
+                              );
                             }
                           },
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
                           decoration: InputDecoration(
                             hintText: currentBrand.name,
-                            hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red.withOpacity(0.5)),
+                            hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red.withOpacity(0.5)),
                             enabledBorder: OutlineInputBorder(
                               borderSide: const BorderSide(color: Colors.red, width: 1),
                               borderRadius: BorderRadius.circular(10.0),
@@ -100,7 +97,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                     children: [
                       FloatingActionButton.extended(
                         heroTag: "32",
-                        label: Text(AppLocalizations.of(context)!.delete, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),),
+                        label: Text(AppLocalizations.of(context)!.delete, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),),
                         icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06,),
                         backgroundColor: canDelete ? Colors.red : Colors.red[200],
                         foregroundColor: AppColors.white,
@@ -111,7 +108,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                       FloatingActionButton.extended(
                         heroTag: "33",
                         icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,),
-                        label: Text(AppLocalizations.of(context)!.cancel, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),),
+                        label: Text(AppLocalizations.of(context)!.cancel, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark),),
                         backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Theme.of(context).primaryColorDark,
                         onPressed: () {

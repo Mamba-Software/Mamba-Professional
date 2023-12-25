@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Auth/views/mobile/Login.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -27,13 +26,12 @@ import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import 'SettingsEditPhotoPage.dart';
 import 'SettingsPrivacy.dart';
 import 'SettingsTheme.dart';
 import 'SettingsYourData.dart';
 
 class Settings extends StatefulWidget {
-  const Settings({Key? key}) : super(key: key);
+  const Settings({super.key});
   @override
   _SettingsState createState() => _SettingsState();
 }
@@ -193,7 +191,7 @@ class _SettingsState extends State<Settings> {
                       AppLocalizations.of(context)!.myData,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -210,7 +208,7 @@ class _SettingsState extends State<Settings> {
                       AppLocalizations.of(context)!.editYourTheme,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -227,7 +225,7 @@ class _SettingsState extends State<Settings> {
                       AppLocalizations.of(context)!.language,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -244,7 +242,7 @@ class _SettingsState extends State<Settings> {
                       AppLocalizations.of(context)!.giveFeedbackTitle,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -264,7 +262,7 @@ class _SettingsState extends State<Settings> {
                       AppLocalizations.of(context)!.shareAppTitle,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -281,7 +279,7 @@ class _SettingsState extends State<Settings> {
                       AppLocalizations.of(context)!.getInTouch,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -304,7 +302,7 @@ class _SettingsState extends State<Settings> {
                       AppLocalizations.of(context)!.rateThisApp,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -327,7 +325,7 @@ class _SettingsState extends State<Settings> {
                       AppLocalizations.of(context)!.lastAppUpdate,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -335,8 +333,9 @@ class _SettingsState extends State<Settings> {
                   ListTile(
                     onTap: () async {
                       mixpanel!.track('user_profile_settings_privacy');
-                      if (!await launchUrl(Uri.parse(privacy)))
+                      if (!await launchUrl(Uri.parse(privacy))) {
                         throw 'Could not launch $privacy';
+                      }
                     },
                     contentPadding: EdgeInsets.symmetric(
                         horizontal: MediaQuery.of(context).size.width * 0.05,
@@ -348,7 +347,7 @@ class _SettingsState extends State<Settings> {
                       AppLocalizations.of(context)!.privacy,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -356,8 +355,9 @@ class _SettingsState extends State<Settings> {
                   ListTile(
                     onTap: () async {
                       mixpanel!.track('user_profile_settings_terms_conditions');
-                      if (!await launchUrl(Uri.parse(termsAndConditions)))
+                      if (!await launchUrl(Uri.parse(termsAndConditions))) {
                         throw 'Could not launch $termsAndConditions';
+                      }
                     },
                     contentPadding: EdgeInsets.symmetric(
                         horizontal: MediaQuery.of(context).size.width * 0.05,
@@ -369,7 +369,7 @@ class _SettingsState extends State<Settings> {
                       AppLocalizations.of(context)!.termsAndConditions,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -378,23 +378,19 @@ class _SettingsState extends State<Settings> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                   Text(
                     AppLocalizations.of(context)!.loggedInWith,
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Text(
                     currentUser.email!,
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Text(
-                    "v." +
-                        _packageInfo.version.toString() +
-                        " (" +
-                        _packageInfo.buildNumber.toString() +
-                        ")",
+                    "v.${_packageInfo.version} (${_packageInfo.buildNumber})",
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText1
+                        .bodyLarge
                         ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.05),
@@ -464,7 +460,7 @@ class _SettingsState extends State<Settings> {
                               AppLocalizations.of(context)!.closeSession,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(
                                       color:
                                           Theme.of(context).primaryColorDark),
@@ -512,7 +508,7 @@ class _SettingsState extends State<Settings> {
                               AppLocalizations.of(context)!.deleteAccount,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ],
@@ -604,7 +600,7 @@ class _SettingsState extends State<Settings> {
 
 // Delete Account Dialog
 class DeleteDialog extends StatefulWidget {
-  const DeleteDialog({Key? key}) : super(key: key);
+  const DeleteDialog({super.key});
 
   @override
   _DeleteDialogState createState() => _DeleteDialogState();
@@ -656,7 +652,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   padding: const EdgeInsets.only(top: 15, bottom: 10.0),
                   child: Text(
                     AppLocalizations.of(context)!.wantDeleteUser,
-                    style: Theme.of(context).textTheme.headline3?.copyWith(
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: Colors.red, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -666,7 +662,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     "${AppLocalizations.of(context)!.onlyAllowed} ",
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium
                         ?.copyWith(height: 1.5),
                     textAlign: TextAlign.center,
                   ),
@@ -676,7 +672,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     "${AppLocalizations.of(context)!.writeDeleteUser} ",
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium
                         ?.copyWith(height: 1.5),
                     textAlign: TextAlign.center,
                   ),
@@ -692,26 +688,26 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           obscureText: !_passwordVisible,
                           controller: deleteController,
                           onChanged: (val) {
-                            setState(() => {deleteTemp = val});
-                            setState(() => {deleteTemp = val});
+                            setState(() => deleteTemp = val);
+                            setState(() => deleteTemp = val);
                             if (val.length < 6 || hasBrand) {
-                              setState(() => {canDelete = false});
-                              setState(() => {canDelete = false});
+                              setState(() => canDelete = false);
+                              setState(() => canDelete = false);
                             } else {
-                              setState(() => {canDelete = true});
-                              setState(() => {canDelete = true});
+                              setState(() => canDelete = true);
+                              setState(() => canDelete = true);
                             }
                           },
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: Colors.red),
                           decoration: InputDecoration(
                             hintText:
                                 AppLocalizations.of(context)!.passworRepeat,
                             hintStyle: Theme.of(context)
                                 .textTheme
-                                .bodyText2
+                                .bodyMedium
                                 ?.copyWith(color: Colors.red),
                             enabledBorder: OutlineInputBorder(
                               borderSide:
@@ -752,7 +748,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             "${AppLocalizations.of(context)!.passwordNotSameError} ",
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText2
+                                .bodyMedium
                                 ?.copyWith(color: Colors.red),
                             textAlign: TextAlign.center,
                           ),
@@ -768,7 +764,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             "${AppLocalizations.of(context)!.passwordNotSameError} ",
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText2
+                                .bodyMedium
                                 ?.copyWith(color: Colors.red),
                             textAlign: TextAlign.center,
                           ),
@@ -787,10 +783,10 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                 AppLocalizations.of(context)!.delete,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium
                                     ?.copyWith(color: AppColors.white),
                               )
-                            : Container(
+                            : SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.20,
                                 child: Center(
                                   child: SizedBox(
@@ -892,7 +888,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           AppLocalizations.of(context)!.cancel,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(
                                   color: Theme.of(context).primaryColorDark),
                         ),
@@ -953,8 +949,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
 // Language Picker Widget
 class LanguagePickerWidget extends StatefulWidget {
   ValueChanged<bool?> idiomaChanged;
-  LanguagePickerWidget({Key? key, required this.idiomaChanged})
-      : super(key: key);
+  LanguagePickerWidget({super.key, required this.idiomaChanged});
   @override
   _LanguagePickerWidgetState createState() => _LanguagePickerWidgetState();
 }
@@ -965,6 +960,7 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
   bool idiomaChanged = false;
   @override
   resetIdiomaChanged() => {idiomaChanged = false};
+  @override
   Widget build(BuildContext context) {
     final languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
@@ -1000,7 +996,7 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                     child: Text(locale.languageCode.toUpperCase(),
                         style: Theme.of(context)
                             .textTheme
-                            .headline3
+                            .displaySmall
                             ?.copyWith(fontWeight: FontWeight.bold)),
                   ),
                 ],

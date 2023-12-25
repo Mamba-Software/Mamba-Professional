@@ -26,28 +26,28 @@ class Message {
       required this.conversationId});
 
   Message.fromMap(Map<String, dynamic> mapData, String documentId) {
-    this.messageId = documentId;
-    this.message = mapData['message'];
-    this.year = mapData['year'].toString();
-    this.month = mapData['month'].toString();
-    this.day = mapData['day'].toString();
-    this.hour = mapData['hour'].toString();
-    this.minute = mapData['minute'].toString();
-    this.second = mapData['second'].toString();
-    this.conversationId = mapData['conversationId'].toString();
-    this.userSent = mapData['userSent'].toString();
+    messageId = documentId;
+    message = mapData['message'];
+    year = mapData['year'].toString();
+    month = mapData['month'].toString();
+    day = mapData['day'].toString();
+    hour = mapData['hour'].toString();
+    minute = mapData['minute'].toString();
+    second = mapData['second'].toString();
+    conversationId = mapData['conversationId'].toString();
+    userSent = mapData['userSent'].toString();
   }
 
   Message.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
-    this.conversationId = documentId;
-    this.message = documentSnapshot.get("message");
-    this.year = documentSnapshot.get("year").toString();
-    this.month = documentSnapshot.get("month").toString();
-    this.day = documentSnapshot.get("day").toString();
-    this.hour = documentSnapshot.get("hour").toString();
-    this.minute = documentSnapshot.get("minute").toString();
-    this.second = documentSnapshot.get("second").toString();
-    this.conversationId = documentSnapshot.get("conversationId").toString();
-    this.userSent = documentSnapshot.get("userSent").toString();
+    conversationId = documentId;
+    message = documentSnapshot.get("message");
+    year = documentSnapshot.get("year").toString();
+    month = documentSnapshot.get("month").toString();
+    day = documentSnapshot.get("day").toString();
+    hour = documentSnapshot.get("hour").toString();
+    minute = documentSnapshot.get("minute").toString();
+    second = documentSnapshot.get("second").toString();
+    conversationId = documentSnapshot.get("conversationId").toString();
+    userSent = documentSnapshot.get("userSent").toString();
   }
 }

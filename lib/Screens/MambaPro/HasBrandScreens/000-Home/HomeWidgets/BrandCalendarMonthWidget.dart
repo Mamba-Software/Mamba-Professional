@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
@@ -18,7 +17,7 @@ class BrandCalendarMonthWidget extends StatefulWidget {
   double width = 0;
   final DateCallBack navigateToPage;
 
-  BrandCalendarMonthWidget({Key? key, required this.brandId, required this.height, required this.width, required this.navigateToPage}) : super(key: key);
+  BrandCalendarMonthWidget({super.key, required this.brandId, required this.height, required this.width, required this.navigateToPage});
 
   @override
   _BrandCalendarMonthWidgetState createState() => _BrandCalendarMonthWidgetState();
@@ -63,8 +62,8 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject;
-      var color;
+      String subject;
+      Color color = Colors.black;
       if (event.isPrivate!) {
         subject = "${event.numClients}";
         color = Colors.black;
@@ -122,7 +121,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
           height: widget.height,
           width: widget.width,
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).colorScheme.background,
             borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
           ),// BoxDecoration
           child: Container(
@@ -159,7 +158,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                               SizedBox(width: widget.width*0.02),
                               Text(
                                   AppLocalizations.of(context)!.sessions,
-                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                                  style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey),
                                   textAlign: TextAlign.center
                               ),
                             ],
@@ -169,7 +168,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                           children: [
                             Text(
                                 DateTimeUtils().formatDateTimeToStringMM(_calendarController.displayDate!, Localizations.localeOf(context).languageCode),
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.center
                             ),
                             SizedBox(width: widget.width*0.04),
@@ -204,14 +203,14 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                               showNavigationArrow: true,
                               todayHighlightColor: Theme.of(context).colorScheme.secondary,
                               viewHeaderStyle: ViewHeaderStyle(
-                                dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                                dayTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 10),
                               ),
                               headerHeight: 0,
                               headerDateFormat: "MMMM yyyy",
                               headerStyle: CalendarHeaderStyle(
                                 textAlign: TextAlign.center,
                                 backgroundColor: Colors.transparent,
-                                textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
+                                textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.transparent),
                               ),
                               cellBorderColor: Colors.transparent,
                               monthViewSettings: MonthViewSettings(
@@ -220,9 +219,9 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                                 showAgenda: false,
                                 navigationDirection: MonthNavigationDirection.horizontal,
                                 monthCellStyle: MonthCellStyle(
-                                  textStyle: Theme.of(context).textTheme.bodyText1,
-                                  trailingDatesTextStyle: Theme.of(context).textTheme.caption,
-                                  leadingDatesTextStyle: Theme.of(context).textTheme.caption,
+                                  textStyle: Theme.of(context).textTheme.bodyLarge,
+                                  trailingDatesTextStyle: Theme.of(context).textTheme.bodySmall,
+                                  leadingDatesTextStyle: Theme.of(context).textTheme.bodySmall,
                                 ),
                                 numberOfWeeksInView: 6,
                                 showTrailingAndLeadingDates: true,

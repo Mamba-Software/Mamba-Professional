@@ -88,7 +88,7 @@ class LocationPlacesSearch {
         result['result']['address_components'] as List<dynamic>;
         // build result
         final place = Place();
-        components.forEach((c) {
+        for (var c in components) {
           final List type = c['types'];
           if (type.contains('route')) {
             place.street = c['long_name'];
@@ -106,7 +106,7 @@ class LocationPlacesSearch {
             place.zipCode = c['long_name'];
             place.fullAddress = "${place.fullAddress} ${c['long_name']}";
           }
-        });
+        }
         return place;
       }
       throw Exception(result['error_message']);

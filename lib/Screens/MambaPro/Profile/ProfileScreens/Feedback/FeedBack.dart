@@ -7,13 +7,12 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/UserFeedBack.dart';
 import 'ReportBug.dart';
 
 // Feedback Widget.
 // Here the Users will give us Weekly Feedback.
 class FeedBack extends StatefulWidget {
-  const FeedBack({Key? key}) : super(key: key);
+  const FeedBack({super.key});
 
   @override
   _FeedBackState createState() => _FeedBackState();
@@ -21,10 +20,10 @@ class FeedBack extends StatefulWidget {
 
 class _FeedBackState extends State<FeedBack> {
   // Feedback Data Service
-  var _feedbackDataService = new FeedbackDataService();
+  final _feedbackDataService = FeedbackDataService();
   // Boolean New Feedback
   bool newFeedback = false;
-  GroupOfQuestions? groupOfQuestions = new GroupOfQuestions();
+  GroupOfQuestions? groupOfQuestions = GroupOfQuestions();
   bool alreadyAnswered = false;
   bool isLoading = true;
 
@@ -88,7 +87,7 @@ class _FeedBackState extends State<FeedBack> {
                   Navigator.push(
                     context,
                       CupertinoPageRoute<String>(
-                        builder: (context) => ReportBug(),
+                        builder: (context) => const ReportBug(),
                     )
                   );
                 },
@@ -99,7 +98,7 @@ class _FeedBackState extends State<FeedBack> {
                 ),
                 title: Text(
                   AppLocalizations.of(context)!.reporting,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.mainColor),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.mainColor),
                 ),
                 trailing: Icon(
                   Icons.arrow_forward_ios,
@@ -118,11 +117,11 @@ class _FeedBackState extends State<FeedBack> {
               child: Text(
                 AppLocalizations.of(context)!.feedbackAnswered,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.05,),
-            Container(
+            SizedBox(
                 height: MediaQuery.of(context).size.height*0.20,
                 child: Image.asset(Constants.doneFeedbackImage)
             ),
@@ -139,7 +138,7 @@ class _FeedBackState extends State<FeedBack> {
                   Navigator.push(
                       context,
                       CupertinoPageRoute<String>(
-                        builder: (context) => ReportBug(),
+                        builder: (context) => const ReportBug(),
                       )
                   );
                 },
@@ -150,7 +149,7 @@ class _FeedBackState extends State<FeedBack> {
                 ),
                 title: Text(
                   AppLocalizations.of(context)!.reporting,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.mainColor),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.mainColor),
                 ),
                 trailing: Icon(
                   Icons.arrow_forward_ios,
@@ -169,7 +168,7 @@ class _FeedBackState extends State<FeedBack> {
               child: Text(
                 AppLocalizations.of(context)!.feedbackNotAnswered,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.05,),
@@ -200,7 +199,7 @@ class _FeedBackState extends State<FeedBack> {
                             style: BorderStyle.solid,
                           ),
                           shape: BoxShape.circle,
-                          image: new DecorationImage(
+                          image: DecorationImage(
                             fit: BoxFit.fitHeight,
                             image: Image.asset(Constants.giveFeedbackImage).image,
                           ),

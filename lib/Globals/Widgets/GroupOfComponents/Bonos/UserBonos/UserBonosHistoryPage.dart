@@ -16,7 +16,6 @@ import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
@@ -26,7 +25,7 @@ class UserBonosHistoryPage extends StatefulWidget {
   String brandId;
   String? purchaseId;
 
-  UserBonosHistoryPage({Key? key, required this.userId, required this.brandId, this.purchaseId}) : super(key: key);
+  UserBonosHistoryPage({super.key, required this.userId, required this.brandId, this.purchaseId});
 
   @override
   _UserBonosHistoryPageState createState() => _UserBonosHistoryPageState();
@@ -113,7 +112,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
         children: [
           Text(
               AppLocalizations.of(context)!.cashPaymentMethod,
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.left
           ),
           const SizedBox(width: 1),
@@ -125,7 +124,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
         children: [
           Text(
               AppLocalizations.of(context)!.transferPaymentMethod,
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.left
           ),
           const SizedBox(width: 1),
@@ -137,7 +136,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
         children: [
           Text(
               AppLocalizations.of(context)!.giftPaymentMethod,
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.left
           ),
           const SizedBox(width: 1),
@@ -159,7 +158,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
         ),
         elevation: 2,
         centerTitle: true,
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         leading: Padding(
           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.0),
           child: MaterialButton(
@@ -167,15 +166,15 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
               Navigator.pop(context);
             },
             elevation: 0,
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).colorScheme.background,
             textColor: AppColors.white,
+            padding: EdgeInsets.zero,
+            shape: const CircleBorder(),
             child: Icon(
               Icons.arrow_back,
               color: Theme.of(context).primaryColor,
               size: MediaQuery.of(context).size.width*0.06,
             ),
-            padding: EdgeInsets.zero,
-            shape: const CircleBorder(),
           ),
         ),
         actions: [
@@ -202,7 +201,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
           )
         ],
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: isLoading ? LoadingView(
         color: Theme.of(context).primaryColor,
         hasLogo: false,
@@ -276,7 +275,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                   children: [
                                     Text(
                                         AppLocalizations.of(context)!.info,
-                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
                                         textAlign: TextAlign.center
                                     ),
                                   ],
@@ -291,13 +290,13 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                            AppLocalizations.of(context)!.price+": ",
-                                            style: Theme.of(context).textTheme.caption,
+                                            "${AppLocalizations.of(context)!.price}: ",
+                                            style: Theme.of(context).textTheme.bodySmall,
                                             textAlign: TextAlign.left
                                         ),
                                         Text(
-                                            purchase.price!.toStringAsFixed(2)+" €",
-                                            style: Theme.of(context).textTheme.bodyText1,
+                                            "${purchase.price!.toStringAsFixed(2)} €",
+                                            style: Theme.of(context).textTheme.bodyLarge,
                                             textAlign: TextAlign.left
                                         ),
                                       ],
@@ -307,13 +306,13 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                            AppLocalizations.of(context)!.buyDate+": ",
-                                            style: Theme.of(context).textTheme.caption,
+                                            "${AppLocalizations.of(context)!.buyDate}: ",
+                                            style: Theme.of(context).textTheme.bodySmall,
                                             textAlign: TextAlign.left
                                         ),
                                         Text(
                                             StringUtils().toCapitalized(DateFormat('EEEE dd/MM/yy', Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate())),
-                                            style: Theme.of(context).textTheme.bodyText1,
+                                            style: Theme.of(context).textTheme.bodyLarge,
                                             textAlign: TextAlign.left
                                         ),
                                       ],
@@ -323,8 +322,8 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                            AppLocalizations.of(context)!.paymentMethod+": ",
-                                            style: Theme.of(context).textTheme.caption,
+                                            "${AppLocalizations.of(context)!.paymentMethod}: ",
+                                            style: Theme.of(context).textTheme.bodySmall,
                                             textAlign: TextAlign.left
                                         ),
                                         buildPaymentMethod(purchase)
@@ -355,7 +354,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                 child: Image.asset(Constants.emptyCalendar)
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                            Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                            Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
                             SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
                         ),
@@ -397,7 +396,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
           Visibility(
             visible: isList && pageViewList.isNotEmpty,
             child: Container(
-              color: Theme.of(context).backgroundColor,
+              color: Theme.of(context).colorScheme.background,
               height: MediaQuery.of(context).size.height,
               child: ListView.builder(
                 controller: _scrollController,
@@ -462,7 +461,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                     Flexible(
                                                       child: Text(
                                                         bono.title!.toUpperCase(),
-                                                        style: Theme.of(context).textTheme.headline1,
+                                                        style: Theme.of(context).textTheme.displayLarge,
                                                         textAlign: TextAlign.left,
                                                         maxLines: 1,
                                                         overflow: TextOverflow.ellipsis,
@@ -483,7 +482,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                     Flexible(
                                                       child: Text(
                                                         brand.name!,
-                                                        style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal),
+                                                        style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.normal),
                                                         textAlign: TextAlign.left,
                                                         maxLines: 1,
                                                         overflow: TextOverflow.ellipsis,
@@ -496,13 +495,13 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                        AppLocalizations.of(context)!.price+": ",
-                                                        style: Theme.of(context).textTheme.caption,
+                                                        "${AppLocalizations.of(context)!.price}: ",
+                                                        style: Theme.of(context).textTheme.bodySmall,
                                                         textAlign: TextAlign.left
                                                     ),
                                                     Text(
-                                                        purchase.price!.toStringAsFixed(2)+" €",
-                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                        "${purchase.price!.toStringAsFixed(2)} €",
+                                                        style: Theme.of(context).textTheme.bodyLarge,
                                                         textAlign: TextAlign.left
                                                     ),
                                                   ],
@@ -512,13 +511,13 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                        AppLocalizations.of(context)!.buyDate+": ",
-                                                        style: Theme.of(context).textTheme.caption,
+                                                        "${AppLocalizations.of(context)!.buyDate}: ",
+                                                        style: Theme.of(context).textTheme.bodySmall,
                                                         textAlign: TextAlign.left
                                                     ),
                                                     Text(
                                                         StringUtils().toCapitalized(DateFormat('EEEE dd/MM/yy', Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate())),
-                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                        style: Theme.of(context).textTheme.bodyLarge,
                                                         textAlign: TextAlign.left
                                                     ),
                                                   ],
@@ -528,8 +527,8 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                        AppLocalizations.of(context)!.paymentMethod+": ",
-                                                        style: Theme.of(context).textTheme.caption,
+                                                        "${AppLocalizations.of(context)!.paymentMethod}: ",
+                                                        style: Theme.of(context).textTheme.bodySmall,
                                                         textAlign: TextAlign.left
                                                     ),
                                                     buildPaymentMethod(purchase)

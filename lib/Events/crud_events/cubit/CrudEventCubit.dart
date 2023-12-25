@@ -7,7 +7,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
@@ -18,13 +17,8 @@ import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Recurrent.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Events/crud_events/read_event/cubit/ReadEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:uuid/uuid.dart';
 part 'CrudEventState.dart';
 
@@ -153,7 +147,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
     late Event event = Event();
     DateTime startDate = DateTime.now();
-    List<Usuario> _selectedTrainer = [];
+    List<Usuario> selectedTrainer = [];
     eventBonos = [];
     clientsModified = false;
     errorBonos = false;
@@ -185,8 +179,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     event.startDate =
         startDate; // = event.copyWith(startDate: state.newEvent.startDate = startDate);
     event.duration = 1; // = event.copyWith(duration: 1);
-    _selectedTrainer.add(currentUser);
-    event.selectedTrainersList = List.from(_selectedTrainer);
+    selectedTrainer.add(currentUser);
+    event.selectedTrainersList = List.from(selectedTrainer);
     event.joinedMembersList = []; // = event.copyWith(joinedMembersList!: []);
     event.maxMembers = 4; // event.copyWith(maxMembers: 1);
     event.isRecurrent = false;
@@ -261,24 +255,24 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
   Future<void> addEventFunction(
       BuildContext context,
-      Event _event,
+      Event event,
       bool isPrivate,
       ReceivedNotification notificationBefore,
       ReceivedNotification notificationAfter) async {
-    if (!_event.isRecurrent!) {
+    if (!event.isRecurrent!) {
       emitWorkingState(30);
       await _addUniqueEventFunction(
-          context, _event, isPrivate, notificationBefore, notificationAfter);
+          context, event, isPrivate, notificationBefore, notificationAfter);
     } else {
       emitWorkingState(30);
       await _addRecurrentEvents(
-          context, _event, isPrivate, notificationBefore, notificationAfter);
+          context, event, isPrivate, notificationBefore, notificationAfter);
     }
   }
 
   Future<void> _addUniqueEventFunction(
       BuildContext context,
-      Event _event,
+      Event eventVariable,
       bool isPrivate,
       ReceivedNotification notificationBefore,
       ReceivedNotification notificationAfter) async {
@@ -286,7 +280,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     mixpanel!.timeEvent("add_event_completed");
 
     //Event Bonos
-    List<Bono> selectedBonos = _event.eventBonos!.entries
+    List<Bono> selectedBonos = eventVariable.eventBonos!.entries
         .where((entry) => entry.value)
         .map((entry) => entry.key)
         .toList();
@@ -296,33 +290,33 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
 
     // Event Start Date
-    Timestamp doneAt = Timestamp.fromDate(_event.startDate!);
+    Timestamp doneAt = Timestamp.fromDate(eventVariable.startDate!);
 
     // Creating Event Object
     Event event = Event(
       isPrivate: isPrivate,
-      title: _event.title,
-      description: _event.description,
+      title: eventVariable.title,
+      description: eventVariable.description,
       imageUrl: eventImageUrl,
       doneAt: doneAt,
       createdAt: Timestamp.now(),
-      year: _event.startDate!.year.toString(),
-      month: _event.startDate!.month.toString(),
-      day: _event.startDate!.day.toString(),
-      hour: _event.startDate!.hour.toString(),
-      minute: _event.startDate!.minute.toString(),
-      duration: _event.duration!,
-      locationId: _event.location!.id,
-      numClients: _event.joinedMembersList!.length,
-      numTrainers: _event.selectedTrainersList!.length,
-      maxMembers: _event.maxMembers,
-      joinedMembersList: _event.joinedMembersList!,
-      selectedTrainersList: _event.selectedTrainersList!,
+      year: eventVariable.startDate!.year.toString(),
+      month: eventVariable.startDate!.month.toString(),
+      day: eventVariable.startDate!.day.toString(),
+      hour: eventVariable.startDate!.hour.toString(),
+      minute: eventVariable.startDate!.minute.toString(),
+      duration: eventVariable.duration!,
+      locationId: eventVariable.location!.id,
+      numClients: eventVariable.joinedMembersList!.length,
+      numTrainers: eventVariable.selectedTrainersList!.length,
+      maxMembers: eventVariable.maxMembers,
+      joinedMembersList: eventVariable.joinedMembersList!,
+      selectedTrainersList: eventVariable.selectedTrainersList!,
     );
     // Add Event
     String eventId = await _addEvents.addEventCall(event);
     notificationBefore.payload = eventId;
-    notificationAfter.payload = "F-" + eventId;
+    notificationAfter.payload = "F-$eventId";
     emitWorkingState(60);
 
     // Add Event Members
@@ -362,25 +356,25 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
   Future<void> _addRecurrentEvents(
       BuildContext context,
-      Event _event,
+      Event event,
       bool isPrivate,
       ReceivedNotification notificationBefore,
       ReceivedNotification notificationAfter) async {
     mixpanel!.timeEvent("add_event_completed");
 
     List<int> dayOfWeek = [];
-    Recurrent recurrent = _event.recurrent!;
+    Recurrent recurrent = event.recurrent!;
 
-    int weekDay = _event.startDate!.weekday;
+    int weekDay = event.startDate!.weekday;
     weekDay = weekDay - 1;
 
     for (int i = 0; i < recurrent.values!.length; i++) {
-      if (_event.recurrent!.values![i]) {
+      if (event.recurrent!.values![i]) {
         dayOfWeek.add(i - weekDay);
       }
     }
     //Event Bonos
-    List<Bono> selectedBonos = _event.eventBonos!.entries
+    List<Bono> selectedBonos = event.eventBonos!.entries
         .where((entry) => entry.value)
         .map((entry) => entry.key)
         .toList();
@@ -391,14 +385,14 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     }
 
     List<String> trainers = [];
-    if (_event.selectedTrainersList!.isNotEmpty) {
-      trainers = _event.selectedTrainersList!
+    if (event.selectedTrainersList!.isNotEmpty) {
+      trainers = event.selectedTrainersList!
           .map((trainer) => trainer.id)
           .cast<String>()
           .toList();
     }
 
-    _event.doneAt = Timestamp.fromDate(_event.startDate!);
+    event.doneAt = Timestamp.fromDate(event.startDate!);
 
     // Event Group Id
     String eventGroupId = const Uuid().v1();
@@ -419,14 +413,14 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         emitWorkingState(valuePortions);
         valuePortions += valueToSum;
         startDate =
-            _event.startDate!.add(Duration(days: ((i * 7) + dayOfWeek[j])));
-        if (!startDate.isBefore(_event.startDate!)) {
+            event.startDate!.add(Duration(days: ((i * 7) + dayOfWeek[j])));
+        if (!startDate.isBefore(event.startDate!)) {
           //TODO CLOUD FUNCTION
           groupEventsIds.add(await _recurrentEvents.addOneRecurrentEvent(
               context,
               startDate,
               eventGroupId,
-              _event,
+              event,
               isPrivate,
               currentBrand,
               currentUser.id!,
@@ -443,14 +437,14 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     }
 
     mixpanel!.track('add_event_completed', properties: {
-      'descriptionLength': _event.description!.length.toString(),
+      'descriptionLength': event.description!.length.toString(),
       'isPrivate': isPrivate,
       'isRecurrent': true,
-      'doneAt': _event.doneAt!.toDate().toString(),
-      'duration': _event.duration.toString(),
-      'numClients': _event.joinedMembersList!.length.toString(),
-      'numTrainers': _event.selectedTrainersList!.length.toString(),
-      'maxMembers': _event.maxMembers!.toString(),
+      'doneAt': event.doneAt!.toDate().toString(),
+      'duration': event.duration.toString(),
+      'numClients': event.joinedMembersList!.length.toString(),
+      'numTrainers': event.selectedTrainersList!.length.toString(),
+      'maxMembers': event.maxMembers!.toString(),
     });
 
     resetNewEvent();
@@ -460,47 +454,47 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
   Future<void> updateEventFunction(
       BuildContext context,
-      Event _event,
-      Event _oldEvent,
+      Event event,
+      Event oldEvent,
       ReceivedNotification notificationBefore,
       ReceivedNotification notificationAfter) async {    
 emit(state.copyWith(isWorking: 30));
     await _updateEventFunction(
-        context, _event, _oldEvent, notificationBefore, notificationAfter);
+        context, event, oldEvent, notificationBefore, notificationAfter);
   }
 
   Future<void> updateRecurrentEventFunction(
       BuildContext context,
-      Event _event,
-      Event _oldEvent,
+      Event event,
+      Event oldEvent,
       ReceivedNotification notificationBefore,
       ReceivedNotification notificationAfter) async {  
 emit(state.copyWith(isWorking: 30));
-    await _updateRecurrentEventFunction(context, _event, _oldEvent.isPrivate!,
+    await _updateRecurrentEventFunction(context, event, oldEvent.isPrivate!,
         notificationBefore, notificationAfter);
   }
 
   Future<void> _updateRecurrentEventFunction(
       BuildContext context,
-      Event _event,
+      Event event,
       bool isPrivate,
       ReceivedNotification notificationBefore,
       ReceivedNotification notificationAfter) async {
     mixpanel!.timeEvent('edit_event_completed');
 
-    List<Bono> selectedBonos = _event.eventBonos!.entries
+    List<Bono> selectedBonos = event.eventBonos!.entries
         .where((entry) => entry.value)
         .map((entry) => entry.key)
         .toList();
 
     // Get Recurrent Group Ids ..
     var eventGroupIds =
-        await _eventDataService.getRecurrentEventGroup(_event.eventGroupId!);
+        await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
     List<String> eventGroupIdsList = eventGroupIds.cast<String>();
 
     // Find index of Current Event
     int index =
-        eventGroupIdsList.indexWhere((element) => element == _event.id!);
+        eventGroupIdsList.indexWhere((element) => element == event.id!);
     // Recurrent total
     //totalEvents = eventGroupIdsList.length - index;
     int totalEvents = eventGroupIdsList.length;
@@ -545,8 +539,8 @@ emit(state.copyWith(isWorking: 30));
         int.parse(originalEvent.year!),
         int.parse(originalEvent.month!),
         int.parse(originalEvent.day!),
-        _event.startDate!.hour,
-        _event.startDate!.minute,
+        event.startDate!.hour,
+        event.startDate!.minute,
       );
 
       Timestamp doneAt = Timestamp.fromDate(updatedStartDate);
@@ -554,9 +548,9 @@ emit(state.copyWith(isWorking: 30));
       Event updatedEvent = Event(
         id: eventId,
         isPrivate: isPrivate,
-        title: _event.title,
-        description: _event.description,
-        imageUrl: _event.imageUrl,
+        title: event.title,
+        description: event.description,
+        imageUrl: event.imageUrl,
         doneAt: doneAt,
         createdAt: Timestamp.now(),
         year: updatedStartDate.year.toString(),
@@ -564,13 +558,13 @@ emit(state.copyWith(isWorking: 30));
         day: updatedStartDate.day.toString(),
         hour: updatedStartDate.hour.toString(),
         minute: updatedStartDate.minute.toString(),
-        duration: _event.duration,
-        locationId: _event.location!.id,
-        numClients: _event.joinedMembersList!.length,
-        numTrainers: _event.selectedTrainersList!.length,
-        maxMembers: _event.maxMembers,
-        joinedMembersList: _event.joinedMembersList!,
-        selectedTrainersList: _event.selectedTrainersList!,
+        duration: event.duration,
+        locationId: event.location!.id,
+        numClients: event.joinedMembersList!.length,
+        numTrainers: event.selectedTrainersList!.length,
+        maxMembers: event.maxMembers,
+        joinedMembersList: event.joinedMembersList!,
+        selectedTrainersList: event.selectedTrainersList!,
         startDate: updatedStartDate,
       );
 
@@ -603,8 +597,8 @@ emit(state.copyWith(isWorking: 30));
 
   Future<void> _updateEventFunction(
       BuildContext context,
-      Event _event,
-      Event _oldEvent,
+      Event eventVariable,
+      Event oldEvent,
       ReceivedNotification notificationBefore,
       ReceivedNotification notificationAfter) async {
     String eventImageUrl;
@@ -615,41 +609,41 @@ emit(state.copyWith(isWorking: 30));
     mixpanel!.timeEvent("edit_event_completed");
 
     //Event Bonos
-    List<Bono> selectedBonos = _event.eventBonos!.entries
+    List<Bono> selectedBonos = eventVariable.eventBonos!.entries
         .where((entry) => entry.value)
         .map((entry) => entry.key)
         .toList();
 
-    eventImageUrl = _event.imageUrl!;
+    eventImageUrl = eventVariable.imageUrl!;
 
     // Event Start Date
-    Timestamp doneAt = Timestamp.fromDate(_event.startDate!);
+    Timestamp doneAt = Timestamp.fromDate(eventVariable.startDate!);
     // Creating Event Object
     Event event = Event(
-      id: _oldEvent.id,
-      isPrivate: _oldEvent.isPrivate,
-      title: _event.title,
-      description: _event.description,
+      id: oldEvent.id,
+      isPrivate: oldEvent.isPrivate,
+      title: eventVariable.title,
+      description: eventVariable.description,
       imageUrl: eventImageUrl,
       doneAt: doneAt,
       createdAt: Timestamp.now(),
-      year: _event.startDate!.year.toString(),
-      month: _event.startDate!.month.toString(),
-      day: _event.startDate!.day.toString(),
-      hour: _event.startDate!.hour.toString(),
-      minute: _event.startDate!.minute.toString(),
-      duration: _event.duration!,
-      locationId: _event.location!.id,
-      numClients: _event.joinedMembersList!.length,
-      numTrainers: _event.selectedTrainersList!.length,
-      maxMembers: _event.maxMembers,
-      joinedMembersList: _event.joinedMembersList!,
-      selectedTrainersList: _event.selectedTrainersList!,
-      startDate: _event.startDate!,
+      year: eventVariable.startDate!.year.toString(),
+      month: eventVariable.startDate!.month.toString(),
+      day: eventVariable.startDate!.day.toString(),
+      hour: eventVariable.startDate!.hour.toString(),
+      minute: eventVariable.startDate!.minute.toString(),
+      duration: eventVariable.duration!,
+      locationId: eventVariable.location!.id,
+      numClients: eventVariable.joinedMembersList!.length,
+      numTrainers: eventVariable.selectedTrainersList!.length,
+      maxMembers: eventVariable.maxMembers,
+      joinedMembersList: eventVariable.joinedMembersList!,
+      selectedTrainersList: eventVariable.selectedTrainersList!,
+      startDate: eventVariable.startDate!,
     );
 
-    notificationBefore.payload = _oldEvent.id;
-    notificationAfter.payload = "F-" + _oldEvent.id!;
+    notificationBefore.payload = oldEvent.id;
+    notificationAfter.payload = "F-${oldEvent.id!}";
 
     // Update Event
     await _eventDataService.updateEvent(event);
@@ -657,24 +651,24 @@ emit(state.copyWith(isWorking: 30));
     // Update Event Bonos
     List<Bono> originalBonos = [];
 
-    for (Bono bono in _oldEvent.bonos) {
+    for (Bono bono in oldEvent.bonos) {
       originalBonos.add(bono);
     }
 
     await _addEvents.updateBonos(originalBonos, selectedBonos, event.id!);
 
     // Update Event Location
-    if (event.locationId! != _oldEvent.locationId!) {
+    if (event.locationId! != oldEvent.locationId!) {
       await _eventDataService.updateEventLocation(
-          event.id!, event.locationId!, _oldEvent.locationId!);
+          event.id!, event.locationId!, oldEvent.locationId!);
     }
 
     await _addEvents.assignTrainers(
-        context, _oldEvent, event, currentUser.id!, notificationBefore);
+        context, oldEvent, event, currentUser.id!, notificationBefore);
 
     await _addEvents.assignClients(
         context,
-        _oldEvent,
+        oldEvent,
         event,
         selectedBonos,
         currentBrand.id!,
@@ -699,48 +693,48 @@ emit(state.copyWith(isWorking: 30));
   //Delete event
 
   Future<void> deleteEventFunction(
-      BuildContext context, Event _oldEvent, bool isPrivate) async {
+      BuildContext context, Event oldEvent, bool isPrivate) async {
     emitWorkingState(30);
-    await _deleteEventFunction(context, _oldEvent, isPrivate);
+    await _deleteEventFunction(context, oldEvent, isPrivate);
   }
 
   Future<void> _deleteEventFunction(
-      BuildContext context, Event _oldEvent, bool isPrivate) async {
+      BuildContext context, Event oldEvent, bool isPrivate) async {
     mixpanel!.timeEvent("delete_event_completed");
 
     // Delete Event Call
-    await _eventDataService.deleteEvent(_oldEvent.id!, isPrivate);
+    await _eventDataService.deleteEvent(oldEvent.id!, isPrivate);
     emitWorkingState(30);
 
     // Event Members
-    List<Usuario> eventMembers = List.from(_oldEvent.selectedTrainersList!);
-    eventMembers.addAll(_oldEvent.joinedMembersList!);
+    List<Usuario> eventMembers = List.from(oldEvent.selectedTrainersList!);
+    eventMembers.addAll(oldEvent.joinedMembersList!);
 
     // Delete Event Bonos
-    _deleteEventBonosCall(_oldEvent.id!);
+    _deleteEventBonosCall(oldEvent.id!);
     emitWorkingState(60);
     // Delete Event Local Notifications
     for (var i = 0; i < eventMembers.length; i++) {
       var user = eventMembers[i];
       // Remove Local Notifications Service
       await _notificationsEvents.deleteEventLocalNotificationsCall(
-          _oldEvent.id!, user.id!, currentUser.id!);
+          oldEvent.id!, user.id!, currentUser.id!);
     }
     emitWorkingState(80);
     // Delete Event From Event Group Id in Case it has any.
-    if (_oldEvent.eventGroupId != null) {
+    if (oldEvent.eventGroupId != null) {
       // Get Recurrent Group Ids ..
       var eventGroupIds = await _eventDataService
-          .getRecurrentEventGroup(_oldEvent.eventGroupId!);
+          .getRecurrentEventGroup(oldEvent.eventGroupId!);
       // Delete Only This Event..
-      eventGroupIds.removeWhere((element) => element == _oldEvent.id!);
+      eventGroupIds.removeWhere((element) => element == oldEvent.id!);
       // Delete Event From Recurrent Group..
       if (eventGroupIds.isNotEmpty) {
         await _eventDataService.updateRecurrentEventGroup(
-            _oldEvent.eventGroupId!, eventGroupIds);
+            oldEvent.eventGroupId!, eventGroupIds);
       } else {
         await _eventDataService
-            .deleteRecurrentEventGroup(_oldEvent.eventGroupId!);
+            .deleteRecurrentEventGroup(oldEvent.eventGroupId!);
       }
     }
     mixpanel!.track('delete_event_completed',
@@ -750,30 +744,30 @@ emit(state.copyWith(isWorking: 30));
   }
 
   Future<void> deleteRecurrentEventFunction(
-      BuildContext context, Event _oldEvent, bool isPrivate) async {
+      BuildContext context, Event oldEvent, bool isPrivate) async {
     emitWorkingState(30);
-    await _deleteRecurrentEventFunction(context, _oldEvent, isPrivate);
+    await _deleteRecurrentEventFunction(context, oldEvent, isPrivate);
   }
 
   Future<void> _deleteRecurrentEventFunction(
-      BuildContext context, Event _oldEvent, bool isPrivate) async {
+      BuildContext context, Event oldEvent, bool isPrivate) async {
     mixpanel!.timeEvent("delete_event_completed");
 
     // Get Recurrent Group Ids ..
     var eventGroupIds =
-        await _eventDataService.getRecurrentEventGroup(_oldEvent.eventGroupId!);
+        await _eventDataService.getRecurrentEventGroup(oldEvent.eventGroupId!);
     List<String> eventGroupIdsList = eventGroupIds.cast<String>();
     // Find index of Current Event
     int index =
-        eventGroupIdsList.indexWhere((element) => element == _oldEvent.id!);
+        eventGroupIdsList.indexWhere((element) => element == oldEvent.id!);
     // Update Recurrent Event Group
     if (index == 0) {
       await _eventDataService
-          .deleteRecurrentEventGroup(_oldEvent.eventGroupId!);
+          .deleteRecurrentEventGroup(oldEvent.eventGroupId!);
     } else {
       eventGroupIds = eventGroupIds.sublist(0, index);
       await _eventDataService.updateRecurrentEventGroup(
-          _oldEvent.eventGroupId!, eventGroupIds);
+          oldEvent.eventGroupId!, eventGroupIds);
     }
     // Recurrent total
     int totalEvents = eventGroupIdsList.length - index;
@@ -798,7 +792,7 @@ emit(state.copyWith(isWorking: 30));
         var user = eventMembers[i];
         // Remove Local Notifications Service
         await _notificationsEvents.deleteEventLocalNotificationsCall(
-            _oldEvent.id!, user.id!, currentUser.id!);
+            oldEvent.id!, user.id!, currentUser.id!);
       }
     }
     mixpanel!.track('delete_event_completed',
@@ -948,20 +942,19 @@ emit(state.copyWith(isWorking: 30));
     ));
   }
 
-  Recurrent updateRecurrency(DateTime startDate, bool isRecurrent, int _value,
-      bool checkValues, List<bool> _values, int newVal) {
-    List<bool> values;
+  Recurrent updateRecurrency(DateTime startDate, bool isRecurrent, int value,
+      bool checkValues, List<bool> values, int newVal) {
+    List<bool> localValues = List.from(values);
     if (checkValues) {
       if (isRecurrent) {
-        values = [false, false, false, false, false, false, false];
-        values[startDate.weekday - 1] = true;
+        localValues = [false, false, false, false, false, false, false];
+        localValues[startDate.weekday - 1] = true;
       } else {
-        values = [false, false, false, false, false, false, false];
+        localValues = [false, false, false, false, false, false, false];
       }
     } else {
-      values = _values;
       if (newVal != -1) {
-        values[newVal % 7] = !values[newVal % 7];
+        localValues[newVal % 7] = !localValues[newVal % 7];
       }
     }
     Recurrent recurrent = Recurrent(
@@ -972,8 +965,8 @@ emit(state.copyWith(isWorking: 30));
       sixMonth: startDate.add(const Duration(days: 182)),
       nineMonth: startDate.add(const Duration(days: 273)),
       twelveMonth: startDate.add(const Duration(days: 364)),
-      values: values,
-      value: _value,
+      values: localValues,
+      value: value,
     );
     return recurrent;
   }
@@ -1092,8 +1085,8 @@ emit(state.copyWith(isWorking: 30));
   }
 
   bool _validateDateTimeDuration(
-      DateTime startDate, double duration, bool isPrivate, bool _isBeforeEdit) {
-    if (!_validateDateAndTime(startDate, duration, _isBeforeEdit)) {
+      DateTime startDate, double duration, bool isPrivate, bool isBeforeEdit) {
+    if (!_validateDateAndTime(startDate, duration, isBeforeEdit)) {
       if (!state.isNew) {
         mixpanel!.track('edit_event_datetime_error',
             properties: {'isPrivate': isPrivate});
@@ -1107,7 +1100,7 @@ emit(state.copyWith(isWorking: 30));
   }
 
   bool _validateDateAndTime(
-      DateTime startTime, double duration, bool _isBeforeEdit) {
+      DateTime startTime, double duration, bool isBeforeEdit) {
     if (!isBeforeEdit) return true;
     // Calculating the Time to check
     var hour = duration.toString().split(".")[0];
@@ -1168,20 +1161,20 @@ emit(state.copyWith(isWorking: 30));
     }
   }
 
-  List<bool> _validateEvent(Event _event, bool _isPrivate, bool _isBeforeEdit) {
-    bool isPrivate = _isPrivate;
+  List<bool> _validateEvent(Event event, bool isPrivateVar, bool isBeforeEdit) {
+    bool isPrivate = isPrivateVar;
     List<bool> isValidated = [true, true, true];
 
-    if (!_validateTitleDescription(_event.title!, isPrivate)) {
+    if (!_validateTitleDescription(event.title!, isPrivate)) {
       isValidated[0] = false;
     }
 
     if (!_validateDateTimeDuration(
-        _event.startDate!, _event.duration!, isPrivate, _isBeforeEdit)) {
+        event.startDate!, event.duration!, isPrivate, isBeforeEdit)) {
       isValidated[1] = false;
     }
 
-    if (!_validateStaff(_event.selectedTrainersList!, isPrivate)) {
+    if (!_validateStaff(event.selectedTrainersList!, isPrivate)) {
       isValidated[2] = false;
     }
 

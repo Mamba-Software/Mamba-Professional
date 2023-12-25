@@ -1,24 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class JoinConfirmationDialogBonos extends StatefulWidget {
   final String text;
@@ -26,12 +20,11 @@ class JoinConfirmationDialogBonos extends StatefulWidget {
   final List<Bono> bonos;
   final String userId;
   const JoinConfirmationDialogBonos(
-      {Key? key,
+      {super.key,
       required this.text,
       required this.bonos,
       required this.brand,
-      required this.userId})
-      : super(key: key);
+      required this.userId});
 
   @override
   _JoinConfirmationDialogBonosState createState() =>
@@ -140,7 +133,7 @@ class _JoinConfirmationDialogBonosState
                                                 .whichBono,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1
+                                                .bodyLarge
                                                 ?.copyWith(
                                                     height: 1.5,
                                                     fontWeight:
@@ -274,22 +267,17 @@ class _JoinConfirmationDialogBonosState
                                                     0.07,
                                                 color: Colors.white),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                      .cancelTimeAt +
-                                                  " " +
-                                                  userBonosPurchases[
+                                              "${AppLocalizations.of(context)!
+                                                      .cancelTimeAt} ${userBonosPurchases[
                                                           _currentPage]
                                                       .bono!
                                                       .condition!
-                                                      .cancelTime
-                                                      .toString() +
-                                                  " " +
-                                                  AppLocalizations.of(context)!
+                                                      .cancelTime} ${AppLocalizations.of(context)!
                                                       .hours
-                                                      .toLowerCase(),
+                                                      .toLowerCase()}",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2
+                                                  .bodyMedium
                                                   ?.copyWith(
                                                       color: Colors.white),
                                             )),
@@ -341,7 +329,7 @@ class _JoinConfirmationDialogBonosState
                           widget.text,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(height: 1.5),
                           textAlign: TextAlign.center,
                         ),
@@ -373,7 +361,7 @@ class _JoinConfirmationDialogBonosState
                           AppLocalizations.of(context)!.book,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: Colors.white),
                         ),
                         icon: Icon(Icons.event_available_outlined,
@@ -415,7 +403,7 @@ class _JoinConfirmationDialogBonosState
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
                           style:
-                              Theme.of(context).textTheme.bodyText2?.copyWith(
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context).primaryColorDark,
                                   ),
                         ),

@@ -12,7 +12,6 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
@@ -24,7 +23,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 
 class Notifications extends StatefulWidget {
-  const Notifications({Key? key}) : super(key: key);
+  const Notifications({super.key});
 
   @override
   _NotificationsState createState() => _NotificationsState();
@@ -333,7 +332,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             Text(
               AppLocalizations.of(context)!.notificationsBottomNav,
-              style: Theme.of(context).textTheme.headline3,
+              style: Theme.of(context).textTheme.displaySmall,
               textAlign: TextAlign.center,
             ),
           ],
@@ -358,7 +357,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             label: Text(
               AppLocalizations.of(context)!.markAsRead,
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             onPressed: () async {
               mixpanel!.track('user_notifications_all_read');
@@ -424,9 +423,9 @@ class _NotificationsState extends State<Notifications> {
                           child: Container(
                             height: MediaQuery.of(context).size.height * 0.02,
                             width: MediaQuery.of(context).size.width * 0.3,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: AppColors.grey,
-                              borderRadius: const BorderRadius.all(
+                              borderRadius: BorderRadius.all(
                                 Radius.circular(10.0),
                               ),
                             ),
@@ -440,9 +439,9 @@ class _NotificationsState extends State<Notifications> {
                           child: Container(
                             height: MediaQuery.of(context).size.height * 0.02,
                             width: MediaQuery.of(context).size.width * 0.2,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: AppColors.grey,
-                              borderRadius: const BorderRadius.all(
+                              borderRadius: BorderRadius.all(
                                 Radius.circular(10.0),
                               ),
                             ),
@@ -527,7 +526,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               AppLocalizations.of(context)!.wellcomeToMAMBA,
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -538,14 +537,14 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   AppLocalizations.of(context)!.onlyImportantNotifications,
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(fontSize: 10),
                 ),
               ],
@@ -572,7 +571,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               AppLocalizations.of(context)!.userCreatesBrandUser(brand.name!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -583,14 +582,14 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   AppLocalizations.of(context)!.userCreatesBrandUserSubtitle,
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(fontSize: 10),
                 ),
               ],
@@ -617,7 +616,7 @@ class _NotificationsState extends State<Notifications> {
             title: Text(
               AppLocalizations.of(context)!
                   .userJoinsBrandBrand(user.name!, brand.name!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -629,14 +628,14 @@ class _NotificationsState extends State<Notifications> {
                 Text(
                   AppLocalizations.of(context)!
                       .userJoinsBrandBrandSubtitle(notification.parameters[3]),
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(fontSize: 10),
                 ),
               ],
@@ -663,7 +662,7 @@ class _NotificationsState extends State<Notifications> {
             title: Text(
               AppLocalizations.of(context)!
                   .userLeavesBrandBrand(user.name!, brand.name!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -675,14 +674,14 @@ class _NotificationsState extends State<Notifications> {
                 Text(
                   AppLocalizations.of(context)!
                       .userLeavesBrandBrandSubtitle(notification.parameters[3]),
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(fontSize: 10),
                 ),
               ],
@@ -709,7 +708,7 @@ class _NotificationsState extends State<Notifications> {
             title: Text(
               AppLocalizations.of(context)!
                   .userSendRequestToBrandBrand(user.name!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -722,14 +721,14 @@ class _NotificationsState extends State<Notifications> {
                   AppLocalizations.of(context)!
                       .userSendRequestToBrandBrandSubtitle(
                           notification.parameters[3]),
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(fontSize: 10),
                 ),
               ],
@@ -756,7 +755,7 @@ class _NotificationsState extends State<Notifications> {
             title: Text(
               AppLocalizations.of(context)!
                   .userCancelRequestToBrandBrand(user.name!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -768,14 +767,14 @@ class _NotificationsState extends State<Notifications> {
                 Text(
                   AppLocalizations.of(context)!
                       .userCancelRequestToBrandBrandSubtitle,
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(fontSize: 10),
                 ),
               ],
@@ -803,7 +802,7 @@ class _NotificationsState extends State<Notifications> {
               title: Text(
                 AppLocalizations.of(context)!
                     .userJoinEventBrand(user.name!, event.title!),
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: notification.isRead!
                         ? FontWeight.normal
                         : FontWeight.bold),
@@ -816,14 +815,14 @@ class _NotificationsState extends State<Notifications> {
                     AppLocalizations.of(context)!.userJoinEventBrandSubtitle(
                         event.numClients.toString(),
                         event.maxMembers.toString()),
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
                     time.toUpperCase(),
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium
                         ?.copyWith(fontSize: 10),
                   ),
                 ],
@@ -850,7 +849,7 @@ class _NotificationsState extends State<Notifications> {
               title: Text(
                 AppLocalizations.of(context)!
                     .userJoinEventBrand(user.name!, event.title!),
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: notification.isRead!
                         ? FontWeight.normal
                         : FontWeight.bold),
@@ -863,7 +862,7 @@ class _NotificationsState extends State<Notifications> {
                     time.toUpperCase(),
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium
                         ?.copyWith(fontSize: 10),
                   ),
                 ],
@@ -885,7 +884,7 @@ class _NotificationsState extends State<Notifications> {
               title: Text(
                 AppLocalizations.of(context)!
                     .userLeavesEventBrand(user.name!, event.title!),
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: notification.isRead!
                         ? FontWeight.normal
                         : FontWeight.bold),
@@ -898,14 +897,14 @@ class _NotificationsState extends State<Notifications> {
                     AppLocalizations.of(context)!.userLeavesEventBrandSubtitle(
                         event.numClients.toString(),
                         event.maxMembers.toString()),
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
                     time.toUpperCase(),
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium
                         ?.copyWith(fontSize: 10),
                   ),
                 ],
@@ -932,7 +931,7 @@ class _NotificationsState extends State<Notifications> {
               title: Text(
                 AppLocalizations.of(context)!
                     .userLeavesEventBrand(user.name!, event.title!),
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: notification.isRead!
                         ? FontWeight.normal
                         : FontWeight.bold),
@@ -945,7 +944,7 @@ class _NotificationsState extends State<Notifications> {
                     time.toUpperCase(),
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium
                         ?.copyWith(fontSize: 10),
                   ),
                 ],
@@ -966,7 +965,7 @@ class _NotificationsState extends State<Notifications> {
             title: Text(
               AppLocalizations.of(context)!
                   .userSendsBonoRequestBrand(user.name!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -979,14 +978,14 @@ class _NotificationsState extends State<Notifications> {
                   AppLocalizations.of(context)!
                       .userSendsBonoRequestSubtitleBrand(
                           bono.title!.toUpperCase()),
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(fontSize: 10),
                 ),
               ],
@@ -1013,7 +1012,7 @@ class _NotificationsState extends State<Notifications> {
             title: Text(
               AppLocalizations.of(context)!
                   .userCancelsBonoRequestBrand(user.name!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -1026,14 +1025,14 @@ class _NotificationsState extends State<Notifications> {
                   AppLocalizations.of(context)!
                       .userCancelsBonoRequestSubtitleBrand(
                           bono.title!.toUpperCase()),
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(fontSize: 10),
                 ),
               ],
@@ -1060,7 +1059,7 @@ class _NotificationsState extends State<Notifications> {
             title: Text(
               AppLocalizations.of(context)!
                   .userBuysBonoTrainer(user.name!, bono.title!.toUpperCase()),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -1071,14 +1070,14 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   AppLocalizations.of(context)!.userBuysBonoTrainerSubtitle,
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(fontSize: 10),
                 ),
               ],

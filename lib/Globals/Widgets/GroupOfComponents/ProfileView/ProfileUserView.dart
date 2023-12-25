@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -38,12 +37,12 @@ class ProfileViewUser extends StatefulWidget {
   ValueChanged<bool?>? blockedChanged;
 
   ProfileViewUser(
-      {Key? key,
+      {super.key,
       required this.userID,
       required this.viewOnly,
       this.comesFromChat,
-      this.blockedChanged})
-      : super(key: key);
+      this.blockedChanged});
+  @override
   _ProfileViewUserState createState() => _ProfileViewUserState();
 }
 
@@ -156,6 +155,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
         context,
         CupertinoPageRoute<Null>(
             builder: (context) => FullScreenPage(
+                  dark: false,
                   child: Image.network(
                     user.imageUrl!,
                     loadingBuilder: (BuildContext context, Widget child,
@@ -172,7 +172,6 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                       );
                     },
                   ),
-                  dark: false,
                 )));
     mixpanel!.track('user_profile_picture_click');
   }
@@ -224,7 +223,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                       : AppLocalizations.of(context)!.client,
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText1
+                      .bodyLarge
                       ?.copyWith(fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center),
               const SizedBox(height: 6),
@@ -232,7 +231,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                   AppLocalizations.of(context)!.joinedIn(DateTimeUtils()
                       .formatDateTimeToStringMMYYYY(dateJoined,
                           Localizations.localeOf(context).languageCode)),
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center)
             ],
           )
@@ -274,7 +273,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
               children: [
                 Text(
                   AppLocalizations.of(context)!.stats,
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 SizedBox(
@@ -296,30 +295,22 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                           children: [
                             averageTime < 90
                                 ? Text(
-                                    averageTime.toStringAsFixed(0) +
-                                        " " +
-                                        AppLocalizations.of(context)!
+                                    "${averageTime.toStringAsFixed(0)} ${AppLocalizations.of(context)!
                                             .minutesString
-                                            .toLowerCase() +
-                                        "/" +
-                                        AppLocalizations.of(context)!
+                                            .toLowerCase()}/${AppLocalizations.of(context)!
                                             .week
-                                            .toLowerCase(),
+                                            .toLowerCase()}",
                                     style:
-                                        Theme.of(context).textTheme.headline3,
+                                        Theme.of(context).textTheme.displaySmall,
                                   )
                                 : Text(
-                                    (averageTime / 60).toStringAsFixed(1) +
-                                        " " +
-                                        AppLocalizations.of(context)!
+                                    "${(averageTime / 60).toStringAsFixed(1)} ${AppLocalizations.of(context)!
                                             .hoursString
-                                            .toLowerCase() +
-                                        "/" +
-                                        AppLocalizations.of(context)!
+                                            .toLowerCase()}/${AppLocalizations.of(context)!
                                             .week
-                                            .toLowerCase(),
+                                            .toLowerCase()}",
                                     style:
-                                        Theme.of(context).textTheme.headline3,
+                                        Theme.of(context).textTheme.displaySmall,
                                   ),
                             const SizedBox(height: 4),
                             Text(
@@ -328,7 +319,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                       .averageTimeWorked
                                   : AppLocalizations.of(context)!
                                       .averageTimeTrained,
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -354,12 +345,10 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              totalTime.toStringAsFixed(0) +
-                                  " " +
-                                  AppLocalizations.of(context)!
+                              "${totalTime.toStringAsFixed(0)} ${AppLocalizations.of(context)!
                                       .hoursString
-                                      .toLowerCase(),
-                              style: Theme.of(context).textTheme.headline3,
+                                      .toLowerCase()}",
+                              style: Theme.of(context).textTheme.displaySmall,
                             ),
                             const SizedBox(height: 4),
                             Text(
@@ -368,7 +357,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                       .totalTimeWorked
                                   : AppLocalizations.of(context)!
                                       .totalTimeTrained,
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -394,17 +383,15 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              totalEvents.length.toString() +
-                                  " " +
-                                  AppLocalizations.of(context)!
+                              "${totalEvents.length} ${AppLocalizations.of(context)!
                                       .sessions
-                                      .toLowerCase(),
-                              style: Theme.of(context).textTheme.headline3,
+                                      .toLowerCase()}",
+                              style: Theme.of(context).textTheme.displaySmall,
                             ),
                             const SizedBox(height: 4),
                             Text(
                               AppLocalizations.of(context)!.sesionsCompleted,
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -427,7 +414,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                 children: [
                   Text(
                     AppLocalizations.of(context)!.stats,
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.displaySmall,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   SizedBox(
@@ -460,7 +447,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                               Text(
                                 AppLocalizations.of(context)!
                                     .averageTimeTrained,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -497,7 +484,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                               const SizedBox(height: 4),
                               Text(
                                 AppLocalizations.of(context)!.totalTimeTrained,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -534,7 +521,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                               const SizedBox(height: 4),
                               Text(
                                 AppLocalizations.of(context)!.sesionsCompleted,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -559,7 +546,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
               children: [
                 Text(
                   AppLocalizations.of(context)!.trainingStreak,
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 hasStreak
@@ -585,35 +572,29 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                 children: [
                                   streakWeeks != 1
                                       ? Text(
-                                          streakWeeks.toString() +
-                                              " " +
-                                              AppLocalizations.of(context)!
+                                          "$streakWeeks ${AppLocalizations.of(context)!
                                                   .week
-                                                  .toLowerCase() +
-                                              " " +
-                                              AppLocalizations.of(context)!
+                                                  .toLowerCase()} ${AppLocalizations.of(context)!
                                                   .inrow
-                                                  .toLowerCase(),
+                                                  .toLowerCase()}",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline1,
+                                              .displayLarge,
                                         )
                                       : Text(
-                                          streakWeeks.toString() +
-                                              " " +
-                                              AppLocalizations.of(context)!
+                                          "$streakWeeks ${AppLocalizations.of(context)!
                                                   .week
-                                                  .toLowerCase(),
+                                                  .toLowerCase()}",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline1,
+                                              .displayLarge,
                                         ),
                                   const SizedBox(height: 4),
                                   Text(
                                     AppLocalizations.of(context)!
                                         .trainingStreakCongrats,
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ],
                               ),
@@ -642,7 +623,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                       AppLocalizations.of(context)!
                                           .trainingStreakDescription,
                                       style:
-                                          Theme.of(context).textTheme.bodyText2,
+                                          Theme.of(context).textTheme.bodyMedium,
                                       textAlign: TextAlign.center),
                                 ],
                               ),
@@ -666,7 +647,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                 children: [
                   Text(
                     AppLocalizations.of(context)!.trainingStreak,
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.displaySmall,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   SizedBox(
@@ -731,7 +712,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                   ? AppLocalizations.of(context)!.sesionsCompleted
                   : StringUtils().toCapitalized(
                       AppLocalizations.of(context)!.myProgress.split(" ")[1]),
-              style: Theme.of(context).textTheme.headline3,
+              style: Theme.of(context).textTheme.displaySmall,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             SizedBox(
@@ -748,7 +729,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
                           backgroundColor: MaterialStateProperty.all(
-                              Theme.of(context).backgroundColor),
+                              Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(
                               Theme.of(context).primaryColor.withOpacity(0.1)),
@@ -776,7 +757,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                 .lastNMonths(6.toString()),
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText2
+                                .bodyMedium
                                 ?.copyWith(
                                     color: Theme.of(context).primaryColor),
                           ),
@@ -793,7 +774,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
                           backgroundColor: MaterialStateProperty.all(
-                              Theme.of(context).backgroundColor),
+                              Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(
                               Theme.of(context).primaryColor.withOpacity(0.1)),
@@ -820,7 +801,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                             AppLocalizations.of(context)!.lastYear,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText2
+                                .bodyMedium
                                 ?.copyWith(
                                     color: Theme.of(context).primaryColor),
                           ),
@@ -852,7 +833,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               Text(
                 AppLocalizations.of(context)!.myProgress,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               SizedBox(
@@ -874,7 +855,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                 const Duration(milliseconds: 100),
                             overlayColor: MaterialStateProperty.all(
                                 Theme.of(context)
-                                    .backgroundColor
+                                    .colorScheme.background
                                     .withOpacity(0.2)),
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(RoundedRectangleBorder(
@@ -899,7 +880,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                   .lastNMonths(6.toString()),
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(
                                       color:
                                           Theme.of(context).primaryColorDark),
@@ -922,7 +903,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                 const Duration(milliseconds: 100),
                             overlayColor: MaterialStateProperty.all(
                                 Theme.of(context)
-                                    .backgroundColor
+                                    .colorScheme.background
                                     .withOpacity(0.2)),
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(RoundedRectangleBorder(
@@ -946,7 +927,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                               AppLocalizations.of(context)!.lastYear,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(
                                       color:
                                           Theme.of(context).primaryColorDark),
@@ -991,22 +972,20 @@ class _ProfileViewUserState extends State<ProfileViewUser>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(AppLocalizations.of(context)!.recentEvents,
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.displaySmall,
                     textAlign: TextAlign.center),
                 totalEvents.isNotEmpty
                     ? TextButton(
+                        onPressed: navigateToEventHistoryScreen,
                         child: Text(
-                            AppLocalizations.of(context)!.seeMap.split(" ")[0] +
-                                " " +
-                                AppLocalizations.of(context)!
+                            "${AppLocalizations.of(context)!.seeMap.split(" ")[0]} ${AppLocalizations.of(context)!
                                     .historial
-                                    .toLowerCase(),
+                                    .toLowerCase()}",
                             style: Theme.of(context)
                                 .textTheme
-                                .caption
+                                .bodySmall
                                 ?.copyWith(
-                                    decoration: TextDecoration.underline)),
-                        onPressed: navigateToEventHistoryScreen)
+                                    decoration: TextDecoration.underline)))
                     : Container(),
               ],
             ),
@@ -1034,7 +1013,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(AppLocalizations.of(context)!.recentEvents,
-                      style: Theme.of(context).textTheme.headline3,
+                      style: Theme.of(context).textTheme.displaySmall,
                       textAlign: TextAlign.center),
                 ],
               ),
@@ -1149,7 +1128,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                               .choseOption,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .caption,
+                                              .bodySmall,
                                           textAlign: TextAlign.left),
                                     ),
                                     !blockedByUser
@@ -1168,7 +1147,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                                     .chatBottomNav,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1,
+                                                    .bodyLarge,
                                                 textAlign: TextAlign.left),
                                             onTap: () async {
                                               mixpanel!.track(
@@ -1185,12 +1164,12 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                                       .instance
                                                       .createRoom(otherUser,
                                                           metadata: {
-                                                    "trainer" + user.id!:
+                                                    "trainer${user.id!}":
                                                         user.isTrainer,
-                                                    "trainer" + currentUser.id!:
+                                                    "trainer${currentUser.id!}":
                                                         currentUser.isTrainer,
-                                                    "active" + user.id!: false,
-                                                    "active" + currentUser.id!:
+                                                    "active${user.id!}": false,
+                                                    "active${currentUser.id!}":
                                                         true,
                                                   });
 
@@ -1201,8 +1180,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                                     builder: (context) =>
                                                         ChatPage(room: room)),
                                               ).whenComplete(() async {
-                                                room.metadata!["active" +
-                                                    currentUser.id!] = false;
+                                                room.metadata!["active${currentUser.id!}"] = false;
                                                 _roomDataService.updateRoom(
                                                     room.id, room.metadata!);
                                               });
@@ -1229,7 +1207,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                                     .chatBottomNav,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     ?.copyWith(
                                                         color: Theme.of(context)
                                                             .disabledColor),
@@ -1256,7 +1234,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                                     .acceptBono,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     ?.copyWith(
                                                         color: hasAllBrandBonos
                                                             ? Theme.of(context)
@@ -1282,7 +1260,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .caption,
+                                                                  .bodySmall,
                                                           textAlign:
                                                               TextAlign.left),
                                                     ],
@@ -1323,16 +1301,14 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                               color: AppColors.red,
                                             ),
                                             title: Text(
-                                                AppLocalizations.of(context)!
-                                                        .delete +
-                                                    " " +
-                                                    AppLocalizations.of(
+                                                "${AppLocalizations.of(context)!
+                                                        .delete} ${AppLocalizations.of(
                                                             context)!
                                                         .member
-                                                        .toLowerCase(),
+                                                        .toLowerCase()}",
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     ?.copyWith(
                                                       color: AppColors.red,
                                                     ),
@@ -1369,7 +1345,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                           AppLocalizations.of(context)!.report,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1
+                                              .bodyLarge
                                               ?.copyWith(
                                                 color: AppColors.red,
                                               ),
@@ -1398,7 +1374,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                                                   .block,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1
+                                              .bodyLarge
                                               ?.copyWith(
                                                 color: AppColors.red,
                                               ),
@@ -1485,10 +1461,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
     final Uri params = Uri(
       scheme: 'mailto',
       path: contactEmail,
-      query: 'subject=Report ' +
-          widget.userID +
-          '&body=' +
-          AppLocalizations.of(context)!.reportUserFor,
+      query: 'subject=Report ${widget.userID}&body=${AppLocalizations.of(context)!.reportUserFor}',
     );
     var url = params.toString();    
     await launchUrl(Uri.parse(url));

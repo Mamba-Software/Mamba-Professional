@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +20,8 @@ import 'package:mamba_castelldefels/Events/cubit/BrandEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
@@ -44,14 +41,13 @@ class BrandCalendarWidget extends StatefulWidget {
   ValueChanged<bool?> pinnedChanged;
 
   BrandCalendarWidget(
-      {Key? key,
+      {super.key,
       required this.brandId,
       this.dateTime,
       this.calendarView,
       this.onlyView,
       required this.pinned,
-      required this.pinnedChanged})
-      : super(key: key);
+      required this.pinnedChanged});
 
   @override
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
@@ -311,7 +307,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
           "${AppLocalizations.of(context)!.schedule} ",
           style: Theme.of(context)
               .textTheme
-              .headline1
+              .displayLarge
               ?.copyWith(color: AppColors.white),
         );
       case CalendarView.day:
@@ -329,7 +325,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     ).format(dateTimeStart)).substring(0, 3)} ",
                 style: Theme.of(context)
                     .textTheme
-                    .headline1
+                    .displayLarge
                     ?.copyWith(color: AppColors.white),
               )
             : Text(
@@ -343,7 +339,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
-                    .headline1
+                    .displayLarge
                     ?.copyWith(color: AppColors.white),
               );
       case CalendarView.week:
@@ -361,7 +357,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
-                    .headline1
+                    .displayLarge
                     ?.copyWith(color: AppColors.white),
               )
             : Text(
@@ -377,7 +373,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
-                    .headline1
+                    .displayLarge
                     ?.copyWith(color: AppColors.white),
               );
       case CalendarView.month:
@@ -390,7 +386,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
           ).format(middleMonthDate)),
           style: Theme.of(context)
               .textTheme
-              .headline1
+              .displayLarge
               ?.copyWith(color: AppColors.white),
         );
       default:
@@ -408,7 +404,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
-                    .headline1
+                    .displayLarge
                     ?.copyWith(color: AppColors.white),
               )
             : Text(
@@ -424,7 +420,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
-                    .headline1
+                    .displayLarge
                     ?.copyWith(color: AppColors.white),
               );
     }
@@ -440,7 +436,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
         value: selectedValue,
         style: Theme.of(context)
             .textTheme
-            .headline1
+            .displayLarge
             ?.copyWith(color: AppColors.white),
         underline: Container(color: Colors.transparent),
         isExpanded: false,
@@ -478,7 +474,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                       color: Theme.of(context).primaryColor),
                   title: Text(
                     AppLocalizations.of(context)!.schedule,
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   trailing: FaIcon(
                     FontAwesomeIcons.check,
@@ -504,7 +500,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     color: Theme.of(context).primaryColor),
                 title: Text(
                   AppLocalizations.of(context)!.day,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
                   FontAwesomeIcons.check,
@@ -529,7 +525,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     color: Theme.of(context).primaryColor),
                 title: Text(
                   AppLocalizations.of(context)!.week,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
                   FontAwesomeIcons.check,
@@ -554,7 +550,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     color: Theme.of(context).primaryColor),
                 title: Text(
                   AppLocalizations.of(context)!.month,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
                   FontAwesomeIcons.check,
@@ -596,7 +592,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
             8,
             MediaQuery.of(context).size.height * 0.06,
           ],
-          padding: EdgeInsets.only(left: 14, right: 14),
+          padding: const EdgeInsets.only(left: 14, right: 14),
         ),
         // After selecting the desired option,it will
         // change button value to selected value
@@ -650,7 +646,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                   Flexible(
                     child: Text(
                       event.title!,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.white, fontWeight: FontWeight.w600),
                       textAlign: TextAlign.start,
                       softWrap: true,
@@ -663,7 +659,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                         "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText2
+                            .bodyMedium
                             ?.copyWith(color: AppColors.white),
                         overflow: TextOverflow.fade,
                         maxLines: 1,
@@ -674,14 +670,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                   event.numFreeSessions != null && event.numFreeSessions != 0
                       ? Flexible(
                           child: Container(
-                              margin: EdgeInsets.only(top: 8),
+                              margin: const EdgeInsets.only(top: 8),
                               child: Text(
                                 event.numFreeSessions == 1
                                     ? "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClient.toLowerCase()}"
                                     : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium
                                     ?.copyWith(
                                       color: AppColors.white,
                                       fontStyle: FontStyle.italic,
@@ -723,7 +719,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       "${trainer.firstName!} ${trainer.lastName![0]}.",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText2
+                                          .bodyMedium
                                           ?.copyWith(
                                               color: AppColors.white,
                                               fontSize: 12),
@@ -751,7 +747,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                   Flexible(
                     child: Text(
                       event.title!,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.white, fontWeight: FontWeight.w600),
                       textAlign: TextAlign.start,
                       softWrap: true,
@@ -762,7 +758,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                       "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
+                          .bodyMedium
                           ?.copyWith(color: AppColors.white),
                       overflow: TextOverflow.fade,
                       maxLines: 1,
@@ -782,7 +778,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}   -  ",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(
                                         color: AppColors.white,
                                         fontStyle: FontStyle.italic,
@@ -823,7 +819,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                             "${trainer.firstName!} ${trainer.lastName![0]}.",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText2
+                                                .bodyMedium
                                                 ?.copyWith(
                                                     color: AppColors.white,
                                                     fontSize: 12),
@@ -857,7 +853,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                       softWrap: true,
                       overflow: TextOverflow.visible,
                       text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             fontWeight: FontWeight.w600),
                         children: [
@@ -868,7 +864,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(color: AppColors.white),
                                 )
                               : TextSpan(
@@ -876,7 +872,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(color: AppColors.white),
                                 ),
                         ],
@@ -896,7 +892,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}   -  ",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(
                                         color: AppColors.white,
                                         fontStyle: FontStyle.italic,
@@ -937,7 +933,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                             "${trainer.firstName!} ${trainer.lastName![0]}.",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText2
+                                                .bodyMedium
                                                 ?.copyWith(
                                                   color: AppColors.white,
                                                 ),
@@ -970,36 +966,26 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                       softWrap: true,
                       overflow: TextOverflow.fade,
                       text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             fontWeight: FontWeight.w600),
                         children: [
                           TextSpan(text: event.title!),
                           event.isPrivate!
                               ? TextSpan(
-                                  text: "   " +
-                                      appointment.subject +
-                                      " " +
-                                      AppLocalizations.of(context)!
-                                          .asistants
-                                          .toLowerCase() +
-                                      "   ",
+                                  text:
+                                      "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(color: AppColors.white),
                                 )
                               : TextSpan(
-                                  text: "   " +
-                                      appointment.subject +
-                                      " " +
-                                      AppLocalizations.of(context)!
-                                          .asistants
-                                          .toLowerCase() +
-                                      "   ",
+                                  text:
+                                      "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(color: AppColors.white),
                                 ),
                         ],
@@ -1012,7 +998,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                               ? "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClient.toLowerCase()}"
                               : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}",
                           style:
-                              Theme.of(context).textTheme.bodyText2?.copyWith(
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: AppColors.white,
                                     fontStyle: FontStyle.italic,
                                   ),
@@ -1083,7 +1069,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     softWrap: true,
                     overflow: TextOverflow.clip,
                     text: TextSpan(
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             fontWeight: FontWeight.w600,
                           ),
@@ -1095,7 +1081,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                               : "${appointment.subject}\n",
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.white),
                         ),
                         event.numFreeSessions != null &&
@@ -1106,13 +1092,13 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                     : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}\n",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium
                                     ?.copyWith(
                                         color: AppColors.white,
                                         fontStyle: FontStyle.italic,
                                         fontSize: 11),
                               )
-                            : TextSpan(text: ""),
+                            : const TextSpan(text: ""),
                       ],
                     ),
                   ),
@@ -1140,7 +1126,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
             Flexible(
               child: Text(
                 event.title!,
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.white,
                     fontSize: 10,
                     fontWeight: FontWeight.w600),
@@ -1207,7 +1193,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                               event.title!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(fontWeight: FontWeight.w600),
                               overflow: TextOverflow.fade,
                               textAlign: TextAlign.start,
@@ -1225,7 +1211,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                   Text(
                                     "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                     overflow: TextOverflow.fade,
                                     maxLines: 1,
                                     softWrap: false,
@@ -1233,7 +1219,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                   Text(
                                     "${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime)} - ${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime)}",
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                     overflow: TextOverflow.fade,
                                     maxLines: 1,
                                     softWrap: false,
@@ -1253,7 +1239,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                             : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}  -  ",
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText2
+                                            .bodyMedium
                                             ?.copyWith(
                                               fontStyle: FontStyle.italic,
                                             ),
@@ -1298,7 +1284,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                       : trainer.firstName!,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2,
+                                                      .bodyMedium,
                                                   overflow: TextOverflow.fade,
                                                   maxLines: 1,
                                                   softWrap: false,
@@ -1410,14 +1396,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                         });
                                       },
                                       style: TextButton.styleFrom(
-                                        primary: AppColors.white,
+                                        foregroundColor: AppColors.white,
                                       ),
                                       child: Text(
                                           AppLocalizations.of(context)!
                                               .todayString,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1
+                                              .bodyLarge
                                               ?.copyWith(
                                                   color: AppColors.white),
                                           textAlign: TextAlign.center),
@@ -1436,7 +1422,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                   .transparent, // Button color
                                           child: InkWell(
                                             splashColor: Theme.of(context)
-                                                .backgroundColor, // Splash color
+                                                .colorScheme
+                                                .background, // Splash color
                                             onTap: () async {
                                               await showModalBottomSheet<int?>(
                                                 context: context,
@@ -1454,10 +1441,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                     (BuildContext context) {
                                                   // Page View Controller
                                                   final PageController
-                                                      _pageController =
+                                                      pageController =
                                                       PageController(
                                                           initialPage: 0);
-                                                  int _currentPage = 0;
+                                                  int currentPage = 0;
                                                   bool isTypeEvent = true;
                                                   List<Usuario>
                                                       selectedTrainersBottom =
@@ -1501,7 +1488,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .caption,
+                                                                          .bodySmall,
                                                                       textAlign:
                                                                           TextAlign
                                                                               .left),
@@ -1509,7 +1496,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                       TextButton(
                                                                           child: Text(
                                                                               AppLocalizations.of(context)!.clear,
-                                                                              style: Theme.of(context).textTheme.caption),
+                                                                              style: Theme.of(context).textTheme.bodySmall),
                                                                           onPressed: () {
                                                                             setStateBottom(() {
                                                                               filterByCalendar = [
@@ -1523,11 +1510,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                           }),
                                                                   dense: true,
                                                                   onTap:
-                                                                      _currentPage ==
+                                                                      currentPage ==
                                                                               0
                                                                           ? null
                                                                           : () {
-                                                                              _pageController.previousPage(
+                                                                              pageController.previousPage(
                                                                                 duration: const Duration(milliseconds: 500),
                                                                                 curve: Curves.ease,
                                                                               );
@@ -1548,13 +1535,13 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                     physics:
                                                                         const NeverScrollableScrollPhysics(),
                                                                     controller:
-                                                                        _pageController,
+                                                                        pageController,
                                                                     onPageChanged:
                                                                         (int
                                                                             page) {
                                                                       setStateBottom(
                                                                           () {
-                                                                        _currentPage =
+                                                                        currentPage =
                                                                             page;
                                                                       });
                                                                     },
@@ -1567,16 +1554,16 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                               setStateBottom(() {
                                                                                 isTypeEvent = true;
                                                                               });
-                                                                              _pageController.nextPage(
+                                                                              pageController.nextPage(
                                                                                 duration: const Duration(milliseconds: 500),
                                                                                 curve: Curves.ease,
                                                                               );
                                                                             },
                                                                             title: Text("${AppLocalizations.of(context)!.typeProfile.split(" ")[0]} ${AppLocalizations.of(context)!.typeProfile.split(" ")[1]} ${AppLocalizations.of(context)!.events.toLowerCase()}",
-                                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                                style: Theme.of(context).textTheme.bodyLarge,
                                                                                 textAlign: TextAlign.left),
                                                                             subtitle: Text(returnFilteredRolesString(),
-                                                                                style: Theme.of(context).textTheme.caption,
+                                                                                style: Theme.of(context).textTheme.bodySmall,
                                                                                 textAlign: TextAlign.left),
                                                                             trailing:
                                                                                 SizedBox(
@@ -1590,18 +1577,18 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                               setStateBottom(() {
                                                                                 isTypeEvent = false;
                                                                               });
-                                                                              _pageController.nextPage(
+                                                                              pageController.nextPage(
                                                                                 duration: const Duration(milliseconds: 500),
                                                                                 curve: Curves.ease,
                                                                               );
                                                                             },
                                                                             title: Text(AppLocalizations.of(context)!.trainers,
-                                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                                style: Theme.of(context).textTheme.bodyLarge,
                                                                                 textAlign: TextAlign.left),
                                                                             subtitle:
                                                                                 Text(
                                                                               returnFilteredStaffMembersString(),
-                                                                              style: Theme.of(context).textTheme.caption,
+                                                                              style: Theme.of(context).textTheme.bodySmall,
                                                                               textAlign: TextAlign.left,
                                                                               maxLines: 1,
                                                                               overflow: TextOverflow.ellipsis,
@@ -1628,7 +1615,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                       Navigator.pop(context);
                                                                                     }
                                                                                   },
-                                                                                  title: Text(AppLocalizations.of(context)!.groupEvent, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                                  title: Text(AppLocalizations.of(context)!.groupEvent, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                   trailing: filterByCalendar[0]
                                                                                       ? SizedBox(
                                                                                           width: MediaQuery.of(context).size.width * 0.15,
@@ -1647,7 +1634,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                       Navigator.pop(context);
                                                                                     }
                                                                                   },
-                                                                                  title: Text(AppLocalizations.of(context)!.privateEvent, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                                  title: Text(AppLocalizations.of(context)!.privateEvent, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                   trailing: filterByCalendar[1]
                                                                                       ? SizedBox(
                                                                                           width: MediaQuery.of(context).size.width * 0.15,
@@ -1706,7 +1693,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                             Flexible(
                                                                                               child: Text(
                                                                                                 "${trainer.firstName!} ${trainer.lastName![0]}.",
-                                                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                                                style: Theme.of(context).textTheme.bodyLarge,
                                                                                                 overflow: TextOverflow.fade,
                                                                                                 maxLines: 1,
                                                                                                 softWrap: false,
@@ -1720,12 +1707,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                                 elevation: 4,
                                                                                                 color: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
                                                                                                 textColor: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
-                                                                                                child: selectedTrainersBottom.contains(trainer)
-                                                                                                    ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width * 0.04)
-                                                                                                    : SizedBox(
-                                                                                                        height: MediaQuery.of(context).size.width * 0.03,
-                                                                                                        width: MediaQuery.of(context).size.width * 0.03,
-                                                                                                      ),
                                                                                                 padding: EdgeInsets.zero,
                                                                                                 shape: const CircleBorder(),
                                                                                                 onPressed: () {
@@ -1745,6 +1726,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                                     }
                                                                                                   });
                                                                                                 },
+                                                                                                child: selectedTrainersBottom.contains(trainer)
+                                                                                                    ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width * 0.04)
+                                                                                                    : SizedBox(
+                                                                                                        height: MediaQuery.of(context).size.width * 0.03,
+                                                                                                        width: MediaQuery.of(context).size.width * 0.03,
+                                                                                                      ),
                                                                                               ),
                                                                                             )
                                                                                           ],
@@ -1935,7 +1922,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                 blackoutDates: [dateJoined],
                                 blackoutDatesTextStyle: Theme.of(context)
                                     .textTheme
-                                    .headline3
+                                    .displaySmall
                                     ?.copyWith(
                                         color: Theme.of(context).primaryColor,
                                         fontWeight: FontWeight.w600),
@@ -1951,7 +1938,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                 cellBorderColor: AppColors.grey,
                                 todayTextStyle: Theme.of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium
                                     ?.copyWith(
                                         color:
                                             Theme.of(context).primaryColorDark),
@@ -1984,7 +1971,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                   backgroundColor: Colors.transparent,
                                   textStyle: Theme.of(context)
                                       .textTheme
-                                      .bodyText1
+                                      .bodyLarge
                                       ?.copyWith(color: Colors.transparent),
                                 ),
                                 viewHeaderHeight: 50,
@@ -1992,10 +1979,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                   backgroundColor:
                                       Theme.of(context).scaffoldBackgroundColor,
                                   dateTextStyle:
-                                      Theme.of(context).textTheme.bodyText2,
+                                      Theme.of(context).textTheme.bodyMedium,
                                   dayTextStyle: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(fontSize: 10),
                                 ),
                                 // Time Slot View Settings
@@ -2017,7 +2004,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                   minimumAppointmentDuration:
                                       const Duration(minutes: 30),
                                   timeTextStyle:
-                                      Theme.of(context).textTheme.bodyText2,
+                                      Theme.of(context).textTheme.bodyMedium,
                                 ),
                                 // Monthly View
                                 monthViewSettings: MonthViewSettings(
@@ -2028,14 +2015,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       MonthAppointmentDisplayMode.appointment,
                                   monthCellStyle: MonthCellStyle(
                                     textStyle:
-                                        Theme.of(context).textTheme.bodyText1,
+                                        Theme.of(context).textTheme.bodyLarge,
                                     trailingDatesTextStyle: Theme.of(context)
                                         .textTheme
-                                        .bodyText1
+                                        .bodyLarge
                                         ?.copyWith(color: AppColors.grey),
                                     leadingDatesTextStyle: Theme.of(context)
                                         .textTheme
-                                        .bodyText1
+                                        .bodyLarge
                                         ?.copyWith(color: AppColors.grey),
                                   ),
                                 ),
@@ -2046,13 +2033,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                         MediaQuery.of(context).size.height *
                                             0.12,
                                     appointmentTextStyle:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                     dayHeaderSettings: DayHeaderSettings(
-                                      dateTextStyle:
-                                          Theme.of(context).textTheme.bodyText2,
+                                      dateTextStyle: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
                                       dayTextStyle: Theme.of(context)
                                           .textTheme
-                                          .bodyText2
+                                          .bodyMedium
                                           ?.copyWith(fontSize: 10),
                                     ),
                                     weekHeaderSettings: WeekHeaderSettings(
@@ -2062,7 +2050,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       backgroundColor: Theme.of(context)
                                           .scaffoldBackgroundColor,
                                       weekTextStyle:
-                                          Theme.of(context).textTheme.caption,
+                                          Theme.of(context).textTheme.bodySmall,
                                     ),
                                     monthHeaderSettings: MonthHeaderSettings(
                                       monthFormat: 'MMMM yyyy',
@@ -2070,8 +2058,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       textAlign: TextAlign.start,
                                       backgroundColor: Theme.of(context)
                                           .scaffoldBackgroundColor,
-                                      monthTextStyle:
-                                          Theme.of(context).textTheme.headline1,
+                                      monthTextStyle: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge,
                                     )),
                                 scheduleViewMonthHeaderBuilder: (BuildContext
                                         buildContext,
@@ -2101,7 +2090,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                           ).format(details.date)),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline1
+                                              .displayLarge
                                               ?.copyWith(
                                                   fontWeight: FontWeight.w500),
                                           textAlign: TextAlign.left,
@@ -2153,7 +2142,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                 },
                                 onTap: onTapCalendar,
                                 appointmentTextStyle:
-                                    Theme.of(context).textTheme.bodyText2!,
+                                    Theme.of(context).textTheme.bodyMedium!,
                                 appointmentBuilder: (BuildContext context,
                                     CalendarAppointmentDetails details) {
                                   return _buildEventContainer(
@@ -2194,8 +2183,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                             MediaQuery.of(context).size.width *
                                                 0.2,
                                         decoration: BoxDecoration(
-                                          color:
-                                              Theme.of(context).backgroundColor,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .background,
                                           borderRadius: const BorderRadius.all(
                                             Radius.circular(10),
                                           ),
@@ -2204,7 +2194,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                             "Zoom: ${(_timeSlotViewScale * 100).toStringAsFixed(0)} %",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .caption
+                                                .bodySmall
                                                 ?.copyWith(fontSize: 11),
                                             textAlign: TextAlign.center),
                                       ),
@@ -2258,7 +2248,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                         Icons.groups,
                       ),
                       elevation: 10,
-                      backgroundColor: Theme.of(context).backgroundColor,
+                      backgroundColor: Theme.of(context).colorScheme.background,
                       labelWidget: Container(
                         color: Colors.transparent,
                         padding: EdgeInsets.only(
@@ -2270,10 +2260,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(AppLocalizations.of(context)!.groupEvent,
-                                style: Theme.of(context).textTheme.headline3,
+                                style: Theme.of(context).textTheme.displaySmall,
                                 textAlign: TextAlign.right),
                             Text(AppLocalizations.of(context)!.groupEventDesc,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
                         ),
@@ -2298,7 +2288,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                         Icons.person,
                       ),
                       elevation: 10,
-                      backgroundColor: Theme.of(context).backgroundColor,
+                      backgroundColor: Theme.of(context).colorScheme.background,
                       labelWidget: Container(
                         color: Colors.transparent,
                         padding: EdgeInsets.only(
@@ -2310,10 +2300,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(AppLocalizations.of(context)!.privateEvent,
-                                style: Theme.of(context).textTheme.headline3,
+                                style: Theme.of(context).textTheme.displaySmall,
                                 textAlign: TextAlign.right),
                             Text(AppLocalizations.of(context)!.privateEventDesc,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
                         ),
@@ -2429,8 +2419,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
       var endDate = startDate
           .add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject;
-      var color;
+      String subject;
+      Color color = Colors.black;
       if (event.isPrivate!) {
         subject = "${event.numClients}";
         if (endDate.isAfter(DateTime.now())) {

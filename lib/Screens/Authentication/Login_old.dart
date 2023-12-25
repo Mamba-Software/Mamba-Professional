@@ -20,7 +20,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({super.key});
 
   @override
   _LoginState createState() => _LoginState();
@@ -112,7 +112,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       Expanded(
                         child: !isLoadingApple ? Text(
                             AppLocalizations.of(context)!.continueWithApple,
-                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
+                            style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black),
                             textAlign: TextAlign.center
                         ) : Center(
                           child: SizedBox(
@@ -171,7 +171,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       Expanded(
                         child: !isLoadingGoogle ? Text(
                             AppLocalizations.of(context)!.continueWithGoogle,
-                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white),
                             textAlign: TextAlign.center
                         ) : Center(
                           child: SizedBox(
@@ -231,7 +231,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       Expanded(
                           child: Text(
                               AppLocalizations.of(context)!.loginWithEmail,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
+                              style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black),
                               textAlign: TextAlign.center
                           )
                       ),
@@ -249,7 +249,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 String? email = await Navigator.push(
                     context,
                     CupertinoPageRoute<String>(
-                      builder: (context) => Register(),
+                      builder: (context) => const Register(),
                       settings: const RouteSettings(name: 'Register'),
                     )
                 );
@@ -263,14 +263,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                   children: [
                     TextSpan(
-                      text: AppLocalizations.of(context)!.noAccount+" ",
+                      text: "${AppLocalizations.of(context)!.noAccount} ",
                     ),
                     TextSpan(
                         text: AppLocalizations.of(context)!.register,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
                     ),
                   ],
                 ),
@@ -288,14 +288,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                   children: [
                     TextSpan(
                       text: AppLocalizations.of(context)!.useMambaTermsAndConditions,
                     ),
                     TextSpan(
                         text: AppLocalizations.of(context)!.termsAndConditions.toLowerCase(),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
                     ),
                   ],
                 ),
@@ -333,11 +333,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             onFieldSubmitted: (val) {
               focusNodePassword.requestFocus();
             },
-            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
             decoration: Styles.textFromInputDecoration.copyWith(
                 labelText: AppLocalizations.of(context)!.email,
-                labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
+                errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                 prefixIcon:  Padding(
                   padding: const EdgeInsets.all(0.0),
                   child: Icon(
@@ -358,12 +358,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 });
               },
               keyboardType: TextInputType.visiblePassword,
-              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
               obscureText: !_passwordVisible,
               decoration: Styles.textFromInputDecoration.copyWith(
                   labelText: AppLocalizations.of(context)!.password,
-                  labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                  errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                  labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
+                  errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                   suffixIcon: Padding(
                       padding: const EdgeInsets.all(0.0),
                       child: IconButton(
@@ -401,7 +401,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 String? email = await Navigator.push(
                     context,
                     CupertinoPageRoute<String>(
-                      builder: (context) => ForgotPassword(),
+                      builder: (context) => const ForgotPassword(),
                       settings: const RouteSettings(name: 'ForgotPassword'),
                     )
                 );
@@ -420,7 +420,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                   children: [
                     /*
                                       TextSpan(
@@ -429,7 +429,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                       */
                     TextSpan(
                         text: AppLocalizations.of(context)!.forgotPassword,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal)
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal)
                     ),
                   ],
                 ),
@@ -461,7 +461,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 child: !isLoading ? Center(
                   child: Text(
                       AppLocalizations.of(context)!.continueWithGoogle.split(" ")[0],
-                      style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black)
                   ),
                 ) : Center(
                   child: SizedBox(
@@ -485,7 +485,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               String? email = await Navigator.push(
                   context,
                   CupertinoPageRoute<String>(
-                    builder: (context) => Register(),
+                    builder: (context) => const Register(),
                     settings: const RouteSettings(name: 'Register'),
                   )
               );
@@ -499,14 +499,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                 children: [
                   TextSpan(
-                    text: AppLocalizations.of(context)!.noAccount+" ",
+                    text: "${AppLocalizations.of(context)!.noAccount} ",
                   ),
                   TextSpan(
                       text: AppLocalizations.of(context)!.register,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
                   ),
                 ],
               ),
@@ -525,14 +525,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                 children: [
                   TextSpan(
                     text: AppLocalizations.of(context)!.useMambaTermsAndConditions,
                   ),
                   TextSpan(
                       text: AppLocalizations.of(context)!.termsAndConditions.toLowerCase(),
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
                   ),
                 ],
               ),
@@ -674,7 +674,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         isLoading = false;
       });
       mixpanel!.track('mamba_login_validate_email_error');
-      showInSnackBar(AppLocalizations.of(context)!.validateError, AppLocalizations.of(context)!.resend+" "+AppLocalizations.of(context)!.email, true, true);
+      showInSnackBar(AppLocalizations.of(context)!.validateError, "${AppLocalizations.of(context)!.resend} ${AppLocalizations.of(context)!.email}", true, true);
     }
   }
 
@@ -854,14 +854,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 child: Text(
                     value,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black)
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.black)
                 ),
               ),
               Flexible(
                 child: Text(
                   valueBody,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black, decoration: TextDecoration.underline),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.black, decoration: TextDecoration.underline),
                 ),
               ),
             ],
@@ -875,7 +875,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         content: Text(
             value,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black)
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.black)
         ),
         backgroundColor: Colors.white,
         duration: const Duration(seconds: 3),

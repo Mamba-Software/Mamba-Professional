@@ -25,7 +25,7 @@ class AllEventsCubit extends Cubit<List<Event>> {
       cubitAuth.stream.distinct().listen((state) {
         // Handle the state change
         if (state is AuthUserBrand) {
-          if(isStreamActive) _streamAllEvents?.cancel();
+          if(isStreamActive) _streamAllEvents.cancel();
           isStreamActive = true;
           _streamAllEvents = getBrandEventsStream(currentBrand.id!).listen((querySnapshot) async {
             List<DocumentSnapshot> documents = querySnapshot.docs;
@@ -88,13 +88,13 @@ class AllEventsCubit extends Cubit<List<Event>> {
 }
 
 
-List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> _brandTrainers) {
+List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> brandTrainers) {
   List<Event> events = [];
   List<Usuario> eventTrainers = [];
   for(int i = 0; i < documents.length; i++) {
     Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
     // Check Trainers in Event
-    for (Usuario trainer in _brandTrainers) {
+    for (Usuario trainer in brandTrainers) {
       int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
       if (index != -1) {
         eventTrainers.add(trainer);
@@ -114,11 +114,11 @@ List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> _b
   return events;
 }
 
-Event documentToEvent(DocumentSnapshot document, List<Usuario> _brandTrainers) {
+Event documentToEvent(DocumentSnapshot document, List<Usuario> brandTrainers) {
   List<Usuario> eventTrainers = [];
   Event evt = Event.fromObjectOnlyCoverData(document.id, document);
   // Check Trainers in Event
-  for (Usuario trainer in _brandTrainers) {
+  for (Usuario trainer in brandTrainers) {
     int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
     if (index != -1) {
       eventTrainers.add(trainer);

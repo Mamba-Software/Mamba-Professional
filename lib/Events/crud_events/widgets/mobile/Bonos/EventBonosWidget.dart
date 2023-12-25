@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -35,7 +33,7 @@ Widget bonoFieldDescription(
                     Flexible(
                       child: Text(
                         AppLocalizations.of(context)!.bonosDescription,
-                        style: Theme.of(context).textTheme.caption,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
                   ],
@@ -69,7 +67,7 @@ Widget bonoFieldDescription(
                             textAlign: TextAlign.left,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText2
+                                .bodyMedium
                                 ?.copyWith(color: AppColors.red, height: 1.3),
                           ),
                         ),
@@ -103,7 +101,7 @@ Widget bonoFieldDescription(
                             textAlign: TextAlign.left,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText2
+                                .bodyMedium
                                 ?.copyWith(color: Colors.green, height: 1.3),
                           ),
                         ),
@@ -121,15 +119,8 @@ Widget bonoFieldDescription(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
-                          child: Text(
-                            AppLocalizations.of(context)!.selectAll,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2
-                                ?.copyWith(fontWeight: FontWeight.w700),
-                          ),
                           style: TextButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
+                            foregroundColor: Theme.of(context).primaryColor,
                           ),
                           onPressed: () async {
                             FocusScopeNode currentFocus =
@@ -142,6 +133,13 @@ Widget bonoFieldDescription(
                                 .read<CrudEventCubit>()
                                 .editEventInfo('AllBonos', EditEventType.bonos);
                           },
+                          child: Text(
+                            AppLocalizations.of(context)!.selectAll,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
                         ),
                       ],
                     ),
@@ -164,7 +162,7 @@ Widget bonoFieldDescription(
                                           .deleteClientsWithPurchasesBonos,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText2
+                                          .bodyMedium
                                           ?.copyWith(color: AppColors.red),
                                       textAlign: TextAlign.center,
                                     ),
@@ -239,33 +237,25 @@ Widget bonoFieldDescription(
                                           bono.title!.toUpperCase(),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1,
+                                              .bodyLarge,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Flexible(
                                           child: Text(
-                                            (bono.sessions! == 10000
-                                                    ? AppLocalizations.of(
+                                            "${bono.sessions! == 10000
+                                                    ? "${AppLocalizations.of(
                                                                 context)!
-                                                            .sessions +
-                                                        " " +
-                                                        AppLocalizations.of(
+                                                            .sessions} ${AppLocalizations.of(
                                                                 context)!
-                                                            .ilimitadas
-                                                    : bono.sessions!
-                                                            .toString() +
-                                                        " " +
-                                                        AppLocalizations.of(
+                                                            .ilimitadas}"
+                                                    : "${bono.sessions!} ${AppLocalizations.of(
                                                                 context)!
                                                             .sessions
-                                                            .toLowerCase()) +
-                                                " desde " +
-                                                bono.price!.toStringAsFixed(2) +
-                                                "€",
+                                                            .toLowerCase()}"} desde ${bono.price!.toStringAsFixed(2)}€",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .caption,
+                                                .bodySmall,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
@@ -285,10 +275,26 @@ Widget bonoFieldDescription(
                                       elevation: 4,
                                       color: eventBonosMap[bono] == true
                                           ? Theme.of(context).primaryColor
-                                          : Theme.of(context).backgroundColor,
+                                          : Theme.of(context).colorScheme.background,
                                       textColor: eventBonosMap[bono] == true
                                           ? Theme.of(context).primaryColor
-                                          : Theme.of(context).backgroundColor,
+                                          : Theme.of(context).colorScheme.background,
+                                      padding: EdgeInsets.zero,
+                                      shape: const CircleBorder(),
+                                      onPressed: () {
+                                        FocusScopeNode currentFocus =
+                                            FocusScope.of(context);
+                                        if (!currentFocus.hasPrimaryFocus &&
+                                            currentFocus.focusedChild != null) {
+                                          FocusManager.instance.primaryFocus
+                                              ?.unfocus();
+                                        }
+                                        //TODO: Control de bonos de clients si tenen purchases si es treu avisar que el client s'unirà al event sense aquest purchaseId
+                                        context
+                                            .read<CrudEventCubit>()
+                                            .editEventInfo(
+                                                '', EditEventType.bonos, bono);
+                                      },
                                       child: eventBonosMap[bono] == true
                                           ? Icon(Icons.check,
                                               color: Theme.of(context)
@@ -307,22 +313,6 @@ Widget bonoFieldDescription(
                                                       .width *
                                                   0.03,
                                             ),
-                                      padding: EdgeInsets.zero,
-                                      shape: const CircleBorder(),
-                                      onPressed: () {
-                                        FocusScopeNode currentFocus =
-                                            FocusScope.of(context);
-                                        if (!currentFocus.hasPrimaryFocus &&
-                                            currentFocus.focusedChild != null) {
-                                          FocusManager.instance.primaryFocus
-                                              ?.unfocus();
-                                        }
-                                        //TODO: Control de bonos de clients si tenen purchases si es treu avisar que el client s'unirà al event sense aquest purchaseId
-                                        context
-                                            .read<CrudEventCubit>()
-                                            .editEventInfo(
-                                                '', EditEventType.bonos, bono);
-                                      },
                                     ),
                                   ),
                                 ],
@@ -342,7 +332,7 @@ Widget bonoFieldDescription(
                       AppLocalizations.of(context)!.noActiveBonos,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
+                          .bodyMedium
                           ?.copyWith(color: AppColors.red),
                       textAlign: TextAlign.center,
                     ),

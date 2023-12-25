@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
@@ -12,13 +11,12 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EventFeedback extends StatefulWidget {
   String eventId;
-  EventFeedback({Key? key, required this.eventId}) : super(key: key);
+  EventFeedback({super.key, required this.eventId});
 
   @override
   _EventFeedbackState createState() => _EventFeedbackState();
@@ -27,7 +25,7 @@ class EventFeedback extends StatefulWidget {
 class _EventFeedbackState extends State<EventFeedback> {
 
   // User Data Service
-  var _eventDataService = new EventDataService();
+  final _eventDataService = EventDataService();
 
   // Boolean isLoading
   bool isLoading = true;
@@ -75,11 +73,11 @@ class _EventFeedbackState extends State<EventFeedback> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         feedbackScore != 0 ?
-        Container(
+        SizedBox(
             width: MediaQuery.of(context).size.width*0.6,
             child: buildResultEmojis()
         ) : Container(),
-        Container(
+        SizedBox(
           height: MediaQuery.of(context).size.height * 0.1,
           child: Center(
             child: Column(
@@ -100,7 +98,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                 ),
                 Text(
                   AppLocalizations.of(context)!.eventFeedbackIntesityText,
-                  style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -125,80 +123,80 @@ class _EventFeedbackState extends State<EventFeedback> {
 
     switch (result) {
       case 1:
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).size.height*0.05,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
                 feedbackScore.toString(),
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center,
               ),
               Image.asset(Constants.relaxedEmojiImage),
               Text(
                 AppLocalizations.of(context)!.relaxedFeedbackLabel,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
             ],
           ),
         );
       case 2:
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).size.height*0.05,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
                 feedbackScore.toString(),
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center,
               ),
               Image.asset(Constants.tiredEmojiImage),
               Text(
                 AppLocalizations.of(context)!.tiredFeedbackLabel,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
             ],
           ),
         );
       case 3:
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).size.height*0.05,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
                 feedbackScore.toString(),
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center,
               ),
               Image.asset(Constants.exhalingEmojiImage),
               Text(
                 AppLocalizations.of(context)!.veryTiredFeedbackLabel,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
             ],
           ),
         );
       case 4:
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).size.height*0.05,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
                 feedbackScore.toString(),
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center,
               ),
               Image.asset(Constants.sweatingEmojiImage),
               Text(
                 AppLocalizations.of(context)!.exhaustedFeedbackLabel,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
             ],
@@ -223,7 +221,7 @@ class _EventFeedbackState extends State<EventFeedback> {
     return Scaffold(
         appBar: null,
         body: isLoading ?
-          Container(
+          SizedBox(
             width: double.infinity,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -261,8 +259,8 @@ class _EventFeedbackState extends State<EventFeedback> {
                       Container(
                         height: MediaQuery.of(context).size.height * 0.05,
                         width: MediaQuery.of(context).size.width * 0.5,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(const Radius.circular(10.0)),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           color: AppColors.grey,
                           shape: BoxShape.rectangle,
                         ),
@@ -271,8 +269,8 @@ class _EventFeedbackState extends State<EventFeedback> {
                       Container(
                         height: MediaQuery.of(context).size.height * 0.05,
                         width: MediaQuery.of(context).size.width * 0.8,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(const Radius.circular(10.0)),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           color: AppColors.grey,
                           shape: BoxShape.rectangle,
                         ),
@@ -290,8 +288,8 @@ class _EventFeedbackState extends State<EventFeedback> {
                       Container(
                         height: MediaQuery.of(context).size.height * 0.05,
                         width: MediaQuery.of(context).size.width * 0.3,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(const Radius.circular(10.0)),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           color: AppColors.grey,
                           shape: BoxShape.rectangle,
                         ),
@@ -300,8 +298,8 @@ class _EventFeedbackState extends State<EventFeedback> {
                       Container(
                         height: MediaQuery.of(context).size.height * 0.05,
                         width: MediaQuery.of(context).size.width * 0.8,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(const Radius.circular(10.0)),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           color: AppColors.grey,
                           shape: BoxShape.rectangle,
                         ),
@@ -317,7 +315,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.06,
                         width: MediaQuery.of(context).size.width * 0.8,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             color: AppColors.grey,
                             borderRadius: BorderRadius.all(Radius.circular(20))
                         ),
@@ -330,7 +328,7 @@ class _EventFeedbackState extends State<EventFeedback> {
             ),
           )
               :
-          Container(
+          SizedBox(
             width: double.infinity,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -347,27 +345,27 @@ class _EventFeedbackState extends State<EventFeedback> {
                             bottomLeft: Radius.circular(MediaQuery.of(context).size.height*0.35),
                             bottomRight: Radius.circular(MediaQuery.of(context).size.height*0.35)
                         ),
-                        color: Theme.of(context).backgroundColor,
+                        color: Theme.of(context).colorScheme.background,
                         shape: BoxShape.rectangle,
                       ),
 
                     ),
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width*0.6,
                       child: Text(
                         AppLocalizations.of(context)!.eventFeedbackText,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(height: 1.5),
+                        style: Theme.of(context).textTheme.displayLarge?.copyWith(height: 1.5),
                         textAlign: TextAlign.center,
                       ),
                     ),
                   ],
                 ),
-                Container(
+                SizedBox(
                   height: MediaQuery.of(context).size.height * 0.20,
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: buildFeedbackWithStarIcon(),
                 ),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
@@ -376,7 +374,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                     children: <Widget>[
                       Text(
                         event.title!,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(height: 1.5),
+                        style: Theme.of(context).textTheme.displayLarge?.copyWith(height: 1.5),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -390,7 +388,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                           SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                           Text(
                               StringUtils().toCapitalized(eventDateString),
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                               textAlign: TextAlign.center
                           ),
                         ],
@@ -406,7 +404,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                           SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                           Text(
                               StringUtils().toCapitalized(eventHourString),
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                               textAlign: TextAlign.center
                           ),
                         ],
@@ -422,7 +420,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                           SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                           Text(
                               StringUtils().durationToString(event.duration!),
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                               textAlign: TextAlign.center
                           ),
                         ],
@@ -439,7 +437,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                           SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                           Text(
                               brand.name!,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                               textAlign: TextAlign.center
                           ),
                         ],
@@ -464,12 +462,12 @@ class _EventFeedbackState extends State<EventFeedback> {
                         width: MediaQuery.of(context).size.width * 0.8,
                         decoration: BoxDecoration(
                             color: feedbackScore != 0 ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.all(Radius.circular(20))
+                            borderRadius: const BorderRadius.all(Radius.circular(20))
                         ),
                         child: !isLoadingBody ? Center(
                           child: Text(
                             AppLocalizations.of(context)!.save,
-                            style: Theme.of(context).textTheme.headline3?.copyWith(color: feedbackScore != 0 ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColorDark.withOpacity(0.4)),
+                            style: Theme.of(context).textTheme.displaySmall?.copyWith(color: feedbackScore != 0 ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColorDark.withOpacity(0.4)),
                             textAlign: TextAlign.center,
                           ),
                         ) : Center(

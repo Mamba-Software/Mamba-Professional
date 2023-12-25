@@ -8,7 +8,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/MyLocationsSelect.dart';
@@ -16,7 +15,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAu
 class LocationWidget extends StatefulWidget {
   final Location location;
 
-  LocationWidget({required this.location});
+  const LocationWidget({super.key, required this.location});
 
   @override
   _LocationWidgetState createState() => _LocationWidgetState();
@@ -76,7 +75,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                       margin: EdgeInsets.all(
                           MediaQuery.of(context).size.height * 0.015),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                         image: DecorationImage(
                           image: AssetImage(Constants.mapsImg),
                           fit: BoxFit.cover,
@@ -105,14 +104,14 @@ class _LocationWidgetState extends State<LocationWidget> {
                         children: [
                           Text(
                             location.description!,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           location.isBaseLocation!
                               ? Text(
                                   AppLocalizations.of(context)!.baseLocation,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .caption
+                                      .bodySmall
                                       ?.copyWith(height: 1.5),
                                 )
                               : Container(),

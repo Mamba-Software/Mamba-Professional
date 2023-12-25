@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -13,7 +12,6 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
@@ -31,11 +29,10 @@ class BonosPro extends StatefulWidget {
   ValueChanged<bool?> pinnedChanged;
 
   BonosPro(
-      {Key? key,
+      {super.key,
       required this.brandId,
       required this.pinned,
-      required this.pinnedChanged})
-      : super(key: key);
+      required this.pinnedChanged});
 
   @override
   _BonosProState createState() => _BonosProState();
@@ -108,14 +105,8 @@ class _BonosProState extends State<BonosPro> {
         MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
     isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
-    print("Device H and W: " +
-        MediaQuery.of(context).size.height.toString() +
-        " " +
-        MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: " +
-        safeAreaHeight.toString() +
-        " " +
-        safeAreaWidth.toString());
+    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   // Navigate to Bonos Request Screen
@@ -132,7 +123,7 @@ class _BonosProState extends State<BonosPro> {
 
   // Navigate to Add Bonos
   Future<void> navigateToAddBonosScreen(
-      Bono bono, Brand _brand, bool edit) async {
+      Bono bono, Brand brand, bool edit) async {
     if (!brandIsActive) {
       await navigateToPayWall(context);
     } else {
@@ -149,7 +140,7 @@ class _BonosProState extends State<BonosPro> {
                 }
               },
               child: AddEditBono(
-                brand: _brand,
+                brand: brand,
                 bono: bono,
                 edit: edit,
                 duplicate: false,
@@ -162,7 +153,7 @@ class _BonosProState extends State<BonosPro> {
     }
   }
 
-  Widget returnBono(Bono _bono) {
+  Widget returnBono(Bono bono) {
     //return _bonosUtils.bonoObject(context, _bono, brand, _lColor);
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -170,7 +161,7 @@ class _BonosProState extends State<BonosPro> {
       child: BonoCard(
         height: MediaQuery.of(context).size.height * 0.22,
         width: MediaQuery.of(context).size.width * 0.9,
-        bono: _bono,
+        bono: bono,
         brand: currentBrand,
         canExpand: true,
         onlyView: !canEdit,
@@ -182,7 +173,7 @@ class _BonosProState extends State<BonosPro> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByBonos[0]) {
-      activeStaff += AppLocalizations.of(context)!.yes + ", ";
+      activeStaff += "${AppLocalizations.of(context)!.yes}, ";
       cnt += 1;
     }
     if (filterByBonos[1]) {
@@ -238,7 +229,7 @@ class _BonosProState extends State<BonosPro> {
                           Text(
                             AppLocalizations.of(context)!.bonos,
                             style:
-                                Theme.of(context).textTheme.headline1?.copyWith(
+                                Theme.of(context).textTheme.displayLarge?.copyWith(
                                       color: AppColors.white,
                                     ),
                           ),
@@ -256,7 +247,7 @@ class _BonosProState extends State<BonosPro> {
                                     : Colors.transparent, // Button color
                                 child: InkWell(
                                   splashColor: Theme.of(context)
-                                      .backgroundColor, // Splash color
+                                      .colorScheme.background, // Splash color
                                   onTap: () async {
                                     mixpanel!
                                         .track('brand_bonos_filter_button');
@@ -271,9 +262,9 @@ class _BonosProState extends State<BonosPro> {
                                       clipBehavior: Clip.antiAliasWithSaveLayer,
                                       builder: (BuildContext context) {
                                         // Page View Controller
-                                        final PageController _pageController =
+                                        final PageController pageController =
                                             PageController(initialPage: 0);
-                                        int _currentPage = 0;
+                                        int currentPage = 0;
                                         // Widget
                                         return StatefulBuilder(
                                           builder: (BuildContext context,
@@ -306,7 +297,7 @@ class _BonosProState extends State<BonosPro> {
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .caption,
+                                                                .bodySmall,
                                                             textAlign:
                                                                 TextAlign.left),
                                                         trailing: TextButton(
@@ -317,7 +308,7 @@ class _BonosProState extends State<BonosPro> {
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .caption),
+                                                                  .bodySmall),
                                                           onPressed: () {
                                                             mixpanel!.track(
                                                                 'brand_bonos_filter_clean');
@@ -333,12 +324,12 @@ class _BonosProState extends State<BonosPro> {
                                                           },
                                                         ),
                                                         dense: true,
-                                                        onTap: _currentPage == 0
+                                                        onTap: currentPage == 0
                                                             ? null
                                                             : () {
                                                                 mixpanel!.track(
                                                                     'brand_bonos_filter_back');
-                                                                _pageController
+                                                                pageController
                                                                     .previousPage(
                                                                   duration: const Duration(
                                                                       milliseconds:
@@ -362,11 +353,11 @@ class _BonosProState extends State<BonosPro> {
                                                           physics:
                                                               const NeverScrollableScrollPhysics(),
                                                           controller:
-                                                              _pageController,
+                                                              pageController,
                                                           onPageChanged:
                                                               (int page) {
                                                             setStateBottom(() {
-                                                              _currentPage =
+                                                              currentPage =
                                                                   page;
                                                             });
                                                           },
@@ -377,7 +368,7 @@ class _BonosProState extends State<BonosPro> {
                                                                   onTap: () {
                                                                     mixpanel!.track(
                                                                         'brand_bonos_filter_active');
-                                                                    _pageController
+                                                                    pageController
                                                                         .nextPage(
                                                                       duration: const Duration(
                                                                           milliseconds:
@@ -387,16 +378,13 @@ class _BonosProState extends State<BonosPro> {
                                                                     );
                                                                   },
                                                                   title: Text(
-                                                                      AppLocalizations.of(context)!
-                                                                              .bono +
-                                                                          " " +
-                                                                          AppLocalizations.of(context)!
-                                                                              .active +
-                                                                          "s",
+                                                                      "${AppLocalizations.of(context)!
+                                                                              .bono} ${AppLocalizations.of(context)!
+                                                                              .active}s",
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .bodyText1,
+                                                                          .bodyLarge,
                                                                       textAlign:
                                                                           TextAlign
                                                                               .left),
@@ -405,7 +393,7 @@ class _BonosProState extends State<BonosPro> {
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .caption,
+                                                                          .bodySmall,
                                                                       textAlign:
                                                                           TextAlign
                                                                               .left),
@@ -468,7 +456,7 @@ class _BonosProState extends State<BonosPro> {
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .bodyText1,
+                                                                          .bodyLarge,
                                                                       textAlign:
                                                                           TextAlign
                                                                               .left),
@@ -523,7 +511,7 @@ class _BonosProState extends State<BonosPro> {
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .bodyText1,
+                                                                          .bodyLarge,
                                                                       textAlign:
                                                                           TextAlign
                                                                               .left),
@@ -707,7 +695,7 @@ class _BonosProState extends State<BonosPro> {
                                                 .purchaseHistory,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1!
+                                                .bodyLarge!
                                                 .copyWith(
                                                     color: Theme.of(context)
                                                         .colorScheme
@@ -721,7 +709,7 @@ class _BonosProState extends State<BonosPro> {
                                                 .bonoRequestDescription,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText2!
+                                                .bodyMedium!
                                                 .copyWith(
                                                     color: Theme.of(context)
                                                         .colorScheme
@@ -742,9 +730,7 @@ class _BonosProState extends State<BonosPro> {
                                       .getBonosRequestsFromBrand(
                                           widget.brandId),
                                   builder: (context, snapshot) {
-                                    if (snapshot == null ||
-                                        snapshot.data == null ||
-                                        snapshot.data!.docs == null) {
+                                    if (snapshot.data == null) {
                                       return Container(
                                         height:
                                             MediaQuery.of(context).size.width *
@@ -761,7 +747,7 @@ class _BonosProState extends State<BonosPro> {
                                           child: Text(0.toString(),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline3
+                                                  .displaySmall
                                                   ?.copyWith(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -790,7 +776,7 @@ class _BonosProState extends State<BonosPro> {
                                           child: Text(requests.toString(),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline3
+                                                  .displaySmall
                                                   ?.copyWith(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -821,9 +807,7 @@ class _BonosProState extends State<BonosPro> {
           StreamBuilder<QuerySnapshot>(
               stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
               builder: (context, snapshot) {
-                if (snapshot == null ||
-                    snapshot.data == null ||
-                    snapshot.data!.docs == null) {
+                if (snapshot.data == null) {
                   return SliverFillRemaining(
                     hasScrollBody: true,
                     child: Center(
@@ -881,7 +865,7 @@ class _BonosProState extends State<BonosPro> {
                                   MediaQuery.of(context).size.height * 0.005),
                           Text(
                             AppLocalizations.of(context)!.noData,
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(

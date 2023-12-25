@@ -7,7 +7,7 @@ class BrandImagesContainer extends StatefulWidget {
   double? height;
   Brand brand;
   List<ImageObject> images = [];
-  BrandImagesContainer({Key? key, this.height, required this.brand, required this.images}) : super(key: key);
+  BrandImagesContainer({super.key, this.height, required this.brand, required this.images});
 
   @override
   _BrandImagesContainerState createState() => _BrandImagesContainerState();

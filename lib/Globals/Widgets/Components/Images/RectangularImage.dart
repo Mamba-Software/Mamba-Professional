@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RectangularImage extends StatefulWidget {
@@ -16,7 +15,7 @@ class RectangularImage extends StatefulWidget {
   final Color? color;
   final BoxFit? fit;
 
-  RectangularImage({Key? key, this.height, this.width, this.borderWidth, this.borderRadius, this.image, this.file, this.color, this.fit}) : super(key: key);
+  const RectangularImage({super.key, this.height, this.width, this.borderWidth, this.borderRadius, this.image, this.file, this.color, this.fit});
 
   @override
   _RectangularImageState createState() => _RectangularImageState();

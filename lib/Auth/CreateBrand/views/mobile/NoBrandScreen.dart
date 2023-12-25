@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Auth/CreateBrand/widgets/buildWidgetsNoBrandScreen.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -10,7 +9,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
 class NoBrandScreen extends StatefulWidget {
-  const NoBrandScreen({Key? key}) : super(key: key);
+  const NoBrandScreen({super.key});
 
   @override
   _NoBrandScreenState createState() => _NoBrandScreenState();
@@ -34,8 +33,8 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
   initDeviceSizes() {
     safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
+    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   /// /////----------------------------
@@ -84,7 +83,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
                       ),
                       Text(
                           "o",
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                           textAlign: TextAlign.center
                       ),
                       Expanded(

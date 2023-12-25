@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
@@ -11,16 +10,13 @@ import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataSe
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/BetaBadge.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectHoursDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -28,8 +24,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSn
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
@@ -41,12 +35,11 @@ class BrandInfo extends StatefulWidget {
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
   BrandInfo(
-      {Key? key,
+      {super.key,
       this.locale,
       required this.brandId,
       required this.pinned,
-      required this.pinnedChanged})
-      : super(key: key);
+      required this.pinnedChanged});
 
   @override
   _BrandInfoState createState() => _BrandInfoState();
@@ -389,7 +382,7 @@ class _BrandInfoState extends State<BrandInfo>
                           Text(
                             AppLocalizations.of(context)!.settings,
                             style:
-                                Theme.of(context).textTheme.headline1?.copyWith(
+                                Theme.of(context).textTheme.displayLarge?.copyWith(
                                       color: AppColors.white,
                                     ),
                           ),
@@ -507,7 +500,7 @@ class _BrandInfoState extends State<BrandInfo>
                               AppLocalizations.of(context)!.information,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(color: AppColors.grey),
                             ),
                           ],
@@ -532,7 +525,7 @@ class _BrandInfoState extends State<BrandInfo>
                             AppLocalizations.of(context)!.logo,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText1
+                                .bodyLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
@@ -591,7 +584,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                 ),
                                                 decoration: BoxDecoration(
                                                   color: Theme.of(context)
-                                                      .backgroundColor,
+                                                      .colorScheme.background,
                                                   borderRadius:
                                                       BorderRadius.circular(15),
                                                 ),
@@ -628,7 +621,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                             .edit,
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText2,
+                                                            .bodyMedium,
                                                         maxLines: 1,
                                                         softWrap: true,
                                                         textAlign:
@@ -653,7 +646,7 @@ class _BrandInfoState extends State<BrandInfo>
                             AppLocalizations.of(context)!.firstName,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText1
+                                .bodyLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
@@ -678,7 +671,7 @@ class _BrandInfoState extends State<BrandInfo>
                                             .nameBrandError
                                         : null,
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                     textAlign: TextAlign.start,
                                     textCapitalization:
                                         TextCapitalization.words,
@@ -686,9 +679,9 @@ class _BrandInfoState extends State<BrandInfo>
                                     decoration: InputDecoration(
                                         filled: true,
                                         fillColor:
-                                            Theme.of(context).backgroundColor,
+                                            Theme.of(context).colorScheme.background,
                                         hintStyle:
-                                            Theme.of(context).textTheme.caption,
+                                            Theme.of(context).textTheme.bodySmall,
                                         hintText: AppLocalizations.of(context)!
                                             .nameBrandError,
                                         border: OutlineInputBorder(
@@ -737,7 +730,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 child: Text(
                                   AppLocalizations.of(context)!
                                       .createBrandCoverDescription,
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
                               ),
@@ -752,7 +745,7 @@ class _BrandInfoState extends State<BrandInfo>
                             AppLocalizations.of(context)!.description,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText1
+                                .bodyLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
@@ -763,7 +756,7 @@ class _BrandInfoState extends State<BrandInfo>
                             borderRadius: BorderRadius.circular(15.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
+                                color: Theme.of(context).colorScheme.background,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(15)),
                               ),
@@ -784,11 +777,11 @@ class _BrandInfoState extends State<BrandInfo>
                                       maxLength: 250,
                                       enabled: canEdit,
                                       style:
-                                          Theme.of(context).textTheme.bodyText2,
+                                          Theme.of(context).textTheme.bodyMedium,
                                       decoration: InputDecoration(
                                           filled: true,
                                           fillColor:
-                                              Theme.of(context).backgroundColor,
+                                              Theme.of(context).colorScheme.background,
                                           hintText:
                                               AppLocalizations.of(context)!
                                                   .descriptionHint,
@@ -800,13 +793,13 @@ class _BrandInfoState extends State<BrandInfo>
                                               "${descriptionController.text.length}/250", // replace 250 with your max length
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .caption
+                                                  .bodySmall
                                                   ?.copyWith(fontSize: 12.5),
                                             ),
                                           ),
                                           hintStyle: Theme.of(context)
                                               .textTheme
-                                              .caption,
+                                              .bodySmall,
                                           border: OutlineInputBorder(
                                             borderSide: const BorderSide(
                                                 color: Colors.transparent,
@@ -854,7 +847,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 child: Text(
                                   AppLocalizations.of(context)!
                                       .createBrandDescDescription,
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
                               ),
@@ -870,15 +863,13 @@ class _BrandInfoState extends State<BrandInfo>
                             children: [
                               Expanded(
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                          .createdBy(admin.name!) +
-                                      " el " +
-                                      DateTimeUtils()
+                                  "${AppLocalizations.of(context)!
+                                          .createdBy(admin.name!)} el ${DateTimeUtils()
                                           .formatDateTimeToStringDDMMMMYYYY(
                                               dateJoinedBrand,
                                               Localizations.localeOf(context)
-                                                  .languageCode),
-                                  style: Theme.of(context).textTheme.caption,
+                                                  .languageCode)}",
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
                               ),
@@ -919,7 +910,7 @@ class _BrandInfoState extends State<BrandInfo>
                                   AppLocalizations.of(context)!.calendar,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline3
+                                      .displaySmall
                                       ?.copyWith(color: AppColors.grey),
                                 ),
                               ],
@@ -927,10 +918,10 @@ class _BrandInfoState extends State<BrandInfo>
                             timeZoneName != null
                                 ? Flexible(
                                     child: Text(
-                                      "GMT: " + timeZoneName!,
+                                      "GMT: ${timeZoneName!}",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .caption
+                                          .bodySmall
                                           ?.copyWith(fontSize: 12.5),
                                       textAlign: TextAlign.right,
                                       overflow: TextOverflow.ellipsis,
@@ -958,7 +949,7 @@ class _BrandInfoState extends State<BrandInfo>
                           AppLocalizations.of(context)!.workingHours,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1
+                              .bodyLarge
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
@@ -1013,12 +1004,12 @@ class _BrandInfoState extends State<BrandInfo>
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15)),
-                                    color: Theme.of(context).backgroundColor,
+                                    color: Theme.of(context).colorScheme.background,
                                   ),
                                   child: Text(
                                     startTimeController.text,
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -1027,7 +1018,7 @@ class _BrandInfoState extends State<BrandInfo>
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Text("-",
-                                  style: Theme.of(context).textTheme.headline3),
+                                  style: Theme.of(context).textTheme.displaySmall),
                             ),
                             TextButton(
                               onPressed: canEdit
@@ -1076,12 +1067,12 @@ class _BrandInfoState extends State<BrandInfo>
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15)),
-                                    color: Theme.of(context).backgroundColor,
+                                    color: Theme.of(context).colorScheme.background,
                                   ),
                                   child: Text(
                                     endTimeController.text,
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -1100,7 +1091,7 @@ class _BrandInfoState extends State<BrandInfo>
                                           .workingHoursError1,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(color: AppColors.red),
                                   textAlign: TextAlign.left,
                                 ),
@@ -1115,7 +1106,7 @@ class _BrandInfoState extends State<BrandInfo>
                               child: Text(
                                 AppLocalizations.of(context)!
                                     .createBrandWorkshiftDescription,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -1131,7 +1122,7 @@ class _BrandInfoState extends State<BrandInfo>
                               AppLocalizations.of(context)!.lunchBreak,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText1
+                                  .bodyLarge
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             GestureDetector(
@@ -1141,7 +1132,7 @@ class _BrandInfoState extends State<BrandInfo>
                                       AppLocalizations.of(context)!.betaFeature,
                                       5);
                                 },
-                                child: BetaBadge())
+                                child: const BetaBadge())
                           ],
                         ),
                         SizedBox(
@@ -1204,12 +1195,12 @@ class _BrandInfoState extends State<BrandInfo>
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15)),
-                                    color: Theme.of(context).backgroundColor,
+                                    color: Theme.of(context).colorScheme.background,
                                   ),
                                   child: Text(
                                     breakStartTimeController.text,
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -1218,7 +1209,7 @@ class _BrandInfoState extends State<BrandInfo>
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Text("-",
-                                  style: Theme.of(context).textTheme.headline3),
+                                  style: Theme.of(context).textTheme.displaySmall),
                             ),
                             TextButton(
                               onPressed: canEdit
@@ -1275,12 +1266,12 @@ class _BrandInfoState extends State<BrandInfo>
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15)),
-                                    color: Theme.of(context).backgroundColor,
+                                    color: Theme.of(context).colorScheme.background,
                                   ),
                                   child: Text(
                                     breakEndTimeController.text,
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -1352,7 +1343,7 @@ class _BrandInfoState extends State<BrandInfo>
                                           .workingHoursError1,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(color: AppColors.red),
                                   textAlign: TextAlign.left,
                                 ),
@@ -1367,7 +1358,7 @@ class _BrandInfoState extends State<BrandInfo>
                               child: Text(
                                 AppLocalizations.of(context)!
                                     .createBrandBreakDescription,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -1381,7 +1372,7 @@ class _BrandInfoState extends State<BrandInfo>
                           AppLocalizations.of(context)!.bookingWindow,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1
+                              .bodyLarge
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
@@ -1402,7 +1393,7 @@ class _BrandInfoState extends State<BrandInfo>
                               decoration: BoxDecoration(
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(15)),
-                                color: Theme.of(context).backgroundColor,
+                                color: Theme.of(context).colorScheme.background,
                               ),
                               height: MediaQuery.of(context).size.width * 0.1,
                               width: MediaQuery.of(context).size.width * 0.2,
@@ -1411,13 +1402,11 @@ class _BrandInfoState extends State<BrandInfo>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    bookingWindow.toString() +
-                                        " " +
-                                        AppLocalizations.of(context)!
+                                    "$bookingWindow ${AppLocalizations.of(context)!
                                             .days
-                                            .toLowerCase(),
+                                            .toLowerCase()}",
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ],
                               ),
@@ -1433,7 +1422,7 @@ class _BrandInfoState extends State<BrandInfo>
                               child: Text(
                                 AppLocalizations.of(context)!
                                     .bookingWindowDescription,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -1450,7 +1439,7 @@ class _BrandInfoState extends State<BrandInfo>
                                   .minimumBookingWindow,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText1
+                                  .bodyLarge
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             GestureDetector(
@@ -1460,7 +1449,7 @@ class _BrandInfoState extends State<BrandInfo>
                                       AppLocalizations.of(context)!.betaFeature,
                                       5);
                                 },
-                                child: BetaBadge())
+                                child: const BetaBadge())
                           ],
                         ),
                         SizedBox(
@@ -1481,7 +1470,7 @@ class _BrandInfoState extends State<BrandInfo>
                               decoration: BoxDecoration(
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(15)),
-                                color: Theme.of(context).backgroundColor,
+                                color: Theme.of(context).colorScheme.background,
                               ),
                               height: MediaQuery.of(context).size.width * 0.1,
                               width: MediaQuery.of(context).size.width * 0.2,
@@ -1494,7 +1483,7 @@ class _BrandInfoState extends State<BrandInfo>
                                         ? "$bookingWindowMin ${AppLocalizations.of(context)!.hoursString.toLowerCase()}"
                                         : "$bookingWindowMin ${AppLocalizations.of(context)!.hour.toLowerCase()}",
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ],
                               ),
@@ -1510,7 +1499,7 @@ class _BrandInfoState extends State<BrandInfo>
                               child: Text(
                                 AppLocalizations.of(context)!
                                     .minimumBookingWindowDescription,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -1548,7 +1537,7 @@ class _BrandInfoState extends State<BrandInfo>
                                       .split(" ")[2]),
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(color: AppColors.grey),
                             ),
                           ],
@@ -1581,7 +1570,7 @@ class _BrandInfoState extends State<BrandInfo>
                                       AppLocalizations.of(context)!.freeSession,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText1
+                                          .bodyLarge
                                           ?.copyWith(
                                               fontWeight: FontWeight.bold),
                                     ),
@@ -1593,7 +1582,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                   .betaFeature,
                                               5);
                                         },
-                                        child: BetaBadge())
+                                        child: const BetaBadge())
                                   ],
                                 ),
                                 SizedBox(
@@ -1626,7 +1615,7 @@ class _BrandInfoState extends State<BrandInfo>
                               child: Text(
                                 AppLocalizations.of(context)!
                                     .freeSessionDescription,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -1649,7 +1638,7 @@ class _BrandInfoState extends State<BrandInfo>
                                       .directPurchasetext,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText1
+                                      .bodyLarge
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
@@ -1682,7 +1671,7 @@ class _BrandInfoState extends State<BrandInfo>
                               child: Text(
                                 AppLocalizations.of(context)!
                                     .directPurchaseDescription,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -1717,7 +1706,7 @@ class _BrandInfoState extends State<BrandInfo>
                               AppLocalizations.of(context)!.others,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(color: AppColors.grey),
                             ),
                           ],
@@ -1755,7 +1744,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                 .exitBrand,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1
+                                                .bodyLarge
                                                 ?.copyWith(
                                                     fontWeight: FontWeight.bold,
                                                     color: AppColors.red),
@@ -1826,7 +1815,7 @@ class _BrandInfoState extends State<BrandInfo>
                                               .exitBrandDesc,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .caption,
+                                              .bodySmall,
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
@@ -1856,7 +1845,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                 .deleteBrand,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1
+                                                .bodyLarge
                                                 ?.copyWith(
                                                     fontWeight: FontWeight.bold,
                                                     color: AppColors.red),
@@ -1920,7 +1909,7 @@ class _BrandInfoState extends State<BrandInfo>
                                               .deleteBrandDesc,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .caption,
+                                              .bodySmall,
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
@@ -1998,7 +1987,7 @@ class _BrandInfoState extends State<BrandInfo>
                   AppLocalizations.of(context)!.save,
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2!
+                      .bodyMedium!
                       .copyWith(color: Colors.white),
                 ),
               ),
@@ -2011,9 +2000,7 @@ class _BrandInfoState extends State<BrandInfo>
     int? pickedMembers = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDaysDialog(
-              title: AppLocalizations.of(context)!.select +
-                  " " +
-                  AppLocalizations.of(context)!.days.toLowerCase(),
+              title: "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.days.toLowerCase()}",
               intialDays: bookingWindow - 1,
             ));
     if (pickedMembers != null) {
@@ -2052,7 +2039,7 @@ class _BrandInfoState extends State<BrandInfo>
           : AppLocalizations.of(context)!.noSubscription,
       style: Theme.of(context)
           .textTheme
-          .bodyText2!
+          .bodyMedium!
           .copyWith(color: Theme.of(context).colorScheme.secondary),
       textAlign: TextAlign.center,
     );
@@ -2143,14 +2130,14 @@ class _BrandInfoState extends State<BrandInfo>
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.width * 0.01),
               child: Text(AppLocalizations.of(context)!.chooseYourPlan,
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       color: AppColors.mainColor, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left),
             ),
             subtitle: Text(
               AppLocalizations.of(context)!
                   .freeTrialDaysLeft(difference.toString()),
-              style: Theme.of(context).textTheme.caption!.copyWith(
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color: AppColors.mainColor,
                   fontWeight: FontWeight.normal,
                   fontSize: 12),
@@ -2171,7 +2158,7 @@ class _BrandInfoState extends State<BrandInfo>
                 child: Center(
                     child: Text(
                   AppLocalizations.of(context)!.subscriptionsAppBar,
-                  style: Theme.of(context).textTheme.caption!.copyWith(
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: AppColors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 15),

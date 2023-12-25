@@ -1,13 +1,11 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
@@ -17,7 +15,7 @@ import 'LocationPlacesSearch.dart';
 
 class MyLocations extends StatefulWidget {
   String brandId;
-  MyLocations({Key? key, required this.brandId}) : super(key: key);
+  MyLocations({super.key, required this.brandId});
 
   @override
   _MyLocationsState createState() => _MyLocationsState();
@@ -25,7 +23,7 @@ class MyLocations extends StatefulWidget {
 
 class _MyLocationsState extends State<MyLocations> {
   // Acceso a Base de Datos
-  var _locationDataService = new LocationDataService();
+  final _locationDataService = LocationDataService();
   // Google APIS
   googlePlace.GooglePlace? gPlace;
   googlePlace.DetailsResult? detailsResult;
@@ -124,7 +122,7 @@ class _MyLocationsState extends State<MyLocations> {
                     child: ListTile(
                       onTap: () async {
                         // Generate a new token here
-                        final sessionToken = Uuid().v4();
+                        final sessionToken = const Uuid().v4();
                         final language = currentUser.idioma;
                         final Suggestion? result = await showSearch(
                           context: context,
@@ -138,22 +136,26 @@ class _MyLocationsState extends State<MyLocations> {
                               await LocationPlacesSearch(sessionToken, language)
                                   .getPlaceDetailFromId(location.placeId!);
                           // Get the information on Strings
-                          if (placeDetails.street != null)
+                          if (placeDetails.street != null) {
                             location.street = placeDetails.street!;
-                          else
+                          } else {
                             location.street = "N/A";
-                          if (placeDetails.streetNumber != null)
+                          }
+                          if (placeDetails.streetNumber != null) {
                             location.streetNumber = placeDetails.streetNumber!;
-                          else
+                          } else {
                             location.streetNumber = "N/A";
-                          if (placeDetails.city != null)
+                          }
+                          if (placeDetails.city != null) {
                             location.city = placeDetails.city!;
-                          else
+                          } else {
                             location.city = "N/A";
-                          if (placeDetails.zipCode != null)
+                          }
+                          if (placeDetails.zipCode != null) {
                             location.zipCode = placeDetails.zipCode!;
-                          else
+                          } else {
                             location.zipCode = "N/A";
+                          }
                           //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
                           // Build Correct Description
                           location.description =
@@ -189,7 +191,7 @@ class _MyLocationsState extends State<MyLocations> {
                       ),
                       title: Text(
                         AppLocalizations.of(context)!.addLocation,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                   ),
@@ -203,10 +205,8 @@ class _MyLocationsState extends State<MyLocations> {
                         stream: _locationDataService
                             .getAllLocationsBrand(widget.brandId),
                         builder: (context, snapshot) {
-                          if (snapshot == null ||
-                              snapshot.data == null ||
-                              snapshot.data!.docs == null) {
-                            return Container(
+                          if (snapshot.data == null) {
+                            return SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.65,
                                 child: Center(child: LoadingView()));
@@ -214,7 +214,7 @@ class _MyLocationsState extends State<MyLocations> {
                             locationList =
                                 documentsToLocations(snapshot.data!.docs);
                             return ListView.builder(
-                                physics: BouncingScrollPhysics(),
+                                physics: const BouncingScrollPhysics(),
                                 shrinkWrap: true,
                                 scrollDirection: Axis.vertical,
                                 itemCount: locationList.length,
@@ -242,7 +242,7 @@ class _MyLocationsState extends State<MyLocations> {
                                           title: Text(location.description!,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2!
+                                                  .bodyMedium!
                                                   .copyWith(
                                                       color: Theme.of(context)
                                                           .colorScheme
@@ -250,7 +250,7 @@ class _MyLocationsState extends State<MyLocations> {
                                           trailing: IconButton(
                                             onPressed: () async {
                                               // Generate a new token here
-                                              final sessionToken = Uuid().v4();
+                                              final sessionToken = const Uuid().v4();
                                               final language =
                                                   currentUser.idioma;
                                               final Suggestion? result =
@@ -270,28 +270,32 @@ class _MyLocationsState extends State<MyLocations> {
                                                         .getPlaceDetailFromId(
                                                             loc.placeId!);
                                                 // Get the information on Strings
-                                                if (placeDetails.street != null)
+                                                if (placeDetails.street != null) {
                                                   loc.street =
                                                       placeDetails.street!;
-                                                else
+                                                } else {
                                                   loc.street = "N/A";
+                                                }
                                                 if (placeDetails.streetNumber !=
-                                                    null)
+                                                    null) {
                                                   loc.streetNumber =
                                                       placeDetails
                                                           .streetNumber!;
-                                                else
+                                                } else {
                                                   loc.streetNumber = "N/A";
-                                                if (placeDetails.city != null)
+                                                }
+                                                if (placeDetails.city != null) {
                                                   loc.city = placeDetails.city!;
-                                                else
+                                                } else {
                                                   loc.city = "N/A";
+                                                }
                                                 if (placeDetails.zipCode !=
-                                                    null)
+                                                    null) {
                                                   loc.zipCode =
                                                       placeDetails.zipCode!;
-                                                else
+                                                } else {
                                                   loc.zipCode = "N/A";
+                                                }
                                                 //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
                                                 // Build Correct Description
                                                 loc.description =
@@ -362,7 +366,7 @@ class _MyLocationsState extends State<MyLocations> {
                                                           .myLocationsBaseLocationDesc,
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .caption,
+                                                          .bodySmall,
                                                       textAlign: TextAlign.left,
                                                     ),
                                                   ),
@@ -391,7 +395,7 @@ class _MyLocationsState extends State<MyLocations> {
                                         location.description!,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText2,
+                                            .bodyMedium,
                                       ),
                                       trailing: IconButton(
                                         onPressed: () async {

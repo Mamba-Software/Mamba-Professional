@@ -17,12 +17,12 @@ class lColor {
 
   lColor.fromObjectAllData(
       String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('name')) {
-      this.name = documentSnapshot.get("name").toString();
+      name = documentSnapshot.get("name").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('hexa')) {
-      this.hexa = documentSnapshot.get("hexa").toString();
+      hexa = documentSnapshot.get("hexa").toString();
     }
   }
 
@@ -40,8 +40,8 @@ class lColor {
 
   // Set Basic Data
   set setBasicData(lColor color) {
-    this.id = color.id;
-    this.name = color.name;
-    this.hexa = color.hexa;
+    id = color.id;
+    name = color.name;
+    hexa = color.hexa;
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -39,8 +38,8 @@ class StaffEventSelector extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      "( " + brandTrainersSelected.length.toString() + " )",
-                      style: Theme.of(context).textTheme.bodyText2,
+                      "( ${brandTrainersSelected.length} )",
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
                 ),
@@ -50,10 +49,7 @@ class StaffEventSelector extends StatelessWidget {
           staffEventWidget(context, brandTrainersSelected),
           dividerAddEditEvent(
               context,
-              AppLocalizations.of(context)!.staff +
-                  "    ( " +
-                  brandTrainersSelected.length.toString() +
-                  " )",
+              "${AppLocalizations.of(context)!.staff}    ( ${brandTrainersSelected.length} )",
               !errorNoTrainerSelected),
         ],
       );

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +14,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // After registering the page pop´s after 5 seconds and the user is sent to the Login page. Before Login in
 // they need to verify his email.
 class Register extends StatefulWidget {
-  Register({Key? key}) : super(key: key);
+  const Register({super.key});
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -23,7 +22,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   // Access to DataBaseService
-  var _userDataService = new UserDataService();
+  final _userDataService = UserDataService();
   // Password Visible
   bool isLoading = false;
   // Scaffold Messenger Key
@@ -58,7 +57,7 @@ class _RegisterState extends State<Register> {
             AppLocalizations.of(context)!.createAccount,
             style: Theme.of(context)
                 .textTheme
-                .headline3!
+                .displaySmall!
                 .copyWith(color: Colors.white),
           ),
           centerTitle: false,
@@ -101,7 +100,7 @@ class _RegisterState extends State<Register> {
                         AppLocalizations.of(context)!.emailError,
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText2
+                            .bodyMedium
                             ?.copyWith(color: AppColors.white),
                         textAlign: TextAlign.left,
                       ),
@@ -122,17 +121,17 @@ class _RegisterState extends State<Register> {
                       },
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
+                          .bodyMedium
                           ?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
                           labelText: AppLocalizations.of(context)!.email,
                           labelStyle: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.white),
                           errorStyle: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.red),
                           prefixIcon: const Padding(
                             padding: EdgeInsets.all(0.0),
@@ -150,7 +149,7 @@ class _RegisterState extends State<Register> {
                           AppLocalizations.of(context)!.passwordError,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.white),
                           textAlign: TextAlign.left,
                         ),
@@ -172,17 +171,17 @@ class _RegisterState extends State<Register> {
                       obscureText: !_passwordVisible,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
+                          .bodyMedium
                           ?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
                           labelText: AppLocalizations.of(context)!.password,
                           labelStyle: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.white),
                           errorStyle: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.red),
                           suffixIcon: Padding(
                               padding: const EdgeInsets.all(0.0),
@@ -218,18 +217,18 @@ class _RegisterState extends State<Register> {
                       obscureText: !_passwordVisible,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
+                          .bodyMedium
                           ?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
                           labelText:
                               AppLocalizations.of(context)!.passworRepeat,
                           labelStyle: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.white),
                           errorStyle: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.red),
                           suffixIcon: Padding(
                               padding: const EdgeInsets.all(0.0),
@@ -377,7 +376,7 @@ class _RegisterState extends State<Register> {
           textAlign: TextAlign.center,
           style: Theme.of(context)
               .textTheme
-              .bodyText2!
+              .bodyMedium!
               .copyWith(color: AppColors.black)),
       backgroundColor: Colors.white,
       duration: const Duration(seconds: 3),

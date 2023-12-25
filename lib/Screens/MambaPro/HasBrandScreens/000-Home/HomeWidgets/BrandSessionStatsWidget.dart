@@ -1,25 +1,17 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../../../../Events/crud_events/models/Event.dart';
-import '../../../../../Globals/Constants.dart';
 
 typedef DateCallBack = void Function(int pageIndex);
 
@@ -27,7 +19,7 @@ class BrandSessionStatsWidget extends StatefulWidget {
   String brandId;
   final DateCallBack navigateToPage;
 
-  BrandSessionStatsWidget({Key? key, required this.brandId, required this.navigateToPage}) : super(key: key);
+  BrandSessionStatsWidget({super.key, required this.brandId, required this.navigateToPage});
 
   @override
   _BrandSessionStatsWidgetState createState() => _BrandSessionStatsWidgetState();
@@ -142,7 +134,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
             minWidth: MediaQuery.of(context).size.width*0.9,
           ),
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).colorScheme.background,
             borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
           ),// BoxDecoration
           child: Container(
@@ -184,7 +176,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                               Text(
                                   AppLocalizations.of(context)!.stats,
-                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                                  style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey),
                                   textAlign: TextAlign.center
                               ),
                             ],
@@ -200,8 +192,8 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                           child: Column(
                             children: [
                               Text(
-                                  AppLocalizations.of(context)!.sessions+" - 30 "+AppLocalizations.of(context)!.days.toLowerCase(),
-                                  style: Theme.of(context).textTheme.caption,
+                                  "${AppLocalizations.of(context)!.sessions} - 30 ${AppLocalizations.of(context)!.days.toLowerCase()}",
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.center
                               ),
                             ],
@@ -225,13 +217,13 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                           plotAreaBorderWidth: 1,
                           primaryXAxis: CategoryAxis(
                             //Hide the gridlines of x-axis
-                            majorGridLines: MajorGridLines(width: 0),
+                            majorGridLines: const MajorGridLines(width: 0),
                             isVisible: false,
                             //Hide the axis line of x-axis
-                            axisLine: AxisLine(width: 0),
+                            axisLine: const AxisLine(width: 0),
                           ),
                           primaryYAxis: NumericAxis(
-                            majorTickLines: MajorTickLines(
+                            majorTickLines: const MajorTickLines(
                               width: 0,
                             ),
                             enableAutoIntervalOnZooming: false,
@@ -240,12 +232,12 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                             //maximum: double.parse(maxNumber.toString()),
                             //isVisible: false,
                             //Hide the gridlines of x-axis
-                            majorGridLines: MajorGridLines(width: 0),
+                            majorGridLines: const MajorGridLines(width: 0),
                             //Hide the axis line of x-axis
-                            axisLine: AxisLine(width: 0),
+                            axisLine: const AxisLine(width: 0),
                           ),
-                          axes: [],
-                          indicators: [],
+                          axes: const [],
+                          indicators: const [],
                           legend: null,
                           tooltipBehavior: _tooltipBehavior,
                           enableSideBySideSeriesPlacement: false,
@@ -281,14 +273,14 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                         width: MediaQuery.of(context).size.width*0.50,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            color: Theme.of(context).backgroundColor.withOpacity(0.9),
+                            color: Theme.of(context).colorScheme.background.withOpacity(0.9),
                             border: Border.all(width: 2, color: Theme.of(context).primaryColor),
                             borderRadius: BorderRadius.circular(10)
                         ),
                         child: Center(
                           child: Text(
                             AppLocalizations.of(context)!.statsMinimumSessionBrand,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w600),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                             textAlign: TextAlign.center,
                           ),
                         ),

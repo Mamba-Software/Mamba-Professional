@@ -3,7 +3,6 @@ import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotificati
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/notificationsEvents.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Events/crud_events/read_event/cubit/ReadEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/DateTimePage.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/InformationPage.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/MembersPage.dart';
@@ -15,14 +14,13 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddOrEditEvent extends StatefulWidget {
   Locale locale;
 
-  AddOrEditEvent({Key? key, required this.locale}) : super(key: key);
+  AddOrEditEvent({super.key, required this.locale});
 
   @override
   _AddOrEditEventState createState() => _AddOrEditEventState();
@@ -93,7 +91,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                           child: FittedBox(
                             fit: BoxFit.contain,
                             child: Text(AppLocalizations.of(context)!.group,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.center),
                           ),
                         ),
@@ -238,7 +236,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                   child: Text(
                                       AppLocalizations.of(context)!.group,
                                       style:
-                                          Theme.of(context).textTheme.bodyText2,
+                                          Theme.of(context).textTheme.bodyMedium,
                                       textAlign: TextAlign.center),
                                 ),
                               ),
@@ -326,11 +324,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                         horizontal:
                                             MediaQuery.of(context).size.width *
                                                 0.05),
-                                    child: Column(
+                                    child: const Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         mainAxisSize: MainAxisSize.min,
-                                        children: const [
+                                        children: [
                                           MembersPage(),
                                         ])),
                               ],
@@ -402,7 +400,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                 AppLocalizations.of(context)!.back,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .copyWith(
                                         color:
                                             Theme.of(context).primaryColorDark),
@@ -588,7 +586,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                     : AppLocalizations.of(context)!.next,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .copyWith(color: AppColors.white),
                               )
                             : Text(
@@ -597,7 +595,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                     : AppLocalizations.of(context)!.next,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .copyWith(color: AppColors.white),
                               ),
                       ),
@@ -610,23 +608,23 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
   }
 
   ReceivedNotification _setNotificationBefore(
-      String eventTimeTime, Event _event) {
-    return _event.isRecurrent!
+      String eventTimeTime, Event event) {
+    return event.isRecurrent!
         ? _notificationsEvents.setEventNotificationBefore(
-            _event,
+            event,
             AppLocalizations.of(context)!
-                .beforeEventTitleNotification(_event.title!, 'replace'),
+                .beforeEventTitleNotification(event.title!, 'replace'),
             AppLocalizations.of(context)!.beforeEventBodyNotification)
         : _notificationsEvents.setEventNotificationBefore(
-            _event,
+            event,
             AppLocalizations.of(context)!
-                .beforeEventTitleNotification(_event.title!, eventTimeTime),
+                .beforeEventTitleNotification(event.title!, eventTimeTime),
             AppLocalizations.of(context)!.beforeEventBodyNotification);
   }
 
-  ReceivedNotification _setNotificationAfter(Event _event) {
+  ReceivedNotification _setNotificationAfter(Event event) {
     return _notificationsEvents.setEventNotificationAfter(
-        _event,
+        event,
         AppLocalizations.of(context)!.afterEventTitleNotification,
         AppLocalizations.of(context)!.afterEventBodyNotification);
   }

@@ -34,12 +34,12 @@ class TextStyles {
       bodyText2 += 1;
     }
     print("\n");
-    print("Text Styles for Screen Height = "+screenHeight.toString());
+    print("Text Styles for Screen Height = $screenHeight");
     print("\n");
-    print("Headline 1 = "+headline1.toString());
-    print("Headline 2 = "+headline2.toString());
-    print("Body Text 1 = "+bodyText1.toString());
-    print("Body Text 2 = "+bodyText2.toString());
+    print("Headline 1 = $headline1");
+    print("Headline 2 = $headline2");
+    print("Body Text 1 = $bodyText1");
+    print("Body Text 2 = $bodyText2");
   }
 
   TextStyle blackHeadline1TextStyle() {

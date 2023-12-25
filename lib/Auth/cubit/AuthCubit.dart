@@ -10,7 +10,6 @@ import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -351,7 +350,7 @@ class AuthCubit extends Cubit<AuthState> {
         .setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
     // Set App Theme To User Preferred Theme Settings
     if (currentUser.isDark != null) {
-      print("This user has a Dark Mode: " + currentUser.isDark!.toString());
+      print("This user has a Dark Mode: ${currentUser.isDark!}");
       Provider.of<ThemeProvider>(context, listen: false)
           .toggleTheme(currentUser.isDark!);
     }

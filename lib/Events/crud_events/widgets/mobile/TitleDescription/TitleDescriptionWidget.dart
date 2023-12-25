@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -70,16 +68,16 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                         focusNodetitleController.unfocus();
                       }
                     },
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     decoration: InputDecoration(
-                      hintStyle: Theme.of(context).textTheme.caption?.copyWith(
+                      hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: titleString.isEmpty
                               ? AppColors.red
-                              : Theme.of(context).textTheme.caption!.color),
+                              : Theme.of(context).textTheme.bodySmall!.color),
                       hintText: AppLocalizations.of(context)!.titleHint,
                       errorStyle: Theme.of(context)
                           .textTheme
-                          .caption
+                          .bodySmall
                           ?.copyWith(color: AppColors.red),
                       errorBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: AppColors.red),
@@ -129,9 +127,9 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                         descriptionString = val;
                       });
                     },
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     decoration: InputDecoration(
-                      hintStyle: Theme.of(context).textTheme.caption,
+                      hintStyle: Theme.of(context).textTheme.bodySmall,
                       hintText: AppLocalizations.of(context)!.descriptionHint,
                       errorBorder: UnderlineInputBorder(
                         borderSide:

@@ -1,13 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/views/mobile/InformationPage.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Bonos/EventBonosBlocSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Clients/ClientEventSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateTimeEventWidget.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationBlocSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Staff/StaffEventSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionBlocSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionWidget.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,12 +11,11 @@ class AddOrEditEvent extends StatelessWidget {
   bool isBeforeEdit;
 
   AddOrEditEvent(
-      {Key? key,
+      {super.key,
       required this.locale,
       this.eventId,
       this.dateTime,
-      required this.isBeforeEdit})
-      : super(key: key);
+      required this.isBeforeEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +71,7 @@ class AddOrEditEvent extends StatelessWidget {
                         child: FittedBox(
                           fit: BoxFit.contain,
                           child: Text(AppLocalizations.of(context)!.group,
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center),
                         ),
                       ),
@@ -105,7 +96,7 @@ class AddOrEditEvent extends StatelessWidget {
                         padding: EdgeInsets.symmetric(
                             horizontal:
                                 MediaQuery.of(context).size.width * 0.05),
-                        child: Column(
+                        child: const Column(
                           children: [
                             //InformationPage(locale: locale),
                           ],
@@ -155,14 +146,14 @@ class AddOrEditEvent extends StatelessWidget {
                           AppLocalizations.of(context)!.createEvent,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodyLarge!
                               .copyWith(color: AppColors.white),
                         )
                       : Text(
                           AppLocalizations.of(context)!.editEvent,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodyLarge!
                               .copyWith(color: AppColors.white),
                         ),
                 ),

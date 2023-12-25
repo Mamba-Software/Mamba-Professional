@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -12,9 +11,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonos/UserBonosHistoryPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 
 import 'UserPurchaseHistory/views/UserPurchaseHistory.dart';
 
@@ -24,7 +21,7 @@ class UserBonosWidget extends StatefulWidget {
   double height = 0;
   double width = 0;
 
-  UserBonosWidget({Key? key, required this.userId, required this.brandId, required this.height, required this.width}) : super(key: key);
+  UserBonosWidget({super.key, required this.userId, required this.brandId, required this.height, required this.width});
 
   @override
   _UserBonosWidgetState createState() => _UserBonosWidgetState();
@@ -74,15 +71,15 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
             children: [
               Text(
                   AppLocalizations.of(context)!.activeBono,
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.displaySmall,
                   textAlign: TextAlign.center
               ),
               TextButton(
+                  onPressed: navigateToBonoHistoryScreen,
                   child: Text(
                       AppLocalizations.of(context)!.purchaseHistory,
-                      style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
-                  ),
-                  onPressed: navigateToBonoHistoryScreen
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(decoration: TextDecoration.underline)
+                  )
               ),
             ],
           ),
@@ -190,8 +187,8 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.noData.split(" ")[0]+" "+AppLocalizations.of(context)!.activeBono.toLowerCase(),
-                            style: Theme.of(context).textTheme.caption,
+                            "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.activeBono.toLowerCase()}",
+                            style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left,
                           ),
                         ],

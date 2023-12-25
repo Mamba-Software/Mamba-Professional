@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -11,7 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // After registering the page pop´s after 5 seconds and the user is sent to the Login page. Before Login in
 // they need to verify his email.
 class Register extends StatefulWidget {
-  Register({Key? key}) : super(key: key);
+  const Register({super.key});
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -19,7 +18,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   // Access to DataBaseService
-  var _userDataService = new UserDataService();
+  final _userDataService = UserDataService();
   // Password Visible
   bool isLoading = false;
   // Scaffold Messenger Key
@@ -49,7 +48,7 @@ class _RegisterState extends State<Register> {
       key: scaffoldMessengerKey,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.createAccount, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white),),
+          title: Text(AppLocalizations.of(context)!.createAccount, style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.white),),
           centerTitle: false,
           elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -83,7 +82,7 @@ class _RegisterState extends State<Register> {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.emailError,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                         textAlign: TextAlign.left,
                       ),
                     ],
@@ -99,11 +98,11 @@ class _RegisterState extends State<Register> {
                       onFieldSubmitted: (val) {
                         focusNodePassword1.requestFocus();
                       },
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
                           labelText: AppLocalizations.of(context)!.email,
-                          labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                          labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
+                          errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                           prefixIcon:  const Padding(
                             padding: EdgeInsets.all(0.0),
                             child: Icon(
@@ -120,7 +119,7 @@ class _RegisterState extends State<Register> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.passwordError,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -137,11 +136,11 @@ class _RegisterState extends State<Register> {
                         focusNodePassword2.requestFocus();
                       },
                       obscureText: !_passwordVisible,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
                           labelText: AppLocalizations.of(context)!.password,
-                          labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                          labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
+                          errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                           suffixIcon: Padding(
                               padding: const EdgeInsets.all(0.0),
                               child: IconButton(
@@ -174,11 +173,11 @@ class _RegisterState extends State<Register> {
                         setState(() => password2 = val);
                       },
                       obscureText: !_passwordVisible,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
                           labelText: AppLocalizations.of(context)!.passworRepeat,
-                          labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                          labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
+                          errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                           suffixIcon: Padding(
                               padding: const EdgeInsets.all(0.0),
                               child: IconButton(
@@ -228,7 +227,7 @@ class _RegisterState extends State<Register> {
                         child: !isLoading ? Center(
                           child: Text(
                               AppLocalizations.of(context)!.register,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
+                              style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black)
                           ),
                         ) : Center(
                           child: SizedBox(
@@ -311,7 +310,7 @@ class _RegisterState extends State<Register> {
       content: Text(
           value,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black)
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.black)
       ),
       backgroundColor: Colors.white,
       duration: const Duration(seconds: 3),

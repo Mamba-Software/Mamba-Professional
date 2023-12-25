@@ -8,7 +8,6 @@ import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotificati
 import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/addEvents.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/notificationsEvents.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:uuid/uuid.dart';
 
 class RecurrentEvents {
   final _brandDataService = BrandDataService();
@@ -21,7 +20,7 @@ class RecurrentEvents {
       BuildContext context,
       DateTime startDate,
       String eventGroupId,
-      Event _event,
+      Event eventVariable,
       bool isPrivate,
       Brand currentBrandLoc,
       String currentUserId,
@@ -43,8 +42,8 @@ class RecurrentEvents {
     // Creating Event Object
     Event event = Event(
       isPrivate: isPrivate,
-      title: _event.title,
-      description: _event.description,
+      title: eventVariable.title,
+      description: eventVariable.description,
       imageUrl: eventImageUrl,
       brandID: currentBrandLoc.id,
       creatorID: currentUserId,
@@ -55,16 +54,16 @@ class RecurrentEvents {
       day: startDate.day.toString(),
       hour: startDate.hour.toString(),
       minute: startDate.minute.toString(),
-      duration: _event.duration!,
-      locationId: _event.location!.id,
-      numClients: _event.joinedMembersList!.length,
-      numTrainers: _event.selectedTrainersList!.length,
-      maxMembers: _event.maxMembers,
-      joinedMembersList: _event.joinedMembersList!,
-      selectedTrainersList: _event.selectedTrainersList!,
+      duration: eventVariable.duration!,
+      locationId: eventVariable.location!.id,
+      numClients: eventVariable.joinedMembersList!.length,
+      numTrainers: eventVariable.selectedTrainersList!.length,
+      maxMembers: eventVariable.maxMembers,
+      joinedMembersList: eventVariable.joinedMembersList!,
+      selectedTrainersList: eventVariable.selectedTrainersList!,
       eventGroupId: eventGroupId,
       bonos: selectedBonos,
-      location: _event.location!,
+      location: eventVariable.location!,
       brandName: currentBrandLoc.name,
       brandLogo: currentBrandLoc.logoUrl,
       startDate: startDate,

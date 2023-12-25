@@ -20,7 +20,7 @@ import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.da
 import 'OnboardingScreen_old.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -241,7 +241,7 @@ class _SplashScreenState extends State<SplashScreen> {
         .setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
     // Set App Theme To User Preferred Theme Settings
     if (currentUser.isDark != null) {
-      print("This user has a Dark Mode: " + currentUser.isDark!.toString());
+      print("This user has a Dark Mode: ${currentUser.isDark!}");
       Provider.of<ThemeProvider>(context, listen: false)
           .toggleTheme(currentUser.isDark!);
     }

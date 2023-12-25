@@ -1,16 +1,7 @@
-import 'dart:math';
 
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -27,8 +18,8 @@ class GenderGroup extends StatefulWidget {
     required this.users,
     required this.resize,
     required this.context,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   GenderGroupState createState() => GenderGroupState();
@@ -47,7 +38,7 @@ class GenderGroupState extends State<GenderGroup> {
 
   int explodeIndex = -1;
 
-  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, tooltipPosition: TooltipPosition.pointer);
+  final TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, tooltipPosition: TooltipPosition.pointer);
 
 
 
@@ -90,13 +81,16 @@ class GenderGroupState extends State<GenderGroup> {
 
 
 
-    genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.male, totalMen, AppColors.mainColor));
-    genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.black));
-    genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.grey));
+    genderGrouped.add(GenderGroupClass(AppLocalizations.of(widget.context)!.male, totalMen, AppColors.mainColor));
+    genderGrouped.add(GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.black));
+    genderGrouped.add(GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.grey));
 
     genderGrouped.sort((a, b){
-      if(a.total >= b.total) return 0;
-      else return 1;
+      if(a.total >= b.total) {
+        return 0;
+      } else {
+        return 1;
+      }
     });
 
     /*
@@ -201,14 +195,14 @@ class GenderGroupState extends State<GenderGroup> {
                             child: Image.asset(Constants.emptyCalendar)
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
                         SizedBox(height: MediaQuery.of(context).size.height*0.05),
                       ],
                     ) : Container(),
                     Container(
                         child: SfCircularChart(
                             tooltipBehavior: _tooltipBehavior,
-                             legend: Legend(isVisible: true,position: LegendPosition.bottom, textStyle: Theme.of(context).textTheme.bodyText2),
+                             legend: Legend(isVisible: true,position: LegendPosition.bottom, textStyle: Theme.of(context).textTheme.bodyMedium),
                             series: <CircularSeries>[
                               // Render pie chart
                               PieSeries<GenderGroupClass, String>(

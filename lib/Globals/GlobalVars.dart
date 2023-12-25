@@ -88,7 +88,7 @@ void setBrandActive() {
 
 Future<void> navigateToPayWall(var context,
     [bool fromActiveSubs = false]) async {
-  final _topSnackBar = TopSnackBarDef();
+  final topSnackBar = TopSnackBarDef();
   if (currentUser.id == currentBrand.adminID) {
     if (fromActiveSubs) {
       await Navigator.push(
@@ -130,7 +130,7 @@ Future<void> navigateToPayWall(var context,
       );
     }
   } else {
-    _topSnackBar.showSnackBarTop(
+    topSnackBar.showSnackBarTop(
         context, AppLocalizations.of(context)!.notSubNotAdmin, 5);
   }
 }

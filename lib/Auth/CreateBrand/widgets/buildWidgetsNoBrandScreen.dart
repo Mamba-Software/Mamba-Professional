@@ -2,10 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Auth/CreateBrand/views/mobile/RegistrarMarca.dart';
-import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
-import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -33,7 +30,7 @@ Widget buildUserPicture(
           child: CircularImage(
             size: safeAreaHeight * 0.08,
             image: currentUser.imageUrl,
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).colorScheme.background,
             borderWidth: 2,
           ),
         ),
@@ -64,11 +61,11 @@ Widget buildGreetingWidget(
                 Text(StringUtils().greetingMessage(context),
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText1
+                        .bodyLarge
                         ?.copyWith(color: AppColors.grey),
                     textAlign: TextAlign.center),
                 Text(currentUser.firstName!,
-                    style: Theme.of(context).textTheme.headline1,
+                    style: Theme.of(context).textTheme.displayLarge,
                     textAlign: TextAlign.center),
               ],
             ),
@@ -154,7 +151,7 @@ Widget buildCreateBrandWidget(BuildContext context, var height, var width) {
                         child: Text(AppLocalizations.of(context)!.createBrand,
                             style: Theme.of(context)
                                 .textTheme
-                                .headline1!
+                                .displayLarge!
                                 .copyWith(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600),
@@ -175,7 +172,7 @@ Widget buildCreateBrandWidget(BuildContext context, var height, var width) {
                             AppLocalizations.of(context)!.createBrandTitle,
                             style: Theme.of(context)
                                 .textTheme
-                                .caption!
+                                .bodySmall!
                                 .copyWith(color: Colors.grey),
                             textAlign: TextAlign.left),
                       ),
@@ -270,7 +267,7 @@ Widget buildJoinBrandWidget(BuildContext context, var height, var width) {
                         child: Text(AppLocalizations.of(context)!.joinBrand,
                             style: Theme.of(context)
                                 .textTheme
-                                .headline1!
+                                .displayLarge!
                                 .copyWith(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600),
@@ -291,7 +288,7 @@ Widget buildJoinBrandWidget(BuildContext context, var height, var width) {
                             AppLocalizations.of(context)!.joinBrandTitle,
                             style: Theme.of(context)
                                 .textTheme
-                                .caption!
+                                .bodySmall!
                                 .copyWith(color: Colors.grey),
                             textAlign: TextAlign.left),
                       ),

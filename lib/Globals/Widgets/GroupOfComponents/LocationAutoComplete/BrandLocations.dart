@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,7 +12,7 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class BrandLocations extends StatefulWidget {
   String brandId;
-  BrandLocations({Key? key, required this.brandId}) : super(key: key);
+  BrandLocations({super.key, required this.brandId});
 
   @override
   _BrandLocationsState createState() => _BrandLocationsState();
@@ -22,7 +21,7 @@ class BrandLocations extends StatefulWidget {
 class _BrandLocationsState extends State<BrandLocations> {
 
   // Acceso a Base de Datos
-  var _locationDataService = new LocationDataService();
+  final _locationDataService = LocationDataService();
   // Boolean Loading
   bool isLoading = false;
   // Locations From Brand
@@ -94,8 +93,8 @@ class _BrandLocationsState extends State<BrandLocations> {
             StreamBuilder<QuerySnapshot>(
                 stream: _locationDataService.getAllLocationsBrand(currentBrand.id!),
                 builder: (context, snapshot) {
-                  if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
-                    return Container(
+                  if (snapshot.data == null ) {
+                    return SizedBox(
                         height: MediaQuery.of(context).size.height*0.65,
                         child: Center(
                             child: LoadingView()
@@ -105,7 +104,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                     locationList = documentsToLocations(snapshot.data!.docs);
                     return Expanded(
                       child: ListView.builder(
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
                           itemCount: locationList.length,
@@ -119,11 +118,11 @@ class _BrandLocationsState extends State<BrandLocations> {
                                     leading: Icon(Icons.home_filled, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,),
                                     title: Text(
                                         location.description!,
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).colorScheme.secondary)
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.secondary)
                                     ),
                                     trailing: IconButton(
                                       onPressed: () async {
-                                        Clipboard.setData(new ClipboardData(text: location.description!)).then((_){
+                                        Clipboard.setData(ClipboardData(text: location.description!)).then((_){
                                           showTopSnackBar(
                                             Overlay.of(context), 
                                             CustomSnackBar.info(
@@ -131,7 +130,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                                               iconRotationAngle: 0,
                                               backgroundColor: Theme.of(context).colorScheme.secondary,
                                               message: AppLocalizations.of(context)!.copyCorrectLocation,
-                                              textStyle: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),
+                                              textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: AppColors.white),
                                             ),
                                           );
                                         });
@@ -153,7 +152,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                                             Expanded(
                                               child: Text(
                                                 AppLocalizations.of(context)!.myLocationsBaseLocationClientDesc,
-                                                style: Theme.of(context).textTheme.caption,
+                                                style: Theme.of(context).textTheme.bodySmall,
                                                 textAlign: TextAlign.left,
                                               ),
                                             ),
@@ -170,11 +169,11 @@ class _BrandLocationsState extends State<BrandLocations> {
                                 leading: Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: 25,),
                                 title: Text(
                                     location.description!,
-                                    style: Theme.of(context).textTheme.bodyText2,
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                                 trailing: IconButton(
                                   onPressed: () async {
-                                    Clipboard.setData(new ClipboardData(text: location.description!)).then((_){
+                                    Clipboard.setData(ClipboardData(text: location.description!)).then((_){
                                       showTopSnackBar(
                                         Overlay.of(context),
                                         CustomSnackBar.info(
@@ -182,7 +181,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                                           iconRotationAngle: 0,
                                           backgroundColor: Theme.of(context).colorScheme.secondary,
                                           message: AppLocalizations.of(context)!.copyCorrectLocation,
-                                          textStyle: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),
+                                          textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: AppColors.white),
                                         ),
                                       );
                                     });

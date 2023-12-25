@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +11,6 @@ import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataServic
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
@@ -29,11 +27,10 @@ class Locations extends StatefulWidget {
   ValueChanged<bool?> pinnedChanged;
 
   Locations(
-      {Key? key,
+      {super.key,
       required this.brandId,
       required this.pinned,
-      required this.pinnedChanged})
-      : super(key: key);
+      required this.pinnedChanged});
 
   @override
   _LocationsState createState() => _LocationsState();
@@ -148,12 +145,9 @@ class _LocationsState extends State<Locations> {
                       if (boolean == true) {
                         setState(() {
                           isLoading = true;
-                          loadingText = AppLocalizations.of(context)!.updating +
-                              " " +
-                              AppLocalizations.of(context)!
+                          loadingText = "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!
                                   .locations
-                                  .toLowerCase() +
-                              "...";
+                                  .toLowerCase()}...";
                         });
                         await Future.delayed(const Duration(seconds: 4));
                         getAllLocations();
@@ -194,10 +188,7 @@ class _LocationsState extends State<Locations> {
         // Reload the Map
         setState(() {
           isLoading = true;
-          loadingText = AppLocalizations.of(context)!.updating +
-              " " +
-              AppLocalizations.of(context)!.locations.toLowerCase() +
-              "...";
+          loadingText = "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!.locations.toLowerCase()}...";
         });
         Location location = Location();
         location.placeId = result.placeId;
@@ -314,7 +305,7 @@ class _LocationsState extends State<Locations> {
                           Text(
                             AppLocalizations.of(context)!.locations,
                             style:
-                                Theme.of(context).textTheme.headline1?.copyWith(
+                                Theme.of(context).textTheme.displayLarge?.copyWith(
                                       color: AppColors.white,
                                     ),
                           ),

@@ -1,16 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
-import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 import '../../../../../Data/Models/Brand.dart';
 
@@ -20,7 +15,7 @@ class RequestBonoConfirmationDialog extends StatefulWidget {
   BonoRequest bonoRequest;
   Brand brand;
 
-  RequestBonoConfirmationDialog({Key? key, required this.bono,required this.user,required this.bonoRequest, required this.brand }) : super(key: key);
+  RequestBonoConfirmationDialog({super.key, required this.bono,required this.user,required this.bonoRequest, required this.brand });
 
   @override
   _RequestBonoConfirmationDialogState createState() => _RequestBonoConfirmationDialogState();
@@ -64,7 +59,7 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
                         Flexible(
                           child: Text(
                             "ha solicitado la confirmación de compra del bono",
-                            style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -97,7 +92,7 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
                         Flexible(
                           child: Text(
                             "pagado con",
-                            style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -124,7 +119,7 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
                           ),
                           label: Text(
                             AppLocalizations.of(context)!.accept,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                           ),
                           icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                           onPressed: null,
@@ -143,7 +138,7 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
                           ),
                           label: Text(
                             AppLocalizations.of(context)!.delete,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                           ),
                           icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,color: AppColors.white),
                           onPressed: null,
@@ -174,7 +169,7 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
                               Flexible(
                                 child: Text(
                                   widget.user.name!,
-                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                  style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),
                               ),

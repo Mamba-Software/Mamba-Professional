@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -15,7 +14,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Sett
 
 // Tus Datos Widget.
 class SettingsYourData extends StatefulWidget {
-  const SettingsYourData({Key? key}) : super(key: key);
+  const SettingsYourData({super.key});
 
   @override
   _SettingsYourDataState createState() => _SettingsYourDataState();
@@ -58,7 +57,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
     await Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => SettingsEditPhotoPage(),
+          builder: (context) => const SettingsEditPhotoPage(),
         )
     ).whenComplete(() {
       setState(() {
@@ -86,13 +85,13 @@ class _SettingsYourDataState extends State<SettingsYourData> {
   Future<void> selectSlot(ctx, type) {
     // Initial Vars
     var startDate = DateTime.now();
-    var title;
-    var widgetPicker;
+    String title = "";
+    Widget widgetPicker = Container();
     // Different types of pickers
     Widget dateTimePicker = CupertinoTheme(
       data: CupertinoThemeData(
           textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyLarge,
           )
       ),
       child: CupertinoDatePicker(
@@ -137,7 +136,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                   children: [
                     Expanded(
                         child: Text(title,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,)
                     ),
                   ],
@@ -161,7 +160,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                       icon: Container(),
                       label: Text(
                           AppLocalizations.of(context)!.confirm,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark)
+                          style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark)
                       ),
                     ),
                   ],
@@ -248,7 +247,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                         children: [
                                           Text(
                                             AppLocalizations.of(context)!.firstName,
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                                             textAlign: TextAlign.left,
                                           ),
                                         ],
@@ -266,7 +265,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                   controller: firstNameController,
                                                   keyboardType: TextInputType.name,
                                                   validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
-                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  style: Theme.of(context).textTheme.bodyMedium,
                                                   onChanged: (value) {
                                                     setState(() {
                                                       firstNameControllerTemp = value;
@@ -275,8 +274,8 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                   textCapitalization: TextCapitalization.words,
                                                   decoration: InputDecoration(
                                                       hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                                      hintStyle: Theme.of(context).textTheme.caption,
-                                                      errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                      hintStyle: Theme.of(context).textTheme.bodySmall,
+                                                      errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                                                       border: OutlineInputBorder(
                                                         borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
                                                         borderRadius: BorderRadius.circular(15.0),
@@ -314,7 +313,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                         children: [
                                           Text(
                                             AppLocalizations.of(context)!.lastName,
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                                             textAlign: TextAlign.left,
                                           ),
                                         ],
@@ -337,12 +336,12 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                     });
                                                   },
                                                   validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
-                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  style: Theme.of(context).textTheme.bodyMedium,
                                                   textCapitalization: TextCapitalization.words,
                                                   decoration: InputDecoration(
                                                       hintText: AppLocalizations.of(context)!.lastNameError,
-                                                      hintStyle: Theme.of(context).textTheme.caption,
-                                                      errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                      hintStyle: Theme.of(context).textTheme.bodySmall,
+                                                      errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                                                       border: OutlineInputBorder(
                                                         borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
                                                         borderRadius: BorderRadius.circular(15.0),
@@ -400,7 +399,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                           children: [
                                             Text(
                                               AppLocalizations.of(context)!.editYourPhoto,
-                                              style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).primaryColor),
+                                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor),
                                               textAlign: TextAlign.center,
                                             ),
                                             SizedBox(width: MediaQuery.of(context).size.width*0.005),
@@ -582,7 +581,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                         children: <Widget>[
                           Text(
                             AppLocalizations.of(context)!.email,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Row(
@@ -596,14 +595,14 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                     initialValue: currentUser.email,
                                     readOnly: true,
                                     enabled: false,
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.start,
                                     decoration: InputDecoration(
                                         filled: true,
                                         fillColor: Theme.of(context).scaffoldBackgroundColor,
                                         hintText: AppLocalizations.of(context)!.lastNameError,
-                                        hintStyle: Theme.of(context).textTheme.caption,
-                                        errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                        hintStyle: Theme.of(context).textTheme.bodySmall,
+                                        errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                                         suffixIcon: FittedBox(
                                           fit: BoxFit.contain,
                                           child: SizedBox(
@@ -664,7 +663,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                         children: <Widget>[
                           Text(
                             AppLocalizations.of(context)!.dateOfBirth,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           SizedBox(
@@ -688,11 +687,11 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                           controller: startDateController,
                                           readOnly: true,
                                           enabled: false,
-                                          style: Theme.of(context).textTheme.bodyText2,
+                                          style: Theme.of(context).textTheme.bodyMedium,
                                           decoration: InputDecoration(
                                               hintText: AppLocalizations.of(context)!.lastNameError,
-                                              hintStyle: Theme.of(context).textTheme.caption,
-                                              errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                              hintStyle: Theme.of(context).textTheme.bodySmall,
+                                              errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                                               border: OutlineInputBorder(
                                                 borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
                                                 borderRadius: BorderRadius.circular(15.0),
@@ -733,7 +732,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                         children: <Widget>[
                           Text(
                             AppLocalizations.of(context)!.gender,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           GenderWidget(
@@ -775,7 +774,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                   startDateController.text = DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDateLocal, Localizations.localeOf(context).languageCode);
                   currentUser.dateOfBirth = startDateController.text;
                 }
-                currentUser.name = currentUser.firstName!+" "+currentUser.lastName!;
+                currentUser.name = "${currentUser.firstName!} ${currentUser.lastName!}";
                 await _userDataService.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
                 mixpanel!.track('user_profile_settings_edit_info_completed');
               }
@@ -785,7 +784,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
           backgroundColor: Colors.green,
           icon: Icon(Icons.save_rounded, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
           label: Text(AppLocalizations.of(context)!.save,
-            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),),
         ),
       ) : Container(),
     );
@@ -795,7 +794,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
 class GenderWidget extends StatefulWidget {
   final ValueChanged<int> selectedGenderChanged;
   final Usuario? user;
-  GenderWidget({required Key key, required this.selectedGenderChanged, required this.user}) : super(key: key);
+  const GenderWidget({required Key key, required this.selectedGenderChanged, required this.user}) : super(key: key);
 
   @override
   _GenderWidgetState createState() => _GenderWidgetState();
@@ -846,7 +845,7 @@ class _GenderWidgetState extends State<GenderWidget> {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: Text(
                             text,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: gender == index ? AppColors.white : Theme.of(context).primaryColor)
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: gender == index ? AppColors.white : Theme.of(context).primaryColor)
                         ),
                       ),
                     ],

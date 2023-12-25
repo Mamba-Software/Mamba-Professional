@@ -42,12 +42,11 @@ class AddOrEditPrivateEvent extends StatefulWidget {
   bool isBeforeEdit;
 
   AddOrEditPrivateEvent(
-      {Key? key,
+      {super.key,
       required this.locale,
       this.eventId,
       this.dateTime,
-      required this.isBeforeEdit})
-      : super(key: key);
+      required this.isBeforeEdit});
 
   @override
   _AddOrEditPrivateEventState createState() => _AddOrEditPrivateEventState();
@@ -194,7 +193,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
     var hour = duration.split(".")[0];
     var min = duration.split(".")[1];
     durationController.text = "${hour}h ${min}min";
-    membersController.text = "${eventMaxMembers.toString()}";
+    membersController.text = eventMaxMembers.toString();
     brandTrainersSelected.add(currentUser);
     isRandomImage = true;
     // Get Event Bonos
@@ -428,7 +427,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
               height: MediaQuery.of(context).size.width * 0.17,
               width: MediaQuery.of(context).size.width * 0.17,
               decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
                 border: Border.all(
                   width: 1,
                   color: Theme.of(context).primaryColor,
@@ -457,7 +456,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                 children: [
                   Text(
                     AppLocalizations.of(context)!.add,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -526,7 +525,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                 children: [
                   Text(
                     AppLocalizations.of(context)!.add,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -577,7 +576,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                         child: FittedBox(
                           fit: BoxFit.contain,
                           child: Text(AppLocalizations.of(context)!.private,
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center),
                         ),
                       ),
@@ -702,7 +701,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                 child: Text(
                                     AppLocalizations.of(context)!.private,
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.bodyMedium,
                                     textAlign: TextAlign.center),
                               ),
                             ),
@@ -779,7 +778,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .headline1,
+                                                                  .displayLarge,
                                                         ),
                                                       ],
                                                     ),
@@ -821,17 +820,17 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                         },
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText2,
+                                                            .bodyMedium,
                                                         decoration:
                                                             InputDecoration(
                                                           hintStyle:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .caption,
+                                                                  .bodySmall,
                                                           errorStyle: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .caption
+                                                              .bodySmall
                                                               ?.copyWith(
                                                                   color:
                                                                       AppColors
@@ -898,7 +897,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .headline1,
+                                                                  .displayLarge,
                                                         ),
                                                       ],
                                                     ),
@@ -930,13 +929,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                         },
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText2,
+                                                            .bodyMedium,
                                                         decoration:
                                                             InputDecoration(
                                                           hintStyle:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .caption,
+                                                                  .bodySmall,
                                                           hintText: AppLocalizations
                                                                   .of(context)!
                                                               .descriptionHint,
@@ -997,7 +996,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .headline1,
+                                                                  .displayLarge,
                                                         ),
                                                       ],
                                                     ),
@@ -1142,7 +1141,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .bodyText2,
+                                                                    .bodyMedium,
                                                               ),
                                                               location.isBaseLocation!
                                                                   ? Text(
@@ -1152,7 +1151,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .caption
+                                                                          .bodySmall
                                                                           ?.copyWith(
                                                                               height: 1.5),
                                                                     )
@@ -1258,7 +1257,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .headline1,
+                                                                  .displayLarge,
                                                             ),
                                                           ],
                                                         ),
@@ -1288,7 +1287,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .caption,
+                                                                .bodySmall,
                                                           ),
                                                         ),
                                                       ],
@@ -1354,7 +1353,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .bodyText2
+                                                                    .bodyMedium
                                                                     ?.copyWith(
                                                                         color: AppColors
                                                                             .red,
@@ -1425,7 +1424,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .bodyText2
+                                                                    .bodyMedium
                                                                     ?.copyWith(
                                                                         color: Colors
                                                                             .green,
@@ -1441,22 +1440,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                       MainAxisAlignment.end,
                                                   children: [
                                                     TextButton(
-                                                      child: Text(
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .selectAll,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2
-                                                            ?.copyWith(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700),
-                                                      ),
                                                       style:
                                                           TextButton.styleFrom(
-                                                        primary:
-                                                            Theme.of(context)
+                                                        foregroundColor: Theme.of(context)
                                                                 .primaryColor,
                                                       ),
                                                       onPressed: () async {
@@ -1488,6 +1474,18 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           }
                                                         }
                                                       },
+                                                      child: Text(
+                                                        AppLocalizations.of(
+                                                                context)!
+                                                            .selectAll,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium
+                                                            ?.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700),
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -1512,7 +1510,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .bodyText2
+                                                                .bodyMedium
                                                                 ?.copyWith(
                                                                     color:
                                                                         AppColors
@@ -1604,7 +1602,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                     style: Theme.of(
                                                                             context)
                                                                         .textTheme
-                                                                        .bodyText1,
+                                                                        .bodyLarge,
                                                                     maxLines: 1,
                                                                     overflow:
                                                                         TextOverflow
@@ -1612,16 +1610,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                   ),
                                                                   Flexible(
                                                                     child: Text(
-                                                                      (bono.sessions! == 10000
-                                                                              ? AppLocalizations.of(context)!.sessions + " " + AppLocalizations.of(context)!.ilimitadas
-                                                                              : bono.sessions!.toString() + " " + AppLocalizations.of(context)!.sessions.toLowerCase()) +
-                                                                          " desde " +
-                                                                          bono.price!.toStringAsFixed(2) +
-                                                                          "€",
+                                                                      "${bono.sessions! == 10000
+                                                                              ? "${AppLocalizations.of(context)!.sessions} ${AppLocalizations.of(context)!.ilimitadas}"
+                                                                              : "${bono.sessions!} ${AppLocalizations.of(context)!.sessions.toLowerCase()}"} desde ${bono.price!.toStringAsFixed(2)}€",
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .caption,
+                                                                          .bodySmall,
                                                                       maxLines:
                                                                           1,
                                                                       overflow:
@@ -1660,7 +1655,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                         .primaryColor
                                                                     : Theme.of(
                                                                             context)
-                                                                        .backgroundColor,
+                                                                        .colorScheme.background,
                                                                 textColor: selectedBonos
                                                                         .contains(bono
                                                                             .id!)
@@ -1669,23 +1664,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                         .primaryColor
                                                                     : Theme.of(
                                                                             context)
-                                                                        .backgroundColor,
-                                                                child: selectedBonos
-                                                                        .contains(bono
-                                                                            .id!)
-                                                                    ? Icon(
-                                                                        Icons
-                                                                            .check,
-                                                                        color: Theme.of(context)
-                                                                            .primaryColorDark,
-                                                                        size: MediaQuery.of(context).size.width *
-                                                                            0.05)
-                                                                    : SizedBox(
-                                                                        height: MediaQuery.of(context).size.width *
-                                                                            0.03,
-                                                                        width: MediaQuery.of(context).size.width *
-                                                                            0.03,
-                                                                      ),
+                                                                        .colorScheme.background,
                                                                 padding:
                                                                     EdgeInsets
                                                                         .zero,
@@ -1729,6 +1708,22 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                     }
                                                                   });
                                                                 },
+                                                                child: selectedBonos
+                                                                        .contains(bono
+                                                                            .id!)
+                                                                    ? Icon(
+                                                                        Icons
+                                                                            .check,
+                                                                        color: Theme.of(context)
+                                                                            .primaryColorDark,
+                                                                        size: MediaQuery.of(context).size.width *
+                                                                            0.05)
+                                                                    : SizedBox(
+                                                                        height: MediaQuery.of(context).size.width *
+                                                                            0.03,
+                                                                        width: MediaQuery.of(context).size.width *
+                                                                            0.03,
+                                                                      ),
                                                               ),
                                                             ),
                                                           ],
@@ -1782,7 +1777,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                 .selectDayTime,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline1,
+                                                .displayLarge,
                                           ),
                                         ),
                                         Padding(
@@ -1831,11 +1826,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                               ? Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .bodyText2
+                                                                  .bodyMedium
                                                               : Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .caption,
+                                                                  .bodySmall,
                                                           decoration:
                                                               const InputDecoration(
                                                             border: InputBorder
@@ -1898,11 +1893,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                               ? Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .bodyText2
+                                                                  .bodyMedium
                                                               : Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .caption,
+                                                                  .bodySmall,
                                                           decoration:
                                                               const InputDecoration(
                                                             border: InputBorder
@@ -1968,11 +1963,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                               ? Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .bodyText2
+                                                                  .bodyMedium
                                                               : Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .caption,
+                                                                  .bodySmall,
                                                           decoration:
                                                               const InputDecoration(
                                                             border: InputBorder
@@ -2012,7 +2007,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                         .errorDate,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText2
+                                                        .bodyMedium
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.red),
@@ -2034,7 +2029,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                         .cantEditText,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText2
+                                                        .bodyMedium
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.red),
@@ -2068,7 +2063,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .headline1,
+                                                                .displayLarge,
                                                           ),
                                                           SizedBox(
                                                             height: MediaQuery.of(
@@ -2146,7 +2141,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .bodyText2
+                                                                  .bodyMedium
                                                                   ?.copyWith(
                                                                       color: AppColors
                                                                           .red),
@@ -2184,17 +2179,17 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                             .days,
                                                                         style: Theme.of(context)
                                                                             .textTheme
-                                                                            .bodyText2,
+                                                                            .bodyMedium,
                                                                       ),
                                                                     ),
                                                                     WeekdaySelector(
                                                                       fillColor:
                                                                           Theme.of(context)
-                                                                              .backgroundColor,
+                                                                              .colorScheme.background,
                                                                       textStyle: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .bodyText2!
+                                                                          .bodyMedium!
                                                                           .copyWith(
                                                                               color: Theme.of(context).primaryColor),
                                                                       selectedFillColor:
@@ -2204,7 +2199,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                       selectedTextStyle: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .bodyText2!
+                                                                          .bodyMedium!
                                                                           .copyWith(
                                                                               color: Theme.of(context).primaryColorDark),
                                                                       firstDayOfWeek:
@@ -2272,7 +2267,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                             .during,
                                                                         style: Theme.of(context)
                                                                             .textTheme
-                                                                            .bodyText2,
+                                                                            .bodyMedium,
                                                                       ),
                                                                     ),
                                                                     Column(
@@ -2290,13 +2285,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                               Text(
                                                                             AppLocalizations.of(context)!.thisWeek,
                                                                             style:
-                                                                                Theme.of(context).textTheme.bodyText2,
+                                                                                Theme.of(context).textTheme.bodyMedium,
                                                                           ),
                                                                           subtitle:
                                                                               Text(
                                                                             AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneWeek))),
                                                                             style:
-                                                                                Theme.of(context).textTheme.caption,
+                                                                                Theme.of(context).textTheme.bodySmall,
                                                                             textAlign:
                                                                                 TextAlign.left,
                                                                           ),
@@ -2330,13 +2325,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                               Text(
                                                                             AppLocalizations.of(context)!.nextTwoWeek,
                                                                             style:
-                                                                                Theme.of(context).textTheme.bodyText2,
+                                                                                Theme.of(context).textTheme.bodyMedium,
                                                                           ),
                                                                           subtitle:
                                                                               Text(
                                                                             AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(twoWeek))),
                                                                             style:
-                                                                                Theme.of(context).textTheme.caption,
+                                                                                Theme.of(context).textTheme.bodySmall,
                                                                             textAlign:
                                                                                 TextAlign.left,
                                                                           ),
@@ -2370,13 +2365,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                               Text(
                                                                             AppLocalizations.of(context)!.wholeMonth,
                                                                             style:
-                                                                                Theme.of(context).textTheme.bodyText2,
+                                                                                Theme.of(context).textTheme.bodyMedium,
                                                                           ),
                                                                           subtitle:
                                                                               Text(
                                                                             AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneMonth))),
                                                                             style:
-                                                                                Theme.of(context).textTheme.caption,
+                                                                                Theme.of(context).textTheme.bodySmall,
                                                                             textAlign:
                                                                                 TextAlign.left,
                                                                           ),
@@ -2435,7 +2430,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .headline1,
+                                                                  .displayLarge,
                                                         ),
                                                         SizedBox(
                                                           height: MediaQuery.of(
@@ -2483,7 +2478,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .headline1,
+                                                                  .displayLarge,
                                                         ),
                                                         SizedBox(
                                                           height: MediaQuery.of(
@@ -2564,7 +2559,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           .staff,
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .headline1,
+                                                          .displayLarge,
                                                     ),
                                                   ],
                                                 ),
@@ -2577,14 +2572,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                 Row(
                                                   children: [
                                                     Text(
-                                                      "( " +
-                                                          brandTrainersSelected
-                                                              .length
-                                                              .toString() +
-                                                          " )",
+                                                      "( ${brandTrainersSelected
+                                                              .length} )",
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText2,
+                                                          .bodyMedium,
                                                     ),
                                                   ],
                                                 )
@@ -2720,7 +2712,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                               .firstName!,
                                                                           style: Theme.of(context)
                                                                               .textTheme
-                                                                              .bodyText2,
+                                                                              .bodyMedium,
                                                                           textAlign:
                                                                               TextAlign.center,
                                                                         ),
@@ -2761,7 +2753,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                         .noTrainerSelectedError,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText2
+                                                        .bodyMedium
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.red),
@@ -2799,7 +2791,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           .clients,
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .headline1,
+                                                          .displayLarge,
                                                     ),
                                                   ],
                                                 ),
@@ -2812,14 +2804,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                 Row(
                                                   children: [
                                                     Text(
-                                                      "( " +
-                                                          brandClientsSelected
-                                                              .length
-                                                              .toString() +
-                                                          " )",
+                                                      "( ${brandClientsSelected
+                                                              .length} )",
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText2,
+                                                          .bodyMedium,
                                                     ),
                                                   ],
                                                 )
@@ -2849,7 +2838,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                         .inviteClientDescription,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .caption,
+                                                        .bodySmall,
                                                   ),
                                                 ),
                                               ],
@@ -2882,7 +2871,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                             .addClientDescription,
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .caption,
+                                                            .bodySmall,
                                                       ),
                                                     ),
                                                   ],
@@ -3028,7 +3017,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                                 children: [
                                                                                   Text(
                                                                                     client.firstName!,
-                                                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                                                    style: Theme.of(context).textTheme.bodyMedium,
                                                                                     textAlign: TextAlign.center,
                                                                                   ),
                                                                                 ],
@@ -3111,7 +3100,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                 AppLocalizations.of(context)!.back,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .copyWith(
                                         color:
                                             Theme.of(context).primaryColorDark),
@@ -3255,7 +3244,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                     : AppLocalizations.of(context)!.next,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .copyWith(color: AppColors.white),
                               )
                             : Text(
@@ -3264,7 +3253,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                     : AppLocalizations.of(context)!.next,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .copyWith(color: AppColors.white),
                               ),
                       ),
@@ -3366,14 +3355,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
     if (!isRecurrent) {
       // Updating Loading Text
       setState(() {
-        isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
-            " " +
-            AppLocalizations.of(context)!.events.toLowerCase() +
-            "... (" +
-            currentEvent.toString() +
-            "/" +
-            currentEvent.toString() +
-            ")";
+        isRecurrentLoadingText = "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$currentEvent)";
       });
       // Creating Event Object
       Event event = Event(
@@ -3455,14 +3437,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
           if (values[weekDay - 1]!) {
             // Updating Loading Text
             setState(() {
-              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
-                  " " +
-                  AppLocalizations.of(context)!.events.toLowerCase() +
-                  "... (" +
-                  currentEvent.toString() +
-                  "/" +
-                  totalEvents.toString() +
-                  ")";
+              isRecurrentLoadingText = "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$totalEvents)";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
@@ -3509,14 +3484,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
           if (values[weekDay - 1]!) {
             // Updating Loading Text
             setState(() {
-              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
-                  " " +
-                  AppLocalizations.of(context)!.events.toLowerCase() +
-                  "... (" +
-                  currentEvent.toString() +
-                  "/" +
-                  totalEvents.toString() +
-                  ")";
+              isRecurrentLoadingText = "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$totalEvents)";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
@@ -3563,14 +3531,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
           if (values[weekDay - 1]!) {
             // Updating Loading Text
             setState(() {
-              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
-                  " " +
-                  AppLocalizations.of(context)!.events.toLowerCase() +
-                  "... (" +
-                  currentEvent.toString() +
-                  "/" +
-                  totalEvents.toString() +
-                  ")";
+              isRecurrentLoadingText = "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$totalEvents)";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
@@ -3635,14 +3596,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
     setState(() {
       isLoading = true;
       // Updating Loading Text
-      isRecurrentLoadingText = AppLocalizations.of(context)!.deleting +
-          " " +
-          AppLocalizations.of(context)!.events.toLowerCase() +
-          "... (" +
-          currentEvent.toString() +
-          "/" +
-          currentEvent.toString() +
-          ")";
+      isRecurrentLoadingText = "${AppLocalizations.of(context)!.deleting} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$currentEvent)";
     });
     // Delete Event Call
     await _eventDataService.deleteEvent(widget.eventId!, true);
@@ -3684,14 +3638,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
     setState(() {
       isLoading = true;
       // Updating Loading Text
-      isRecurrentLoadingText = AppLocalizations.of(context)!.editing +
-          " " +
-          AppLocalizations.of(context)!.events.toLowerCase() +
-          "... (" +
-          currentEvent.toString() +
-          "/" +
-          currentEvent.toString() +
-          ")";
+      isRecurrentLoadingText = "${AppLocalizations.of(context)!.editing} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$currentEvent)";
     });
     // Get Random Photo if no Image Selected
     if (isRandomImage) {
@@ -3758,7 +3705,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
         // Remove Trainer Left
         eventTrainersAdded.removeWhere((element) => element.id == user.id);
         originalTrainers.removeWhere((element) => element.id == user.id);
-        print("Trainer Matched " + user.id.toString());
+        print("Trainer Matched ${user.id}");
         if (originalStartDate != startDate) {
           // Remove Old Local Notification
           await _deleteEventLocalNotificationsCall(event.id!, user.id!);
@@ -3777,7 +3724,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
       await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
       // Remove Event Local Notifications
       await _deleteEventLocalNotificationsCall(event.id!, user.id!);
-      print("Trainer Removed " + user.id.toString());
+      print("Trainer Removed ${user.id}");
     }
     // Handle Trainers Added
     // Trainers Added Not Matched means that they have added to the Event
@@ -3792,7 +3739,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(
           event.id!, user.id!, user.isTrainer!);
-      print("Trainer Added " + user.id.toString());
+      print("Trainer Added ${user.id}");
     }
 
     /// Continue With Clients
@@ -3806,7 +3753,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
         // Remove Trainer Left
         eventClientsAdded.removeWhere((element) => element.id == user.id);
         originalClients.removeWhere((element) => element.id == user.id);
-        print("Client Matched " + user.id.toString());
+        print("Client Matched ${user.id}");
         if (originalStartDate != startDate) {
           // Remove Old Local Notification
           await _deleteEventLocalNotificationsCall(event.id!, user.id!);
@@ -3835,7 +3782,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
           user.id!, currentBrand.id!, event.id!);
       // Remove Event Local Notifications
       await _deleteEventLocalNotificationsCall(event.id!, user.id!);
-      print("Client Removed " + user.id.toString());
+      print("Client Removed ${user.id}");
     }
 
     //JMF_AddUser_Begin
@@ -3862,7 +3809,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(
           event.id!, user.id!, user.isTrainer!);
-      print("Client Added " + user.id.toString());
+      print("Client Added ${user.id}");
     }
     mixpanel!.track('edit_event_completed', properties: {
       'descriptionLength': event.description!.length.toString(),
@@ -3904,14 +3851,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
     for (var i = index; i < eventGroupIdsList.length; i++) {
       // Updating Loading Text
       setState(() {
-        isRecurrentLoadingText = AppLocalizations.of(context)!.deleting +
-            " " +
-            AppLocalizations.of(context)!.events.toLowerCase() +
-            "... (" +
-            currentEvent.toString() +
-            "/" +
-            totalEvents.toString() +
-            ")";
+        isRecurrentLoadingText = "${AppLocalizations.of(context)!.deleting} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$totalEvents)";
       });
       currentEvent += 1;
       // Event Id
@@ -3953,14 +3893,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
     for (var i = index; i < eventGroupIdsList.length; i++) {
       // Updating Loading Text
       setState(() {
-        isRecurrentLoadingText = AppLocalizations.of(context)!.editing +
-            " " +
-            AppLocalizations.of(context)!.events.toLowerCase() +
-            "... (" +
-            currentEvent.toString() +
-            "/" +
-            totalEvents.toString() +
-            ")";
+        isRecurrentLoadingText = "${AppLocalizations.of(context)!.editing} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$totalEvents)";
       });
       currentEvent += 1;
       // Event Id
@@ -4058,7 +3991,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
           // Remove Trainer Left
           eventTrainersAdded.removeWhere((element) => element.id == user.id);
           originalTrainers.removeWhere((element) => element.id == user.id);
-          print("Trainer Matched " + user.id.toString());
+          print("Trainer Matched ${user.id}");
           if (originalStartDate != updatedStartDate) {
             // Remove Old Local Notification
             await _deleteEventLocalNotificationsCall(event.id!, user.id!);
@@ -4077,7 +4010,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
         await _eventDataService.deleteUserFromEvent(eventId, user.id!);
         // Remove Event Local Notifications
         await _deleteEventLocalNotificationsCall(eventId, user.id!);
-        print("Trainer Removed " + user.id.toString());
+        print("Trainer Removed ${user.id}");
       }
       // Handle Trainers Added
       // Trainers Added Not Matched means that they have added to the Event
@@ -4092,7 +4025,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
         // Add Event Local Notifications
         await _addEventLocalNotificationsCall(
             eventId, user.id!, user.isTrainer!);
-        print("Trainer Added " + user.id.toString());
+        print("Trainer Added ${user.id}");
       }
       /*
       /// Continue With Clients
@@ -4166,7 +4099,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
     for (var i = 0; i < eventMembers.length; i++) {
       var user = eventMembers[i];
       if (user.isTrainer!) {
-        print("Notifications Trainer " + user.name!);
+        print("Notifications Trainer ${user.name!}");
         // Firebase Call
         if (user.id != currentUser.id!) {
           await _eventDataService.addUserToEvent(eventId, user.id!, "", true);
@@ -4177,7 +4110,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
         await _addEventLocalNotificationsCall(
             eventId, user.id!, user.isTrainer!);
       } else {
-        print("Notifications Client " + user.name!);
+        print("Notifications Client ${user.name!}");
         // Firebase Call
         await _eventDataService.addUserToEvent(
             eventId, user.id!, user.purchaseId!, true);

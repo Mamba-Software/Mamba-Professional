@@ -33,43 +33,43 @@ class NotificationEvent {
   });
 
   NotificationEvent.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('userId')) {
-      this.userId = documentSnapshot.get("userId").toString();
+      userId = documentSnapshot.get("userId").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('type')) {
-      this.type = documentSnapshot.get("type").toString();
+      type = documentSnapshot.get("type").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isRead')) {
-      this.isRead = documentSnapshot.get("isRead");
+      isRead = documentSnapshot.get("isRead");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateSent')) {
-      this.dateSent = documentSnapshot.get("dateSent").toString();
+      dateSent = documentSnapshot.get("dateSent").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
-      this.createdAt = documentSnapshot.get("createdAt");
+      createdAt = documentSnapshot.get("createdAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('parameters')) {
-      this.parameters = documentSnapshot.get("parameters");
+      parameters = documentSnapshot.get("parameters");
     }
     // Deprecated
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('year')) {
-      this.year = documentSnapshot.get("year").toString();
+      year = documentSnapshot.get("year").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('month')) {
-      this.month = documentSnapshot.get("month").toString();
+      month = documentSnapshot.get("month").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('day')) {
-      this.day = documentSnapshot.get("day").toString();
+      day = documentSnapshot.get("day").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('hour')) {
-      this.hour = documentSnapshot.get("hour").toString();
+      hour = documentSnapshot.get("hour").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('minutes')) {
-      this.minutes = documentSnapshot.get("minutes").toString();
+      minutes = documentSnapshot.get("minutes").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('seconds')) {
-      this.seconds = documentSnapshot.get("seconds").toString();
+      seconds = documentSnapshot.get("seconds").toString();
     }
   }
 }

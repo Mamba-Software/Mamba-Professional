@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
@@ -18,8 +17,8 @@ class SessionsMade extends StatefulWidget {
     required this.events,
     required this.backEvents,
     required this.isYearly,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   SessionsMadeState createState() => SessionsMadeState();
@@ -186,8 +185,8 @@ class SessionsMadeState extends State<SessionsMade> {
                 axisLine: const AxisLine(width: 0),
               ),
               enableSideBySideSeriesPlacement: false,
-              axes: [],
-              indicators: [],
+              axes: const [],
+              indicators: const [],
               legend: null,
               tooltipBehavior: _tooltipBehavior,
               series: <ChartSeries>[
@@ -221,14 +220,14 @@ class SessionsMadeState extends State<SessionsMade> {
             width: MediaQuery.of(context).size.width*0.50,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor.withOpacity(0.9),
+                color: Theme.of(context).colorScheme.background.withOpacity(0.9),
                 border: Border.all(width: 2, color: Theme.of(context).primaryColor),
                 borderRadius: BorderRadius.circular(10)
             ),
             child: Center(
               child: Text(
                 AppLocalizations.of(context)!.statsMinimumSession(5.toString()),
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
             ),

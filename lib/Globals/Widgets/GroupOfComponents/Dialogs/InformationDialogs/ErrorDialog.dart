@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class ErrorDialog extends StatelessWidget {
   final String text;
-  const ErrorDialog({Key? key, required this.text}) : super(key: key);
+  const ErrorDialog({super.key, required this.text});
 
 
   @override
@@ -28,10 +27,10 @@ class ErrorDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Flexible(
-                  child: Text(text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                  child: Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                 ),
                 TextButton(
-                  child: Text(AppLocalizations.of(context)!.close, style: Theme.of(context).textTheme.bodyText2?.copyWith(decoration: TextDecoration.underline), ),
+                  child: Text(AppLocalizations.of(context)!.close, style: Theme.of(context).textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline), ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   }

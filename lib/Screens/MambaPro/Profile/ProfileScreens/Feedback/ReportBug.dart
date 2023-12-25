@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -10,7 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Report a Bug Widget.
 class ReportBug extends StatefulWidget {
-  const ReportBug({Key? key}) : super(key: key);
+  const ReportBug({super.key});
 
   @override
   _ReportBugState createState() => _ReportBugState();
@@ -18,7 +17,7 @@ class ReportBug extends StatefulWidget {
 
 class _ReportBugState extends State<ReportBug> {
   // Acceso a Base de Datos
-  var _feedbackDataService = new FeedbackDataService();
+  final _feedbackDataService = FeedbackDataService();
 
   // Boolean Loading
   bool isLoading = false;
@@ -57,7 +56,7 @@ class _ReportBugState extends State<ReportBug> {
           message: AppLocalizations.of(context)!.errorSent,
           textStyle: Theme.of(context)
               .textTheme
-              .bodyText1!
+              .bodyLarge!
               .copyWith(color: AppColors.white),
         ),
       );
@@ -101,7 +100,7 @@ class _ReportBugState extends State<ReportBug> {
         Text(AppLocalizations.of(context)!.title,
             style: Theme.of(context)
                 .textTheme
-                .bodyText1
+                .bodyLarge
                 ?.copyWith(fontWeight: FontWeight.bold)),
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.01,
@@ -113,10 +112,10 @@ class _ReportBugState extends State<ReportBug> {
           onChanged: (val) {
             setState(() => tituloTemp = val);
           },
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(
             hintText: AppLocalizations.of(context)!.titleError,
-            hintStyle: Theme.of(context).textTheme.caption,
+            hintStyle: Theme.of(context).textTheme.bodySmall,
           ),
           enabled: true,
         ),
@@ -132,7 +131,7 @@ class _ReportBugState extends State<ReportBug> {
         Text(AppLocalizations.of(context)!.description,
             style: Theme.of(context)
                 .textTheme
-                .bodyText1
+                .bodyLarge
                 ?.copyWith(fontWeight: FontWeight.bold)),
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.01,
@@ -147,10 +146,10 @@ class _ReportBugState extends State<ReportBug> {
           },
           minLines: 1,
           maxLines: 6,
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(
             hintText: AppLocalizations.of(context)!.descriptionError,
-            hintStyle: Theme.of(context).textTheme.caption,
+            hintStyle: Theme.of(context).textTheme.bodySmall,
           ),
         ),
       ],
@@ -165,7 +164,7 @@ class _ReportBugState extends State<ReportBug> {
         Text(AppLocalizations.of(context)!.reproducteSteps,
             style: Theme.of(context)
                 .textTheme
-                .bodyText1
+                .bodyLarge
                 ?.copyWith(fontWeight: FontWeight.bold)),
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.01,
@@ -177,11 +176,11 @@ class _ReportBugState extends State<ReportBug> {
           },
           minLines: 1,
           maxLines: 3,
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
           decoration: InputDecoration(
             hintMaxLines: 2,
             hintText: AppLocalizations.of(context)!.reproducteStepsHint,
-            hintStyle: Theme.of(context).textTheme.caption,
+            hintStyle: Theme.of(context).textTheme.bodySmall,
           ),
           enabled: true,
         ),
@@ -195,9 +194,9 @@ class _ReportBugState extends State<ReportBug> {
       children: [
         Material(
           elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.all(
-              const Radius.circular(10.0),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
             ),
           ),
           child: Container(
@@ -225,7 +224,7 @@ class _ReportBugState extends State<ReportBug> {
                     child: Text(AppLocalizations.of(context)!.send,
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText1
+                            .bodyLarge
                             ?.copyWith(color: AppColors.white)),
                   )
                 ],
@@ -236,9 +235,9 @@ class _ReportBugState extends State<ReportBug> {
         ),
         Material(
           elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.all(
-              const Radius.circular(10.0),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
             ),
           ),
           child: Container(
@@ -261,7 +260,7 @@ class _ReportBugState extends State<ReportBug> {
                     child: Text(AppLocalizations.of(context)!.clear,
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText1
+                            .bodyLarge
                             ?.copyWith(color: AppColors.white)),
                   ),
                 ],

@@ -1,20 +1,10 @@
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
-import 'package:uuid/uuid.dart';
 
 // Brand Firebase Service Class. All calls to Firebase are in this class.
 class SuscriptionFirebaseCalls {
@@ -37,16 +27,16 @@ class SuscriptionFirebaseCalls {
   Future<Subscription> getBrandSubscription(String adminAppUserId) async {
     print('subscription');
     try {
-      Subscription subscription = new Subscription();
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      Subscription subscription = Subscription();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore
               .collection(subscriptionsRevenueCat)
               .doc(adminAppUserId)
               .get();
-      if (_documentSnapshot.exists) {
-        final data = _documentSnapshot.data()!;
+      if (documentSnapshot.exists) {
+        final data = documentSnapshot.data()!;
         if (data.containsKey('entitlements')) {
-          final entitlements = _documentSnapshot.get("entitlements");
+          final entitlements = documentSnapshot.get("entitlements");
           if (entitlements.containsKey(dotenv.env['REVCAT_ENTITLEMENT_ID']!)) {
             String expireDate =
                 entitlements[dotenv.env['REVCAT_ENTITLEMENT_ID']!]
@@ -56,7 +46,7 @@ class SuscriptionFirebaseCalls {
               String subId = entitlements[dotenv.env['REVCAT_ENTITLEMENT_ID']!]
                   ['product_identifier'];
               if (data.containsKey('subscriptions')) {
-                final subscriptions = _documentSnapshot.get("subscriptions");
+                final subscriptions = documentSnapshot.get("subscriptions");
                 print(subscriptions[subId]['expires_date']);
                 final subscription = Subscription.fromRevenueSubscription(
                     subscriptions[subId], subId);
@@ -73,7 +63,7 @@ class SuscriptionFirebaseCalls {
       return subscription;
     } catch (e) {
       print(e);
-      return new Subscription();
+      return Subscription();
     }
   }
 }

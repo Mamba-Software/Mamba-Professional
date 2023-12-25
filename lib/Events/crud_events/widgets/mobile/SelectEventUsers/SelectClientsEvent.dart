@@ -1,19 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/JoinConfirmationDialogBonos.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialogBonos.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -25,12 +21,11 @@ class SelectClientsEvent extends StatefulWidget {
   List<Bono> bonos = [];
 
   SelectClientsEvent(
-      {Key? key,
+      {super.key,
       required this.selectedUsers,
       this.maxClients,
       this.selectedBonos,
-      required this.bonos})
-      : super(key: key);
+      required this.bonos});
 
   @override
   _SelectClientsEventState createState() => _SelectClientsEventState();
@@ -38,8 +33,8 @@ class SelectClientsEvent extends StatefulWidget {
 
 class _SelectClientsEventState extends State<SelectClientsEvent> {
   // Brand Data Service
-  var _brandDataService = BrandDataService();
-  var _purchaseDataService = PurchaseDataService();
+  final _brandDataService = BrandDataService();
+  final _purchaseDataService = PurchaseDataService();
   final _eventDataService = EventDataService();
   final _userDataService = UserDataService();
   // Boolean Loading
@@ -142,10 +137,10 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                     onChanged: (value) {
                       filterSearchResults(value);
                     },
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.left,
                     decoration: InputDecoration(
-                      hintStyle: Theme.of(context).textTheme.caption,
+                      hintStyle: Theme.of(context).textTheme.bodySmall,
                       hintText: AppLocalizations.of(context)!.search,
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -173,7 +168,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                         searchController.clear();
                         filterSearchResults("");
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.clear,
                         color: AppColors.grey,
                       ),
@@ -184,18 +179,18 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                 backgroundColor: Colors.transparent,
                 body: Column(
                   children: [
-                    selectedClients.length > 0
+                    selectedClients.isNotEmpty
                         ? Container(
                             padding: EdgeInsets.symmetric(
                               horizontal:
                                   MediaQuery.of(context).size.width * 0.05,
                             ),
-                            color: Theme.of(context).backgroundColor,
+                            color: Theme.of(context).colorScheme.background,
                             height: MediaQuery.of(context).size.height * 0.04,
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
-                                Container(
+                                SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.80,
                                   child: ListView.builder(
@@ -214,16 +209,16 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                                         selectedClients.length -
                                                             1
                                                 ? user.name!
-                                                : user.name! + ", ",
+                                                : "${user.name!}, ",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText2,
+                                                .bodyMedium,
                                           ),
                                         );
                                       }),
                                 ),
                                 widget.maxClients != null
-                                    ? Container(
+                                    ? SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.09,
@@ -232,33 +227,30 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                               MainAxisAlignment.end,
                                           children: [
                                             Text(
-                                              "( " +
-                                                  selectedClients.length
-                                                      .toString(),
+                                              "( ${selectedClients.length}",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2
+                                                  .bodyMedium
                                                   ?.copyWith(fontSize: 8),
                                             ),
                                             Text(
                                               " / ",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2
+                                                  .bodyMedium
                                                   ?.copyWith(fontSize: 8),
                                             ),
                                             Text(
-                                              widget.maxClients.toString() +
-                                                  " )",
+                                              "${widget.maxClients} )",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2
+                                                  .bodyMedium
                                                   ?.copyWith(fontSize: 8),
                                             ),
                                           ],
                                         ),
                                       )
-                                    : Container(
+                                    : SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.09,
@@ -267,13 +259,10 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                               MainAxisAlignment.end,
                                           children: [
                                             Text(
-                                              "( " +
-                                                  selectedClients.length
-                                                      .toString() +
-                                                  " )",
+                                              "( ${selectedClients.length} )",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2
+                                                  .bodyMedium
                                                   ?.copyWith(fontSize: 8),
                                             ),
                                           ],
@@ -299,11 +288,11 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                       Localizations.localeOf(context)
                                           .languageCode);
                               return Padding(
-                                padding: EdgeInsets.symmetric(vertical: 0),
+                                padding: const EdgeInsets.symmetric(vertical: 0),
                                 child: ListTile(
                                   tileColor: selectedClients.contains(user)
                                       ? Theme.of(context)
-                                          .backgroundColor
+                                          .colorScheme.background
                                           .withOpacity(0.5)
                                       : Theme.of(context)
                                           .scaffoldBackgroundColor,
@@ -342,7 +331,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                                       .shrinkWrap,
                                               value: selectedClients
                                                   .contains(user),
-                                              shape: CircleBorder(
+                                              shape: const CircleBorder(
                                                   side: BorderSide.none),
                                               onChanged: (bool? value) {},
                                             ),
@@ -353,7 +342,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                     getUsersFullName(user),
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodyText1
+                                        .bodyLarge
                                         ?.copyWith(fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.left,
                                   ),
@@ -384,7 +373,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                                                 .languageCode)),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .caption,
+                                                .bodySmall,
                                           ),
                                         ],
                                       ),
@@ -481,7 +470,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                 floatingActionButton: Padding(
                   padding:
                       EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                  child: Container(
+                  child: SizedBox(
                     height: MediaQuery.of(context).size.width * 0.17,
                     width: MediaQuery.of(context).size.width * 0.17,
                     child: FloatingActionButton(

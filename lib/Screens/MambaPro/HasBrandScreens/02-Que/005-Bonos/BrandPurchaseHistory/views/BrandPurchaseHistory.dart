@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,7 +16,7 @@ import '../cubit/BrandPurchasesCubit.dart';
 class BrandPurchaseHistory extends StatelessWidget {
   final String brandId;
 
-  const BrandPurchaseHistory({Key? key, required this.brandId}) : super(key: key);
+  const BrandPurchaseHistory({super.key, required this.brandId});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class BrandPurchaseHistory extends StatelessWidget {
 class BrandPurchaseHistoryBody extends StatefulWidget {
   final String brandId;
 
-  const BrandPurchaseHistoryBody({Key? key, required this.brandId}) : super(key: key);
+  const BrandPurchaseHistoryBody({super.key, required this.brandId});
 
   @override
   _BrandPurchaseHistoryBodyState createState() => _BrandPurchaseHistoryBodyState();
@@ -86,7 +85,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
     // Check for "this month" selection
     if (startDate.day == 1 && startDate.month == now.month && startDate.year == now.year
         && endDate.day == maxEndDate.day && endDate.month == maxEndDate.month && endDate.year == maxEndDate.year) {
-      return AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]+" "+StringUtils().toCapitalized(AppLocalizations.of(context)!.month);
+      return "${AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.month)}";
     }
 
     // Check for "previous month" selection
@@ -120,11 +119,11 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
     String filteredRoles = "";
     int cnt = 0;
     if (filterByPurchaseStatus[0]) {
-      filteredRoles += AppLocalizations.of(context)!.verfied+", ";
+      filteredRoles += "${AppLocalizations.of(context)!.verfied}, ";
       cnt += 1;
     }
     if (filterByPurchaseStatus[1]) {
-      filteredRoles += AppLocalizations.of(context)!.unverfied+", ";
+      filteredRoles += "${AppLocalizations.of(context)!.unverfied}, ";
       cnt += 1;
     }
     if (filterByPurchaseStatus[2]) {
@@ -135,7 +134,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
       return filteredRoles.split(", ")[0];
     }
     if (cnt == 2 && filterByPurchaseStatus[2] == false) {
-      return filteredRoles.split(", ")[0]+", "+filteredRoles.split(", ")[1];
+      return "${filteredRoles.split(", ")[0]}, ${filteredRoles.split(", ")[1]}";
     }
     return filteredRoles;
   }
@@ -144,7 +143,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByActivePurchases[0]) {
-      activeStaff += AppLocalizations.of(context)!.yes+", ";
+      activeStaff += "${AppLocalizations.of(context)!.yes}, ";
       cnt += 1;
     }
     if (filterByActivePurchases[1]) {
@@ -201,7 +200,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                       ),
                       child: IconButton(
                         splashRadius: 20,
-                        splashColor: Theme.of(context).backgroundColor, // Splash color
+                        splashColor: Theme.of(context).colorScheme.background, // Splash color
                         padding: EdgeInsets.zero,
                         alignment: Alignment.center,
                         icon: Icon(
@@ -222,8 +221,8 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                             builder: (BuildContext context) {
                               return StatefulBuilder(
                                 builder: (BuildContext context, StateSetter setState) {
-                                  final PageController _pageController = PageController(initialPage: 0);
-                                  ValueNotifier<int> _currentPage = ValueNotifier(0);
+                                  final PageController pageController = PageController(initialPage: 0);
+                                  ValueNotifier<int> currentPage = ValueNotifier(0);
                                   ValueNotifier<bool> isTypePurchase = ValueNotifier(true);
                                   return FractionallySizedBox(
                                     heightFactor: 0.33,
@@ -236,18 +235,18 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             ValueListenableBuilder<int>(
-                                              valueListenable: _currentPage,
+                                              valueListenable: currentPage,
                                               builder: (context, value, child) {
                                                 return ListTile(
                                                   title: Text(
                                                       AppLocalizations.of(context)!.filterBy,
-                                                      style: Theme.of(context).textTheme.caption,
+                                                      style: Theme.of(context).textTheme.bodySmall,
                                                       textAlign: TextAlign.left
                                                   ),
                                                   trailing: TextButton(
                                                       child: Text(
                                                           AppLocalizations.of(context)!.clear,
-                                                          style: Theme.of(context).textTheme.caption
+                                                          style: Theme.of(context).textTheme.bodySmall
                                                       ),
                                                       onPressed: () {
                                                         filterByPurchaseStatus = [true, true, true];
@@ -258,7 +257,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                   ),
                                                   dense: true,
                                                   onTap: value == 0 ? null : () {
-                                                    _pageController.previousPage(
+                                                    pageController.previousPage(
                                                       duration: const Duration(milliseconds: 500),
                                                       curve: Curves.ease,
                                                     );
@@ -271,9 +270,9 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                               width: MediaQuery.of(context).size.width,
                                               child: PageView(
                                                 physics: const NeverScrollableScrollPhysics(),
-                                                controller: _pageController,
+                                                controller: pageController,
                                                 onPageChanged: (int page) {
-                                                  _currentPage.value = page;
+                                                  currentPage.value = page;
                                                 },
                                                 children: <Widget>[
                                                   Column(
@@ -281,19 +280,19 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                       ListTile(
                                                         onTap: () {
                                                           isTypePurchase.value = true;
-                                                          _pageController.nextPage(
+                                                          pageController.nextPage(
                                                             duration: const Duration(milliseconds: 500),
                                                             curve: Curves.ease,
                                                           );
                                                         },
                                                         title: Text(
                                                             AppLocalizations.of(context)!.state,
-                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                            style: Theme.of(context).textTheme.bodyLarge,
                                                             textAlign: TextAlign.left
                                                         ),
                                                         subtitle: Text(
                                                             returnFilteredStatusString(filterByPurchaseStatus),
-                                                            style: Theme.of(context).textTheme.caption,
+                                                            style: Theme.of(context).textTheme.bodySmall,
                                                             maxLines: 1,
                                                             overflow: TextOverflow.ellipsis,
                                                             textAlign: TextAlign.left
@@ -308,19 +307,19 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                       ListTile(
                                                         onTap: () {
                                                           isTypePurchase.value = false;
-                                                          _pageController.nextPage(
+                                                          pageController.nextPage(
                                                             duration: const Duration(milliseconds: 500),
                                                             curve: Curves.ease,
                                                           );
                                                         },
                                                         title: Text(
-                                                            AppLocalizations.of(context)!.bono+" "+AppLocalizations.of(context)!.active+"s",
-                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                            "${AppLocalizations.of(context)!.bono} ${AppLocalizations.of(context)!.active}s",
+                                                            style: Theme.of(context).textTheme.bodyLarge,
                                                             textAlign: TextAlign.left
                                                         ),
                                                         subtitle: Text(
                                                             returnFilteredActiveBonosString(filterByActivePurchases),
-                                                            style: Theme.of(context).textTheme.caption,
+                                                            style: Theme.of(context).textTheme.bodySmall,
                                                             maxLines: 1,
                                                             overflow: TextOverflow.ellipsis,
                                                             textAlign: TextAlign.left
@@ -352,7 +351,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                             },
                                                             title: Text(
                                                                 AppLocalizations.of(context)!.verfied,
-                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                style: Theme.of(context).textTheme.bodyLarge,
                                                                 textAlign: TextAlign.left
                                                             ),
                                                             trailing: filterByPurchaseStatus[0] ? SizedBox(
@@ -373,7 +372,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                             },
                                                             title: Text(
                                                                 AppLocalizations.of(context)!.unverfied,
-                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                style: Theme.of(context).textTheme.bodyLarge,
                                                                 textAlign: TextAlign.left
                                                             ),
                                                             trailing: filterByPurchaseStatus[1] ? SizedBox(
@@ -394,7 +393,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                             },
                                                             title: Text(
                                                                 AppLocalizations.of(context)!.toConfirm,
-                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                style: Theme.of(context).textTheme.bodyLarge,
                                                                 textAlign: TextAlign.left
                                                             ),
                                                             trailing: filterByPurchaseStatus[2] ? SizedBox(
@@ -418,7 +417,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                             },
                                                             title: Text(
                                                                 AppLocalizations.of(context)!.active,
-                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                style: Theme.of(context).textTheme.bodyLarge,
                                                                 textAlign: TextAlign.left
                                                             ),
                                                             trailing: filterByActivePurchases[0] ? SizedBox(
@@ -439,7 +438,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                             },
                                                             title: Text(
                                                                 AppLocalizations.of(context)!.desactive,
-                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                style: Theme.of(context).textTheme.bodyLarge,
                                                                 textAlign: TextAlign.left
                                                             ),
                                                             trailing: filterByActivePurchases[1] ? SizedBox(
@@ -490,7 +489,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                 ),
                                 child: IconButton(
                                   splashRadius: 20,
-                                  splashColor: Theme.of(context).backgroundColor, // Splash color
+                                  splashColor: Theme.of(context).colorScheme.background, // Splash color
                                   padding: const EdgeInsets.only(right: 2),
                                   alignment: Alignment.center,
                                   icon: Icon(
@@ -504,16 +503,6 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                 ),
                               ),
                               TextButton(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
-                                      style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
-                                    ),
-                                    Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
-                                  ],
-                                ),
                                 style: TextButton.styleFrom(
                                   backgroundColor: AppColors.grey.withOpacity(0.1),
                                   shape: RoundedRectangleBorder(  // add this
@@ -522,12 +511,22 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                   padding: const EdgeInsets.only(left: 16.0, right: 10.0),
                                 ),
                                 onPressed: () => _show(context, startDate, endDate, dateJoinedBrand),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                                    ),
+                                    Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                           Text(
                             '${DateFormat('d MMM, yy\'').format(startDate)} - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -569,7 +568,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                           child: Image.asset(Constants.emptyCalendar)
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.015),
-                      Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                      Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
                       SizedBox(height: MediaQuery.of(context).size.height*0.1),
                     ],
                   ),
@@ -637,7 +636,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                 ),
                                 child: IconButton(
                                   splashRadius: 20,
-                                  splashColor: Theme.of(context).backgroundColor, // Splash color
+                                  splashColor: Theme.of(context).colorScheme.background, // Splash color
                                   padding: const EdgeInsets.only(right: 2),
                                   alignment: Alignment.center,
                                   icon: Icon(
@@ -649,16 +648,6 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                 ),
                               ),
                               TextButton(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
-                                      style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
-                                    ),
-                                    Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
-                                  ],
-                                ),
                                 style: TextButton.styleFrom(
                                   backgroundColor: AppColors.grey.withOpacity(0.1),
                                   shape: RoundedRectangleBorder(  // add this
@@ -667,12 +656,22 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                   padding: const EdgeInsets.only(left: 16.0, right: 10.0),
                                 ),
                                 onPressed: () => _show(context, startDate, endDate, dateJoinedBrand),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                                    ),
+                                    Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                           Text(
                             '${DateFormat('d MMM, yy\'').format(startDate)} - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                         ],

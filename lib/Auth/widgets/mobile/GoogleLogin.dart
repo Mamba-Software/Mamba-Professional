@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
@@ -45,7 +44,7 @@ Widget googleLogin(BuildContext context, AuthState state) {
                   ? Text(AppLocalizations.of(context)!.continueWithGoogle,
                       style: Theme.of(context)
                           .textTheme
-                          .headline3
+                          .displaySmall
                           ?.copyWith(color: AppColors.white),
                       textAlign: TextAlign.center)
                   : Center(

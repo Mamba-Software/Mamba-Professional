@@ -1,7 +1,6 @@
 
 
 //MambaCoin class used to have a widget of mamba coin
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 
@@ -10,12 +9,13 @@ class MambaCoin {
 
 
   //Mmaba coin with value and or animation
-  Widget mambaCoin(var context, String? sessions, double? size, var image, _animation, bool animate) {
+  Widget mambaCoin(var context, String? sessions, double? size, var image, animation, bool animate) {
     image = 'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mamba_logo.png?alt=media&token=a4307bd0-0c20-497f-abe7-0ada93129b85';
     print(size.toString());
 
-    if(animate) return RotationTransition(
-      turns: _animation,
+    if(animate) {
+      return RotationTransition(
+      turns: animation,
       //duration: const Duration(seconds: 5),
       child: Container(
         height: 30,
@@ -35,7 +35,7 @@ class MambaCoin {
             children: [
               Text(
                 sessions!,
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight:
                     false ? FontWeight.normal : FontWeight.bold,
                     fontSize: MediaQuery.of(context).size.height*0.02
@@ -46,7 +46,8 @@ class MambaCoin {
         ),
       ),
     );
-    else return Container(
+    } else {
+      return Container(
       height: 30,
       width: 30,
       decoration: BoxDecoration(
@@ -64,7 +65,7 @@ class MambaCoin {
           children: [
             Text(
               sessions!,
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight:
                   false ? FontWeight.normal : FontWeight.bold,
                   fontSize: MediaQuery.of(context).size.height*0.02
@@ -74,6 +75,7 @@ class MambaCoin {
         ),
       ),
     );
+    }
     /*
     Container(
           height: MediaQuery.of(context).size.height * 0.1,
@@ -128,7 +130,7 @@ class MambaCoin {
           children: [
             Text(
               sessions!,
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight:
                   false ? FontWeight.normal : FontWeight.bold,
                   fontSize: MediaQuery.of(context).size.height*0.02

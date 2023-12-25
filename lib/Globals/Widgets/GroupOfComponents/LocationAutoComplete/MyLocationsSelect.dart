@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,7 +17,7 @@ import 'LocationPlacesSearch.dart';
 
 class MyLocationsSelect extends StatefulWidget {
   String brandId;
-  MyLocationsSelect({Key? key, required this.brandId}) : super(key: key);
+  MyLocationsSelect({super.key, required this.brandId});
 
   @override
   _MyLocationsSelectState createState() => _MyLocationsSelectState();
@@ -26,7 +25,7 @@ class MyLocationsSelect extends StatefulWidget {
 
 class _MyLocationsSelectState extends State<MyLocationsSelect> {
   // Acceso a Base de Datos
-  var _locationDataService = new LocationDataService();
+  final _locationDataService = LocationDataService();
   // Google APIS
   googlePlace.GooglePlace? gPlace;
   googlePlace.DetailsResult? detailsResult;
@@ -149,22 +148,26 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                               await LocationPlacesSearch(sessionToken, language)
                                   .getPlaceDetailFromId(location.placeId!);
                           // Get the information on Strings
-                          if (placeDetails.street != null)
+                          if (placeDetails.street != null) {
                             location.street = placeDetails.street!;
-                          else
+                          } else {
                             location.street = "N/A";
-                          if (placeDetails.streetNumber != null)
+                          }
+                          if (placeDetails.streetNumber != null) {
                             location.streetNumber = placeDetails.streetNumber!;
-                          else
+                          } else {
                             location.streetNumber = "N/A";
-                          if (placeDetails.city != null)
+                          }
+                          if (placeDetails.city != null) {
                             location.city = placeDetails.city!;
-                          else
+                          } else {
                             location.city = "N/A";
-                          if (placeDetails.zipCode != null)
+                          }
+                          if (placeDetails.zipCode != null) {
                             location.zipCode = placeDetails.zipCode!;
-                          else
+                          } else {
                             location.zipCode = "N/A";
+                          }
                           //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
                           // Build Correct Description
                           location.description =
@@ -200,7 +203,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                       ),
                       title: Text(
                         AppLocalizations.of(context)!.addLocation,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                   ),
@@ -213,9 +216,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                       stream: _locationDataService
                           .getAllLocationsBrand(currentBrand.id!),
                       builder: (context, snapshot) {
-                        if (snapshot == null ||
-                            snapshot.data == null ||
-                            snapshot.data!.docs == null) {
+                        if (snapshot.data == null) {
                           return SizedBox(
                               height: MediaQuery.of(context).size.height * 0.65,
                               child: Center(child: LoadingView()));
@@ -245,7 +246,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                                   title: Text(location.description!,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText2
+                                          .bodyMedium
                                           ?.copyWith(
                                             color: location.isBaseLocation!
                                                 ? Theme.of(context)

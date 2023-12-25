@@ -21,21 +21,21 @@ class GroupOfQuestions {
   });
 
   GroupOfQuestions.fromMap(Map<String, dynamic> mapData, String documentId) {
-    this.id = documentId;
-    this.creatorID = mapData['creatorID'].toString();
-    this.questionOne = mapData['questionOne'].toString();
-    this.questionTwo = mapData['questionTwo'].toString();
-    this.questionThree = mapData['questionThree'].toString();
-    this.questionFour = mapData['questionFour'].toString();
+    id = documentId;
+    creatorID = mapData['creatorID'].toString();
+    questionOne = mapData['questionOne'].toString();
+    questionTwo = mapData['questionTwo'].toString();
+    questionThree = mapData['questionThree'].toString();
+    questionFour = mapData['questionFour'].toString();
   }
 
 
   GroupOfQuestions.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
-    this.id = documentId;
-    this.creatorID = documentSnapshot.get("creatorID").toString();
-    this.questionOne = documentSnapshot.get("questionOne").toString();
-    this.questionTwo = documentSnapshot.get("questionTwo").toString();
-    this.questionThree = documentSnapshot.get("questionThree").toString();
-    this.questionFour = documentSnapshot.get("questionFour").toString();
+    id = documentId;
+    creatorID = documentSnapshot.get("creatorID").toString();
+    questionOne = documentSnapshot.get("questionOne").toString();
+    questionTwo = documentSnapshot.get("questionTwo").toString();
+    questionThree = documentSnapshot.get("questionThree").toString();
+    questionFour = documentSnapshot.get("questionFour").toString();
   }
 }

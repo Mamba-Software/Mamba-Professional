@@ -28,7 +28,7 @@ class BonoCard extends StatefulWidget {
   bool? hideActive;
 
   BonoCard({
-    Key? key,
+    super.key,
     required this.height,
     required this.width,
     required this.bono,
@@ -39,7 +39,7 @@ class BonoCard extends StatefulWidget {
     this.clientView,
     this.hideActive,
     required this.onlyView,
-  }) : super(key: key);
+  });
 
   @override
   BonoCardState createState() => BonoCardState();
@@ -231,7 +231,7 @@ class BonoCardState extends State<BonoCard> {
                                   brand.name!.toUpperCase(),
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline3
+                                      .displaySmall
                                       ?.copyWith(
                                           fontWeight: FontWeight.normal,
                                           color: Colors.white),
@@ -262,7 +262,7 @@ class BonoCardState extends State<BonoCard> {
                                       bono.title!.toUpperCase(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline1
+                                          .displayLarge
                                           ?.copyWith(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white),
@@ -313,13 +313,12 @@ class BonoCardState extends State<BonoCard> {
                                           child: Row(
                                             children: [
                                               Text(
-                                                bono.price!
+                                                '${bono.price!
                                                         .toStringAsFixed(2)
-                                                        .toUpperCase() +
-                                                    ' €',
+                                                        .toUpperCase()} €',
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     ?.copyWith(
                                                         color: Colors.white),
                                                 textAlign: TextAlign.left,
@@ -329,32 +328,29 @@ class BonoCardState extends State<BonoCard> {
                                               ),
                                               bono.sessions! > 5000
                                                   ? Text(
-                                                      AppLocalizations.of(
+                                                      "${AppLocalizations.of(
                                                                   context)!
                                                               .sessions
-                                                              .toUpperCase() +
-                                                          " " +  AppLocalizations.of(
-                                                          context)!.ilimitadas.toUpperCase(),
+                                                              .toUpperCase()} ${AppLocalizations.of(
+                                                          context)!.ilimitadas.toUpperCase()}",
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText1
+                                                          .bodyLarge
                                                           ?.copyWith(
                                                               color:
                                                                   Colors.white),
                                                       textAlign: TextAlign.left,
                                                     )
                                                   : Text(
-                                                      bono.sessions!
+                                                      '${bono.sessions!
                                                               .toString()
-                                                              .toUpperCase() +
-                                                          ' ' +
-                                                          AppLocalizations.of(
+                                                              .toUpperCase()} ${AppLocalizations.of(
                                                                   context)!
                                                               .sessions
-                                                              .toUpperCase(),
+                                                              .toUpperCase()}',
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText1
+                                                          .bodyLarge
                                                           ?.copyWith(
                                                               color:
                                                                   Colors.white),
@@ -378,7 +374,7 @@ class BonoCardState extends State<BonoCard> {
                                                     child: Center(
                                                       child: Text(
                                                         AppLocalizations.of(context)!.desactive.toUpperCase(),
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                                                         textAlign: TextAlign.center,
                                                         maxLines: 1,
                                                         overflow: TextOverflow.visible,
@@ -400,7 +396,7 @@ class BonoCardState extends State<BonoCard> {
                                                     child: Center(
                                                       child: Text(
                                                         AppLocalizations.of(context)!.active.toUpperCase(),
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                                                         textAlign: TextAlign.center,
                                                         maxLines: 1,
                                                         overflow: TextOverflow.visible,
@@ -463,7 +459,7 @@ class BonoCardState extends State<BonoCard> {
                                     bono.description!,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodyText1
+                                        .bodyLarge
                                         ?.copyWith(color: Colors.white70),
                                     textAlign: TextAlign.left,
                                     maxLines: 4,
@@ -492,7 +488,7 @@ class BonoCardState extends State<BonoCard> {
                                                 context)!.numberSessions.toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2
+                                                      .bodyMedium
                                                       ?.copyWith(
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -509,7 +505,7 @@ class BonoCardState extends State<BonoCard> {
                                                       context)!.ilimitadas.toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText1
+                                                      .bodyLarge
                                                       ?.copyWith(
                                                       color: Colors.white70),
                                                   textAlign: TextAlign.left,
@@ -520,7 +516,7 @@ class BonoCardState extends State<BonoCard> {
                                                   bono.sessions!.toString(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText1
+                                                      .bodyLarge
                                                       ?.copyWith(
                                                           color: Colors.white70),
                                                   textAlign: TextAlign.left,
@@ -541,7 +537,7 @@ class BonoCardState extends State<BonoCard> {
                                                       context)!.disponibilidad.toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2
+                                                      .bodyMedium
                                                       ?.copyWith(
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -556,7 +552,7 @@ class BonoCardState extends State<BonoCard> {
                                                       context)!.desactive,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText1
+                                                      .bodyLarge
                                                       ?.copyWith(
                                                           color: Colors.white70),
                                                   textAlign: TextAlign.left,
@@ -586,7 +582,7 @@ class BonoCardState extends State<BonoCard> {
                                                       context)!.price.toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2
+                                                      .bodyMedium
                                                       ?.copyWith(
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -599,12 +595,11 @@ class BonoCardState extends State<BonoCard> {
                                                 Row(
                                                   children: [
                                                     Text(
-                                                      bono.price!.toStringAsFixed(
-                                                              2) +
-                                                          " €",
+                                                      "${bono.price!.toStringAsFixed(
+                                                              2)} €",
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText1
+                                                          .bodyLarge
                                                           ?.copyWith(
                                                               color:
                                                                   Colors.white70),
@@ -629,7 +624,7 @@ class BonoCardState extends State<BonoCard> {
                                                           context)!.session + ')',
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText2
+                                                          .bodyMedium
                                                           ?.copyWith(
                                                               color:
                                                                   Colors.white70),
@@ -667,7 +662,7 @@ class BonoCardState extends State<BonoCard> {
                                                       context)!.conditions.toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2
+                                                      .bodyMedium
                                                       ?.copyWith(
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -692,16 +687,13 @@ class BonoCardState extends State<BonoCard> {
                                                             color:
                                                                 Colors.white70),
                                                         title: Text(
-                                                          AppLocalizations.of(
-                                                              context)!.expiresAt + " " +
-                                                              condition
-                                                                  .expirationTime
-                                                                  .toString() +
-                                                              " " + AppLocalizations.of(
-                                                              context)!.days.toLowerCase(),
+                                                          "${AppLocalizations.of(
+                                                              context)!.expiresAt} ${condition
+                                                                  .expirationTime} ${AppLocalizations.of(
+                                                              context)!.days.toLowerCase()}",
                                                           style: Theme.of(context)
                                                               .textTheme
-                                                              .bodyText1
+                                                              .bodyLarge
                                                               ?.copyWith(
                                                                   color: Colors
                                                                       .white70),
@@ -724,7 +716,7 @@ class BonoCardState extends State<BonoCard> {
                                                           context)!.noExpireDate,
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText1
+                                                          .bodyLarge
                                                           ?.copyWith(
                                                           color: Colors
                                                               .white70),
@@ -744,14 +736,11 @@ class BonoCardState extends State<BonoCard> {
                                                             color:
                                                                 Colors.white70),
                                                         title: Text(
-                                                          AppLocalizations.of(
-                                                              context)!.cancelTimeAt + " " +
-                                                              condition.cancelTime
-                                                                  .toString() +
-                                                              " " + AppLocalizations.of(context)!.hours.toLowerCase(),
+                                                          "${AppLocalizations.of(
+                                                              context)!.cancelTimeAt} ${condition.cancelTime} ${AppLocalizations.of(context)!.hours.toLowerCase()}",
                                                           style: Theme.of(context)
                                                               .textTheme
-                                                              .bodyText1
+                                                              .bodyLarge
                                                               ?.copyWith(
                                                                   color: Colors
                                                                       .white70),
@@ -771,15 +760,12 @@ class BonoCardState extends State<BonoCard> {
                                                             color:
                                                                 Colors.white70),
                                                         title: Text(
-                                                          AppLocalizations.of(
-                                                              context)!.max + " " +
-                                                              condition
-                                                                  .weeklySessions
-                                                                  .toString() +
-                                                              " " + AppLocalizations.of(context)!.trainsPerWeek.toLowerCase(),
+                                                          "${AppLocalizations.of(
+                                                              context)!.max} ${condition
+                                                                  .weeklySessions} ${AppLocalizations.of(context)!.trainsPerWeek.toLowerCase()}",
                                                           style: Theme.of(context)
                                                               .textTheme
-                                                              .bodyText1
+                                                              .bodyLarge
                                                               ?.copyWith(
                                                                   color: Colors
                                                                       .white70),
@@ -843,7 +829,7 @@ class BonoCardState extends State<BonoCard> {
                                   : AppLocalizations.of(context)!.edit,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(color: Theme.of(context).primaryColorDark),
                             ),
                           ),
@@ -949,7 +935,7 @@ class BonoCardState extends State<BonoCard> {
                               : AppLocalizations.of(context)!.edit,
                           style: Theme.of(context)
                               .textTheme
-                              .headline3
+                              .displaySmall
                               ?.copyWith(color: Theme.of(context).primaryColorDark),
                         ),
                       ),
@@ -987,14 +973,14 @@ class BonoCardState extends State<BonoCard> {
                 ListTile(
                   title: Text(
                       AppLocalizations.of(context)!.choseOption,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.left
                   ),
                   trailing: SizedBox(
                     width: MediaQuery.of(context).size.width*0.5,
                     child: Text(
                       widget.bono.title!.toUpperCase(),
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                       softWrap: false,
                       overflow: TextOverflow.fade,
                       textAlign: TextAlign.right,
@@ -1013,8 +999,8 @@ class BonoCardState extends State<BonoCard> {
                   minLeadingWidth: MediaQuery.of(context).size.width*0.06,
                   leading: Icon(bono.isActive! ? Icons.pause_circle_outline  : Icons.play_circle_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
                   title: Text(
-                      (bono.isActive! ? AppLocalizations.of(context)!.mambaProActivated.split(" ")[0] : AppLocalizations.of(context)!.mambaProDesactivated.split(" ")[0])+" "+AppLocalizations.of(context)!.bono.toLowerCase(),
-                      style: Theme.of(context).textTheme.bodyText1,
+                      "${bono.isActive! ? AppLocalizations.of(context)!.mambaProActivated.split(" ")[0] : AppLocalizations.of(context)!.mambaProDesactivated.split(" ")[0]} ${AppLocalizations.of(context)!.bono.toLowerCase()}",
+                      style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left
                   ),
                 ),
@@ -1031,7 +1017,7 @@ class BonoCardState extends State<BonoCard> {
                   leading: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
                   title: Text(
                       AppLocalizations.of(context)!.editBono,
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left
                   ),
                 ),
@@ -1047,8 +1033,8 @@ class BonoCardState extends State<BonoCard> {
                   minLeadingWidth: MediaQuery.of(context).size.width*0.06,
                   leading: Icon(Icons.file_copy_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
                   title: Text(
-                      AppLocalizations.of(context)!.duplicate+" "+AppLocalizations.of(context)!.bono.toLowerCase(),
-                      style: Theme.of(context).textTheme.bodyText1,
+                      "${AppLocalizations.of(context)!.duplicate} ${AppLocalizations.of(context)!.bono.toLowerCase()}",
+                      style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left
                   ),
                 ),
@@ -1064,8 +1050,8 @@ class BonoCardState extends State<BonoCard> {
                   minLeadingWidth: MediaQuery.of(context).size.width*0.06,
                   leading: Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.06),
                   title: Text(
-                      AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.bono.toLowerCase(),
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
+                      "${AppLocalizations.of(context)!.delete} ${AppLocalizations.of(context)!.bono.toLowerCase()}",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red),
                       textAlign: TextAlign.left
                   ),
                 ),

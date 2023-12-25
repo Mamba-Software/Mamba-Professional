@@ -26,14 +26,13 @@ class LocationImageTile extends StatefulWidget {
   var width;
 
   LocationImageTile(
-      {Key? key,
+      {super.key,
       required this.brandId,
       required this.locationId,
       required this.locationChanged,
       required this.height,
       required this.width,
-      required this.canEdit})
-      : super(key: key);
+      required this.canEdit});
 
   @override
   _LocationImageTileState createState() => _LocationImageTileState();
@@ -92,7 +91,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
   Widget build(BuildContext context) {
     return isLoading
         ? Shimmer.fromColors(
-            baseColor: Theme.of(context).backgroundColor,
+            baseColor: Theme.of(context).colorScheme.background,
             highlightColor: AppColors.grey.withOpacity(0.3),
             child: Container(
               height: widget.height,
@@ -106,7 +105,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
             height: widget.height,
             width: widget.width,
             decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
                 borderRadius: const BorderRadius.all(Radius.circular(15.0))),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -127,7 +126,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                           Text(location.description!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3!
+                                  .displaySmall!
                                   .copyWith(
                                       color: Theme.of(context).primaryColor,
                                       fontWeight: FontWeight.bold),
@@ -160,7 +159,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                                 .baseLocation,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .caption!
+                                                .bodySmall!
                                                 .copyWith(
                                                     color: Theme.of(context)
                                                         .colorScheme
@@ -218,7 +217,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                                         .toStringAsFixed(0)),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .caption,
+                                                .bodySmall,
                                             textAlign: TextAlign.center),
                                       ),
                                     ],
@@ -262,7 +261,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                     } else {
                                       if (location.isBaseLocation!) {
                                         // Generate a new token here
-                                        final sessionToken = Uuid().v4();
+                                        final sessionToken = const Uuid().v4();
                                         final language = currentUser.idioma;
                                         final Suggestion? result =
                                             await showSearch(
@@ -382,7 +381,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                                       .edit,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2,
+                                                      .bodyMedium,
                                                   textAlign: TextAlign.center),
                                             ),
                                           ],
@@ -409,7 +408,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                                       .delete,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2,
+                                                      .bodyMedium,
                                                   textAlign: TextAlign.center),
                                             ),
                                           ],

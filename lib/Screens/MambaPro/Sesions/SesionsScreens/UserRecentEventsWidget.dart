@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
 import '../../../../Events/crud_events/models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -12,7 +10,7 @@ class UserRecentEventsWidget extends StatefulWidget {
   String userId;
   List<Event> events;
 
-  UserRecentEventsWidget({Key? key, required this.userId, required this.events}) : super(key: key);
+  UserRecentEventsWidget({super.key, required this.userId, required this.events});
 
   @override
   _UserRecentEventsWidgetState createState() => _UserRecentEventsWidgetState();
@@ -76,7 +74,7 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
           mainAxisSize: MainAxisSize.max,
           children: [
             SizedBox(height: MediaQuery.of(context).size.height*0.015),
-            Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+            Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
             SizedBox(height: MediaQuery.of(context).size.height*0.1),
           ],
         ),

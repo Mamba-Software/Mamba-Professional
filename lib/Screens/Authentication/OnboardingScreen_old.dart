@@ -12,7 +12,6 @@ import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca_old.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../../Data/DataService/User/UserDataService.dart';
@@ -23,7 +22,7 @@ import '../../Globals/Widgets/Components/Images/CircularImage.dart';
 import 'SplashScreen_old.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+  const OnboardingScreen({super.key});
 
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -100,7 +99,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> addUser() async {
     // Trimming for Names
-    String name = firstNameController.text.trim()+" "+lastNameController.text.trim();
+    String name = "${firstNameController.text.trim()} ${lastNameController.text.trim()}";
     String dateString = DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDate, Localizations.localeOf(context).languageCode);
     // Update Functions
     await _userDataService.updateUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), dateString, gender!, _image, imageUrl, true);
@@ -274,18 +273,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       children: [
                         Text(
                           AppLocalizations.of(context)!.trainersOnboarding,
-                          style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
+                          style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white, fontSize: 30),
                           textAlign: TextAlign.left,
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                         RichText(
                           textAlign: TextAlign.left,
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, height: 1.5),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
                                 text: AppLocalizations.of(context)!.trainersOnboardingDesc.split(" ")[0],
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
                               ),
                               TextSpan(
                                 text: AppLocalizations.of(context)!.trainersOnboardingDesc.substring(AppLocalizations.of(context)!.trainersOnboardingDesc.split(" ")[0].length),
@@ -321,7 +320,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         child: Center(
                           child: Text(
                               AppLocalizations.of(context)!.next,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
+                              style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black)
                           ),
                         ),
                       ),
@@ -335,7 +334,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         onPressed: null,
                         child: Text(
                           AppLocalizations.of(context)!.skip,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
+                          style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -378,21 +377,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       children: [
                         Text(
                           AppLocalizations.of(context)!.trainersOnboardingSecond,
-                          style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
+                          style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white, fontSize: 30),
                           textAlign: TextAlign.left,
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                         RichText(
                           textAlign: TextAlign.left,
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, height: 1.5),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
                                 text: AppLocalizations.of(context)!.trainersOnboardingSecondDesc1,
                               ),
                               TextSpan(
                                 text: AppLocalizations.of(context)!.trainersOnboardingSecondDesc2.toLowerCase(),
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
                               ),
                               TextSpan(
                                 text: AppLocalizations.of(context)!.trainersOnboardingSecondDesc3,
@@ -427,7 +426,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         child: Center(
                           child: Text(
                               AppLocalizations.of(context)!.next,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
+                              style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black)
                           ),
                         ),
                       ),
@@ -441,7 +440,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         onPressed: null,
                         child: Text(
                           AppLocalizations.of(context)!.skip,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
+                          style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -484,21 +483,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       children: [
                         Text(
                           AppLocalizations.of(context)!.trainersOnboardingThird,
-                          style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
+                          style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white, fontSize: 30),
                           textAlign: TextAlign.left,
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                         RichText(
                           textAlign: TextAlign.left,
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, height: 1.5),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
                                 text: AppLocalizations.of(context)!.trainersOnboardingThirdDesc1,
                               ),
                               TextSpan(
                                 text: AppLocalizations.of(context)!.trainersOnboardingThirdDesc2,
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
                               ),
                               TextSpan(
                                 text: AppLocalizations.of(context)!.trainersOnboardingThirdDesc3,
@@ -534,7 +533,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         child: Center(
                           child: Text(
                               AppLocalizations.of(context)!.notificationsPermision,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
+                              style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black)
                           ),
                         ),
                       ),
@@ -553,7 +552,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         },
                         child: Text(
                           AppLocalizations.of(context)!.next,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
+                          style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -625,13 +624,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     children: [
                                       Text(
                                         AppLocalizations.of(context)!.whatsYourName,
-                                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
+                                        style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white, fontSize: 30),
                                         textAlign: TextAlign.left,
                                       ),
                                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                       Text(
                                         AppLocalizations.of(context)!.changeLater,
-                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.left,
                                       ),
                                       isGoogle ? FittedBox(
@@ -653,7 +652,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Flexible(
                                                 child: Text(
                                                   AppLocalizations.of(context)!.googleInfo,
-                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                                                   textAlign: TextAlign.left,
                                                 ),
                                               ),
@@ -682,8 +681,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                               Flexible(
                                                 child: Text(
-                                                  AppLocalizations.of(context)!.googleInfo.split("Google")[0]+" Apple",
-                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                  "${AppLocalizations.of(context)!.googleInfo.split("Google")[0]} Apple",
+                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                                                   textAlign: TextAlign.left,
                                                 ),
                                               ),
@@ -716,14 +715,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 onFieldSubmitted: (val) {
                                                   focusNodeName.requestFocus();
                                                 },
-                                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
                                                 textCapitalization: TextCapitalization.words,
                                                 decoration: InputDecoration(
                                                     filled: true,
                                                     fillColor: AppColors.white,
                                                     hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                                    hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                                    errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                    hintStyle: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                                    errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                                                     border: OutlineInputBorder(
                                                       borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
                                                       borderRadius: BorderRadius.circular(15.0),
@@ -769,14 +768,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     });
                                                   }
                                                 },
-                                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
                                                 textCapitalization: TextCapitalization.words,
                                                 decoration: InputDecoration(
                                                     filled: true,
                                                     fillColor: AppColors.white,
                                                     hintText: AppLocalizations.of(context)!.lastNameError,
-                                                    hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                                    errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                    hintStyle: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                                    errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                                                     border: OutlineInputBorder(
                                                       borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
                                                       borderRadius: BorderRadius.circular(15.0),
@@ -821,7 +820,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       Expanded(
                                         child: Text(
                                           AppLocalizations.of(context)!.visibleFirstName,
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
@@ -836,16 +835,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             curve: Curves.ease,
                                           );
                                         },
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0, backgroundColor: canGoNextName ? AppColors.white : AppColors.black,
+                                          shape: const CircleBorder(),
+                                          padding: const EdgeInsets.all(15),
+                                        ),
                                         child: Icon(
                                           Icons.arrow_forward_ios,
                                           color: canGoNextName ? AppColors.black : AppColors.white.withOpacity(0.2),
                                           size: MediaQuery.of(context).size.width*0.06,
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          elevation: 0,
-                                          shape: const CircleBorder(),
-                                          padding: const EdgeInsets.all(15),
-                                          primary: canGoNextName ? AppColors.white : AppColors.black,
                                         ),
                                       ),
                                     ],
@@ -866,14 +864,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        AppLocalizations.of(context)!.uploadPhoto.split(" ")[0]+" "+AppLocalizations.of(context)!.profilePhoto.toLowerCase(),
-                                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
+                                        "${AppLocalizations.of(context)!.uploadPhoto.split(" ")[0]} ${AppLocalizations.of(context)!.profilePhoto.toLowerCase()}",
+                                        style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white, fontSize: 30),
                                         textAlign: TextAlign.left,
                                       ),
                                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                       Text(
                                         AppLocalizations.of(context)!.changeLater,
-                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.left,
                                       ),
                                       isGoogle ? FittedBox(
@@ -895,7 +893,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Flexible(
                                                 child: Text(
                                                   AppLocalizations.of(context)!.googleInfo,
-                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                                                   textAlign: TextAlign.left,
                                                 ),
                                               ),
@@ -910,6 +908,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         child: _image == null && imageUrl == null ? Center(
                                           child: OutlinedButton(
                                             onPressed: getImage,
+                                            style: OutlinedButton.styleFrom(
+                                              backgroundColor: AppColors.white,
+                                              elevation: 4,
+                                              shape: const CircleBorder(),
+                                              padding: const EdgeInsets.all(40),
+                                            ),
                                             child: !isLoadingBody ? Icon(
                                               Icons.add,
                                               color: AppColors.grey,
@@ -927,12 +931,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            style: OutlinedButton.styleFrom(
-                                              backgroundColor: AppColors.white,
-                                              elevation: 4,
-                                              shape: const CircleBorder(),
-                                              padding: const EdgeInsets.all(40),
                                             ),
                                           ),
                                         )
@@ -996,7 +994,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       Expanded(
                                         child: Text(
                                           "",
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
@@ -1007,15 +1005,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             curve: Curves.ease,
                                           );
                                         },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: const CircleBorder(), backgroundColor: AppColors.white,
+                                          padding: const EdgeInsets.all(15),
+                                        ),
                                         child: Icon(
                                           Icons.arrow_forward_ios,
                                           color: Colors.black,
                                           size: MediaQuery.of(context).size.width*0.06,
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          shape: const CircleBorder(),
-                                          padding: const EdgeInsets.all(15),
-                                          primary: AppColors.white,
                                         ),
                                       )
                                     ],
@@ -1037,13 +1034,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     children: [
                                       Text(
                                         AppLocalizations.of(context)!.whensYourBday,
-                                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
+                                        style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white, fontSize: 30),
                                         textAlign: TextAlign.left,
                                       ),
                                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                       Text(
                                         AppLocalizations.of(context)!.changeLater,
-                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.left,
                                       ),
                                       SizedBox(height: MediaQuery.of(context).size.height*0.05),
@@ -1057,7 +1054,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 children: [
                                                   Text(
                                                     AppLocalizations.of(context)!.day,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ],
@@ -1100,14 +1097,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     inputFormatters: [
                                                       LengthLimitingTextInputFormatter(2),// for mobile
                                                     ],
-                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                                    style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
                                                     textCapitalization: TextCapitalization.words,
                                                     decoration: InputDecoration(
                                                         filled: true,
                                                         fillColor: AppColors.white,
                                                         hintText: "DD",
-                                                        hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                                        errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                        hintStyle: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                                        errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                                                         border: OutlineInputBorder(
                                                           borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
                                                           borderRadius: BorderRadius.circular(15.0),
@@ -1141,7 +1138,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 children: [
                                                   Text(
                                                     AppLocalizations.of(context)!.month,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ],
@@ -1184,14 +1181,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     inputFormatters: [
                                                       LengthLimitingTextInputFormatter(2),// for mobile
                                                     ],
-                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                                    style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
                                                     textCapitalization: TextCapitalization.words,
                                                     decoration: InputDecoration(
                                                         filled: true,
                                                         fillColor: AppColors.white,
                                                         hintText: "MM",
-                                                        hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                                        errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                        hintStyle: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                                        errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                                                         border: OutlineInputBorder(
                                                           borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
                                                           borderRadius: BorderRadius.circular(15.0),
@@ -1224,8 +1221,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(context)!.year+" (*)",
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                                    "${AppLocalizations.of(context)!.year} (*)",
+                                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ],
@@ -1265,14 +1262,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     inputFormatters: [
                                                       LengthLimitingTextInputFormatter(4),// for mobile
                                                     ],
-                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                                    style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
                                                     textCapitalization: TextCapitalization.words,
                                                     decoration: InputDecoration(
                                                         filled: true,
                                                         fillColor: AppColors.white,
                                                         hintText: "YYYY",
-                                                        hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                                        errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                        hintStyle: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                                        errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                                                         border: OutlineInputBorder(
                                                           borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
                                                           borderRadius: BorderRadius.circular(15.0),
@@ -1314,7 +1311,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             Flexible(
                                               child: Text(
                                                 AppLocalizations.of(context)!.errorDate,
-                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                                                 textAlign: TextAlign.left,
                                               ),
                                             ),
@@ -1333,17 +1330,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(context)!.dateOfBirth+": ",
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                                                    "${AppLocalizations.of(context)!.dateOfBirth}: ",
+                                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                   (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) ? Text(
                                                     DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDate, Localizations.localeOf(context).languageCode),
-                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
+                                                    style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
                                                     textAlign: TextAlign.left,
                                                   ) : Text(
                                                     startDate.year.toString(),
-                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
+                                                    style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ],
@@ -1352,13 +1349,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(context)!.age+": ",
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                                                    "${AppLocalizations.of(context)!.age}: ",
+                                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                   Text(
                                                     calculateAge(startDate, DateTime.now()).toStringAsFixed(0),
-                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
+                                                    style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ],
@@ -1388,7 +1385,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       Expanded(
                                         child: Text(
                                           AppLocalizations.of(context)!.visibleFact,
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
@@ -1404,13 +1401,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             DateTime? date;
                                             if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
                                               // Full Date
-                                              String dateString = yearController.text+"-"+monthController.text+"-"+dayController.text;
+                                              String dateString = "${yearController.text}-${monthController.text}-${dayController.text}";
                                               date = convertToDate(dateString, "yyyy-MM-dd", context);
                                             } else {
                                               // Only Year
                                               dayController.text = "";
                                               monthController.text = "";
-                                              String dateString = yearController.text+"-1-1";
+                                              String dateString = "${yearController.text}-1-1";
                                               date = convertToDate(dateString, "yyyy-MM-dd", context);
                                             }
                                             if (date == null || date.isAfter(DateTime.now()) || DateTime.now().difference(date).inDays > 36500) {
@@ -1435,16 +1432,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             );
                                           }
                                         },
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0, backgroundColor: canGoNextDate ? AppColors.white : AppColors.black,
+                                          shape: const CircleBorder(),
+                                          padding: const EdgeInsets.all(15),                                          
+                                        ),
                                         child: Icon(
                                           Icons.arrow_forward_ios,
                                           color: canGoNextDate ? AppColors.black : AppColors.white.withOpacity(0.2),
                                           size: MediaQuery.of(context).size.width*0.06,
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          elevation: 0,
-                                          shape: const CircleBorder(),
-                                          padding: const EdgeInsets.all(15),
-                                          primary: canGoNextDate ? AppColors.white : AppColors.black,                                          
                                         ),
                                       )
                                     ],
@@ -1468,13 +1464,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       children: [
                                         Text(
                                           AppLocalizations.of(context)!.whatsYourGender,
-                                          style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
+                                          style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white, fontSize: 30),
                                           textAlign: TextAlign.left,
                                         ),
                                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                         Text(
                                           AppLocalizations.of(context)!.changeLater,
-                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                           textAlign: TextAlign.left,
                                         ),
                                         SizedBox(height: MediaQuery.of(context).size.height*0.05),
@@ -1493,7 +1489,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 Expanded(
                                                   child: Text(
                                                     AppLocalizations.of(context)!.female,
-                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                                    style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ),
@@ -1534,7 +1530,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 Expanded(
                                                   child: Text(
                                                     AppLocalizations.of(context)!.male,
-                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                                    style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ),
@@ -1575,7 +1571,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 Expanded(
                                                   child: Text(
                                                     AppLocalizations.of(context)!.transgender,
-                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                                    style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ),
@@ -1622,7 +1618,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       Expanded(
                                         child: Text(
                                           AppLocalizations.of(context)!.visibleFact,
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
@@ -1634,6 +1630,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           await Future.delayed(const Duration(seconds: 1));
                                           addUser();
                                         },
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0, backgroundColor: gender != null ? AppColors.white : AppColors.black,
+                                          shape: const CircleBorder(),
+                                          padding: const EdgeInsets.all(15),
+                                        ),
                                         child: !isLoading ? Icon(
                                           Icons.arrow_forward_ios,
                                           color: gender != null ? AppColors.black : AppColors.white.withOpacity(0.2),
@@ -1651,12 +1652,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          elevation: 0,
-                                          shape: const CircleBorder(),
-                                          padding: const EdgeInsets.all(15),
-                                          primary: gender != null ? AppColors.white : AppColors.black,
                                         ),
                                       ),
                                     ],

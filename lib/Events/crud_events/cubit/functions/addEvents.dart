@@ -108,12 +108,12 @@ class AddEventFunctions {
 
   Future<void> assignTrainers(
       BuildContext context,
-      Event _oldEvent,
+      Event oldEvent,
       Event event,
       String currentUserId,
       ReceivedNotification notificationBefore) async {
     Set<String?> oldIds =
-        _oldEvent.selectedTrainersList!.map((usuario) => usuario.id).toSet();
+        oldEvent.selectedTrainersList!.map((usuario) => usuario.id).toSet();
     Set<String?> newIds =
         event.selectedTrainersList!.map((usuario) => usuario.id).toSet();
 
@@ -127,7 +127,7 @@ class AddEventFunctions {
         .cast<Usuario>()
         .toList();
     List<Usuario> trainersToRemove = idsToRemove
-        .map((id) => _oldEvent.selectedTrainersList!
+        .map((id) => oldEvent.selectedTrainersList!
             .firstWhere((usuario) => usuario.id == id))
         .cast<Usuario>()
         .toList();
@@ -142,8 +142,8 @@ class AddEventFunctions {
     for (int i = 0; i < matchedTrainers.length; i++) {
       var user = matchedTrainers[i];
 
-      print("Trainer Matched " + user.id.toString());
-      if (_oldEvent.startDate! != event.startDate!) {
+      print("Trainer Matched ${user.id}");
+      if (oldEvent.startDate! != event.startDate!) {
         // Remove Old Local Notification
         await _notificationsEvents.deleteEventLocalNotificationsCall(
             event.id!, user.id!, currentUserId);
@@ -168,7 +168,7 @@ class AddEventFunctions {
       // Remove Event Local Notifications
       await _notificationsEvents.deleteEventLocalNotificationsCall(
           event.id!, user.id!, currentUserId);
-      print("Trainer Removed " + user.id.toString());
+      print("Trainer Removed ${user.id}");
     }
 
     /// Handle Trainers Added
@@ -190,13 +190,13 @@ class AddEventFunctions {
           currentUserId,
           notificationBefore,
           notificationBefore);
-      print("Trainer Added " + user.id.toString());
+      print("Trainer Added ${user.id}");
     }
   }
 
   Future<void> assignClients(
       BuildContext context,
-      Event _oldEvent,
+      Event oldEvent,
       Event event,
       List<Bono> selectedBonos,
       String currentBrandId,
@@ -204,7 +204,7 @@ class AddEventFunctions {
       ReceivedNotification notificationBefore,
       ReceivedNotification notificationsAfter) async {
     Set<String?> oldIds =
-        _oldEvent.joinedMembersList!.map((usuario) => usuario.id).toSet();
+        oldEvent.joinedMembersList!.map((usuario) => usuario.id).toSet();
     Set<String?> newIds =
         event.joinedMembersList!.map((usuario) => usuario.id).toSet();
 
@@ -218,7 +218,7 @@ class AddEventFunctions {
         .cast<Usuario>()
         .toList();
     List<Usuario> clientsToRemove = idsToRemove
-        .map((id) => _oldEvent.joinedMembersList!
+        .map((id) => oldEvent.joinedMembersList!
             .firstWhere((usuario) => usuario.id == id))
         .cast<Usuario>()
         .toList();
@@ -231,8 +231,8 @@ class AddEventFunctions {
     for (int i = 0; i < matchedClients.length; i++) {
       var user = matchedClients[i];
 
-      print("Client Matched " + user.id.toString());
-      if (_oldEvent.startDate! != event.startDate!) {
+      print("Client Matched ${user.id}");
+      if (oldEvent.startDate! != event.startDate!) {
         // Remove Old Local Notification
         await _notificationsEvents.deleteEventLocalNotificationsCall(
             event.id!, user.id!, currentUserId);
@@ -265,7 +265,7 @@ class AddEventFunctions {
       // Remove Event Local Notifications
       await _notificationsEvents.deleteEventLocalNotificationsCall(
           event.id!, user.id!, currentUserId);
-      print("Client Removed " + user.id.toString());
+      print("Client Removed ${user.id}");
     }
 
     //JMF_AddUser_Begin
@@ -299,7 +299,7 @@ class AddEventFunctions {
           currentUserId,
           notificationBefore,
           notificationsAfter);
-      print("Client Added " + user.id.toString());
+      print("Client Added ${user.id}");
     }
   }
 

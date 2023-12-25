@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent_old.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -15,7 +14,7 @@ class PlanEventWidget extends StatefulWidget {
   bool isPrivate = false;
   ValueChanged<bool?> onClicked;
 
-  PlanEventWidget({Key? key, required this.height, required this.width, required this.isPrivate, required this.onClicked}) : super(key: key);
+  PlanEventWidget({super.key, required this.height, required this.width, required this.isPrivate, required this.onClicked});
 
   @override
   _PlanEventWidgetState createState() => _PlanEventWidgetState();
@@ -147,12 +146,12 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
                             children: [
                               Text(
                                 AppLocalizations.of(context)!.add,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark),
+                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark),
                                 textAlign: TextAlign.left,
                               ),
                               Text(
                                 AppLocalizations.of(context)!.privateEvent,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark),
+                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark),
                                 textAlign: TextAlign.left,
                               ),
                             ],
@@ -184,12 +183,12 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
                             children: [
                               Text(
                                 AppLocalizations.of(context)!.add,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark),
+                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark),
                                 textAlign: TextAlign.left,
                               ),
                               Text(
                                 AppLocalizations.of(context)!.groupEvent,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark),
+                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark),
                                 textAlign: TextAlign.left,
                               ),
                             ],

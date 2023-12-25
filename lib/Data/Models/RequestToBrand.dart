@@ -25,14 +25,14 @@ class RequestToBrand {
   });
 
   RequestToBrand.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
-    this.brandId = documentSnapshot.get("brandId").toString();
-    this.userId = documentSnapshot.get("userId").toString();
-    this.name = documentSnapshot.get("name").toString();
-    this.isTrainer = documentSnapshot.get("isTrainer");
-    this.dateSent = documentSnapshot.get("dateSent").toString();
-    this.year = documentSnapshot.get("year").toString();
-    this.month = documentSnapshot.get("month").toString();
-    this.day = documentSnapshot.get("day").toString();
+    id = documentId;
+    brandId = documentSnapshot.get("brandId").toString();
+    userId = documentSnapshot.get("userId").toString();
+    name = documentSnapshot.get("name").toString();
+    isTrainer = documentSnapshot.get("isTrainer");
+    dateSent = documentSnapshot.get("dateSent").toString();
+    year = documentSnapshot.get("year").toString();
+    month = documentSnapshot.get("month").toString();
+    day = documentSnapshot.get("day").toString();
   }
 }

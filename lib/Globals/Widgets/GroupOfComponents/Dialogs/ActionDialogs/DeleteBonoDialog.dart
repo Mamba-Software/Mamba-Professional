@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -6,7 +5,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 class DeleteBonoDialog extends StatelessWidget {
   final bool hasPurchases;
   final bool isActive;
-  const DeleteBonoDialog({Key? key, required this.hasPurchases, required this.isActive}) : super(key: key);
+  const DeleteBonoDialog({super.key, required this.hasPurchases, required this.isActive});
 
 
   @override
@@ -33,7 +32,7 @@ class DeleteBonoDialog extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 10, left: 10),
                     child: Text(
                       hasPurchases && isActive ? AppLocalizations.of(context)!.deactivateBonoConfirmation : AppLocalizations.of(context)!.deleteBonoConfirmation,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -62,7 +61,7 @@ class DeleteBonoDialog extends StatelessWidget {
                           child: Text(
                             AppLocalizations.of(context)!.bonosNoDeleteWarning,
                             textAlign: TextAlign.left,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.5),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red, height: 1.5),
                           ),
                         ),
                       ),
@@ -88,7 +87,7 @@ class DeleteBonoDialog extends StatelessWidget {
                         child: Text(
                           AppLocalizations.of(context)!.bonosCanDeleteWarning,
                           textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green, height: 1.3),
                         ),
                       ),
                     ],
@@ -113,7 +112,7 @@ class DeleteBonoDialog extends StatelessWidget {
                         ),
                         label: Text(
                           hasPurchases ? AppLocalizations.of(context)!.mambaProActivated.split(" ")[0] : AppLocalizations.of(context)!.delete,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                         ),
                         icon: Icon(hasPurchases ? Icons.pause_circle_outline : Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
@@ -134,7 +133,7 @@ class DeleteBonoDialog extends StatelessWidget {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark,),
                         ),
                         icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                         onPressed: () {

@@ -52,7 +52,7 @@ dependencies:
   rename: ^3.0.1
   url_launcher: ^6.0.17
   auto_size_text: ^3.0.0
-  flutter_firebase_chat_core: ^1.5.1
+  flutter_firebase_chat_core: ^1.6.7
   flutter_chat_ui: ^1.5.3
   file_picker: ^6.1.1
   mime: ^1.0.1

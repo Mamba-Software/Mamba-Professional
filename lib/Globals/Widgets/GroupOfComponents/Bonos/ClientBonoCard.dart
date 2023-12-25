@@ -32,7 +32,7 @@ class ClientBonoCard extends StatefulWidget {
   BonoRequest? bonoRequest;
 
   ClientBonoCard({
-    Key? key,
+    super.key,
     required this.height,
     required this.width,
     required this.bono,
@@ -42,7 +42,7 @@ class ClientBonoCard extends StatefulWidget {
     required this.onlyView,
     this.isExpanded,
     this.bonoRequest,
-  }) : super(key: key);
+  });
 
   @override
   ClientBonoCardState createState() => ClientBonoCardState();
@@ -317,7 +317,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                   brand.name!.toUpperCase(),
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline3
+                                      .displaySmall
                                       ?.copyWith(
                                           fontWeight: FontWeight.normal,
                                           color: Colors.white),
@@ -353,7 +353,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                       bono.title!.toUpperCase(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline1
+                                          .displayLarge
                                           ?.copyWith(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white),
@@ -384,7 +384,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       .toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText1
+                                                      .bodyLarge
                                                       ?.copyWith(
                                                           color: Colors.white,
                                                           fontWeight:
@@ -436,19 +436,17 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                   children: [
                                                     bono.sessions! > 5000
                                                         ? Text(
-                                                            AppLocalizations.of(
+                                                            "${AppLocalizations.of(
                                                                         context)!
                                                                     .sessions
-                                                                    .toUpperCase() +
-                                                                " " +
-                                                                AppLocalizations.of(
+                                                                    .toUpperCase()} ${AppLocalizations.of(
                                                                         context)!
                                                                     .ilimitadas
-                                                                    .toUpperCase(),
+                                                                    .toUpperCase()}",
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .bodyText1
+                                                                .bodyLarge
                                                                 ?.copyWith(
                                                                     color: Colors
                                                                         .white),
@@ -470,7 +468,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .bodyText1
+                                                                .bodyLarge
                                                                 ?.copyWith(
                                                                     color: Colors
                                                                         .white),
@@ -484,19 +482,15 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                     condition.weeklySessions !=
                                                             0
                                                         ? Text(
-                                                            eventsThisWeek
-                                                                    .length
-                                                                    .toString() +
-                                                                "/${condition.weeklySessions}" +
-                                                                " " +
-                                                                AppLocalizations.of(
+                                                            "${eventsThisWeek
+                                                                    .length}/${condition.weeklySessions} ${AppLocalizations.of(
                                                                         context)!
                                                                     .thisWeek
-                                                                    .toUpperCase(),
+                                                                    .toUpperCase()}",
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .bodyText1
+                                                                .bodyLarge
                                                                 ?.copyWith(
                                                                     color: Colors
                                                                         .white),
@@ -506,21 +500,16 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                         : condition.expirationTime !=
                                                                 0
                                                             ? Text(
-                                                                AppLocalizations.of(
+                                                                "${AppLocalizations.of(
                                                                             context)!
-                                                                        .expiresAt +
-                                                                    " " +
-                                                                    daysToExpire
-                                                                        .toString() +
-                                                                    " " +
-                                                                    AppLocalizations.of(
+                                                                        .expiresAt} $daysToExpire ${AppLocalizations.of(
                                                                             context)!
                                                                         .days
-                                                                        .toLowerCase(),
+                                                                        .toLowerCase()}",
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .bodyText1
+                                                                    .bodyLarge
                                                                     ?.copyWith(
                                                                         color: Colors
                                                                             .white),
@@ -535,17 +524,14 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                   children: [
                                                     bono.sessions! > 5000
                                                         ? Text(
-                                                            sessionsDone
-                                                                    .toString() +
-                                                                ' ' +
-                                                                AppLocalizations.of(
+                                                            '$sessionsDone ${AppLocalizations.of(
                                                                         context)!
                                                                     .sessions
-                                                                    .toUpperCase(),
+                                                                    .toUpperCase()}',
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .bodyText1
+                                                                .bodyLarge
                                                                 ?.copyWith(
                                                                     color: Colors
                                                                         .white),
@@ -567,7 +553,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .bodyText1
+                                                                .bodyLarge
                                                                 ?.copyWith(
                                                                     color: Colors
                                                                         .white),
@@ -606,7 +592,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                     .toUpperCase(),
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText1
+                                                            .bodyLarge
                                                             ?.copyWith(
                                                                 color: Colors
                                                                     .white,
@@ -674,7 +660,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                     bono.description!,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodyText1
+                                        .bodyLarge
                                         ?.copyWith(color: Colors.white70),
                                     textAlign: TextAlign.left,
                                     maxLines: 4,
@@ -704,7 +690,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       .toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2
+                                                      .bodyMedium
                                                       ?.copyWith(
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -723,7 +709,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             .toUpperCase(),
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText1
+                                                            .bodyLarge
                                                             ?.copyWith(
                                                                 color: Colors
                                                                     .white70),
@@ -734,14 +720,10 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             .visible,
                                                       )
                                                     : Text(
-                                                        sessionsDone
-                                                                .toString() +
-                                                            "/" +
-                                                            bono.sessions!
-                                                                .toString(),
+                                                        "$sessionsDone/${bono.sessions!}",
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText1
+                                                            .bodyLarge
                                                             ?.copyWith(
                                                                 color: Colors
                                                                     .white70),
@@ -766,7 +748,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       .toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2
+                                                      .bodyMedium
                                                       ?.copyWith(
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -797,7 +779,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                   .expired,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText1
+                                                      .bodyLarge
                                                       ?.copyWith(
                                                           color:
                                                               Colors.white70),
@@ -830,7 +812,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       .toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2
+                                                      .bodyMedium
                                                       ?.copyWith(
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -844,13 +826,12 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                 Row(
                                                   children: [
                                                     Text(
-                                                      bono.price!
+                                                      "${bono.price!
                                                               .toStringAsFixed(
-                                                                  2) +
-                                                          " €",
+                                                                  2)} €",
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText1
+                                                          .bodyLarge
                                                           ?.copyWith(
                                                               color: Colors
                                                                   .white70),
@@ -880,7 +861,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .bodyText2
+                                                                .bodyMedium
                                                                 ?.copyWith(
                                                                     color: Colors
                                                                         .white70),
@@ -920,7 +901,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       .toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2
+                                                      .bodyMedium
                                                       ?.copyWith(
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -948,40 +929,30 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                         title:
                                                             isNotActive == false
                                                                 ? Text(
-                                                                    AppLocalizations.of(
+                                                                    "${AppLocalizations.of(
                                                                                 context)!
-                                                                            .expiresAt +
-                                                                        " " +
-                                                                        daysToExpire
-                                                                            .toString() +
-                                                                        " " +
-                                                                        AppLocalizations.of(context)!
+                                                                            .expiresAt} $daysToExpire ${AppLocalizations.of(context)!
                                                                             .days
-                                                                            .toLowerCase(),
+                                                                            .toLowerCase()}",
                                                                     style: Theme.of(
                                                                             context)
                                                                         .textTheme
-                                                                        .bodyText1
+                                                                        .bodyLarge
                                                                         ?.copyWith(
                                                                             color:
                                                                                 Colors.white70),
                                                                   )
                                                                 : Text(
-                                                                    AppLocalizations.of(
+                                                                    "${AppLocalizations.of(
                                                                                 context)!
-                                                                            .expiredAfter +
-                                                                        " " +
-                                                                        condition
-                                                                            .expirationTime
-                                                                            .toString() +
-                                                                        " " +
-                                                                        AppLocalizations.of(context)!
+                                                                            .expiredAfter} ${condition
+                                                                            .expirationTime} ${AppLocalizations.of(context)!
                                                                             .days
-                                                                            .toLowerCase(),
+                                                                            .toLowerCase()}",
                                                                     style: Theme.of(
                                                                             context)
                                                                         .textTheme
-                                                                        .bodyText1
+                                                                        .bodyLarge
                                                                         ?.copyWith(
                                                                             color:
                                                                                 Colors.white70),
@@ -995,19 +966,17 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                               height: 8,
                                                             ),
                                                             Text(
-                                                              AppLocalizations.of(
+                                                              "${AppLocalizations.of(
                                                                           context)!
-                                                                      .expireDate +
-                                                                  ": " +
-                                                                  DateTimeUtils().formatDateTimeToStringDDMMYYYY(
+                                                                      .expireDate}: ${DateTimeUtils().formatDateTimeToStringDDMMYYYY(
                                                                       expirationDate,
                                                                       Localizations.localeOf(
                                                                               context)
-                                                                          .languageCode),
+                                                                          .languageCode)}",
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .bodyText1
+                                                                  .bodyLarge
                                                                   ?.copyWith(
                                                                       color: Colors
                                                                           .white),
@@ -1035,7 +1004,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .bodyText1
+                                                              .bodyLarge
                                                               ?.copyWith(
                                                                   color: Colors
                                                                       .white70),
@@ -1049,19 +1018,17 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                               height: 8,
                                                             ),
                                                             Text(
-                                                              AppLocalizations.of(
+                                                              "${AppLocalizations.of(
                                                                           context)!
-                                                                      .buyDate +
-                                                                  ": " +
-                                                                  DateTimeUtils().formatDateTimeToStringDDMMYYYY(
+                                                                      .buyDate}: ${DateTimeUtils().formatDateTimeToStringDDMMYYYY(
                                                                       purchasedDate,
                                                                       Localizations.localeOf(
                                                                               context)
-                                                                          .languageCode),
+                                                                          .languageCode)}",
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .bodyText1
+                                                                  .bodyLarge
                                                                   ?.copyWith(
                                                                       color: Colors
                                                                           .white),
@@ -1083,22 +1050,17 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             color:
                                                                 Colors.white70),
                                                         title: Text(
-                                                          AppLocalizations.of(
+                                                          "${AppLocalizations.of(
                                                                       context)!
-                                                                  .max +
-                                                              " " +
-                                                              condition
-                                                                  .weeklySessions
-                                                                  .toString() +
-                                                              " " +
-                                                              AppLocalizations.of(
+                                                                  .max} ${condition
+                                                                  .weeklySessions} ${AppLocalizations.of(
                                                                       context)!
                                                                   .trainsPerWeek
-                                                                  .toLowerCase(),
+                                                                  .toLowerCase()}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .bodyText1
+                                                              .bodyLarge
                                                               ?.copyWith(
                                                                   color: Colors
                                                                       .white70),
@@ -1115,15 +1077,10 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                             8,
                                                                       ),
                                                                       Text(
-                                                                        AppLocalizations.of(context)!.thisWeek +
-                                                                            ": " +
-                                                                            eventsThisWeek.length.toString() +
-                                                                            "/${condition.weeklySessions}" +
-                                                                            " " +
-                                                                            AppLocalizations.of(context)!.sessions.toLowerCase(),
+                                                                        "${AppLocalizations.of(context)!.thisWeek}: ${eventsThisWeek.length}/${condition.weeklySessions} ${AppLocalizations.of(context)!.sessions.toLowerCase()}",
                                                                         style: Theme.of(context)
                                                                             .textTheme
-                                                                            .caption
+                                                                            .bodySmall
                                                                             ?.copyWith(color: Colors.white),
                                                                       ),
                                                                     ],
@@ -1146,22 +1103,17 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             color:
                                                                 Colors.white70),
                                                         title: Text(
-                                                          AppLocalizations.of(
+                                                          "${AppLocalizations.of(
                                                                       context)!
-                                                                  .cancelTimeAt +
-                                                              " " +
-                                                              condition
-                                                                  .cancelTime
-                                                                  .toString() +
-                                                              " " +
-                                                              AppLocalizations.of(
+                                                                  .cancelTimeAt} ${condition
+                                                                  .cancelTime} ${AppLocalizations.of(
                                                                       context)!
                                                                   .hours
-                                                                  .toLowerCase(),
+                                                                  .toLowerCase()}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .bodyText1
+                                                              .bodyLarge
                                                               ?.copyWith(
                                                                   color: Colors
                                                                       .white70),
@@ -1214,7 +1166,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                               AppLocalizations.of(context)!.edit,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(
                                       color:
                                           Theme.of(context).primaryColorDark),

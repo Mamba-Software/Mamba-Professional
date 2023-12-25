@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -28,20 +27,20 @@ Widget recurrentEventObjectWidget(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
                   AppLocalizations.of(context)!.days,
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
               WeekdaySelector(
-                fillColor: Theme.of(context).backgroundColor,
+                fillColor: Theme.of(context).colorScheme.background,
                 textStyle: Theme.of(context)
                     .textTheme
-                    .bodyText2!
+                    .bodyMedium!
                     .copyWith(color: Theme.of(context).primaryColor),
                 selectedFillColor: Theme.of(context).primaryColor,
 
                 selectedTextStyle: Theme.of(context)
                     .textTheme
-                    .bodyText2!
+                    .bodyMedium!
                     .copyWith(color: Theme.of(context).primaryColorDark),
                 firstDayOfWeek: 0,
                 shortWeekdays: [
@@ -76,7 +75,7 @@ Widget recurrentEventObjectWidget(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
                   AppLocalizations.of(context)!.during,
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
               Column(
@@ -154,7 +153,7 @@ Color getColor(BuildContext context, Set<MaterialState> states) {
   return Theme.of(context).primaryColor;
 }
 
-Widget selectorRecurrent(int _value, int group, Locale locale,
+Widget selectorRecurrent(int value, int group, Locale locale,
     BuildContext context, DateTime durationRecurrent, String text,
     [bool isBeta = false]) {
   return ListTile(
@@ -164,21 +163,21 @@ Widget selectorRecurrent(int _value, int group, Locale locale,
       children: [
         Text(
           text,
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
-        isBeta ? BetaBadge() : Container(),
+        isBeta ? const BetaBadge() : Container(),
       ],
     ),
     subtitle: Text(
       AppLocalizations.of(context)!.until(StringUtils().toCapitalized(
           DateFormat('EEEE - d/M/yy', locale.languageCode)
               .format(durationRecurrent))),
-      style: Theme.of(context).textTheme.caption,
+      style: Theme.of(context).textTheme.bodySmall,
       textAlign: TextAlign.left,
     ),
     leading: Radio(
       value: group,
-      groupValue: _value,
+      groupValue: value,
       activeColor: Theme.of(context).colorScheme.secondary,
       fillColor: MaterialStateProperty.resolveWith(
           (states) => getColor(context, states)),

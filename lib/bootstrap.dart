@@ -141,7 +141,7 @@ class Bootstrap {
 // Material App
 class Mamba extends StatefulWidget {
   final bool isDevelopment;
-  const Mamba({Key? key, required this.isDevelopment}) : super(key: key);
+  const Mamba({super.key, required this.isDevelopment});
 
   @override
   _MambaState createState() => _MambaState();
@@ -211,7 +211,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
           Consumer3<LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider>(
               builder: (context, LanguageProvider language, ThemeProvider theme,
                   FirebaseAnalyticsProvider analytics, _) {
-        AppThemes _appThemes = AppThemes();
+        AppThemes appThemes = AppThemes();
         final brightness = SchedulerBinding.instance.window.platformBrightness;
         if (brightness == Brightness.dark) {
           print("Dark Mode");
@@ -227,8 +227,8 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
               debugShowCheckedModeBanner: widget.isDevelopment,
               title: Constants.appName,
               themeMode: theme.themeMode,
-              theme: _appThemes.returnResponsiveLightTheme(100.vh),
-              darkTheme: _appThemes.returnResponsiveDarkTheme(100.vh),
+              theme: appThemes.returnResponsiveLightTheme(100.vh),
+              darkTheme: appThemes.returnResponsiveDarkTheme(100.vh),
               locale: language.idioma,
               supportedLocales: Idiomas.all,
               localizationsDelegates: const [
@@ -292,6 +292,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                       settings: const RouteSettings(name: 'MembershipRequests'),
                     );
                 }
+                return null;
               },
             );
           },

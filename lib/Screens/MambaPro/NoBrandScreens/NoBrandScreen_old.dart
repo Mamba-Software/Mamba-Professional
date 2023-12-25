@@ -1,42 +1,32 @@
 // ignore_for_file: avoid_print
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
-import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/QRCode/QRScanner.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandIntroScreen_old.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca_old.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
 class NoBrandScreen extends StatefulWidget {
-  const NoBrandScreen({Key? key}) : super(key: key);
+  const NoBrandScreen({super.key});
 
   @override
   _NoBrandScreenState createState() => _NoBrandScreenState();
@@ -68,8 +58,8 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
   initDeviceSizes() {
     safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
+    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   /// /////----------------------------
@@ -154,12 +144,12 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
                 children: [
                   Text(
                       StringUtils().greetingMessage(context),
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                       textAlign: TextAlign.center
                   ),
                   Text(
                       currentUser.firstName!,
-                      style: Theme.of(context).textTheme.headline1,
+                      style: Theme.of(context).textTheme.displayLarge,
                       textAlign: TextAlign.center
                   ),
                 ],
@@ -221,7 +211,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
         child: SizedBox(
           height: safeAreaHeight * 0.1,
           child: Center(
-            child: CircularImage(size: safeAreaHeight * 0.08, image: currentUser.imageUrl, color: Theme.of(context).backgroundColor, borderWidth: 2,),
+            child: CircularImage(size: safeAreaHeight * 0.08, image: currentUser.imageUrl, color: Theme.of(context).colorScheme.background, borderWidth: 2,),
           ),
         ),
       ),
@@ -343,7 +333,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
                           Flexible(
                             child: Text(
                                 AppLocalizations.of(context)!.createBrand,
-                              style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                               textAlign: TextAlign.left
                             ),
                           ),
@@ -360,7 +350,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
                           Flexible(
                             child: Text(
                                 AppLocalizations.of(context)!.createBrandTitle,
-                                style: Theme.of(context).textTheme.caption!.copyWith(color: Colors.grey),
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
                                 textAlign: TextAlign.left
                             ),
                           ),
@@ -487,7 +477,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
                           Flexible(
                             child: Text(
                                 AppLocalizations.of(context)!.joinBrand,
-                              style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                               textAlign: TextAlign.left
                             ),
                           ),
@@ -504,7 +494,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
                           Flexible(
                             child: Text(
                                 AppLocalizations.of(context)!.joinBrandTitle,
-                                style: Theme.of(context).textTheme.caption!.copyWith(color: Colors.grey),
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
                                 textAlign: TextAlign.left
                             ),
                           ),
@@ -564,7 +554,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
                       ),
                       Text(
                           "o",
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                           textAlign: TextAlign.center
                       ),
                       Expanded(

@@ -19,7 +19,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadlin
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -29,8 +28,7 @@ import '../../../Providers/ThemeProvider.dart';
 class PayWall extends StatefulWidget {
   String brandId;
   bool? comesFromInitPage;
-  PayWall({Key? key, required this.brandId, this.comesFromInitPage})
-      : super(key: key);
+  PayWall({super.key, required this.brandId, this.comesFromInitPage});
 
   @override
   _PayWallState createState() => _PayWallState();
@@ -201,7 +199,7 @@ class _PayWallState extends State<PayWall> {
                     AppLocalizations.of(context)!.tanksforUsing,
                     style: Theme.of(context)
                         .textTheme
-                        .headline1
+                        .displayLarge
                         ?.copyWith(fontSize: 30),
                     textAlign: TextAlign.left,
                   ),
@@ -221,7 +219,7 @@ class _PayWallState extends State<PayWall> {
           ),
           backgroundColor: isDark
               ? Theme.of(context).scaffoldBackgroundColor
-              : Theme.of(context).backgroundColor,
+              : Theme.of(context).colorScheme.background,
           persistentFooterButtons: <Widget>[
             Container(
               child: seePromotions
@@ -264,7 +262,7 @@ class _PayWallState extends State<PayWall> {
                                                 .seeSubscriptionPayWall,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline1
+                                                .displayLarge
                                                 ?.copyWith(
                                                   color: AppColors.white,
                                                 ),
@@ -306,7 +304,7 @@ class _PayWallState extends State<PayWall> {
                 height: MediaQuery.of(context).size.height * 0.6,
                 child: AnimatedAlign(
                     alignment: Alignment.center,
-                    duration: Duration(seconds: 10),
+                    duration: const Duration(seconds: 10),
                     child: Provider.of<ThemeProvider>(context, listen: false)
                             .isDarkMode
                         ? Image.asset(
@@ -336,7 +334,7 @@ class _PayWallState extends State<PayWall> {
                   Navigator.pop(context);
                 }
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.close,
               ),
             ),
@@ -381,7 +379,7 @@ class _PayWallState extends State<PayWall> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 Text(
                   AppLocalizations.of(context)!.updateToday,
-                  style: Theme.of(context).textTheme.headline1?.copyWith(
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
                       fontWeight: FontWeight.normal,
                       color: Theme.of(context).primaryColor,
                       fontSize: 30),
@@ -392,13 +390,13 @@ class _PayWallState extends State<PayWall> {
                   children: [
                     Text(
                       AppLocalizations.of(context)!.joinToBrands,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.normal,
                           color: Theme.of(context).primaryColor),
                     ),
                     Text(
                       'fitness',
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.normal,
                             color: AppColors.mainColor,
                           ),
@@ -426,13 +424,13 @@ class _PayWallState extends State<PayWall> {
               AppLocalizations.of(context)!.getAll,
               style: Theme.of(context)
                   .textTheme
-                  .headline1
+                  .displayLarge
                   ?.copyWith(fontSize: 30, fontWeight: FontWeight.normal),
               textAlign: TextAlign.center,
             ),
             Text(
               AppLocalizations.of(context)!.getAllDesc,
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.03),
@@ -480,7 +478,7 @@ class _PayWallState extends State<PayWall> {
                 child: Center(
                     child: Text(
                   AppLocalizations.of(context)!.moreInfoInWeb,
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.normal,
                       color: Theme.of(context).primaryColor),
                 )),
@@ -552,9 +550,9 @@ class _PayWallState extends State<PayWall> {
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   builder: (BuildContext context) {
                     // Page View Controller
-                    final PageController _pageController =
+                    final PageController pageController =
                         PageController(initialPage: 0);
-                    int _currentPage = 0;
+                    int currentPage = 0;
                     bool isRoles = true;
                     // Widget
                     return ModalBuy(subscriptionList[index]);
@@ -593,13 +591,11 @@ class _PayWallState extends State<PayWall> {
                           ? Text(
                               subscriptionList[index].package == null
                                   ? subscriptionList[index].descriptionAdapted!
-                                  : subscriptionList[index].priceString! +
-                                      ' ' +
-                                      subscriptionList[index]
-                                          .descriptionAdapted!,
+                                  : '${subscriptionList[index].priceString!} ${subscriptionList[index]
+                                          .descriptionAdapted!}',
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline1
+                                  .displayLarge
                                   ?.copyWith(
                                     color: AppColors.white,
                                   ),
@@ -607,13 +603,11 @@ class _PayWallState extends State<PayWall> {
                           : Text(
                               subscriptionList[index].package == null
                                   ? subscriptionList[index].descriptionAdapted!
-                                  : subscriptionList[index].priceString! +
-                                      ' ' +
-                                      subscriptionList[index]
-                                          .descriptionAdapted!,
+                                  : '${subscriptionList[index].priceString!} ${subscriptionList[index]
+                                          .descriptionAdapted!}',
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline1
+                                  .displayLarge
                                   ?.copyWith(
                                     color: AppColors.white,
                                   ),
@@ -643,11 +637,11 @@ class _PayWallState extends State<PayWall> {
                 children: [
                   ListTile(
                     title: Text('Mamba Pro',
-                        style: Theme.of(context).textTheme.caption,
+                        style: Theme.of(context).textTheme.bodySmall,
                         textAlign: TextAlign.left),
                     trailing: Text(
                         AppLocalizations.of(context)!.subscriptionsAppBar,
-                        style: Theme.of(context).textTheme.caption),
+                        style: Theme.of(context).textTheme.bodySmall),
                     dense: true,
                   ),
                   Divider(
@@ -663,17 +657,17 @@ class _PayWallState extends State<PayWall> {
                       ),
                     ),
                     title: Text(sub.title!,
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.left),
                     subtitle: Text('Fitness is Business',
-                        style: Theme.of(context).textTheme.caption),
+                        style: Theme.of(context).textTheme.bodySmall),
                     dense: true,
                   ),
                   ListTile(
                     title: Row(
                       children: [
                         Text(AppLocalizations.of(context)!.uniquePromotion),
-                        Icon(
+                        const Icon(
                           Icons.done,
                           color: Colors.green,
                         ),
@@ -682,10 +676,10 @@ class _PayWallState extends State<PayWall> {
                   ),
                   ListTile(
                     title: Text(AppLocalizations.of(context)!.startToday,
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.left),
                     trailing: Text(sub.descriptionAdapted!,
-                        style: Theme.of(context).textTheme.bodyText1),
+                        style: Theme.of(context).textTheme.bodyLarge),
                     dense: true,
                   ),
                   ListTile(
@@ -717,7 +711,7 @@ class _PayWallState extends State<PayWall> {
                             AppLocalizations.of(context)!.subscribeNow,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText1
+                                .bodyLarge
                                 ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.black),
@@ -746,9 +740,9 @@ class _PayWallState extends State<PayWall> {
           size: 50,
         ),
         title: Text(title,
-            style: Theme.of(context).textTheme.bodyText1,
+            style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.left),
-        subtitle: Text(subtitle, style: Theme.of(context).textTheme.caption),
+        subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
         dense: true,
       ),
     );
@@ -767,7 +761,7 @@ class _PayWallState extends State<PayWall> {
               AppLocalizations.of(context)!.promotionUse,
               style: Theme.of(context)
                   .textTheme
-                  .headline1
+                  .displayLarge
                   ?.copyWith(fontSize: 30, fontWeight: FontWeight.normal),
               textAlign: TextAlign.center,
             ),
@@ -795,7 +789,7 @@ class _PayWallState extends State<PayWall> {
                                 children: [
                                   Text(AppLocalizations.of(context)!
                                       .noPromotions),
-                                  Icon(
+                                  const Icon(
                                     Icons.close,
                                     color: Colors.red,
                                   ),
@@ -807,7 +801,7 @@ class _PayWallState extends State<PayWall> {
                                     children: [
                                       Text(AppLocalizations.of(context)!
                                           .promotionDetected),
-                                      Icon(
+                                      const Icon(
                                         Icons.done,
                                         color: Colors.green,
                                       ),
@@ -846,7 +840,7 @@ class _PayWallState extends State<PayWall> {
                           });
                         }
                       },
-                      style: Theme.of(context).textTheme.headline3?.copyWith(
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
                           fontWeight: FontWeight.normal,
                           color: AppColors.black),
                       textCapitalization: TextCapitalization.words,
@@ -857,13 +851,13 @@ class _PayWallState extends State<PayWall> {
                           hintText: AppLocalizations.of(context)!.insertCode,
                           hintStyle: Theme.of(context)
                               .textTheme
-                              .headline3
+                              .displaySmall
                               ?.copyWith(
                                   color: AppColors.grey,
                                   fontWeight: FontWeight.normal),
                           errorStyle: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.red),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
@@ -916,7 +910,7 @@ class _PayWallState extends State<PayWall> {
             child: Text(AppLocalizations.of(context)!.getInTouchText,
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText1!
+                    .bodyLarge!
                     .copyWith(color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.center),
           ),
@@ -925,13 +919,6 @@ class _PayWallState extends State<PayWall> {
             width: MediaQuery.of(context).size.width * 0.4,
             child: OutlinedButton(
               onPressed: () => launchEmail(),
-              child: Text(
-                AppLocalizations.of(context)!.getInTouch,
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).primaryColorDark),
-                textAlign: TextAlign.center,
-              ),
               style: OutlinedButton.styleFrom(
                 elevation: 4,
                 backgroundColor: Theme.of(context).primaryColor,
@@ -942,6 +929,13 @@ class _PayWallState extends State<PayWall> {
                     Radius.circular(30),
                   ),
                 ),
+              ),
+              child: Text(
+                AppLocalizations.of(context)!.getInTouch,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).primaryColorDark),
+                textAlign: TextAlign.center,
               ),
             ),
           ),

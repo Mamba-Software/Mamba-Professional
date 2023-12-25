@@ -14,7 +14,6 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'EventFeedback.dart';
@@ -27,7 +26,7 @@ class EventListTile extends StatefulWidget {
   var height;
   var width;
 
-  EventListTile({Key? key, required this.eventId, required this.userId, required this.showFeedback, this.showAverage, required this.height, required this.width}) : super(key: key);
+  EventListTile({super.key, required this.eventId, required this.userId, required this.showFeedback, this.showAverage, required this.height, required this.width});
 
   @override
   _EventListTileState createState() => _EventListTileState();
@@ -216,7 +215,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                   ),
                   Text(
                     eventFeedbackValue.toString(),
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.center
                   ),
                 ],
@@ -228,7 +227,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                   fit: BoxFit.fitWidth,
                   child: Text(
                       AppLocalizations.of(context)!.average,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.center
                   ),
                 ),
@@ -408,13 +407,13 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                           children: [
                             Text(
                                 _brand.name!,
-                                style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center
                             ),
                             SizedBox(height: widget.height*0.02,),
                             Text(
                                 _event.title!,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.center
                             ),
                             SizedBox(height: widget.height*0.015,),
@@ -424,7 +423,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                                 SizedBox(width: widget.width*0.02),
                                 Text(
                                     StringUtils().toCapitalized(eventDateString),
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.center
                                 ),
                               ],
@@ -436,7 +435,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                                 SizedBox(width: widget.width*0.02),
                                 Text(
                                     StringUtils().toCapitalized(eventHourString),
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.center
                                 ),
                               ],
@@ -449,7 +448,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                                 Expanded(
                                   child: Text(
                                       _location.description!,
-                                      style: Theme.of(context).textTheme.caption,
+                                      style: Theme.of(context).textTheme.bodySmall,
                                       textAlign: TextAlign.left
                                   ),
                                 ),

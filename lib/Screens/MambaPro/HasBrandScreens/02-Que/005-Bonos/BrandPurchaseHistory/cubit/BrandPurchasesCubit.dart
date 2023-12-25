@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
@@ -134,7 +133,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       openBrandRequestsStream();
       openPurchasesStream();
     } catch(e) {
-      print("Brand Purchases Error"+e.toString());
+      print("Brand Purchases Error$e");
       emit(BrandPurchasesError(e.toString()));
     }
   }
@@ -212,7 +211,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       });
       return filteredDateList;
     } catch(e) {
-      print("Get More Brand Purchases Error: "+e.toString());
+      print("Get More Brand Purchases Error: $e");
       emit(BrandPurchasesError(e.toString()));
       return [];
     }
@@ -300,13 +299,13 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         filterBy(filterByPurchaseStatus, filterByActivePurchases);
       },
         onError: (e) {
-          print("Brand Requests Error"+e.toString());
+          print("Brand Requests Error$e");
           emit(BrandPurchasesError(e.toString()));
         },
       );
 
     } catch(e) {
-      print("Brand Purchases Error"+e.toString());
+      print("Brand Purchases Error$e");
       emit(BrandPurchasesError(e.toString()));
     }
   }
@@ -415,13 +414,13 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         }
       },
         onError: (e) {
-          print("Brand Purchases Error"+e.toString());
+          print("Brand Purchases Error$e");
           emit(BrandPurchasesError(e.toString()));
         },
       );
 
     } catch(e) {
-      print("Brand Purchases Error"+e.toString());
+      print("Brand Purchases Error$e");
       emit(BrandPurchasesError(e.toString()));
     }
   }
@@ -461,7 +460,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       );
       print("Date Range Successfully Updated");
     } catch(e) {
-      print("Update Date Range Error"+e.toString());
+      print("Update Date Range Error$e");
       emit(BrandPurchasesError(e.toString()));
     }
   }
@@ -534,7 +533,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         )
       );
     } catch(e) {
-      print("Filter By Error"+e.toString());
+      print("Filter By Error$e");
       emit(BrandPurchasesError(e.toString()));
     }
   }
@@ -582,7 +581,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         )
       );
     } catch(e) {
-      print("Update Date Range Error"+e.toString());
+      print("Update Date Range Error$e");
       emit(BrandPurchasesError(e.toString()));
     }
   }
@@ -607,7 +606,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         )
       );
     } catch(e) {
-      print("Update Date Range Error"+e.toString());
+      print("Update Date Range Error$e");
       emit(BrandPurchasesError(e.toString()));
     }
   }
@@ -635,7 +634,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       filterBy(filterByPurchaseStatus, filterByActivePurchases);
       print("orderByDate Successfully Applied");
     } catch(e) {
-      print("Order By Error"+e.toString());
+      print("Order By Error$e");
       emit(BrandPurchasesError(e.toString()));
     }
   }

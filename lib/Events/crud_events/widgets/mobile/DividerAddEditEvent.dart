@@ -58,7 +58,7 @@ Widget titleEventWidget(BuildContext context, String eventField,
             children: <Widget>[
               Text(
                 eventField,
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
               ),
             ],
           ),

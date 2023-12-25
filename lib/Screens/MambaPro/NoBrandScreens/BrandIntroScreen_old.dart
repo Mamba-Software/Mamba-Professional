@@ -6,6 +6,8 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BrandIntroScreen extends StatefulWidget {
+  const BrandIntroScreen({super.key});
+
   @override
   _BrandIntroScreenState createState() => _BrandIntroScreenState();
 }
@@ -81,12 +83,12 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.skip,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
+                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white),
                               ),
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                          Container(
+                          SizedBox(
                             height: MediaQuery.of(context).size.height*0.3,
                             width: MediaQuery.of(context).size.width,
                             child: Center(
@@ -95,14 +97,14 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                                 children: [
                                   Container(
                                       height: MediaQuery.of(context).size.height*0.2,
-                                      decoration: new BoxDecoration(
+                                      decoration: BoxDecoration(
                                           border: Border.all(
                                             width: 1,
                                             color: AppColors.white,
                                             style: BorderStyle.solid,
                                           ),
                                           shape: BoxShape.circle,
-                                          image: new DecorationImage(
+                                          image: DecorationImage(
                                             fit: BoxFit.fitHeight,
                                             image: AssetImage(Constants.portadaCreateBrandIntro),
                                           ),
@@ -119,7 +121,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                   Text(
                                     "La Era Fitness",
-                                    style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontStyle: FontStyle.italic, fontSize: 28),
+                                    style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white, fontStyle: FontStyle.italic, fontSize: 28),
                                   ),
                                 ],
                               ),
@@ -128,14 +130,14 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                           SizedBox(height: MediaQuery.of(context).size.height*0.04),
                           Text(
                             AppLocalizations.of(context)!.createBrandCover,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Container(
+                          SizedBox(
                             height: MediaQuery.of(context).size.height*0.1,
                             child: Text(
                               AppLocalizations.of(context)!.createBrandPortada,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                             ),
                           ),
                         ],
@@ -163,12 +165,12 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.skip,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
+                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white),
                               ),
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                          Container(
+                          SizedBox(
                             height: MediaQuery.of(context).size.height*0.3,
                             width: MediaQuery.of(context).size.width,
                             child: Center(
@@ -181,14 +183,14 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           Text(
                             AppLocalizations.of(context)!.info,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Container(
+                          SizedBox(
                             height: MediaQuery.of(context).size.height*0.1,
                             child: Text(
                               AppLocalizations.of(context)!.createBrandInfo,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                             ),
                           ),
                         ],
@@ -216,12 +218,12 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.skip,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
+                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white),
                               ),
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                          Container(
+                          SizedBox(
                             height: MediaQuery.of(context).size.height*0.3,
                             width: MediaQuery.of(context).size.width,
                             child: Center(
@@ -234,14 +236,14 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           Text(
                             AppLocalizations.of(context)!.createBrandBaseLocation,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Container(
+                          SizedBox(
                             height: MediaQuery.of(context).size.height*0.1,
                             child: Text(
                               AppLocalizations.of(context)!.createBrandLocation,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                             ),
                           ),
                         ],
@@ -266,12 +268,12 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                               onPressed: null,
                               child: Text(
                                 AppLocalizations.of(context)!.skip,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black,),
+                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black,),
                               ),
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                          Container(
+                          SizedBox(
                             height: MediaQuery.of(context).size.height*0.3,
                             width: MediaQuery.of(context).size.width,
                             child: Center(
@@ -284,14 +286,14 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           Text(
                             AppLocalizations.of(context)!.createBrandWorkshift,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Container(
+                          SizedBox(
                             height: MediaQuery.of(context).size.height*0.1,
                             child: Text(
                               AppLocalizations.of(context)!.createBrandWorkshiftDescription,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                             ),
                           ),
                         ],
@@ -321,7 +323,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                 child: Center(
                   child: Text(
                     AppLocalizations.of(context)!.letsGo,
-                    style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.black),
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.black),
                   ),
                 ),
               ),
