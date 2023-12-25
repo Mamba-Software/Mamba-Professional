@@ -85,99 +85,18 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   //Return the ListTile of each screen of Mamba Pro
-  Widget listTilePro(int pageIndex, [bool isFavourite = false]) {
-    if (pageIndex == 0) {
-      return ListTile(
-          leading: CircularImage(
-            size: MediaQuery.of(context).size.width * 0.07,
-            image: currentBrand.logoUrl,
-            borderWidth: 1,
-            color: AppColors.grey,
-          ),
-          title: Text(
-            currentBrand.name!,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+  Widget listTilePro(int pageIndexVar, [bool isFavourite = false]) {
+    return ListTile(
+          leading: _mambaProUtils.iconSelectorListView(context, pageIndexVar),
+          title: _mambaProUtils.titlePageSelectorListView(context, pageIndexVar),          
           onTap: () => {
                 Navigator.pop(context),
                 setBrandActive(),
                 setState(() {
-                  pageIndex = pageIndex;
+                  pageIndex = pageIndexVar;
                   setFavourites();
                 }),
               });
-    } else {
-      return ListTile(
-          leading: _mambaProUtils.iconSelectorListView(context, pageIndex),
-          title: _mambaProUtils.titlePageSelectorListView(context, pageIndex),
-          /*
-          trailing: isFavourite ? SizedBox(
-            width: MediaQuery.of(context).size.width*0.15,
-            child: IconButton(
-                onPressed: () {
-                  setState(() {
-                    if (pageIndex == _pageIndex) {
-                      iconStar = false;
-                    }
-                    favourites.remove(_pageIndex);
-                    favourites.sort();
-                    _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
-                    switch (pageIndex) {
-                      case 9:
-                        mixpanel!.track('drawer_stats_pinned_off');
-                        break;
-                      case 2:
-                        mixpanel!.track('drawer_clients_pinned_off');
-                        break;
-                      case 1:
-                        mixpanel!.track('drawer_trainers_pinned_off');
-                        break;
-                     // case 15:
-                        mixpanel!.track('drawer_membership_requests_pinned_off');
-                        break;
-                      case 8:
-                        mixpanel!.track('drawer_brand_info_pinned_off');
-                        break;
-                      case 5:
-                        mixpanel!.track('drawer_bonos_pinned_off');
-                        break;
-                      case 10:
-                        mixpanel!.track('drawer_calendar_pinned_off');
-                        break;
-                      case 14:
-                        mixpanel!.track('drawer_event_history_pinned_off');
-                        break;
-                      case 7:
-                        mixpanel!.track('drawer_images_pinned_off');
-                        break;
-                      case 11:
-                        mixpanel!.track('drawer_locations_pinned_off');
-                        break;
-                      default:
-                        break;
-                    }
-                  }
-                  );
-                },
-                icon: Icon(
-                  Icons.push_pin,
-                  color: AppColors.red,
-                  size: MediaQuery.of(context).size.width*0.06,
-                )
-            ),
-          ) : SizedBox(
-            width: MediaQuery.of(context).size.width*0.15,
-          ),
-           */
-          onTap: () => {
-                Navigator.pop(context),
-                setBrandActive(),
-                setState(() {
-                  pageIndex = pageIndex;
-                  setFavourites();
-                }),
-              });
-    }
   }
 
   Widget buildHeader() {
@@ -736,6 +655,7 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   Widget buildBodyNavigation() {
+    print(pageIndex);
     switch (pageIndex) {
       case 0:
         mixpanel!.track('brand_homepage_view');
@@ -854,28 +774,6 @@ class _BrandScreenState extends State<BrandScreen> {
           pinned: iconStar,
           pinnedChanged: (boolean) {
             handleChangedFavourites();
-          },
-        );
-        return HomePro(
-          brandId: currentBrand.id!,
-          numTrainers: currentBrand.numTrainers!,
-          numClients: currentBrand.numClients!,
-          navigateToPage: (int page,
-              [DateTime? dateTime,
-              CalendarView? calendarView,
-              bool? addGroupEvent,
-              bool? addPrivateEvent,
-              bool? createBono]) async {
-            setState(() {
-              calendarDateTime = dateTime;
-              this.calendarView = calendarView;
-              pageIndex = page;
-            });
-            await Future.delayed(const Duration(seconds: 2));
-            setState(() {
-              calendarDateTime = null;
-              this.calendarView = null;
-            });
           },
         );
     }

@@ -113,7 +113,7 @@ class EachList extends StatelessWidget {
         break;
       case 3:
         var result = await _script.getStatistics();
-        print("RESULT: "+result.toString());
+        print("RESULT: $result");
         break;
     }
   }
