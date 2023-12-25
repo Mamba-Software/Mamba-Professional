@@ -1663,6 +1663,7 @@ class ScriptsDatabaseService {
 
   Future<bool> getStatistics() async {
     try {
+      // Users
       QuerySnapshot querySnapshot = await _firestore.collection("Users").get();
       var totalUsers = querySnapshot.docs.length;
       print('Users: ${querySnapshot.docs.length}');
@@ -1697,7 +1698,9 @@ class ScriptsDatabaseService {
       print('noGenderUsers: $noGenderUsers');
       print('isPrivate: $isPrivate');
       print('isPublic: $isPublic');
+      print("\n");
 
+      // Users Type
       querySnapshot = await _firestore
           .collection("Users")
           .where("isTrainer", isEqualTo: false)
@@ -1711,12 +1714,23 @@ class ScriptsDatabaseService {
           .get();
       var trainerUsers = querySnapshot.docs.length;
       print('Users Trainers: ${querySnapshot.docs.length}');
-
       print('Users Not Onboarded: ${totalUsers - clientUsers - trainerUsers}');
+      print("\n");
 
+      // Brands
       querySnapshot = await _firestore.collection("Brands").get();
-      print('Brands: ${querySnapshot.docs.length}');
+      var totalBrands = querySnapshot.docs.length;
+      print('Total Brands: ${querySnapshot.docs.length}');
+      querySnapshot = await _firestore
+          .collection("Brands")
+          .where("notShow", isEqualTo: true)
+          .get();
+      var fakeBrands = querySnapshot.docs.length;
+      print('Fake Brands: ${querySnapshot.docs.length}');
+      print('Brands: ${totalBrands - fakeBrands}');
+      print("\n");
 
+      // Events
       querySnapshot = await _firestore.collection("Events").get();
       print('Events: ${querySnapshot.docs.length}');
 
@@ -1726,6 +1740,7 @@ class ScriptsDatabaseService {
           .get();
       print('Events With Clients: ${querySnapshot.docs.length}');
 
+      // Events per Month
       for (int i = 1; i < 13; i++) {
         querySnapshot = await _firestore
             .collection("Events")
@@ -1742,16 +1757,58 @@ class ScriptsDatabaseService {
             .get();
         print("Events with Clients Month $i: ${querySnapshot.docs.length}");
       }
+      print("\n");
 
+      // Purchases
+      var totalPurchases = 0;
+      double totalAmount = 0;
+      double totalCash = 0;
+      double totalBizum = 0;
+      double totalGift = 0;
+      var paymentMethodCash = 0;
+      var paymentMethodBizum = 0;
+      var paymentMethodGift = 0;
+      querySnapshot = await _firestore.collection("Purchases").get();
+      totalPurchases = querySnapshot.docs.length;
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        Purchase p = Purchase.fromObjectAllData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        // Total
+        totalAmount += p.price!;
+        // Payment Method
+        if (p.paymentMethod == 0) {
+          totalCash += p.price!;
+          paymentMethodCash += 1;
+        } else if (p.paymentMethod == 1) {
+          totalBizum += p.price!;
+          paymentMethodBizum += 1;
+        } else {
+          totalGift += p.price!;
+          paymentMethodGift += 1;
+        }
+      }
+      print('totalPurchases: $totalPurchases');
+      print('totalAmount: $totalAmount');
+      print('Payment Methods:');
+      print(' % Cash: ${(paymentMethodCash / totalPurchases) * 100}');
+      print(' € Cash: $totalCash');
+      print(' % Bizum: ${(paymentMethodBizum / totalPurchases) * 100}');
+      print(' € Bizum: $totalBizum');
+      print(' % Gift: ${(paymentMethodGift / totalPurchases) * 100}');
+      print(' € Gift: $totalGift');
+      print("\n");
+
+      // Locations
       querySnapshot = await _firestore.collection("Locations").get();
       print('Locations: ${querySnapshot.docs.length}');
 
+      // Rooms
       querySnapshot = await _firestore.collection("Rooms").get();
       print('Rooms: ${querySnapshot.docs.length}');
 
+      // Errors Reported
       querySnapshot = await _firestore.collection("Errors").get();
-      print('Errors: ${querySnapshot.docs.length}');
-
+      print('Errors Reported: ${querySnapshot.docs.length}');
       return true;
     } catch (e) {
       print(e.toString());
@@ -1830,7 +1887,8 @@ class ScriptsDatabaseService {
               .where("year", isEqualTo: 2022.toString())
               .where("month", isEqualTo: i.toString())
               .get();
-          print("Events with Clients Month $i: ${querySnapshotBrand.docs.length}");
+          print(
+              "Events with Clients Month $i: ${querySnapshotBrand.docs.length}");
         }
       }
 
@@ -3857,6 +3915,99 @@ class ScriptsDatabaseService {
       }
 
       print('All Events Checked');
+      print('\n');
+      print(
+          '=================================================================================');
+      print(
+          '=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> JBPremoveBonoDeletedFromEventOctober2nd() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('JB RemoveBonoDeletedFromEvent October2nd');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying events/users collection:\n');
+      print('--------------');
+      print('\n');
+
+      /// THE GOAL IS TO REMOVE DE DELETED BONOS FROM THE EVENT, THIS IS A BUG WE DISCOVERED TODAY
+      String brandsCollection = "Brands";
+      String eventsCollection = "Events";
+      String brandId = "f88204e3-a2a9-4261-8799-8a4673571eaf";
+
+      // Get All Bonos From Brand
+      List<String> bonosIds = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(brandsCollection)
+          .doc(brandId)
+          .collection("Bonos")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        bonosIds.add(querySnapshot.docs[i].id);
+      }
+      print('--------------');
+      print("ACTIVE BONOS");
+      for (String bonoId in bonosIds) {
+        print(bonoId);
+      }
+      print('--------------');
+      print('\n');
+      // Get All Events From Brand
+      QuerySnapshot querySnapshot2 = await _firestore
+          .collection(brandsCollection)
+          .doc(brandId)
+          .collection("Events")
+          .get();
+
+      print('--------------');
+      print("CREATED EVENTS");
+      print(querySnapshot2.size);
+      print('--------------');
+      print('\n');
+
+      // For Each Event Check
+      for (int i = 0; i < querySnapshot2.docs.length; i++) {
+        print('-----');
+        String eventId = querySnapshot2.docs[i].id;
+        print("EVENT $eventId");
+        // Get the Event Bonos
+        QuerySnapshot querySnapshot3 = await _firestore
+            .collection(eventsCollection)
+            .doc(eventId)
+            .collection("Bonos")
+            .get();
+        // Check if all Bonos exist
+        List<String> deletedBonosIds = [];
+        for (int i = 0; i < querySnapshot3.docs.length; i++) {
+          String eventBonoId = querySnapshot3.docs[i].get("bonoId");
+          if (bonosIds.contains(eventBonoId) == false) {
+            deletedBonosIds.add(eventBonoId);
+          }
+        }
+        // Remove Bonos that does not exist
+        for (String bonoId in deletedBonosIds) {
+          print('Deleting $bonoId');
+          await _firestore
+              .collection(eventsCollection)
+              .doc(eventId)
+              .collection("Bonos")
+              .doc(bonoId)
+              .delete();
+        }
+        print('Next Event');
+        print('-----');
+        print('\n');
+      }
+      print('All Deleted Bonos Removed');
       print('\n');
       print(
           '=================================================================================');

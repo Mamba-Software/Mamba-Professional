@@ -112,9 +112,8 @@ class EachList extends StatelessWidget {
             ));
         break;
       case 3:
-        // var result = await _script.getStatisticsSpecific();
-        var result = await _script.JBparcheUserJoinsEventNovembre23th();
-        print("RESULT: $result");
+        var result = await _script.getStatistics();
+        print("RESULT: "+result.toString());
         break;
     }
   }
