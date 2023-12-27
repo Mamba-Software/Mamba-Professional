@@ -20,10 +20,11 @@ switch (environment) {
 
 // Initialize Functions
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const { user } = require("firebase-functions/v1/auth");
-// Initialize Firebase Admin
+const admin = require('firebase-admin');
+// Initialize Firebase
 admin.initializeApp();
+const db = admin.firestore();
 
 // Environment-specific values
 // GCP Firestore
