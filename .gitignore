@@ -46,6 +46,5 @@ app.*.map.json
 /android/app/release
 
 # dotenv environment variables file depending on Flavor
-.env.development
 .env.staging
 .env.production
