@@ -61,12 +61,10 @@ Future<void> backgroundLocalMessageHandler(
 class Bootstrap {
   // Vars
   final FirebaseOptions? firebaseOptions;
-
   // Init
   Bootstrap({required this.firebaseOptions}) {
     bootstrap();
   }
-
   // Starting app function. After initialization, we define the global providers:
   Future<void> bootstrap() async {
     runZonedGuarded(() async {
@@ -92,7 +90,6 @@ class Bootstrap {
       FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
       // Firebase Dynamic Links
       DynamicLinkUtils().retrieveDynamicLink();
-
       /// Production and Staging Only
       if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Global Uncaught Errors
@@ -128,9 +125,7 @@ class Bootstrap {
           ChangeNotifierProvider<FirebaseAnalyticsProvider>(
               create: (_) => FirebaseAnalyticsProvider()),
         ],
-        child: Mamba(
-          isDevelopment: currentFlavor == Flavor.development,
-        ),
+        child: const Mamba(),
       ));
     }, (error, stackTrace) {
       print(error.toString());
@@ -153,10 +148,8 @@ class Bootstrap {
 }
 
 // Material App
-class Mamba extends StatefulWidget {
-  final bool isDevelopment;
-  const Mamba({super.key, required this.isDevelopment});
-
+class Mamba extends StatefulWidget {  
+  const Mamba({super.key});
   @override
   _MambaState createState() => _MambaState();
 }
@@ -238,7 +231,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
           allowtextScaling: true,
           builder: () {
             return MaterialApp(
-              debugShowCheckedModeBanner: widget.isDevelopment,
+              debugShowCheckedModeBanner: currentFlavor == Flavor.development,
               title: Constants.appName,
               themeMode: theme.themeMode,
               theme: appThemes.returnResponsiveLightTheme(100.vh),

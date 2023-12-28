@@ -1,10 +1,7 @@
 import 'dart:math';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -28,15 +25,12 @@ import '../Models/Subscription.dart';
 
 class ScriptsDatabaseService {
   // Firebase Instances
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
   final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
-  final _eventDataService = EventDataService();
   final _libraryDataService = LibraryDataService();
-  final _purchaseDataService = PurchaseDataService();
 
   // Firebase collections
   String users = 'Users';
