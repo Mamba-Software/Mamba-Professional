@@ -347,8 +347,7 @@ class AuthCubit extends Cubit<AuthState> {
     if (currentUser.gender == 1) genderString = "Female";
     if (currentUser.gender == 2) genderString = "Other";
     mixpanel!.getPeople().set("gender", genderString);
-    mixpanel!.getPeople().set("language", currentUser.idioma!);
-    mixpanel!.getPeople().set("isProduction", true);
+    mixpanel!.getPeople().set("language", currentUser.idioma!);    
     var dateOfBirthSplit = currentUser.dateOfBirth!.split("-");
     DateTime dateOfBirth = DateTime(int.parse(dateOfBirthSplit[2]),
         int.parse(dateOfBirthSplit[1]), int.parse(dateOfBirthSplit[0]), 0, 0);

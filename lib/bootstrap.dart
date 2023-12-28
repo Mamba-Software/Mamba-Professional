@@ -74,7 +74,7 @@ class Bootstrap {
       WidgetsFlutterBinding.ensureInitialized();
       // Load Env Variables
       print("Loading Environment Variables...");
-      String envFileName = ".env.${currentFlavor.toString()}";
+      String envFileName = ".env.${currentFlavor.name}";
       await dotenv.load(fileName: envFileName);
       // Initialize Firebase
       if (kIsWeb) {
@@ -92,6 +92,7 @@ class Bootstrap {
       FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
       // Firebase Dynamic Links
       DynamicLinkUtils().retrieveDynamicLink();
+
       /// Production and Staging Only
       if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Global Uncaught Errors
@@ -100,11 +101,13 @@ class Bootstrap {
         mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!,
             trackAutomaticEvents: true, optOutTrackingDefault: false);
         // Set Log Level
-        await Purchases.setLogLevel(LogLevel.debug);
+        await Purchases.setLogLevel(LogLevel.info);
       } else {
         // Init MixPanel
         mixpanel = await Mixpanel.init('your_dummy_or_test_key',
             trackAutomaticEvents: true, optOutTrackingDefault: false);
+        // Set Log Level
+        await Purchases.setLogLevel(LogLevel.debug);
       }
       // Init Revenue Cat
       if (Platform.isAndroid) {
@@ -130,6 +133,7 @@ class Bootstrap {
         ),
       ));
     }, (error, stackTrace) {
+      print(error.toString());
       if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Explicitly Caught Exceptions
         FirebaseCrashlytics.instance.recordError(error, stackTrace);
