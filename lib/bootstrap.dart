@@ -79,10 +79,12 @@ class Bootstrap {
       await dotenv.load(fileName: envFileName);
       // Initialize Firebase
       if (kIsWeb) {
+        // Web = Firebase Options
         await Firebase.initializeApp(
           options: firebaseOptions,
         );
       } else {
+        // Mobile = Firebase .json or .plist
         await Firebase.initializeApp();
       }
       // Initialise TimeZone
@@ -91,22 +93,21 @@ class Bootstrap {
       FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
       // Firebase Dynamic Links
       DynamicLinkUtils().retrieveDynamicLink();
-      // Firebase Crashlytics
-      if (isProduction) {
+      /// Production Only
+      if (flavor == "production") {
+        // Firebase Crashlytics on Global Uncaught Errors
         FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      }
-      // Init MixPanel
-      mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!,
-          trackAutomaticEvents: true, optOutTrackingDefault: false);
-      // Init Revenue Cat
-      await Purchases.setLogLevel(LogLevel.debug);
+        // Init MixPanel
+        mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!, trackAutomaticEvents: true, optOutTrackingDefault: false);
+        // Set Log Level
+        await Purchases.setLogLevel(LogLevel.debug);      
+      } 
+      // Init Revenue Cat      
       if (Platform.isAndroid) {
-        PurchasesConfiguration configuration =
-            PurchasesConfiguration(dotenv.env['REVCAT_GOOGLE_API_KEY']!);
+        PurchasesConfiguration configuration = PurchasesConfiguration(dotenv.env['REVCAT_GOOGLE_API_KEY']!);
         await Purchases.configure(configuration);
       } else if (Platform.isIOS) {
-        PurchasesConfiguration configuration =
-            PurchasesConfiguration(dotenv.env['REVCAT_APPLE_API_KEY']!);
+        PurchasesConfiguration configuration = PurchasesConfiguration(dotenv.env['REVCAT_APPLE_API_KEY']!);
         await Purchases.configure(configuration);
       }
       // Run App
@@ -123,7 +124,10 @@ class Bootstrap {
         ),
       ));
     }, (error, stackTrace) {
-      FirebaseCrashlytics.instance.recordError(error, stackTrace);
+      if (flavor == "production") {
+        // Firebase Crashlytics on Explicitly Caught Exceptions
+        FirebaseCrashlytics.instance.recordError(error, stackTrace);
+      }
     });
   }
 
