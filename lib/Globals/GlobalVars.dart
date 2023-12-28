@@ -14,8 +14,13 @@ import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
-// IS PRODUCTION ?
-bool isProduction = true;
+// Flavor Setup
+enum Flavor {
+  production, 
+  staging,   
+  development,
+}
+Flavor currentFlavor = Flavor.development;
 
 // App Version
 var appVersion = "MAMBA v0.0.19";

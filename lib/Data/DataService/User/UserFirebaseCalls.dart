@@ -28,14 +28,13 @@ class UserFirebaseCalls {
   final batch = FirebaseFirestore.instance.batch();
 
   // Firebase collections
-  String users = isProduction ? 'Users' : '7777 Users';
-  String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
+  String users = 'Users';
+  String nicknames = 'Nicknames';
+  String brands = 'Brands';
+  String conversations = 'Conversations';
+  String purchases = 'Purchases';  
 
   // Authentication Services
-
   Future<User?> getCurrentUser() async {
     User? currentUser;
     currentUser = _auth.currentUser;
@@ -68,12 +67,12 @@ class UserFirebaseCalls {
     if (error) return -1;
     if (authResult == null) {
       return -1;
-    }
-    if (authResult.user != null && isProduction) {
-      if (authResult.user!.emailVerified) {
-        return 0;
-      } else {
+    }    
+    if (authResult.user != null) {
+      if (currentFlavor != Flavor.development && authResult.user!.emailVerified == false) {
         return -2;
+      } else {
+        return 0;
       }
     } else {
       return 0;

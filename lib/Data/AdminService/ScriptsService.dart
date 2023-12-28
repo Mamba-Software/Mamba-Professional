@@ -39,23 +39,22 @@ class ScriptsDatabaseService {
   final _purchaseDataService = PurchaseDataService();
 
   // Firebase collections
-  String users = isProduction ? 'Users' : '7777 Users';
-  String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String events = isProduction ? 'Events' : '7777 Events';
-  String locations = isProduction ? 'Locations' : '7777 Locations';
-  String groupOfQuestions =
-      isProduction ? 'GroupOfQuestions' : '7777 GroupOfQuestions';
-  String questions = isProduction ? 'Questions' : '7777 Questions';
-  String answers = isProduction ? 'Answers' : '7777 Answers';
-  String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String messages = isProduction ? 'Messages' : '7777 Messages';
-  String errors = isProduction ? 'Errors' : '7777 Errors';
-  String requests = isProduction ? 'Requests' : '7777 Requests';
-  String notifications = isProduction ? 'Notifications' : '7777 Notifications';
-  String rooms = isProduction ? 'Rooms' : '7777 Rooms';
-  String library = isProduction ? 'Library' : 'Library';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
+  String users = 'Users';
+  String nicknames = 'Nicknames';
+  String brands = 'Brands';
+  String events = 'Events';
+  String locations = 'Locations';
+  String groupOfQuestions = 'GroupOfQuestions';
+  String questions = 'Questions';
+  String answers = 'Answers';
+  String conversations = 'Conversations';
+  String messages = 'Messages';
+  String errors = 'Errors';
+  String requests = 'Requests';
+  String notifications = 'Notifications';
+  String rooms = 'Rooms';
+  String library = 'Library';
+  String purchases = 'Purchases';
 
   Future<bool> migrateUserDataFebruary6th() async {
     try {

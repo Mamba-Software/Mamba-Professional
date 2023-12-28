@@ -171,7 +171,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     mixpanel!.getPeople().set("language", currentUser.idioma!);
     mixpanel!.getPeople().set("isPrivate", true);
     mixpanel!.getPeople().set("isTrainer", true);
-    mixpanel!.getPeople().set("isProduction", isProduction);
+    mixpanel!.getPeople().set("isProduction", true);
   }
 
   int calculateAge(DateTime birthDate, DateTime currentDate) {

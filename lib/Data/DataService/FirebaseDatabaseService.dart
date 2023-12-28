@@ -37,58 +37,31 @@ class FirebaseDatabaseService {
   final batch = FirebaseFirestore.instance.batch();
 
   // Firebase collections
-  String users = isProduction ? 'Users' : '7777 Users';
-  String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String events = isProduction ? 'Events' : '7777 Events';
-  String locations = isProduction ? 'Locations' : '7777 Locations';
-  String groupOfQuestions =
-      isProduction ? 'GroupOfQuestions' : '7777 GroupOfQuestions';
-  String questions = isProduction ? 'Questions' : '7777 Questions';
-  String answers = isProduction ? 'Answers' : '7777 Answers';
-  String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String messages = isProduction ? 'Messages' : '7777 Messages';
-  String errors = isProduction ? 'Errors' : '7777 Errors';
-  String requests = isProduction ? 'Requests' : '7777 Requests';
-  String notifications = isProduction ? 'Notifications' : '7777 Notifications';
-  String rooms = isProduction ? 'Rooms' : '7777 Rooms';
-  String promotions = isProduction ? 'Promotions' : '7777 Promotions';
-  String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
+  String users = 'Users';
+  String nicknames = 'Nicknames';
+  String brands = 'Brands';
+  String events = 'Events';
+  String locations = 'Locations';
+  String groupOfQuestions = 'GroupOfQuestions';
+  String questions = 'Questions';
+  String answers = 'Answers';
+  String conversations = 'Conversations';
+  String messages = 'Messages';
+  String errors = 'Errors';
+  String requests = 'Requests';
+  String notifications = 'Notifications';
+  String rooms = 'Rooms';
+  String library = 'Library';
+  String purchases = 'Purchases';
+  String promotions = 'Promotions';
+  String subscriptions = 'Subscriptions';
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
     return {
       'uid': id,
       'isMessageRead': isMessageRead,
     };
-  }
-
-  // Authentication Services
-  Future<int> signIn(String email, String password) async {
-    bool error = false;
-    UserCredential? authResult;
-    try {
-      authResult = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-    } catch (e) {
-      error = true;
-    }
-    if (error) return -1;
-    if (authResult == null) return -1;
-    if (authResult.user != null && isProduction) {
-      if (authResult.user!.emailVerified) {
-        return 0;
-      } else {
-        return -2;
-      }
-    } else {
-      return 0;
-    }
-  }
-
-  Future<void> signOut() async {
-    return await _auth.signOut();
-  }
+  }  
 
   Future<int> resetPassword(String email) async {
     try {
@@ -2446,10 +2419,7 @@ class FirebaseDatabaseService {
   Future<int> addEventRecurrent(Event event, List<String> bonos,
       List<String> trainers, ReceivedNotification receivedNotification) async {
     String cloudFunction = 'CreateRecurrentEvent';
-    try {
-      if (!isProduction) {
-        cloudFunction = 'zzzzCreateRecurrentEvent';
-      }
+    try {      
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'europe-west1')
               .httpsCallable(cloudFunction);

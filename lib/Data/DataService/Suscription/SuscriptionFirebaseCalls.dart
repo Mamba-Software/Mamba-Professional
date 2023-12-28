@@ -1,28 +1,23 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 
 // Brand Firebase Service Class. All calls to Firebase are in this class.
 class SuscriptionFirebaseCalls {
   // Firebase Instances
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
 
   // Firebase collections
-  String library = isProduction ? 'Library' : 'Library';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String users = isProduction ? 'Users' : '7777 Users';
-  String events = isProduction ? 'Events' : '7777 Events';
-  String locations = isProduction ? 'Locations' : '7777 Locations';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
-  String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
-  String subscriptionsRevenueCat = isProduction ? '111testSubs' : '111testSubs';
+  String users = 'Users';
+  String brands = 'Brands';
+  String events = 'Events';
+  String locations = 'Locations';
+  String library = 'Library';
+  String purchases = 'Purchases';
+  String subscriptions = 'Subscriptions';
+  String subscriptionsRevenueCat = '111testSubs';
 
   Future<Subscription> getBrandSubscription(String adminAppUserId) async {
     print('subscription');

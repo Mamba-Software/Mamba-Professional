@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -8,26 +6,23 @@ import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:uuid/uuid.dart';
 
 // Firebase Purchase Service Class. All calls to Firebase are in this class.
 class PurchaseFirebaseCalls {
 
   // Firebase Instances
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
 
-  // Firebase collections
-  String users = isProduction ? 'Users' : '7777 Users';
-  String events = isProduction ? 'Events' : '7777 Events';
-  String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
-  String library = isProduction ? 'Library' : 'Library';
+  // Firebase collections  
+  String users = 'Users';
+  String nicknames = 'Nicknames';
+  String brands = 'Brands';
+  String events = 'Events';
+  String conversations = 'Conversations';
+  String library = 'Library';
+  String purchases = 'Purchases';
 
   // Check Data
   Future<bool> checkIfEventInPurchase(String purchaseId, String eventId) async {

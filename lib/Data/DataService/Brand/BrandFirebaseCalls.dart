@@ -30,14 +30,14 @@ class BrandFirebaseCalls {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
 
-  // Firebase collections
-  String library = isProduction ? 'Library' : 'Library';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String users = isProduction ? 'Users' : '7777 Users';
-  String events = isProduction ? 'Events' : '7777 Events';
-  String locations = isProduction ? 'Locations' : '7777 Locations';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
-  String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
+  // Firebase collections 
+  String users = 'Users';  
+  String brands = 'Brands';
+  String events = 'Events';
+  String locations = 'Locations';
+  String library = 'Library';
+  String purchases = 'Purchases';
+  String subscriptions = 'Subscriptions';
 
   //Utils
 
@@ -1233,10 +1233,6 @@ class BrandFirebaseCalls {
         .collection("Bonos")
         .doc(bonoId)
         .delete();
-
-    if (!isProduction) {
-      cloudFunction = 'zzzzDeleteEventBono';
-    }
     final HttpsCallable callable =
         FirebaseFunctions.instanceFor(region: 'europe-west1')
             .httpsCallable(cloudFunction);

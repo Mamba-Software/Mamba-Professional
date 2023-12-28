@@ -46,7 +46,7 @@ class _ChatPageState extends State<ChatPage> {
   bool blockedUser = false;
   TopSnackBarDef topSnackBarComp = TopSnackBarDef();
   var roomActual;
-  String rooms = isProduction ? 'Rooms' : '7777 Rooms';
+  String rooms = 'Rooms';
 
   @override
   void initState() {

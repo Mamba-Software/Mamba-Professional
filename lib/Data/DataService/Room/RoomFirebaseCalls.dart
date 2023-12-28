@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 
 // Firebase Room Service Class. All calls to Firebase are in this class.
 class RoomFirebaseCalls {
@@ -9,7 +8,7 @@ class RoomFirebaseCalls {
   final batch = FirebaseFirestore.instance.batch();
 
   // Firebase collections
-  String rooms = isProduction ? 'Rooms' : '7777 Rooms';
+  String rooms = 'Rooms';
 
   //Update
 

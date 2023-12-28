@@ -60,11 +60,10 @@ Future<void> backgroundLocalMessageHandler(
 // Bootstrap
 class Bootstrap {
   // Vars
-  final String flavor;
   final FirebaseOptions? firebaseOptions;
 
   // Init
-  Bootstrap({required this.flavor, required this.firebaseOptions}) {
+  Bootstrap({required this.firebaseOptions}) {
     bootstrap();
   }
 
@@ -75,7 +74,7 @@ class Bootstrap {
       WidgetsFlutterBinding.ensureInitialized();
       // Load Env Variables
       print("Loading Environment Variables...");
-      String envFileName = ".env.$flavor";
+      String envFileName = ".env.${currentFlavor.toString()}";
       await dotenv.load(fileName: envFileName);
       // Initialize Firebase
       if (kIsWeb) {
@@ -93,21 +92,25 @@ class Bootstrap {
       FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
       // Firebase Dynamic Links
       DynamicLinkUtils().retrieveDynamicLink();
-      /// Production Only
-      if (flavor == "production") {
+
+      /// Production and Staging Only
+      if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Global Uncaught Errors
         FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
         // Init MixPanel
-        mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!, trackAutomaticEvents: true, optOutTrackingDefault: false);
+        mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!,
+            trackAutomaticEvents: true, optOutTrackingDefault: false);
         // Set Log Level
-        await Purchases.setLogLevel(LogLevel.debug);      
-      } 
-      // Init Revenue Cat      
+        await Purchases.setLogLevel(LogLevel.debug);
+      }
+      // Init Revenue Cat
       if (Platform.isAndroid) {
-        PurchasesConfiguration configuration = PurchasesConfiguration(dotenv.env['REVCAT_GOOGLE_API_KEY']!);
+        PurchasesConfiguration configuration =
+            PurchasesConfiguration(dotenv.env['REVCAT_GOOGLE_API_KEY']!);
         await Purchases.configure(configuration);
       } else if (Platform.isIOS) {
-        PurchasesConfiguration configuration = PurchasesConfiguration(dotenv.env['REVCAT_APPLE_API_KEY']!);
+        PurchasesConfiguration configuration =
+            PurchasesConfiguration(dotenv.env['REVCAT_APPLE_API_KEY']!);
         await Purchases.configure(configuration);
       }
       // Run App
@@ -120,11 +123,11 @@ class Bootstrap {
               create: (_) => FirebaseAnalyticsProvider()),
         ],
         child: Mamba(
-          isDevelopment: flavor == "development",
+          isDevelopment: currentFlavor == Flavor.development,
         ),
       ));
     }, (error, stackTrace) {
-      if (flavor == "production") {
+      if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Explicitly Caught Exceptions
         FirebaseCrashlytics.instance.recordError(error, stackTrace);
       }
