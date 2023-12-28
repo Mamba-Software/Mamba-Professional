@@ -92,7 +92,6 @@ class Bootstrap {
       FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
       // Firebase Dynamic Links
       DynamicLinkUtils().retrieveDynamicLink();
-
       /// Production and Staging Only
       if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Global Uncaught Errors
@@ -102,6 +101,10 @@ class Bootstrap {
             trackAutomaticEvents: true, optOutTrackingDefault: false);
         // Set Log Level
         await Purchases.setLogLevel(LogLevel.debug);
+      } else {
+        // Init MixPanel
+        mixpanel = await Mixpanel.init('your_dummy_or_test_key',
+            trackAutomaticEvents: true, optOutTrackingDefault: false);
       }
       // Init Revenue Cat
       if (Platform.isAndroid) {
