@@ -93,19 +93,13 @@ class Bootstrap {
       /// Production and Staging Only
       if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Global Uncaught Errors
-        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-        // Init MixPanel
-        mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!,
-            trackAutomaticEvents: true, optOutTrackingDefault: false);
+        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;        
         // Set Log Level
         await Purchases.setLogLevel(LogLevel.info);
-      } else {
-        // Init MixPanel
-        mixpanel = await Mixpanel.init('your_dummy_or_test_key',
+      } 
+      // Init MixPanel
+      mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!,
             trackAutomaticEvents: true, optOutTrackingDefault: false);
-        // Set Log Level
-        await Purchases.setLogLevel(LogLevel.debug);
-      }
       // Init Revenue Cat
       if (Platform.isAndroid) {
         PurchasesConfiguration configuration =

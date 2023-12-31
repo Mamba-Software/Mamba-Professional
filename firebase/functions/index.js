@@ -44,179 +44,8 @@ exports.scheduledDailyFunction = functions
 .schedule('every day 7:00')
 .timeZone('Europe/Madrid')
 .onRun( async (context) => {
-      
-      /* For each User get Events of Today, commented right now to test de Storage Backup!j
-      let today = new Date();
-      const usersSnapshot = await db.collection("Users").get();
-      for (var i in usersSnapshot.docs) {
-        const userId = usersSnapshot.docs[i].id;
-        const userDoc = usersSnapshot.docs[i].data();
-        functions.logger.log(
-          "User with Id",
-          userId,
-          "and Name:",
-          userDoc.name,
-        );
-        //JMF NOTIFICATIONS TO READ
-        if(userDoc.isTrainer == true) {
-        const notificationsUnreadUser = await db
-                .collection("Users")
-                .doc(userId)
-                .collection("Notifications")
-                .where('isRead', '==', false)
-                .get();
-            for (var j in notificationsUnreadUser.docs) {
-                      await db.collection('Users').doc(userId).collection("Notifications").doc(notificationsUnreadUser.docs[j].id).update({ isRead: true });
-            }
-        }
-        //JMF NOTIFICATIONS TO READ
-
-        // Get the Users events today
-        const userEventsSnapshot = await db
-        .collection("Users")
-        .doc(userId)
-        .collection("Events")
-        .where('year', '==', today.getFullYear().toString())
-        .where('month', '==', (today.getMonth()+1).toString())
-        .where('day', '==', today.getDate().toString())
-        .get();
-        functions.logger.log(
-          "User Events Num =",
-          userEventsSnapshot.size,
-          );
-        // Get The Time of the First Event
-        let firstHour = 100;
-        let firstMinute = 100;
-        let firstEventDoc;
-        for (var i in userEventsSnapshot.docs) {
-          const eventDoc = userEventsSnapshot.docs[i].data();
-          if (eventDoc.hour < firstHour) {
-            firstEventDoc = eventDoc;
-          } else if (eventDoc.hour == firstHour) {
-            if (eventDoc.minute < firstMinute) {
-              firstEventDoc = eventDoc;
-            }
-          }
-        }
-        // Send Notification if there is an Event Today
-        if (userEventsSnapshot.size > 0) {
-          if (userEventsSnapshot.size == 1) {
-            functions.logger.log(
-              "One Event this User"
-              );
-                // Send Good Morning Notification
-                var payload = 0;
-                if (userDoc.isTrainer == true) {
-                  functions.logger.log(
-                    "isTrainer"
-                    );
-                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                  if (userDoc.idioma == "es") {
-                    payload = {
-                      notification: {
-                        title: "Buenos días "+userDoc.firstName + " ☀️",
-                        body: "⏰ Hoy tienes 1 sesión prevista. Empiezas a las "+firstEventDoc.hour+":"+minutes,
-                      },
-                      data: {
-                        route: "SplashScreen",
-                      },
-                    };
-                  } else {
-                    payload = {
-                      notification: {
-                        title: "Bon dia "+userDoc.firstName + " ☀️",
-                        body: "⏰ Avui tens 1 sessió prevista. Comences a les "+firstEventDoc.hour+":"+minutes,
-                      },
-                      data: {
-                        route: "SplashScreen",
-                      },
-                    };
-                  }
-                } else {
-                  functions.logger.log(
-                    "isClient"
-                    );
-                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                  if (userDoc.idioma == "es") {
-                    payload = {
-                      notification: {
-                        title: "Buenos días "+userDoc.firstName+ " ☀️",
-                        body: "⚠️ ¡Recuerda! Hoy a las "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
-                      },
-                      data: {
-                        route: "SplashScreen",
-                      },
-                    };
-                  } else {
-                    payload = {
-                      notification: {
-                        title: "Bon dia "+userDoc.firstName+ " ☀️",
-                        body: "⚠️ Recorda! Avui a les "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
-                      },
-                      data: {
-                        route: "SplashScreen",
-                      },
-                    };
-                  }
-                }
-                functions.logger.log(
-                  "Payload",
-                  payload
-                  );
-                var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-                functions.logger.log(
-                  "Response",
-                  response
-                  );
-              } else {
-                functions.logger.log(
-                  "More Than Event this User"
-                  );
-                // Send Good Morning Notification
-                var payload = 0;
-                if (userDoc.isTrainer == true) {
-                  functions.logger.log(
-                  "isTrainer"
-                  );
-                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                  if (userDoc.idioma == "es") {
-                  payload = {
-                    notification: {
-                      title: "Buenos días "+userDoc.firstName+ " ☀️",
-                      body: "⏰ Hoy tienes "+userEventsSnapshot.size+" sesiones previstas. Empiezas a las "+firstEventDoc.hour+":"+minutes,
-                    },
-                    data: {
-                      route: "SplashScreen0",
-                    },
-                  };
-                } else {
-                  payload = {
-                    notification: {
-                      title: "Bon dia "+userDoc.firstName+ " ☀️",
-                      body: "⏰ Avui tens "+userEventsSnapshot.size+" sessions previstes. Comences a les "+firstEventDoc.hour+":"+minutes,
-                    },
-                    data: {
-                      route: "SplashScreen0",
-                    },
-                  };
-                }
-                functions.logger.log(
-                  "Payload",
-                  payload
-                  );
-                var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-                functions.logger.log(
-                  "Response",
-                  response
-                  );
-              }
-            }
-        }
-      }
-      */
-
       // Check if today is Monday, then backup the Firebase data only if on PRODUCTION      
-      let date = new Date();          
+      let date = new Date();                   
       if (date.getDay() === 1 && environment === 'mamba-style') {      
           console.log("It's Monday, it's time for ... AUTOMATIC BACKUP");
           console.log("Environment: "+environment);
@@ -236,19 +65,25 @@ exports.scheduledDailyFunction = functions
           } catch (err) {
               console.error("Firestore Backup Error:", err);
               throw new Error('Firestore Export operation failed');
-          }
+          }          
+          /*
+          // TODO: Storage backup commented as it needs to be more efficient and incremental, in the mean time we do monthly manual transfers.
           // Storage Backup
           const sourceBucketName = envConfig.storageBucket;
-          const destinationBucketName = envConfig.storageBucketBackup;          
+          const destinationBucketName = envConfig.storageBucketBackup;
+          console.log("sourceBucketName: "+ envConfig.storageBucket);
+          console.log("destinationBucketName: "+ envConfig.storageBucketBackup);
           try {
               const [files] = await storage.bucket(sourceBucketName).getFiles();
-              for (const file of files) {
-                  await storage.bucket(sourceBucketName).file(file.name).copy(storage.bucket(destinationBucketName).file(file.name));
-              }
+              const copyPromises = files.map(file => 
+                  storage.bucket(sourceBucketName).file(file.name).copy(storage.bucket(destinationBucketName).file(file.name))
+              );
+              await Promise.all(copyPromises);
               console.log('Storage Backup completed successfully');
           } catch (error) {
               console.error('Storage Backup Error:', error);
           }
+          */
       }
     });
 
