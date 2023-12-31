@@ -208,11 +208,14 @@ class _PayWallState extends State<PayWall> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   getAll(),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  /*
                   promotionGet(),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Divider(
                       color: Theme.of(context).dividerColor, thickness: 1.5),
+                      */
                   buildContactUsContainer(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 ],
               ),
             ),
@@ -454,7 +457,7 @@ class _PayWallState extends State<PayWall> {
                 Icons.leaderboard_outlined,
                 AppLocalizations.of(context)!.statsPayWallHeader,
                 AppLocalizations.of(context)!.statsPayWallText),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             TextButton(
               onPressed: () async {
                 FocusScopeNode currentFocus = FocusScope.of(context);
@@ -474,7 +477,7 @@ class _PayWallState extends State<PayWall> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 width: MediaQuery.of(context).size.width * 0.90,
-                height: MediaQuery.of(context).size.height * 0.05,
+                height: MediaQuery.of(context).size.height * 0.075,
                 child: Center(
                     child: Text(
                   AppLocalizations.of(context)!.moreInfoInWeb,
@@ -484,7 +487,7 @@ class _PayWallState extends State<PayWall> {
                 )),
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             Divider(color: Theme.of(context).dividerColor, thickness: 1.5),
           ],
         ),
@@ -591,8 +594,7 @@ class _PayWallState extends State<PayWall> {
                           ? Text(
                               subscriptionList[index].package == null
                                   ? subscriptionList[index].descriptionAdapted!
-                                  : '${subscriptionList[index].priceString!} ${subscriptionList[index]
-                                          .descriptionAdapted!}',
+                                  : '${subscriptionList[index].priceString!} ${subscriptionList[index].descriptionAdapted!}',
                               style: Theme.of(context)
                                   .textTheme
                                   .displayLarge
@@ -603,8 +605,7 @@ class _PayWallState extends State<PayWall> {
                           : Text(
                               subscriptionList[index].package == null
                                   ? subscriptionList[index].descriptionAdapted!
-                                  : '${subscriptionList[index].priceString!} ${subscriptionList[index]
-                                          .descriptionAdapted!}',
+                                  : '${subscriptionList[index].priceString!} ${subscriptionList[index].descriptionAdapted!}',
                               style: Theme.of(context)
                                   .textTheme
                                   .displayLarge
