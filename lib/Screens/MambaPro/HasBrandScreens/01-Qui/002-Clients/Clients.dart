@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
@@ -286,8 +287,9 @@ class _Clients extends State<Clients> {
                                           ?.copyWith(color: AppColors.white),
                                       textAlign: TextAlign.left,
                                       decoration: InputDecoration(
-                                        hintStyle:
-                                            Theme.of(context).textTheme.bodySmall,
+                                        hintStyle: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
                                         hintText: AppLocalizations.of(context)!
                                             .search,
                                         enabledBorder: const OutlineInputBorder(
@@ -364,7 +366,8 @@ class _Clients extends State<Clients> {
                                         },
                                         splashRadius: 20,
                                         splashColor: Theme.of(context)
-                                            .colorScheme.background, // Splash color
+                                            .colorScheme
+                                            .background, // Splash color
                                         padding: EdgeInsets.zero,
                                         alignment: Alignment.center,
                                         icon: Icon(
@@ -387,7 +390,8 @@ class _Clients extends State<Clients> {
                                                 .transparent, // Button color
                                         child: InkWell(
                                           splashColor: Theme.of(context)
-                                              .colorScheme.background, // Splash color
+                                              .colorScheme
+                                              .background, // Splash color
                                           onTap: () async {
                                             mixpanel!.track(
                                                 'brand_clients_filter_button');
@@ -807,191 +811,259 @@ class _Clients extends State<Clients> {
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 10)),
             state is ClientsSessionsLoaded
-                ? SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        Usuario user = state.usersNow[index];
-                        String dateTimeNow = DateTimeUtils()
-                            .formatDateTimeToStringDDMMYYYY(DateTime.now(),
-                                Localizations.localeOf(context).languageCode);
-                        DateTime dateJoined = DateTimeUtils()
-                            .formatStringToDateTimeDDMMYY(
-                                user.dateJoined ?? dateTimeNow,
-                                Localizations.localeOf(context).languageCode);
-                        return ListTile(
-                          leading: CircularImage(
-                            size: MediaQuery.of(context).size.width * 0.15,
-                            image: user.imageUrl,
-                            color: Theme.of(context).primaryColor,
-                            borderWidth: 1.0,
-                          ),
-                          title: Text(
-                            user.name!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left,
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.lastEventAt == null
-                                    ? AppLocalizations.of(context)!
-                                        .lastActiveIn(DateTimeUtils()
-                                            .formatDateTimeToStringMMMYYYY(
-                                                dateJoined,
-                                                Localizations.localeOf(context)
-                                                    .languageCode))
-                                    : AppLocalizations.of(context)!
-                                        .lastActiveIn(DateTimeUtils()
-                                            .formatDateTimeToStringMMMYYYY(
-                                                user.lastEventAt!.toDate(),
-                                                Localizations.localeOf(context)
-                                                    .languageCode)),
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                          trailing: user.id! == currentUser.id
-                              ? IconButton(
-                                  icon: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Theme.of(context).primaryColor,
-                                    size: MediaQuery.of(context).size.height *
-                                        0.03,
-                                  ),
-                                  alignment: Alignment.centerRight,
-                                  padding: const EdgeInsets.all(0),
-                                  onPressed: false ? () {} : null,
-                                )
-                              : user.sessions == null
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(0),
-                                      child: Container(
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                0.04,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.04,
-                                        margin: EdgeInsets.only(
-                                            right: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.02),
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .scaffoldBackgroundColor,
-                                            shape: BoxShape.circle),
-                                        child: CircularProgressIndicator(
+                ? state.allUsers.isNotEmpty
+                    ? SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            Usuario user = state.usersNow[index];
+                            String dateTimeNow = DateTimeUtils()
+                                .formatDateTimeToStringDDMMYYYY(
+                                    DateTime.now(),
+                                    Localizations.localeOf(context)
+                                        .languageCode);
+                            DateTime dateJoined = DateTimeUtils()
+                                .formatStringToDateTimeDDMMYY(
+                                    user.dateJoined ?? dateTimeNow,
+                                    Localizations.localeOf(context)
+                                        .languageCode);
+                            if (state.allUsers.isNotEmpty) {
+                              return ListTile(
+                                leading: CircularImage(
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.15,
+                                  image: user.imageUrl,
+                                  color: Theme.of(context).primaryColor,
+                                  borderWidth: 1.0,
+                                ),
+                                title: Text(
+                                  user.name!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.left,
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      user.lastEventAt == null
+                                          ? AppLocalizations.of(context)!
+                                              .lastActiveIn(DateTimeUtils()
+                                                  .formatDateTimeToStringMMMYYYY(
+                                                      dateJoined,
+                                                      Localizations.localeOf(
+                                                              context)
+                                                          .languageCode))
+                                          : AppLocalizations.of(context)!
+                                              .lastActiveIn(DateTimeUtils()
+                                                  .formatDateTimeToStringMMMYYYY(
+                                                      user.lastEventAt!
+                                                          .toDate(),
+                                                      Localizations.localeOf(
+                                                              context)
+                                                          .languageCode)),
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                                trailing: user.id! == currentUser.id
+                                    ? IconButton(
+                                        icon: Icon(
+                                          Icons.arrow_forward_ios,
                                           color: Theme.of(context).primaryColor,
-                                          strokeWidth: 1.5,
+                                          size: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
                                         ),
-                                      ),
-                                    )
-                                  : user.sessions == '-1'
-                                      ? IconButton(
-                                          icon: Icon(
-                                            Icons.chat_outlined,
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.03,
-                                          ),
-                                          alignment: Alignment.centerRight,
-                                          padding: const EdgeInsets.all(0),
-                                          onPressed: () async {
-                                            mixpanel!.track(
-                                                'brand_clients_chat_button');
-                                            types.User otherUser = types.User(
-                                              firstName: user.firstName,
-                                              lastName: user.lastName,
-                                              id: user.id!,
-                                              // UID from Firebase Authentication
-                                              imageUrl: user.imageUrl,
-                                            );
-                                            final room = await FirebaseChatCore
-                                                .instance
-                                                .createRoom(otherUser,
-                                                    metadata: {
-                                                  "trainer${user.id!}":
-                                                      user.isTrainer,
-                                                  "trainer${currentUser.id!}":
-                                                      currentUser.isTrainer,
-                                                  "active${user.id!}": false,
-                                                  "active${currentUser.id!}":
-                                                      true,
-                                                });
-
-                                            bool? deleteRoom =
-                                                await Navigator.push(
-                                              context,
-                                              CupertinoPageRoute<bool>(
-                                                  builder: (context) =>
-                                                      ChatPage(room: room)),
-                                            ).whenComplete(() async {
-                                              room.metadata!["active${currentUser.id!}"] = false;
-                                              _roomDataService.updateRoom(
-                                                  room.id, room.metadata!);
-                                            });
-                                            if (!deleteRoom!) {
-                                              _roomDataService
-                                                  .deleteRoom(room.id);
-                                              mixpanel!.track(
-                                                  'brand_clients_chat_empty');
-                                            }
-                                          },
-                                        )
-                                      : Padding(
-                                          padding: const EdgeInsets.all(0),
-                                          child: Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.12,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.08,
-                                            decoration: BoxDecoration(
+                                        alignment: Alignment.centerRight,
+                                        padding: const EdgeInsets.all(0),
+                                        onPressed: false ? () {} : null,
+                                      )
+                                    : user.sessions == null
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(0),
+                                            child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.04,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.04,
+                                              margin: EdgeInsets.only(
+                                                  right: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.02),
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .scaffoldBackgroundColor,
+                                                  shape: BoxShape.circle),
+                                              child: CircularProgressIndicator(
                                                 color: Theme.of(context)
-                                                    .scaffoldBackgroundColor,
-                                                shape: BoxShape.circle),
-                                            child: buildPlacesLeftWidget(
-                                                int.parse(user.sessions!)),
-                                          ),
-                                        ),
-                          onTap: () async {
-                            mixpanel!.track('brand_clients_profile_view');
-                            var result = await Navigator.push(
-                                context,
-                                CupertinoPageRoute<bool?>(
-                                    builder: (context) => ProfileViewUser(
-                                          userID: user.id!,
-                                          viewOnly: false,
-                                        )));
-                            if (result != null && result) {
-                              context.read<ClientSessionsCubit>().loadList();
-                            } else {
-                              context.read<ClientSessionsCubit>().updateUser(
-                                  user.id!,
-                                  state.usersNow,
-                                  state.allUsers,
-                                  state.filteredUsers,
-                                  state.searchedUsers,
-                                  state.i,
-                                  state.finished);
-                            }
+                                                    .primaryColor,
+                                                strokeWidth: 1.5,
+                                              ),
+                                            ),
+                                          )
+                                        : user.sessions == '-1'
+                                            ? IconButton(
+                                                icon: Icon(
+                                                  Icons.chat_outlined,
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.03,
+                                                ),
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                padding:
+                                                    const EdgeInsets.all(0),
+                                                onPressed: () async {
+                                                  mixpanel!.track(
+                                                      'brand_clients_chat_button');
+                                                  types.User otherUser =
+                                                      types.User(
+                                                    firstName: user.firstName,
+                                                    lastName: user.lastName,
+                                                    id: user.id!,
+                                                    // UID from Firebase Authentication
+                                                    imageUrl: user.imageUrl,
+                                                  );
+                                                  final room =
+                                                      await FirebaseChatCore
+                                                          .instance
+                                                          .createRoom(otherUser,
+                                                              metadata: {
+                                                        "trainer${user.id!}":
+                                                            user.isTrainer,
+                                                        "trainer${currentUser.id!}":
+                                                            currentUser
+                                                                .isTrainer,
+                                                        "active${user.id!}":
+                                                            false,
+                                                        "active${currentUser.id!}":
+                                                            true,
+                                                      });
+
+                                                  bool? deleteRoom =
+                                                      await Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute<bool>(
+                                                        builder: (context) =>
+                                                            ChatPage(
+                                                                room: room)),
+                                                  ).whenComplete(() async {
+                                                    room.metadata![
+                                                            "active${currentUser.id!}"] =
+                                                        false;
+                                                    _roomDataService.updateRoom(
+                                                        room.id,
+                                                        room.metadata!);
+                                                  });
+                                                  if (!deleteRoom!) {
+                                                    _roomDataService
+                                                        .deleteRoom(room.id);
+                                                    mixpanel!.track(
+                                                        'brand_clients_chat_empty');
+                                                  }
+                                                },
+                                              )
+                                            : Padding(
+                                                padding:
+                                                    const EdgeInsets.all(0),
+                                                child: Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.12,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.08,
+                                                  decoration: BoxDecoration(
+                                                      color: Theme.of(context)
+                                                          .scaffoldBackgroundColor,
+                                                      shape: BoxShape.circle),
+                                                  child: buildPlacesLeftWidget(
+                                                      int.parse(
+                                                          user.sessions!)),
+                                                ),
+                                              ),
+                                onTap: () async {
+                                  mixpanel!.track('brand_clients_profile_view');
+                                  var result = await Navigator.push(
+                                      context,
+                                      CupertinoPageRoute<bool?>(
+                                          builder: (context) => ProfileViewUser(
+                                                userID: user.id!,
+                                                viewOnly: false,
+                                              )));
+                                  if (result != null && result) {
+                                    context
+                                        .read<ClientSessionsCubit>()
+                                        .loadList();
+                                  } else {
+                                    context
+                                        .read<ClientSessionsCubit>()
+                                        .updateUser(
+                                            user.id!,
+                                            state.usersNow,
+                                            state.allUsers,
+                                            state.filteredUsers,
+                                            state.searchedUsers,
+                                            state.i,
+                                            state.finished);
+                                  }
+                                },
+                              );
+                            } else {}
                           },
-                        );
-                      },
-                      childCount: state.usersNow.length, // 1000 list items
-                    ),
-                  )
+                          childCount: state.usersNow.length, // 1000 list items
+                        ),
+                      )
+                    : SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.25),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.3,
+                                child: Image.asset(Constants.emptyCalendar)),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.005),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * 0.2),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.clients.toLowerCase()}",
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                 : SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
@@ -1166,8 +1238,9 @@ class _Clients extends State<Clients> {
                                 ),
                                 Text(
                                     "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.client}",
-                                    style:
-                                        Theme.of(context).textTheme.displaySmall,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall,
                                     textAlign: TextAlign.right),
                               ],
                             ),

@@ -183,7 +183,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
     allUsers = await _eventDataService.getEventUsers(event!.id!);
     List<Usuario> trainers = [];
     List<Usuario> clients = [];
-    bool isJoined = false;
+    bool isJoinedTemp = false;
     for (var i=0; i < allUsers.length; i++) {
       var user = allUsers[i];
       if (user.isTrainer!) {
@@ -192,7 +192,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
         if (currentUser.id! == user.id!) {
           // User has joined the event
           clients.insert(0, user);
-          isJoined = true;
+          isJoinedTemp = true;
           double? feedbackClient = await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
           eventClientsFeedback.insert(0, feedbackClient);
         } else {
@@ -208,7 +208,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
         placesLeft = members - eventClients.length;
         eventTrainers = trainers;
         eventClients = clients;
-        isJoined = isJoined;
+        isJoined = isJoinedTemp;
       });
     }
   }
