@@ -1,9 +1,18 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Specific rules for the 'Users' collection
+    match /Users/{userId} {
+      allow read;  // Allows read access to all users
+      allow write; // Allows write access to all users
+      allow delete: if request.auth.uid != null; // Only authenticated users can delete
+    }
+
+    // General rules for all other documents
     match /{document=**} {
-      allow read, write, delete: if
-          request.time < timestamp.date(2024, 2, 17);
+      allow read;  // Public read access
+      allow write, delete: if request.auth.uid != null; // Authenticated users only
     }
   }
 }
