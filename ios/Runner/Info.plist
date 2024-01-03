@@ -97,5 +97,7 @@
 	<false/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app requires continuous access to your location to accurately set and update the location of your fitness brand, ensuring clients can find your services easily. Constant location access allows for real-time updates of your location, providing potential clients with the most current information about your proximity, thereby enhancing their ability to connect with you for fitness sessions</string>
 </dict>
 </plist>
