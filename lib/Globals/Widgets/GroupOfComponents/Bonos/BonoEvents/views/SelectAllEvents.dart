@@ -1,29 +1,19 @@
-import 'package:animated_snack_bar/animated_snack_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoEvents/cubit/BonoEventsCubit.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import '../../../../../../Events/crud_events/models/Event.dart';
 
 
 
@@ -36,8 +26,7 @@ class SelectAllEvents extends StatelessWidget {
   Purchase purchase;
 
   SelectAllEvents(
-      {Key? key, required this.parentContext, required this.selectedEvents, required this.allEvents, required this.brandId, required this.purchase})
-      : super(key: key);
+      {super.key, required this.parentContext, required this.selectedEvents, required this.allEvents, required this.brandId, required this.purchase});
 
   // Search Controller
   bool searchClicked = false;
@@ -132,13 +121,13 @@ class SelectAllEvents extends StatelessWidget {
                         style: Theme
                             .of(context)
                             .textTheme
-                            .bodyText2,
+                            .bodyMedium,
                         textAlign: TextAlign.left,
                         decoration: InputDecoration(
                           hintStyle: Theme
                               .of(context)
                               .textTheme
-                              .caption,
+                              .bodySmall,
                           hintText: AppLocalizations.of(context)!.search,
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -186,7 +175,7 @@ class SelectAllEvents extends StatelessWidget {
                                 .width * 0.05,),
                             color: Theme
                                 .of(context)
-                                .backgroundColor,
+                                .colorScheme.background,
                             height: MediaQuery
                                 .of(context)
                                 .size
@@ -207,11 +196,11 @@ class SelectAllEvents extends StatelessWidget {
                                                 loadedState.selectedEvents.length == 1 ||
                                                 index == loadedState.selectedEvents.length - 1
                                                 ? event.title!
-                                                : event.title! + ", ",
+                                                : "${event.title!}, ",
                                             style: Theme
                                                 .of(context)
                                                 .textTheme
-                                                .bodyText2,
+                                                .bodyMedium,
                                           ),
                                         );
                                       }
@@ -226,12 +215,11 @@ class SelectAllEvents extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Text(
-                                        "( " + loadedState.selectedEvents.length.toString() +
-                                            " )",
+                                        "( ${loadedState.selectedEvents.length} )",
                                         style: Theme
                                             .of(context)
                                             .textTheme
-                                            .bodyText2
+                                            .bodyMedium
                                             ?.copyWith(fontSize: 8),
                                       ),
                                     ],
@@ -256,7 +244,7 @@ class SelectAllEvents extends StatelessWidget {
                                   .primaryColor,
                               todayBackgroundColor: Theme
                                   .of(context)
-                                  .backgroundColor,
+                                  .colorScheme.background,
                             ),
                             child: SfCalendar(
                               // Controller
@@ -264,7 +252,7 @@ class SelectAllEvents extends StatelessWidget {
                               blackoutDatesTextStyle: Theme
                                   .of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(color: Theme
                                   .of(context)
                                   .colorScheme
@@ -281,7 +269,7 @@ class SelectAllEvents extends StatelessWidget {
                               todayTextStyle: Theme
                                   .of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: Theme
                                   .of(context)
                                   .primaryColorDark),
@@ -305,22 +293,22 @@ class SelectAllEvents extends StatelessWidget {
                                 textStyle: Theme
                                     .of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge
                                     ?.copyWith(color: Colors.transparent),
                               ),
                               viewHeaderHeight: 30,
                               viewHeaderStyle: ViewHeaderStyle(
                                 backgroundColor: Theme
                                     .of(context)
-                                    .backgroundColor,
+                                    .colorScheme.background,
                                 dateTextStyle: Theme
                                     .of(context)
                                     .textTheme
-                                    .bodyText2,
+                                    .bodyMedium,
                                 dayTextStyle: Theme
                                     .of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium
                                     ?.copyWith(fontSize: 10),
                               ),
                               // Monthly View
@@ -343,30 +331,30 @@ class SelectAllEvents extends StatelessWidget {
                                   dateTextStyle: Theme
                                       .of(context)
                                       .textTheme
-                                      .bodyText2,
+                                      .bodyMedium,
                                   dayTextStyle: Theme
                                       .of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(fontSize: 10),
                                   appointmentTextStyle: Theme
                                       .of(context)
                                       .textTheme
-                                      .bodyText2,
+                                      .bodyMedium,
                                 ),
                                 monthCellStyle: MonthCellStyle(
                                   textStyle: Theme
                                       .of(context)
                                       .textTheme
-                                      .bodyText1,
+                                      .bodyLarge,
                                   trailingDatesTextStyle: Theme
                                       .of(context)
                                       .textTheme
-                                      .caption,
+                                      .bodySmall,
                                   leadingDatesTextStyle: Theme
                                       .of(context)
                                       .textTheme
-                                      .caption,
+                                      .bodySmall,
                                 ),
                               ),
                               // Schedule View
@@ -379,16 +367,16 @@ class SelectAllEvents extends StatelessWidget {
                                   appointmentTextStyle: Theme
                                       .of(context)
                                       .textTheme
-                                      .bodyText2,
+                                      .bodyMedium,
                                   dayHeaderSettings: DayHeaderSettings(
                                     dateTextStyle: Theme
                                         .of(context)
                                         .textTheme
-                                        .bodyText2,
+                                        .bodyMedium,
                                     dayTextStyle: Theme
                                         .of(context)
                                         .textTheme
-                                        .bodyText2
+                                        .bodyMedium
                                         ?.copyWith(fontSize: 10),
                                   ),
                                   weekHeaderSettings: WeekHeaderSettings(
@@ -401,7 +389,7 @@ class SelectAllEvents extends StatelessWidget {
                                     weekTextStyle: Theme
                                         .of(context)
                                         .textTheme
-                                        .caption,
+                                        .bodySmall,
                                   ),
                                   monthHeaderSettings: MonthHeaderSettings(
                                     monthFormat: 'MMMM yyyy',
@@ -413,7 +401,7 @@ class SelectAllEvents extends StatelessWidget {
                                     monthTextStyle: Theme
                                         .of(context)
                                         .textTheme
-                                        .headline1,
+                                        .displayLarge,
                                   )
                               ),
                               scheduleViewMonthHeaderBuilder: (
@@ -441,7 +429,7 @@ class SelectAllEvents extends StatelessWidget {
                                         style: Theme
                                             .of(context)
                                             .textTheme
-                                            .headline1
+                                            .displayLarge
                                             ?.copyWith(
                                             fontWeight: FontWeight.normal,
                                             color: AppColors.grey),
@@ -454,7 +442,7 @@ class SelectAllEvents extends StatelessWidget {
                               appointmentTextStyle: Theme
                                   .of(context)
                                   .textTheme
-                                  .bodyText2!,
+                                  .bodyMedium!,
                               appointmentBuilder: (BuildContext context,
                                   CalendarAppointmentDetails details) {
                                 final Appointment appointment = details.appointments.first;
@@ -476,7 +464,7 @@ class SelectAllEvents extends StatelessWidget {
                         ) :
                         Expanded(
                           child: Center(
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width*0.6,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -488,7 +476,7 @@ class SelectAllEvents extends StatelessWidget {
                                       child: Image.asset(Constants.emptyCalendar)
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                                  Text(AppLocalizations.of(context)!.noEventsAccesibleBono, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                                  Text(AppLocalizations.of(context)!.noEventsAccesibleBono, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.12),
                                 ],
                               ),
@@ -556,11 +544,22 @@ class SelectAllEvents extends StatelessWidget {
                             style: Theme
                                 .of(context)
                                 .textTheme
-                                .headline1
+                                .displayLarge
                                 ?.copyWith(fontSize: 22),
                             textAlign: TextAlign.center,
                           ),
                           TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Theme
+                                  .of(context)
+                                  .colorScheme.background,
+                              shape: RoundedRectangleBorder( // add this
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              padding: const EdgeInsets.only(left: 16.0,
+                                  right: 10.0),
+                            ),
+                            onPressed: null,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -569,7 +568,7 @@ class SelectAllEvents extends StatelessWidget {
                                   style: Theme
                                       .of(context)
                                       .textTheme
-                                      .bodyText1
+                                      .bodyLarge
                                       ?.copyWith(color: AppColors.grey),
                                 ),
                                 SizedBox(width: MediaQuery
@@ -586,17 +585,6 @@ class SelectAllEvents extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            style: TextButton.styleFrom(
-                              backgroundColor: Theme
-                                  .of(context)
-                                  .backgroundColor,
-                              shape: RoundedRectangleBorder( // add this
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              padding: const EdgeInsets.only(left: 16.0,
-                                  right: 10.0),
-                            ),
-                            onPressed: null,
                           ),
                         ],
                       ),
@@ -624,7 +612,7 @@ class SelectAllEvents extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Theme
                               .of(context)
-                              .backgroundColor,
+                              .colorScheme.background,
                           //border: Border.all(color: Theme.of(context).primaryColor, width: 0.5),
                           borderRadius: const BorderRadius.all(
                             Radius.circular(15.0),
@@ -635,10 +623,10 @@ class SelectAllEvents extends StatelessWidget {
                             Shimmer.fromColors(
                               baseColor: Theme
                                   .of(context)
-                                  .backgroundColor,
+                                  .colorScheme.background,
                               highlightColor: Theme
                                   .of(context)
-                                  .backgroundColor
+                                  .colorScheme.background
                                   .withOpacity(0.5),
                               child: Container(
                                 height: MediaQuery
@@ -652,7 +640,7 @@ class SelectAllEvents extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: Theme
                                       .of(context)
-                                      .backgroundColor,
+                                      .colorScheme.background,
                                   //border: Border.all(color: Theme.of(context).primaryColor, width: 0.5),
                                   borderRadius: const BorderRadius.only(
                                     topRight: Radius.circular(15),
@@ -717,8 +705,8 @@ class SelectAllEvents extends StatelessWidget {
       var endDate = startDate.add(
           Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject;
-      var color;
+      String subject;
+      Color color = Colors.black;
       if (event.isPrivate!) {
         subject = "${event.numClients}";
         color = Colors.black;

@@ -12,7 +12,7 @@ import '../../../Components/Images/CircularImage.dart';
 
 class BrandInvitePage extends StatefulWidget {
   String brandId;
-  BrandInvitePage({Key? key, required this.brandId}) : super(key: key);
+  BrandInvitePage({super.key, required this.brandId});
 
   @override
   _BrandInvitePageState createState() => _BrandInvitePageState();
@@ -116,7 +116,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                           SizedBox(
                               width: MediaQuery.of(context).size.width * 0.05),
                           Text(brand.name!,
-                              style: Theme.of(context).textTheme.headline1),
+                              style: Theme.of(context).textTheme.displayLarge),
                         ],
                       ),
                     ),
@@ -131,7 +131,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.description,
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left,
                           ),
                         ],
@@ -149,7 +149,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                           Flexible(
                             child: Text(
                               brand.description!,
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ),
                         ],
@@ -166,7 +166,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.staff,
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left,
                           ),
                         ],
@@ -230,7 +230,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                                               user.name!,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2,
+                                                  .bodyMedium,
                                               textAlign: TextAlign.center,
                                             ),
                                           ),
@@ -255,7 +255,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                           Text(
                             AppLocalizations.of(context)!
                                 .memberSince(brand.dateJoined!),
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left,
                           ),
                         ],
@@ -297,7 +297,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                               AppLocalizations.of(context)!.join,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline1
+                                  .displayLarge
                                   ?.copyWith(
                                     color: Theme.of(context).primaryColorDark,
                                   ),

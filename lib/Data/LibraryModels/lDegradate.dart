@@ -19,17 +19,17 @@ class lDegradate {
 
   lDegradate.fromObjectAllData(
       String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('name')) {
-      this.name = documentSnapshot.get("name").toString();
+      name = documentSnapshot.get("name").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('hexa1')) {
-      this.hexa1 = documentSnapshot.get("hexa1").toString();
+      hexa1 = documentSnapshot.get("hexa1").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('hexa2')) {
-      this.hexa2 = documentSnapshot.get("hexa2").toString();
+      hexa2 = documentSnapshot.get("hexa2").toString();
     }
   }
 
@@ -47,9 +47,9 @@ class lDegradate {
 
   // Set Basic Data
   set setBasicData(lDegradate degradate) {
-    this.id = degradate.id;
-    this.name = degradate.name;
-    this.hexa1 = degradate.hexa1;
-    this.hexa2 = degradate.hexa2;
+    id = degradate.id;
+    name = degradate.name;
+    hexa1 = degradate.hexa1;
+    hexa2 = degradate.hexa2;
   }
 }

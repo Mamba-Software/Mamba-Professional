@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import '../../../../../../Data/Models/Usuario.dart';
 import '../../../../../../Globals/Widgets/Components/Images/CircularImage.dart';
 
@@ -14,7 +12,7 @@ class BrandRoles extends StatefulWidget {
   String brandId;
   List<Usuario> trainers;
 
-  BrandRoles({Key? key, required this.brandId, required this.trainers}) : super(key: key);
+  BrandRoles({super.key, required this.brandId, required this.trainers});
 
   @override
   _BrandRolesState createState() => _BrandRolesState();
@@ -96,7 +94,7 @@ class _BrandRolesState extends State<BrandRoles> {
                       ListTile(
                         title: Text(
                             AppLocalizations.of(context)!.roles,
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left
                         ),
                         dense: true,
@@ -121,7 +119,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         },
                         title: Text(
                             AppLocalizations.of(context)!.owner,
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                             textAlign: TextAlign.left
                         ),
                         trailing: trainer.brandRole == 1 ? SizedBox(
@@ -149,7 +147,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         },
                         title: Text(
                             AppLocalizations.of(context)!.administrador,
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                             textAlign: TextAlign.left
                         ),
                         trailing: trainer.brandRole == 2 ? SizedBox(
@@ -177,7 +175,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         },
                         title: Text(
                             AppLocalizations.of(context)!.trainer,
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                             textAlign: TextAlign.left
                         ),
                         trailing: trainer.brandRole == 3 ? SizedBox(
@@ -338,7 +336,7 @@ class _BrandRolesState extends State<BrandRoles> {
               // Owners
               Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).backgroundColor,
+                  color: Theme.of(context).colorScheme.background,
                   borderRadius: const BorderRadius.all(Radius.circular(10))
                 ),
                 child: Column(
@@ -350,7 +348,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.owner,
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                             textAlign: TextAlign.left,
                           ),
                           IconButton(
@@ -385,7 +383,7 @@ class _BrandRolesState extends State<BrandRoles> {
                               ),
                               title: Text(
                                 getUsersFullName(user),
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -396,12 +394,12 @@ class _BrandRolesState extends State<BrandRoles> {
                                   Text(
                                     user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
                                     AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                     maxLines: 1,
                                   ),
                                 ],
                               ),
-                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.width*0.05,),
+                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.background, size: MediaQuery.of(context).size.width*0.05,),
                               onTap: () async {
                                 await onEditTrainerRole(user);
                               },
@@ -416,7 +414,7 @@ class _BrandRolesState extends State<BrandRoles> {
               // Admins
               Container(
                 decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).colorScheme.background,
                     borderRadius:
                     const BorderRadius.all(Radius.circular(10))
                 ),
@@ -429,7 +427,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.administrador,
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                             textAlign: TextAlign.left,
                           ),
                           IconButton(
@@ -464,7 +462,7 @@ class _BrandRolesState extends State<BrandRoles> {
                               ),
                               title: Text(
                                 getUsersFullName(user),
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -475,12 +473,12 @@ class _BrandRolesState extends State<BrandRoles> {
                                   Text(
                                     user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
                                     AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                     maxLines: 1,
                                   ),
                                 ],
                               ),
-                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.width*0.05,),
+                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.background, size: MediaQuery.of(context).size.width*0.05,),
                               onTap: () async {
                                 await onEditTrainerRole(user);
                               },
@@ -492,7 +490,7 @@ class _BrandRolesState extends State<BrandRoles> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
                         SizedBox(height: MediaQuery.of(context).size.width * 0.05)
                       ],
                     ),
@@ -503,7 +501,7 @@ class _BrandRolesState extends State<BrandRoles> {
               // Trainers
               Container(
                 decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).colorScheme.background,
                     borderRadius:
                     const BorderRadius.all(Radius.circular(10))
                 ),
@@ -516,7 +514,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.trainer,
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                             textAlign: TextAlign.left,
                           ),
                           IconButton(
@@ -551,7 +549,7 @@ class _BrandRolesState extends State<BrandRoles> {
                               ),
                               title: Text(
                                 getUsersFullName(user),
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -562,12 +560,12 @@ class _BrandRolesState extends State<BrandRoles> {
                                   Text(
                                     user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
                                     AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                     maxLines: 1,
                                   ),
                                 ],
                               ),
-                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.width*0.05,),
+                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.background, size: MediaQuery.of(context).size.width*0.05,),
                               onTap: () async {
                                 await onEditTrainerRole(user);
                               },
@@ -579,7 +577,7 @@ class _BrandRolesState extends State<BrandRoles> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
                         SizedBox(height: MediaQuery.of(context).size.width * 0.05)
                       ],
                     ),

@@ -3,11 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
-import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Data/Models/Promotion.dart';
@@ -23,11 +21,8 @@ import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:uuid/uuid.dart';
 
 import '../Models/Bono.dart';
@@ -42,57 +37,31 @@ class FirebaseDatabaseService {
   final batch = FirebaseFirestore.instance.batch();
 
   // Firebase collections
-  String users = isProduction ? 'Users' : '7777 Users';
-  String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String events = isProduction ? 'Events' : '7777 Events';
-  String locations = isProduction ? 'Locations' : '7777 Locations';
-  String groupOfQuestions =
-      isProduction ? 'GroupOfQuestions' : '7777 GroupOfQuestions';
-  String questions = isProduction ? 'Questions' : '7777 Questions';
-  String answers = isProduction ? 'Answers' : '7777 Answers';
-  String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String messages = isProduction ? 'Messages' : '7777 Messages';
-  String errors = isProduction ? 'Errors' : '7777 Errors';
-  String requests = isProduction ? 'Requests' : '7777 Requests';
-  String notifications = isProduction ? 'Notifications' : '7777 Notifications';
-  String rooms = isProduction ? 'Rooms' : '7777 Rooms';
-  String promotions = isProduction ? 'Promotions' : '7777 Promotions';
-  String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
+  String users = 'Users';
+  String nicknames = 'Nicknames';
+  String brands = 'Brands';
+  String events = 'Events';
+  String locations = 'Locations';
+  String groupOfQuestions = 'GroupOfQuestions';
+  String questions = 'Questions';
+  String answers = 'Answers';
+  String conversations = 'Conversations';
+  String messages = 'Messages';
+  String errors = 'Errors';
+  String requests = 'Requests';
+  String notifications = 'Notifications';
+  String rooms = 'Rooms';
+  String library = 'Library';
+  String purchases = 'Purchases';
+  String promotions = 'Promotions';
+  String subscriptions = 'Subscriptions';
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
     return {
       'uid': id,
       'isMessageRead': isMessageRead,
     };
-  }
-
-  // Authentication Services
-  Future<int> signIn(String email, String password) async {
-    bool error = false;
-    UserCredential? authResult;
-    try {
-      authResult = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-    } catch (e) {
-      error = true;
-    }
-    if (error) return -1;
-    if (authResult == null) return -1;
-    if (authResult.user != null && isProduction) {
-      if (authResult.user!.emailVerified)
-        return 0;
-      else
-        return -2;
-    } else {
-      return 0;
-    }
-  }
-
-  Future<void> signOut() async {
-    return await _auth.signOut();
-  }
+  }  
 
   Future<int> resetPassword(String email) async {
     try {
@@ -107,7 +76,7 @@ class FirebaseDatabaseService {
   Future<bool> deleteUser(String password) async {
     try {
       bool error = false;
-      User user = await _auth.currentUser!;
+      User user = _auth.currentUser!;
       await _auth
           .signInWithEmailAndPassword(email: user.email!, password: password)
           .catchError((value) {
@@ -150,39 +119,42 @@ class FirebaseDatabaseService {
       brand = Brand.fromObjectAllData(
           querySnapshot.docs[i].id, querySnapshot.docs[i]);
     }
-    if (brand.id == null)
+    if (brand.id == null) {
       return null;
-    else
+    } else {
       return brand;
+    }
   }
 
   Future<bool> checkCurrentUser() async {
     User currentUser;
-    currentUser = await _auth.currentUser!;
-    if (currentUser != null)
+    currentUser = _auth.currentUser!;
+    if (currentUser != null) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 
   Future<bool> checkIfItsMe(String uid) async {
     User currentUser;
-    currentUser = await _auth.currentUser!;
-    if (currentUser.uid == uid)
+    currentUser = _auth.currentUser!;
+    if (currentUser.uid == uid) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 
   Future<List<bool>> checkAppVersion() async {
     // Get Current Build Number
-    PackageInfo _packageInfo = await PackageInfo.fromPlatform();
-    final int buildNumber = int.parse(_packageInfo.buildNumber);
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final int buildNumber = int.parse(packageInfo.buildNumber);
     // Get Minimum and Max Version from Settings Collection
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection("Settings").doc("MinimumAppVersion").get();
-    int minBuildNumPro = _documentSnapshot.get("minBuildNumPro");
-    int maxBuildNumPro = _documentSnapshot.get("maxBuildNumPro");
+    int minBuildNumPro = documentSnapshot.get("minBuildNumPro");
+    int maxBuildNumPro = documentSnapshot.get("maxBuildNumPro");
     if (buildNumber < minBuildNumPro) {
       // Can Update && isMandatory
       print("Can Update == TRUE && isMandatory == TRUE");
@@ -203,18 +175,18 @@ class FirebaseDatabaseService {
 
   Future<bool> checkIfIsMaintenance() async {
     // Get Minimum and Max Version from Settings Collection
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection("Settings").doc("MinimumAppVersion").get();
-    bool isMaintenance = _documentSnapshot.get("isMaintenance");
+    bool isMaintenance = documentSnapshot.get("isMaintenance");
     return isMaintenance;
   }
 
   Future<List<bool>> checkIfMinimumAppVersion(String clientAppVersion) async {
     // Get Minimum Version from Settings Collection
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection("Settings").doc("MinimumAppVersion").get();
-    String minimumAppVersion = _documentSnapshot.get("versionPro");
-    bool isMandatory = _documentSnapshot.get("isMandatoryPro");
+    String minimumAppVersion = documentSnapshot.get("versionPro");
+    bool isMandatory = documentSnapshot.get("isMandatoryPro");
     List<bool> result = [isMandatory];
     if (clientAppVersion == minimumAppVersion) {
       result.insert(0, true);
@@ -227,30 +199,30 @@ class FirebaseDatabaseService {
 
   Future<String> checkMonthOffer() async {
     // Get Minimum Version from Settings Collection
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection("Settings").doc("MinimumAppVersion").get();
-    String monthFree = _documentSnapshot.get("monthFree");
+    String monthFree = documentSnapshot.get("monthFree");
     return monthFree;
   }
 
   Future<User?> getCurrentUser() async {
     User? currentUser;
-    currentUser = await _auth.currentUser;
+    currentUser = _auth.currentUser;
     return currentUser;
   }
 
   Future<Usuario> getUserDetails(String uid) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection(users).doc(uid).get();
-    return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    return Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
   }
 
   Future<Usuario> getUserCoverDetails(String uid) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(users).doc(uid).get();
       return Usuario.fromObjectOnlyCoverData(
-          _documentSnapshot.id, _documentSnapshot);
+          documentSnapshot.id, documentSnapshot);
     } catch (e) {
       print(e);
       return Usuario();
@@ -271,7 +243,7 @@ class FirebaseDatabaseService {
       authResult = await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((userCredential) async {
-        if (userCredential != null && userCredential.user != null) {
+        if (userCredential.user != null) {
           await _firestore.collection(users).doc(userCredential.user!.uid).set({
             "name": null,
             "firstName": null,
@@ -430,7 +402,7 @@ class FirebaseDatabaseService {
     // Check If User in Brands too update notificationToken there as well.
     var brandsCollection =
         await _firestore.collection(users).doc(uid).collection("Brands").get();
-    if (brandsCollection.docs.length > 0) {
+    if (brandsCollection.docs.isNotEmpty) {
       for (var i = 0; i < brandsCollection.docs.length; i++) {
         var brandDocument = brandsCollection.docs[i];
         await _firestore
@@ -504,7 +476,7 @@ class FirebaseDatabaseService {
     String imageURL = "";
     var storageRef = _firebaseStorage
         .ref()
-        .child("users/" + userId + "/images/" + userId + ".jpeg");
+        .child("users/$userId/images/$userId.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -518,7 +490,7 @@ class FirebaseDatabaseService {
   }
 
   Future<void> deleteUserPhoto(String userId) async {
-    await _firebaseStorage.ref().child("userPics/" + userId + ".png").delete();
+    await _firebaseStorage.ref().child("userPics/$userId.png").delete();
   }
 
   Future<void> updateCurrentUserDatosPerifl(String name, String firstName,
@@ -566,10 +538,10 @@ class FirebaseDatabaseService {
   }
 
   Future<String> updateBrandPhoto(String brandID, File image) async {
-    var result;
+    String result = "";
     var storageRef = _firebaseStorage
         .ref()
-        .child("brands/" + brandID + "/images/" + brandID + ".jpeg");
+        .child("brands/$brandID/images/$brandID.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -596,7 +568,7 @@ class FirebaseDatabaseService {
     // Delete Image From Storage
     _firebaseStorage
         .ref()
-        .child("brands/" + brandID + "/images/" + imageId + ".jpeg")
+        .child("brands/$brandID/images/$imageId.jpeg")
         .delete();
     // Delete Image From Firebase Firestore
     await _firestore
@@ -699,7 +671,7 @@ class FirebaseDatabaseService {
       // Upload the image to Firebase Storage
       var storageRef = _firebaseStorage
           .ref()
-          .child("brands/" + brandID + "/images/" + uid + ".jpeg");
+          .child("brands/$brandID/images/$uid.jpeg");
       var uploadTask = storageRef.putFile(image);
       await uploadTask.whenComplete(() async {
         await storageRef.getDownloadURL().then((value) async {
@@ -721,14 +693,14 @@ class FirebaseDatabaseService {
   Future<void> deleteBrandContentPicture(String brandID) async {
     await _firebaseStorage
         .ref()
-        .child("brandPics/" + brandID + ".png")
+        .child("brandPics/$brandID.png")
         .delete();
   }
 
   Future<void> deleteBrandPhoto(String brandID) async {
     await _firebaseStorage
         .ref()
-        .child("brandPics/" + brandID + ".png")
+        .child("brandPics/$brandID.png")
         .delete();
   }
 
@@ -986,16 +958,16 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       String bonoId = querySnapshot.docs[i].get("bonoId");
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore
               .collection(brands)
               .doc(brandId)
               .collection("Bonos")
               .doc(bonoId)
               .get();
-      if (_documentSnapshot.exists) {
+      if (documentSnapshot.exists) {
         bonos.add(
-            Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot));
+            Bono.fromObjectAllData(documentSnapshot.id, documentSnapshot));
       }
     }
     return bonos;
@@ -1016,14 +988,14 @@ class FirebaseDatabaseService {
 
   Future<double?> getEventUserFeedback(String eventId, String userId) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore
               .collection(events)
               .doc(eventId)
               .collection("Users")
               .doc(userId)
               .get();
-      double feedbackScore = _documentSnapshot.get("intensityScore").toDouble();
+      double feedbackScore = documentSnapshot.get("intensityScore").toDouble();
       return feedbackScore;
     } catch (e) {
       return null;
@@ -1040,8 +1012,8 @@ class FirebaseDatabaseService {
           .collection("Users")
           .get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
-        if ((_documentSnapshot.data() as Map<String, dynamic>)
+        DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
+        if ((documentSnapshot.data() as Map<String, dynamic>)
             .containsKey('intensityScore')) {
           double feedbackScore = querySnapshot.docs[i].get("intensityScore");
           cnt += 1;
@@ -1109,17 +1081,17 @@ class FirebaseDatabaseService {
   }
 
   Future<Brand> getBrandDetails(String brandID) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection(brands).doc(brandID).get();
-    return Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    return Brand.fromObjectAllData(documentSnapshot.id, documentSnapshot);
   }
 
   Future<Brand> getBrandCoverDetails(String brandID) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(brands).doc(brandID).get();
       return Brand.fromObjectOnlyCoverData(
-          _documentSnapshot.id, _documentSnapshot);
+          documentSnapshot.id, documentSnapshot);
     } catch (e) {
       print(e.toString());
       return Brand();
@@ -1128,9 +1100,9 @@ class FirebaseDatabaseService {
 
   Future<String> getBrandLogoUrl(String brandID) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(brands).doc(brandID).get();
-      return _documentSnapshot.get("logoUrl");
+      return documentSnapshot.get("logoUrl");
     } catch (e) {
       print(e.toString());
       return "";
@@ -1217,10 +1189,10 @@ class FirebaseDatabaseService {
 
   Future<List<String>> getBrandCover(String brandID) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(brands).doc(brandID).get();
-      String name = _documentSnapshot.get("name");
-      String image = _documentSnapshot.get("logoUrl");
+      String name = documentSnapshot.get("name");
+      String image = documentSnapshot.get("logoUrl");
       List<String> result = [name, image];
       return result;
     } catch (e) {
@@ -1258,7 +1230,7 @@ class FirebaseDatabaseService {
   }
 
   Future<bool> checkIfBrandExists(String brandID) async {
-    var userDocRef = await _firestore.collection(brands).doc(brandID);
+    var userDocRef = _firestore.collection(brands).doc(brandID);
     var doc = await userDocRef.get();
     if (doc.exists) {
       return true;
@@ -1411,13 +1383,13 @@ class FirebaseDatabaseService {
 
   // Add Event
   Future<dynamic> getRecurrentEventGroup(String eventGroupId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
         .collection(events)
         .doc("Recurrent Events")
         .collection("Recurrent Events")
         .doc(eventGroupId)
         .get();
-    return _documentSnapshot.get("groupEvents");
+    return documentSnapshot.get("groupEvents");
   }
 
   // Add Event
@@ -1439,9 +1411,9 @@ class FirebaseDatabaseService {
   // Get Single Event
   Future<Event> getSingleEvent(String id) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(events).doc(id).get();
-      return Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      return Event.fromObjectAllData(documentSnapshot.id, documentSnapshot);
     } catch (e) {
       print(e);
       return Event();
@@ -1711,10 +1683,10 @@ class FirebaseDatabaseService {
       if (index != -1) {
         brand = brandLoaded[index];
       } else {
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
             await _firestore.collection(brands).doc(event.brandID).get();
         brand =
-            Brand.fromObjectOnlyCoverData(event.brandID!, _documentSnapshot);
+            Brand.fromObjectOnlyCoverData(event.brandID!, documentSnapshot);
         brandLoaded.add(brand);
       }
       event.brandID = brand.id;
@@ -1900,10 +1872,10 @@ class FirebaseDatabaseService {
   // Get a Event Trainers
   Future<List<String>> getEventTrainers(String eid) async {
     List<String> participants = [];
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection(events).doc(eid).get();
     Event event =
-        Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        Event.fromObjectAllData(documentSnapshot.id, documentSnapshot);
     for (int i = 0; i < event.selectedTrainers.length; i++) {
       participants.add(event.selectedTrainers[i]);
     }
@@ -1913,10 +1885,10 @@ class FirebaseDatabaseService {
   // Get a Event Clients
   Future<List<String>> getEventClients(String eid) async {
     List<String> participants = [];
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection(events).doc(eid).get();
     Event event =
-        Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        Event.fromObjectAllData(documentSnapshot.id, documentSnapshot);
     for (int i = 0; i < event.joinedMembers.length; i++) {
       participants.add(event.joinedMembers[i]);
     }
@@ -1953,10 +1925,10 @@ class FirebaseDatabaseService {
   Future<bool> addUserToEvent(String eid, String uid, String purchaseId,
       [bool invitedDirectly = false]) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(events).doc(eid).get();
       Event event =
-          Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+          Event.fromObjectAllData(documentSnapshot.id, documentSnapshot);
       if (event.maxMembers != null && event.numClients != null) {
         if (event.numClients! > event.maxMembers!) {
           await _firestore.collection(events).doc(eid).update({
@@ -2308,17 +2280,17 @@ class FirebaseDatabaseService {
   Future<void> updateEventUserPurchase(
       String eventId, String userId, String purchaseId) async {
     try {
-      final _purchaseDataService = PurchaseDataService();
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      final purchaseDataService = PurchaseDataService();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore
               .collection(events)
               .doc(eventId)
               .collection("Users")
               .doc(userId)
               .get();
-      if (_documentSnapshot.exists) {
+      if (documentSnapshot.exists) {
         Usuario user =
-            Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         if (user.purchaseId != purchaseId) {
           await _firestore
               .collection(events)
@@ -2328,9 +2300,9 @@ class FirebaseDatabaseService {
               .update({
             "purchaseId": purchaseId,
           });
-          await _purchaseDataService.deletedPurchaseUserFromEvent(
+          await purchaseDataService.deletedPurchaseUserFromEvent(
               user, eventId);
-          await _purchaseDataService.addEventToPurchase(purchaseId, eventId);
+          await purchaseDataService.addEventToPurchase(purchaseId, eventId);
         }
       }
     } catch (e) {
@@ -2444,25 +2416,22 @@ class FirebaseDatabaseService {
     }
   }
 
-  Future<int> addEventRecurrent(Event _event, List<String> bonos,
+  Future<int> addEventRecurrent(Event event, List<String> bonos,
       List<String> trainers, ReceivedNotification receivedNotification) async {
     String cloudFunction = 'CreateRecurrentEvent';
-    try {
-      if (!isProduction) {
-        cloudFunction = 'zzzzCreateRecurrentEvent';
-      }
+    try {      
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'europe-west1')
               .httpsCallable(cloudFunction);
-      print(_event.toJson());
+      print(event.toJson());
       print(GeoFlutterUtils.getGeoPointJSON(
-          _event.location!.latitude!, _event.location!.longitude!));
+          event.location!.latitude!, event.location!.longitude!));
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
-          'event': _event.toJson(),
-          'doneAtString': _event.doneAt?.millisecondsSinceEpoch,
+          'event': event.toJson(),
+          'doneAtString': event.doneAt?.millisecondsSinceEpoch,
           ...GeoFlutterUtils.getGeoPointJSON(
-              _event.location!.latitude!, _event.location!.longitude!),
+              event.location!.latitude!, event.location!.longitude!),
           'bonos': bonos,
           'trainers': trainers,
           'notification': receivedNotification.toJson(),
@@ -2667,9 +2636,9 @@ class FirebaseDatabaseService {
 
   // Get Single Location
   Future<Location> getSingleLocation(String locationId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection(locations).doc(locationId).get();
-    return Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    return Location.fromObjectAllData(documentSnapshot.id, documentSnapshot);
   }
 
   // Get All Brand Locations
@@ -2749,10 +2718,11 @@ class FirebaseDatabaseService {
         .doc(brandId)
         .collection("Bonos Requests")
         .get();
-    if (querySnapshot.docs.length != 0)
+    if (querySnapshot.docs.isNotEmpty) {
       return querySnapshot.docs[0].get("bonoId").toString();
-    else
+    } else {
       return '';
+    }
   }
 
   //Add bono to brand
@@ -2883,32 +2853,33 @@ class FirebaseDatabaseService {
   Future<List<int>> getUserFavourites(String brandId, String userId) async {
     var favourites;
     List<int> favouritesList = [];
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
         .collection(brands)
         .doc(brandId)
         .collection("Users")
         .doc(userId)
         .get();
-    if ((_documentSnapshot.data() as Map<String, dynamic>)
+    if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('favourites')) {
-      favourites = _documentSnapshot.get("favourites");
+      favourites = documentSnapshot.get("favourites");
       for (int i = 0; i < favourites.length; ++i) {
         favouritesList.add(favourites[i]);
       }
       return favouritesList;
-    } else
+    } else {
       return [];
+    }
   }
 
   //UpdateBono Compras
   Future<void> updateBonoCompras(String brandID, String bonoId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
         .collection(brands)
         .doc(brandID)
         .collection("Bonos")
         .doc(bonoId)
         .get();
-    Bono b = Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    Bono b = Bono.fromObjectAllData(documentSnapshot.id, documentSnapshot);
     await _firestore
         .collection(brands)
         .doc(brandID)
@@ -3025,7 +2996,7 @@ class FirebaseDatabaseService {
         .doc(userId)
         .collection("Requests")
         .get();
-    if (querySnapshot.docs.length > 0) {
+    if (querySnapshot.docs.isNotEmpty) {
       request = RequestToBrand.fromObjectAllData(
           querySnapshot.docs[0].id, querySnapshot.docs[0]);
       return request;
@@ -3091,7 +3062,7 @@ class FirebaseDatabaseService {
   Future<ReceivedNotification?> getIndividualLocalNotification(
       String userId, String notificationId) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore
               .collection(users)
               .doc(userId)
@@ -3099,7 +3070,7 @@ class FirebaseDatabaseService {
               .doc(notificationId)
               .get();
       return ReceivedNotification.fromObjectAllData(
-          _documentSnapshot.id, _documentSnapshot);
+          documentSnapshot.id, documentSnapshot);
     } catch (e) {
       return null;
     }
@@ -3254,9 +3225,9 @@ class FirebaseDatabaseService {
 
   //Get One Question
   Future<Question> getOneQuestion(String? id) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection(questions).doc(id).get();
-    return Question.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    return Question.fromMap(documentSnapshot.data()!, documentSnapshot.id);
   }
 
   // Add Question
@@ -3333,7 +3304,7 @@ class FirebaseDatabaseService {
       groupOfQuestionsList.add(GroupOfQuestions.fromObject(
           querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    if (querySnapshot.docs.length == 0) {
+    if (querySnapshot.docs.isEmpty) {
       return null;
     }
     return groupOfQuestionsList[0];
@@ -3371,10 +3342,11 @@ class FirebaseDatabaseService {
         .where("userID", isEqualTo: currentUser.id.toString())
         .where("groupOfQuestionsID", isEqualTo: groupOfQuestionsId.toString())
         .get();
-    if (querySnapshot.docs.length == 0) {
+    if (querySnapshot.docs.isEmpty) {
       return false;
-    } else
+    } else {
       return true;
+    }
   }
 
   //Conversations
@@ -3542,23 +3514,23 @@ class FirebaseDatabaseService {
     DateTime now = DateTime.now();
     Timestamp tmstp = Timestamp.fromDate(now);
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(subscriptions).doc(subscriptionId).get();
       subscription = Subscription.fromObjectAllData(
-          _documentSnapshot.id, _documentSnapshot);
+          documentSnapshot.id, documentSnapshot);
       if (subscription.isActive! &&
           subscription.startDate!.compareTo(tmstp) < 0 &&
           tmstp.compareTo(subscription.endDate!) < 0 &&
           subscription.promotion == subscriptionId) {
         try {
-          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
+          DocumentSnapshot<Map<String, dynamic>> documentSnapshot2 =
               await _firestore
                   .collection(subscriptions)
                   .doc(subscriptionId)
                   .collection('Brands')
                   .doc(brandId)
                   .get();
-          if (!_documentSnapshot2.exists) {
+          if (!documentSnapshot2.exists) {
             return subscription;
           } else {
             return Subscription();
@@ -3580,14 +3552,14 @@ class FirebaseDatabaseService {
   Future<bool> checkIfBrandUsedSubscription(
       String subscriptionId, String brandId) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot2 =
           await _firestore
               .collection(subscriptions)
               .doc(subscriptionId)
               .collection('Brands')
               .doc(brandId)
               .get();
-      if (!_documentSnapshot2.exists) {
+      if (!documentSnapshot2.exists) {
         return false;
       } else {
         return true;
@@ -3604,10 +3576,10 @@ class FirebaseDatabaseService {
     DateTime now = DateTime.now();
     Timestamp tmstp = Timestamp.fromDate(now);
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(promotions).doc(id).get();
       promotion =
-          Promotion.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+          Promotion.fromObjectAllData(documentSnapshot.id, documentSnapshot);
       if (promotion.isActive! &&
           promotion.startDate!.compareTo(tmstp.toString()) < 0 &&
           tmstp.toString().compareTo(promotion.endDate!) < 0) {
@@ -3635,14 +3607,14 @@ class FirebaseDatabaseService {
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         subscriptionTemp = Subscription.fromObjectAllData(
             querySnapshot.docs[i].id, querySnapshot.docs[i]);
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot2 =
             await _firestore
                 .collection(subscriptions)
                 .doc(querySnapshot.docs[i].id)
                 .collection('Brands')
                 .doc(brandId)
                 .get();
-        if (!_documentSnapshot2.exists) {
+        if (!documentSnapshot2.exists) {
           if (subscriptionTemp.isActive! &&
               subscriptionTemp.startDate!.compareTo(tmstp) < 0 &&
               tmstp.compareTo(subscriptionTemp.endDate!) < 0) {

@@ -52,7 +52,7 @@ dependencies:
   rename: ^3.0.1
   url_launcher: ^6.0.17
   auto_size_text: ^3.0.0
-  flutter_firebase_chat_core: ^1.5.1
+  flutter_firebase_chat_core: ^1.6.7
   flutter_chat_ui: ^1.5.3
   file_picker: ^6.1.1
   mime: ^1.0.1
@@ -64,6 +64,7 @@ dependencies:
   store_redirect: ^2.0.1
   firebase_crashlytics: ^3.4.4
   firebase_analytics: ^10.7.0
+  firebase_app_check: ^0.2.1+8
   shimmer: ^3.0.0
   lazy_load_scrollview: 1.3.0
   google_maps_flutter: ^2.2.6
@@ -91,6 +92,7 @@ dependencies:
   animated_snack_bar: ^0.4.0
   sign_in_with_apple: ^5.0.0
   permission_handler: ^11.0.1
+  flutter_dotenv: ^5.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -143,6 +145,9 @@ flutter:
   assets:
      - assets/images/
      - assets/animations/
+     - .env.development
+     - .env.staging
+     - .env.production
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -8,10 +7,8 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
@@ -24,13 +21,12 @@ class LeaveConfirmationDialogBonos extends StatefulWidget {
   final String purchaseId;
   final Usuario user;
   const LeaveConfirmationDialogBonos(
-      {Key? key,
+      {super.key,
       required this.text,
       required this.brand,
       required this.bonos,
       required this.purchaseId,
-      required this.user})
-      : super(key: key);
+      required this.user});
 
   @override
   _LeaveConfirmationDialogBonosState createState() =>
@@ -97,9 +93,9 @@ class _LeaveConfirmationDialogBonosState
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(20),
+      insetPadding: const EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
+        padding: const EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -123,7 +119,7 @@ class _LeaveConfirmationDialogBonosState
                           widget.text,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(height: 1.5),
                           textAlign: TextAlign.center,
                         ),
@@ -290,7 +286,7 @@ class _LeaveConfirmationDialogBonosState
                           AppLocalizations.of(context)!.delete,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.white),
                         ),
                         icon: isLoading
@@ -332,7 +328,7 @@ class _LeaveConfirmationDialogBonosState
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
                           style:
-                              Theme.of(context).textTheme.bodyText2?.copyWith(
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context).primaryColorDark,
                                   ),
                         ),
@@ -356,13 +352,13 @@ class _LeaveConfirmationDialogBonosState
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(70, 70), // button width and height
+                      size: const Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
                           color: Colors.red, // button color
                           child: InkWell(
                             onTap: () async {},
-                            child: Icon(
+                            child: const Icon(
                               Icons.event_busy_outlined,
                               color: Colors.white,
                               size: 40,

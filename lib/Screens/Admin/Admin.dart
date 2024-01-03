@@ -2,14 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/AdminService/ScriptsService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminTool.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminFeedBack.dart';
 
 class Admin extends StatefulWidget {
-  const Admin({Key? key}) : super(key: key);
+  const Admin({super.key});
 
   @override
   _AdminState createState() => _AdminState();
@@ -55,8 +53,8 @@ class _AdminState extends State<Admin> {
       ),
       backgroundColor: Colors.white,
       body: ListView.builder(
-        itemCount: this.Names.length,
-        itemBuilder: (context, int index) => EachList(this.Names[index], index),
+        itemCount: Names.length,
+        itemBuilder: (context, int index) => EachList(Names[index], index),
       ),
     );
   }
@@ -67,16 +65,16 @@ class EachList extends StatelessWidget {
   final _script = ScriptsDatabaseService();
   final String name;
   final int index;
-  EachList(this.name, this.index);
+  EachList(this.name, this.index, {super.key});
   @override
   Widget build(BuildContext context) {
-    return new Card(
+    return Card(
       margin: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
       child: ListTile(
         leading: CircleAvatar(
           radius: 25.0,
-          child: new Text(name[0]),
           backgroundColor: Styles.mainColorTrans,
+          child: Text(name[0]),
         ),
         trailing: const Icon(Icons.east),
         title: Text(
@@ -85,7 +83,7 @@ class EachList extends StatelessWidget {
         ),
         subtitle: const Text("Admin Tool"),
         onTap: () {
-          this.returnPage(this.index, context);
+          returnPage(index, context);
         },
       ),
     );
@@ -115,7 +113,7 @@ class EachList extends StatelessWidget {
         break;
       case 3:
         var result = await _script.getStatistics();
-        print("RESULT: "+result.toString());
+        print("RESULT: $result");
         break;
     }
   }

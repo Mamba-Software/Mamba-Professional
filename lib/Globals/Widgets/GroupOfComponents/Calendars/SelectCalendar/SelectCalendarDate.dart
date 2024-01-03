@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -15,12 +14,11 @@ class SelectCalendarDate extends StatefulWidget {
   bool acceptToday;
 
   SelectCalendarDate(
-      {Key? key,
+      {super.key,
       required this.dateRange,
       required this.dateJoined,
       required this.isFuture,
-      this.acceptToday = false})
-      : super(key: key);
+      this.acceptToday = false});
 
   @override
   _SelectCalendarDateState createState() => _SelectCalendarDateState();
@@ -130,7 +128,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(_range,
-                      style: Theme.of(context).textTheme.headline3,
+                      style: Theme.of(context).textTheme.displaySmall,
                       textAlign: TextAlign.left),
                 ],
               ),
@@ -179,7 +177,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   .comingNDays(7.toString()),
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -213,7 +211,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   .comingNDays(14.toString()),
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -246,7 +244,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                               AppLocalizations.of(context)!.endOfMonth,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -278,7 +276,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   .comingNDays(30.toString()),
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -310,7 +308,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   .comingNDays(60.toString()),
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -342,7 +340,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   .comingNDays(90.toString()),
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -392,7 +390,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   .lastNDays(7.toString()),
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -429,7 +427,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   .lastNDays(14.toString()),
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -466,7 +464,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   .lastNDays(30.toString()),
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -498,15 +496,13 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!
+                              "${AppLocalizations.of(context)!
                                       .thisEventAndRest
-                                      .split(" ")[0] +
-                                  " " +
-                                  StringUtils().toCapitalized(
-                                      AppLocalizations.of(context)!.month),
+                                      .split(" ")[0]} ${StringUtils().toCapitalized(
+                                      AppLocalizations.of(context)!.month)}",
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -541,7 +537,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                               AppLocalizations.of(context)!.previousMonth,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -578,7 +574,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   .lastNDays(90.toString()),
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -608,7 +604,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                               AppLocalizations.of(context)!.historic,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.white),
                             ),
                           ),
@@ -648,24 +644,24 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     textAlign: TextAlign.left,
                     textStyle: Theme.of(context)
                         .textTheme
-                        .bodyText1
+                        .bodyLarge
                         ?.copyWith(fontWeight: FontWeight.bold),
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor),
                 monthFormat: 'MMMM',
                 monthCellStyle: DateRangePickerMonthCellStyle(
-                  textStyle: Theme.of(context).textTheme.bodyText2,
-                  todayTextStyle: Theme.of(context).textTheme.bodyText2,
+                  textStyle: Theme.of(context).textTheme.bodyMedium,
+                  todayTextStyle: Theme.of(context).textTheme.bodyMedium,
                   todayCellDecoration: BoxDecoration(
                       border: Border.all(color: Colors.transparent, width: 1),
                       shape: BoxShape.circle),
-                  specialDatesTextStyle: Theme.of(context).textTheme.bodyText2,
+                  specialDatesTextStyle: Theme.of(context).textTheme.bodyMedium,
                   specialDatesDecoration: BoxDecoration(
                     color: Theme.of(context).primaryColor.withOpacity(0.08),
                     border: Border.all(
                         width: 1, color: Theme.of(context).primaryColor),
                     shape: BoxShape.circle,
                   ),
-                  disabledDatesTextStyle: Theme.of(context).textTheme.caption,
+                  disabledDatesTextStyle: Theme.of(context).textTheme.bodySmall,
                 ),
                 monthViewSettings: DateRangePickerMonthViewSettings(
                   firstDayOfWeek: 1,
@@ -675,7 +671,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                   viewHeaderStyle: DateRangePickerViewHeaderStyle(
                     textStyle: Theme.of(context)
                         .textTheme
-                        .caption
+                        .bodySmall
                         ?.copyWith(fontSize: 12),
                   ),
                   specialDates: <DateTime>[widget.dateJoined],
@@ -686,16 +682,16 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                 selectionColor: Theme.of(context).primaryColor,
                 selectionTextStyle: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: Theme.of(context).primaryColorDark),
                 startRangeSelectionColor: Theme.of(context).primaryColor,
                 endRangeSelectionColor: Theme.of(context).primaryColor,
-                rangeSelectionColor: Theme.of(context).backgroundColor,
+                rangeSelectionColor: Theme.of(context).colorScheme.background,
                 extendableRangeSelectionDirection:
                     ExtendableRangeSelectionDirection.forward,
                 rangeTextStyle: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: Theme.of(context).primaryColor),
               ),
             ),
@@ -720,7 +716,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                   AppLocalizations.of(context)!.confirm,
                   style: Theme.of(context)
                       .textTheme
-                      .headline1
+                      .displayLarge
                       ?.copyWith(color: Theme.of(context).primaryColorDark),
                 ),
               ),

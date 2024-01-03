@@ -1,7 +1,4 @@
-import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 
 class CounterBadgeIcon extends StatefulWidget {
   final int counter;
@@ -9,10 +6,10 @@ class CounterBadgeIcon extends StatefulWidget {
   final double? right;
   final Widget child;
 
-  CounterBadgeIcon({Key? key, required this.counter, this.top = 0, this.right = 0, required this.child}) : super(key: key);
+  const CounterBadgeIcon({super.key, required this.counter, this.top = 0, this.right = 0, required this.child});
 
   @override
-  _CounterBadgeIconState createState() => new _CounterBadgeIconState();
+  _CounterBadgeIconState createState() => _CounterBadgeIconState();
 }
 
 class _CounterBadgeIconState extends State<CounterBadgeIcon> {

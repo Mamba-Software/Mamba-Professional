@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionWidget.dart';
 
 class TitleDescriptionBlocSelector extends StatelessWidget {
@@ -9,6 +7,6 @@ class TitleDescriptionBlocSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TitleDescriptionWidget();
+    return const TitleDescriptionWidget();
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -10,7 +9,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 class RequestConfirmationDialog extends StatefulWidget {
   final String text;
   final String userId;
-  const RequestConfirmationDialog({Key? key, required this.text, required this.userId}) : super(key: key);
+  const RequestConfirmationDialog({super.key, required this.text, required this.userId});
 
   @override
   _RequestConfirmationDialogState createState() => _RequestConfirmationDialogState();
@@ -18,7 +17,7 @@ class RequestConfirmationDialog extends StatefulWidget {
 
 class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
+  final _userDataService = UserDataService();
   // Boolean Loading
   bool isLoading = false;
   // User Requesting
@@ -44,7 +43,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
     return isLoading ?
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: const EdgeInsets.all(20),
         child: Container(
           height: MediaQuery.of(context).size.height*0.3,
           decoration: BoxDecoration(
@@ -62,9 +61,9 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
         :
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: const EdgeInsets.all(20),
         child: Container(
-          padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
+          padding: const EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
           height: MediaQuery.of(context).size.height*0.3,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -84,7 +83,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Flexible(
-                          child: Text(widget.text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                          child: Text(widget.text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                         ),
                       ],
                     ),
@@ -107,7 +106,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                           ),
                           label: Text(
                             AppLocalizations.of(context)!.accept,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                           ),
                           icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                           onPressed: () {
@@ -128,7 +127,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                           ),
                           label: Text(
                             AppLocalizations.of(context)!.delete,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                           ),
                           icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,color: AppColors.white),
                           onPressed: () {
@@ -152,7 +151,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                         borderWidth: 2,
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width*0.9,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.10),
@@ -162,7 +161,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                               Flexible(
                                 child: Text(
                                   user.name!,
-                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                  style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),
                               ),

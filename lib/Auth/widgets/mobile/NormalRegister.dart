@@ -1,17 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Auth/utils/enumAuth.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-Widget normalRegister(BuildContext context, AuthState state,  final _formKey, String email, String password) {
+Widget normalRegister(BuildContext context, AuthState state,  final formKey, String email, String password) {
 
   return GestureDetector(
     onTap: () async {
-      if(_formKey.currentState!.validate()){
+      if(formKey.currentState!.validate()){
         //emailTemp = email;
         context.read<AuthCubit>().signUp(email, password, context);
       }
@@ -33,7 +31,7 @@ Widget normalRegister(BuildContext context, AuthState state,  final _formKey, St
         child: checkIfProvider(state, AuthProviderEnum.register) ? Center(
           child: Text(
               AppLocalizations.of(context)!.register,
-              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
+              style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black)
           ),
         ) : Center(
           child: SizedBox(

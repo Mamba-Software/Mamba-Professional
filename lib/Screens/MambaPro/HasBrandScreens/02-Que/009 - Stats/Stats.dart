@@ -1,5 +1,4 @@
 // ignore_for_file: avoid_print
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
@@ -14,8 +13,6 @@ import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -42,12 +39,11 @@ class Stats extends StatefulWidget {
   int? initIndex;
 
   Stats(
-      {Key? key,
+      {super.key,
       required this.brandId,
       required this.pinned,
       required this.pinnedChanged,
-      this.initIndex})
-      : super(key: key);
+      this.initIndex});
 
   @override
   _StatsState createState() => _StatsState();
@@ -141,14 +137,8 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         AppBar().preferredSize.height -
         MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: " +
-        MediaQuery.of(context).size.height.toString() +
-        " " +
-        MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: " +
-        safeAreaHeight.toString() +
-        " " +
-        safeAreaWidth.toString());
+    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   // Gets the Events Done by the Brand
@@ -310,7 +300,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05, right: MediaQuery.of(context).size.width * 0.025),
                           child: Text(
                             AppLocalizations.of(context)!.stats,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white,),
                           ),
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.015,),
@@ -378,16 +368,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                returnCorrectText(),
-                                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
-                              ),
-                              const Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.white)
-                            ],
-                          ),
                           style: TextButton.styleFrom(
                             backgroundColor: AppColors.lightGrey.withOpacity(0.1),
                             shape: RoundedRectangleBorder(  // add this
@@ -396,10 +376,20 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                             padding: const EdgeInsets.only(left: 16.0, right: 10.0),
                           ),
                           onPressed: _show,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                returnCorrectText(),
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                              ),
+                              const Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.white)
+                            ],
+                          ),
                         ),
                         Text(
                           '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -416,7 +406,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                     indicatorColor: AppColors.grey,
                     labelColor: AppColors.white,
                     unselectedLabelColor: AppColors.white,
-                    labelStyle: Theme.of(context).textTheme.bodyText2,
+                    labelStyle: Theme.of(context).textTheme.bodyMedium,
                     tabs: [
                       Tab(
                         text: AppLocalizations.of(context)!.events,
@@ -488,7 +478,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                           child: Text(
                             AppLocalizations.of(context)!.stats,
                             style:
-                            Theme.of(context).textTheme.headline1?.copyWith(
+                            Theme.of(context).textTheme.displayLarge?.copyWith(
                               color: AppColors.white,
                             ),
                           ),
@@ -562,29 +552,28 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                returnCorrectText(),
-                                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
-                              ),
-                              const Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.white)
-                            ],
-                          ),
                           style: TextButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                            backgroundColor: AppColors.lightGrey.withOpacity(0.1),
+                            foregroundColor: Theme.of(context).primaryColor, backgroundColor: AppColors.lightGrey.withOpacity(0.1),
                             shape: RoundedRectangleBorder(  // add this
                               borderRadius: BorderRadius.circular(10),
                             ),
                             padding: const EdgeInsets.only(left: 16.0, right: 10.0),
                           ),
                           onPressed: _show,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                returnCorrectText(),
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                              ),
+                              const Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.white)
+                            ],
+                          ),
                         ),
                         Text(
                           '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -601,7 +590,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                     indicatorColor: AppColors.grey,
                     labelColor: AppColors.white,
                     unselectedLabelColor: AppColors.white,
-                    labelStyle: Theme.of(context).textTheme.bodyText2,
+                    labelStyle: Theme.of(context).textTheme.bodyMedium,
                     tabs: [
                       Tab(
                         text: AppLocalizations.of(context)!.events,
@@ -691,7 +680,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(text,
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                     color: Theme.of(context).primaryColorLight,
                     fontWeight: FontWeight.bold)),
             SizedBox(
@@ -729,7 +718,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                     text,
                     style: Theme.of(context)
                         .textTheme
-                        .headline1
+                        .displayLarge
                         ?.copyWith(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                 ],
@@ -857,7 +846,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
     return Column(
       children: [
         statsTitle('Entrenadores'),
-        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+        Divider(color: Theme.of(context).colorScheme.background, thickness: 2),
       ],
     );
   }
@@ -966,7 +955,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
     // Check for "this month" selection
     if (startDate.day == 1 && startDate.month == now.month && startDate.year == now.year
         && endDate.day == maxEndDate.day && endDate.month == maxEndDate.month && endDate.year == maxEndDate.year) {
-      return AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]+" "+StringUtils().toCapitalized(AppLocalizations.of(context)!.month);
+      return "${AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.month)}";
     }
 
     // Check for "previous month" selection

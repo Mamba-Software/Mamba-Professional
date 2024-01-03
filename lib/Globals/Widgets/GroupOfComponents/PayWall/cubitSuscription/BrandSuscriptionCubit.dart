@@ -18,11 +18,11 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
 
   late StreamSubscription<DocumentSnapshot> _streamBrandSuscription;
 
-  BrandSuscriptionCubit(final cubitAuth) : super(BrandSuscriptionInitial()) {
+  BrandSuscriptionCubit(final cubitAuth) : super(const BrandSuscriptionInitial()) {
 
     Stream<DocumentSnapshot<Object?>> getBrandSubscriptionStream(String userId) {
-      final _brandDataService = BrandDataService();
-      return _brandDataService.getBrandSubscriptionStream(currentBrand.id!);
+      final brandDataService = BrandDataService();
+      return brandDataService.getBrandSubscriptionStream(currentBrand.id!);
     }
 
     try {
@@ -49,10 +49,10 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
 
   Future<void> getBrandSuscription(DocumentSnapshot document) async {
     DateFormat formatter = DateFormat('dd/MM/yy');
-    Brand brand = new Brand();
+    Brand brand = Brand();
     brand = Brand.fromObjectAllData(document.id, document);
-    final _suscriptionDataService = SuscriptionDataService();
-    final _brandDataService = BrandDataService();
+    final suscriptionDataService = SuscriptionDataService();
+    final brandDataService = BrandDataService();
     Subscription subscription = Subscription();
     try {
       //Está en la antigua suscripción metodo
@@ -64,7 +64,7 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
               currentBrand.endDatePay = brand.endDatePay;
           }
           subscription =
-          await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
+          await brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
           subscription.unsuscribed = true;
           setBrandActive();
           if(brandIsActive) {

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,7 +14,6 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/BetaBadge.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
@@ -36,12 +34,11 @@ class Trainers extends StatefulWidget {
   ValueChanged<bool?> pinnedChanged;
 
   Trainers(
-      {Key? key,
+      {super.key,
       required this.brandId,
       required this.numTrainers,
       required this.pinned,
-      required this.pinnedChanged})
-      : super(key: key);
+      required this.pinnedChanged});
 
   @override
   _Trainers createState() => _Trainers();
@@ -231,11 +228,11 @@ class _Trainers extends State<Trainers> {
     String filteredRoles = "";
     int cnt = 0;
     if (filterByTrainers[0]) {
-      filteredRoles += AppLocalizations.of(context)!.owner + ", ";
+      filteredRoles += "${AppLocalizations.of(context)!.owner}, ";
       cnt += 1;
     }
     if (filterByTrainers[1]) {
-      filteredRoles += AppLocalizations.of(context)!.administrador + ", ";
+      filteredRoles += "${AppLocalizations.of(context)!.administrador}, ";
       cnt += 1;
     }
     if (filterByTrainers[2]) {
@@ -246,7 +243,7 @@ class _Trainers extends State<Trainers> {
       return filteredRoles.split(", ")[0];
     }
     if (cnt == 2 && filterByTrainers[2] == false) {
-      return filteredRoles.split(", ")[0] + ", " + filteredRoles.split(", ")[1];
+      return "${filteredRoles.split(", ")[0]}, ${filteredRoles.split(", ")[1]}";
     }
     return filteredRoles;
   }
@@ -255,7 +252,7 @@ class _Trainers extends State<Trainers> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByTrainers[3]) {
-      activeStaff += AppLocalizations.of(context)!.yes + ", ";
+      activeStaff += "${AppLocalizations.of(context)!.yes}, ";
       cnt += 1;
     }
     if (filterByTrainers[4]) {
@@ -322,7 +319,7 @@ class _Trainers extends State<Trainers> {
                                   AppLocalizations.of(context)!.staff,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline1
+                                      .displayLarge
                                       ?.copyWith(
                                         color: AppColors.white,
                                       ),
@@ -338,12 +335,12 @@ class _Trainers extends State<Trainers> {
                                     },
                                     style: Theme.of(context)
                                         .textTheme
-                                        .caption
+                                        .bodySmall
                                         ?.copyWith(color: AppColors.white),
                                     textAlign: TextAlign.left,
                                     decoration: InputDecoration(
                                       hintStyle:
-                                          Theme.of(context).textTheme.caption,
+                                          Theme.of(context).textTheme.bodySmall,
                                       hintText:
                                           AppLocalizations.of(context)!.search,
                                       enabledBorder: const OutlineInputBorder(
@@ -414,7 +411,7 @@ class _Trainers extends State<Trainers> {
                                       },
                                       splashRadius: 20,
                                       splashColor: Theme.of(context)
-                                          .backgroundColor, // Splash color
+                                          .colorScheme.background, // Splash color
                                       padding: EdgeInsets.zero,
                                       alignment: Alignment.center,
                                       icon: Icon(
@@ -435,7 +432,7 @@ class _Trainers extends State<Trainers> {
                                           : Colors.transparent, // Button color
                                       child: InkWell(
                                         splashColor: Theme.of(context)
-                                            .backgroundColor, // Splash color
+                                            .colorScheme.background, // Splash color
                                         onTap: () async {
                                           mixpanel!.track(
                                               'brand_trainers_filter_button');
@@ -453,10 +450,10 @@ class _Trainers extends State<Trainers> {
                                             builder: (BuildContext context) {
                                               // Page View Controller
                                               final PageController
-                                                  _pageController =
+                                                  pageController =
                                                   PageController(
                                                       initialPage: 0);
-                                              int _currentPage = 0;
+                                              int currentPage = 0;
                                               bool isRoles = true;
                                               // Widget
                                               return StatefulBuilder(
@@ -495,7 +492,7 @@ class _Trainers extends State<Trainers> {
                                                                   style: Theme.of(
                                                                           context)
                                                                       .textTheme
-                                                                      .caption,
+                                                                      .bodySmall,
                                                                   textAlign:
                                                                       TextAlign
                                                                           .left),
@@ -506,7 +503,7 @@ class _Trainers extends State<Trainers> {
                                                                               .clear,
                                                                           style: Theme.of(context)
                                                                               .textTheme
-                                                                              .caption),
+                                                                              .bodySmall),
                                                                       onPressed:
                                                                           () {
                                                                         mixpanel!
@@ -530,13 +527,13 @@ class _Trainers extends State<Trainers> {
                                                                       }),
                                                               dense: true,
                                                               onTap:
-                                                                  _currentPage ==
+                                                                  currentPage ==
                                                                           0
                                                                       ? null
                                                                       : () {
                                                                           mixpanel!
                                                                               .track('brand_trainers_filter_back');
-                                                                          _pageController
+                                                                          pageController
                                                                               .previousPage(
                                                                             duration:
                                                                                 const Duration(milliseconds: 500),
@@ -560,12 +557,12 @@ class _Trainers extends State<Trainers> {
                                                                 physics:
                                                                     const NeverScrollableScrollPhysics(),
                                                                 controller:
-                                                                    _pageController,
+                                                                    pageController,
                                                                 onPageChanged:
                                                                     (int page) {
                                                                   setStateBottom(
                                                                       () {
-                                                                    _currentPage =
+                                                                    currentPage =
                                                                         page;
                                                                   });
                                                                 },
@@ -582,7 +579,7 @@ class _Trainers extends State<Trainers> {
                                                                           });
                                                                           mixpanel!
                                                                               .track('brand_trainers_filter_roles');
-                                                                          _pageController
+                                                                          pageController
                                                                               .nextPage(
                                                                             duration:
                                                                                 const Duration(milliseconds: 500),
@@ -594,12 +591,12 @@ class _Trainers extends State<Trainers> {
                                                                             AppLocalizations.of(context)!
                                                                                 .roles,
                                                                             style:
-                                                                                Theme.of(context).textTheme.bodyText1,
+                                                                                Theme.of(context).textTheme.bodyLarge,
                                                                             textAlign: TextAlign.left),
                                                                         subtitle: Text(
                                                                             returnFilteredRolesString(),
                                                                             style:
-                                                                                Theme.of(context).textTheme.caption,
+                                                                                Theme.of(context).textTheme.bodySmall,
                                                                             textAlign: TextAlign.left),
                                                                         trailing:
                                                                             SizedBox(
@@ -619,7 +616,7 @@ class _Trainers extends State<Trainers> {
                                                                           });
                                                                           mixpanel!
                                                                               .track('brand_trainers_filter_active');
-                                                                          _pageController
+                                                                          pageController
                                                                               .nextPage(
                                                                             duration:
                                                                                 const Duration(milliseconds: 500),
@@ -628,15 +625,13 @@ class _Trainers extends State<Trainers> {
                                                                           );
                                                                         },
                                                                         title: Text(
-                                                                            AppLocalizations.of(context)!.active +
-                                                                                " " +
-                                                                                AppLocalizations.of(context)!.lastNDays(30.toString()),
-                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            "${AppLocalizations.of(context)!.active} ${AppLocalizations.of(context)!.lastNDays(30.toString())}",
+                                                                            style: Theme.of(context).textTheme.bodyLarge,
                                                                             textAlign: TextAlign.left),
                                                                         subtitle: Text(
                                                                             returnFilteredActiveStaffString(),
                                                                             style:
-                                                                                Theme.of(context).textTheme.caption,
+                                                                                Theme.of(context).textTheme.bodySmall,
                                                                             textAlign: TextAlign.left),
                                                                         trailing:
                                                                             SizedBox(
@@ -672,7 +667,7 @@ class _Trainers extends State<Trainers> {
                                                                                   }
                                                                                 });
                                                                               },
-                                                                              title: Text(AppLocalizations.of(context)!.owner, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                              title: Text(AppLocalizations.of(context)!.owner, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                               trailing: filterByTrainers[0]
                                                                                   ? SizedBox(
                                                                                       width: MediaQuery.of(context).size.width * 0.15,
@@ -701,7 +696,7 @@ class _Trainers extends State<Trainers> {
                                                                                   }
                                                                                 });
                                                                               },
-                                                                              title: Text(AppLocalizations.of(context)!.administrador, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                              title: Text(AppLocalizations.of(context)!.administrador, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                               trailing: filterByTrainers[1]
                                                                                   ? SizedBox(
                                                                                       width: MediaQuery.of(context).size.width * 0.15,
@@ -730,7 +725,7 @@ class _Trainers extends State<Trainers> {
                                                                                   }
                                                                                 });
                                                                               },
-                                                                              title: Text(AppLocalizations.of(context)!.trainer, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                              title: Text(AppLocalizations.of(context)!.trainer, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                               trailing: filterByTrainers[2]
                                                                                   ? SizedBox(
                                                                                       width: MediaQuery.of(context).size.width * 0.15,
@@ -762,7 +757,7 @@ class _Trainers extends State<Trainers> {
                                                                                   }
                                                                                 });
                                                                               },
-                                                                              title: Text(AppLocalizations.of(context)!.yes, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                              title: Text(AppLocalizations.of(context)!.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                               trailing: filterByTrainers[3]
                                                                                   ? SizedBox(
                                                                                       width: MediaQuery.of(context).size.width * 0.15,
@@ -790,7 +785,7 @@ class _Trainers extends State<Trainers> {
                                                                                   }
                                                                                 });
                                                                               },
-                                                                              title: Text(AppLocalizations.of(context)!.no, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                              title: Text(AppLocalizations.of(context)!.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                               trailing: filterByTrainers[4]
                                                                                   ? SizedBox(
                                                                                       width: MediaQuery.of(context).size.width * 0.15,
@@ -947,14 +942,12 @@ class _Trainers extends State<Trainers> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      AppLocalizations.of(context)!.edit +
-                                          " " +
-                                          AppLocalizations.of(context)!
+                                      "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!
                                               .staff
-                                              .toLowerCase(),
+                                              .toLowerCase()}",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText1!
+                                          .bodyLarge!
                                           .copyWith(
                                               color: Theme.of(context)
                                                   .colorScheme
@@ -966,7 +959,7 @@ class _Trainers extends State<Trainers> {
                                           .rolesDescription,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText2!
+                                          .bodyMedium!
                                           .copyWith(
                                               color: Theme.of(context)
                                                   .colorScheme
@@ -1117,7 +1110,7 @@ class _Trainers extends State<Trainers> {
                               user.name!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText1
+                                  .bodyLarge
                                   ?.copyWith(fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left,
                             ),
@@ -1126,7 +1119,7 @@ class _Trainers extends State<Trainers> {
                               children: [
                                 Text(
                                   returnBrandRoleString(user),
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ],
                             ),
@@ -1164,11 +1157,11 @@ class _Trainers extends State<Trainers> {
                                       final room = await FirebaseChatCore
                                           .instance
                                           .createRoom(otherUser, metadata: {
-                                        "trainer" + user.id!: user.isTrainer,
-                                        "trainer" + currentUser.id!:
+                                        "trainer${user.id!}": user.isTrainer,
+                                        "trainer${currentUser.id!}":
                                             currentUser.isTrainer,
-                                        "active" + user.id!: false,
-                                        "active" + currentUser.id!: true,
+                                        "active${user.id!}": false,
+                                        "active${currentUser.id!}": true,
                                       });
 
                                       bool? deleteRoom = await Navigator.push(
@@ -1178,7 +1171,7 @@ class _Trainers extends State<Trainers> {
                                                 ChatPage(room: room)),
                                       ).whenComplete(() async {
                                         room.metadata![
-                                            "active" + currentUser.id!] = false;
+                                            "active${currentUser.id!}"] = false;
                                         _roomDataService.updateRoom(
                                             room.id, room.metadata!);
                                       });
@@ -1221,7 +1214,7 @@ class _Trainers extends State<Trainers> {
                                   MediaQuery.of(context).size.height * 0.005),
                           Text(
                             AppLocalizations.of(context)!.noData,
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(
@@ -1251,7 +1244,6 @@ class _Trainers extends State<Trainers> {
               width: MediaQuery.of(context).size.width * 0.15,
               child: SpeedDial(
                 heroTag: "106",
-                child: const Icon(Icons.add),
                 activeChild: const Icon(Icons.group_add_outlined),
                 animationDuration: const Duration(milliseconds: 100),
                 foregroundColor: AppColors.white,
@@ -1267,7 +1259,7 @@ class _Trainers extends State<Trainers> {
                         size: 30,
                       ),
                       elevation: 10,
-                      backgroundColor: Theme.of(context).backgroundColor,
+                      backgroundColor: Theme.of(context).colorScheme.background,
                       labelWidget: Container(
                         color: Colors.transparent,
                         padding: EdgeInsets.only(
@@ -1289,17 +1281,15 @@ class _Trainers extends State<Trainers> {
                                               .betaFeature,
                                           5);
                                     },
-                                    child: BetaBadge()),
+                                    child: const BetaBadge()),
                                 SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.02,
                                 ),
                                 Text(
-                                    AppLocalizations.of(context)!.add +
-                                        " " +
-                                        AppLocalizations.of(context)!.staff,
+                                    "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.staff}",
                                     style:
-                                        Theme.of(context).textTheme.headline3,
+                                        Theme.of(context).textTheme.displaySmall,
                                     textAlign: TextAlign.right),
                               ],
                             ),
@@ -1317,7 +1307,7 @@ class _Trainers extends State<Trainers> {
                                         .split(AppLocalizations.of(context)!
                                             .client
                                             .toLowerCase())[1],
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
                         ),
@@ -1333,7 +1323,7 @@ class _Trainers extends State<Trainers> {
                         ),
                       ),
                       elevation: 10,
-                      backgroundColor: Theme.of(context).backgroundColor,
+                      backgroundColor: Theme.of(context).colorScheme.background,
                       labelWidget: Container(
                         color: Colors.transparent,
                         padding: EdgeInsets.only(
@@ -1345,13 +1335,11 @@ class _Trainers extends State<Trainers> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                                AppLocalizations.of(context)!.invite +
-                                    " " +
-                                    AppLocalizations.of(context)!.staff,
-                                style: Theme.of(context).textTheme.headline3,
+                                "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.staff}",
+                                style: Theme.of(context).textTheme.displaySmall,
                                 textAlign: TextAlign.right),
                             Text(AppLocalizations.of(context)!.copyCodeMessage,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
                         ),
@@ -1360,6 +1348,7 @@ class _Trainers extends State<Trainers> {
                         navigateShareBrandLink();
                       }),
                 ],
+                child: const Icon(Icons.add),
               ),
             ),
           )

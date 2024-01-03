@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -35,7 +33,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class EventPageClient extends StatefulWidget {
   String eventId;
   bool? onlyView;
-  EventPageClient({Key? key, required this.eventId, this.onlyView}) : super(key: key);
+  EventPageClient({super.key, required this.eventId, this.onlyView});
 
   @override
   _EventPageClientState createState() => _EventPageClientState();
@@ -82,8 +80,8 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
   List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
   // Location
   Location location = Location();
-  Set<Marker> markers = Set<Marker>();
-  CameraPosition _initialPosition = CameraPosition(target: LatLng(26.8206, 30.8025));
+  Set<Marker> markers = <Marker>{};
+  CameraPosition _initialPosition = const CameraPosition(target: LatLng(26.8206, 30.8025));
   GoogleMapController? mapController;
   final Completer<GoogleMapController> _controller = Completer();
   // Participants
@@ -130,8 +128,8 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
   initDeviceSizes() {
     safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
+    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   Future getEventInfo() async {
@@ -185,7 +183,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
     allUsers = await _eventDataService.getEventUsers(event!.id!);
     List<Usuario> trainers = [];
     List<Usuario> clients = [];
-    bool _isJoined = false;
+    bool isJoinedTemp = false;
     for (var i=0; i < allUsers.length; i++) {
       var user = allUsers[i];
       if (user.isTrainer!) {
@@ -194,7 +192,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
         if (currentUser.id! == user.id!) {
           // User has joined the event
           clients.insert(0, user);
-          _isJoined = true;
+          isJoinedTemp = true;
           double? feedbackClient = await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
           eventClientsFeedback.insert(0, feedbackClient);
         } else {
@@ -210,7 +208,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
         placesLeft = members - eventClients.length;
         eventTrainers = trainers;
         eventClients = clients;
-        isJoined = _isJoined;
+        isJoined = isJoinedTemp;
       });
     }
   }
@@ -268,7 +266,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
 
   void createMarker() async{
     Marker marker = Marker(
-      markerId: MarkerId('1'),
+      markerId: const MarkerId('1'),
       position: LatLng(location.latitude!,location.longitude!),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       onTap: () {},
@@ -304,12 +302,12 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
             children: [
               Text(
                 places.toString(),
-                style: Theme.of(context).textTheme.headline3?.copyWith(color: isFull ? AppColors.red : Colors.green),
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: isFull ? AppColors.red : Colors.green),
                 textAlign: TextAlign.center,
               ),
               Text(
                 places == 1 ? AppLocalizations.of(context)!.slot : AppLocalizations.of(context)!.slots,
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5, color: isFull ? AppColors.red : Colors.green),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 5, color: isFull ? AppColors.red : Colors.green),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -321,20 +319,20 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
 
   // Build EventFeedback Value
   Widget buildEventFeedbackIcon(double eventFeedbackValue) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width*0.1,
       child: FittedBox(
         fit: BoxFit.fitWidth,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width*0.05,
               child: Image.asset(Constants.fireEmojiImage),
             ),
             Text(
                 eventFeedbackValue.toString(),
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center
             ),
           ],
@@ -367,7 +365,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
             height: MediaQuery.of(context).size.height * 0.3,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor
+                color: Theme.of(context).colorScheme.background
             ),
           ),
           Positioned(
@@ -657,9 +655,9 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                     child: TextField(
                                       controller: titleController,
                                       readOnly: true,
-                                      style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                      style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.bold),
                                       decoration: InputDecoration(
-                                        hintStyle: Theme.of(context).textTheme.caption,
+                                        hintStyle: Theme.of(context).textTheme.bodySmall,
                                         hintText:AppLocalizations.of(context)!.titleHint,
                                         border: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -674,13 +672,13 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
-                                      color: Theme.of(context).backgroundColor,
+                                      color: Theme.of(context).colorScheme.background,
                                     ),
                                     child: event!.isPrivate! ? Row(
                                       children: [
                                         Text(
                                             AppLocalizations.of(context)!.private,
-                                            style: Theme.of(context).textTheme.bodyText2,
+                                            style: Theme.of(context).textTheme.bodyMedium,
                                             textAlign: TextAlign.right
                                         ),
                                         SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -694,7 +692,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                       children: [
                                         Text(
                                             AppLocalizations.of(context)!.group,
-                                            style: Theme.of(context).textTheme.bodyText2,
+                                            style: Theme.of(context).textTheme.bodyMedium,
                                             textAlign: TextAlign.right
                                         ),
                                         SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -719,9 +717,9 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                           readOnly: true,
                                           minLines: 1,
                                           maxLines: 4,
-                                          style: Theme.of(context).textTheme.bodyText2,
+                                          style: Theme.of(context).textTheme.bodyMedium,
                                           decoration: InputDecoration(
-                                            hintStyle: Theme.of(context).textTheme.caption,
+                                            hintStyle: Theme.of(context).textTheme.bodySmall,
                                             hintText:AppLocalizations.of(context)!.noDescription,
                                             border: InputBorder.none,
                                             focusedBorder: InputBorder.none,
@@ -745,7 +743,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                           child: Center(
                             child: Text(
                               AppLocalizations.of(context)!.errorDate,
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -771,7 +769,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                 child: Center(
                                     child: Text(
                                         event!.day.toString(),
-                                        style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
+                                        style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
                                         textAlign: TextAlign.center
                                     )
                                 ),
@@ -790,9 +788,9 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                             controller: startDateController,
                                             readOnly: true,
                                             enabled: false,
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                                             decoration: InputDecoration(
-                                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                              labelStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                                               border: InputBorder.none,
                                               focusedBorder: InputBorder.none,
                                               enabledBorder: InputBorder.none,
@@ -846,7 +844,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                             controller: durationController,
                                             readOnly: true,
                                             enabled: false,
-                                            style: Theme.of(context).textTheme.bodyText2,
+                                            style: Theme.of(context).textTheme.bodyMedium,
                                             decoration: const InputDecoration(
                                               border: InputBorder.none,
                                               focusedBorder: InputBorder.none,
@@ -877,7 +875,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                         height: MediaQuery.of(context).size.height*0.2,
                         width: MediaQuery.of(context).size.width*0.9,
                         decoration: BoxDecoration(
-                            color: Theme.of(context).backgroundColor,
+                            color: Theme.of(context).colorScheme.background,
                             borderRadius: const BorderRadius.all(Radius.circular(15.0))
                         ),
                         child: Stack(
@@ -932,7 +930,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                       padding: const EdgeInsets.only(left: 5.0),
                                       child: Text(
                                         location.description!,
-                                        style: Theme.of(context).textTheme.bodyText2,
+                                        style: Theme.of(context).textTheme.bodyMedium,
                                       ),
                                     )
                                   ],
@@ -956,22 +954,22 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                             children: <Widget>[
                               Text(
                                 AppLocalizations.of(context)!.trainers,
-                                style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 0),
+                          padding: const EdgeInsets.only(top: 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Container(
+                              SizedBox(
                                 height: MediaQuery.of(context).size.height*0.15,
                                 width: MediaQuery.of(context).size.width*0.99,
                                 child: ListView.builder(
                                     shrinkWrap: true,
-                                    physics: BouncingScrollPhysics(),
+                                    physics: const BouncingScrollPhysics(),
                                     scrollDirection: Axis.horizontal,
                                     itemCount: eventTrainers.length,
                                     itemBuilder: (context, int index) {
@@ -982,7 +980,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                               builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false,)));
                                         },
                                         child: Padding(
-                                          padding: !(index == 0 || index == eventTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                          padding: !(index == 0 || index == eventTrainers.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
@@ -993,7 +991,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                 borderWidth: 1,
                                               ),
                                               SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                              Container(
+                                              SizedBox(
                                                 width: MediaQuery.of(context).size.width*0.2,
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1001,7 +999,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                     Expanded(
                                                       child: Text(
                                                         trainer.name! != AppLocalizations.of(context)!.notFoundUser ? trainer.firstName! : trainer.name!,
-                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        style: Theme.of(context).textTheme.bodyMedium,
                                                         textAlign: TextAlign.center,
                                                       ),
                                                     ),
@@ -1025,29 +1023,29 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                             children: <Widget>[
                               Text(
                                 AppLocalizations.of(context)!.clients,
-                                style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
                               ),
-                              SizedBox(width: 16),
+                              const SizedBox(width: 16),
                               (event!.isPrivate! == false) ? Row(
                                 children: [
                                   Text(
-                                    "( "+event!.numClients.toString(),
-                                    style: Theme.of(context).textTheme.bodyText2,
+                                    "( ${event!.numClients}",
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                   ),
                                   Text(
                                     " / ",
-                                    style: Theme.of(context).textTheme.bodyText2,
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                   ),
                                   Text(
-                                    event!.maxMembers.toString()+" )",
-                                    style: Theme.of(context).textTheme.bodyText2,
+                                    "${event!.maxMembers} )",
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ],
                               ) : Row(
                                 children: [
                                   Text(
-                                    "( "+event!.numClients.toString()+" )",
-                                    style: Theme.of(context).textTheme.bodyText2,
+                                    "( ${event!.numClients} )",
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ],
                               ),
@@ -1055,7 +1053,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 0),
+                          padding: const EdgeInsets.only(top: 0),
                           child:
                           eventClients.isEmpty ?
                           Row(
@@ -1063,13 +1061,13 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                             children: [
                               Column(
                                 children: [
-                                  Container(
+                                  SizedBox(
                                       height: 100,
                                       child: Image.asset(Constants.emptyPeople)
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.noClientJoining,
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -1079,12 +1077,12 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Container(
+                              SizedBox(
                                 height: MediaQuery.of(context).size.height*0.15,
                                 width: MediaQuery.of(context).size.width,
                                 child: ListView.builder(
                                     shrinkWrap: true,
-                                    physics: BouncingScrollPhysics(),
+                                    physics: const BouncingScrollPhysics(),
                                     scrollDirection: Axis.horizontal,
                                     itemCount: eventClients.length,
                                     itemBuilder: (context, int index) {
@@ -1096,7 +1094,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
 
                                           },
                                           child: Padding(
-                                            padding: !(index == 0 || index == eventClients.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                            padding: !(index == 0 || index == eventClients.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
@@ -1107,7 +1105,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                   borderWidth: 1,
                                                 ),
                                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                Container(
+                                                SizedBox(
                                                   width: MediaQuery.of(context).size.width*0.2,
                                                   child: Row(
                                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1115,7 +1113,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                       Expanded(
                                                         child: Text(
                                                           client.name! != AppLocalizations.of(context)!.notFoundUser ? client.firstName! : client.name!,
-                                                          style: Theme.of(context).textTheme.caption,
+                                                          style: Theme.of(context).textTheme.bodySmall,
                                                           textAlign: TextAlign.center,
                                                         ),
                                                       ),
@@ -1133,7 +1131,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                 builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
                                           },
                                           child: Padding(
-                                            padding: !(index == 0 || index == eventClients.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                            padding: !(index == 0 || index == eventClients.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
@@ -1144,7 +1142,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                   borderWidth: 1,
                                                 ),
                                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                Container(
+                                                SizedBox(
                                                   width: MediaQuery.of(context).size.width*0.2,
                                                   child: Row(
                                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1152,7 +1150,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                       Expanded(
                                                         child: Text(
                                                           client.name! != AppLocalizations.of(context)!.notFoundUser ? client.firstName! : client.name!,
-                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                          style: Theme.of(context).textTheme.bodyMedium,
                                                           textAlign: TextAlign.center,
                                                         ),
                                                       ),
@@ -1160,7 +1158,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                   ),
                                                 ),
                                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                clientFeedback != null ? Container(
+                                                clientFeedback != null ? SizedBox(
                                                   height: MediaQuery.of(context).size.height*0.02,
                                                   width: MediaQuery.of(context).size.width*0.1,
                                                   child: FittedBox(
@@ -1215,7 +1213,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                   color: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 child: SingleChildScrollView(
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   child: Column(
                     children: [
                       Padding(
@@ -1235,9 +1233,9 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                         child: TextField(
                                           controller: titleController,
                                           readOnly: true,
-                                          style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                          style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.bold),
                                           decoration: InputDecoration(
-                                            labelStyle: Theme.of(context).textTheme.bodyText2,
+                                            labelStyle: Theme.of(context).textTheme.bodyMedium,
                                             hintText:AppLocalizations.of(context)!.noDescription,
                                             border: InputBorder.none,
                                             focusedBorder: InputBorder.none,
@@ -1249,16 +1247,16 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                         ),
                                       ),
                                       Container(
-                                        padding: EdgeInsets.all(8),
+                                        padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(15),
-                                          color: Theme.of(context).backgroundColor,
+                                          color: Theme.of(context).colorScheme.background,
                                         ),
                                         child: event!.isPrivate! ? Row(
                                           children: [
                                             Text(
                                                 AppLocalizations.of(context)!.private,
-                                                style: Theme.of(context).textTheme.bodyText2,
+                                                style: Theme.of(context).textTheme.bodyMedium,
                                                 textAlign: TextAlign.right
                                             ),
                                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -1272,7 +1270,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                           children: [
                                             Text(
                                                 AppLocalizations.of(context)!.group,
-                                                style: Theme.of(context).textTheme.bodyText2,
+                                                style: Theme.of(context).textTheme.bodyMedium,
                                                 textAlign: TextAlign.right
                                             ),
                                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -1287,7 +1285,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                     ],
                                   ),
                                   Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 0),
+                                      padding: const EdgeInsets.symmetric(horizontal: 0),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: <Widget>[
@@ -1297,16 +1295,16 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                               readOnly: true,
                                               minLines: 1,
                                               maxLines: 4,
-                                              style: Theme.of(context).textTheme.bodyText2,
+                                              style: Theme.of(context).textTheme.bodyMedium,
                                               decoration: InputDecoration(
-                                                hintStyle: Theme.of(context).textTheme.caption,
+                                                hintStyle: Theme.of(context).textTheme.bodySmall,
                                                 hintText:AppLocalizations.of(context)!.noDescription,
                                                 border: InputBorder.none,
                                                 focusedBorder: InputBorder.none,
                                                 enabledBorder: InputBorder.none,
                                                 errorBorder: InputBorder.none,
                                                 disabledBorder: InputBorder.none,
-                                                contentPadding: EdgeInsets.all(0),
+                                                contentPadding: const EdgeInsets.all(0),
                                               ),
                                               textAlign: TextAlign.justify,
                                             ),
@@ -1323,7 +1321,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               width: MediaQuery.of(context).size.width * 0.90,
                               decoration: BoxDecoration(
                                   color: Theme.of(context).scaffoldBackgroundColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(5.0))
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0))
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
@@ -1334,18 +1332,18 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                     width: MediaQuery.of(context).size.height * 0.07,
                                     decoration: BoxDecoration(
                                         color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
-                                        borderRadius: BorderRadius.all(Radius.circular(5.0))
+                                        borderRadius: const BorderRadius.all(Radius.circular(5.0))
                                     ),
                                     child: Center(
                                         child: Text(
                                             event!.day.toString(),
-                                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
+                                            style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
                                             textAlign: TextAlign.center
                                         )
                                     ),
                                   ),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                                  Container(
+                                  SizedBox(
                                       height: MediaQuery.of(context).size.height * 0.08,
                                       width: MediaQuery.of(context).size.width*0.64,
                                       child: Center(
@@ -1358,9 +1356,9 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                 controller: startDateController,
                                                 readOnly: true,
                                                 enabled: false,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                                                 decoration: InputDecoration(
-                                                  labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  labelStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                                                   border: InputBorder.none,
                                                   focusedBorder: InputBorder.none,
                                                   enabledBorder: InputBorder.none,
@@ -1383,7 +1381,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               width: MediaQuery.of(context).size.width * 0.90,
                               decoration: BoxDecoration(
                                   color: Theme.of(context).scaffoldBackgroundColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(5.0))
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0))
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
@@ -1394,14 +1392,14 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                     width: MediaQuery.of(context).size.height * 0.07,
                                     decoration: BoxDecoration(
                                         color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
-                                        borderRadius: BorderRadius.all(Radius.circular(5.0))
+                                        borderRadius: const BorderRadius.all(Radius.circular(5.0))
                                     ),
                                     child: Center(
                                         child: Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,)
                                     ),
                                   ),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                                  Container(
+                                  SizedBox(
                                       height: MediaQuery.of(context).size.height * 0.08,
                                       width: MediaQuery.of(context).size.width*0.64,
                                       child: Center(
@@ -1414,8 +1412,8 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                 controller: durationController,
                                                 readOnly: true,
                                                 enabled: false,
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                                decoration: InputDecoration(
+                                                style: Theme.of(context).textTheme.bodyMedium,
+                                                decoration: const InputDecoration(
                                                   border: InputBorder.none,
                                                   focusedBorder: InputBorder.none,
                                                   enabledBorder: InputBorder.none,
@@ -1445,14 +1443,14 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                             height: MediaQuery.of(context).size.height*0.2,
                             width: MediaQuery.of(context).size.width*0.9,
                             decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                color: Theme.of(context).colorScheme.background,
+                                borderRadius: const BorderRadius.all(Radius.circular(15.0))
                             ),
                             child: Stack(
                               children: <Widget>[
                                 Center(
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.only(
+                                    borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(15),
                                       topRight: Radius.circular(15),
                                       bottomRight: Radius.circular(15),
@@ -1470,7 +1468,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                         rotateGesturesEnabled: false,
                                         mapToolbarEnabled: false,
                                         zoomControlsEnabled: false,
-                                        minMaxZoomPreference: MinMaxZoomPreference(17,17),
+                                        minMaxZoomPreference: const MinMaxZoomPreference(17,17),
                                         myLocationButtonEnabled: false,
                                         markers: markers,
                                         mapType: MapType.hybrid,
@@ -1487,7 +1485,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                         borderRadius: BorderRadius.circular(15),
                                         color: Theme.of(context).scaffoldBackgroundColor
                                     ),
-                                    padding: EdgeInsets.all(10),
+                                    padding: const EdgeInsets.all(10),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
@@ -1500,7 +1498,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                           padding: const EdgeInsets.only(left: 5.0),
                                           child: Text(
                                             location.description!,
-                                            style: Theme.of(context).textTheme.bodyText2,
+                                            style: Theme.of(context).textTheme.bodyMedium,
                                           ),
                                         )
                                       ],
@@ -1524,22 +1522,22 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                 children: <Widget>[
                                   Text(
                                     AppLocalizations.of(context)!.trainers,
-                                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 0),
+                              padding: const EdgeInsets.only(top: 0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     height: MediaQuery.of(context).size.height*0.15,
                                     width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
-                                        physics: BouncingScrollPhysics(),
+                                        physics: const BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
                                         itemCount: eventTrainers.length,
                                         itemBuilder: (context, int index) {
@@ -1550,7 +1548,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                 builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false,)));
                                             },
                                             child: Padding(
-                                              padding: !(index == 0 || index == eventTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                              padding: !(index == 0 || index == eventTrainers.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
@@ -1561,7 +1559,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                     borderWidth: 1,
                                                   ),
                                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                  Container(
+                                                  SizedBox(
                                                     width: MediaQuery.of(context).size.width*0.2,
                                                     child: Row(
                                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1569,7 +1567,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                         Expanded(
                                                           child: Text(
                                                             trainer.name! != AppLocalizations.of(context)!.notFoundUser ? trainer.firstName! : trainer.name!,
-                                                            style: Theme.of(context).textTheme.bodyText2,
+                                                            style: Theme.of(context).textTheme.bodyMedium,
                                                             textAlign: TextAlign.center,
                                                           ),
                                                         ),
@@ -1593,29 +1591,29 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                 children: <Widget>[
                                   Text(
                                     AppLocalizations.of(context)!.clients,
-                                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
                                   ),
-                                  SizedBox(width: 16),
+                                  const SizedBox(width: 16),
                                   (event!.isPrivate! == false) ? Row(
                                     children: [
                                       Text(
-                                        "( "+event!.numClients.toString(),
-                                        style: Theme.of(context).textTheme.bodyText2,
+                                        "( ${event!.numClients}",
+                                        style: Theme.of(context).textTheme.bodyMedium,
                                       ),
                                       Text(
                                         " / ",
-                                        style: Theme.of(context).textTheme.bodyText2,
+                                        style: Theme.of(context).textTheme.bodyMedium,
                                       ),
                                       Text(
-                                        event!.maxMembers.toString()+" )",
-                                        style: Theme.of(context).textTheme.bodyText2,
+                                        "${event!.maxMembers} )",
+                                        style: Theme.of(context).textTheme.bodyMedium,
                                       ),
                                     ],
                                   ) : Row(
                                     children: [
                                       Text(
-                                        "( "+event!.numClients.toString()+" )",
-                                        style: Theme.of(context).textTheme.bodyText2,
+                                        "( ${event!.numClients} )",
+                                        style: Theme.of(context).textTheme.bodyMedium,
                                       ),
                                     ],
                                   ),
@@ -1623,7 +1621,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 0),
+                              padding: const EdgeInsets.only(top: 0),
                               child:
                               eventClients.isEmpty ?
                               Row(
@@ -1631,13 +1629,13 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                 children: [
                                   Column(
                                     children: [
-                                      Container(
+                                      SizedBox(
                                           height: 100,
                                           child: Image.asset(Constants.emptyPeople)
                                       ),
                                       Text(
                                         AppLocalizations.of(context)!.noClientJoining,
-                                        style: Theme.of(context).textTheme.caption,
+                                        style: Theme.of(context).textTheme.bodySmall,
                                         textAlign: TextAlign.center,
                                       ),
                                     ],
@@ -1647,12 +1645,12 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     height: MediaQuery.of(context).size.height*0.15,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                         shrinkWrap: true,
-                                        physics: BouncingScrollPhysics(),
+                                        physics: const BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
                                         itemCount: eventClients.length,
                                         itemBuilder: (context, int index) {
@@ -1664,7 +1662,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
 
                                               },
                                               child: Padding(
-                                                padding: !(index == 0 || index == eventClients.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                padding: !(index == 0 || index == eventClients.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
@@ -1675,7 +1673,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                       borderWidth: 1,
                                                     ),
                                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                    Container(
+                                                    SizedBox(
                                                       width: MediaQuery.of(context).size.width*0.2,
                                                       child: Row(
                                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1683,7 +1681,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                           Expanded(
                                                             child: Text(
                                                               client.name! != AppLocalizations.of(context)!.notFoundUser ? client.firstName! : client.name!,
-                                                              style: Theme.of(context).textTheme.caption,
+                                                              style: Theme.of(context).textTheme.bodySmall,
                                                               textAlign: TextAlign.center,
                                                             ),
                                                           ),
@@ -1701,7 +1699,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                   builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
                                               },
                                               child: Padding(
-                                                padding: !(index == 0 || index == eventClients.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                padding: !(index == 0 || index == eventClients.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
@@ -1712,7 +1710,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                     borderWidth: 1,
                                                     ),
                                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                    Container(
+                                                    SizedBox(
                                                       width: MediaQuery.of(context).size.width*0.2,
                                                       child: Row(
                                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1720,7 +1718,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                           Expanded(
                                                             child: Text(
                                                               client.name! != AppLocalizations.of(context)!.notFoundUser ? client.firstName! : client.name!,
-                                                              style: Theme.of(context).textTheme.bodyText2,
+                                                              style: Theme.of(context).textTheme.bodyMedium,
                                                               textAlign: TextAlign.center,
                                                             ),
                                                           ),
@@ -1728,7 +1726,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                       ),
                                                     ),
                                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                    clientFeedback != null ? Container(
+                                                    clientFeedback != null ? SizedBox(
                                                       height: MediaQuery.of(context).size.height*0.02,
                                                       width: MediaQuery.of(context).size.width*0.1,
                                                       child: FittedBox(
@@ -1812,7 +1810,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                             icon: Icon(Icons.schedule_send, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
                             label: Text(
                               AppLocalizations.of(context)!.sent,
-                              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),),
                           ),
                         ),
                       ),
@@ -1859,7 +1857,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                             icon: Icon(Icons.send_outlined, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
                             label: Text(
                               AppLocalizations.of(context)!.join,
-                              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),),
                           ),
                         ),
                       ),
@@ -1916,10 +1914,10 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                             }
                           },
                           backgroundColor: Colors.green,
-                          icon: Icon(Icons.event_available_outlined, color: Colors.white,),
+                          icon: const Icon(Icons.event_available_outlined, color: Colors.white,),
                           label: Text(
                             AppLocalizations.of(context)!.book,
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),),
                         ),
                       ),
                     ),
@@ -1971,10 +1969,10 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                             }
                           },
                           backgroundColor: Colors.red,
-                          icon: Icon(Icons.event_busy_outlined, color: Colors.white,),
+                          icon: const Icon(Icons.event_busy_outlined, color: Colors.white,),
                           label: Text(
                             AppLocalizations.of(context)!.leave,
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),),
                         ),
                       ),
                     ),

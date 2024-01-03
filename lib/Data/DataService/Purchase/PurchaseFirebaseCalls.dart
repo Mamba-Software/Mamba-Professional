@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -8,26 +6,23 @@ import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:uuid/uuid.dart';
 
 // Firebase Purchase Service Class. All calls to Firebase are in this class.
 class PurchaseFirebaseCalls {
 
   // Firebase Instances
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
 
-  // Firebase collections
-  String users = isProduction ? 'Users' : '7777 Users';
-  String events = isProduction ? 'Events' : '7777 Events';
-  String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
-  String library = isProduction ? 'Library' : 'Library';
+  // Firebase collections  
+  String users = 'Users';
+  String nicknames = 'Nicknames';
+  String brands = 'Brands';
+  String events = 'Events';
+  String conversations = 'Conversations';
+  String library = 'Library';
+  String purchases = 'Purchases';
 
   // Check Data
   Future<bool> checkIfEventInPurchase(String purchaseId, String eventId) async {
@@ -56,9 +51,9 @@ class PurchaseFirebaseCalls {
           .where("isActive", isEqualTo: true)
           .get();
       for (int j = 0; j < querySnapshot.docs.length; j++) {
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(purchases)
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore.collection(purchases)
             .doc(querySnapshot.docs[j].id).collection("Events").doc(eventId).get();
-        if(_documentSnapshot.exists) {
+        if(documentSnapshot.exists) {
           return querySnapshot.docs[j].id;
         }
       }
@@ -72,27 +67,27 @@ class PurchaseFirebaseCalls {
   Future<Purchase> getPurchaseInfo(String purchaseId) async {
     Purchase purchase;
     // Get Main Purchase Info
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
         .collection(purchases)
         .doc(purchaseId)
         .get();
-    purchase = Purchase.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    purchase = Purchase.fromObjectAllData(documentSnapshot.id, documentSnapshot);
     // Get Brand From Purchase
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 = await _firestore.collection(brands).doc(purchase.brandId).get();
-    Brand brand =  Brand.fromObjectOnlyCoverData(_documentSnapshot2.id, _documentSnapshot2);
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot2 = await _firestore.collection(brands).doc(purchase.brandId).get();
+    Brand brand =  Brand.fromObjectOnlyCoverData(documentSnapshot2.id, documentSnapshot2);
     // Set Purchased Brand Bono
     purchase.setPurchasedBrandBono = brand;
     // Get Bono From Purchase
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot3 = await _firestore.collection(brands).doc(purchase.brandId).collection("Bonos").doc(purchase.bonoId).get();
-    Bono bono =  Bono.fromObjectAllData(_documentSnapshot3.id, _documentSnapshot3);
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot3 = await _firestore.collection(brands).doc(purchase.brandId).collection("Bonos").doc(purchase.bonoId).get();
+    Bono bono =  Bono.fromObjectAllData(documentSnapshot3.id, documentSnapshot3);
     // Add Conditions of This purchase
     bono.setBrandId = purchase.brandId!;
-    bono.setBonoPrice = _documentSnapshot.get("price").toDouble();
-    bono.setBonoSessions = _documentSnapshot.get("sessions");
+    bono.setBonoPrice = documentSnapshot.get("price").toDouble();
+    bono.setBonoSessions = documentSnapshot.get("sessions");
     bono.setConditionsData = Condition(
-      expirationTime: _documentSnapshot.get("expirationTime"),
-      cancelTime: _documentSnapshot.get("cancelTime"),
-      weeklySessions: _documentSnapshot.get("weeklySessions"),
+      expirationTime: documentSnapshot.get("expirationTime"),
+      cancelTime: documentSnapshot.get("cancelTime"),
+      weeklySessions: documentSnapshot.get("weeklySessions"),
     );
     // Set Purchased Bono
     purchase.setPurchasedBono = bono;
@@ -236,7 +231,7 @@ class PurchaseFirebaseCalls {
 
   Future<List<Purchase>> getAllUserPurchasesFromBrand(String userId, String brandId) async {
     List<Purchase> purchasesList = [];
-    Map<String, Bono> bonoKey =  Map();
+    Map<String, Bono> bonoKey =  {};
     Bono bono = Bono();
     // Get All User Purchases
     QuerySnapshot querySnapshot = await _firestore
@@ -247,15 +242,15 @@ class PurchaseFirebaseCalls {
         .collection("Purchases")
         .get();
 
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 = await _firestore.collection(brands).doc(brandId).get();
-    Brand brand = Brand.fromObjectOnlyCoverData(_documentSnapshot2.id, _documentSnapshot2);
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot2 = await _firestore.collection(brands).doc(brandId).get();
+    Brand brand = Brand.fromObjectOnlyCoverData(documentSnapshot2.id, documentSnapshot2);
 
     // Build Each Purchase
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       // Get Main Purchase Info
       String purchaseId = querySnapshot.docs[i].id;
-      DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
-      Purchase purchase = Purchase.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
+      Purchase purchase = Purchase.fromObjectAllData(documentSnapshot.id, documentSnapshot);
       purchase.setBasicData = Purchase(
         id: purchase.id,
         userId: userId,
@@ -273,19 +268,19 @@ class PurchaseFirebaseCalls {
         bono = bonoKey[purchase.bonoId!]!;
       }
       else {
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot3 = await _firestore.collection(brands).doc(purchase.brandId).collection("Bonos").doc(purchase.bonoId).get();
-        bono =  Bono.fromObjectAllData(_documentSnapshot3.id, _documentSnapshot3);
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot3 = await _firestore.collection(brands).doc(purchase.brandId).collection("Bonos").doc(purchase.bonoId).get();
+        bono =  Bono.fromObjectAllData(documentSnapshot3.id, documentSnapshot3);
         bonoKey[purchase.bonoId!] = bono;
       }
       // Get Bono From Purchase
 
       // Add Conditions of This purchase
-      bono.setBonoPrice = _documentSnapshot.get("price").toDouble();
-      bono.setBonoSessions = _documentSnapshot.get("sessions");
+      bono.setBonoPrice = documentSnapshot.get("price").toDouble();
+      bono.setBonoSessions = documentSnapshot.get("sessions");
       bono.setConditionsData = Condition(
-        expirationTime: _documentSnapshot.get("expirationTime"),
-        cancelTime: _documentSnapshot.get("cancelTime"),
-        weeklySessions: _documentSnapshot.get("weeklySessions"),
+        expirationTime: documentSnapshot.get("expirationTime"),
+        cancelTime: documentSnapshot.get("cancelTime"),
+        weeklySessions: documentSnapshot.get("weeklySessions"),
       );
       // Set Purchased Bono
       purchase.setPurchasedBono = bono;
@@ -337,10 +332,10 @@ class PurchaseFirebaseCalls {
 
       for (int j = 0; j < querySnapshot.docs.length; j++) {
         Purchase purchase = Purchase.fromObjectAllData(querySnapshot.docs[j].id, querySnapshot.docs[j]);
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users)
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore.collection(users)
             .doc(purchase.userId).get();
-        if(_documentSnapshot.exists) {
-          Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        if(documentSnapshot.exists) {
+          Usuario user = Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
           if(!userList.any((element) => element.id == user.id)) {
             user.purchaseId = querySnapshot.docs[j].id;
             userList.add(user);
@@ -353,9 +348,9 @@ class PurchaseFirebaseCalls {
   Future<List<Bono>> getBonosByBonosString(List<String> selectedBonos, String brandId) async {
     List<Bono> bonoList = [];
     for(int i = 0; i < selectedBonos.length; ++i) {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands)
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore.collection(brands)
           .doc(brandId).collection("Bonos").doc(selectedBonos[i]).get();
-      bonoList.add(Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot));
+      bonoList.add(Bono.fromObjectAllData(documentSnapshot.id, documentSnapshot));
     }
     return bonoList;
   }
@@ -370,10 +365,10 @@ class PurchaseFirebaseCalls {
         .get();
 
     for (int i = 0; i < querySnapshot2.docs.length; i++) {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(events).doc(querySnapshot2.docs[i].id).get();
-      if(_documentSnapshot.exists) {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore.collection(events).doc(querySnapshot2.docs[i].id).get();
+      if(documentSnapshot.exists) {
         Event event = Event.fromObjectAllData(
-            _documentSnapshot.id, _documentSnapshot);
+            documentSnapshot.id, documentSnapshot);
         eventList.add(event);
       }
     }
@@ -398,15 +393,15 @@ class PurchaseFirebaseCalls {
         .get();
 
     for (int i = 0; i < querySnapshot2.docs.length; i++) {
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
             .collection(events).doc(querySnapshot2.docs[i].id).get();
         Event event = Event.fromObjectAllData(
-            _documentSnapshot.id, _documentSnapshot);
+            documentSnapshot.id, documentSnapshot);
         DocumentSnapshot<
-            Map<String, dynamic>> _documentSnapshotBonos = await _firestore
+            Map<String, dynamic>> documentSnapshotBonos = await _firestore
             .collection(events).doc(querySnapshot2.docs[i].id).collection(
             'Bonos').doc(purchase.bonoId!).get();
-        if (_documentSnapshotBonos.exists) {
+        if (documentSnapshotBonos.exists) {
           eventList.add(event);
         }
     }
@@ -442,10 +437,10 @@ class PurchaseFirebaseCalls {
   Future<void> addEventToPurchase(String purchaseId, String eventId) async {
     if(purchaseId != "") {
       DocumentSnapshot<
-          Map<String, dynamic>> _documentSnapshot = await _firestore.collection(
+          Map<String, dynamic>> documentSnapshot = await _firestore.collection(
           events).doc(eventId).get();
       Event event = Event.fromObjectAllData(
-          _documentSnapshot.id, _documentSnapshot);
+          documentSnapshot.id, documentSnapshot);
       // Add This to Payments
       await _firestore
           .collection(purchases)
@@ -497,18 +492,18 @@ class PurchaseFirebaseCalls {
   }
 
   Future<void> updatePurchaseEvents(String purchaseId, String userId, List<Event> eventsToAdd, List<Event> eventsToDelete) async {
-    EventDataService _eventDataService = EventDataService();
+    EventDataService eventDataService = EventDataService();
     for(int i = 0; i < eventsToDelete.length; ++i)
     {
-      print("Delete event: " + eventsToDelete[i].id!);
+      print("Delete event: ${eventsToDelete[i].id!}");
       deleteEventFromPurchase(purchaseId, eventsToDelete[i].id!);
-      _eventDataService.deleteUserFromEvent(eventsToDelete[i].id!,userId);
+      eventDataService.deleteUserFromEvent(eventsToDelete[i].id!,userId);
     }
     print('Ading ev');
     print(eventsToAdd.length);
     for(int j = 0; j < eventsToAdd.length; ++j)
     {
-      print("Add event: " + eventsToAdd[j].id!);
+      print("Add event: ${eventsToAdd[j].id!}");
       await _firestore
           .collection(purchases)
           .doc(purchaseId)
@@ -529,7 +524,7 @@ class PurchaseFirebaseCalls {
         "numClients": eventsToAdd[j].numClients,
         "maxMembers": eventsToAdd[j].maxMembers,
       });
-      _eventDataService.addUserToEvent(eventsToAdd[j].id!,userId, purchaseId,true);
+      eventDataService.addUserToEvent(eventsToAdd[j].id!,userId, purchaseId,true);
     }
   }
 
@@ -562,7 +557,7 @@ class PurchaseFirebaseCalls {
   }
 
   Future<void> deleteEventsFromUserPurchase(String purchaseId, String userId, String brandId) async {
-    EventDataService _eventDataService = EventDataService();
+    EventDataService eventDataService = EventDataService();
     await _firestore
         .collection(purchases)
         .doc(purchaseId)
@@ -570,7 +565,7 @@ class PurchaseFirebaseCalls {
         .get()
         .then((snapshot) {
       for (DocumentSnapshot ds in snapshot.docs) {
-        _eventDataService.deleteUserFromEvent(ds.id,userId);
+        eventDataService.deleteUserFromEvent(ds.id,userId);
         ds.reference.delete();
       }
     });

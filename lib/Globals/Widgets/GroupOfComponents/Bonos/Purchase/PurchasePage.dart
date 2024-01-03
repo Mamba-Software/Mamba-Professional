@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +10,6 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -29,7 +27,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Clie
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchaseEvents/views/PurchaseEvents.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 
 class PurchasePage extends StatefulWidget {
@@ -40,13 +37,13 @@ class PurchasePage extends StatefulWidget {
   Purchase? purchase;
 
   PurchasePage({
-    Key? key,
+    super.key,
     required this.user,
     required this.brand,
     this.bono,
     this.bonoRequest,
     this.purchase,
-  }) : super(key: key);
+  });
 
   @override
   _PurchasePageState createState() => _PurchasePageState();
@@ -246,26 +243,26 @@ class _PurchasePageState extends State<PurchasePage> {
     setBonoConditions(bonoSelected);
   }
 
-  void setBonoConditions(Bono _bono) {
-    int? days = _bono.condition?.expirationTime!;
-    priceController.text = _bono.price.toString();
-    if (_bono.sessions! > 5000) {
+  void setBonoConditions(Bono bono) {
+    int? days = bono.condition?.expirationTime!;
+    priceController.text = bono.price.toString();
+    if (bono.sessions! > 5000) {
       sessionsController.text = '';
       noSessions = true;
     } else {
-      sessionsController.text = _bono.sessions.toString();
+      sessionsController.text = bono.sessions.toString();
       noSessions = false;
     }
-    freeCancellController.text = (_bono.condition?.cancelTime!).toString();
-    weeklyController.text = (_bono.condition?.weeklySessions!).toString();
-    sessionsController.text = (_bono.sessions!).toString();
-    priceController.text = (_bono.price!).toStringAsFixed(2);
+    freeCancellController.text = (bono.condition?.cancelTime!).toString();
+    weeklyController.text = (bono.condition?.weeklySessions!).toString();
+    sessionsController.text = (bono.sessions!).toString();
+    priceController.text = (bono.price!).toStringAsFixed(2);
     isSelectedDays[0] = false;
     isSelectedDays[1] = false;
     isSelectedDays[2] = false;
     isSelectedDays[3] = false;
     isSelectedDays[4] = false;
-    if (_bono.condition?.expirationTime == 0) {
+    if (bono.condition?.expirationTime == 0) {
       isSelectedDays[0] = true;
     } else {
       isSelectedDays[4] = true;
@@ -357,13 +354,13 @@ class _PurchasePageState extends State<PurchasePage> {
     }
   }
 
-  void executeFunctionWithPurchase(Purchase _purchase) {
+  void executeFunctionWithPurchase(Purchase purchase) {
     eventsUpdated = true;
-    List<Event> deleteEvents = _purchase.initalEvents
-        .where((b) => !_purchase.events.any((a) => a.id == b.id))
+    List<Event> deleteEvents = purchase.initalEvents
+        .where((b) => !purchase.events.any((a) => a.id == b.id))
         .toList();
-    List<Event> newEvents = _purchase.events
-        .where((b) => !_purchase.initalEvents.any((a) => a.id == b.id))
+    List<Event> newEvents = purchase.events
+        .where((b) => !purchase.initalEvents.any((a) => a.id == b.id))
         .toList();
     newPurchase.setInitialEventsData = deleteEvents;
     newPurchase.setPurchasedEventsData = newEvents;
@@ -411,7 +408,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
+                        color: Theme.of(context).colorScheme.background,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Row(
@@ -431,7 +428,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                 AppLocalizations.of(context)!.unverfied,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge
                                     ?.copyWith(
                                         color: AppColors.red,
                                         fontWeight: FontWeight.bold),
@@ -464,7 +461,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
+                        color: Theme.of(context).colorScheme.background,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Row(
@@ -484,7 +481,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                 AppLocalizations.of(context)!.verfied,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge
                                     ?.copyWith(fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.right,
                               ),
@@ -518,7 +515,7 @@ class _PurchasePageState extends State<PurchasePage> {
                   AppLocalizations.of(context)!.toConfirmDesc,
                   style: Theme.of(context)
                       .textTheme
-                      .caption
+                      .bodySmall
                       ?.copyWith(fontSize: 12),
                   textAlign: TextAlign.left,
                 ),
@@ -535,7 +532,7 @@ class _PurchasePageState extends State<PurchasePage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Row(
@@ -551,7 +548,7 @@ class _PurchasePageState extends State<PurchasePage> {
                       SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                       Text(
                         AppLocalizations.of(context)!.unverfied,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: AppColors.red, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.right,
                       ),
@@ -583,7 +580,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     AppLocalizations.of(context)!.unverfiedDesc,
                     style: Theme.of(context)
                         .textTheme
-                        .caption
+                        .bodySmall
                         ?.copyWith(fontSize: 12),
                     textAlign: TextAlign.left,
                   ),
@@ -598,7 +595,7 @@ class _PurchasePageState extends State<PurchasePage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Row(
@@ -616,7 +613,7 @@ class _PurchasePageState extends State<PurchasePage> {
                         AppLocalizations.of(context)!.verfied,
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText1
+                            .bodyLarge
                             ?.copyWith(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.right,
                       ),
@@ -648,7 +645,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     AppLocalizations.of(context)!.verfiedDesc,
                     style: Theme.of(context)
                         .textTheme
-                        .caption
+                        .bodySmall
                         ?.copyWith(fontSize: 12),
                     textAlign: TextAlign.left,
                   ),
@@ -670,7 +667,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     Localizations.localeOf(context).languageCode)
                 .format(widget.bonoRequest!.timeRequested!.toDate())
                 .toUpperCase(),
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -687,7 +684,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     .format(purchase.purchasedAt!.toDate())
                     .toUpperCase()
                 : '',
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -733,12 +730,10 @@ class _PurchasePageState extends State<PurchasePage> {
                   duration: const Duration(milliseconds: 200),
                   child: Text(
                       editBono
-                          ? AppLocalizations.of(context)!.edit +
-                              " " +
-                              AppLocalizations.of(context)!
+                          ? "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!
                                   .directPurchasetext
                                   .split(" ")[0]
-                                  .toLowerCase()
+                                  .toLowerCase()}"
                           : isBonoRequest
                               ? StringUtils().toCapitalized(
                                   AppLocalizations.of(context)!
@@ -843,12 +838,10 @@ class _PurchasePageState extends State<PurchasePage> {
                         children: [
                           Text(
                               editBono
-                                  ? AppLocalizations.of(context)!.edit +
-                                      " " +
-                                      AppLocalizations.of(context)!
+                                  ? "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!
                                           .directPurchasetext
                                           .split(" ")[0]
-                                          .toLowerCase()
+                                          .toLowerCase()}"
                                   : isBonoRequest
                                       ? StringUtils().toCapitalized(
                                           AppLocalizations.of(context)!
@@ -857,7 +850,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                               .trim())
                                       : AppLocalizations.of(context)!
                                           .acceptBono,
-                              style: Theme.of(context).textTheme.headline1,
+                              style: Theme.of(context).textTheme.displayLarge,
                               textAlign: TextAlign.left),
                           SizedBox(
                               height:
@@ -879,7 +872,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                       AppLocalizations.of(context)!
                                           .acceptBonoDesc,
                                       style:
-                                          Theme.of(context).textTheme.caption,
+                                          Theme.of(context).textTheme.bodySmall,
                                       textAlign: TextAlign.left,
                                     ),
                                     SizedBox(
@@ -895,7 +888,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                                         horizontal: 8),
                                                 decoration: BoxDecoration(
                                                   color: Theme.of(context)
-                                                      .backgroundColor,
+                                                      .colorScheme.background,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           10.0),
@@ -930,7 +923,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .bodyText1
+                                                              .bodyLarge
                                                               ?.copyWith(
                                                                   color:
                                                                       AppColors
@@ -984,7 +977,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                                         horizontal: 8),
                                                 decoration: BoxDecoration(
                                                   color: Theme.of(context)
-                                                      .backgroundColor,
+                                                      .colorScheme.background,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           10.0),
@@ -1021,7 +1014,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .bodyText1
+                                                              .bodyLarge
                                                               ?.copyWith(
                                                                   fontWeight:
                                                                       FontWeight
@@ -1134,7 +1127,7 @@ class _PurchasePageState extends State<PurchasePage> {
                           child: Text(AppLocalizations.of(context)!.user,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline1
+                                  .displayLarge
                                   ?.copyWith(fontSize: 22),
                               textAlign: TextAlign.center),
                         ),
@@ -1149,7 +1142,7 @@ class _PurchasePageState extends State<PurchasePage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 4),
                       decoration: BoxDecoration(
-                          color: Theme.of(context).backgroundColor,
+                          color: Theme.of(context).colorScheme.background,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(10))),
                       child: ListTile(
@@ -1167,7 +1160,7 @@ class _PurchasePageState extends State<PurchasePage> {
                           widget.user.name!,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1
+                              .bodyLarge
                               ?.copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.left,
                         ),
@@ -1188,7 +1181,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                               user.lastEventAt!.toDate(),
                                               Localizations.localeOf(context)
                                                   .languageCode)),
-                              style: Theme.of(context).textTheme.caption,
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
@@ -1232,7 +1225,7 @@ class _PurchasePageState extends State<PurchasePage> {
                           child: Text(AppLocalizations.of(context)!.bono,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline1
+                                  .displayLarge
                                   ?.copyWith(fontSize: 22),
                               textAlign: TextAlign.center),
                         ),
@@ -1376,6 +1369,16 @@ class _PurchasePageState extends State<PurchasePage> {
                             children: [
                               Expanded(
                                 child: TextButton(
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: Theme.of(context).primaryColor,
+                                  ),
+                                  onPressed: editBono
+                                      ? null
+                                      : () async {
+                                          setState(() {
+                                            seeConditions = !seeConditions;
+                                          });
+                                        },
                                   child: Row(
                                     children: [
                                       Expanded(
@@ -1386,7 +1389,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                           //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline3
+                                              .displaySmall
                                               ?.copyWith(
                                                   fontWeight:
                                                       FontWeight.normal),
@@ -1405,16 +1408,6 @@ class _PurchasePageState extends State<PurchasePage> {
                                               Theme.of(context).primaryColor),
                                     ],
                                   ),
-                                  style: TextButton.styleFrom(
-                                    primary: Theme.of(context).primaryColor,
-                                  ),
-                                  onPressed: editBono
-                                      ? null
-                                      : () async {
-                                          setState(() {
-                                            seeConditions = !seeConditions;
-                                          });
-                                        },
                                 ),
                               ),
                             ],
@@ -1436,7 +1429,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                 //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline1
+                                    .displayLarge
                                     ?.copyWith(fontSize: 22),
                               ),
                             ],
@@ -1456,7 +1449,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                   padding: EdgeInsets.all(
                                       MediaQuery.of(context).size.width * 0.05),
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).backgroundColor,
+                                      color: Theme.of(context).colorScheme.background,
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   child: optionTextWrite(
@@ -1483,7 +1476,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                   padding: EdgeInsets.all(
                                       MediaQuery.of(context).size.width * 0.05),
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).backgroundColor,
+                                      color: Theme.of(context).colorScheme.background,
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   child: optionTextWrite(
@@ -1511,7 +1504,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                             0.05),
                                     decoration: BoxDecoration(
                                         color:
-                                            Theme.of(context).backgroundColor,
+                                            Theme.of(context).colorScheme.background,
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(10))),
                                     child: optionConditionsWrite(
@@ -1540,7 +1533,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                   padding: EdgeInsets.all(
                                       MediaQuery.of(context).size.width * 0.05),
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).backgroundColor,
+                                      color: Theme.of(context).colorScheme.background,
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   child: optionConditionsWrite(
@@ -1569,7 +1562,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                   padding: EdgeInsets.all(
                                       MediaQuery.of(context).size.width * 0.05),
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).backgroundColor,
+                                      color: Theme.of(context).colorScheme.background,
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   child: optionConditionsWrite(
@@ -1612,7 +1605,7 @@ class _PurchasePageState extends State<PurchasePage> {
                               AppLocalizations.of(context)!.paymentMethod,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline1
+                                  .displayLarge
                                   ?.copyWith(fontSize: 22),
                               textAlign: TextAlign.center),
                         ),
@@ -1630,14 +1623,14 @@ class _PurchasePageState extends State<PurchasePage> {
                               RichText(
                                 textAlign: TextAlign.left,
                                 text: TextSpan(
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                   children: [
                                     TextSpan(
                                       text: AppLocalizations.of(context)!
                                           .paymentMethodConfirm,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .caption
+                                          .bodySmall
                                           ?.copyWith(height: 1.5),
                                     ),
                                   ],
@@ -1652,31 +1645,30 @@ class _PurchasePageState extends State<PurchasePage> {
                                   MediaQuery.of(context).size.width * 0.05),
                           child: RichText(
                             text: TextSpan(
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                               children: [
                                 TextSpan(
                                     text: AppLocalizations.of(context)!
                                         .paymentMethodOriginal,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .caption
+                                        .bodySmall
                                         ?.copyWith(height: 1.5)),
                                 TextSpan(
                                   text: originalPaymentString,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .caption
+                                      .bodySmall
                                       ?.copyWith(
                                           fontWeight: FontWeight.bold,
                                           height: 1.5),
                                 ),
                                 TextSpan(
-                                    text: ". " +
-                                        AppLocalizations.of(context)!
-                                            .paymentMethodEdit,
+                                    text: ". ${AppLocalizations.of(context)!
+                                            .paymentMethodEdit}",
                                     style: Theme.of(context)
                                         .textTheme
-                                        .caption
+                                        .bodySmall
                                         ?.copyWith(height: 1.5)),
                               ],
                             ),
@@ -1705,7 +1697,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                     MediaQuery.of(context).size.width * 0.25,
                                 width: MediaQuery.of(context).size.width * 0.25,
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).backgroundColor,
+                                  color: Theme.of(context).colorScheme.background,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(10),
                                   ),
@@ -1733,7 +1725,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                         .cashPaymentMethod,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline3
+                                        .displaySmall
                                         ?.copyWith(
                                             color: paymentMethod == 1
                                                 ? Theme.of(context)
@@ -1770,7 +1762,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                     MediaQuery.of(context).size.width * 0.25,
                                 width: MediaQuery.of(context).size.width * 0.25,
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).backgroundColor,
+                                  color: Theme.of(context).colorScheme.background,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(10),
                                   ),
@@ -1798,7 +1790,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                         .transferPaymentMethod,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline3
+                                        .displaySmall
                                         ?.copyWith(
                                             color: paymentMethod == 0
                                                 ? Theme.of(context)
@@ -1835,7 +1827,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                     MediaQuery.of(context).size.width * 0.25,
                                 width: MediaQuery.of(context).size.width * 0.25,
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).backgroundColor,
+                                  color: Theme.of(context).colorScheme.background,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(10),
                                   ),
@@ -1863,7 +1855,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                         .giftPaymentMethod,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline3
+                                        .displaySmall
                                         ?.copyWith(
                                             color: paymentMethod != 2
                                                 ? Theme.of(context)
@@ -2057,7 +2049,7 @@ class _PurchasePageState extends State<PurchasePage> {
                 : AppLocalizations.of(context)!.confirm,
             style: Theme.of(context)
                 .textTheme
-                .bodyText2!
+                .bodyMedium!
                 .copyWith(color: Colors.white)),
       ),
     );
@@ -2095,7 +2087,7 @@ class _PurchasePageState extends State<PurchasePage> {
                             Text(titleText,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge
                                     ?.copyWith(fontWeight: FontWeight.bold)),
                             subtitleText != ""
                                 ? Padding(
@@ -2103,7 +2095,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                     child: Text(
                                       subtitleText,
                                       style:
-                                          Theme.of(context).textTheme.caption,
+                                          Theme.of(context).textTheme.bodySmall,
                                     ),
                                   )
                                 : Container(),
@@ -2121,7 +2113,7 @@ class _PurchasePageState extends State<PurchasePage> {
                             Text(titleText,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge
                                     ?.copyWith(fontWeight: FontWeight.bold)),
                             subtitleText != ""
                                 ? variable != 'ses'
@@ -2132,7 +2124,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                           subtitleText,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .caption,
+                                              .bodySmall,
                                         ),
                                       )
                                     : Padding(
@@ -2147,7 +2139,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                                 subtitleText,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .caption,
+                                                    .bodySmall,
                                               ),
                                             ),
                                             Container(
@@ -2215,10 +2207,10 @@ class _PurchasePageState extends State<PurchasePage> {
                                 });
                               },
                               style: editable
-                                  ? Theme.of(context).textTheme.bodyText1
+                                  ? Theme.of(context).textTheme.bodyLarge
                                   : Theme.of(context)
                                       .textTheme
-                                      .bodyText1
+                                      .bodyLarge
                                       ?.copyWith(
                                           color:
                                               Theme.of(context).disabledColor),
@@ -2231,8 +2223,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                         ? "euros (€)"
                                         : "",
                                 suffixStyle:
-                                    Theme.of(context).textTheme.caption,
-                                hintStyle: Theme.of(context).textTheme.caption,
+                                    Theme.of(context).textTheme.bodySmall,
+                                hintStyle: Theme.of(context).textTheme.bodySmall,
                                 hintText: hintText,
                                 errorBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.red),
@@ -2260,11 +2252,9 @@ class _PurchasePageState extends State<PurchasePage> {
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height * 0.01),
                           child: Text(
-                            (bonoSelected.price! / bonoSelected.sessions!)
-                                    .toStringAsFixed(2) +
-                                " € / " +
-                                AppLocalizations.of(context)!.session,
-                            style: Theme.of(context).textTheme.caption,
+                            "${(bonoSelected.price! / bonoSelected.sessions!)
+                                    .toStringAsFixed(2)} € / ${AppLocalizations.of(context)!.session}",
+                            style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left,
                           ),
                         )
@@ -2319,10 +2309,10 @@ class _PurchasePageState extends State<PurchasePage> {
                                     });
                                   },
                                   style: editable
-                                      ? Theme.of(context).textTheme.bodyText1
+                                      ? Theme.of(context).textTheme.bodyLarge
                                       : Theme.of(context)
                                           .textTheme
-                                          .bodyText1
+                                          .bodyLarge
                                           ?.copyWith(
                                               color: Theme.of(context)
                                                   .disabledColor),
@@ -2333,7 +2323,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                             ? "euros (€)"
                                             : "",
                                     hintStyle:
-                                        Theme.of(context).textTheme.caption,
+                                        Theme.of(context).textTheme.bodySmall,
                                     hintText: hintText,
                                     //border: InputBorder.none,
                                     errorBorder: const UnderlineInputBorder(
@@ -2393,7 +2383,7 @@ class _PurchasePageState extends State<PurchasePage> {
                         titleText,
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText1
+                            .bodyLarge
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       variable == 'exp' || variable == 'expEdit'
@@ -2401,7 +2391,7 @@ class _PurchasePageState extends State<PurchasePage> {
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
                                 subtitleText,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                             )
                           : variable == 'canFree'
@@ -2421,13 +2411,13 @@ class _PurchasePageState extends State<PurchasePage> {
                                                         .freeCancelInfo,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .caption,
+                                                        .bodySmall,
                                                   )
                                                 : Text(
                                                     subtitleText,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .caption,
+                                                        .bodySmall,
                                                   ),
                                           ),
                                           Container(
@@ -2467,7 +2457,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                               subtitleText,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .caption,
+                                                  .bodySmall,
                                             ),
                                           ),
                                           Container(
@@ -2549,10 +2539,10 @@ class _PurchasePageState extends State<PurchasePage> {
                                 });
                               },
                               style: editable
-                                  ? Theme.of(context).textTheme.bodyText1
+                                  ? Theme.of(context).textTheme.bodyLarge
                                   : Theme.of(context)
                                       .textTheme
-                                      .bodyText1
+                                      .bodyLarge
                                       ?.copyWith(
                                           color:
                                               Theme.of(context).disabledColor),
@@ -2567,8 +2557,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                             .toLowerCase()
                                         : "",
                                 suffixStyle:
-                                    Theme.of(context).textTheme.caption,
-                                hintStyle: Theme.of(context).textTheme.caption,
+                                    Theme.of(context).textTheme.bodySmall,
+                                hintStyle: Theme.of(context).textTheme.bodySmall,
                                 hintText: hintText,
                                 errorBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.red),
@@ -2611,10 +2601,10 @@ class _PurchasePageState extends State<PurchasePage> {
                                     });
                                   },
                                   style: editable
-                                      ? Theme.of(context).textTheme.bodyText1
+                                      ? Theme.of(context).textTheme.bodyLarge
                                       : Theme.of(context)
                                           .textTheme
-                                          .bodyText1
+                                          .bodyLarge
                                           ?.copyWith(
                                               color: Theme.of(context)
                                                   .disabledColor),
@@ -2629,9 +2619,9 @@ class _PurchasePageState extends State<PurchasePage> {
                                                 .toLowerCase()
                                             : "",
                                     suffixStyle:
-                                        Theme.of(context).textTheme.caption,
+                                        Theme.of(context).textTheme.bodySmall,
                                     hintStyle:
-                                        Theme.of(context).textTheme.caption,
+                                        Theme.of(context).textTheme.bodySmall,
                                     hintText: hintText,
                                     errorBorder: const UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.red),
@@ -2752,18 +2742,16 @@ class _PurchasePageState extends State<PurchasePage> {
                                 children: [
                                   Flexible(
                                     child: Text(
-                                      AppLocalizations.of(context)!.expiresAt +
-                                          " " +
-                                          StringUtils().toCapitalized(
+                                      "${AppLocalizations.of(context)!.expiresAt} ${StringUtils().toCapitalized(
                                               DateFormat(
                                                       'EEEE - d MMM yyyy',
                                                       Localizations.localeOf(
                                                               context)
                                                           .languageCode)
-                                                  .format(endDate)),
+                                                  .format(endDate))}",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText2
+                                          .bodyMedium
                                           ?.copyWith(
                                               color: notShow == false
                                                   ? Theme.of(context)
@@ -2776,30 +2764,24 @@ class _PurchasePageState extends State<PurchasePage> {
                                   const SizedBox(height: 4),
                                   Flexible(
                                     child: Text(
-                                      AppLocalizations.of(context)!.from +
-                                          " " +
-                                          StringUtils().toCapitalized(
+                                      "${AppLocalizations.of(context)!.from} ${StringUtils().toCapitalized(
                                               DateFormat(
                                                       'd/M/yy',
                                                       Localizations.localeOf(
                                                               context)
                                                           .languageCode)
-                                                  .format(startDate)) +
-                                          " " +
-                                          AppLocalizations.of(context)!
+                                                  .format(startDate))} ${AppLocalizations.of(context)!
                                               .to
-                                              .toLowerCase() +
-                                          " " +
-                                          StringUtils().toCapitalized(
+                                              .toLowerCase()} ${StringUtils().toCapitalized(
                                               DateFormat(
                                                       'd/M/yy',
                                                       Localizations.localeOf(
                                                               context)
                                                           .languageCode)
-                                                  .format(endDate)),
+                                                  .format(endDate))}",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .caption
+                                          .bodySmall
                                           ?.copyWith(fontSize: 12),
                                       textAlign: TextAlign.left,
                                     ),
@@ -2812,11 +2794,9 @@ class _PurchasePageState extends State<PurchasePage> {
                       )
                     : Text(
                         numberDays != "0"
-                            ? numberDays +
-                                " " +
-                                AppLocalizations.of(context)!.days.toLowerCase()
+                            ? "$numberDays ${AppLocalizations.of(context)!.days.toLowerCase()}"
                             : "No expira",
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: notShow == false
                                 ? Theme.of(context).primaryColor
                                 : Theme.of(context).disabledColor),
@@ -2832,7 +2812,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                         .languageCode)
                                 .format(startDate.add(
                                     Duration(days: int.parse(numberDays)))))),
-                        style: Theme.of(context).textTheme.caption,
+                        style: Theme.of(context).textTheme.bodySmall,
                         textAlign: TextAlign.left,
                       )
                     : Container(),
@@ -2850,14 +2830,6 @@ class _PurchasePageState extends State<PurchasePage> {
                             ? Theme.of(context).primaryColor
                             : Theme.of(context).disabledColor
                         : Theme.of(context).scaffoldBackgroundColor,
-                    child: isSelectedDays[index] == true
-                        ? Icon(Icons.check,
-                            color: Theme.of(context).primaryColorDark,
-                            size: MediaQuery.of(context).size.width * 0.06)
-                        : SizedBox(
-                            height: MediaQuery.of(context).size.width * 0.03,
-                            width: MediaQuery.of(context).size.width * 0.03,
-                          ),
                     padding: EdgeInsets.zero,
                     shape: const CircleBorder(),
                     onPressed: editable == false
@@ -2893,6 +2865,14 @@ class _PurchasePageState extends State<PurchasePage> {
                             }
                             setState(() {});
                           },
+                    child: isSelectedDays[index] == true
+                        ? Icon(Icons.check,
+                            color: Theme.of(context).primaryColorDark,
+                            size: MediaQuery.of(context).size.width * 0.06)
+                        : SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.03,
+                            width: MediaQuery.of(context).size.width * 0.03,
+                          ),
                   ),
                 )
               : Container(),

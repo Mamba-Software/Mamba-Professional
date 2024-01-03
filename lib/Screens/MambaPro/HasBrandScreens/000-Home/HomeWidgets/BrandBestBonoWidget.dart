@@ -19,7 +19,7 @@ class BrandBestBonoWidget extends StatefulWidget {
   String brandId;
   final DateCallBack navigateToPage;
 
-  BrandBestBonoWidget({Key? key, required this.brandId, required this.navigateToPage}) : super(key: key);
+  BrandBestBonoWidget({super.key, required this.brandId, required this.navigateToPage});
 
   @override
   _BrandBestBonoWidgetState createState() => _BrandBestBonoWidgetState();
@@ -39,7 +39,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
   }
 
   // Navigate to Add Bonos
-  Future<void> navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) async {
+  Future<void> navigateToAddBonosScreen(Bono bono, Brand brand, bool edit) async {
     mixpanel!.track('brand_homepage_add_bono');
     await Navigator.push(
       context,
@@ -53,7 +53,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
             }
           },
           child: AddEditBono(
-            brand: _brand,
+            brand: brand,
             bono: bono,
             edit: edit,
             duplicate: false,
@@ -80,7 +80,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
             minWidth: MediaQuery.of(context).size.width*0.9,
           ),
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).colorScheme.background,
             borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
           ),// BoxDecoration
           child: Container(
@@ -124,13 +124,13 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                               Text(
                                   AppLocalizations.of(context)!.bonos,
-                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                                  style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey),
                                   textAlign: TextAlign.center
                               ),
                             ],
                           ),
                         ),
-                        bonoMostBuys == null ? Text("") : TextButton(
+                        bonoMostBuys == null ? const Text("") : TextButton(
                           onPressed: () async {
                             if(brandIsActive) {
                               mixpanel!.track('brand_homepage_bonos_most_buys');
@@ -142,7 +142,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                           },
                           child: Text(
                               AppLocalizations.of(context)!.mostBuys,
-                              style: Theme.of(context).textTheme.caption,
+                              style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.center
                           ),
                         ),
@@ -204,7 +204,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                                     SizedBox(
                                       height: MediaQuery.of(context).size.height * 0.01,
                                     ),
-                                    Flexible(child: Text(AppLocalizations.of(context)!.noBonosCreated, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start)),
+                                    Flexible(child: Text(AppLocalizations.of(context)!.noBonosCreated, style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start)),
                                     TextButton(
                                       onPressed: () async {
                                           if(brandIsActive) {
@@ -227,7 +227,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                                       },
                                       child: Text(
                                         AppLocalizations.of(context)!.createFistBono,
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.secondary),
                                       ),
                                     ),
                                   ],

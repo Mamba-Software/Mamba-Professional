@@ -29,7 +29,7 @@ class HomePro extends StatefulWidget {
   int numTrainers;
   final DateCallBack navigateToPage;
 
-  HomePro({Key? key, required this.brandId, required this.numTrainers, required this.numClients, required this.navigateToPage}) : super(key: key);
+  HomePro({super.key, required this.brandId, required this.numTrainers, required this.numClients, required this.navigateToPage});
 
   @override
   _HomePro createState() => _HomePro();
@@ -99,7 +99,7 @@ class _HomePro extends State<HomePro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: CustomScrollView(
         controller: _scrollController,
         physics: const ClampingScrollPhysics(),
@@ -127,7 +127,7 @@ class _HomePro extends State<HomePro> {
                       minWidth: MediaQuery.of(context).size.width*0.9,
                     ),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                       borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(15.0),
                         topLeft: Radius.circular(15.0),
@@ -239,7 +239,7 @@ class _HomePro extends State<HomePro> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
-                  currentUser.id == currentBrand.adminID ? EndDateSubscription() : Container(),
+                  currentUser.id == currentBrand.adminID ? const EndDateSubscription() : Container(),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -10,7 +9,7 @@ class AppUpdateDialog extends StatelessWidget {
 
   bool isMandatory;
 
-  AppUpdateDialog({Key? key, required this.isMandatory}) : super(key: key);
+  AppUpdateDialog({super.key, required this.isMandatory});
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +33,11 @@ class AppUpdateDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Flexible(
-                    child: Text(AppLocalizations.of(context)!.updateAppTitle, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold,height: 1.5),textAlign: TextAlign.center,),
+                    child: Text(AppLocalizations.of(context)!.updateAppTitle, style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold,height: 1.5),textAlign: TextAlign.center,),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                   Flexible(
-                    child: Text(AppLocalizations.of(context)!.updateAppText, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                    child: Text(AppLocalizations.of(context)!.updateAppText, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                   ),
                   isMandatory ? Column(
                     children: [
@@ -59,7 +58,7 @@ class AppUpdateDialog extends StatelessWidget {
                               SizedBox(width: MediaQuery.of(context).size.width*0.01),
                               Text(
                                 AppLocalizations.of(context)!.mandatoryUpdate,
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5, color: AppColors.white),
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5, color: AppColors.white),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -89,7 +88,7 @@ class AppUpdateDialog extends StatelessWidget {
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.update,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white,),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white,),
                     ),
                     onPressed: () async {
                       mixpanel!.track('minimum_app_version_update', properties: {'isMandatory': isMandatory});

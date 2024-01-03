@@ -2,23 +2,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Events/Calendar/views/BrandCalendarWidget.dart';
-import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
@@ -30,15 +25,11 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/Ho
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/Bonos.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/009%20-%20Stats/Stats.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import '../../../Globals/Widgets/GroupOfComponents/PayWall/BrandSubscription.dart';
@@ -46,7 +37,7 @@ import '../../../Globals/Widgets/GroupOfComponents/PayWall/BrandSubscription.dar
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
 class BrandScreen extends StatefulWidget {
-  const BrandScreen({Key? key}) : super(key: key);
+  const BrandScreen({super.key});
 
   @override
   _BrandScreenState createState() => _BrandScreenState();
@@ -94,99 +85,18 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   //Return the ListTile of each screen of Mamba Pro
-  Widget listTilePro(int _pageIndex, [bool isFavourite = false]) {
-    if (_pageIndex == 0) {
-      return ListTile(
-          leading: CircularImage(
-            size: MediaQuery.of(context).size.width * 0.07,
-            image: currentBrand.logoUrl,
-            borderWidth: 1,
-            color: AppColors.grey,
-          ),
-          title: Text(
-            currentBrand.name!,
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
+  Widget listTilePro(int pageIndexVar, [bool isFavourite = false]) {
+    return ListTile(
+          leading: _mambaProUtils.iconSelectorListView(context, pageIndexVar),
+          title: _mambaProUtils.titlePageSelectorListView(context, pageIndexVar),          
           onTap: () => {
                 Navigator.pop(context),
                 setBrandActive(),
                 setState(() {
-                  pageIndex = _pageIndex;
+                  pageIndex = pageIndexVar;
                   setFavourites();
                 }),
               });
-    } else {
-      return ListTile(
-          leading: _mambaProUtils.iconSelectorListView(context, _pageIndex),
-          title: _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
-          /*
-          trailing: isFavourite ? SizedBox(
-            width: MediaQuery.of(context).size.width*0.15,
-            child: IconButton(
-                onPressed: () {
-                  setState(() {
-                    if (pageIndex == _pageIndex) {
-                      iconStar = false;
-                    }
-                    favourites.remove(_pageIndex);
-                    favourites.sort();
-                    _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
-                    switch (pageIndex) {
-                      case 9:
-                        mixpanel!.track('drawer_stats_pinned_off');
-                        break;
-                      case 2:
-                        mixpanel!.track('drawer_clients_pinned_off');
-                        break;
-                      case 1:
-                        mixpanel!.track('drawer_trainers_pinned_off');
-                        break;
-                     // case 15:
-                        mixpanel!.track('drawer_membership_requests_pinned_off');
-                        break;
-                      case 8:
-                        mixpanel!.track('drawer_brand_info_pinned_off');
-                        break;
-                      case 5:
-                        mixpanel!.track('drawer_bonos_pinned_off');
-                        break;
-                      case 10:
-                        mixpanel!.track('drawer_calendar_pinned_off');
-                        break;
-                      case 14:
-                        mixpanel!.track('drawer_event_history_pinned_off');
-                        break;
-                      case 7:
-                        mixpanel!.track('drawer_images_pinned_off');
-                        break;
-                      case 11:
-                        mixpanel!.track('drawer_locations_pinned_off');
-                        break;
-                      default:
-                        break;
-                    }
-                  }
-                  );
-                },
-                icon: Icon(
-                  Icons.push_pin,
-                  color: AppColors.red,
-                  size: MediaQuery.of(context).size.width*0.06,
-                )
-            ),
-          ) : SizedBox(
-            width: MediaQuery.of(context).size.width*0.15,
-          ),
-           */
-          onTap: () => {
-                Navigator.pop(context),
-                setBrandActive(),
-                setState(() {
-                  pageIndex = _pageIndex;
-                  setFavourites();
-                }),
-              });
-    }
   }
 
   Widget buildHeader() {
@@ -260,7 +170,7 @@ class _BrandScreenState extends State<BrandScreen> {
                               currentBrand.name!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline1
+                                  .displayLarge
                                   ?.copyWith(color: AppColors.white),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -276,7 +186,7 @@ class _BrandScreenState extends State<BrandScreen> {
                                   child: Text(
                                     returnBrandRoleString(),
                                     textAlign: TextAlign.left,
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -284,6 +194,20 @@ class _BrandScreenState extends State<BrandScreen> {
                               ),
                               const SizedBox(width: 8),
                               TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor:
+                                      AppColors.white.withOpacity(0.3),
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, right: 8.0),
+                                  shape: RoundedRectangleBorder(
+                                    // add this
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  minimumSize: const Size(30, 20),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                onPressed: () => navigateShareBrandLink(),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -299,25 +223,11 @@ class _BrandScreenState extends State<BrandScreen> {
                                       AppLocalizations.of(context)!.invite,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText2!
+                                          .bodyMedium!
                                           .copyWith(color: AppColors.white),
                                     ),
                                   ],
                                 ),
-                                style: TextButton.styleFrom(
-                                  backgroundColor:
-                                      AppColors.white.withOpacity(0.3),
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8.0),
-                                  shape: RoundedRectangleBorder(
-                                    // add this
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  minimumSize: Size(30, 20),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                onPressed: () => navigateShareBrandLink(),
                               )
                             ],
                           ),
@@ -428,7 +338,7 @@ class _BrandScreenState extends State<BrandScreen> {
               horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
             AppLocalizations.of(context)!.management,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
           ),
         ),
@@ -443,7 +353,7 @@ class _BrandScreenState extends State<BrandScreen> {
               horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
             AppLocalizations.of(context)!.members,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
           ),
         ),
@@ -458,7 +368,7 @@ class _BrandScreenState extends State<BrandScreen> {
               horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
             AppLocalizations.of(context)!.yourBrand,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
           ),
         ),
@@ -674,7 +584,7 @@ class _BrandScreenState extends State<BrandScreen> {
               AppLocalizations.of(context)!.deleteBrand,
               style: Theme.of(context)
                   .textTheme
-                  .bodyText1
+                  .bodyLarge
                   ?.copyWith(color: Colors.red),
             ),
             onTap: () async {
@@ -710,7 +620,7 @@ class _BrandScreenState extends State<BrandScreen> {
               AppLocalizations.of(context)!.exitBrand,
               style: Theme.of(context)
                   .textTheme
-                  .bodyText1
+                  .bodyLarge
                   ?.copyWith(color: Colors.red),
             ),
             onTap: () async {
@@ -745,6 +655,7 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   Widget buildBodyNavigation() {
+    print(pageIndex);
     switch (pageIndex) {
       case 0:
         mixpanel!.track('brand_homepage_view');
@@ -863,28 +774,6 @@ class _BrandScreenState extends State<BrandScreen> {
           pinned: iconStar,
           pinnedChanged: (boolean) {
             handleChangedFavourites();
-          },
-        );
-        return HomePro(
-          brandId: currentBrand.id!,
-          numTrainers: currentBrand.numTrainers!,
-          numClients: currentBrand.numClients!,
-          navigateToPage: (int page,
-              [DateTime? dateTime,
-              CalendarView? calendarView,
-              bool? addGroupEvent,
-              bool? addPrivateEvent,
-              bool? createBono]) async {
-            setState(() {
-              calendarDateTime = dateTime;
-              this.calendarView = calendarView;
-              pageIndex = page;
-            });
-            await Future.delayed(const Duration(seconds: 2));
-            setState(() {
-              calendarDateTime = null;
-              this.calendarView = null;
-            });
           },
         );
     }

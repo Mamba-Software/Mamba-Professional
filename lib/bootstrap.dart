@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -22,7 +24,6 @@ import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
-import 'package:mamba_castelldefels/firebase_options.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -36,27 +37,14 @@ import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'dart:io' show Platform;
 import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 
-// Declaring Instance of AppThemes();
-AppThemes _appThemes = AppThemes();
-// Initialize the [FlutterLocalNotificationsPlugin] package.
-LocalNotificationService localNotificationService = LocalNotificationService();
-// Create a [AndroidNotificationChannel] for heads up notifications
-late AndroidNotificationChannel channel;
-
-// BackGroundNotificationHandler
-Future<void> _backgroundMessageHandler(RemoteMessage message) async {  if (message.data.containsKey('route')) {
-    String route = message.data['route'];
-    localNotificationService.onNotifications.add(route);
-  }
-}
-
-// Local BackGroundNotificationHandler
+// Top Level -- Local BackGroundNotificationHandler
 Future<void> backgroundLocalMessageHandler(
     NotificationResponse notificationResponse) async {
+  LocalNotificationService localNotificationService =
+      LocalNotificationService();
   switch (notificationResponse.notificationResponseType) {
     case NotificationResponseType.selectedNotification:
       localNotificationService.onNotifications
@@ -69,72 +57,93 @@ Future<void> backgroundLocalMessageHandler(
   }
 }
 
-// Starting app function. After initialization, we define the global providers:
-// - Language Provider: To change the Language of the App.
-Future<void> main() async {
-  await runZonedGuarded(() async {
-    // Initialize App
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    // Initialise TimeZone
-    timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
-    // Firebase Messaging Back Ground Message Handler
-    FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
-    // Firebase Dynamic Links
-    DynamicLinkUtils().retrieveDynamicLink();
-    // Firebase Crashlytics
-    if (isProduction) {
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+// Bootstrap
+class Bootstrap {
+  // Vars
+  final FirebaseOptions? firebaseOptions;
+  // Init
+  Bootstrap({required this.firebaseOptions}) {
+    bootstrap();
+  }
+  // Starting app function. After initialization, we define the global providers:
+  Future<void> bootstrap() async {
+    runZonedGuarded(() async {
+      // Initialize App
+      WidgetsFlutterBinding.ensureInitialized();
+      // Load Env Variables
+      print("Loading Environment Variables...");
+      String envFileName = ".env.${currentFlavor.name}";
+      await dotenv.load(fileName: envFileName);
+      // Initialize Firebase
+      if (kIsWeb) {
+        // Web = Firebase Options
+        await Firebase.initializeApp(
+          options: firebaseOptions,
+        );
+      } else {
+        // Mobile = Firebase .json or .plist
+        await Firebase.initializeApp();
+      }
+      // Initialise TimeZone
+      timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+      // Firebase Messaging Back Ground Message Handler
+      FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
+      // Firebase Dynamic Links
+      DynamicLinkUtils().retrieveDynamicLink();
+      /// Production and Staging Only
+      if (currentFlavor != Flavor.development) {
+        // Firebase Crashlytics on Global Uncaught Errors
+        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;        
+        // Set Log Level
+        await Purchases.setLogLevel(LogLevel.info);
+      } 
+      // Init MixPanel
+      mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!,
+            trackAutomaticEvents: true, optOutTrackingDefault: false);
+      // Init Revenue Cat
+      if (Platform.isAndroid) {
+        PurchasesConfiguration configuration =
+            PurchasesConfiguration(dotenv.env['REVCAT_GOOGLE_API_KEY']!);
+        await Purchases.configure(configuration);
+      } else if (Platform.isIOS) {
+        PurchasesConfiguration configuration =
+            PurchasesConfiguration(dotenv.env['REVCAT_APPLE_API_KEY']!);
+        await Purchases.configure(configuration);
+      }
+      // Run App
+      runApp(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<LanguageProvider>(
+              create: (_) => LanguageProvider()),
+          ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+          ChangeNotifierProvider<FirebaseAnalyticsProvider>(
+              create: (_) => FirebaseAnalyticsProvider()),
+        ],
+        child: const Mamba(),
+      ));
+    }, (error, stackTrace) {
+      print(error.toString());
+      if (currentFlavor != Flavor.development) {
+        // Firebase Crashlytics on Explicitly Caught Exceptions
+        FirebaseCrashlytics.instance.recordError(error, stackTrace);
+      }
+    });
+  }
+
+  // BackGroundNotificationHandler
+  Future<void> _backgroundMessageHandler(RemoteMessage message) async {
+    LocalNotificationService localNotificationService =
+        LocalNotificationService();
+    if (message.data.containsKey('route')) {
+      String route = message.data['route'];
+      localNotificationService.onNotifications.add(route);
     }
-    // Init MixPanel
-    mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
-        trackAutomaticEvents: true, optOutTrackingDefault: false);
-    mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
-        trackAutomaticEvents: true, optOutTrackingDefault: false);
-    await initPlatformState();
-    // Run App
-    runApp(MultiProvider(
-      providers: [
-        ChangeNotifierProvider<LanguageProvider>(
-            create: (_) => LanguageProvider()),
-        ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider<FirebaseAnalyticsProvider>(
-            create: (_) => FirebaseAnalyticsProvider()),
-      ],
-      child: const Mamba(),
-    ));
-    runApp(MultiProvider(
-      providers: [
-        ChangeNotifierProvider<LanguageProvider>(
-            create: (_) => LanguageProvider()),
-        ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider<FirebaseAnalyticsProvider>(
-            create: (_) => FirebaseAnalyticsProvider()),
-      ],
-      child: const Mamba(),
-    ));
-  }, (error, stackTrace) {
-    FirebaseCrashlytics.instance.recordError(error, stackTrace);
-  });
-}
-
-Future<void> initPlatformState() async {
-  await Purchases.setLogLevel(LogLevel.debug);
-
-  if (Platform.isAndroid) {
-    PurchasesConfiguration configuration = PurchasesConfiguration(googleApiKey);
-    await Purchases.configure(configuration);
-  } else if (Platform.isIOS) {
-    PurchasesConfiguration configuration = PurchasesConfiguration(appleApiKey);
-    await Purchases.configure(configuration);
   }
 }
 
-class Mamba extends StatefulWidget {
-  const Mamba({Key? key}) : super(key: key);
-
+// Material App
+class Mamba extends StatefulWidget {  
+  const Mamba({super.key});
   @override
   _MambaState createState() => _MambaState();
 }
@@ -203,6 +212,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
           Consumer3<LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider>(
               builder: (context, LanguageProvider language, ThemeProvider theme,
                   FirebaseAnalyticsProvider analytics, _) {
+        AppThemes appThemes = AppThemes();
         final brightness = SchedulerBinding.instance.window.platformBrightness;
         if (brightness == Brightness.dark) {
           print("Dark Mode");
@@ -215,11 +225,11 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
           allowtextScaling: true,
           builder: () {
             return MaterialApp(
-              debugShowCheckedModeBanner: false,
+              debugShowCheckedModeBanner: currentFlavor == Flavor.development,
               title: Constants.appName,
               themeMode: theme.themeMode,
-              theme: _appThemes.returnResponsiveLightTheme(100.vh),
-              darkTheme: _appThemes.returnResponsiveDarkTheme(100.vh),
+              theme: appThemes.returnResponsiveLightTheme(100.vh),
+              darkTheme: appThemes.returnResponsiveDarkTheme(100.vh),
               locale: language.idioma,
               supportedLocales: Idiomas.all,
               localizationsDelegates: const [
@@ -283,6 +293,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                       settings: const RouteSettings(name: 'MembershipRequests'),
                     );
                 }
+                return null;
               },
             );
           },

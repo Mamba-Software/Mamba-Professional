@@ -9,10 +9,10 @@ class UsersHorizontalScroll extends StatefulWidget {
   final double height;
   final double width;
 
-  UsersHorizontalScroll({Key? key, required this.height, required this.width, required this.usuarios}) : super(key: key);
+  const UsersHorizontalScroll({super.key, required this.height, required this.width, required this.usuarios});
 
   @override
-  _UsersHorizontalScrollState createState() => new _UsersHorizontalScrollState();
+  _UsersHorizontalScrollState createState() => _UsersHorizontalScrollState();
 }
 
 class _UsersHorizontalScrollState extends State<UsersHorizontalScroll> {
@@ -31,12 +31,12 @@ class _UsersHorizontalScrollState extends State<UsersHorizontalScroll> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: widget.height,
       width: widget.width,
       child: ListView.builder(
           shrinkWrap: true,
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
           itemCount: widget.usuarios.length,
           itemBuilder: (context, int index) {
@@ -45,7 +45,7 @@ class _UsersHorizontalScrollState extends State<UsersHorizontalScroll> {
               onTap: () => navigateToUserProfileScreen(user.id!),
               child: Padding(
                 padding: !(index == 0 || index == widget.usuarios.length-1) ?
-                  EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ?
+                  const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ?
                   EdgeInsets.only(
                     left: widget.width*0.06,
                     right: 8.0
@@ -63,7 +63,7 @@ class _UsersHorizontalScrollState extends State<UsersHorizontalScroll> {
                       color: Theme.of(context).primaryColor,
                       borderWidth: 1,
                     ),
-                    Container(
+                    SizedBox(
                       width: widget.width*0.2,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -71,7 +71,7 @@ class _UsersHorizontalScrollState extends State<UsersHorizontalScroll> {
                           Expanded(
                             child: Text(
                               user.firstName!,
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center,
                             ),
                           ),

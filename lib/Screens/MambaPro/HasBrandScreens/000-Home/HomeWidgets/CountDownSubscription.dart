@@ -1,35 +1,19 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
-import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandEventCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 
 import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 
 class CountDownSubscription extends StatefulWidget {
 
-  CountDownSubscription({Key? key}) : super(key: key);
+  const CountDownSubscription({super.key});
 
   @override
   _CountDownSubscriptionState createState() => _CountDownSubscriptionState();
@@ -144,7 +128,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
               minWidth: MediaQuery.of(context).size.width*0.9,
             ),
             decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
+              color: Theme.of(context).colorScheme.background,
               borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
             ),// BoxDecoration
             child: Container(
@@ -181,7 +165,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                                 SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                 Text(
                                     'Subscripción',
-                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                                    style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey),
                                     textAlign: TextAlign.center
                                 ),
                               ],
@@ -193,7 +177,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                               children: [
                                 Text(
                                     'Caducidad (Meses/días)',
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.center
                                 ),
                               ],
@@ -230,7 +214,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                                 style: Theme
                                     .of(context)
                                     .textTheme
-                                    .headline1
+                                    .displayLarge
                                     ?.copyWith(
                                     fontWeight: FontWeight
                                         .bold, fontSize: 15,
@@ -265,7 +249,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                                 style: Theme
                                     .of(context)
                                     .textTheme
-                                    .headline1
+                                    .displayLarge
                                     ?.copyWith(
                                     fontWeight: FontWeight
                                         .bold, fontSize: 15,
@@ -285,7 +269,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                             style: Theme
                                 .of(context)
                                 .textTheme
-                                .headline1
+                                .displayLarge
                                 ?.copyWith(
                                 fontWeight: FontWeight
                                     .bold, fontSize: 30,
@@ -318,7 +302,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                                 style: Theme
                                     .of(context)
                                     .textTheme
-                                    .headline1
+                                    .displayLarge
                                     ?.copyWith(
                                     fontWeight: FontWeight
                                         .bold, fontSize: 15,
@@ -353,7 +337,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                                 style: Theme
                                     .of(context)
                                     .textTheme
-                                    .headline1
+                                    .displayLarge
                                     ?.copyWith(
                                     fontWeight: FontWeight
                                         .bold, fontSize: 15,

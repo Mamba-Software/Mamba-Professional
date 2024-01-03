@@ -7,7 +7,6 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import '../../../../Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import '../../Components/Images/CircularImage.dart';
-import '../LoadingViews/SplashScreenView.dart';
 
 class YourBrandsListTile extends StatefulWidget {
   List<Brand> brands;
@@ -17,11 +16,10 @@ class YourBrandsListTile extends StatefulWidget {
   var safeAreaWidth;
 
   YourBrandsListTile(
-      {Key? key,
+      {super.key,
       required this.brands,
       required this.safeAreaHeight,
-      required this.safeAreaWidth})
-      : super(key: key);
+      required this.safeAreaWidth});
 
   @override
   _YourBrandsListTileState createState() => _YourBrandsListTileState();
@@ -58,12 +56,12 @@ class _YourBrandsListTileState extends State<YourBrandsListTile> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(AppLocalizations.of(context)!.yourBrands,
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center),
             Expanded(
               child: ListView.builder(
                   shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   itemCount: widget.brands.length,
                   itemBuilder: (context, index) {
                     Brand brand;
@@ -77,13 +75,13 @@ class _YourBrandsListTileState extends State<YourBrandsListTile> {
                               child: CircularImage(
                             size: widget.safeAreaHeight * 0.08,
                             image: currentUser.imageUrl,
-                            color: Theme.of(context).backgroundColor,
+                            color: Theme.of(context).colorScheme.background,
                             borderWidth: 2,
                           )),
                           title: Text(brand.name!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(
                                     color: Theme.of(context).primaryColor,
                                   )),
@@ -93,9 +91,9 @@ class _YourBrandsListTileState extends State<YourBrandsListTile> {
                               Navigator.pushReplacement(
                                   context,
                                   CupertinoPageRoute<Null>(
-                                    builder: (context) => SplashScreen(),
+                                    builder: (context) => const SplashScreen(),
                                     settings:
-                                        RouteSettings(name: 'SplashScreen'),
+                                        const RouteSettings(name: 'SplashScreen'),
                                   ));
                             });
                           },

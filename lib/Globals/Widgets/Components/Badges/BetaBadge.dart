@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class BetaBadge extends StatefulWidget {
-  BetaBadge({Key? key}) : super(key: key);
+  const BetaBadge({super.key});
 
   @override
-  _BetaBadgeState createState() => new _BetaBadgeState();
+  _BetaBadgeState createState() => _BetaBadgeState();
 }
 
 class _BetaBadgeState extends State<BetaBadge> {
@@ -25,7 +25,7 @@ class _BetaBadgeState extends State<BetaBadge> {
           "Beta",
           style: Theme.of(context)
               .textTheme
-              .bodyText2
+              .bodyMedium
               ?.copyWith(color: Theme.of(context).colorScheme.secondary),
         ),
       ),

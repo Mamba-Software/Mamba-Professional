@@ -7,7 +7,6 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import '../../../../Events/crud_events/models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,7 +16,7 @@ class UserEventHistoryWidget extends StatefulWidget {
   bool isTrainer;
   List<Event> events;
 
-  UserEventHistoryWidget({Key? key, required this.userId, required this.isTrainer, required this.events}) : super(key: key);
+  UserEventHistoryWidget({super.key, required this.userId, required this.isTrainer, required this.events});
 
   @override
   _UserEventHistoryWidgetState createState() => _UserEventHistoryWidgetState();
@@ -107,7 +106,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
           style: Theme.of(context).appBarTheme.titleTextStyle,
           textAlign: TextAlign.center,
         ),
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
@@ -116,7 +115,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
           },
         ),
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Padding(
         padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03, left: MediaQuery.of(context).size.width*0.02),
         child: Column(
@@ -125,16 +124,16 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
               child: SfCalendarTheme(
                 data: SfCalendarThemeData(
                   brightness: Brightness.dark,
-                  backgroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: Theme.of(context).colorScheme.background,
                   todayHighlightColor: Theme.of(context).primaryColor,
-                  todayBackgroundColor: Theme.of(context).backgroundColor,
+                  todayBackgroundColor: Theme.of(context).colorScheme.background,
                 ),
                 child: SfCalendar(
                   // Controller
                   controller: _controller,
                   view: CalendarView.schedule,
                   blackoutDates: [dateJoined.subtract(const Duration(days: 1))],
-                  blackoutDatesTextStyle: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600),
+                  blackoutDatesTextStyle: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600),
                   // Data
                   minDate: dateJoined.subtract(const Duration(days: 1)),
                   initialDisplayDate: DateTime.now(),
@@ -145,7 +144,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                   firstDayOfWeek: 1,
                   showCurrentTimeIndicator: true,
                   cellBorderColor: Colors.transparent,
-                  todayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
+                  todayTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark),
                   // Style
                   selectionDecoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
@@ -156,13 +155,13 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                   headerStyle: CalendarHeaderStyle(
                     textAlign: TextAlign.center,
                     backgroundColor: Colors.transparent,
-                    textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
+                    textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.transparent),
                   ),
                   viewHeaderHeight: 30,
                   viewHeaderStyle: ViewHeaderStyle(
-                    backgroundColor: Theme.of(context).backgroundColor,
-                    dateTextStyle: Theme.of(context).textTheme.bodyText2,
-                    dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    dateTextStyle: Theme.of(context).textTheme.bodyMedium,
+                    dayTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 10),
                   ),
                   // Monthly View
                   monthViewSettings: MonthViewSettings(
@@ -174,43 +173,43 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                     agendaViewHeight: MediaQuery.of(context).size.height*0.35,
                     agendaItemHeight: MediaQuery.of(context).size.height*0.15,
                     agendaStyle: AgendaStyle(
-                      dateTextStyle: Theme.of(context).textTheme.bodyText2,
-                      dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                      appointmentTextStyle: Theme.of(context).textTheme.bodyText2,
+                      dateTextStyle: Theme.of(context).textTheme.bodyMedium,
+                      dayTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 10),
+                      appointmentTextStyle: Theme.of(context).textTheme.bodyMedium,
                     ),
                     monthCellStyle: MonthCellStyle(
-                      textStyle: Theme.of(context).textTheme.bodyText1,
-                      trailingDatesTextStyle: Theme.of(context).textTheme.caption,
-                      leadingDatesTextStyle: Theme.of(context).textTheme.caption,
+                      textStyle: Theme.of(context).textTheme.bodyLarge,
+                      trailingDatesTextStyle: Theme.of(context).textTheme.bodySmall,
+                      leadingDatesTextStyle: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                   // Schedule View
                   scheduleViewSettings: ScheduleViewSettings(
                       hideEmptyScheduleWeek: true,
                       appointmentItemHeight: MediaQuery.of(context).size.height*0.15,
-                      appointmentTextStyle: Theme.of(context).textTheme.bodyText2,
+                      appointmentTextStyle: Theme.of(context).textTheme.bodyMedium,
                       dayHeaderSettings: DayHeaderSettings(
-                        dateTextStyle: Theme.of(context).textTheme.bodyText2,
-                        dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                        dateTextStyle: Theme.of(context).textTheme.bodyMedium,
+                        dayTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 10),
                       ),
                       weekHeaderSettings: WeekHeaderSettings(
                         startDateFormat: 'dd/MM',
                         endDateFormat: 'dd/MM/yyyy',
                         textAlign: TextAlign.start,
-                        backgroundColor: Theme.of(context).backgroundColor,
-                        weekTextStyle: Theme.of(context).textTheme.caption,
+                        backgroundColor: Theme.of(context).colorScheme.background,
+                        weekTextStyle: Theme.of(context).textTheme.bodySmall,
                       ),
                       monthHeaderSettings: MonthHeaderSettings(
                         monthFormat: 'MMMM yyyy',
                         height: 70,
                         textAlign: TextAlign.start,
-                        backgroundColor: Theme.of(context).backgroundColor,
-                        monthTextStyle: Theme.of(context).textTheme.headline1,
+                        backgroundColor: Theme.of(context).colorScheme.background,
+                        monthTextStyle: Theme.of(context).textTheme.displayLarge,
                       )
                   ),
                   scheduleViewMonthHeaderBuilder: (BuildContext buildContext, ScheduleViewMonthHeaderDetails details) {
                     return Container(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                       padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -218,7 +217,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                         children: [
                           Text(
                             StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(details.date)),
-                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal, color: AppColors.grey),
+                            style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.normal, color: AppColors.grey),
                             textAlign: TextAlign.left,
                           ),
                         ],
@@ -234,7 +233,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                       });
                     });
                   },
-                  appointmentTextStyle: Theme.of(context).textTheme.bodyText2!,
+                  appointmentTextStyle: Theme.of(context).textTheme.bodyMedium!,
                   appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                     return _buildEventContainer(details);
                   },
@@ -263,8 +262,8 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject;
-      var color;
+      String subject;
+      Color color = Colors.black;
       if (event.isPrivate!) {
         subject = "${event.numClients}";
         color = Colors.black;

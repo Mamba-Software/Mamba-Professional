@@ -1,13 +1,7 @@
-import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateEvent/DateEventWidget.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateEvent/TimeEventWidget.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateTimeEventWidget.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DurationEvent/DurationEventWidget.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -43,7 +37,7 @@ class DurationEventSelector extends StatelessWidget {
                       AppLocalizations.of(context)!.errorDate,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
+                          .bodyMedium
                           ?.copyWith(color: AppColors.red),
                       textAlign: TextAlign.center,
                     ),
@@ -59,7 +53,7 @@ class DurationEventSelector extends StatelessWidget {
                       AppLocalizations.of(context)!.cantEditText,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
+                          .bodyMedium
                           ?.copyWith(color: AppColors.red),
                       textAlign: TextAlign.center,
                     ),
@@ -75,8 +69,8 @@ class DurationEventSelector extends StatelessWidget {
 }
 
 bool validateDateAndTime(
-    DateTime startTime, double duration, bool _isBeforeEdit) {
-  if (!_isBeforeEdit) {
+    DateTime startTime, double duration, bool isBeforeEdit) {
+  if (!isBeforeEdit) {
     return true;
   }
   // Calculating the Time to check

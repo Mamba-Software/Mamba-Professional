@@ -26,31 +26,31 @@ class Conversation {
       this.isMessageRead});
 
   Conversation.fromMap(Map<String, dynamic> mapData, String documentId) {
-    this.conversationId = documentId;
-    this.users = mapData['users'];
-    this.year = mapData['year'].toString();
-    this.month = mapData['month'].toString();
-    this.day = mapData['day'].toString();
-    this.hour = mapData['hour'].toString();
-    this.minute = mapData['minute'].toString();
-    this.lastMessage = mapData['lastMessage'].toString();
-    this.brandId = mapData['brandId'].toString();
-    this.second = mapData['second'].toString();
-    this.isMessageRead = mapData['messagesRead'];
+    conversationId = documentId;
+    users = mapData['users'];
+    year = mapData['year'].toString();
+    month = mapData['month'].toString();
+    day = mapData['day'].toString();
+    hour = mapData['hour'].toString();
+    minute = mapData['minute'].toString();
+    lastMessage = mapData['lastMessage'].toString();
+    brandId = mapData['brandId'].toString();
+    second = mapData['second'].toString();
+    isMessageRead = mapData['messagesRead'];
   }
 
   Conversation.fromObject(
       DocumentSnapshot documentSnapshot, String documentId) {
-    this.conversationId = documentId;
-    this.users = documentSnapshot.get("users");
-    this.year = documentSnapshot.get("year").toString();
-    this.month = documentSnapshot.get("month").toString();
-    this.day = documentSnapshot.get("day").toString();
-    this.hour = documentSnapshot.get("hour").toString();
-    this.minute = documentSnapshot.get("minute").toString();
-    this.lastMessage = documentSnapshot.get("lastMessage").toString();
-    this.brandId = documentSnapshot.get("brandId").toString();
-    this.second = documentSnapshot.get("second").toString();
-    this.isMessageRead = documentSnapshot.get("messagesRead");
+    conversationId = documentId;
+    users = documentSnapshot.get("users");
+    year = documentSnapshot.get("year").toString();
+    month = documentSnapshot.get("month").toString();
+    day = documentSnapshot.get("day").toString();
+    hour = documentSnapshot.get("hour").toString();
+    minute = documentSnapshot.get("minute").toString();
+    lastMessage = documentSnapshot.get("lastMessage").toString();
+    brandId = documentSnapshot.get("brandId").toString();
+    second = documentSnapshot.get("second").toString();
+    isMessageRead = documentSnapshot.get("messagesRead");
   }
 }

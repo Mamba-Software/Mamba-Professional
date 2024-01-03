@@ -1,336 +1,6 @@
 {
   "indexes": [
     {
-      "collectionGroup": "7777 Conversations",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "users",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "year",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "day",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "hour",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "minute",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Events",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "brandID",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "day",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "year",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "hour",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Events",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "joinedMembers",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "brandID",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "year",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "day",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Events",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "joinedMembers",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "day",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "year",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "hour",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Events",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "joinedMembers",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "year",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "day",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Events",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "joinedMembers",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "year",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "day",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Events",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "selectedTrainers",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "brandID",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "year",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "day",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Events",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "selectedTrainers",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "day",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "year",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "hour",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Events",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "selectedTrainers",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "year",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "day",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Messages",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "conversationId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "year",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "day",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "hour",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "minute",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "second",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Messages",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "conversationId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "year",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "day",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "hour",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "minute",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "second",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Notifications",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "userId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "year",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "month",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "day",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "7777 Rooms",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "userIds",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "updatedAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
       "collectionGroup": "Conversations",
       "queryScope": "COLLECTION",
       "fields": [
@@ -435,6 +105,50 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "day",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "month",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "geoPosition.geohash",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "day",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "month",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "hour",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "joinedMembers",
           "arrayConfig": "CONTAINS"
         },
@@ -531,6 +245,24 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "month",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "numClients",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "selectedTrainers",
           "arrayConfig": "CONTAINS"
         },
@@ -608,6 +340,24 @@
           "fieldPath": "selectedTrainers",
           "arrayConfig": "CONTAINS"
         },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "month",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "day",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Events",
+      "queryScope": "COLLECTION",
+      "fields": [
         {
           "fieldPath": "year",
           "order": "DESCENDING"
@@ -888,6 +638,50 @@
         },
         {
           "fieldPath": "seconds",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Notifications",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "month",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "day",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "hour",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "minutes",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "seconds",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Rooms",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userIds",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "updatedAt",
           "order": "DESCENDING"
         }
       ]

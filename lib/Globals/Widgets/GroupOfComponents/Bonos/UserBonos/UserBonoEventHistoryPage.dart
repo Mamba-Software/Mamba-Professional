@@ -9,7 +9,7 @@ class UserBonoEventHistoryPage extends StatefulWidget {
   String userId;
   List<Event> bonoEvents;
 
-  UserBonoEventHistoryPage({Key? key, required this.userId, required this.bonoEvents}) : super(key: key);
+  UserBonoEventHistoryPage({super.key, required this.userId, required this.bonoEvents});
 
   @override
   _UserBonoEventHistoryPageState createState() => _UserBonoEventHistoryPageState();
@@ -42,8 +42,8 @@ class _UserBonoEventHistoryPageState extends State<UserBonoEventHistoryPage> {
   initDeviceSizes() {
     safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
+    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   @override

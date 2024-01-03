@@ -15,9 +15,9 @@ class lPaymentMethod {
 
   lPaymentMethod.fromObjectAllData(
       String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('name')) {
-      this.name = documentSnapshot.get("name").toString();
+      name = documentSnapshot.get("name").toString();
     }
   }
 
@@ -25,7 +25,7 @@ class lPaymentMethod {
 
   // Set Basic Data
   set setBasicData(lPaymentMethod paymentMethod) {
-    this.id = paymentMethod.id;
-    this.name = paymentMethod.name;
+    id = paymentMethod.id;
+    name = paymentMethod.name;
   }
 }

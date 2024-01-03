@@ -15,7 +15,7 @@ class UserCalendarMonthWidget extends StatefulWidget {
   var height;
   var width;
 
-  UserCalendarMonthWidget({Key? key, required this.userId, required this.height, required this.width}) : super(key: key);
+  UserCalendarMonthWidget({super.key, required this.userId, required this.height, required this.width});
 
   @override
   _UserCalendarMonthWidgetState createState() => _UserCalendarMonthWidgetState();
@@ -26,7 +26,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
   // Boolean Loading
   bool isLoading = true;
   // Acceso a Base de Datos
-  var _eventDataService = EventDataService();
+  final _eventDataService = EventDataService();
   // Calendar
   final CalendarController _calendarController = CalendarController();
   // Date in the Middle of the Month
@@ -62,8 +62,8 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject;
-      var color;
+      String subject;
+      Color color = Colors.black;
       if (event.isPrivate!) {
         subject = "${event.numClients}";
         color = Colors.black;
@@ -73,8 +73,9 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
         double numClients = double.parse(event.numClients.toString());
         double maxMembers = double.parse(event.maxMembers.toString());
         double bookedCapacity = numClients/maxMembers;
-        if(bookedCapacity <= 0.20) color = Colors.green;
-        else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = const Color(0xFFA8C76C);
+        if(bookedCapacity <= 0.20) {
+          color = Colors.green;
+        } else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = const Color(0xFFA8C76C);
         else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = const Color(0xFFECE014);
         else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
         else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
@@ -128,7 +129,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(AppLocalizations.of(context)!.myCalendar, style: Theme.of(context).textTheme.headline1),
+                Text(AppLocalizations.of(context)!.myCalendar, style: Theme.of(context).textTheme.displayLarge),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -152,7 +153,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         fit: BoxFit.fitHeight,
                         child: Text(
                           StringUtils().toCapitalized(DateFormat('MM', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.start,
                         ),
                       ),
@@ -478,7 +479,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(AppLocalizations.of(context)!.myCalendar, style: Theme.of(context).textTheme.headline1),
+                Text(AppLocalizations.of(context)!.myCalendar, style: Theme.of(context).textTheme.displayLarge),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -502,7 +503,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         fit: BoxFit.fitHeight,
                         child: Text(
                           StringUtils().toCapitalized(DateFormat('MM', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.start,
                         ),
                       ),
@@ -539,22 +540,22 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
               todayHighlightColor: Theme.of(context).colorScheme.secondary,
               viewHeaderHeight:  widget.width*0.15,
               viewHeaderStyle: ViewHeaderStyle(
-                dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                dayTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 10),
               ),
               headerHeight: 0,
               headerDateFormat: "MMMM yyyy",
               headerStyle: CalendarHeaderStyle(
                 textAlign: TextAlign.center,
                 backgroundColor: Colors.transparent,
-                textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
+                textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.transparent),
               ),
               cellBorderColor: Colors.transparent,
               monthViewSettings: MonthViewSettings(
                 navigationDirection: MonthNavigationDirection.horizontal,
                 monthCellStyle: MonthCellStyle(
-                  textStyle: Theme.of(context).textTheme.bodyText1,
-                  trailingDatesTextStyle: Theme.of(context).textTheme.caption,
-                  leadingDatesTextStyle: Theme.of(context).textTheme.caption,
+                  textStyle: Theme.of(context).textTheme.bodyLarge,
+                  trailingDatesTextStyle: Theme.of(context).textTheme.bodySmall,
+                  leadingDatesTextStyle: Theme.of(context).textTheme.bodySmall,
                 ),
                 numberOfWeeksInView: 6,
                 showTrailingAndLeadingDates: false,

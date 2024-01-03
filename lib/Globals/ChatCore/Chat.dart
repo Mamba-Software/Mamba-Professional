@@ -22,9 +22,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
-    Key? key,
+    super.key,
     required this.room,
-  }) : super(key: key);
+  });
 
   final types.Room room;
 
@@ -34,7 +34,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
 
-  var _roomDataService = new RoomDataService();
+  final _roomDataService = RoomDataService();
   final _userDataService = UserDataService();
   bool _isAttachmentUploading = false;
   bool isLoading = true;
@@ -46,7 +46,7 @@ class _ChatPageState extends State<ChatPage> {
   bool blockedUser = false;
   TopSnackBarDef topSnackBarComp = TopSnackBarDef();
   var roomActual;
-  String rooms = isProduction ? 'Rooms' : '7777 Rooms';
+  String rooms = 'Rooms';
 
   @override
   void initState() {
@@ -82,7 +82,7 @@ class _ChatPageState extends State<ChatPage> {
     String messageStatus = "seen";
     Map<String, dynamic> metadata = {};
     Map<String, dynamic> metadataMessage = {};
-    widget.room.metadata!["active" + currentUser.id!] = true;
+    widget.room.metadata!["active${currentUser.id!}"] = true;
     //widget.room.metadata!["alreadyChanged"] = false;
     await _roomDataService.updateRoom(widget.room.id, widget.room.metadata!);
 
@@ -347,7 +347,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
               borderRadius: BorderRadius.circular(20),
               color: (customMessage.author.id == currentUser.id
                   ? Styles.mainColorTrans
-                  : Theme.of(context).backgroundColor),
+                  : Theme.of(context).colorScheme.background),
             ),
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.03,
@@ -362,7 +362,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                     Flexible(
                       child: Text(
                         customMessage.id,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                     SizedBox(
@@ -374,7 +374,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                       ),
                       Text(
                         customMessage.id,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ]),
                   ],
@@ -456,7 +456,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.03,
             ),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.60,
               child: Row(
                 children: [
@@ -466,7 +466,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                       decoration: InputDecoration(
                         hintStyle: Theme.of(context).appBarTheme.titleTextStyle,
                         hintText: noMessages ? nameRoom : widget.room.name,
-                        contentPadding: EdgeInsets.all(0),
+                        contentPadding: const EdgeInsets.all(0),
                         isDense: true,
                         enabledBorder: InputBorder.none,
                         errorBorder: InputBorder.none,
@@ -501,27 +501,27 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                     theme: DefaultChatTheme(
                       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                       inputBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                      inputTextStyle: Theme.of(context).textTheme.bodyText2!,
+                      inputTextStyle: Theme.of(context).textTheme.bodyMedium!,
                       inputTextColor: Theme.of(context).primaryColor,
                       inputTextCursorColor: Theme.of(context).colorScheme.secondary,
                       inputBorderRadius: BorderRadius.circular(0),
                       primaryColor: Styles.mainColorTrans,
-                      secondaryColor: Theme.of(context).backgroundColor,
-                      emptyChatPlaceholderTextStyle: Theme.of(context).textTheme.caption!,
-                      sentMessageBodyTextStyle: Theme.of(context).textTheme.bodyText2!,
-                      sentEmojiMessageTextStyle: Theme.of(context).textTheme.bodyText2!,
-                      sentMessageCaptionTextStyle: Theme.of(context).textTheme.bodyText2!,
+                      secondaryColor: Theme.of(context).colorScheme.background,
+                      emptyChatPlaceholderTextStyle: Theme.of(context).textTheme.bodySmall!,
+                      sentMessageBodyTextStyle: Theme.of(context).textTheme.bodyMedium!,
+                      sentEmojiMessageTextStyle: Theme.of(context).textTheme.bodyMedium!,
+                      sentMessageCaptionTextStyle: Theme.of(context).textTheme.bodyMedium!,
                       sentMessageDocumentIconColor: Theme.of(context).primaryColor,
-                      sentMessageLinkDescriptionTextStyle: Theme.of(context).textTheme.bodyText2!,
-                      sentMessageLinkTitleTextStyle:Theme.of(context).textTheme.bodyText2!,
-                      receivedMessageBodyTextStyle: Theme.of(context).textTheme.bodyText2!,
-                      receivedEmojiMessageTextStyle: Theme.of(context).textTheme.bodyText2!,
-                      receivedMessageCaptionTextStyle: Theme.of(context).textTheme.bodyText2!,
+                      sentMessageLinkDescriptionTextStyle: Theme.of(context).textTheme.bodyMedium!,
+                      sentMessageLinkTitleTextStyle:Theme.of(context).textTheme.bodyMedium!,
+                      receivedMessageBodyTextStyle: Theme.of(context).textTheme.bodyMedium!,
+                      receivedEmojiMessageTextStyle: Theme.of(context).textTheme.bodyMedium!,
+                      receivedMessageCaptionTextStyle: Theme.of(context).textTheme.bodyMedium!,
                       receivedMessageDocumentIconColor: Theme.of(context).primaryColor,
-                      receivedMessageLinkDescriptionTextStyle: Theme.of(context).textTheme.bodyText2!,
-                      receivedMessageLinkTitleTextStyle:Theme.of(context).textTheme.bodyText2!,
-                      userNameTextStyle: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
-                      userAvatarNameColors: [
+                      receivedMessageLinkDescriptionTextStyle: Theme.of(context).textTheme.bodyMedium!,
+                      receivedMessageLinkTitleTextStyle:Theme.of(context).textTheme.bodyMedium!,
+                      userNameTextStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                      userAvatarNameColors: const [
                         Color(0xffff6767),
                         Color(0xff66e0da),
                         Color(0xfff5a2d9),
@@ -537,11 +537,11 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                         Icons.done_all,
                         color: Theme.of(context).primaryColor,
                       ),
-                      seenIcon: Icon(
+                      seenIcon: const Icon(
                         Icons.done_all,
                         color: Styles.mainColor,
                       ),
-                      dateDividerTextStyle: Theme.of(context).textTheme.caption!.copyWith(fontSize: 10),
+                      dateDividerTextStyle: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 10),
                     ),
                     //sendButtonVisibilityMode: SendButtonVisibilityMode.always,
                     customDateHeaderText: _customDateHeaderText,
@@ -549,7 +549,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                     groupMessagesThreshold: 300000,
                     isAttachmentUploading: _isAttachmentUploading,
                     messages: snapshot.data ?? [],
-                    scrollPhysics: BouncingScrollPhysics(),
+                    scrollPhysics: const BouncingScrollPhysics(),
                     emptyState: Container(),
                     onSendPressed: _handleSendPressed,
                     showUserNames: widget.room.type.toString() == "RoomType.group" ? true : false,

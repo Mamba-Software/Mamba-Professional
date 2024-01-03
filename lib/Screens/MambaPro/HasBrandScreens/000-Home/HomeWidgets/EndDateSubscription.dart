@@ -1,24 +1,19 @@
-import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:purchases_flutter/models/customer_info_wrapper.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 class EndDateSubscription extends StatefulWidget {
 
-  EndDateSubscription({Key? key}) : super(key: key);
+  const EndDateSubscription({super.key});
 
   @override
   _EndDateSubscriptionState createState() => _EndDateSubscriptionState();
@@ -76,7 +71,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                         minWidth: MediaQuery.of(context).size.width*0.9,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
+                        color: Theme.of(context).colorScheme.background,
                         borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
                       ),// BoxDecoration
                       child: Container(
@@ -107,15 +102,15 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                                   style: Theme
                                       .of(context)
                                       .textTheme
-                                      .bodyText1,
+                                      .bodyLarge,
                                   textAlign: TextAlign.left
                               ),
                               subtitle: Text(
-                                  suscriptionState.subscription.unsuscribed!? AppLocalizations.of(context)!.expiresAt + ' ' + formatter.format(suscriptionState.subscription.endDate!.toDate()).toString() :  AppLocalizations.of(context)!.autoRenovation ,
+                                  suscriptionState.subscription.unsuscribed!? '${AppLocalizations.of(context)!.expiresAt} ${formatter.format(suscriptionState.subscription.endDate!.toDate())}' :  AppLocalizations.of(context)!.autoRenovation ,
                                   style: Theme
                                       .of(context)
                                       .textTheme
-                                      .caption
+                                      .bodySmall
                               ),
                               dense: true,
                             ),
@@ -172,7 +167,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
 
   Widget textToShow()
   {
-    return   Text(ShowTextExpired? AppLocalizations.of(context)!.subscriptionExpired : AppLocalizations.of(context)!.noSubscription,  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary), textAlign: TextAlign.center,);
+    return   Text(ShowTextExpired? AppLocalizations.of(context)!.subscriptionExpired : AppLocalizations.of(context)!.noSubscription,  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.secondary), textAlign: TextAlign.center,);
   }
 
   Widget freeTrialMamba()
@@ -201,7 +196,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                   style: Theme
                       .of(context)
                       .textTheme
-                      .bodyText1!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.bold),
+                      .bodyLarge!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left
               ),
             ),
@@ -210,7 +205,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                 style: Theme
                     .of(context)
                     .textTheme
-                    .caption!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.normal, fontSize: 12),
+                    .bodySmall!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.normal, fontSize: 12),
             ),
             trailing: GestureDetector(
               onTap: () async {
@@ -230,7 +225,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                   style: Theme
                       .of(context)
                       .textTheme
-                      .caption!.copyWith(color:  AppColors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                      .bodySmall!.copyWith(color:  AppColors.white, fontWeight: FontWeight.bold, fontSize: 15),
                 )),
               ),
             ),
@@ -263,7 +258,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
             minWidth: MediaQuery.of(context).size.width*0.9,
           ),
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).colorScheme.background,
             borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
           ),// BoxDecoration
           child: Container(
@@ -294,15 +289,15 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                       style: Theme
                           .of(context)
                           .textTheme
-                          .bodyText1,
+                          .bodyLarge,
                       textAlign: TextAlign.left
                   ),
                   subtitle: Text(
-                    'Tienes hasta el ' + ' ' + formatter.format(currentBrand.endDatePay!.toDate()).toString() + ' para suscribirte a un plan',
+                    'Tienes hasta el  ${formatter.format(currentBrand.endDatePay!.toDate())} para suscribirte a un plan',
                       style: Theme
                           .of(context)
                           .textTheme
-                          .caption
+                          .bodySmall
                   ),
                   dense: true,
                 ),

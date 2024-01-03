@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
@@ -63,7 +62,7 @@ Widget appleLogin(BuildContext context, AuthState state) {
                   style: Theme
                       .of(context)
                       .textTheme
-                      .headline3
+                      .displaySmall
                       ?.copyWith(color: AppColors.black),
                   textAlign: TextAlign.center
               ) : Center(

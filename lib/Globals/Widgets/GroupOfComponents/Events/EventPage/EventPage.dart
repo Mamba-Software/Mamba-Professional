@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPageClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 
 import 'EventPageTrainer.dart';
 
@@ -10,7 +9,7 @@ class EventPageOld extends StatefulWidget {
   String eventId;
   bool? onlyView;
 
-  EventPageOld({Key? key, required this.eventId, this.onlyView}) : super(key: key);
+  EventPageOld({super.key, required this.eventId, this.onlyView});
 
   @override
   _EventPageState createState() => _EventPageState();

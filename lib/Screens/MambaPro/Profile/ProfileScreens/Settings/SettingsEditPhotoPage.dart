@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -11,6 +9,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:permission_handler/permission_handler.dart';
 
 class SettingsEditPhotoPage extends StatefulWidget {
+  const SettingsEditPhotoPage({super.key});
+
   @override
   _SettingsEditPhotoPageState createState() => _SettingsEditPhotoPageState();
 }
@@ -18,7 +18,7 @@ class SettingsEditPhotoPage extends StatefulWidget {
 class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> with WidgetsBindingObserver {
 
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
+  final _userDataService = UserDataService();
   // Boolean Loading
   bool isLoading = false;
   bool isLoadingBody = false;
@@ -52,7 +52,7 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> with Widg
         isSettingsOpened = false;
       });
       var status = await Permission.photos.status;
-      print("Status After Settings: "+status.toString());
+      print("Status After Settings: $status");
       if (status.isLimited || status.isGranted) {
         getImage();
       }
@@ -146,6 +146,16 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> with Widg
                   child: _image == null ?
                   OutlinedButton(
                     onPressed: getImage,
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 1.5
+                      ),
+                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      elevation: 10,
+                      shape: const CircleBorder(),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.13, right: MediaQuery.of(context).size.height * 0.13, top: MediaQuery.of(context).size.height * 0.14),
+                    ),
                     child: Column(
                       //mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -168,16 +178,6 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> with Widg
                           ),
                         ),
                       ],
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 1.5
-                      ),
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                      elevation: 10,
-                      shape: const CircleBorder(),
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.13, right: MediaQuery.of(context).size.height * 0.13, top: MediaQuery.of(context).size.height * 0.14),
                     ),
                   )
                       :

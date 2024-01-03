@@ -18,12 +18,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'SplashScreen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+  const OnboardingScreen({super.key});
 
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -102,7 +101,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> addUser() async {
     // Trimming for Names
     String name =
-        firstNameController.text.trim() + " " + lastNameController.text.trim();
+        "${firstNameController.text.trim()} ${lastNameController.text.trim()}";
     String dateString = DateTimeUtils().formatDateTimeToStringDDMMYYYY(
         startDate, Localizations.localeOf(context).languageCode);
     // Update Functions
@@ -171,8 +170,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     mixpanel!.getPeople().set("dateOfBirth", startDate.toString());
     mixpanel!.getPeople().set("language", currentUser.idioma!);
     mixpanel!.getPeople().set("isPrivate", true);
-    mixpanel!.getPeople().set("isTrainer", true);
-    mixpanel!.getPeople().set("isProduction", isProduction);
+    mixpanel!.getPeople().set("isTrainer", true);    
   }
 
   int calculateAge(DateTime birthDate, DateTime currentDate) {
@@ -284,7 +282,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           AppLocalizations.of(context)!.trainersOnboarding,
                           style: Theme.of(context)
                               .textTheme
-                              .headline1
+                              .displayLarge
                               ?.copyWith(color: AppColors.white, fontSize: 30),
                           textAlign: TextAlign.left,
                         ),
@@ -295,7 +293,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           text: TextSpan(
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText1
+                                .bodyLarge
                                 ?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
@@ -304,7 +302,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     .split(" ")[0],
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge
                                     ?.copyWith(
                                         color: AppColors.white,
                                         decoration: TextDecoration.underline),
@@ -348,7 +346,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           child: Text(AppLocalizations.of(context)!.next,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(color: AppColors.black)),
                         ),
                       ),
@@ -364,7 +362,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           AppLocalizations.of(context)!.skip,
                           style: Theme.of(context)
                               .textTheme
-                              .headline3
+                              .displaySmall
                               ?.copyWith(color: AppColors.black),
                           textAlign: TextAlign.center,
                         ),
@@ -408,7 +406,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               .trainersOnboardingSecond,
                           style: Theme.of(context)
                               .textTheme
-                              .headline1
+                              .displayLarge
                               ?.copyWith(color: AppColors.white, fontSize: 30),
                           textAlign: TextAlign.left,
                         ),
@@ -419,7 +417,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           text: TextSpan(
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText1
+                                .bodyLarge
                                 ?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
@@ -432,7 +430,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     .toLowerCase(),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge
                                     ?.copyWith(
                                         color: AppColors.white,
                                         decoration: TextDecoration.underline),
@@ -472,7 +470,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           child: Text(AppLocalizations.of(context)!.next,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(color: AppColors.black)),
                         ),
                       ),
@@ -488,7 +486,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           AppLocalizations.of(context)!.skip,
                           style: Theme.of(context)
                               .textTheme
-                              .headline3
+                              .displaySmall
                               ?.copyWith(color: AppColors.black),
                           textAlign: TextAlign.center,
                         ),
@@ -531,7 +529,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           AppLocalizations.of(context)!.trainersOnboardingThird,
                           style: Theme.of(context)
                               .textTheme
-                              .headline1
+                              .displayLarge
                               ?.copyWith(color: AppColors.white, fontSize: 30),
                           textAlign: TextAlign.left,
                         ),
@@ -542,7 +540,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           text: TextSpan(
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText1
+                                .bodyLarge
                                 ?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
@@ -554,7 +552,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     .trainersOnboardingThirdDesc2,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge
                                     ?.copyWith(
                                         color: AppColors.white,
                                         decoration: TextDecoration.underline),
@@ -597,7 +595,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   .notificationsPermision,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(color: AppColors.black)),
                         ),
                       ),
@@ -618,7 +616,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           AppLocalizations.of(context)!.next,
                           style: Theme.of(context)
                               .textTheme
-                              .headline3
+                              .displaySmall
                               ?.copyWith(color: AppColors.white),
                           textAlign: TextAlign.center,
                         ),
@@ -698,7 +696,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             .whatsYourName,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline1
+                                            .displayLarge
                                             ?.copyWith(
                                                 color: AppColors.white,
                                                 fontSize: 30),
@@ -714,7 +712,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             .changeLater,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1
+                                            .bodyLarge
                                             ?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.left,
                                       ),
@@ -758,7 +756,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             .googleInfo,
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText2
+                                                            .bodyMedium
                                                             ?.copyWith(
                                                                 color: AppColors
                                                                     .white),
@@ -813,15 +811,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             0.02),
                                                     Flexible(
                                                       child: Text(
-                                                        AppLocalizations.of(
+                                                        "${AppLocalizations.of(
                                                                     context)!
                                                                 .googleInfo
                                                                 .split(
-                                                                    "Google")[0] +
-                                                            " Apple",
+                                                                    "Google")[0]} Apple",
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText2
+                                                            .bodyMedium
                                                             ?.copyWith(
                                                                 color: AppColors
                                                                     .white),
@@ -870,7 +867,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 },
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .headline3
+                                                    .displaySmall
                                                     ?.copyWith(
                                                         color: AppColors.black,
                                                         fontWeight:
@@ -887,7 +884,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         Theme
                                                                 .of(context)
                                                             .textTheme
-                                                            .headline3
+                                                            .displaySmall
                                                             ?.copyWith(
                                                                 color:
                                                                     AppColors
@@ -898,7 +895,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     errorStyle: Theme
                                                             .of(context)
                                                         .textTheme
-                                                        .bodyText2
+                                                        .bodyMedium
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.red),
@@ -987,7 +984,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 },
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .headline3
+                                                    .displaySmall
                                                     ?.copyWith(
                                                         color: AppColors.black,
                                                         fontWeight:
@@ -1004,7 +1001,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         Theme
                                                                 .of(context)
                                                             .textTheme
-                                                            .headline3
+                                                            .displaySmall
                                                             ?.copyWith(
                                                                 color:
                                                                     AppColors
@@ -1015,7 +1012,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     errorStyle: Theme
                                                             .of(context)
                                                         .textTheme
-                                                        .bodyText2
+                                                        .bodyMedium
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.red),
@@ -1112,7 +1109,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               .visibleFirstName,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2
+                                              .bodyMedium
                                               ?.copyWith(
                                                   color: AppColors.white),
                                           textAlign: TextAlign.left,
@@ -1134,6 +1131,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   curve: Curves.ease,
                                                 );
                                               },
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0, backgroundColor: canGoNextName
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                          shape: const CircleBorder(),
+                                          padding: const EdgeInsets.all(15),
+                                        ),
                                         child: Icon(
                                           Icons.arrow_forward_ios,
                                           color: canGoNextName
@@ -1144,14 +1148,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   .size
                                                   .width *
                                               0.06,
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          elevation: 0,
-                                          shape: const CircleBorder(),
-                                          padding: const EdgeInsets.all(15),
-                                          primary: canGoNextName
-                                              ? AppColors.white
-                                              : AppColors.black,
                                         ),
                                       ),
                                     ],
@@ -1175,16 +1171,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        AppLocalizations.of(context)!
+                                        "${AppLocalizations.of(context)!
                                                 .uploadPhoto
-                                                .split(" ")[0] +
-                                            " " +
-                                            AppLocalizations.of(context)!
+                                                .split(" ")[0]} ${AppLocalizations.of(context)!
                                                 .profilePhoto
-                                                .toLowerCase(),
+                                                .toLowerCase()}",
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline1
+                                            .displayLarge
                                             ?.copyWith(
                                                 color: AppColors.white,
                                                 fontSize: 30),
@@ -1200,7 +1194,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             .changeLater,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1
+                                            .bodyLarge
                                             ?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.left,
                                       ),
@@ -1244,7 +1238,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             .googleInfo,
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText2
+                                                            .bodyMedium
                                                             ?.copyWith(
                                                                 color: AppColors
                                                                     .white),
@@ -1272,6 +1266,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             ? Center(
                                                 child: OutlinedButton(
                                                   onPressed: getImage,
+                                                  style:
+                                                      OutlinedButton.styleFrom(
+                                                    backgroundColor:
+                                                        AppColors.white,
+                                                    elevation: 4,
+                                                    shape: const CircleBorder(),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            40),
+                                                  ),
                                                   child: !isLoadingBody
                                                       ? Icon(
                                                           Icons.add,
@@ -1314,16 +1318,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             ),
                                                           ),
                                                         ),
-                                                  style:
-                                                      OutlinedButton.styleFrom(
-                                                    backgroundColor:
-                                                        AppColors.white,
-                                                    elevation: 4,
-                                                    shape: const CircleBorder(),
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            40),
-                                                  ),
                                                 ),
                                               )
                                             : _image != null
@@ -1412,7 +1406,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           "",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2
+                                              .bodyMedium
                                               ?.copyWith(
                                                   color: AppColors.white),
                                           textAlign: TextAlign.left,
@@ -1426,6 +1420,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             curve: Curves.ease,
                                           );
                                         },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: const CircleBorder(), backgroundColor: AppColors.white,
+                                          padding: const EdgeInsets.all(15),
+                                        ),
                                         child: Icon(
                                           Icons.arrow_forward_ios,
                                           color: Colors.black,
@@ -1433,11 +1431,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   .size
                                                   .width *
                                               0.06,
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          shape: const CircleBorder(),
-                                          padding: const EdgeInsets.all(15),
-                                          primary: AppColors.white,
                                         ),
                                       )
                                     ],
@@ -1465,7 +1458,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             .whensYourBday,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline1
+                                            .displayLarge
                                             ?.copyWith(
                                                 color: AppColors.white,
                                                 fontSize: 30),
@@ -1481,7 +1474,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             .changeLater,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1
+                                            .bodyLarge
                                             ?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.left,
                                       ),
@@ -1506,7 +1499,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         .day,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText1
+                                                        .bodyLarge
                                                         ?.copyWith(
                                                             color: AppColors
                                                                 .white),
@@ -1568,7 +1561,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     ],
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline3
+                                                        .displaySmall
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.black,
@@ -1586,7 +1579,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         hintStyle: Theme.of(
                                                                 context)
                                                             .textTheme
-                                                            .headline3
+                                                            .displaySmall
                                                             ?.copyWith(
                                                                 color: AppColors
                                                                     .grey,
@@ -1596,7 +1589,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         errorStyle: Theme.of(
                                                                 context)
                                                             .textTheme
-                                                            .bodyText2
+                                                            .bodyMedium
                                                             ?.copyWith(
                                                                 color: AppColors
                                                                     .red),
@@ -1677,7 +1670,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         .month,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText1
+                                                        .bodyLarge
                                                         ?.copyWith(
                                                             color: AppColors
                                                                 .white),
@@ -1739,7 +1732,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     ],
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline3
+                                                        .displaySmall
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.black,
@@ -1757,7 +1750,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         hintStyle: Theme.of(
                                                                 context)
                                                             .textTheme
-                                                            .headline3
+                                                            .displaySmall
                                                             ?.copyWith(
                                                                 color: AppColors
                                                                     .grey,
@@ -1767,7 +1760,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         errorStyle: Theme.of(
                                                                 context)
                                                             .textTheme
-                                                            .bodyText2
+                                                            .bodyMedium
                                                             ?.copyWith(
                                                                 color: AppColors
                                                                     .red),
@@ -1843,13 +1836,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(
+                                                    "${AppLocalizations.of(
                                                                 context)!
-                                                            .year +
-                                                        " (*)",
+                                                            .year} (*)",
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText1
+                                                        .bodyLarge
                                                         ?.copyWith(
                                                             color: AppColors
                                                                 .white),
@@ -1907,7 +1899,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     ],
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline3
+                                                        .displaySmall
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.black,
@@ -1925,7 +1917,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         hintStyle: Theme.of(
                                                                 context)
                                                             .textTheme
-                                                            .headline3
+                                                            .displaySmall
                                                             ?.copyWith(
                                                                 color: AppColors
                                                                     .grey,
@@ -1935,7 +1927,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         errorStyle: Theme.of(
                                                                 context)
                                                             .textTheme
-                                                            .bodyText2
+                                                            .bodyMedium
                                                             ?.copyWith(
                                                                 color: AppColors
                                                                     .red),
@@ -2021,7 +2013,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           .errorDate,
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText2
+                                                          .bodyMedium
                                                           ?.copyWith(
                                                               color: AppColors
                                                                   .white),
@@ -2050,13 +2042,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(
+                                                    "${AppLocalizations.of(
                                                                 context)!
-                                                            .dateOfBirth +
-                                                        ": ",
+                                                            .dateOfBirth}: ",
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText1
+                                                        .bodyLarge
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.white,
@@ -2083,7 +2074,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .headline3
+                                                              .displaySmall
                                                               ?.copyWith(
                                                                   color:
                                                                       AppColors
@@ -2100,7 +2091,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .headline3
+                                                              .displaySmall
                                                               ?.copyWith(
                                                                   color:
                                                                       AppColors
@@ -2121,13 +2112,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(
+                                                    "${AppLocalizations.of(
                                                                 context)!
-                                                            .age +
-                                                        ": ",
+                                                            .age}: ",
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText1
+                                                        .bodyLarge
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.white,
@@ -2142,7 +2132,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         .toStringAsFixed(0),
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline3
+                                                        .displaySmall
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.white,
@@ -2198,7 +2188,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               .visibleFact,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2
+                                              .bodyMedium
                                               ?.copyWith(
                                                   color: AppColors.white),
                                           textAlign: TextAlign.left,
@@ -2233,12 +2223,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           4) {
                                                     // Full Date
                                                     String dateString =
-                                                        yearController.text +
-                                                            "-" +
-                                                            monthController
-                                                                .text +
-                                                            "-" +
-                                                            dayController.text;
+                                                        "${yearController.text}-${monthController
+                                                                .text}-${dayController.text}";
                                                     date = convertToDate(
                                                         dateString,
                                                         "yyyy-MM-dd",
@@ -2248,8 +2234,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     dayController.text = "";
                                                     monthController.text = "";
                                                     String dateString =
-                                                        yearController.text +
-                                                            "-1-1";
+                                                        "${yearController.text}-1-1";
                                                     date = convertToDate(
                                                         dateString,
                                                         "yyyy-MM-dd",
@@ -2286,6 +2271,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   );
                                                 }
                                               },
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0, backgroundColor: canGoNextDate
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                          shape: const CircleBorder(),
+                                          padding: const EdgeInsets.all(15),
+                                        ),
                                         child: Icon(
                                           Icons.arrow_forward_ios,
                                           color: canGoNextDate
@@ -2296,14 +2288,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   .size
                                                   .width *
                                               0.06,
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          elevation: 0,
-                                          shape: const CircleBorder(),
-                                          padding: const EdgeInsets.all(15),
-                                          primary: canGoNextDate
-                                              ? AppColors.white
-                                              : AppColors.black,
                                         ),
                                       )
                                     ],
@@ -2333,7 +2317,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               .whatsYourGender,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline1
+                                              .displayLarge
                                               ?.copyWith(
                                                   color: AppColors.white,
                                                   fontSize: 30),
@@ -2349,7 +2333,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               .changeLater,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1
+                                              .bodyLarge
                                               ?.copyWith(
                                                   color: AppColors.white),
                                           textAlign: TextAlign.left,
@@ -2384,7 +2368,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         .female,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline3
+                                                        .displaySmall
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.black,
@@ -2450,7 +2434,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         .male,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline3
+                                                        .displaySmall
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.black,
@@ -2516,7 +2500,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         .transgender,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline3
+                                                        .displaySmall
                                                         ?.copyWith(
                                                             color:
                                                                 AppColors.black,
@@ -2594,7 +2578,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               .visibleFact,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2
+                                              .bodyMedium
                                               ?.copyWith(
                                                   color: AppColors.white),
                                           textAlign: TextAlign.left,
@@ -2611,6 +2595,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     const Duration(seconds: 1));
                                                 addUser();
                                               },
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0, backgroundColor: gender != null
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                          shape: const CircleBorder(),
+                                          padding: const EdgeInsets.all(15),
+                                        ),
                                         child: !isLoading
                                             ? Icon(
                                                 Icons.arrow_forward_ios,
@@ -2652,14 +2643,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   ),
                                                 ),
                                               ),
-                                        style: ElevatedButton.styleFrom(
-                                          elevation: 0,
-                                          shape: const CircleBorder(),
-                                          padding: const EdgeInsets.all(15),
-                                          primary: gender != null
-                                              ? AppColors.white
-                                              : AppColors.black,
-                                        ),
                                       ),
                                     ],
                                   ),

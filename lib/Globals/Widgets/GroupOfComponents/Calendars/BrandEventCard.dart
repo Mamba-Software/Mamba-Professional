@@ -16,7 +16,7 @@ class BrandEventCard extends StatefulWidget {
   Color? color;
   double height = 0;
   double width = 0;
-  BrandEventCard({Key? key, required this.event, this.color, required this.height, required this.width}) : super(key: key);
+  BrandEventCard({super.key, required this.event, this.color, required this.height, required this.width});
 
   @override
   _BrandEventCardState createState() => _BrandEventCardState();
@@ -67,13 +67,13 @@ class _BrandEventCardState extends State<BrandEventCard> {
     if (widget.event.averageIntensityScore == null) {
       return Text(
           "-- ",
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.black),
           textAlign: TextAlign.center
       );
     } else {
       return Text(
           widget.event.averageIntensityScore!.toStringAsFixed(1),
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.black),
           textAlign: TextAlign.center
       );
     }
@@ -87,8 +87,8 @@ class _BrandEventCardState extends State<BrandEventCard> {
       return Row(
         children: [
           Text(
-              "/ "+widget.event.feedbackEntries.toString(),
-              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+              "/ ${widget.event.feedbackEntries}",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.black),
               textAlign: TextAlign.center
           ),
           Icon(
@@ -144,7 +144,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
               height: MediaQuery.of(context).size.height*0.15,
               width: widget.width,
               decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
                 //border: Border.all(color: Theme.of(context).primaryColor, width: 0.5),
                 borderRadius: const BorderRadius.all(
                   Radius.circular(15.0),
@@ -156,7 +156,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
                     height: MediaQuery.of(context).size.height*0.10,
                     width: widget.width,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                       //border: Border.all(color: Theme.of(context).primaryColor, width: 0.5),
                       borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(15),
@@ -233,14 +233,14 @@ class _BrandEventCardState extends State<BrandEventCard> {
                       children: [
                         Text(
                           widget.event.title!,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                          style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
                           textAlign: TextAlign.start,
                           maxLines: 1,
                           overflow: TextOverflow.visible,
                         ),
                         Text(
                           widget.event.isPrivate! ? AppLocalizations.of(context)!.privateEvent : AppLocalizations.of(context)!.groupEvent,
-                          style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.white),
                           textAlign: TextAlign.start,
                           maxLines: 1,
                           overflow: TextOverflow.visible,
@@ -259,8 +259,8 @@ class _BrandEventCardState extends State<BrandEventCard> {
                         Row(
                           children: [
                             Text(
-                              DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                              "${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate)} - ${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate)}",
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.black),
                               textAlign: TextAlign.start,
                             ),
                             SizedBox(
@@ -269,8 +269,8 @@ class _BrandEventCardState extends State<BrandEventCard> {
                               child: const VerticalDivider(color: AppColors.black,),
                             ),
                             Text(
-                              widget.event.numClients! != 1 ? widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase() : widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase().substring(0,AppLocalizations.of(context)!.asistants.length-1),
-                              style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
+                              widget.event.numClients! != 1 ? "${widget.event.numClients!} ${AppLocalizations.of(context)!.asistants.toLowerCase()}" : "${widget.event.numClients!} ${AppLocalizations.of(context)!.asistants.toLowerCase().substring(0,AppLocalizations.of(context)!.asistants.length-1)}",
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.black),
                               textAlign: TextAlign.start,
                             ),
                           ],
@@ -302,8 +302,8 @@ class _BrandEventCardState extends State<BrandEventCard> {
                       Padding(
                         padding: EdgeInsets.only(left: widget.height*0.1),
                         child: Text(
-                          DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                          "${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate)} - ${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate)}",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.black),
                           textAlign: TextAlign.start,
                         ),
                       ),
@@ -322,12 +322,12 @@ class _BrandEventCardState extends State<BrandEventCard> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 widget.event.isPrivate! ? Text(
-                                  widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
-                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                  "${widget.event.numClients!} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
                                   textAlign: TextAlign.center,
                                 ) : Text(
-                                  widget.event.numClients!.toString()+"/"+widget.event.maxMembers!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
-                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                  "${widget.event.numClients!}/${widget.event.maxMembers!} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
                                   textAlign: TextAlign.center,
                                 ),
                               ],

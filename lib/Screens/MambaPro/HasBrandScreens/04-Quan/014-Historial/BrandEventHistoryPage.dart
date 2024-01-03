@@ -17,7 +17,7 @@ class BrandEventHistoryPage extends StatefulWidget {
   String brandId;
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
-  BrandEventHistoryPage({Key? key, required this.brandId, required this.pinned, required this.pinnedChanged}) : super(key: key);
+  BrandEventHistoryPage({super.key, required this.brandId, required this.pinned, required this.pinnedChanged});
 
   @override
   _BrandEventHistoryPageState createState() => _BrandEventHistoryPageState();
@@ -75,8 +75,8 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
   initDeviceSizes() {
     safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
+    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   // Gets the Events Done by the Brand
@@ -135,7 +135,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.eventHistory,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white,),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
@@ -392,7 +392,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                     child: Image.asset(Constants.emptyCalendar)
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
                 SizedBox(height: MediaQuery.of(context).size.height*0.12),
               ],
             )

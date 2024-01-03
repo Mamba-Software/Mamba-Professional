@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,7 +17,7 @@ import 'Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatCore extends StatefulWidget {
-  const ChatCore({Key? key}) : super(key: key);
+  const ChatCore({super.key});
 
   @override
   _ChatCoreState createState() => _ChatCoreState();
@@ -29,7 +28,7 @@ class _ChatCoreState extends State<ChatCore> {
   bool _initialized = false;
   User? _user;
 
-  var _roomDataService = RoomDataService();
+  final _roomDataService = RoomDataService();
   final _userDataService = UserDataService();
   var searchController = TextEditingController();
   bool searchClicked = false;
@@ -76,7 +75,6 @@ class _ChatCoreState extends State<ChatCore> {
     if (query.isNotEmpty || query != "") {
       for (var item in allRooms) {
         if (item.name!.toLowerCase().startsWith(query)) {
-          ;
           roomsFiltered.add(item);
         }
       }
@@ -101,8 +99,7 @@ class _ChatCoreState extends State<ChatCore> {
                 ': ' +
                 room.lastMessages[0].text;
           } else {
-            return AppLocalizations.of(context)!.user +
-                ': ' +
+            return '${AppLocalizations.of(context)!.user}: ' +
                 room.lastMessages[0].text;
           }
         } else {
@@ -129,7 +126,7 @@ class _ChatCoreState extends State<ChatCore> {
                 ),
                 Text(
                   AppLocalizations.of(context)!.chatBottomNav,
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.displaySmall,
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -164,10 +161,10 @@ class _ChatCoreState extends State<ChatCore> {
                               // Filter chats
                               filterSearchResults(value.toLowerCase());
                             },
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                             textAlign: TextAlign.left,
                             decoration: InputDecoration(
-                              hintStyle: Theme.of(context).textTheme.caption,
+                              hintStyle: Theme.of(context).textTheme.bodySmall,
                               hintText: AppLocalizations.of(context)!.search,
                               focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey),
@@ -322,7 +319,7 @@ class _ChatCoreState extends State<ChatCore> {
                 ),
                 Text(
                   AppLocalizations.of(context)!.chatBottomNav,
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.displaySmall,
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -347,10 +344,10 @@ class _ChatCoreState extends State<ChatCore> {
                               // Filter chats
                               filterSearchResults(value.toLowerCase());
                             },
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                             textAlign: TextAlign.left,
                             decoration: InputDecoration(
-                              hintStyle: Theme.of(context).textTheme.caption,
+                              hintStyle: Theme.of(context).textTheme.bodySmall,
                               hintText: AppLocalizations.of(context)!.search,
                               focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey),
@@ -502,7 +499,7 @@ class _ChatCoreState extends State<ChatCore> {
               ),
               Text(
                 AppLocalizations.of(context)!.chatBottomNav,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
             ],
@@ -527,10 +524,10 @@ class _ChatCoreState extends State<ChatCore> {
                             // Filter chats
                             filterSearchResults(value.toLowerCase());
                           },
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.left,
                           decoration: InputDecoration(
-                            hintStyle: Theme.of(context).textTheme.caption,
+                            hintStyle: Theme.of(context).textTheme.bodySmall,
                             hintText: AppLocalizations.of(context)!.search,
                             focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
@@ -693,7 +690,7 @@ class _ChatCoreState extends State<ChatCore> {
                           horizontal: MediaQuery.of(context).size.width * 0.1),
                       child: Text(
                         AppLocalizations.of(context)!.noMessages,
-                        style: Theme.of(context).textTheme.caption,
+                        style: Theme.of(context).textTheme.bodySmall,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -707,10 +704,10 @@ class _ChatCoreState extends State<ChatCore> {
               return ListView.builder(
                 itemCount: allRooms.length,
                 itemBuilder: (context, index) {
-                  final room;
+                  final types.Room room;
                   room = allRooms[index];
 
-                  var userAux;
+                  types.User? userAux;
                   if (room.type.toString() != "RoomType.group") {
                     userAux = room.users.firstWhere(
                       (u) => u.id != _user!.uid,
@@ -722,12 +719,12 @@ class _ChatCoreState extends State<ChatCore> {
 
                   bool Read = true;
                   if (room.lastMessages != null &&
-                      room.lastMessages[0].metadata[currentUser.id] ==
+                      room.lastMessages![0].metadata![currentUser.id] ==
                           "delivered") {
                     Read = false;
                   }
 
-                  var dt = DateTime.fromMillisecondsSinceEpoch(room.updatedAt);
+                  var dt = DateTime.fromMillisecondsSinceEpoch(room.updatedAt!);
 
                   return GestureDetector(
                     onTap: () async {
@@ -741,7 +738,7 @@ class _ChatCoreState extends State<ChatCore> {
                                 room: room,
                               ),
                             )).whenComplete(() async {
-                          room.metadata!["active" + currentUser.id!] = false;
+                          room.metadata!["active${currentUser.id!}"] = false;
                           _roomDataService.updateRoom(room.id, room.metadata!);
                         });
                       }
@@ -777,7 +774,7 @@ class _ChatCoreState extends State<ChatCore> {
                                           room.name ?? '',
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1
+                                              .bodyLarge
                                               ?.copyWith(
                                                   fontWeight: FontWeight.bold),
                                         ),
@@ -792,7 +789,7 @@ class _ChatCoreState extends State<ChatCore> {
                                           decoration: InputDecoration(
                                             hintStyle: Theme.of(context)
                                                 .textTheme
-                                                .bodyText2
+                                                .bodyMedium
                                                 ?.copyWith(
                                                     color: Colors.grey.shade600,
                                                     fontWeight: Read
@@ -824,7 +821,7 @@ class _ChatCoreState extends State<ChatCore> {
                           Icon(
                             room.type.toString() == "RoomType.group"
                                 ? Icons.groups
-                                : room.metadata!["trainer" + userAux.id] == true
+                                : room.metadata!["trainer${userAux!.id}"] == true
                                     ? Icons.record_voice_over
                                     : Icons.directions_run,
                             color: Theme.of(context).primaryColor,
@@ -839,7 +836,7 @@ class _ChatCoreState extends State<ChatCore> {
                             (DateFormat('dd/MM/yy').format(dt)).toString(),
                             style: Theme.of(context)
                                 .textTheme
-                                .caption
+                                .bodySmall
                                 ?.copyWith(fontSize: 10),
                           ),
                         ],
@@ -852,10 +849,10 @@ class _ChatCoreState extends State<ChatCore> {
               return ListView.builder(
                 itemCount: rooms.length,
                 itemBuilder: (context, index) {
-                  final room;
+                  final types.Room room;
                   room = rooms[index];
 
-                  var userAux;
+                  types.User? userAux;
                   if (room.type.toString() != "RoomType.group") {
                     userAux = room.users.firstWhere(
                       (u) => u.id != _user!.uid,
@@ -867,12 +864,12 @@ class _ChatCoreState extends State<ChatCore> {
 
                   bool Read = true;
                   if (room.lastMessages != null &&
-                      room.lastMessages[0].metadata[currentUser.id] ==
+                      room.lastMessages![0].metadata![currentUser.id] ==
                           "delivered") {
                     Read = false;
                   }
 
-                  var dt = DateTime.fromMillisecondsSinceEpoch(room.updatedAt);
+                  var dt = DateTime.fromMillisecondsSinceEpoch(room.updatedAt!);
 
                   return GestureDetector(
                     onTap: () async {
@@ -886,7 +883,7 @@ class _ChatCoreState extends State<ChatCore> {
                                 room: room,
                               ),
                             )).whenComplete(() {
-                          room.metadata!["active" + currentUser.id!] = false;
+                          room.metadata!["active${currentUser.id!}"] = false;
                           _roomDataService.updateRoom(room.id, room.metadata!);
                         });
                       }
@@ -922,7 +919,7 @@ class _ChatCoreState extends State<ChatCore> {
                                           room.name ?? '',
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1
+                                              .bodyLarge
                                               ?.copyWith(
                                                   fontWeight: FontWeight.bold),
                                         ),
@@ -937,14 +934,14 @@ class _ChatCoreState extends State<ChatCore> {
                                           decoration: InputDecoration(
                                             hintStyle: Theme.of(context)
                                                 .textTheme
-                                                .bodyText2
+                                                .bodyMedium
                                                 ?.copyWith(
                                                     color: Colors.grey.shade600,
                                                     fontWeight: Read
                                                         ? FontWeight.normal
                                                         : FontWeight.bold),
                                             hintText: room.lastMessages != null
-                                                ? room.lastMessages[0].text
+                                                ? "${room.lastMessages![0].author.firstName}..."
                                                 : 'test',
                                             contentPadding:
                                                 const EdgeInsets.all(0),
@@ -970,7 +967,7 @@ class _ChatCoreState extends State<ChatCore> {
                           Icon(
                             room.type.toString() == "RoomType.group"
                                 ? Icons.groups
-                                : room.metadata!["trainer" + userAux.id] == true
+                                : room.metadata!["trainer${userAux!.id}"] == true
                                     ? Icons.record_voice_over
                                     : Icons.directions_run,
                             color: Theme.of(context).primaryColor,
@@ -985,7 +982,7 @@ class _ChatCoreState extends State<ChatCore> {
                             (DateFormat('dd/MM/yy').format(dt)).toString(),
                             style: Theme.of(context)
                                 .textTheme
-                                .caption
+                                .bodySmall
                                 ?.copyWith(fontSize: 10),
                           ),
                         ],

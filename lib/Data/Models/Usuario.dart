@@ -1,8 +1,6 @@
 // Model for a User in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 
 import 'Brand.dart';
 import 'RequestToBrand.dart';

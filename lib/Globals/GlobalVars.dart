@@ -14,15 +14,19 @@ import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
-// IS PRODUCTION ?
-bool isProduction = true;
+// Flavor Setup
+enum Flavor {
+  production, 
+  staging,   
+  development,
+}
+Flavor currentFlavor = Flavor.development;
 
 // App Version
 var appVersion = "MAMBA v0.0.19";
 
 List<lColor> currentColors = [];
-List<lDegradate> currentDegradates =
-    []; //0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
+List<lDegradate> currentDegradates = []; //0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
 
 // App
 var androidGooglePlayUrl =
@@ -39,11 +43,6 @@ var termsAndConditions = "https://mambafitness.es/terminos-y-condiciones/";
 var privacy = "https://mambafitness.es/privacidad/";
 var functionalities = "https://mambafitness.es/profesionales/";
 
-// API Keys
-var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
-var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";
-var googleMapsAPIAndroid = "AIzaSyBv6FwSFMHrhQE6w5i7bIW_DcOOW08FVR8";
-var googleMapsAPIIOS = "AIzaSyCHiJWFQzsfD-lO34bbctas1No0Kgxn9i4";
 
 // User & Brand Global Variables
 var currentUser = Usuario();
@@ -70,11 +69,6 @@ final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
 // Dynamic Links Path
 var dynamicLinkBrandId;
 
-//Revenue Cat
-const googleApiKey = 'goog_xHoFXqoNpoesuLjeweHEqSuEvXy';
-const appleApiKey = 'appl_WdXLePsgLfQWTsDgYXYWYkdbDCj';
-const entitlementID = 'AllFeatures';
-
 //JMF 18042023 REVENUECAT
 void setBrandActive() {
   //Se trata de revenueCat
@@ -99,7 +93,7 @@ void setBrandActive() {
 
 Future<void> navigateToPayWall(var context,
     [bool fromActiveSubs = false]) async {
-  final _topSnackBar = TopSnackBarDef();
+  final topSnackBar = TopSnackBarDef();
   if (currentUser.id == currentBrand.adminID) {
     if (fromActiveSubs) {
       await Navigator.push(
@@ -141,7 +135,7 @@ Future<void> navigateToPayWall(var context,
       );
     }
   } else {
-    _topSnackBar.showSnackBarTop(
+    topSnackBar.showSnackBarTop(
         context, AppLocalizations.of(context)!.notSubNotAdmin, 5);
   }
 }

@@ -7,7 +7,6 @@ import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
 
@@ -18,13 +17,12 @@ class UserEventCard extends StatefulWidget {
   bool isMyEvent = false;
   bool showEmoji = false;
   UserEventCard(
-      {Key? key,
+      {super.key,
       required this.event,
       required this.height,
       required this.width,
       required this.isMyEvent,
-      required this.showEmoji})
-      : super(key: key);
+      required this.showEmoji});
 
   @override
   _UserEventCardState createState() => _UserEventCardState();
@@ -79,7 +77,7 @@ class _UserEventCardState extends State<UserEventCard> {
             Text("?? ",
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: Colors.deepOrange),
                 textAlign: TextAlign.center),
             SizedBox(
@@ -95,7 +93,7 @@ class _UserEventCardState extends State<UserEventCard> {
             Text("-- ",
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: AppColors.black),
                 textAlign: TextAlign.center),
             SizedBox(
@@ -109,10 +107,10 @@ class _UserEventCardState extends State<UserEventCard> {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(widget.event.intensityScore!.toStringAsFixed(1) + " ",
+          Text("${widget.event.intensityScore!.toStringAsFixed(1)} ",
               style: Theme.of(context)
                   .textTheme
-                  .bodyText2
+                  .bodyMedium
                   ?.copyWith(color: AppColors.black),
               textAlign: TextAlign.center),
           SizedBox(
@@ -130,11 +128,11 @@ class _UserEventCardState extends State<UserEventCard> {
     double hoursLeft = minutesLeft / 60;
     return Text(
         hoursLeft < 1
-            ? "En " + minutesLeft.toString() + "m "
-            : "En " + hoursLeft.toStringAsFixed(0) + "h ",
+            ? "En ${minutesLeft}m "
+            : "En ${hoursLeft.toStringAsFixed(0)}h ",
         style: Theme.of(context)
             .textTheme
-            .bodyText2
+            .bodyMedium
             ?.copyWith(color: AppColors.black),
         textAlign: TextAlign.center);
   }
@@ -149,11 +147,11 @@ class _UserEventCardState extends State<UserEventCard> {
                 vertical: MediaQuery.of(context).size.width * 0.03,
                 horizontal: MediaQuery.of(context).size.width * 0.03),
             child: Container(
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 color: Colors.green.withOpacity(0.8),
-                borderRadius: new BorderRadius.all(
-                  const Radius.circular(10.0),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10.0),
                 ),
               ),
               child: Text(
@@ -161,7 +159,7 @@ class _UserEventCardState extends State<UserEventCard> {
                     .freeSession
                     .toUpperCase()
                     .split(" ")[2],
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold, color: Colors.white),
                 textAlign: TextAlign.left,
               ),
@@ -236,7 +234,7 @@ class _UserEventCardState extends State<UserEventCard> {
               height: widget.height,
               width: widget.width,
               decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
                 //border: Border.all(color: Theme.of(context).primaryColor, width: 0.5),
                 borderRadius: const BorderRadius.all(
                   Radius.circular(15.0),
@@ -248,7 +246,7 @@ class _UserEventCardState extends State<UserEventCard> {
                     height: widget.height * 0.66,
                     width: widget.width,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                       //border: Border.all(color: Theme.of(context).primaryColor, width: 0.5),
                       borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(15),
@@ -333,7 +331,7 @@ class _UserEventCardState extends State<UserEventCard> {
                               widget.event.title!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(
                                       color: AppColors.white,
                                       fontWeight: FontWeight.w600),
@@ -347,7 +345,7 @@ class _UserEventCardState extends State<UserEventCard> {
                                   : AppLocalizations.of(context)!.groupEvent,
                               style: Theme.of(context)
                                   .textTheme
-                                  .caption
+                                  .bodySmall
                                   ?.copyWith(color: AppColors.white),
                               textAlign: TextAlign.start,
                               maxLines: 1,
@@ -367,22 +365,20 @@ class _UserEventCardState extends State<UserEventCard> {
                                   Row(
                                     children: [
                                       Text(
-                                        DateFormat(
+                                        "${DateFormat(
                                                     'Hm',
                                                     Localizations.localeOf(
                                                             context)
                                                         .languageCode)
-                                                .format(startDate) +
-                                            " - " +
-                                            DateFormat(
+                                                .format(startDate)} - ${DateFormat(
                                                     'Hm',
                                                     Localizations.localeOf(
                                                             context)
                                                         .languageCode)
-                                                .format(endDate),
+                                                .format(endDate)}",
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText2
+                                            .bodyMedium
                                             ?.copyWith(color: AppColors.black),
                                         textAlign: TextAlign.start,
                                       ),
@@ -429,7 +425,7 @@ class _UserEventCardState extends State<UserEventCard> {
                                                   .format(startDate)),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2
+                                              .bodyMedium
                                               ?.copyWith(
                                                   color: AppColors.black),
                                           textAlign: TextAlign.start,
@@ -444,29 +440,26 @@ class _UserEventCardState extends State<UserEventCard> {
                                                   .format(startDate)),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2
+                                              .bodyMedium
                                               ?.copyWith(
                                                   color: AppColors.black),
                                           textAlign: TextAlign.start,
                                         ),
                                         Text(
-                                          "de " +
-                                              DateFormat(
+                                          "de ${DateFormat(
                                                       'Hm',
                                                       Localizations.localeOf(
                                                               context)
                                                           .languageCode)
-                                                  .format(startDate) +
-                                              " - " +
-                                              DateFormat(
+                                                  .format(startDate)} - ${DateFormat(
                                                       'Hm',
                                                       Localizations.localeOf(
                                                               context)
                                                           .languageCode)
-                                                  .format(endDate),
+                                                  .format(endDate)}",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2
+                                              .bodyMedium
                                               ?.copyWith(
                                                   color: AppColors.black),
                                           textAlign: TextAlign.start,

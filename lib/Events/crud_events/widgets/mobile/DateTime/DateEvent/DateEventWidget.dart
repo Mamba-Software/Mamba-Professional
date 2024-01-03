@@ -39,8 +39,8 @@ Widget dateEventWidget(BuildContext context, DateTime startDate,
                   readOnly: true,
                   enabled: false,
                   style: isBeforeEdit
-                      ? Theme.of(context).textTheme.bodyText2
-                      : Theme.of(context).textTheme.caption,
+                      ? Theme.of(context).textTheme.bodyMedium
+                      : Theme.of(context).textTheme.bodySmall,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,

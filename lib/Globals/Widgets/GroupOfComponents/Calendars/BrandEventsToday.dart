@@ -5,8 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
@@ -15,7 +13,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class BrandEventsToday extends StatefulWidget {
   String brandId;
-  BrandEventsToday({Key? key, required this.brandId}) : super(key: key);
+  BrandEventsToday({super.key, required this.brandId});
 
   @override
   _BrandEventsTodayState createState() => _BrandEventsTodayState();
@@ -24,8 +22,8 @@ class BrandEventsToday extends StatefulWidget {
 class _BrandEventsTodayState extends State<BrandEventsToday> {
 
   // Acceso a Base de Datos
-  var _brandDataService = new BrandDataService();
-  var _eventDataService = new EventDataService();
+  final _brandDataService = BrandDataService();
+  final _eventDataService = EventDataService();
   // Boolean Loading
   bool isLoading = false;
   // Brand Object
@@ -66,7 +64,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
     });
   }
 
-  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
+  String toCapitalized(String s) => s.isNotEmpty ?'${s[0].toUpperCase()}${s.substring(1)}':'';
 
   durationToString(double duration) {
     String temp = "";
@@ -114,7 +112,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
       body: StreamBuilder<QuerySnapshot>(
           stream: _eventDataService.getBrandsEventsTodayStream(_brand.id!),
           builder: (context, snapshot) {
-            if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
+            if (snapshot.data == null ) {
               return LoadingView();
             } else {
               todayEvents = documentsToEvents(snapshot.data!.docs);
@@ -172,7 +170,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Flexible(child: Text(event.title!, textAlign: TextAlign.center, style:Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)),
+                                  Flexible(child: Text(event.title!, textAlign: TextAlign.center, style:Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),)),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                   const Text(
                                     "-",
@@ -189,10 +187,10 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                                     event.numTrainers.toString(),
                                     style: const TextStyle(color: Colors.white, fontSize: 14),
                                   ),
-                                  Container(
+                                  const SizedBox(
                                       height: 16,
                                       width: 32,
-                                      child: const VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                      child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
                                   ),
                                   const Icon(
                                     Icons.directions_run,
@@ -303,7 +301,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
       // Subject
       var subject = "${event.numClients}/${event.maxMembers}";
       // Colors
-      var color;
+      Color color = Colors.black;
       double numClients = double.parse(event.numClients.toString());
       double maxMembers = double.parse(event.maxMembers.toString());
       double bookedCapacity = numClients/maxMembers;

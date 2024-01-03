@@ -6,7 +6,7 @@ class LoadingView extends StatefulWidget {
   bool? isSmall;
   Color? color;
   String? text;
-  LoadingView({Key? key, this.hasLogo, this.isSmall, this.color, this.text}) : super(key: key);
+  LoadingView({super.key, this.hasLogo, this.isSmall, this.color, this.text});
 
   @override
   _LoadingViewState createState() => _LoadingViewState();
@@ -25,7 +25,7 @@ class _LoadingViewState extends State<LoadingView> {
             height: widget.isSmall != null && widget.isSmall == true ? 25 : 50,
             child: CircularProgressIndicator(
               strokeWidth: widget.isSmall != null && widget.isSmall == true ? 2.5 : 4,
-              color:  widget.color != null ? widget.color : Theme.of(context).colorScheme.secondary,
+              color:  widget.color ?? Theme.of(context).colorScheme.secondary,
             ),
           ),
         ),
@@ -42,7 +42,7 @@ class _LoadingViewState extends State<LoadingView> {
           padding: const EdgeInsets.only(top: 100),
           child: Text(
             widget.text!,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
         ) : Container(),
       ],

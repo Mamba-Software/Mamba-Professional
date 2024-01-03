@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:store_redirect/store_redirect.dart';
 
 import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import '../../../../GlobalVars.dart';
@@ -15,7 +13,7 @@ import '../../LoadingViews/LoadingView.dart';
 
 class BrandInviteDialog extends StatefulWidget {
   String brandId;
-  BrandInviteDialog({Key? key, required this.brandId}) : super(key: key);
+  BrandInviteDialog({super.key, required this.brandId});
 
   @override
   _BrandInviteDialogState createState() => _BrandInviteDialogState();
@@ -128,7 +126,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
                                 AppLocalizations.of(context)!.brandInviteDialog,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium
                                     ?.copyWith(height: 1.5),
                                 textAlign: TextAlign.center,
                               ),
@@ -159,7 +157,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
                             AppLocalizations.of(context)!.join,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText2
+                                .bodyMedium
                                 ?.copyWith(color: AppColors.white),
                           ),
                           icon: !isBodyLoading
@@ -202,7 +200,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
                           SizedBox(
                               height:
                                   MediaQuery.of(context).size.height * 0.02),
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.9,
                             child: Padding(
                               padding: EdgeInsets.symmetric(
@@ -216,7 +214,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
                                       brand.name!,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline1
+                                          .displayLarge
                                           ?.copyWith(
                                               fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.left,

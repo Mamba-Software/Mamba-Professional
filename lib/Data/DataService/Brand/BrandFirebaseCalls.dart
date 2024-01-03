@@ -4,8 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
@@ -32,21 +30,21 @@ class BrandFirebaseCalls {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
 
-  // Firebase collections
-  String library = isProduction ? 'Library' : 'Library';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String users = isProduction ? 'Users' : '7777 Users';
-  String events = isProduction ? 'Events' : '7777 Events';
-  String locations = isProduction ? 'Locations' : '7777 Locations';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
-  String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
+  // Firebase collections 
+  String users = 'Users';  
+  String brands = 'Brands';
+  String events = 'Events';
+  String locations = 'Locations';
+  String library = 'Library';
+  String purchases = 'Purchases';
+  String subscriptions = 'Subscriptions';
 
   //Utils
 
   Future<Usuario> getUserDetails(String uid) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection(users).doc(uid).get();
-    return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    return Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
   }
 
   Future<User?> getCurrentUser() async {
@@ -58,14 +56,14 @@ class BrandFirebaseCalls {
   Future<void> deleteBrandContentPicture(String brandID) async {
     await _firebaseStorage
         .ref()
-        .child("brands/" + brandID + "/images/" + brandID + ".jpeg")
+        .child("brands/$brandID/images/$brandID.jpeg")
         .delete();
   }
 
   Future<void> deleteBrandPhoto(String brandID) async {
     await _firebaseStorage
         .ref()
-        .child("brands/" + brandID + "/images/" + brandID + ".jpeg")
+        .child("brands/$brandID/images/$brandID.jpeg")
         .delete();
   }
 
@@ -143,9 +141,9 @@ class BrandFirebaseCalls {
   }
 
   Future<Location> getSingleLocation(String locationId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection(locations).doc(locationId).get();
-    return Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    return Location.fromObjectAllData(documentSnapshot.id, documentSnapshot);
   }
 
   Future<void> deleteRequestToBrand(RequestToBrand request) async {
@@ -161,7 +159,7 @@ class BrandFirebaseCalls {
 
   Future<bool> checkIfBrandExists(String brandID) async {
     try {
-      var userDocRef = await _firestore.collection(brands).doc(brandID);
+      var userDocRef = _firestore.collection(brands).doc(brandID);
       var doc = await userDocRef.get();
       if (doc.exists) {
         return true;
@@ -184,10 +182,11 @@ class BrandFirebaseCalls {
       brand = Brand.fromObjectAllData(
           querySnapshot.docs[i].id, querySnapshot.docs[i]);
     }
-    if (brand.id == null)
+    if (brand.id == null) {
       return null;
-    else
+    } else {
       return brand;
+    }
   }
 
   Future<bool> checkIfBrandBonoHasPurchases(
@@ -227,10 +226,10 @@ class BrandFirebaseCalls {
   //Getters
 
   Future<Brand> getBrandDetails(String brandID) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection(brands).doc(brandID).get();
     Brand brand =
-        Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        Brand.fromObjectAllData(documentSnapshot.id, documentSnapshot);
     List<ImageObject> contentImages = [];
     QuerySnapshot querySnapshot2 = await _firestore
         .collection(brands)
@@ -247,10 +246,10 @@ class BrandFirebaseCalls {
 
   Future<Brand> getBrandCoverDetails(String brandID) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(brands).doc(brandID).get();
       return Brand.fromObjectOnlyCoverData(
-          _documentSnapshot.id, _documentSnapshot);
+          documentSnapshot.id, documentSnapshot);
     } catch (e) {
       print(e.toString());
       return Brand();
@@ -259,9 +258,9 @@ class BrandFirebaseCalls {
 
   Future<String> getBrandLogoUrl(String brandID) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(brands).doc(brandID).get();
-      return _documentSnapshot.get("logoUrl");
+      return documentSnapshot.get("logoUrl");
     } catch (e) {
       print(e.toString());
       return "";
@@ -432,24 +431,24 @@ class BrandFirebaseCalls {
   }
 
   Future<Bono> getBonoInfo(String brandId, String bonoId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
         .collection(brands)
         .doc(brandId)
         .collection("Bonos")
         .doc(bonoId)
         .get();
-    return Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    return Bono.fromObjectAllData(documentSnapshot.id, documentSnapshot);
   }
 
   Future<int> getUserBrandRole(String brandId, String userId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
         .collection(brands)
         .doc(brandId)
         .collection("Users")
         .doc(userId)
         .get();
     try {
-      return _documentSnapshot.get("role");
+      return documentSnapshot.get("role");
     } catch (e) {
       return 3;
     }
@@ -563,7 +562,7 @@ class BrandFirebaseCalls {
   Future<Subscription> getBrandSubscription(
       String brandId, String subscriptionId) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore
               .collection(brands)
               .doc(brandId)
@@ -571,7 +570,7 @@ class BrandFirebaseCalls {
               .doc(subscriptionId)
               .get();
       return Subscription.fromObjectAllData(
-          _documentSnapshot.id, _documentSnapshot);
+          documentSnapshot.id, documentSnapshot);
     } catch (e) {
       print(e);
       return Subscription();
@@ -660,7 +659,7 @@ class BrandFirebaseCalls {
     // Upload the image to Firebase Storage
     var storageRef = _firebaseStorage
         .ref()
-        .child("brands/" + brandID + "/images/" + uid + ".jpeg");
+        .child("brands/$brandID/images/$uid.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -688,7 +687,7 @@ class BrandFirebaseCalls {
       // Upload the image to Firebase Storage
       var storageRef = _firebaseStorage
           .ref()
-          .child("brands/" + brandID + "/images/" + uid + ".jpeg");
+          .child("brands/$brandID/images/$uid.jpeg");
       var uploadTask = storageRef.putFile(image);
       await uploadTask.whenComplete(() async {
         await storageRef.getDownloadURL().then((value) async {
@@ -800,10 +799,10 @@ class BrandFirebaseCalls {
   }
 
   Future<String> updateBrandPhoto(String brandID, File image) async {
-    var result;
+    String result = "";
     var storageRef = _firebaseStorage
         .ref()
-        .child("brands/" + brandID + "/images/" + brandID + ".jpeg");
+        .child("brands/$brandID/images/$brandID.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -846,10 +845,10 @@ class BrandFirebaseCalls {
 
   Future<void> updateBrandBaseLocation(
       String brandID, String locationID) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _firestore.collection(locations).doc(locationID).get();
     Location location =
-        Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        Location.fromObjectAllData(documentSnapshot.id, documentSnapshot);
     await _firestore.collection(brands).doc(brandID).update({
       "baseLocation": locationID,
       "zipCode": location.zipCode,
@@ -892,13 +891,13 @@ class BrandFirebaseCalls {
   }
 
   Future<void> updateBonoCompras(String brandID, String bonoId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
         .collection(brands)
         .doc(brandID)
         .collection("Bonos")
         .doc(bonoId)
         .get();
-    Bono b = Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    Bono b = Bono.fromObjectAllData(documentSnapshot.id, documentSnapshot);
     await _firestore
         .collection(brands)
         .doc(brandID)
@@ -911,13 +910,13 @@ class BrandFirebaseCalls {
 
   Future<void> updateBonoActive(
       String brandID, String bonoId, bool isActive) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
         .collection(brands)
         .doc(brandID)
         .collection("Bonos")
         .doc(bonoId)
         .get();
-    Bono b = Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    Bono b = Bono.fromObjectAllData(documentSnapshot.id, documentSnapshot);
     await _firestore
         .collection(brands)
         .doc(brandID)
@@ -996,14 +995,14 @@ class BrandFirebaseCalls {
 
   Future<void> updateBrandSubscriptionRevenueCat(
       String brandID,
-      String? expires_date,
-      String? original_purchase_date,
-      String? product_plan_identifier,
+      String? expiresDate,
+      String? originalPurchaseDate,
+      String? productPlanIdentifier,
       String? unsuscribedAT) async {
     Map<String, dynamic> map = {
-      "expires_date": expires_date,
-      "original_purchase_date": original_purchase_date,
-      "product_plan_identifier": product_plan_identifier,
+      "expires_date": expiresDate,
+      "original_purchase_date": originalPurchaseDate,
+      "product_plan_identifier": productPlanIdentifier,
       "brandIsActive": true,
       "unsuscribed": (unsuscribedAT == null) ? false : true,
     };
@@ -1050,7 +1049,7 @@ class BrandFirebaseCalls {
     // Delete Image From Storage
     _firebaseStorage
         .ref()
-        .child("brands/" + brandID + "/images/" + imageId + ".jpeg")
+        .child("brands/$brandID/images/$imageId.jpeg")
         .delete();
     // Delete Image From Firebase Firestore
     await _firestore
@@ -1103,7 +1102,7 @@ class BrandFirebaseCalls {
     // Delete Image From Storage
     _firebaseStorage
         .ref()
-        .child("brands/" + brandID + "/images/" + imageId + ".jpeg")
+        .child("brands/$brandID/images/$imageId.jpeg")
         .delete();
     // Delete Image From Firebase Firestore
     await _firestore
@@ -1234,10 +1233,6 @@ class BrandFirebaseCalls {
         .collection("Bonos")
         .doc(bonoId)
         .delete();
-
-    if (!isProduction) {
-      cloudFunction = 'zzzzDeleteEventBono';
-    }
     final HttpsCallable callable =
         FirebaseFunctions.instanceFor(region: 'europe-west1')
             .httpsCallable(cloudFunction);

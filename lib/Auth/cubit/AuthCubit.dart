@@ -10,7 +10,6 @@ import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -18,7 +17,6 @@ import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
 part 'AuthState.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -251,60 +249,19 @@ class AuthCubit extends Cubit<AuthState> {
         await Future.delayed(const Duration(milliseconds: 1500));
         emit(const AuthMaintenance());
       } else {
-        // 2.1 User is logged in.
-        // 3. Check if we are in production enviroment
-        if (isProduction) {
-          // 3.1 We are in PROD. We checked if email has been verified.
-          if (firebaseUser.emailVerified) {
-            // 3.1.1 Email has been verified
-            // 4. Define Prod Config for FirebaseChatCore
-            FirebaseChatCore.instance.setConfig(const FirebaseChatCoreConfig(
-              null,
-              'Rooms',
-              'Users',
-            ));
-            // 5. Load Users Data
-            String userId = firebaseUser.uid;
-            //String userId = "GFrVbdR5WNSuFydb8i32g620Rle2";
-            await _getUserData(userId, context);
-            // 6. Get Token for FirebaseMessaging
-            FirebaseMessaging.instance.getToken().then((token) {
-              print("Token: $token");
-              if (token != currentUser.notificationToken) {
-                print("New token updated");
-                _userDataService.updateUserNotificationToken(
-                    currentUser.id!, token!);
-              }
-            });
-            // 7. Travel to Corresponding Screen
-            if (currentUser.isAdmin!) {
-              emit(const AuthAdmin());
-            } else {
-              if (!(currentUser.isFirst!)) {
-                _sendMixPanelDataUsers();
-                if (hasBrand) {
-                  emit(AuthUserBrand(currentBrand));
-                } else {
-                  emit(const AuthUserNoBrand());
-                }
-              } else {
-                emit(const AuthNewUser());
-              }
-            }
-          } else {
-            // 3.1.2 Email has NOT been verified. Go back to Login.
-            emit(const AuthNotLoged());
-          }
-        } else {
-          // 3.2 We are in DEVELOPMENT
-          // 4. Define Development Config for FirebaseCore
+        // 2.1 User is logged in.        
+        // 3. We are in PROD or STG. We checked if email has been verified.
+        if (currentFlavor == Flavor.development || (currentFlavor != Flavor.development && firebaseUser.emailVerified)) {                  
+          // 4. Define Prod Config for FirebaseChatCore
           FirebaseChatCore.instance.setConfig(const FirebaseChatCoreConfig(
             null,
-            '7777 Rooms',
-            '7777 Users',
+            'Rooms',
+            'Users',
           ));
           // 5. Load Users Data
-          await _getUserData(firebaseUser.uid, context);
+          String userId = firebaseUser.uid;
+          //String userId = "GFrVbdR5WNSuFydb8i32g620Rle2";
+          await _getUserData(userId, context);
           // 6. Get Token for FirebaseMessaging
           FirebaseMessaging.instance.getToken().then((token) {
             print("Token: $token");
@@ -329,7 +286,10 @@ class AuthCubit extends Cubit<AuthState> {
               emit(const AuthNewUser());
             }
           }
-        }
+        } else {
+          // 3.1.2 Email has NOT been verified. Go back to Login.
+          emit(const AuthNotLoged());
+        }        
       }
     } else {
       // 2.2 User is logged NOT in. We travel to the Login
@@ -351,7 +311,7 @@ class AuthCubit extends Cubit<AuthState> {
         .setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
     // Set App Theme To User Preferred Theme Settings
     if (currentUser.isDark != null) {
-      print("This user has a Dark Mode: " + currentUser.isDark!.toString());
+      print("This user has a Dark Mode: ${currentUser.isDark!}");
       Provider.of<ThemeProvider>(context, listen: false)
           .toggleTheme(currentUser.isDark!);
     }
@@ -387,8 +347,7 @@ class AuthCubit extends Cubit<AuthState> {
     if (currentUser.gender == 1) genderString = "Female";
     if (currentUser.gender == 2) genderString = "Other";
     mixpanel!.getPeople().set("gender", genderString);
-    mixpanel!.getPeople().set("language", currentUser.idioma!);
-    mixpanel!.getPeople().set("isProduction", isProduction);
+    mixpanel!.getPeople().set("language", currentUser.idioma!);    
     var dateOfBirthSplit = currentUser.dateOfBirth!.split("-");
     DateTime dateOfBirth = DateTime(int.parse(dateOfBirthSplit[2]),
         int.parse(dateOfBirthSplit[1]), int.parse(dateOfBirthSplit[0]), 0, 0);

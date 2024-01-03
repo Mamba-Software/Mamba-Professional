@@ -7,8 +7,7 @@ class SelectHoursDialog extends StatefulWidget {
   int intialDays;
   int? daysMax;
   SelectHoursDialog(
-      {Key? key, required this.title, required this.intialDays, this.daysMax})
-      : super(key: key);
+      {super.key, required this.title, required this.intialDays, this.daysMax});
 
   @override
   _SelectHoursDialogState createState() => _SelectHoursDialogState();
@@ -31,7 +30,7 @@ class _SelectHoursDialogState extends State<SelectHoursDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       child: Container(
         constraints: BoxConstraints(
@@ -51,7 +50,7 @@ class _SelectHoursDialogState extends State<SelectHoursDialog> {
                     child: Text(widget.title,
                         style: Theme.of(context)
                             .textTheme
-                            .headline3
+                            .displaySmall
                             ?.copyWith(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center)),
               ],
@@ -64,7 +63,7 @@ class _SelectHoursDialogState extends State<SelectHoursDialog> {
                     data: CupertinoThemeData(
                         textTheme: CupertinoTextThemeData(
                       dateTimePickerTextStyle:
-                          Theme.of(context).textTheme.bodyText2,
+                          Theme.of(context).textTheme.bodyMedium,
                     )),
                     child: CupertinoPicker(
                         scrollController: FixedExtentScrollController(
@@ -79,7 +78,7 @@ class _SelectHoursDialogState extends State<SelectHoursDialog> {
                           return Center(
                             child: Text(
                               days.toString(),
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           );
                         }))),
@@ -97,7 +96,7 @@ class _SelectHoursDialogState extends State<SelectHoursDialog> {
                   backgroundColor: Theme.of(context).primaryColor,
                   icon: Container(),
                   label: Text(AppLocalizations.of(context)!.confirm,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
                           color: Theme.of(context).primaryColorDark)),
                 ),
               ],

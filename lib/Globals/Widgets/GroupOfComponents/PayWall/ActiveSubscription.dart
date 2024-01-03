@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +10,7 @@ class ActiveSubscription extends StatefulWidget {
   Subscription subscription;
   String brandId;
 
-  ActiveSubscription({Key? key, required this.subscription, required this.brandId}) : super(key: key);
+  ActiveSubscription({super.key, required this.subscription, required this.brandId});
 
   @override
   _ActiveSubscriptionState createState() => _ActiveSubscriptionState();
@@ -97,7 +96,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                 style: Theme
                                     .of(context)
                                     .textTheme
-                                    .headline3,
+                                    .displaySmall,
                                 textAlign: TextAlign.left
                             ),
                             subtitle: Text(
@@ -105,7 +104,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                 style: Theme
                                     .of(context)
                                     .textTheme
-                                    .caption
+                                    .bodySmall
                             ),
                             dense: true,
                           ),
@@ -120,7 +119,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                             child: Text(
                               subscription.unsuscribed!? AppLocalizations.of(context)!.moreSubInfo(formatter.format(subscription.endDate!.toDate()).toString()) :
                               AppLocalizations.of(context)!.moreSubInfoRenAut(formatter.format(subscription.endDate!.toDate())),
-                              style: Theme.of(context).textTheme.caption,
+                              style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.left,
                             ),
                           ),
@@ -161,7 +160,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                   style: Theme
                                       .of(context)
                                       .textTheme
-                                      .headline1,
+                                      .displayLarge,
                                   textAlign: TextAlign.left,
                                 ),
                               ),
@@ -214,7 +213,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                         style: Theme
                                             .of(context)
                                             .textTheme
-                                            .bodyText1
+                                            .bodyLarge
                                             ?.copyWith(
                                             fontWeight: FontWeight
                                                 .normal,
@@ -247,7 +246,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
   Widget listTileGetAll(String subtitle)
   {
     return  ListTile(
-      leading: Icon(
+      leading: const Icon(
         Icons.done,
         color: Colors.green,
       ),
@@ -256,7 +255,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
           style: Theme
               .of(context)
               .textTheme
-              .bodyText1,
+              .bodyLarge,
           textAlign: TextAlign.left
       ),
     );

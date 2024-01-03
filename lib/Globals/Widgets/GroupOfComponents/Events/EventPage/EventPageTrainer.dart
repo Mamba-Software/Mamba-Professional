@@ -10,7 +10,6 @@ import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent_old.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -36,7 +35,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EventPageTrainer extends StatefulWidget {
   String eventId;
-  EventPageTrainer({Key? key, required this.eventId}) : super(key: key);
+  EventPageTrainer({super.key, required this.eventId});
 
   @override
   _EventPageTrainerState createState() => _EventPageTrainerState();
@@ -154,14 +153,8 @@ class _EventPageTrainerState extends State<EventPageTrainer>
         AppBar().preferredSize.height -
         MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: " +
-        MediaQuery.of(context).size.height.toString() +
-        " " +
-        MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: " +
-        safeAreaHeight.toString() +
-        " " +
-        safeAreaWidth.toString());
+    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   void getEventInfo() async {
@@ -341,7 +334,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
               child: Image.asset(Constants.fireEmojiImage),
             ),
             Text(eventFeedbackValue.toString(),
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center),
           ],
         ),
@@ -364,7 +357,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                     places.toString(),
                     style: Theme.of(context)
                         .textTheme
-                        .headline3
+                        .displaySmall
                         ?.copyWith(color: Colors.green),
                     textAlign: TextAlign.center,
                   ),
@@ -374,7 +367,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                         : AppLocalizations.of(context)!.slots,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium
                         ?.copyWith(fontSize: 5, color: Colors.green),
                     textAlign: TextAlign.center,
                   ),
@@ -396,7 +389,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                       AppLocalizations.of(context)!.full,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
+                          .bodyMedium
                           ?.copyWith(fontSize: 5, color: AppColors.red),
                       textAlign: TextAlign.center,
                     ),
@@ -422,7 +415,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                   children: [
                     Text(
                       event!.averageIntensityScore!.toStringAsFixed(1),
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(
@@ -454,7 +447,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                   children: [
                     Text(
                       "-- ",
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(
@@ -1065,7 +1058,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .headline1
+                                                                .displayLarge
                                                                 ?.copyWith(
                                                                     fontWeight:
                                                                         FontWeight
@@ -1084,7 +1077,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .caption,
+                                                                .bodySmall,
                                                             textAlign:
                                                                 TextAlign.start,
                                                             maxLines: 1,
@@ -1121,13 +1114,13 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .bodyText2,
+                                                                .bodyMedium,
                                                             decoration:
                                                                 InputDecoration(
                                                               hintStyle: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .caption,
+                                                                  .bodySmall,
                                                               hintText: AppLocalizations
                                                                       .of(context)!
                                                                   .noDescription,
@@ -1176,7 +1169,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                           .errorDate,
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText2
+                                                          .bodyMedium
                                                           ?.copyWith(
                                                               color: AppColors
                                                                   .red),
@@ -1231,7 +1224,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .headline1
+                                                              .displayLarge
                                                               ?.copyWith(
                                                                   fontWeight:
                                                                       FontWeight
@@ -1279,7 +1272,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .bodyText1
+                                                                  .bodyLarge
                                                                   ?.copyWith(
                                                                       fontWeight:
                                                                           FontWeight
@@ -1289,7 +1282,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                 labelStyle: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .bodyText1
+                                                                    .bodyLarge
                                                                     ?.copyWith(
                                                                         fontWeight:
                                                                             FontWeight.bold),
@@ -1407,7 +1400,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .bodyText2,
+                                                                  .bodyMedium,
                                                               decoration:
                                                                   const InputDecoration(
                                                                 border:
@@ -1534,7 +1527,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .bodyText2,
+                                                                  .bodyMedium,
                                                               decoration:
                                                                   const InputDecoration(
                                                                 border:
@@ -1595,7 +1588,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                               0.9,
                                           decoration: BoxDecoration(
                                               color: Theme.of(context)
-                                                  .backgroundColor,
+                                                  .colorScheme.background,
                                               borderRadius:
                                                   const BorderRadius.all(
                                                       Radius.circular(15.0))),
@@ -1680,7 +1673,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .bodyText2,
+                                                                  .bodyMedium,
                                                         ),
                                                       )
                                                     ],
@@ -1724,7 +1717,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .bodyText1!
+                                                              .bodyLarge!
                                                               .copyWith(
                                                                   fontWeight:
                                                                       FontWeight
@@ -1819,7 +1812,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                             .toUpperCase(),
                                                                         style: Theme.of(context)
                                                                             .textTheme
-                                                                            .bodyText1,
+                                                                            .bodyLarge,
                                                                         maxLines:
                                                                             1,
                                                                         overflow:
@@ -1828,13 +1821,10 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                       Flexible(
                                                                         child:
                                                                             Text(
-                                                                          (bono.sessions! == 10000 ? AppLocalizations.of(context)!.sessions + " " + AppLocalizations.of(context)!.ilimitadas : bono.sessions!.toString() + " " + AppLocalizations.of(context)!.sessions.toLowerCase()) +
-                                                                              " desde " +
-                                                                              bono.price!.toStringAsFixed(2) +
-                                                                              "€",
+                                                                          "${bono.sessions! == 10000 ? "${AppLocalizations.of(context)!.sessions} ${AppLocalizations.of(context)!.ilimitadas}" : "${bono.sessions!} ${AppLocalizations.of(context)!.sessions.toLowerCase()}"} desde ${bono.price!.toStringAsFixed(2)}€",
                                                                           style: Theme.of(context)
                                                                               .textTheme
-                                                                              .caption,
+                                                                              .bodySmall,
                                                                           maxLines:
                                                                               1,
                                                                           overflow:
@@ -1872,7 +1862,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                     .trainers,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1!
+                                                    .bodyLarge!
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.bold),
@@ -1989,7 +1979,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .bodyText2,
+                                                                  .bodyMedium,
                                                               textAlign:
                                                                   TextAlign
                                                                       .center,
@@ -2024,7 +2014,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                     .clients,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1!
+                                                    .bodyLarge!
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.bold),
@@ -2034,43 +2024,36 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                   ? Row(
                                                       children: [
                                                         Text(
-                                                          "( " +
-                                                              event!.numClients
-                                                                  .toString(),
+                                                          "( ${event!.numClients}",
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .bodyText2,
+                                                                  .bodyMedium,
                                                         ),
                                                         Text(
                                                           " / ",
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .bodyText2,
+                                                                  .bodyMedium,
                                                         ),
                                                         Text(
-                                                          event!.maxMembers
-                                                                  .toString() +
-                                                              " )",
+                                                          "${event!.maxMembers} )",
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .bodyText2,
+                                                                  .bodyMedium,
                                                         ),
                                                       ],
                                                     )
                                                   : Row(
                                                       children: [
                                                         Text(
-                                                          "( " +
-                                                              event!.numClients
-                                                                  .toString() +
-                                                              " )",
+                                                          "( ${event!.numClients} )",
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .bodyText2,
+                                                                  .bodyMedium,
                                                         ),
                                                       ],
                                                     ),
@@ -2095,7 +2078,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                             .noClientJoining,
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .caption,
+                                                            .bodySmall,
                                                         textAlign:
                                                             TextAlign.center,
                                                       ),
@@ -2236,7 +2219,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                         children: [
                                                                           Flexible(
                                                                             child: Text(clientFeedback.toString(),
-                                                                                style: Theme.of(context).textTheme.bodyText2,
+                                                                                style: Theme.of(context).textTheme.bodyMedium,
                                                                                 maxLines: 1,
                                                                                 softWrap: true,
                                                                                 textAlign: TextAlign.center),
@@ -2280,7 +2263,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                     style: Theme.of(
                                                                             context)
                                                                         .textTheme
-                                                                        .bodyText2,
+                                                                        .bodyMedium,
                                                                     textAlign:
                                                                         TextAlign
                                                                             .center,
@@ -2376,14 +2359,12 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                           size: MediaQuery.of(context).size.width * 0.05,
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.invite +
-                              " " +
-                              AppLocalizations.of(context)!
+                          "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!
                                   .clients
-                                  .toLowerCase(),
+                                  .toLowerCase()}",
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2!
+                              .bodyMedium!
                               .copyWith(
                                   color: Theme.of(context).primaryColorDark),
                         ),
@@ -2468,7 +2449,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                     AppLocalizations.of(context)!.edit,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2!
+                        .bodyMedium!
                         .copyWith(color: Colors.white),
                   ),
                 ),

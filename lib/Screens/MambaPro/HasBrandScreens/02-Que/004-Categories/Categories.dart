@@ -1,24 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:shimmer/shimmer.dart';
 
 class Categories extends StatefulWidget {
   String brandId;
 
-  Categories({Key? key, required this.brandId}) : super(key: key);
+  Categories({super.key, required this.brandId});
 
   @override
   _Categories createState() => _Categories();
@@ -27,7 +13,7 @@ class Categories extends StatefulWidget {
 class _Categories extends State<Categories> {
 
   // Brand Data Service
-  var _brandDataService = BrandDataService();
+  final _brandDataService = BrandDataService();
 
   List<dynamic> sportIcon = [Icons.sports_soccer, Icons.sports_tennis,Icons.sports_tennis, Icons.sports_tennis, Icons.sports_tennis, Icons.sports_tennis, Icons.sports_tennis];
   List<dynamic> sportColor = [Colors.red[100]!, Colors.blue[100]!, Colors.green[100]!, Colors.yellow[100]!, Colors.orange[100]!, Colors.purple[100]!, Colors.brown[100]!];
@@ -78,7 +64,7 @@ class _Categories extends State<Categories> {
             border: Border.all(
               color: color,
             ),
-            borderRadius: BorderRadius.all(Radius.circular(20)),
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
           ),
           width: 100,
           height: 50,
@@ -98,9 +84,9 @@ class _Categories extends State<Categories> {
                   ],
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                sportClicked[index]? Icon(
+                sportClicked[index]? const Icon(
                   Icons.remove_circle_outline,
-                ) : Icon(
+                ) : const Icon(
                   Icons.add_circle_outline,
                 ),
               ],
@@ -129,7 +115,7 @@ class _Categories extends State<Categories> {
                     padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
                     child: Row(
                       children: [
-                        Text('Selecciona las categorias de tu marca', style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                        Text('Selecciona las categorias de tu marca', style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                       ],
                     ),
                   ),
@@ -155,7 +141,7 @@ class _Categories extends State<Categories> {
                     padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
                     child: Row(
                       children: [
-                        Text('Indica las palabras clave de tu marca', style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                        Text('Indica las palabras clave de tu marca', style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                         ],
                     ),
                   ),
@@ -175,7 +161,7 @@ class _Categories extends State<Categories> {
                         onChanged: (value) {
                           palabrasClave = value;
                         },
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                         textAlign: TextAlign.left,
                   ),
                     )),
@@ -187,16 +173,16 @@ class _Categories extends State<Categories> {
                       border: Border.all(
                         color: Colors.grey,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Padding(
                       padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Guardar todo', style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                          Text('Guardar todo', style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                           SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-                          Icon(
+                          const Icon(
                             Icons.save,
                           ),
                         ],

@@ -1,5 +1,10 @@
 {
   "projects": {
-    "default": "mamba-style"
-  }
+    "default": "mamba-fitness-dev",
+    "production": "mamba-style",
+    "development": "mamba-fitness-dev",
+    "staging": "mamba-fitness-test"
+  },
+  "targets": {},
+  "etags": {}
 }

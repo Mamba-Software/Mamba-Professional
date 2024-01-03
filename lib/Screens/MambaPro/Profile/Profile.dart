@@ -24,12 +24,11 @@ import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Sett
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsYourData.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 // Profile Page
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({super.key});
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -144,6 +143,7 @@ class _ProfileState extends State<Profile> {
       context,
       CupertinoPageRoute<void>(
         builder: (context) => FullScreenPage(
+          dark: false,
           child:  Image.network(
             currentUser.imageUrl!,
             loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
@@ -159,7 +159,6 @@ class _ProfileState extends State<Profile> {
               );
             },
           ),
-          dark: false,
         )
       )
     );
@@ -221,13 +220,13 @@ class _ProfileState extends State<Profile> {
       children: [
         Text(
             currentUser.name!,
-            style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 25),
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 25),
             textAlign: TextAlign.center
         ),
         const SizedBox(height: 6),
         Text(
             AppLocalizations.of(context)!.joinedIn(DateTimeUtils().formatDateTimeToStringMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)),
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center
         )
       ],
@@ -295,7 +294,7 @@ class _ProfileState extends State<Profile> {
         children: [
           Text(
             AppLocalizations.of(context)!.stats,
-            style: Theme.of(context).textTheme.headline3,
+            style: Theme.of(context).textTheme.displaySmall,
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.01),
           SizedBox(
@@ -318,16 +317,16 @@ class _ProfileState extends State<Profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       averageTime < 90 ? Text(
-                        averageTime.toStringAsFixed(0)+" "+AppLocalizations.of(context)!.minutesString.toLowerCase()+"/"+AppLocalizations.of(context)!.week.toLowerCase(),
-                        style: Theme.of(context).textTheme.headline3,
+                        "${averageTime.toStringAsFixed(0)} ${AppLocalizations.of(context)!.minutesString.toLowerCase()}/${AppLocalizations.of(context)!.week.toLowerCase()}",
+                        style: Theme.of(context).textTheme.displaySmall,
                       ) : Text(
-                        (averageTime/60).toStringAsFixed(1)+" "+AppLocalizations.of(context)!.hoursString.toLowerCase()+"/"+AppLocalizations.of(context)!.week.toLowerCase(),
-                        style: Theme.of(context).textTheme.headline3,
+                        "${(averageTime/60).toStringAsFixed(1)} ${AppLocalizations.of(context)!.hoursString.toLowerCase()}/${AppLocalizations.of(context)!.week.toLowerCase()}",
+                        style: Theme.of(context).textTheme.displaySmall,
                       ),
                       const SizedBox(height: 4),
                       Text(
                         currentUser.isTrainer! ? AppLocalizations.of(context)!.averageTimeWorked : AppLocalizations.of(context)!.averageTimeTrained,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
                   ),
@@ -355,13 +354,13 @@ class _ProfileState extends State<Profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        totalTime.toStringAsFixed(0)+" "+AppLocalizations.of(context)!.hoursString.toLowerCase(),
-                        style: Theme.of(context).textTheme.headline3,
+                        "${totalTime.toStringAsFixed(0)} ${AppLocalizations.of(context)!.hoursString.toLowerCase()}",
+                        style: Theme.of(context).textTheme.displaySmall,
                       ),
                       const SizedBox(height: 4),
                       Text(
                         currentUser.isTrainer! ? AppLocalizations.of(context)!.totalTimeWorked : AppLocalizations.of(context)!.totalTimeTrained,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
                   ),
@@ -389,13 +388,13 @@ class _ProfileState extends State<Profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        totalEvents.length.toString()+" "+AppLocalizations.of(context)!.sessions.toLowerCase(),
-                        style: Theme.of(context).textTheme.headline3,
+                        "${totalEvents.length} ${AppLocalizations.of(context)!.sessions.toLowerCase()}",
+                        style: Theme.of(context).textTheme.displaySmall,
                       ),
                       const SizedBox(height: 4),
                       Text(
                         AppLocalizations.of(context)!.sesionsCompleted,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
                   ),
@@ -416,7 +415,7 @@ class _ProfileState extends State<Profile> {
             children: [
               Text(
                 AppLocalizations.of(context)!.stats,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               SizedBox(
@@ -449,7 +448,7 @@ class _ProfileState extends State<Profile> {
                           const SizedBox(height: 4),
                           Text(
                             AppLocalizations.of(context)!.averageTimeTrained,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
                       ),
@@ -487,7 +486,7 @@ class _ProfileState extends State<Profile> {
                           const SizedBox(height: 4),
                           Text(
                             AppLocalizations.of(context)!.totalTimeTrained,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
                       ),
@@ -525,7 +524,7 @@ class _ProfileState extends State<Profile> {
                           const SizedBox(height: 4),
                           Text(
                             AppLocalizations.of(context)!.sesionsCompleted,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
                       ),
@@ -550,7 +549,7 @@ class _ProfileState extends State<Profile> {
           children: [
             Text(
               currentUser.isTrainer! ? AppLocalizations.of(context)!.sesionsCompleted : StringUtils().toCapitalized(AppLocalizations.of(context)!.myProgress.split(" ")[1]),
-              style: Theme.of(context).textTheme.headline3,
+              style: Theme.of(context).textTheme.displaySmall,
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.02),
             SizedBox(
@@ -566,7 +565,7 @@ class _ProfileState extends State<Profile> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).backgroundColor),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -588,7 +587,7 @@ class _ProfileState extends State<Profile> {
                           const SizedBox(width: 8),
                           Text(
                             AppLocalizations.of(context)!.lastNMonths(6.toString()),
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColor),
                           ),
                         ],
                       ),
@@ -602,7 +601,7 @@ class _ProfileState extends State<Profile> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).backgroundColor),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -624,7 +623,7 @@ class _ProfileState extends State<Profile> {
                           const SizedBox(width: 8),
                           Text(
                             AppLocalizations.of(context)!.lastYear,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColor),
                           ),
                         ],
                       ),
@@ -653,7 +652,7 @@ class _ProfileState extends State<Profile> {
             children: [
               Text(
                 AppLocalizations.of(context)!.myProgress,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.02),
               SizedBox(
@@ -671,7 +670,7 @@ class _ProfileState extends State<Profile> {
                             elevation: MaterialStateProperty.all(4),
                             backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                             animationDuration: const Duration(milliseconds: 100),
-                            overlayColor: MaterialStateProperty.all(Theme.of(context).backgroundColor.withOpacity(0.2)),
+                            overlayColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background.withOpacity(0.2)),
                             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -691,7 +690,7 @@ class _ProfileState extends State<Profile> {
                             const SizedBox(width: 8),
                             Text(
                               AppLocalizations.of(context)!.lastNMonths(6.toString()),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark),
                             ),
                           ],
                         ),
@@ -707,7 +706,7 @@ class _ProfileState extends State<Profile> {
                             elevation: MaterialStateProperty.all(4),
                             backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                             animationDuration: const Duration(milliseconds: 100),
-                            overlayColor: MaterialStateProperty.all(Theme.of(context).backgroundColor.withOpacity(0.2)),
+                            overlayColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background.withOpacity(0.2)),
                             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -727,7 +726,7 @@ class _ProfileState extends State<Profile> {
                             const SizedBox(width: 8),
                             Text(
                               AppLocalizations.of(context)!.lastYear,
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark),
                             ),
                           ],
                         ),
@@ -775,7 +774,7 @@ class _ProfileState extends State<Profile> {
               width: MediaQuery.of(context).size.width*0.9,
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
               decoration: BoxDecoration(
-                  color: Theme.of(context).backgroundColor,
+                  color: Theme.of(context).colorScheme.background,
                   borderRadius: BorderRadius.circular(30)
               ),
               child: Row(
@@ -790,7 +789,7 @@ class _ProfileState extends State<Profile> {
                   SizedBox(width: MediaQuery.of(context).size.width*0.05),
                   Text(
                     AppLocalizations.of(context)!.myData,
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.displaySmall,
                   ),
                 ],
               ),
@@ -823,7 +822,7 @@ class _ProfileState extends State<Profile> {
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
               child: Text(
                   AppLocalizations.of(context)!.shareAppText,
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor),
                   textAlign: TextAlign.center
               ),
             ),
@@ -835,14 +834,9 @@ class _ProfileState extends State<Profile> {
                   mixpanel!.track('user_profile_share_app');
                   _sharePlusUtils.shareMambaLink(currentUser.firstName!);
                 },
-                child: Text(
-                  AppLocalizations.of(context)!.shareApp,
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
-                ),
                 style: OutlinedButton.styleFrom(
                   elevation: 4,
-                  backgroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: Theme.of(context).colorScheme.background,
                   fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                   side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
                   shape: const RoundedRectangleBorder(
@@ -850,6 +844,11 @@ class _ProfileState extends State<Profile> {
                       Radius.circular(30),
                     ),
                   ),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.shareApp,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
@@ -882,7 +881,7 @@ class _ProfileState extends State<Profile> {
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
               child: Text(
                   AppLocalizations.of(context)!.giveFeedbackText,
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor),
                   textAlign: TextAlign.center
               ),
             ),
@@ -894,14 +893,9 @@ class _ProfileState extends State<Profile> {
                   mixpanel!.track('user_profile_feedback_open');
                   navigateToFeedbackScreen();
                 },
-                child: Text(
-                  AppLocalizations.of(context)!.giveFeedback,
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
-                ),
                 style: OutlinedButton.styleFrom(
                   elevation: 4,
-                  backgroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: Theme.of(context).colorScheme.background,
                   fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                   side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
                   shape: const RoundedRectangleBorder(
@@ -909,6 +903,11 @@ class _ProfileState extends State<Profile> {
                       Radius.circular(30),
                     ),
                   ),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.giveFeedback,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
@@ -941,7 +940,7 @@ class _ProfileState extends State<Profile> {
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
               child: Text(
                   AppLocalizations.of(context)!.getInTouchText,
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor),
                   textAlign: TextAlign.center
               ),
             ),
@@ -950,14 +949,9 @@ class _ProfileState extends State<Profile> {
               width: MediaQuery.of(context).size.width*0.4,
               child: OutlinedButton(
                 onPressed: () => launchEmail(),
-                child: Text(
-                  AppLocalizations.of(context)!.getInTouch,
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
-                ),
                 style: OutlinedButton.styleFrom(
                   elevation: 4,
-                  backgroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: Theme.of(context).colorScheme.background,
                   fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                   side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
                   shape: const RoundedRectangleBorder(
@@ -965,6 +959,11 @@ class _ProfileState extends State<Profile> {
                       Radius.circular(30),
                     ),
                   ),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.getInTouch,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
@@ -983,6 +982,7 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold (
       appBar: AppBar(
@@ -1017,9 +1017,9 @@ class _ProfileState extends State<Profile> {
                           elevation: 4,
                           color: AppColors.white,
                           textColor: AppColors.black,
-                          child: Icon(Icons.arrow_back, color: AppColors.black, size: MediaQuery.of(context).size.height*0.035,),
                           padding: EdgeInsets.zero,
                           shape: const CircleBorder(),
+                          child: Icon(Icons.arrow_back, color: AppColors.black, size: MediaQuery.of(context).size.height*0.035,),
                         ),
                       ),
                       SizedBox(
@@ -1030,9 +1030,9 @@ class _ProfileState extends State<Profile> {
                           elevation: 4,
                           color: AppColors.white,
                           textColor: AppColors.black,
-                          child: Icon(Icons.settings_outlined, color: AppColors.black, size: MediaQuery.of(context).size.height*0.035,),
                           padding: EdgeInsets.zero,
                           shape: const CircleBorder(),
+                          child: Icon(Icons.settings_outlined, color: AppColors.black, size: MediaQuery.of(context).size.height*0.035,),
                         ),
                       ),
                     ],

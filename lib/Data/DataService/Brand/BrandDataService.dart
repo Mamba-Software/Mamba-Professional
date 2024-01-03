@@ -62,7 +62,7 @@ class BrandDataService {
   Future<void> updateBonoActive(String brandID, String bonoId, bool isActive) => _firebase.updateBonoActive(brandID, bonoId, isActive);
   Future<void> updateUserBrandRole(String userId, String brandId, int role) => _firebase.updateUserBrandRole(userId, brandId, role);
   Future<void> updateBrandPay(String brandID, int time, String subscriptionId, String title, DateTime endDate, bool revenueCatSub) => _firebase.updateBrandPay(brandID, time, subscriptionId, title, endDate, revenueCatSub);
-  Future<void> updateBrandSubscriptionRevenueCat(String brandID, String? expires_date, String? original_purchase_date, String? product_plan_identifier, String? unsuscribedAT) => _firebase.updateBrandSubscriptionRevenueCat(brandID, expires_date,  original_purchase_date, product_plan_identifier, unsuscribedAT);
+  Future<void> updateBrandSubscriptionRevenueCat(String brandID, String? expiresDate, String? originalPurchaseDate, String? productPlanIdentifier, String? unsuscribedAT) => _firebase.updateBrandSubscriptionRevenueCat(brandID, expiresDate,  originalPurchaseDate, productPlanIdentifier, unsuscribedAT);
 
   // Delete Data
   Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);

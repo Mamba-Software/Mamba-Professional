@@ -35,62 +35,62 @@ class Location {
 
   Location.fromObjectAllData(
       String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('brandID')) {
-      this.brandID = documentSnapshot.get("brandID").toString();
+      brandID = documentSnapshot.get("brandID").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('placeId')) {
-      this.placeId = documentSnapshot.get("placeId").toString();
+      placeId = documentSnapshot.get("placeId").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('isBaseLocation')) {
-      this.isBaseLocation = documentSnapshot.get("isBaseLocation");
+      isBaseLocation = documentSnapshot.get("isBaseLocation");
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('description')) {
-      this.description = documentSnapshot.get("description").toString();
+      description = documentSnapshot.get("description").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('street')) {
-      this.street = documentSnapshot.get("street").toString();
+      street = documentSnapshot.get("street").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('streetNumber')) {
-      this.streetNumber = documentSnapshot.get("streetNumber").toString();
+      streetNumber = documentSnapshot.get("streetNumber").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('city')) {
-      this.city = documentSnapshot.get("city").toString();
+      city = documentSnapshot.get("city").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('zipCode')) {
-      this.zipCode = documentSnapshot.get("zipCode").toString();
+      zipCode = documentSnapshot.get("zipCode").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('latitude')) {
-      this.latitude = documentSnapshot.get("latitude");
+      latitude = documentSnapshot.get("latitude");
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('longitude')) {
-      this.longitude = documentSnapshot.get("longitude");
+      longitude = documentSnapshot.get("longitude");
     }
   }
 
   Location.fromObjectOnlyCoverData(
       String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('description')) {
-      this.description = documentSnapshot.get("description").toString();
+      description = documentSnapshot.get("description").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('latitude')) {
-      this.latitude = documentSnapshot.get("latitude");
+      latitude = documentSnapshot.get("latitude");
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('longitude')) {
-      this.longitude = documentSnapshot.get("longitude");
+      longitude = documentSnapshot.get("longitude");
     }
   }
 

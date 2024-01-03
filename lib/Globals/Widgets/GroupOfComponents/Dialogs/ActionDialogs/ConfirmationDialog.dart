@@ -1,20 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String text;
-  const ConfirmationDialog({Key? key, required this.text}) : super(key: key);
+  const ConfirmationDialog({super.key, required this.text});
 
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(20),
+      insetPadding: const EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
+        padding: const EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -35,7 +34,7 @@ class ConfirmationDialog extends StatelessWidget {
                       Flexible(
                         child: Text(
                           text,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
                           textAlign: TextAlign.center,),
                       ),
                     ],
@@ -59,7 +58,7 @@ class ConfirmationDialog extends StatelessWidget {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.confirm,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                         ),
                         icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
@@ -80,7 +79,7 @@ class ConfirmationDialog extends StatelessWidget {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark,),
                         ),
                         icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                         onPressed: () {
@@ -98,14 +97,14 @@ class ConfirmationDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(70, 70), // button width and height
+                      size: const Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
                           color: Theme.of(context).colorScheme.secondary,
                           child: InkWell(
                             onTap: () async {
                             },
-                            child: Icon(Icons.priority_high, color: Colors.white, size: 45,), // icon
+                            child: const Icon(Icons.priority_high, color: Colors.white, size: 45,), // icon
                           ),
                         ),
                       ),

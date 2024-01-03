@@ -1,75 +1,64 @@
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
-import 'package:uuid/uuid.dart';
 
 // Brand Firebase Service Class. All calls to Firebase are in this class.
 class SuscriptionFirebaseCalls {
   // Firebase Instances
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
 
   // Firebase collections
-  String library = isProduction ? 'Library' : 'Library';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String users = isProduction ? 'Users' : '7777 Users';
-  String events = isProduction ? 'Events' : '7777 Events';
-  String locations = isProduction ? 'Locations' : '7777 Locations';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
-  String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
-  String subscriptionsRevenueCat = isProduction ? '111testSubs' : '111testSubs';
+  String users = 'Users';
+  String brands = 'Brands';
+  String events = 'Events';
+  String locations = 'Locations';
+  String library = 'Library';
+  String purchases = 'Purchases';
+  String subscriptions = 'Subscriptions';
+  String subscriptionsRevenueCat = '111testSubs';
 
   Future<Subscription> getBrandSubscription(String adminAppUserId) async {
     print('subscription');
     try {
-    Subscription subscription = new Subscription();
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(subscriptionsRevenueCat).doc(adminAppUserId).get();
-    if (_documentSnapshot.exists) {
-      final data = _documentSnapshot.data()!;
-      if (data.containsKey('entitlements')) {
-        final entitlements = _documentSnapshot.get("entitlements");
-        if (entitlements.containsKey(entitlementID)) {
-          String expireDate = entitlements[entitlementID]['expires_date'];
-          if ((DateTime.parse(expireDate).isAfter(DateTime.now()) ||
-              DateTime.parse(expireDate).isAtSameMomentAs(DateTime.now()))) {
-            String subId = entitlements[entitlementID]['product_identifier'];
-            if (data.containsKey('subscriptions')) {
-              final subscriptions = _documentSnapshot.get("subscriptions");
-              print(subscriptions[subId]['expires_date']);
-              final subscription = Subscription.fromRevenueSubscription(
-                  subscriptions[subId], subId);
-              return subscription;
+      Subscription subscription = Subscription();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+          await _firestore
+              .collection(subscriptionsRevenueCat)
+              .doc(adminAppUserId)
+              .get();
+      if (documentSnapshot.exists) {
+        final data = documentSnapshot.data()!;
+        if (data.containsKey('entitlements')) {
+          final entitlements = documentSnapshot.get("entitlements");
+          if (entitlements.containsKey(dotenv.env['REVCAT_ENTITLEMENT_ID']!)) {
+            String expireDate =
+                entitlements[dotenv.env['REVCAT_ENTITLEMENT_ID']!]
+                    ['expires_date'];
+            if ((DateTime.parse(expireDate).isAfter(DateTime.now()) ||
+                DateTime.parse(expireDate).isAtSameMomentAs(DateTime.now()))) {
+              String subId = entitlements[dotenv.env['REVCAT_ENTITLEMENT_ID']!]
+                  ['product_identifier'];
+              if (data.containsKey('subscriptions')) {
+                final subscriptions = documentSnapshot.get("subscriptions");
+                print(subscriptions[subId]['expires_date']);
+                final subscription = Subscription.fromRevenueSubscription(
+                    subscriptions[subId], subId);
+                return subscription;
+              }
             }
           }
-        }
 
-        /*final subscriptionAux = (subscriptions.values).firstWhere(
+          /*final subscriptionAux = (subscriptions.values).firstWhere(
                 (subscription) => (DateTime.parse(subscription['expires_date']).isAfter(DateTime.now()) || DateTime.parse(subscription['expires_date']).isAtSameMomentAs(DateTime.now())));
         final subscription = Subscription.fromRevenueSubscription(subscriptions['month_sub']);*/
+        }
       }
-    }
-    return subscription;
-    }
-    catch(e)
-    {
+      return subscription;
+    } catch (e) {
       print(e);
-      return new Subscription();
+      return Subscription();
     }
-    
-    
   }
 }

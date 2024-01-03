@@ -3,16 +3,11 @@ import 'dart:math';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../Styles/AppColors/AppColors.dart';
@@ -24,8 +19,8 @@ class DayOffer extends StatefulWidget {
   DayOffer({
     required this.events,
     required this.context,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   DayOfferState createState() => DayOfferState();
@@ -42,7 +37,7 @@ class DayOfferState extends State<DayOffer> {
 
   List<TotalEvents> totalEvents = [];
 
-  Timestamp tm = Timestamp.fromDate(DateTime.now().subtract(Duration(days: 5)));
+  Timestamp tm = Timestamp.fromDate(DateTime.now().subtract(const Duration(days: 5)));
 
   double maxValue = 0;
   int maxValueInt = 0;
@@ -113,7 +108,7 @@ class DayOfferState extends State<DayOffer> {
     addDayInTotalEvent(AppLocalizations.of(widget.context)!.sat, 5);
     addDayInTotalEvent(AppLocalizations.of(widget.context)!.sun, 6);
 
-    maxValueStr = maxValueInt.toString() + '%';
+    maxValueStr = '$maxValueInt%';
 
     totalEvents = totalEvents.reversed.toList();
     }
@@ -128,7 +123,7 @@ class DayOfferState extends State<DayOffer> {
       }
 
       totalEvent =
-      new TotalEvents(day, roundDouble(weekDays[number] / totalSumClients, 2));
+      TotalEvents(day, roundDouble(weekDays[number] / totalSumClients, 2));
       totalEvents.add(totalEvent);
     }
 
@@ -137,7 +132,7 @@ class DayOfferState extends State<DayOffer> {
   void addBaseDayInTotalEvent(String day, int number) {
     TotalEvents totalEvent;
       totalEvent =
-      new TotalEvents(day, 0);
+      TotalEvents(day, 0);
       totalEvents.add(totalEvent);
 
 
@@ -164,9 +159,11 @@ class DayOfferState extends State<DayOffer> {
                           onDataLabelRender:(DataLabelRenderArgs args){
                             if(args.text == maxValueStr)
                               {
-                                args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.mainColor));
+                                args.textStyle = (Theme.of(context).textTheme.bodyLarge!.copyWith(color: AppColors.mainColor));
                               }
-                            else  args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorLight));
+                            else {
+                              args.textStyle = (Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColorLight));
+                            }
 
 
                           },
@@ -179,27 +176,27 @@ class DayOfferState extends State<DayOffer> {
                             numberFormat: NumberFormat.percentPattern(),
                             placeLabelsNearAxisLine: true,
                             //Hide the gridlines of x-axis
-                            majorGridLines: MajorGridLines(width: 0),
+                            majorGridLines: const MajorGridLines(width: 0),
                             isVisible: false,
                             //Hide the axis line of x-axis
-                            axisLine: AxisLine(width: 0),
+                            axisLine: const AxisLine(width: 0),
 
                           ),
                           primaryXAxis: CategoryAxis(
-                            majorTickLines: MajorTickLines(
+                            majorTickLines: const MajorTickLines(
                               width: 0,
                             ),
-                            labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor)),
+                            labelStyle: (Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor)),
                             placeLabelsNearAxisLine: true,
                             //maximum: double.parse(maxNumber.toString()),
                             //isVisible: false,
                             //Hide the gridlines of x-axis
-                            majorGridLines: MajorGridLines(width: 0),
+                            majorGridLines: const MajorGridLines(width: 0),
                             //Hide the axis line of x-axis
-                            axisLine: AxisLine(width: 0),
+                            axisLine: const AxisLine(width: 0),
                           ),
-                          axes: [],
-                          indicators: [],
+                          axes: const [],
+                          indicators: const [],
                           legend: null,
                          // tooltipBehavior: _tooltipBehavior,
                         enableSideBySideSeriesPlacement: false,
@@ -209,7 +206,7 @@ class DayOfferState extends State<DayOffer> {
                           BarSeries<TotalEvents, String>(
                             spacing: 1,
                             width: 0.3,
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            borderRadius: const BorderRadius.all(Radius.circular(30)),
                               borderColor: Styles.mainColor,
                             borderWidth: 0,
                               /*
@@ -230,7 +227,7 @@ class DayOfferState extends State<DayOffer> {
                               ),
                                 dataSource: totalEvents,
 
-                                dataLabelSettings: DataLabelSettings(isVisible: true),
+                                dataLabelSettings: const DataLabelSettings(isVisible: true),
                                 xValueMapper: (TotalEvents events, _) => events.day,
                                 yValueMapper: (TotalEvents events, _) => events.percentatge,
                             )

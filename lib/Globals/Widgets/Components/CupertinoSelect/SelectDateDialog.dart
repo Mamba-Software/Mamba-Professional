@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ class SelectDateDialog extends StatefulWidget {
   DateTime startDate;
   bool onlyFuture;
   bool dateOfWeek;
-  SelectDateDialog({Key? key, required this.title, required this.startDate, required this.onlyFuture, required this.dateOfWeek}) : super(key: key);
+  SelectDateDialog({super.key, required this.title, required this.startDate, required this.onlyFuture, required this.dateOfWeek});
 
   @override
   _SelectDateDialogState createState() => _SelectDateDialogState();
@@ -32,7 +31,7 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
       ),
       child: Container(
@@ -52,13 +51,13 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
                 Expanded(
                     child: Text(
                       widget.title,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center
                     )
                 ),
               ],
             ),
-            widget.dateOfWeek == true ? Container(
+            widget.dateOfWeek == true ? SizedBox(
               height: MediaQuery.of(context).size.height*0.24,
               width: MediaQuery.of(context).size.width,
               child: Row(
@@ -69,7 +68,7 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
                     padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
                     child: Text(
                         StringUtils().toCapitalized(DateFormat('EE', Localizations.localeOf(context).languageCode).format(pickedDate)),
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.right
                     ),
                   ),
@@ -79,14 +78,14 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
                       child: CupertinoTheme(
                         data: CupertinoThemeData(
                             textTheme: CupertinoTextThemeData(
-                              dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+                              dateTimePickerTextStyle: Theme.of(context).textTheme.bodyLarge,
                             )
                         ),
                         child: CupertinoDatePicker(
                             mode: CupertinoDatePickerMode.date,
                             initialDateTime: DateTime(widget.startDate.year, widget.startDate.month, widget.startDate.day, widget.startDate.hour, widget.startDate.minute),
-                            minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(const Duration(minutes: 1)): widget.startDate.subtract(Duration(days: 365*80)),
-                            maximumDate: widget.onlyFuture ? (DateTime.now()).add(Duration(days: 365*1)): DateTime(widget.startDate.year, 12, 31, 0, 0),
+                            minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(const Duration(minutes: 1)): widget.startDate.subtract(const Duration(days: 365*80)),
+                            maximumDate: widget.onlyFuture ? (DateTime.now()).add(const Duration(days: 365*1)): DateTime(widget.startDate.year, 12, 31, 0, 0),
                             maximumYear:  widget.onlyFuture ? DateTime.now().year+1 : DateTime.now().year,
                             use24hFormat: true,
                             onDateTimeChanged: (val) {
@@ -106,14 +105,14 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
                 child: CupertinoTheme(
                   data: CupertinoThemeData(
                       textTheme: CupertinoTextThemeData(
-                        dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+                        dateTimePickerTextStyle: Theme.of(context).textTheme.bodyLarge,
                       )
                   ),
                   child: CupertinoDatePicker(
                       mode: CupertinoDatePickerMode.date,
                       initialDateTime: DateTime(widget.startDate.year, widget.startDate.month, widget.startDate.day, widget.startDate.hour, widget.startDate.minute),
-                      minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(Duration(minutes: 1)): widget.startDate.subtract(Duration(days: 365*80)),
-                      maximumDate: widget.onlyFuture ? (DateTime.now()).add(Duration(days: 365*1)): DateTime(widget.startDate.year, 12, 31, 0, 0),
+                      minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(const Duration(minutes: 1)): widget.startDate.subtract(const Duration(days: 365*80)),
+                      maximumDate: widget.onlyFuture ? (DateTime.now()).add(const Duration(days: 365*1)): DateTime(widget.startDate.year, 12, 31, 0, 0),
                       maximumYear:  widget.onlyFuture ? DateTime.now().year+1 : DateTime.now().year,
                       use24hFormat: true,
                       onDateTimeChanged: (val) {
@@ -138,7 +137,7 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
                   icon: Container(),
                   label: Text(
                       AppLocalizations.of(context)!.confirm,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark)
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark)
                   ),
                 ),
               ],

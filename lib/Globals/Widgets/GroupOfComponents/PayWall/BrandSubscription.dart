@@ -1,36 +1,17 @@
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 
 import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
@@ -41,12 +22,11 @@ class BrandSubscription extends StatefulWidget {
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
   BrandSubscription(
-      {Key? key,
+      {super.key,
       this.locale,
       required this.brandId,
       required this.pinned,
-      required this.pinnedChanged})
-      : super(key: key);
+      required this.pinnedChanged});
 
   @override
   _BrandInfoState createState() => _BrandInfoState();
@@ -139,7 +119,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                     .yourPlan
                                     .split(" ")[1]),
                             style:
-                                Theme.of(context).textTheme.headline1?.copyWith(
+                                Theme.of(context).textTheme.displayLarge?.copyWith(
                                       color: AppColors.white,
                                     ),
                           ),
@@ -324,7 +304,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                                 .chooseYourPlan,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline3
+                                                .displaySmall
                                                 ?.copyWith(
                                                     color: Theme.of(context)
                                                         .colorScheme
@@ -365,7 +345,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                                   difference.toString()),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2
+                                              .bodyMedium
                                               ?.copyWith(
                                                   color: Theme.of(context)
                                                       .colorScheme
@@ -430,7 +410,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                           suscriptionState.subscription.title!,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline3
+                                              .displaySmall
                                               ?.copyWith(
                                                   color: Theme.of(context)
                                                       .colorScheme
@@ -487,7 +467,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                                         .toDate())),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText2
+                                            .bodyMedium
                                             ?.copyWith(
                                                 color: Theme.of(context)
                                                     .colorScheme
@@ -541,7 +521,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                     AppLocalizations.of(context)!
                                         .subscriptionIncludes,
                                     style:
-                                        Theme.of(context).textTheme.headline1,
+                                        Theme.of(context).textTheme.displayLarge,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
@@ -626,17 +606,15 @@ class _BrandInfoState extends State<BrandSubscription>
                                                     0.05,
                                                 child: Center(
                                                     child: Text(
-                                                  AppLocalizations.of(context)!
+                                                  "${AppLocalizations.of(context)!
                                                           .seeAllMasc
-                                                          .split(" ")[0] +
-                                                      " " +
-                                                      AppLocalizations.of(
+                                                          .split(" ")[0]} ${AppLocalizations.of(
                                                               context)!
                                                           .subscriptionsAppBar
-                                                          .toLowerCase(),
+                                                          .toLowerCase()}",
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline3
+                                                      .displaySmall
                                                       ?.copyWith(
                                                           color: Theme.of(
                                                                   context)
@@ -671,7 +649,7 @@ class _BrandInfoState extends State<BrandSubscription>
                               child: Text(
                                 AppLocalizations.of(context)!
                                     .adminSubscriptionDesc,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -741,7 +719,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                         .chooseYourPlan,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline3
+                                        .displaySmall
                                         ?.copyWith(
                                             color: Theme.of(context)
                                                 .colorScheme
@@ -779,7 +757,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                           .noSubscription,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyMedium
                                       ?.copyWith(
                                           color: Theme.of(context)
                                               .colorScheme
@@ -833,7 +811,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                     AppLocalizations.of(context)!
                                         .subscriptionIncludes,
                                     style:
-                                        Theme.of(context).textTheme.headline1,
+                                        Theme.of(context).textTheme.displayLarge,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
@@ -913,7 +891,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                                 .seeAllSubs,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1
+                                                .bodyLarge
                                                 ?.copyWith(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -941,7 +919,7 @@ class _BrandInfoState extends State<BrandSubscription>
                               child: Text(
                                 AppLocalizations.of(context)!
                                     .adminSubscriptionDesc,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -987,7 +965,7 @@ class _BrandInfoState extends State<BrandSubscription>
         color: Colors.green,
       ),
       title: Text(subtitle,
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.bodyLarge,
           textAlign: TextAlign.left),
     );
   }

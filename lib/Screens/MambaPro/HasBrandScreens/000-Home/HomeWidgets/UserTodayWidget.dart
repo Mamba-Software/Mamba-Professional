@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,10 +12,8 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandEventCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
@@ -26,7 +23,7 @@ class UserTodayWidget extends StatefulWidget {
 
   ValueChanged<bool?> onClicked;
 
-  UserTodayWidget({Key? key, required this.onClicked}) : super(key: key);
+  UserTodayWidget({super.key, required this.onClicked});
 
   @override
   _UserTodayWidgetState createState() => _UserTodayWidgetState();
@@ -201,10 +198,10 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Icon(
                     Icons.update_outlined,
                     color: Colors.white,
@@ -234,10 +231,10 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-              child: Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
+                children: [
                   /*
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.doing,
@@ -274,10 +271,10 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   /*
                   Text(AppLocalizations.of(context)!.finished,
                       style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
@@ -352,7 +349,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
           minWidth: MediaQuery.of(context).size.width*0.9,
         ),
         decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
+          color: Theme.of(context).colorScheme.background,
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(15.0),
             bottomRight: Radius.circular(15.0),
@@ -391,7 +388,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                           child: CircularImage(
                             size: MediaQuery.of(context).size.width * 0.15,
                             image: currentUser.imageUrl,
-                            color: Theme.of(context).backgroundColor,
+                            color: Theme.of(context).colorScheme.background,
                             borderWidth: 1,
                           ),
                         ),
@@ -405,12 +402,12 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                         children: [
                           Text(
                               StringUtils().greetingMessage(context),
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                               textAlign: TextAlign.center
                           ),
                           Text(
                               currentUser.firstName!,
-                              style: Theme.of(context).textTheme.headline1,
+                              style: Theme.of(context).textTheme.displayLarge,
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
@@ -456,7 +453,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                               height: MediaQuery.of(context).size.height*0.04,
                               child: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
-                                child: Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.bodyText1),
+                                child: Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.bodyLarge),
                               ),
                             ),
                             SizedBox(
@@ -490,14 +487,14 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Flexible(child: Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start)),
+                                Flexible(child: Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start)),
                                 TextButton(
                                   onPressed: () {
                                     widget.onClicked(true);
                                   },
                                   child: Text(
                                     AppLocalizations.of(context)!.calendarWeekBrandText(currentBrand.name!),
-                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.secondary),
                                   ),
                                 ),
                               ],

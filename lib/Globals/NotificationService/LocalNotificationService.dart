@@ -1,7 +1,9 @@
+// ignore_for_file: depend_on_referenced_packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:mamba_castelldefels/bootstrap.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -14,7 +16,8 @@ import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotificati
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/main.dart';
+
+
 
 /// Streams are created so that app can respond to notification-related events
 /// since the plugin is initialised in the `main` function
@@ -260,7 +263,7 @@ class LocalNotificationService {
         firebaseNotificationsTemp.remove(notif);
         _userDataService.deleteLocalNotification(
             currentUser.id!, notif.id!.toString());
-        print("Removing Fired Notification " + notif.id.toString());
+        print("Removing Fired Notification ${notif.id}");
       }
       bool eventExists =
           await _eventDataService.checkIfEventExists(notif.eventId!);
@@ -269,16 +272,14 @@ class LocalNotificationService {
         firebaseNotificationsTemp.remove(notif);
         _userDataService.deleteLocalNotification(
             currentUser.id!, notif.id!.toString());
-        print("Removing False Notification " + notif.id.toString());
+        print("Removing False Notification ${notif.id}");
       }
     }
-    print(firebaseNotificationsTemp.length.toString() +
-        " Firebase notifications left...");
+    print("${firebaseNotificationsTemp.length} Firebase notifications left...");
     // Compare the ones left to fire with Local Device Notifications
     List<PendingNotificationRequest> pendingNotificationRequests =
         await _notificationsPlugin.pendingNotificationRequests();
-    print(pendingNotificationRequests.length.toString() +
-        " Local notifications...");
+    print("${pendingNotificationRequests.length} Local notifications...");
     // Create Aux Variables
     var pendingNotificationRequestsTemp =
         List.from(pendingNotificationRequests);
@@ -295,7 +296,7 @@ class LocalNotificationService {
         pendingNotificationRequestsTemp
             .removeWhere((element) => element.id == notif.id);
         firebaseLeftTemp.removeWhere((element) => element.id == notif.id);
-        print("Notification Matched " + notif.id.toString());
+        print("Notification Matched ${notif.id}");
       }
     }
     // Handle the Remaining Firebase Notifications
@@ -304,8 +305,8 @@ class LocalNotificationService {
       for (int i = 0; i < firebaseLeftTemp.length; i++) {
         ReceivedNotification notif = firebaseLeftTemp[i];
         // Schedule Notif
-        await this.scheduleNotification(context, notif);
-        print("Local Notification Added " + notif.id.toString());
+        await scheduleNotification(context, notif);
+        print("Local Notification Added ${notif.id}");
       }
     }
     // Handle the Remaining Local Notifications
@@ -315,11 +316,11 @@ class LocalNotificationService {
         PendingNotificationRequest notif = pendingNotificationRequestsTemp[i];
         // Cancel Local Notification
         _notificationsPlugin.cancel(notif.id);
-        print("Local Notification Canceled " + notif.id.toString());
+        print("Local Notification Canceled ${notif.id}");
       }
     }
     var localNotif = await _notificationsPlugin.pendingNotificationRequests();
-    print(localNotif.length.toString() + " pending ...");
+    print("${localNotif.length} pending ...");
     print("Finished Handling Local Notifications...");
   }
 
@@ -376,7 +377,7 @@ class LocalNotificationService {
         id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         title: AppLocalizations.of(context)!.afterEventTitleNotification,
         body: AppLocalizations.of(context)!.afterEventBodyNotification,
-        payload: "F-" + event.id!,
+        payload: "F-${event.id!}",
         createdAt: Timestamp.now(),
         firesAt: afterDate,
       );
@@ -492,7 +493,7 @@ class LocalNotificationService {
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime);
       // To make sure not the same Timestamp
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
     }
 
     // Schedule Before Notification
@@ -560,7 +561,7 @@ class LocalNotificationService {
         body:
             '¿Qué te ha parecido? ¿Demasiado intensa? Comunica tu nivel de esfuerzo a tu entrenador',
         //body: AppLocalizations.of(context)!.afterEventBodyNotification, PROBLEMS
-        payload: "F-" + event.id!,
+        payload: "F-${event.id!}",
         createdAt: Timestamp.now(),
         firesAt: afterDate,
       );
@@ -581,11 +582,7 @@ class LocalNotificationService {
       // title: AppLocalizations.of(context)!
       // .beforeEventTitleNotification(event.title!, eventTimeTime), PROBLEMS
       // body: AppLocalizations.of(context)!.beforeEventBodyNotification, PROBLEMS
-      title: '⚠️ 🏋️‍ ' +
-          event.title! +
-          ' a las ' +
-          eventTimeTime.toString() +
-          ' 🏋️‍ ⚠️ ',
+      title: '⚠️ 🏋️‍ ${event.title!} a las $eventTimeTime 🏋️‍ ⚠️ ',
       //body: AppLocalizations.of(context)!.beforeEventBodyNotification, PROBLEMS
       body:
           'Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles',
@@ -610,7 +607,7 @@ class LocalNotificationService {
       // Add Notification Firebase
       _userDataService.addLocalNotification(userId, notificationAfter);
       // To make sure not the same Timestamp
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       print("Feedback Event Notification Added");
     }
     // Add Notification Firebase
@@ -658,7 +655,7 @@ class LocalNotificationService {
           .bonoExpirationTomorrowTitleNotification(bono.title!.toUpperCase());
       body =
           AppLocalizations.of(context)!.bonoExpirationTomorrowBodyNotification;
-      payload = "E-" + brandId;
+      payload = "E-$brandId";
       // Notification 1 Day before
       ReceivedNotification notificationOneDayBefore = ReceivedNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -681,7 +678,7 @@ class LocalNotificationService {
       title = AppLocalizations.of(context)!
           .bonoExpirationWeekTitleNotification(bono.title!.toUpperCase());
       body = AppLocalizations.of(context)!.bonoExpirationWeekBodyNotification;
-      payload = "E-" + brandId;
+      payload = "E-$brandId";
       // Notification 1 Day before
       ReceivedNotification notificationOneWeekBefore = ReceivedNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/ 1000,

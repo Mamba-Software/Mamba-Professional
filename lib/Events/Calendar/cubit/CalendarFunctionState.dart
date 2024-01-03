@@ -43,7 +43,7 @@ class CalendarFunctionLoaded extends CalendarFunctionState {
   final DateTime? calendarDateTime;
   final CalendarView? calendarView;
 
-  CalendarFunctionLoaded({
+  const CalendarFunctionLoaded({
     required this.selectedValue,
     required this.items,
     required this.canEdit,

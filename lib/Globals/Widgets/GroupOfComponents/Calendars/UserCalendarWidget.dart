@@ -9,7 +9,6 @@ import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/R
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
@@ -20,7 +19,7 @@ class UserCalendarWidget extends StatefulWidget {
   String userId;
   DateTime? dateTime;
 
-  UserCalendarWidget({Key? key, required this.userId, this.dateTime}) : super(key: key);
+  UserCalendarWidget({super.key, required this.userId, this.dateTime});
 
   @override
   _UserCalendarWidgetState createState() => _UserCalendarWidgetState();
@@ -28,8 +27,8 @@ class UserCalendarWidget extends StatefulWidget {
 
 class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   // Acceso a Base de Datos
-  var _brandDataService = new BrandDataService();
-  var _eventDataService = new EventDataService();
+  final _brandDataService = BrandDataService();
+  final _eventDataService = EventDataService();
   // Screen Dimensions
   var safeAreaHeight;
   var safeAreaWidth;
@@ -39,14 +38,14 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   // Boolean Loading
   Brand _brand = Brand();
   // Sesions Controller
-  GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final CalendarController _controller = CalendarController();
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
   // Horari
   double _startHour = 8;
   double _endHour = 22;
-  DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentUser.dateJoined!).subtract(Duration(days: 365));
+  DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentUser.dateJoined!).subtract(const Duration(days: 365));
   // Events From Brand
   List<Event> eventsList = [];
   List<Appointment> allAppointments = <Appointment>[];
@@ -67,8 +66,8 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   initDeviceSizes() {
     safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
+    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   // Init App Bar Title
@@ -77,18 +76,18 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
       DateTime now = DateTime.now();
       int currentDay = now.weekday;
       displayDateTimeStart = now.subtract(Duration(days: currentDay-1));
-      displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 6));
+      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
     } else {
       DateTime dateTime = widget.dateTime!;
       int currentDay = dateTime.weekday;
       displayDateTimeStart = dateTime.subtract(Duration(days: currentDay-1));
-      displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 6));
+      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
     }
   }
 
   void getUserBrandDetails() async {
     List<Brand> result = await _brandDataService.getAllBrandsFromUser(widget.userId);
-    if (result.length != 0) {
+    if (result.isNotEmpty) {
       _brand = await _brandDataService.getBrandDetails(result[0].id!);
     }
     // TODO: Aixo ho fa per fer el init del Calendari. S'hauria de fer loop per totes les brands del user.
@@ -101,12 +100,12 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
       DateTime now = DateTime.now();
       int currentDay = now.weekday;
       displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
-      displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 7));
+      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 7));
     } else {
       DateTime dateTime = widget.dateTime!;
       int currentDay = dateTime.weekday;
       displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
-      displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 6));
+      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
     }
     if (_brand.id != null) {
       dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
@@ -139,7 +138,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Text(
       StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
     );
   }
 
@@ -162,7 +161,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
               },
             ),
             actions: [
-              Container(
+              SizedBox(
                 width: safeAreaWidth*0.15,
                 child: TextButton(
                   onPressed: () {
@@ -177,7 +176,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                   },
                   child: Text(
                       AppLocalizations.of(context)!.todayString,
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center
                   ),
                 ),
@@ -195,7 +194,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                     });
                   }
                 },
-                icon: _controller.view == CalendarView.month ? Container(
+                icon: _controller.view == CalendarView.month ? SizedBox(
                   width: safeAreaWidth*0.15,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -209,13 +208,13 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         fit: BoxFit.contain,
                         child: Text(
                             AppLocalizations.of(context)!.weekString,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                             textAlign: TextAlign.center
                         ),
                       ),
                     ],
                   ),
-                ) : Container(
+                ) : SizedBox(
                   width: safeAreaWidth*0.15,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -229,7 +228,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         fit: BoxFit.contain,
                         child: Text(
                             AppLocalizations.of(context)!.monthString,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                             textAlign: TextAlign.center
                         ),
                       ),
@@ -244,7 +243,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
           body: !isLoading ? StreamBuilder<QuerySnapshot>(
               stream: _eventDataService.getUserEventsStream(widget.userId),
               builder: (context, snapshot) {
-                if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
+                if (snapshot.data == null ) {
                   return LoadingView();
                 } else {
                   eventsList = documentsToEvents(snapshot.data!.docs);
@@ -267,21 +266,21 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                             border: Border.all(width: 0.1, color: Colors.transparent)
                         ) : BoxDecoration(
                           border: Border.all(width: 0.5, color: Theme.of(context).colorScheme.secondary),
-                          borderRadius: new BorderRadius.all(
-                            const Radius.circular(10.0),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(10.0),
                           ),
                         ),
                         headerHeight: 0,
                         headerStyle: CalendarHeaderStyle(
                           textAlign: TextAlign.center,
                           backgroundColor: Colors.transparent,
-                          textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
+                          textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.transparent),
                         ),
                         viewHeaderHeight: 50,
                         viewHeaderStyle: ViewHeaderStyle(
                           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                          dateTextStyle: Theme.of(context).textTheme.bodyText2,
-                          dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                          dateTextStyle: Theme.of(context).textTheme.bodyMedium,
+                          dayTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 10),
                         ),
                         cellBorderColor: _controller.view == CalendarView.month ? Colors.transparent : AppColors.grey,
                         timeSlotViewSettings: TimeSlotViewSettings(
@@ -295,8 +294,8 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                           dateFormat: 'd',
                           timeRulerSize: 25,
                           nonWorkingDays: nonWorkDays,
-                          minimumAppointmentDuration: Duration(minutes: 30),
-                          timeTextStyle: Theme.of(context).textTheme.bodyText2,
+                          minimumAppointmentDuration: const Duration(minutes: 30),
+                          timeTextStyle: Theme.of(context).textTheme.bodyMedium,
                         ),
                         monthViewSettings: MonthViewSettings(
                           appointmentDisplayCount: 5,
@@ -307,12 +306,12 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                           agendaViewHeight: safeAreaHeight*0.4,
                           agendaItemHeight: safeAreaHeight*0.08,
                           agendaStyle: AgendaStyle(
-                            appointmentTextStyle: Theme.of(context).textTheme.bodyText2,
+                            appointmentTextStyle: Theme.of(context).textTheme.bodyMedium,
                           ),
                           monthCellStyle: MonthCellStyle(
-                            textStyle: Theme.of(context).textTheme.bodyText1,
-                            trailingDatesTextStyle: Theme.of(context).textTheme.caption,
-                            leadingDatesTextStyle: Theme.of(context).textTheme.caption,
+                            textStyle: Theme.of(context).textTheme.bodyLarge,
+                            trailingDatesTextStyle: Theme.of(context).textTheme.bodySmall,
+                            leadingDatesTextStyle: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
                         onViewChanged: (ViewChangedDetails viewChangedDetails) {
@@ -325,7 +324,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                           });
                         },
                         onTap: onTapCalendar,
-                        appointmentTextStyle: Theme.of(context).textTheme.bodyText2!,
+                        appointmentTextStyle: Theme.of(context).textTheme.bodyMedium!,
                         appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                           final Appointment appointment = details.appointments.first;
                           final DateTime today = DateTime.now();
@@ -339,9 +338,9 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                 },
                                 child: Center(
                                   child: Material(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: new BorderRadius.all(
-                                        const Radius.circular(5.0),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0),
                                       ),
                                     ),
                                     elevation: 2,
@@ -351,7 +350,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                       padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                                       decoration: BoxDecoration(
                                         color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                           Radius.circular(5),
                                         ),
                                       ),
@@ -369,7 +368,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                               SizedBox(width: details.bounds.width*0.02,),
                                               Text(
                                                 event.title!,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
+                                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
                                                 textAlign: TextAlign.start,
                                               ),
                                             ],
@@ -378,13 +377,13 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                                                "${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime)} - ${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime)}",
+                                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white.withOpacity(0.5)),
                                                 textAlign: TextAlign.start,
                                               ),
                                               Text(
-                                                "("+appointment.subject+")",
-                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                                                "(${appointment.subject})",
+                                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white.withOpacity(0.5)),
                                                 textAlign: TextAlign.start,
                                               ),
                                             ],
@@ -402,9 +401,9 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                 },
                                 child: Center(
                                   child: Material(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: new BorderRadius.all(
-                                        const Radius.circular(5.0),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0),
                                       ),
                                     ),
                                     elevation: 2,
@@ -414,7 +413,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                       padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                                       decoration: BoxDecoration(
                                         color: event.isPrivate! ?  AppColors.black : appointment.color,
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                           Radius.circular(5),
                                         ),
                                       ),
@@ -432,7 +431,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                               SizedBox(width: details.bounds.width*0.02,),
                                               Text(
                                                 event.title!,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
+                                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
                                                 textAlign: TextAlign.start,
                                               ),
                                             ],
@@ -441,13 +440,13 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                "${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime)} - ${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime)}",
+                                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                                                 textAlign: TextAlign.start,
                                               ),
                                               Text(
-                                                "("+appointment.subject+")",
-                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                "(${appointment.subject})",
+                                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                                                 textAlign: TextAlign.start,
                                               ),
                                             ],
@@ -467,9 +466,9 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                 },
                                 child: Center(
                                   child: Material(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: new BorderRadius.all(
-                                        const Radius.circular(5.0),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0),
                                       ),
                                     ),
                                     elevation: 2,
@@ -479,7 +478,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                       padding: EdgeInsets.all(details.bounds.width*0.1),
                                       decoration: BoxDecoration(
                                         color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                           Radius.circular(5),
                                         ),
                                       ),
@@ -488,7 +487,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                         children: [
                                           AutoSizeText(
                                             event.title!,
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                             textAlign: TextAlign.center,
                                             wrapWords: false,
                                             minFontSize: 1,
@@ -517,9 +516,9 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                 },
                                 child: Center(
                                   child: Material(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: new BorderRadius.all(
-                                        const Radius.circular(5.0),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0),
                                       ),
                                     ),
                                     elevation: 2,
@@ -529,7 +528,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                       padding: EdgeInsets.all(details.bounds.width*0.1),
                                       decoration: BoxDecoration(
                                         color: event.isPrivate! ? AppColors.black : appointment.color,
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                           Radius.circular(5),
                                         ),
                                       ),
@@ -538,7 +537,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                         children: [
                                           AutoSizeText(
                                             event.title!,
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                             textAlign: TextAlign.center,
                                             wrapWords: false,
                                             minFontSize: 1,
@@ -556,7 +555,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                                 width: details.bounds.width*0.4,
                                                 child: AutoSizeText(
                                                   appointment.subject,
-                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                                   textAlign: TextAlign.center,
                                                   wrapWords: false,
                                                   minFontSize: 1,
@@ -650,7 +649,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
 
   Widget timeRegionBuilder(BuildContext context, TimeRegionDetails timeRegionDetails) {
     return Container(
-      color: Color(0x40B5B5B5),
+      color: const Color(0x40B5B5B5),
     );
   }
 
@@ -670,8 +669,8 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject;
-      var color;
+      String subject;
+      Color color = Colors.black;
       if (event.isPrivate!) {
         subject = "${event.numClients}";
         color = Colors.black;
@@ -681,9 +680,10 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
         double numClients = double.parse(event.numClients.toString());
         double maxMembers = double.parse(event.maxMembers.toString());
         double bookedCapacity = numClients/maxMembers;
-        if(bookedCapacity <= 0.20) color = Colors.green;
-        else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
-        else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
+        if(bookedCapacity <= 0.20) {
+          color = Colors.green;
+        } else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = const Color(0xFFA8C76C);
+        else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = const Color(0xFFECE014);
         else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
         else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
         else if(bookedCapacity >= 1) color = Colors.red;

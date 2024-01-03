@@ -13,8 +13,7 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
   final _userDataService= UserDataService();
   final _brandDataService = BrandDataService();
 
-  ClientSessionsCubit(this.allUsers) : super(const ClientsSessionsInitial()) {
-  }
+  ClientSessionsCubit(this.allUsers) : super(const ClientsSessionsInitial());
 
   void loadList() async {
     List<Usuario> allMembers = [];

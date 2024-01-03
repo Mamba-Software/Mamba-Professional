@@ -1,22 +1,19 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/BetaBadge.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
@@ -37,12 +34,11 @@ class Clients extends StatefulWidget {
   ValueChanged<bool?> pinnedChanged;
 
   Clients(
-      {Key? key,
+      {super.key,
       required this.brandId,
       required this.numClients,
       required this.pinned,
-      required this.pinnedChanged})
-      : super(key: key);
+      required this.pinnedChanged});
 
   @override
   _Clients createState() => _Clients();
@@ -171,7 +167,7 @@ class _Clients extends State<Clients> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByClients[0]) {
-      activeStaff += AppLocalizations.of(context)!.yes + ", ";
+      activeStaff += "${AppLocalizations.of(context)!.yes}, ";
       cnt += 1;
     }
     if (filterByClients[1]) {
@@ -269,7 +265,7 @@ class _Clients extends State<Clients> {
                                     AppLocalizations.of(context)!.clients,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline1
+                                        .displayLarge
                                         ?.copyWith(
                                           color: AppColors.white,
                                         ),
@@ -287,12 +283,13 @@ class _Clients extends State<Clients> {
                                       },
                                       style: Theme.of(context)
                                           .textTheme
-                                          .caption
+                                          .bodySmall
                                           ?.copyWith(color: AppColors.white),
                                       textAlign: TextAlign.left,
                                       decoration: InputDecoration(
-                                        hintStyle:
-                                            Theme.of(context).textTheme.caption,
+                                        hintStyle: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
                                         hintText: AppLocalizations.of(context)!
                                             .search,
                                         enabledBorder: const OutlineInputBorder(
@@ -369,7 +366,8 @@ class _Clients extends State<Clients> {
                                         },
                                         splashRadius: 20,
                                         splashColor: Theme.of(context)
-                                            .backgroundColor, // Splash color
+                                            .colorScheme
+                                            .background, // Splash color
                                         padding: EdgeInsets.zero,
                                         alignment: Alignment.center,
                                         icon: Icon(
@@ -392,7 +390,8 @@ class _Clients extends State<Clients> {
                                                 .transparent, // Button color
                                         child: InkWell(
                                           splashColor: Theme.of(context)
-                                              .backgroundColor, // Splash color
+                                              .colorScheme
+                                              .background, // Splash color
                                           onTap: () async {
                                             mixpanel!.track(
                                                 'brand_clients_filter_button');
@@ -411,10 +410,10 @@ class _Clients extends State<Clients> {
                                               builder: (BuildContext context) {
                                                 // Page View Controller
                                                 final PageController
-                                                    _pageController =
+                                                    pageController =
                                                     PageController(
                                                         initialPage: 0);
-                                                int _currentPage = 0;
+                                                int currentPage = 0;
                                                 bool isFilterBy = true;
                                                 // Widget
                                                 return StatefulBuilder(
@@ -457,7 +456,7 @@ class _Clients extends State<Clients> {
                                                                     style: Theme.of(
                                                                             context)
                                                                         .textTheme
-                                                                        .caption,
+                                                                        .bodySmall,
                                                                     textAlign:
                                                                         TextAlign
                                                                             .left),
@@ -468,7 +467,7 @@ class _Clients extends State<Clients> {
                                                                                 .clear,
                                                                             style: Theme.of(context)
                                                                                 .textTheme
-                                                                                .caption),
+                                                                                .bodySmall),
                                                                         onPressed:
                                                                             () {
                                                                           mixpanel!
@@ -498,12 +497,12 @@ class _Clients extends State<Clients> {
                                                                         }),
                                                                 dense: true,
                                                                 onTap:
-                                                                    _currentPage ==
+                                                                    currentPage ==
                                                                             0
                                                                         ? null
                                                                         : () {
                                                                             mixpanel!.track('brand_clients_filter_back');
-                                                                            _pageController.previousPage(
+                                                                            pageController.previousPage(
                                                                               duration: const Duration(milliseconds: 500),
                                                                               curve: Curves.ease,
                                                                             );
@@ -523,13 +522,13 @@ class _Clients extends State<Clients> {
                                                                   physics:
                                                                       const NeverScrollableScrollPhysics(),
                                                                   controller:
-                                                                      _pageController,
+                                                                      pageController,
                                                                   onPageChanged:
                                                                       (int
                                                                           page) {
                                                                     setStateBottom(
                                                                         () {
-                                                                      _currentPage =
+                                                                      currentPage =
                                                                           page;
                                                                     });
                                                                   },
@@ -543,18 +542,18 @@ class _Clients extends State<Clients> {
                                                                               isFilterBy = true;
                                                                             });
                                                                             mixpanel!.track('brand_clients_filter_active');
-                                                                            _pageController.nextPage(
+                                                                            pageController.nextPage(
                                                                               duration: const Duration(milliseconds: 500),
                                                                               curve: Curves.ease,
                                                                             );
                                                                           },
                                                                           title: Text(
-                                                                              AppLocalizations.of(context)!.active + " " + AppLocalizations.of(context)!.lastNDays(30.toString()),
-                                                                              style: Theme.of(context).textTheme.bodyText1,
+                                                                              "${AppLocalizations.of(context)!.active} ${AppLocalizations.of(context)!.lastNDays(30.toString())}",
+                                                                              style: Theme.of(context).textTheme.bodyLarge,
                                                                               textAlign: TextAlign.left),
                                                                           subtitle: Text(
                                                                               returnFilteredActiveClientsString(),
-                                                                              style: Theme.of(context).textTheme.caption,
+                                                                              style: Theme.of(context).textTheme.bodySmall,
                                                                               textAlign: TextAlign.left),
                                                                           trailing:
                                                                               SizedBox(
@@ -567,13 +566,13 @@ class _Clients extends State<Clients> {
                                                                         state is ClientsSessionsLoaded &&
                                                                                 state.finished
                                                                             ? ListTile(
-                                                                                title: Text(AppLocalizations.of(context)!.orderBy, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.left),
+                                                                                title: Text(AppLocalizations.of(context)!.orderBy, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.left),
                                                                                 dense: true,
-                                                                                onTap: _currentPage == 0
+                                                                                onTap: currentPage == 0
                                                                                     ? null
                                                                                     : () {
                                                                                         mixpanel!.track('brand_clients_filter_back');
-                                                                                        _pageController.previousPage(
+                                                                                        pageController.previousPage(
                                                                                           duration: const Duration(milliseconds: 500),
                                                                                           curve: Curves.ease,
                                                                                         );
@@ -588,13 +587,13 @@ class _Clients extends State<Clients> {
                                                                                     isFilterBy = false;
                                                                                   });
                                                                                   mixpanel!.track('brand_clients_order_active');
-                                                                                  _pageController.nextPage(
+                                                                                  pageController.nextPage(
                                                                                     duration: const Duration(milliseconds: 500),
                                                                                     curve: Curves.ease,
                                                                                   );
                                                                                 },
-                                                                                title: Text(AppLocalizations.of(context)!.orderBySessions, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
-                                                                                subtitle: Text(returnFilteredOrderClientsString(), style: Theme.of(context).textTheme.caption, textAlign: TextAlign.left),
+                                                                                title: Text(AppLocalizations.of(context)!.orderBySessions, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                subtitle: Text(returnFilteredOrderClientsString(), style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.left),
                                                                                 trailing: SizedBox(
                                                                                   width: MediaQuery.of(context).size.width * 0.15,
                                                                                   child: Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
@@ -626,7 +625,7 @@ class _Clients extends State<Clients> {
                                                                                     }
                                                                                   });
                                                                                 },
-                                                                                title: Text(AppLocalizations.of(context)!.yes, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                                title: Text(AppLocalizations.of(context)!.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                 trailing: filterByClients[0]
                                                                                     ? SizedBox(
                                                                                         width: MediaQuery.of(context).size.width * 0.15,
@@ -654,7 +653,7 @@ class _Clients extends State<Clients> {
                                                                                     }
                                                                                   });
                                                                                 },
-                                                                                title: Text(AppLocalizations.of(context)!.no, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                                title: Text(AppLocalizations.of(context)!.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                 trailing: filterByClients[1]
                                                                                     ? SizedBox(
                                                                                         width: MediaQuery.of(context).size.width * 0.15,
@@ -676,7 +675,7 @@ class _Clients extends State<Clients> {
                                                                                     filterSearchResults(query, state, true);
                                                                                   });
                                                                                 },
-                                                                                title: Text(AppLocalizations.of(context)!.orderBySessionsMoreToLess, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                                title: Text(AppLocalizations.of(context)!.orderBySessionsMoreToLess, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                 trailing: orderBySessions[0]
                                                                                     ? SizedBox(
                                                                                         width: MediaQuery.of(context).size.width * 0.15,
@@ -693,7 +692,7 @@ class _Clients extends State<Clients> {
                                                                                     filterSearchResults(query, state, true);
                                                                                   });
                                                                                 },
-                                                                                title: Text(AppLocalizations.of(context)!.orderBySessionsLessToMore, style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.left),
+                                                                                title: Text(AppLocalizations.of(context)!.orderBySessionsLessToMore, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                 trailing: orderBySessions[1]
                                                                                     ? SizedBox(
                                                                                         width: MediaQuery.of(context).size.width * 0.15,
@@ -812,192 +811,259 @@ class _Clients extends State<Clients> {
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 10)),
             state is ClientsSessionsLoaded
-                ? SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        Usuario user = state.usersNow[index];
-                        String dateTimeNow = DateTimeUtils()
-                            .formatDateTimeToStringDDMMYYYY(DateTime.now(),
-                                Localizations.localeOf(context).languageCode);
-                        DateTime dateJoined = DateTimeUtils()
-                            .formatStringToDateTimeDDMMYY(
-                                user.dateJoined ?? dateTimeNow,
-                                Localizations.localeOf(context).languageCode);
-                        return ListTile(
-                          leading: CircularImage(
-                            size: MediaQuery.of(context).size.width * 0.15,
-                            image: user.imageUrl,
-                            color: Theme.of(context).primaryColor,
-                            borderWidth: 1.0,
-                          ),
-                          title: Text(
-                            user.name!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left,
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.lastEventAt == null
-                                    ? AppLocalizations.of(context)!
-                                        .lastActiveIn(DateTimeUtils()
-                                            .formatDateTimeToStringMMMYYYY(
-                                                dateJoined,
-                                                Localizations.localeOf(context)
-                                                    .languageCode))
-                                    : AppLocalizations.of(context)!
-                                        .lastActiveIn(DateTimeUtils()
-                                            .formatDateTimeToStringMMMYYYY(
-                                                user.lastEventAt!.toDate(),
-                                                Localizations.localeOf(context)
-                                                    .languageCode)),
-                                style: Theme.of(context).textTheme.caption,
-                              ),
-                            ],
-                          ),
-                          trailing: user.id! == currentUser.id
-                              ? IconButton(
-                                  icon: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Theme.of(context).primaryColor,
-                                    size: MediaQuery.of(context).size.height *
-                                        0.03,
-                                  ),
-                                  alignment: Alignment.centerRight,
-                                  padding: const EdgeInsets.all(0),
-                                  onPressed: false ? () {} : null,
-                                )
-                              : user.sessions == null
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(0),
-                                      child: Container(
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                0.04,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.04,
-                                        margin: EdgeInsets.only(
-                                            right: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.02),
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .scaffoldBackgroundColor,
-                                            shape: BoxShape.circle),
-                                        child: CircularProgressIndicator(
+                ? state.allUsers.isNotEmpty
+                    ? SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            Usuario user = state.usersNow[index];
+                            String dateTimeNow = DateTimeUtils()
+                                .formatDateTimeToStringDDMMYYYY(
+                                    DateTime.now(),
+                                    Localizations.localeOf(context)
+                                        .languageCode);
+                            DateTime dateJoined = DateTimeUtils()
+                                .formatStringToDateTimeDDMMYY(
+                                    user.dateJoined ?? dateTimeNow,
+                                    Localizations.localeOf(context)
+                                        .languageCode);
+                            if (state.allUsers.isNotEmpty) {
+                              return ListTile(
+                                leading: CircularImage(
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.15,
+                                  image: user.imageUrl,
+                                  color: Theme.of(context).primaryColor,
+                                  borderWidth: 1.0,
+                                ),
+                                title: Text(
+                                  user.name!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.left,
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      user.lastEventAt == null
+                                          ? AppLocalizations.of(context)!
+                                              .lastActiveIn(DateTimeUtils()
+                                                  .formatDateTimeToStringMMMYYYY(
+                                                      dateJoined,
+                                                      Localizations.localeOf(
+                                                              context)
+                                                          .languageCode))
+                                          : AppLocalizations.of(context)!
+                                              .lastActiveIn(DateTimeUtils()
+                                                  .formatDateTimeToStringMMMYYYY(
+                                                      user.lastEventAt!
+                                                          .toDate(),
+                                                      Localizations.localeOf(
+                                                              context)
+                                                          .languageCode)),
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                                trailing: user.id! == currentUser.id
+                                    ? IconButton(
+                                        icon: Icon(
+                                          Icons.arrow_forward_ios,
                                           color: Theme.of(context).primaryColor,
-                                          strokeWidth: 1.5,
+                                          size: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
                                         ),
-                                      ),
-                                    )
-                                  : user.sessions == '-1'
-                                      ? IconButton(
-                                          icon: Icon(
-                                            Icons.chat_outlined,
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.03,
-                                          ),
-                                          alignment: Alignment.centerRight,
-                                          padding: const EdgeInsets.all(0),
-                                          onPressed: () async {
-                                            mixpanel!.track(
-                                                'brand_clients_chat_button');
-                                            types.User otherUser = types.User(
-                                              firstName: user.firstName,
-                                              lastName: user.lastName,
-                                              id: user.id!,
-                                              // UID from Firebase Authentication
-                                              imageUrl: user.imageUrl,
-                                            );
-                                            final room = await FirebaseChatCore
-                                                .instance
-                                                .createRoom(otherUser,
-                                                    metadata: {
-                                                  "trainer" + user.id!:
-                                                      user.isTrainer,
-                                                  "trainer" + currentUser.id!:
-                                                      currentUser.isTrainer,
-                                                  "active" + user.id!: false,
-                                                  "active" + currentUser.id!:
-                                                      true,
-                                                });
-
-                                            bool? deleteRoom =
-                                                await Navigator.push(
-                                              context,
-                                              CupertinoPageRoute<bool>(
-                                                  builder: (context) =>
-                                                      ChatPage(room: room)),
-                                            ).whenComplete(() async {
-                                              room.metadata!["active" +
-                                                  currentUser.id!] = false;
-                                              _roomDataService.updateRoom(
-                                                  room.id, room.metadata!);
-                                            });
-                                            if (!deleteRoom!) {
-                                              _roomDataService
-                                                  .deleteRoom(room.id);
-                                              mixpanel!.track(
-                                                  'brand_clients_chat_empty');
-                                            }
-                                          },
-                                        )
-                                      : Padding(
-                                          padding: const EdgeInsets.all(0),
-                                          child: Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.12,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.08,
-                                            decoration: BoxDecoration(
+                                        alignment: Alignment.centerRight,
+                                        padding: const EdgeInsets.all(0),
+                                        onPressed: false ? () {} : null,
+                                      )
+                                    : user.sessions == null
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(0),
+                                            child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.04,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.04,
+                                              margin: EdgeInsets.only(
+                                                  right: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.02),
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .scaffoldBackgroundColor,
+                                                  shape: BoxShape.circle),
+                                              child: CircularProgressIndicator(
                                                 color: Theme.of(context)
-                                                    .scaffoldBackgroundColor,
-                                                shape: BoxShape.circle),
-                                            child: buildPlacesLeftWidget(
-                                                int.parse(user.sessions!)),
-                                          ),
-                                        ),
-                          onTap: () async {
-                            mixpanel!.track('brand_clients_profile_view');
-                            var result = await Navigator.push(
-                                context,
-                                CupertinoPageRoute<bool?>(
-                                    builder: (context) => ProfileViewUser(
-                                          userID: user.id!,
-                                          viewOnly: false,
-                                        )));
-                            if (result != null && result) {
-                              context.read<ClientSessionsCubit>().loadList();
-                            } else {
-                              context.read<ClientSessionsCubit>().updateUser(
-                                  user.id!,
-                                  state.usersNow,
-                                  state.allUsers,
-                                  state.filteredUsers,
-                                  state.searchedUsers,
-                                  state.i,
-                                  state.finished);
-                            }
+                                                    .primaryColor,
+                                                strokeWidth: 1.5,
+                                              ),
+                                            ),
+                                          )
+                                        : user.sessions == '-1'
+                                            ? IconButton(
+                                                icon: Icon(
+                                                  Icons.chat_outlined,
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.03,
+                                                ),
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                padding:
+                                                    const EdgeInsets.all(0),
+                                                onPressed: () async {
+                                                  mixpanel!.track(
+                                                      'brand_clients_chat_button');
+                                                  types.User otherUser =
+                                                      types.User(
+                                                    firstName: user.firstName,
+                                                    lastName: user.lastName,
+                                                    id: user.id!,
+                                                    // UID from Firebase Authentication
+                                                    imageUrl: user.imageUrl,
+                                                  );
+                                                  final room =
+                                                      await FirebaseChatCore
+                                                          .instance
+                                                          .createRoom(otherUser,
+                                                              metadata: {
+                                                        "trainer${user.id!}":
+                                                            user.isTrainer,
+                                                        "trainer${currentUser.id!}":
+                                                            currentUser
+                                                                .isTrainer,
+                                                        "active${user.id!}":
+                                                            false,
+                                                        "active${currentUser.id!}":
+                                                            true,
+                                                      });
+
+                                                  bool? deleteRoom =
+                                                      await Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute<bool>(
+                                                        builder: (context) =>
+                                                            ChatPage(
+                                                                room: room)),
+                                                  ).whenComplete(() async {
+                                                    room.metadata![
+                                                            "active${currentUser.id!}"] =
+                                                        false;
+                                                    _roomDataService.updateRoom(
+                                                        room.id,
+                                                        room.metadata!);
+                                                  });
+                                                  if (!deleteRoom!) {
+                                                    _roomDataService
+                                                        .deleteRoom(room.id);
+                                                    mixpanel!.track(
+                                                        'brand_clients_chat_empty');
+                                                  }
+                                                },
+                                              )
+                                            : Padding(
+                                                padding:
+                                                    const EdgeInsets.all(0),
+                                                child: Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.12,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.08,
+                                                  decoration: BoxDecoration(
+                                                      color: Theme.of(context)
+                                                          .scaffoldBackgroundColor,
+                                                      shape: BoxShape.circle),
+                                                  child: buildPlacesLeftWidget(
+                                                      int.parse(
+                                                          user.sessions!)),
+                                                ),
+                                              ),
+                                onTap: () async {
+                                  mixpanel!.track('brand_clients_profile_view');
+                                  var result = await Navigator.push(
+                                      context,
+                                      CupertinoPageRoute<bool?>(
+                                          builder: (context) => ProfileViewUser(
+                                                userID: user.id!,
+                                                viewOnly: false,
+                                              )));
+                                  if (result != null && result) {
+                                    context
+                                        .read<ClientSessionsCubit>()
+                                        .loadList();
+                                  } else {
+                                    context
+                                        .read<ClientSessionsCubit>()
+                                        .updateUser(
+                                            user.id!,
+                                            state.usersNow,
+                                            state.allUsers,
+                                            state.filteredUsers,
+                                            state.searchedUsers,
+                                            state.i,
+                                            state.finished);
+                                  }
+                                },
+                              );
+                            } else {}
                           },
-                        );
-                      },
-                      childCount: state.usersNow.length, // 1000 list items
-                    ),
-                  )
+                          childCount: state.usersNow.length, // 1000 list items
+                        ),
+                      )
+                    : SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.25),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.3,
+                                child: Image.asset(Constants.emptyCalendar)),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.005),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * 0.2),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.clients.toLowerCase()}",
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                 : SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
@@ -1128,7 +1194,6 @@ class _Clients extends State<Clients> {
               width: MediaQuery.of(context).size.width * 0.15,
               child: SpeedDial(
                 heroTag: "96",
-                child: const Icon(Icons.add),
                 activeChild: const Icon(Icons.group_add_outlined),
                 animationDuration: const Duration(milliseconds: 100),
                 foregroundColor: AppColors.white,
@@ -1144,7 +1209,7 @@ class _Clients extends State<Clients> {
                         size: 30,
                       ),
                       elevation: 10,
-                      backgroundColor: Theme.of(context).backgroundColor,
+                      backgroundColor: Theme.of(context).colorScheme.background,
                       labelWidget: Container(
                         color: Colors.transparent,
                         padding: EdgeInsets.only(
@@ -1166,24 +1231,23 @@ class _Clients extends State<Clients> {
                                               .betaFeature,
                                           5);
                                     },
-                                    child: BetaBadge()),
+                                    child: const BetaBadge()),
                                 SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.02,
                                 ),
                                 Text(
-                                    AppLocalizations.of(context)!.add +
-                                        " " +
-                                        AppLocalizations.of(context)!.client,
-                                    style:
-                                        Theme.of(context).textTheme.headline3,
+                                    "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.client}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall,
                                     textAlign: TextAlign.right),
                               ],
                             ),
                             Text(
                                 AppLocalizations.of(context)!
                                     .addClientsManually,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
                         ),
@@ -1199,7 +1263,7 @@ class _Clients extends State<Clients> {
                         ),
                       ),
                       elevation: 10,
-                      backgroundColor: Theme.of(context).backgroundColor,
+                      backgroundColor: Theme.of(context).colorScheme.background,
                       labelWidget: Container(
                         color: Colors.transparent,
                         padding: EdgeInsets.only(
@@ -1211,13 +1275,11 @@ class _Clients extends State<Clients> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                                AppLocalizations.of(context)!.invite +
-                                    " " +
-                                    AppLocalizations.of(context)!.client,
-                                style: Theme.of(context).textTheme.headline3,
+                                "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.client}",
+                                style: Theme.of(context).textTheme.displaySmall,
                                 textAlign: TextAlign.right),
                             Text(AppLocalizations.of(context)!.copyCodeMessage,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
                         ),
@@ -1226,6 +1288,7 @@ class _Clients extends State<Clients> {
                         navigateShareBrandLink();
                       }),
                 ],
+                child: const Icon(Icons.add),
               ),
             ),
           )
@@ -1300,7 +1363,7 @@ class _Clients extends State<Clients> {
 
     return FittedBox(
         fit: BoxFit.fitHeight,
-        child: Container(
+        child: SizedBox(
             height: MediaQuery.of(context).size.width * 0.1,
             //padding: const EdgeInsets.only(top: 4, bottom: 8),
             child: Column(
@@ -1310,7 +1373,7 @@ class _Clients extends State<Clients> {
                   places == 10 ? '+9' : places.toString(),
                   style: Theme.of(context)
                       .textTheme
-                      .headline3
+                      .displaySmall
                       ?.copyWith(color: color),
                   textAlign: TextAlign.center,
                 ),
@@ -1320,7 +1383,7 @@ class _Clients extends State<Clients> {
                       : AppLocalizations.of(context)!.sessions.toLowerCase(),
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(fontSize: 5, color: color),
                   textAlign: TextAlign.center,
                 ),

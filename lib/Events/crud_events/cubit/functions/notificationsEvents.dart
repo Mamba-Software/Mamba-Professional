@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 
 class NotificationsEvent {
@@ -59,7 +57,7 @@ class NotificationsEvent {
   ReceivedNotification setEventNotificationBefore(
       Event event, String titleNot, String bodyNot) {
     // Schedule Before Notification
-    DateTime beforeDate = event.startDate!.subtract(Duration(hours: 1));
+    DateTime beforeDate = event.startDate!.subtract(const Duration(hours: 1));
     String eventTimeTime = StringUtils()
         .hourMinutesToString(event.startDate!.hour, event.startDate!.minute);
     // Notification one hour before
@@ -79,7 +77,7 @@ class NotificationsEvent {
   ReceivedNotification setEventNotificationBeforeRecurrent(
       Event event, String titleNot, String bodyNot) {
     // Schedule Before Notification
-    DateTime beforeDate = event.startDate!.subtract(Duration(hours: 1));
+    DateTime beforeDate = event.startDate!.subtract(const Duration(hours: 1));
     String eventTimeTime = StringUtils()
         .hourMinutesToString(event.startDate!.hour, event.startDate!.minute);
     titleNot = titleNot.replaceAll('replace', eventTimeTime);

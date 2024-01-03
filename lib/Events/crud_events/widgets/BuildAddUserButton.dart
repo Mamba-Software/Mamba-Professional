@@ -63,7 +63,7 @@ Widget buildAddUserButton(
             height: MediaQuery.of(context).size.width * 0.17,
             width: MediaQuery.of(context).size.width * 0.17,
             decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
+              color: Theme.of(context).colorScheme.background,
               border: Border.all(
                 width: 1,
                 color: Theme.of(context).primaryColor,
@@ -92,7 +92,7 @@ Widget buildAddUserButton(
               children: [
                 Text(
                   AppLocalizations.of(context)!.add,
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
               ],

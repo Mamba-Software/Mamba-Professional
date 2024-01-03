@@ -16,7 +16,7 @@ class TopSnackBarDef {
           backgroundColor: color,
           textStyle: Theme.of(context)
               .textTheme
-              .bodyText1!
+              .bodyLarge!
               .copyWith(color: AppColors.white),
         ),
         behavior: null, // Optional: makes it floating style
@@ -72,7 +72,7 @@ class TopSnackBarDef {
                 Flexible(
                   child: Text(
                     value,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: isError == false
                               ? Theme.of(context).primaryColorDark
                               : AppColors.red,
@@ -97,11 +97,11 @@ class TopSnackBarDef {
         content: CustomSnackBar.success(
           icon: Container(),
           iconRotationAngle: 0,
-          message: value!,
+          message: value,
           backgroundColor: Theme.of(context).primaryColor,
           textStyle: Theme.of(context)
               .textTheme
-              .bodyText1!
+              .bodyLarge!
               .copyWith(color: Theme.of(context).primaryColorDark),
         ),
         behavior: null, // Optional: makes it floating style

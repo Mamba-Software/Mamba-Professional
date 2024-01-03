@@ -1,12 +1,10 @@
 import 'dart:io';
 
 import 'package:external_app_launcher/external_app_launcher.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Auth/utils/enumAuth.dart';
 import 'package:mamba_castelldefels/Auth/views/mobile/ForgotPassword.dart';
@@ -21,12 +19,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({super.key});
 
   @override
   _LoginState createState() => _LoginState();
@@ -83,9 +80,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               // Handle validation error here.
               showInSnackBar(
                   AppLocalizations.of(context)!.validateError,
-                  AppLocalizations.of(context)!.resend +
-                      " " +
-                      AppLocalizations.of(context)!.email,
+                  "${AppLocalizations.of(context)!.resend} ${AppLocalizations.of(context)!.email}",
                   true,
                   true);
 
@@ -196,7 +191,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                               AppLocalizations.of(context)!.loginWithEmail,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .displaySmall
                                   ?.copyWith(color: AppColors.black),
                               textAlign: TextAlign.center)),
                     ],
@@ -213,7 +208,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 String? email = await Navigator.push(
                     context,
                     CupertinoPageRoute<String>(
-                      builder: (context) => Register(),
+                      builder: (context) => const Register(),
                       settings: const RouteSettings(name: 'Register'),
                     ));
                 if (email != null) {
@@ -228,15 +223,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 text: TextSpan(
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(color: AppColors.white),
                   children: [
                     TextSpan(
-                      text: AppLocalizations.of(context)!.noAccount + " ",
+                      text: "${AppLocalizations.of(context)!.noAccount} ",
                     ),
                     TextSpan(
                         text: AppLocalizations.of(context)!.register,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             decoration: TextDecoration.underline)),
                   ],
@@ -257,7 +252,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 text: TextSpan(
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(color: AppColors.white),
                   children: [
                     TextSpan(
@@ -268,7 +263,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         text: AppLocalizations.of(context)!
                             .termsAndConditions
                             .toLowerCase(),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             decoration: TextDecoration.underline)),
                   ],
@@ -311,17 +306,17 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             },
             style: Theme.of(context)
                 .textTheme
-                .bodyText2
+                .bodyMedium
                 ?.copyWith(color: AppColors.white),
             decoration: Styles.textFromInputDecoration.copyWith(
                 labelText: AppLocalizations.of(context)!.email,
                 labelStyle: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: AppColors.white),
                 errorStyle: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: AppColors.red),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(0.0),
@@ -346,18 +341,18 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               keyboardType: TextInputType.visiblePassword,
               style: Theme.of(context)
                   .textTheme
-                  .bodyText2
+                  .bodyMedium
                   ?.copyWith(color: AppColors.white),
               obscureText: !_passwordVisible,
               decoration: Styles.textFromInputDecoration.copyWith(
                   labelText: AppLocalizations.of(context)!.password,
                   labelStyle: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(color: AppColors.white),
                   errorStyle: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(color: AppColors.red),
                   suffixIcon: Padding(
                       padding: const EdgeInsets.all(0.0),
@@ -395,7 +390,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 String? email = await Navigator.push(
                     context,
                     CupertinoPageRoute<String>(
-                      builder: (context) => ForgotPassword(),
+                      builder: (context) => const ForgotPassword(),
                       settings: const RouteSettings(name: 'ForgotPassword'),
                     ));
                 if (email != null) {
@@ -414,7 +409,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 text: TextSpan(
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium
                       ?.copyWith(color: AppColors.white),
                   children: [
                     /*
@@ -424,7 +419,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                       */
                     TextSpan(
                         text: AppLocalizations.of(context)!.forgotPassword,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             fontWeight: FontWeight.normal)),
                   ],
@@ -443,7 +438,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               String? email = await Navigator.push(
                   context,
                   CupertinoPageRoute<String>(
-                    builder: (context) => Register(),
+                    builder: (context) => const Register(),
                     settings: const RouteSettings(name: 'Register'),
                   ));
               if (email != null) {
@@ -458,15 +453,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               text: TextSpan(
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: AppColors.white),
                 children: [
                   TextSpan(
-                    text: AppLocalizations.of(context)!.noAccount + " ",
+                    text: "${AppLocalizations.of(context)!.noAccount} ",
                   ),
                   TextSpan(
                       text: AppLocalizations.of(context)!.register,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.white,
                           decoration: TextDecoration.underline)),
                 ],
@@ -487,7 +482,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               text: TextSpan(
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText2
+                    .bodyMedium
                     ?.copyWith(color: AppColors.white),
                 children: [
                   TextSpan(
@@ -498,7 +493,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       text: AppLocalizations.of(context)!
                           .termsAndConditions
                           .toLowerCase(),
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.white,
                           decoration: TextDecoration.underline)),
                 ],
@@ -632,14 +627,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2!
+                        .bodyMedium!
                         .copyWith(color: AppColors.black)),
               ),
               Flexible(
                 child: Text(
                   valueBody,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: AppColors.black,
                       decoration: TextDecoration.underline),
                 ),
@@ -656,7 +651,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             textAlign: TextAlign.center,
             style: Theme.of(context)
                 .textTheme
-                .bodyText2!
+                .bodyMedium!
                 .copyWith(color: AppColors.black)),
         backgroundColor: Colors.white,
         duration: const Duration(seconds: 3),

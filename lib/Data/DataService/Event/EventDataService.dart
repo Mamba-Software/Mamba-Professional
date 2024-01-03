@@ -1,17 +1,9 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/Message.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
-import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import '../FirebaseDatabaseService.dart';
 
@@ -89,10 +81,10 @@ class EventDataService {
       _firebase.addEventBonos(eventId, bonoIds);
   Future<void> addEventBonosObject(String eventId, List<Bono> bonos) =>
       _firebase.addEventBonosObject(eventId, bonos);
-  Future<int> addEventRecurrent(Event _event, List<String> bonos,
+  Future<int> addEventRecurrent(Event event, List<String> bonos,
           List<String> trainers, ReceivedNotification receivedNotification) =>
       _firebase.addEventRecurrent(
-          _event, bonos, trainers, receivedNotification);
+          event, bonos, trainers, receivedNotification);
 
   // Update Data
   Future<void> updateEvent(Event event) => _firebase.updateEvent(event);

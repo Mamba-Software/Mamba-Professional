@@ -10,9 +10,7 @@ import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -21,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MediaQuery/MediaQuery.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../../../../Data/LibraryModels/lDegradate.dart';
 import '../../../../../Globals/Utils/Bonos/BonosUtils.dart';
 import '../../../../../Globals/Widgets/Components/Images/RectangularImage.dart';
@@ -36,8 +33,7 @@ class AddEditBono extends StatefulWidget {
   bool delete;
 
   AddEditBono(
-      {Key? key, required this.brand, required this.bono, required this.edit, required this.duplicate, required this.delete})
-      : super(key: key);
+      {super.key, required this.brand, required this.bono, required this.edit, required this.duplicate, required this.delete});
 
   @override
   _AddEditBonoState createState() => _AddEditBonoState();
@@ -157,8 +153,8 @@ class _AddEditBonoState extends State<AddEditBono>
   initState() {
     isLoading = false;
     _tabController = TabController(length: 5, vsync: this);
-    var color;
-    var degradate1, degradate2;
+    Color color;
+    Color degradate1, degradate2;
     if (widget.edit == true || widget.duplicate == true) {
       bono.id = widget.bono.id;
       bono.title = widget.bono.title;
@@ -498,7 +494,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                 AppLocalizations.of(context)!.back,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .copyWith(
                                         color:
                                             Theme.of(context).primaryColorDark),
@@ -636,7 +632,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               : AppLocalizations.of(context)!.next,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodyLarge!
                               .copyWith(color: AppColors.white),
                         ),
                       ),
@@ -737,7 +733,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     child: Text(
                       AppLocalizations.of(context)!.bonosPurchasedWarning,
                       textAlign: TextAlign.left,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red, height: 1.3),
                     ),
                   ),
                 ],
@@ -762,7 +758,7 @@ class _AddEditBonoState extends State<AddEditBono>
                   child: Text(
                     AppLocalizations.of(context)!.bonosCanPurchasedWarning,
                     textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green, height: 1.3),
                   ),
                 ),
               ],
@@ -838,7 +834,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     child: Text(
                       AppLocalizations.of(context)!.bonosPurchasedWarning,
                       textAlign: TextAlign.left,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red, height: 1.3),
                     ),
                   ),
                 ],
@@ -863,7 +859,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     child: Text(
                       AppLocalizations.of(context)!.bonosCanPurchasedWarning,
                       textAlign: TextAlign.left,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green, height: 1.3),
                     ),
                   ),
                 ],
@@ -972,7 +968,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                     "Opacidad",
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline1,
+                                        .displayLarge,
                                   ),
                                 ],
                               ),
@@ -999,7 +995,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                 label: _currentSliderValue.round().toString(),
                                 activeColor: Theme.of(context).primaryColor,
                                 inactiveColor:
-                                    Theme.of(context).backgroundColor,
+                                    Theme.of(context).colorScheme.background,
                                 onChanged: (double value) {
                                   setState(() {
                                     _currentSliderValue = value;
@@ -1031,7 +1027,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                   AppLocalizations.of(context)!.photo,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline1,
+                                      .displayLarge,
                                 ),
                               ],
                             ),
@@ -1154,15 +1150,13 @@ class _AddEditBonoState extends State<AddEditBono>
                                                         .width *
                                                     0.1),
                                             Text(
-                                              AppLocalizations.of(context)!
-                                                      .select +
-                                                  " " +
-                                                  AppLocalizations.of(context)!
+                                              "${AppLocalizations.of(context)!
+                                                      .select} ${AppLocalizations.of(context)!
                                                       .photo
-                                                      .toLowerCase(),
+                                                      .toLowerCase()}",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .caption
+                                                  .bodySmall
                                                   ?.copyWith(
                                                     color: imageError
                                                         ? AppColors.grey
@@ -1196,7 +1190,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                       AppLocalizations.of(context)!.colorSolid,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline1,
+                                          .displayLarge,
                                     ),
                                   ],
                                 ),
@@ -1279,7 +1273,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                         .degradateSolid,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline1,
+                                        .displayLarge,
                                   ),
                                 ],
                               ),
@@ -1391,7 +1385,7 @@ class _AddEditBonoState extends State<AddEditBono>
                       AppLocalizations.of(context)!.preseeBono,
                       style: Theme.of(context)
                           .textTheme
-                          .headline1,
+                          .displayLarge,
                     ),
                   ),
                 ],
@@ -1508,8 +1502,8 @@ class _AddEditBonoState extends State<AddEditBono>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  numberDays != "0" ? numberDays+" "+AppLocalizations.of(context)!.days.toLowerCase() : "No expira",
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: notShow == false ? Theme.of(context).primaryColor : Theme.of(context).disabledColor),
+                  numberDays != "0" ? "$numberDays ${AppLocalizations.of(context)!.days.toLowerCase()}" : "No expira",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: notShow == false ? Theme.of(context).primaryColor : Theme.of(context).disabledColor),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -1521,8 +1515,7 @@ class _AddEditBonoState extends State<AddEditBono>
             width: MediaQuery.of(context).size.height * 0.06,
             child: MaterialButton(
               elevation: 2,
-              color: isSelectedDays[index] == true ? editable ? Theme.of(context).primaryColor : Theme.of(context).disabledColor : Theme.of(context).backgroundColor,
-              child: isSelectedDays[index] == true ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
+              color: isSelectedDays[index] == true ? editable ? Theme.of(context).primaryColor : Theme.of(context).disabledColor : Theme.of(context).colorScheme.background,
               padding: EdgeInsets.zero,
               shape: const CircleBorder(),
               onPressed: editable == false ? () {} : () {
@@ -1549,6 +1542,7 @@ class _AddEditBonoState extends State<AddEditBono>
                 }
                 setState(() {});
               },
+              child: isSelectedDays[index] == true ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
             ),
           ) : Container(),
         ],
@@ -1640,14 +1634,14 @@ class _AddEditBonoState extends State<AddEditBono>
                             titleText,
                             style: Theme.of(context)
                                 .textTheme
-                                .headline1,
+                                .displayLarge,
                           ),
                           subtitleText != ""
                               ?  Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
                                     subtitleText,
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                   ),
                               )
                               :  Container(),
@@ -1665,7 +1659,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                   titleText,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline1
+                                      .displayLarge
                               ),
                               subtitleText != ""
                                   ? Padding(
@@ -1678,7 +1672,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                               subtitleText,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .caption,
+                                                  .bodySmall,
                                           ),
                                         ),
                                         checkBox ? Container(
@@ -1712,14 +1706,14 @@ class _AddEditBonoState extends State<AddEditBono>
                             titleText,
                             style: Theme.of(context)
                                 .textTheme
-                                .headline1,
+                                .displayLarge,
                           ),
                           subtitleText != "" ?
                             variable != 'ses' ? Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
                                 subtitleText,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                           ) : Padding(
                             padding: const EdgeInsets.only(top: 8.0),
@@ -1731,7 +1725,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                     subtitleText,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .caption,
+                                        .bodySmall,
                                   ),
                                 ),
                                 Container(
@@ -1830,11 +1824,11 @@ class _AddEditBonoState extends State<AddEditBono>
                                 }
                               });
                             },
-                            style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                            style: editable? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).disabledColor),
                             decoration: InputDecoration(
                               suffixText: variable == 'ses' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'price' ? "euros (€)" : "",
-                              suffixStyle: Theme.of(context).textTheme.caption,
-                              hintStyle: Theme.of(context).textTheme.caption,
+                              suffixStyle: Theme.of(context).textTheme.bodySmall,
+                              hintStyle: Theme.of(context).textTheme.bodySmall,
                               hintText: hintText,
                               errorBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.red),
@@ -1858,8 +1852,8 @@ class _AddEditBonoState extends State<AddEditBono>
                   variable == 'price' && priceController.text.isNotEmpty && priceController.text != "0" && sessionsController.text != "" && sessionsController.text != "0" && noSessions == false  ? Padding(
                     padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
                     child: Text(
-                      (bono.price! / bono.sessions!).toStringAsFixed(2) + " € / " + AppLocalizations.of(context)!.session,
-                      style: Theme.of(context).textTheme.caption,
+                      "${(bono.price! / bono.sessions!).toStringAsFixed(2)} € / ${AppLocalizations.of(context)!.session}",
+                      style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.left,
                     ),
                   ) : Container(),
@@ -1924,11 +1918,11 @@ class _AddEditBonoState extends State<AddEditBono>
                                       }
                                     });
                                   },
-                                  style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                                  style: editable? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).disabledColor),
                                   decoration: InputDecoration(
                                     suffixText: variable == 'ses' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'price' ? "euros (€)" : "",
-                                    suffixStyle: Theme.of(context).textTheme.caption,
-                                    hintStyle: Theme.of(context).textTheme.caption,
+                                    suffixStyle: Theme.of(context).textTheme.bodySmall,
+                                    hintStyle: Theme.of(context).textTheme.bodySmall,
                                     hintText: hintText,
                                     //border: InputBorder.none,
                                     errorBorder: const UnderlineInputBorder(
@@ -1998,13 +1992,13 @@ class _AddEditBonoState extends State<AddEditBono>
                   children: <Widget>[
                     Text(
                       titleText,
-                      style: Theme.of(context).textTheme.headline1,
+                      style: Theme.of(context).textTheme.displayLarge,
                     ),
                     variable == 'exp' ? Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
                         subtitleText,
-                        style: Theme.of(context).textTheme.caption,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ) :
                     variable == 'canFree' ? Padding(
@@ -2017,12 +2011,12 @@ class _AddEditBonoState extends State<AddEditBono>
                               Flexible(
                                 child: noSessions == true ? Text(
                                   AppLocalizations.of(context)!.freeCancelInfo,
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ) : Text(
                                   subtitleText,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .caption,
+                                      .bodySmall,
                                 ),
                               ),
                               Container(
@@ -2050,7 +2044,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               subtitleText,
                               style: Theme.of(context)
                                   .textTheme
-                                  .caption,
+                                  .bodySmall,
                             ),
                           ),
                           Container(
@@ -2106,11 +2100,11 @@ class _AddEditBonoState extends State<AddEditBono>
                       }
                     });
                   },
-                  style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                  style: editable ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).disabledColor),
                   decoration: InputDecoration(
                     suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.trainsPerWeek.toLowerCase() : variable == 'canFree' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
-                    suffixStyle: Theme.of(context).textTheme.caption,
-                    hintStyle: Theme.of(context).textTheme.caption,
+                    suffixStyle: Theme.of(context).textTheme.bodySmall,
+                    hintStyle: Theme.of(context).textTheme.bodySmall,
                     hintText: hintText,
                     errorBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.red),
@@ -2146,11 +2140,11 @@ class _AddEditBonoState extends State<AddEditBono>
                     condition.weeklySessions = int.parse(val);
                   });
                 },
-                style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                style: editable ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).disabledColor),
                 decoration: InputDecoration(
                   suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'canFree' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
-                  suffixStyle: Theme.of(context).textTheme.caption,
-                  hintStyle: Theme.of(context).textTheme.caption,
+                  suffixStyle: Theme.of(context).textTheme.bodySmall,
+                  hintStyle: Theme.of(context).textTheme.bodySmall,
                   hintText: hintText,
                   errorBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.red),

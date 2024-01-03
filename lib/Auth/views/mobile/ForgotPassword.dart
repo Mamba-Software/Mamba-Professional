@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +11,7 @@ import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ForgotPassword extends StatefulWidget {
-  ForgotPassword({Key? key}) : super(key: key);
+  const ForgotPassword({super.key});
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
@@ -20,7 +19,7 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   // Access to DataBaseService
-  var _userDataService = new UserDataService();
+  final _userDataService = UserDataService();
 
   // Scaffold Messenger Key
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -31,7 +30,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   String email = '';
   String? emailTemp;
   // Password
-  bool _passwordVisible = false;
+  final bool _passwordVisible = false;
   String password1 = '';
   String password2 = '';
 
@@ -50,7 +49,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           title: Text(AppLocalizations.of(context)!.resetPassword,
               style: Theme.of(context)
                   .textTheme
-                  .headline3!
+                  .displaySmall!
                   .copyWith(color: Colors.white)),
           elevation: 0,
           centerTitle: false,
@@ -92,7 +91,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         AppLocalizations.of(context)!.emailError,
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText2
+                            .bodyMedium
                             ?.copyWith(color: AppColors.white),
                         textAlign: TextAlign.left,
                       ),
@@ -110,17 +109,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       },
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
+                          .bodyMedium
                           ?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
                           labelText: AppLocalizations.of(context)!.email,
                           labelStyle: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.white),
                           errorStyle: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyMedium
                               ?.copyWith(color: AppColors.red),
                           prefixIcon: const Padding(
                             padding: EdgeInsets.all(0.0),
@@ -201,7 +200,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           textAlign: TextAlign.center,
           style: Theme.of(context)
               .textTheme
-              .bodyText2!
+              .bodyMedium!
               .copyWith(color: AppColors.black)),
       backgroundColor: Colors.white,
       duration: const Duration(seconds: 3),

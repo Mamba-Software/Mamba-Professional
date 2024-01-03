@@ -1,23 +1,12 @@
-import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateEvent/DateEventWidget.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateEvent/TimeEventWidget.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateTimeEventWidget.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DurationEvent/DurationEventSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/RecurrentEvent/RecurrentEventObjectSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:weekday_selector/weekday_selector.dart';
 
 class RecurrentEventSelector extends StatelessWidget {
   final Locale locale;
@@ -42,7 +31,7 @@ class RecurrentEventSelector extends StatelessWidget {
                           children: [
                             Text(
                               AppLocalizations.of(context)!.recurrentEvent,
-                              style: Theme.of(context).textTheme.headline1,
+                              style: Theme.of(context).textTheme.displayLarge,
                             ),
                             context
                                     .read<CrudEventCubit>()
@@ -106,7 +95,7 @@ class RecurrentEventSelector extends StatelessWidget {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.recurrentEvent,
-                            style: Theme.of(context).textTheme.headline1,
+                            style: Theme.of(context).textTheme.displayLarge,
                           ),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.035,
@@ -131,7 +120,7 @@ class RecurrentEventSelector extends StatelessWidget {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.recurrentEvent,
-                            style: Theme.of(context).textTheme.headline1,
+                            style: Theme.of(context).textTheme.displayLarge,
                           ),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.035,

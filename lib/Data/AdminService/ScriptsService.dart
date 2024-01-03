@@ -1,10 +1,7 @@
 import 'dart:math';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -28,34 +25,30 @@ import '../Models/Subscription.dart';
 
 class ScriptsDatabaseService {
   // Firebase Instances
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
   final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
-  final _eventDataService = EventDataService();
   final _libraryDataService = LibraryDataService();
-  final _purchaseDataService = PurchaseDataService();
 
   // Firebase collections
-  String users = isProduction ? 'Users' : '7777 Users';
-  String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
-  String brands = isProduction ? 'Brands' : '7777 Brands';
-  String events = isProduction ? 'Events' : '7777 Events';
-  String locations = isProduction ? 'Locations' : '7777 Locations';
-  String groupOfQuestions =
-      isProduction ? 'GroupOfQuestions' : '7777 GroupOfQuestions';
-  String questions = isProduction ? 'Questions' : '7777 Questions';
-  String answers = isProduction ? 'Answers' : '7777 Answers';
-  String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String messages = isProduction ? 'Messages' : '7777 Messages';
-  String errors = isProduction ? 'Errors' : '7777 Errors';
-  String requests = isProduction ? 'Requests' : '7777 Requests';
-  String notifications = isProduction ? 'Notifications' : '7777 Notifications';
-  String rooms = isProduction ? 'Rooms' : '7777 Rooms';
-  String library = isProduction ? 'Library' : 'Library';
-  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
+  String users = 'Users';
+  String nicknames = 'Nicknames';
+  String brands = 'Brands';
+  String events = 'Events';
+  String locations = 'Locations';
+  String groupOfQuestions = 'GroupOfQuestions';
+  String questions = 'Questions';
+  String answers = 'Answers';
+  String conversations = 'Conversations';
+  String messages = 'Messages';
+  String errors = 'Errors';
+  String requests = 'Requests';
+  String notifications = 'Notifications';
+  String rooms = 'Rooms';
+  String library = 'Library';
+  String purchases = 'Purchases';
 
   Future<bool> migrateUserDataFebruary6th() async {
     try {
@@ -224,9 +217,9 @@ class ScriptsDatabaseService {
       // REAL MIGRATION FOR REAL DATA OF USERS
       QuerySnapshot querySnapshot = await _firestore.collection(users).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
         Usuario user =
-            Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print(
             '=================================================================================');
         print(
@@ -267,24 +260,24 @@ class ScriptsDatabaseService {
           for (var i = 0; i < querySnapshotNotif.docs.length; i++) {
             String notifId = querySnapshotNotif.docs[i].id;
             print('Notification with ID : $notifId');
-            DocumentSnapshot _documentSnapshot = querySnapshotNotif.docs[i];
+            DocumentSnapshot documentSnapshot = querySnapshotNotif.docs[i];
             await _firestore
                 .collection(users)
                 .doc(user.id!)
                 .collection("Notifications")
                 .doc(notifId)
                 .set({
-              "userId": _documentSnapshot.get("userId"),
-              "type": _documentSnapshot.get("type"),
-              "isRead": _documentSnapshot.get("isRead"),
-              "dateSent": _documentSnapshot.get("dateSent"),
-              "year": _documentSnapshot.get("year"),
-              "month": _documentSnapshot.get("month"),
-              "day": _documentSnapshot.get("day"),
-              "hour": _documentSnapshot.get("hour"),
-              "minutes": _documentSnapshot.get("minutes"),
-              "seconds": _documentSnapshot.get("seconds"),
-              "parameters": _documentSnapshot.get("parameters"),
+              "userId": documentSnapshot.get("userId"),
+              "type": documentSnapshot.get("type"),
+              "isRead": documentSnapshot.get("isRead"),
+              "dateSent": documentSnapshot.get("dateSent"),
+              "year": documentSnapshot.get("year"),
+              "month": documentSnapshot.get("month"),
+              "day": documentSnapshot.get("day"),
+              "hour": documentSnapshot.get("hour"),
+              "minutes": documentSnapshot.get("minutes"),
+              "seconds": documentSnapshot.get("seconds"),
+              "parameters": documentSnapshot.get("parameters"),
             });
           }
           print('All Notifications Added');
@@ -315,9 +308,9 @@ class ScriptsDatabaseService {
           print('Adding "Brands" subcollection');
           print('-----------------------------\n');
           if (user.brandID != "null") {
-            DocumentSnapshot _document =
+            DocumentSnapshot document =
                 await _firestore.collection(brands).doc(user.brandID).get();
-            Brand brand = Brand.fromObjectAllData(_document.id, _document);
+            Brand brand = Brand.fromObjectAllData(document.id, document);
             print('Brand with ID : ${brand.id!}');
             final DateTime now = DateTime.now();
             final DateFormat formatter = DateFormat('dd-MM-yyyy');
@@ -355,26 +348,26 @@ class ScriptsDatabaseService {
           }
           for (var i = 0; i < querySnapshotEvents.docs.length; i++) {
             String eventId = querySnapshotEvents.docs[i].id;
-            DocumentSnapshot _documentSnapshot = querySnapshotEvents.docs[i];
+            DocumentSnapshot documentSnapshot = querySnapshotEvents.docs[i];
             print('Event with ID : $eventId');
-            int numClients = _documentSnapshot.get("joinedMembers").length;
-            int numTrainers = _documentSnapshot.get("selectedTrainers").length;
+            int numClients = documentSnapshot.get("joinedMembers").length;
+            int numTrainers = documentSnapshot.get("selectedTrainers").length;
             await _firestore
                 .collection(users)
                 .doc(user.id!)
                 .collection("Events")
                 .doc(eventId)
                 .set({
-              "title": _documentSnapshot.get("title"),
-              "year": _documentSnapshot.get("year"),
-              "month": _documentSnapshot.get("month"),
-              "day": _documentSnapshot.get("day"),
-              "hour": _documentSnapshot.get("hour"),
-              "minute": _documentSnapshot.get("minute"),
-              "duration": _documentSnapshot.get("duration"),
+              "title": documentSnapshot.get("title"),
+              "year": documentSnapshot.get("year"),
+              "month": documentSnapshot.get("month"),
+              "day": documentSnapshot.get("day"),
+              "hour": documentSnapshot.get("hour"),
+              "minute": documentSnapshot.get("minute"),
+              "duration": documentSnapshot.get("duration"),
               "numTrainers": numTrainers,
               "numClients": numClients,
-              "maxMembers": _documentSnapshot.get("maxMembers"),
+              "maxMembers": documentSnapshot.get("maxMembers"),
             });
           }
           print('All Events Added');
@@ -534,10 +527,10 @@ class ScriptsDatabaseService {
       QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         String brandId = querySnapshot.docs[i].id;
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
             await _firestore.collection(brands).doc(brandId).get();
         Brand brand =
-            Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Brand.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print(
             '=================================================================================');
         print(
@@ -548,8 +541,8 @@ class ScriptsDatabaseService {
         print('-----------------------------');
         print('Updating numTrainers and numClients document of Brand');
         await _firestore.collection(brands).doc(brandId).update({
-          "numClients": _documentSnapshot.get("numberClients"),
-          "numTrainers": _documentSnapshot.get("numberTrainers"),
+          "numClients": documentSnapshot.get("numberClients"),
+          "numTrainers": documentSnapshot.get("numberTrainers"),
         });
         print('Create Room for Brand ...');
         print('-----------------------------');
@@ -589,11 +582,11 @@ class ScriptsDatabaseService {
             .get();
         for (var i = 0; i < querySnapshotUsers.docs.length; i++) {
           String userId = querySnapshotUsers.docs[i].id;
-          DocumentSnapshot _documentSnapshot = querySnapshotUsers.docs[i];
-          Usuario user = Usuario.fromObjectAllData(userId, _documentSnapshot);
+          DocumentSnapshot documentSnapshot = querySnapshotUsers.docs[i];
+          Usuario user = Usuario.fromObjectAllData(userId, documentSnapshot);
           print('User with ID : $userId');
           int role = 0;
-          if (_documentSnapshot.get("isTrainer")) {
+          if (documentSnapshot.get("isTrainer")) {
             if (userId == brand.adminID) {
               role = 1;
             } else {
@@ -628,9 +621,9 @@ class ScriptsDatabaseService {
             .get();
         for (var i = 0; i < querySnapshotLocations.docs.length; i++) {
           String locationId = querySnapshotLocations.docs[i].id;
-          DocumentSnapshot _documentSnapshot = querySnapshotLocations.docs[i];
+          DocumentSnapshot documentSnapshot = querySnapshotLocations.docs[i];
           Location location =
-              Location.fromObjectAllData(locationId, _documentSnapshot);
+              Location.fromObjectAllData(locationId, documentSnapshot);
           print('Location with ID : $locationId');
           await _firestore
               .collection(brands)
@@ -654,26 +647,26 @@ class ScriptsDatabaseService {
             .get();
         for (var i = 0; i < querySnapshotEvents.docs.length; i++) {
           String eventId = querySnapshotEvents.docs[i].id;
-          DocumentSnapshot _documentSnapshot = querySnapshotEvents.docs[i];
+          DocumentSnapshot documentSnapshot = querySnapshotEvents.docs[i];
           print('Event with ID : $eventId');
-          int numClients = _documentSnapshot.get("joinedMembers").length;
-          int numTrainers = _documentSnapshot.get("selectedTrainers").length;
+          int numClients = documentSnapshot.get("joinedMembers").length;
+          int numTrainers = documentSnapshot.get("selectedTrainers").length;
           await _firestore
               .collection(brands)
               .doc(brandId)
               .collection("Events")
               .doc(eventId)
               .set({
-            "title": _documentSnapshot.get("title"),
-            "year": _documentSnapshot.get("year"),
-            "month": _documentSnapshot.get("month"),
-            "day": _documentSnapshot.get("day"),
-            "hour": _documentSnapshot.get("hour"),
-            "minute": _documentSnapshot.get("minute"),
-            "duration": _documentSnapshot.get("duration"),
+            "title": documentSnapshot.get("title"),
+            "year": documentSnapshot.get("year"),
+            "month": documentSnapshot.get("month"),
+            "day": documentSnapshot.get("day"),
+            "hour": documentSnapshot.get("hour"),
+            "minute": documentSnapshot.get("minute"),
+            "duration": documentSnapshot.get("duration"),
             "numTrainers": numTrainers,
             "numClients": numClients,
-            "maxMembers": _documentSnapshot.get("maxMembers"),
+            "maxMembers": documentSnapshot.get("maxMembers"),
           });
         }
         print('All Events Added');
@@ -816,10 +809,10 @@ class ScriptsDatabaseService {
         for (var i = 0; i < usersIds.length; i++) {
           String userId = usersIds[i];
           print('User with ID : $userId');
-          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+          DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
               await _firestore.collection(users).doc(userId).get();
           Usuario user = Usuario.fromObjectAllData(
-              _documentSnapshot.id, _documentSnapshot);
+              documentSnapshot.id, documentSnapshot);
           await _firestore
               .collection(events)
               .doc(event.id!)
@@ -841,10 +834,10 @@ class ScriptsDatabaseService {
         print('\n');
         print('Adding "Brands" subcollection');
         print('-----------------------------\n');
-        DocumentSnapshot _documentBrand =
+        DocumentSnapshot documentBrand =
             await _firestore.collection(brands).doc(event.brandID).get();
         Brand brand =
-            Brand.fromObjectAllData(_documentBrand.id, _documentBrand);
+            Brand.fromObjectAllData(documentBrand.id, documentBrand);
         print('Brand with ID : ${brand.id!}');
         await _firestore
             .collection(events)
@@ -859,10 +852,10 @@ class ScriptsDatabaseService {
         print('\n');
         print('Adding "Locations" subcollection');
         print('-----------------------------\n');
-        DocumentSnapshot _documentSnapshot =
+        DocumentSnapshot documentSnapshot =
             await _firestore.collection(locations).doc(event.locationId).get();
         Location location =
-            Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Location.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print('Location with ID : ${location.id!}');
         await _firestore
             .collection(events)
@@ -946,10 +939,10 @@ class ScriptsDatabaseService {
           await _firestore.collection(locations).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         String locationId = querySnapshot.docs[i].id;
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
             await _firestore.collection(locations).doc(locationId).get();
         Location location =
-            Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Location.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print(
             '=================================================================================');
         print(
@@ -969,26 +962,26 @@ class ScriptsDatabaseService {
             .get();
         for (var i = 0; i < querySnapshotEvents.docs.length; i++) {
           String eventId = querySnapshotEvents.docs[i].id;
-          DocumentSnapshot _documentSnapshot = querySnapshotEvents.docs[i];
+          DocumentSnapshot documentSnapshot = querySnapshotEvents.docs[i];
           print('Event with ID : $eventId');
-          int numClients = _documentSnapshot.get("joinedMembers").length;
-          int numTrainers = _documentSnapshot.get("selectedTrainers").length;
+          int numClients = documentSnapshot.get("joinedMembers").length;
+          int numTrainers = documentSnapshot.get("selectedTrainers").length;
           await _firestore
               .collection(locations)
               .doc(location.id)
               .collection("Events")
               .doc(eventId)
               .set({
-            "title": _documentSnapshot.get("title"),
-            "year": _documentSnapshot.get("year"),
-            "month": _documentSnapshot.get("month"),
-            "day": _documentSnapshot.get("day"),
-            "hour": _documentSnapshot.get("hour"),
-            "minute": _documentSnapshot.get("minute"),
-            "duration": _documentSnapshot.get("duration"),
+            "title": documentSnapshot.get("title"),
+            "year": documentSnapshot.get("year"),
+            "month": documentSnapshot.get("month"),
+            "day": documentSnapshot.get("day"),
+            "hour": documentSnapshot.get("hour"),
+            "minute": documentSnapshot.get("minute"),
+            "duration": documentSnapshot.get("duration"),
             "numTrainers": numTrainers,
             "numClients": numClients,
-            "maxMembers": _documentSnapshot.get("maxMembers"),
+            "maxMembers": documentSnapshot.get("maxMembers"),
           });
         }
         print('All Events Added');
@@ -1020,9 +1013,9 @@ class ScriptsDatabaseService {
       // CHANGES ON REAL DATA OF USERS
       QuerySnapshot querySnapshot = await _firestore.collection(users).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
         Usuario user =
-            Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print(
             '=================================================================================');
         print(
@@ -1089,10 +1082,10 @@ class ScriptsDatabaseService {
       QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         String brandId = querySnapshot.docs[i].id;
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
             await _firestore.collection(brands).doc(brandId).get();
         Brand brand =
-            Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Brand.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print(
             '=================================================================================');
         print(
@@ -1174,9 +1167,9 @@ class ScriptsDatabaseService {
       QuerySnapshot querySnapshot =
           await _firestore.collection("7777 Users").get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
         Usuario user =
-            Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print(
             '=================================================================================');
         print(
@@ -1263,9 +1256,9 @@ class ScriptsDatabaseService {
       // TEST IN DEVELOPMENT
       QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
         Brand brand =
-            Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Brand.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print(
             '=================================================================================');
         print(
@@ -1618,9 +1611,9 @@ class ScriptsDatabaseService {
       // REAL MIGRATION FOR REAL DATA OF USERS
       QuerySnapshot querySnapshot = await _firestore.collection("Users").get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
         Usuario user =
-            Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print(
             '=================================================================================');
         print(
@@ -1667,6 +1660,7 @@ class ScriptsDatabaseService {
       QuerySnapshot querySnapshot = await _firestore.collection("Users").get();
       var totalUsers = querySnapshot.docs.length;
       print('Users: ${querySnapshot.docs.length}');
+
       // Gender
       var femaleUsers = 0;
       var maleUsers = 0;
@@ -1732,6 +1726,7 @@ class ScriptsDatabaseService {
       // Events
       querySnapshot = await _firestore.collection("Events").get();
       print('Events: ${querySnapshot.docs.length}');
+
       querySnapshot = await _firestore
           .collection("Events")
           .where("numClients", isGreaterThan: 0)
@@ -1819,10 +1814,10 @@ class ScriptsDatabaseService {
       QuerySnapshot querySnapshot = await _firestore.collection("Brands").get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         String brandId = querySnapshot.docs[i].id;
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
             await _firestore.collection("Brands").doc(brandId).get();
         Brand brand =
-            Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Brand.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print(
             '=================================================================================');
         print("BRAND ${brand.name!}");
@@ -2023,10 +2018,10 @@ class ScriptsDatabaseService {
         for (var i = 0; i < usersIds.length; i++) {
           String userId = usersIds[i];
           print('User with ID : $userId');
-          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+          DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
               await _firestore.collection(users).doc(userId).get();
           Usuario user = Usuario.fromObjectAllData(
-              _documentSnapshot.id, _documentSnapshot);
+              documentSnapshot.id, documentSnapshot);
           await _firestore
               .collection(events)
               .doc(event.id!)
@@ -2048,10 +2043,10 @@ class ScriptsDatabaseService {
         print('\n');
         print('Adding "Brands" subcollection');
         print('-----------------------------\n');
-        DocumentSnapshot _documentBrand =
+        DocumentSnapshot documentBrand =
             await _firestore.collection(brands).doc(event.brandID).get();
         Brand brand =
-            Brand.fromObjectAllData(_documentBrand.id, _documentBrand);
+            Brand.fromObjectAllData(documentBrand.id, documentBrand);
         print('Brand with ID : ${brand.id!}');
         await _firestore
             .collection(events)
@@ -2066,10 +2061,10 @@ class ScriptsDatabaseService {
         print('\n');
         print('Adding "Locations" subcollection');
         print('-----------------------------\n');
-        DocumentSnapshot _documentSnapshot =
+        DocumentSnapshot documentSnapshot =
             await _firestore.collection(locations).doc(event.locationId).get();
         Location location =
-            Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Location.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print('Location with ID : ${location.id!}');
         await _firestore
             .collection(events)
@@ -2142,9 +2137,7 @@ class ScriptsDatabaseService {
             .getImageFileSize(File(compressedFileImage!.path), 2);
         print("Compressed Image Size: $compressedSize");
         // Upload Image
-        var storageRef = _firebaseStorage
-            .ref()
-            .child("library/images/event/${querySnapshot.docs[i].id}.jpeg");
+        var storageRef = _firebaseStorage.ref().child("library/images/event/${querySnapshot.docs[i].id}.jpeg");
         var uploadTask = storageRef.putFile(File(compressedFileImage.path));
         await uploadTask.whenComplete(() async {
           await storageRef.getDownloadURL().then((value) async {
@@ -2444,10 +2437,10 @@ class ScriptsDatabaseService {
       QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         String brandId = querySnapshot.docs[i].id;
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
             await _firestore.collection(brands).doc(brandId).get();
         Brand brand =
-            Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Brand.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         print(
             '=================================================================================');
         print(
@@ -2463,20 +2456,20 @@ class ScriptsDatabaseService {
             .get();
         for (var i = 0; i < querySnapshotUsers.docs.length; i++) {
           String userId = querySnapshotUsers.docs[i].id;
-          DocumentSnapshot _documentSnapshot =
+          DocumentSnapshot documentSnapshot =
               await _firestore.collection(users).doc(userId).get();
           // Get User Data
-          Usuario user = Usuario.fromObjectAllData(userId, _documentSnapshot);
+          Usuario user = Usuario.fromObjectAllData(userId, documentSnapshot);
           print('User with ID : ' + userId + " and Name: " + user.name!);
           // Get Date Joined Brand
-          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
+          DocumentSnapshot<Map<String, dynamic>> documentSnapshot2 =
               await _firestore
                   .collection(users)
                   .doc(userId)
                   .collection("Brands")
                   .doc(brandId)
                   .get();
-          String dateJoined = _documentSnapshot2.get("dateJoined");
+          String dateJoined = documentSnapshot2.get("dateJoined");
           // Get Last Event of User
           QuerySnapshot querySnapshotUserEvents = await _firestore
               .collection(users)
@@ -2524,7 +2517,7 @@ class ScriptsDatabaseService {
               "dateOfBirth": user.dateOfBirth,
             });
             // Updates
-            print("lastEventAt: " + "No Events Done");
+            print("lastEventAt: " "No Events Done");
             print("dateJoined: $dateJoined");
             print("gender: ${user.gender}");
             print("dateJoined: ${user.dateOfBirth!}");
@@ -2752,7 +2745,7 @@ class ScriptsDatabaseService {
       print('\n');
 
       String users = "7777 Users";
-      Usuario user = new Usuario();
+      Usuario user = Usuario();
       QuerySnapshot querySnapshot3;
       QuerySnapshot querySnapshot4;
 
@@ -2879,7 +2872,7 @@ class ScriptsDatabaseService {
       print('\n');
 
       String users = "7777 Users";
-      Usuario user = new Usuario();
+      Usuario user = Usuario();
       QuerySnapshot querySnapshot3;
       QuerySnapshot querySnapshot4;
 
@@ -2935,7 +2928,7 @@ class ScriptsDatabaseService {
 
       String brands = "7777 Brands";
       String locations = "7777 Locations";
-      Usuario user = new Usuario();
+      Usuario user = Usuario();
       QuerySnapshot querySnapshot4;
       String baseImage = "";
       print('before');
@@ -2985,14 +2978,14 @@ class ScriptsDatabaseService {
             .where("isBaseLocation", isEqualTo: true)
             .get();
         print('3rd cause');
-        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
             await _firestore
                 .collection(locations)
                 .doc(querySnapshotLocations.docs[0].id)
                 .get();
         print(querySnapshotLocations.docs[0].id);
         var location =
-            Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+            Location.fromObjectAllData(documentSnapshot.id, documentSnapshot);
         //user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
         print(location);
 
@@ -3054,13 +3047,13 @@ class ScriptsDatabaseService {
         for (int j = 0; j < querySnapshotEventsUser.docs.length; j++) {
           String eventId = querySnapshotEventsUser.docs[j].id;
           print(eventId);
-          DocumentSnapshot<Map<String, dynamic>> _documentSnapshotEvent =
+          DocumentSnapshot<Map<String, dynamic>> documentSnapshotEvent =
               await _firestore
                   .collection(events)
                   .doc(querySnapshotEventsUser.docs[j].id)
                   .get();
           Event event = Event.fromObjectAllData(
-              _documentSnapshotEvent.id, _documentSnapshotEvent);
+              documentSnapshotEvent.id, documentSnapshotEvent);
           await _firestore
               .collection(users)
               .doc(userId)
@@ -3115,13 +3108,13 @@ class ScriptsDatabaseService {
 
         for (int j = 0; j < querySnapshotEventsLocation.docs.length; j++) {
           String eventId = querySnapshotEventsLocation.docs[j].id;
-          DocumentSnapshot<Map<String, dynamic>> _documentSnapshotEvent =
+          DocumentSnapshot<Map<String, dynamic>> documentSnapshotEvent =
               await _firestore
                   .collection(events)
                   .doc(querySnapshotEventsLocation.docs[j].id)
                   .get();
           Event event = Event.fromObjectAllData(
-              _documentSnapshotEvent.id, _documentSnapshotEvent);
+              documentSnapshotEvent.id, documentSnapshotEvent);
           await _firestore
               .collection(locations)
               .doc(locationId)
@@ -3218,16 +3211,16 @@ class ScriptsDatabaseService {
         if (brand.endDatePay != null && brand.subscriptionId != null) {
           print(brand.endDatePay!.toDate());
           brand.endDatePay = Timestamp.fromDate(
-              brand.endDatePay!.toDate().add(Duration(days: 7)));
+              brand.endDatePay!.toDate().add(const Duration(days: 7)));
           print(brand.endDatePay!.toDate());
-          DocumentSnapshot _documentSnapshot = await _firestore
+          DocumentSnapshot documentSnapshot = await _firestore
               .collection(brands)
               .doc(brandId)
               .collection(subscriptions)
               .doc(brand.subscriptionId!)
               .get();
           Subscription sub = Subscription.fromObjectAllData(
-              _documentSnapshot.id, _documentSnapshot);
+              documentSnapshot.id, documentSnapshot);
           if (sub.subscriptionId == 'FITNESSISBUSINESS') {
             await _firestore.collection(brands).doc(brandId).update({
               "endDatePay": brand.endDatePay,
@@ -3445,8 +3438,7 @@ class ScriptsDatabaseService {
             '=================================================================================');
         print(
             '=================================================================================');
-        print(
-            'PURCHASE WITH ID: ${purchase.id!} AND USER IS: ${purchase.userId!} FROM BRAND: ${purchase.brandId!}');
+        print('PURCHASE WITH ID: ${purchase.id!} AND USER IS: ${purchase.userId!} FROM BRAND: ${purchase.brandId!}');
         print('\n');
 
         /// Check if Purchase is active by checking if Users/{userId}/Bonos/{bonoId} exists
@@ -3603,8 +3595,7 @@ class ScriptsDatabaseService {
                     '=================================================================================');
                 print(
                     '=================================================================================');
-                print(
-                    'PURCHASE WITH ID: $purchaseId AND USER IS: $userId HAS IT ON EVENT: $eventId');
+                print('PURCHASE WITH ID: $purchaseId AND USER IS: $userId HAS IT ON EVENT: $eventId');
                 print('\n');
                 await _firestore
                     .collection(eventsCollection)

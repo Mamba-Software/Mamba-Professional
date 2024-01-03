@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -13,7 +11,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 class SelectTrainersEvent extends StatefulWidget {
   List<Usuario> selectedTrainers = [];  
 
-  SelectTrainersEvent({Key? key, required this.selectedTrainers}) : super(key: key);
+  SelectTrainersEvent({super.key, required this.selectedTrainers});
 
   @override
   _SelectTrainersEventState createState() => _SelectTrainersEventState();
@@ -22,7 +20,7 @@ class SelectTrainersEvent extends StatefulWidget {
 class _SelectTrainersEventState extends State<SelectTrainersEvent> {
 
   // Brand Data Service
-  var _brandDataService = BrandDataService();
+  final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = false;
   // Search Controller
@@ -106,10 +104,10 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
               onChanged: (value) {
                 filterSearchResults(value);
               },
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.left,
               decoration: InputDecoration(
-                hintStyle: Theme.of(context).textTheme.caption,
+                hintStyle: Theme.of(context).textTheme.bodySmall,
                 hintText: AppLocalizations.of(context)!.search,
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
@@ -141,14 +139,14 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
           backgroundColor: Colors.transparent,
           body: Column(
               children: [
-                selectedTrainers.length > 0 ? Container(
+                selectedTrainers.isNotEmpty ? Container(
                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05,),
-                  color: Theme.of(context).backgroundColor,
+                  color: Theme.of(context).colorScheme.background,
                   height: MediaQuery.of(context).size.height*0.04,
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width*0.80,
                         child: ListView.builder(
                             shrinkWrap: true,
@@ -158,21 +156,21 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
                               Usuario user = selectedTrainers[index];
                               return Center(
                                 child: Text(
-                                  index == 0 && selectedTrainers.length == 1 || index == selectedTrainers.length-1 ? user.name! : user.name! + ", ",
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  index == 0 && selectedTrainers.length == 1 || index == selectedTrainers.length-1 ? user.name! : "${user.name!}, ",
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               );
                             }
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width*0.09,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              "( "+selectedTrainers.length.toString()+" )",
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
+                              "( ${selectedTrainers.length} )",
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 8),
                             ),
                           ],
                         ),
@@ -191,7 +189,7 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 0),
                           child: ListTile(
-                            tileColor: selectedTrainers.contains(user) ? Theme.of(context).backgroundColor.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor,
+                            tileColor: selectedTrainers.contains(user) ? Theme.of(context).colorScheme.background.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor,
                             leading: Stack(
                               alignment: Alignment.bottomRight,
                               children: [
@@ -223,7 +221,7 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
                             ),
                             title: Text(
                               getUsersFullName(user),
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left,
                             ),
                             subtitle: Column(
@@ -232,7 +230,7 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
                                 Text(
                                   user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
                                   AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ],
                             ),
@@ -259,7 +257,7 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
           ),
           floatingActionButton: Padding(
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.width*0.17,
               width: MediaQuery.of(context).size.width*0.17,
               child: FloatingActionButton(
