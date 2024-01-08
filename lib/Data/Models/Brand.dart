@@ -150,6 +150,10 @@ class Brand {
       subscriptionId = documentSnapshot.get("subscriptionId").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('notShow')) {
+      notShow = documentSnapshot.get("notShow");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('subscription')) {
       subscription = documentSnapshot.get("subscription");
     }
