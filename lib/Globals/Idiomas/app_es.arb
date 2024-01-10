@@ -2455,6 +2455,22 @@
   "@editBono": {
     "description": "Edit bono message"
   },
+  "createBonoRecurrent": "Crear bono recurrente",
+  "@createBonoRecurrent": {
+    "description": "Create bono message"
+  },
+  "editBonoRecurrent": "Editar bono recurrente",
+  "@editBonoRecurrent": {
+    "description": "Edit bono message"
+  },
+  "createBonoSimple": "Crear bono simple",
+  "@createBonoRecurrent": {
+    "description": "Create bono message"
+  },
+  "editBonoSimple": "Editar bono simple",
+  "@editBonoRecurrent": {
+    "description": "Edit bono message"
+  },
   "nameBono": "Nombre de tu bono",
   "@nameBono": {
     "description": "Name bono message"
@@ -3570,5 +3586,37 @@
   "betaFeature": "Función en fase Beta. Comparte tu experiencia para ayudarnos a perfeccionarla.",
   "@betaFeature":{
     "description": "processOnWork text"
+  },
+  "bonoSimple": "Bono simple",
+  "@bonoSimple":{
+    "description": "bonoSimple text"
+  },
+  "bonoSimpleText": "No se renueva",
+  "@bonoSimpleText":{
+    "description": "bonoSimpleText text"
+  },
+  "bonoRecurrent": "Bono recurrente",
+  "@bonoRecurrent":{
+    "description": "bonoRecurrent text"
+  },
+  "bonoRecurrentText": "Se renueva cuando se termina",
+  "@bonoRecurrentText":{
+    "description": "bonoRecurrentText text"
+  },
+  "renovationDate": "Fecha de renovación",
+  "@renovationDate":{
+  "description": "RenovationDate text"
+  },
+  "renovationDateDesc": "Desde la compra, el número de días hasta el próximo pago",
+  "@renovationDateDesc":{
+  "description": "RenovationDate text"
+  },
+  "firstDayOfMonth": "Primer día de cada mes",
+  "@firstDayOfMonth":{
+  "description": "FirstDayOfMonth text"
+  },
+  "firstDayOfMonthDesc": "Se aplicaran cargos al cliente según las condiciones de tu marca",
+  "@firstDayOfMonthDesc":{
+  "description": "FirstDayOfMonthDesc text"
   }
 }

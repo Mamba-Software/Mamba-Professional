@@ -550,6 +550,8 @@
   "bonoRequestDescription": "Pendents de confirmació",
   "createBono": "Crear val",
   "editBono": "Editar val",
+  "createBonoRecurrent": "Crear val recurrent",
+  "editBonoRecurrent": "Editar val recurrent",
   "nameBono": "Nom del teu val",
   "descriptionBono": "Descripció del teu val",
   "activarBono": "Activar val",
@@ -806,5 +808,15 @@
   "cantEditRecurrent": "Elimina els clients del esdeveniment per poder indicar si és un esdeveniment recurrent",
   "noActiveBonos": "No disposes de vals actius per assignar a l'esdeveniment",
   "processOnWork": "Hi ha un procés executant-se, esperi fins que acabi o reinici l'app",
-  "betaFeature": "Funció en fase Beta. Comparteix la teva experiència per ajudar-nos a perfeccionar-la."
+  "betaFeature": "Funció en fase Beta. Comparteix la teva experiència per ajudar-nos a perfeccionar-la.",
+  "bonoSimple": "Val simple",
+  "bonoSimpleText": "No es renova",
+  "bonoRecurrent": "Val recurrent",
+  "bonoRecurrentText": "Es renova quan s'acaba",
+  "renovationDate": "Data de renovació",
+  "renovationDateDesc": "Des de la compra, el número de dies fins el pròxim pagament",
+  "firstDayOfMonth": "Primer dia de cada mes",
+  "firstDayOfMonthDesc": "S'aplicaran càrregs al client segons les condicions de la teva marca",
+  "createBonoSimple": "Crear val simple",
+  "editBonoSimple": "Editar val simple"
 }

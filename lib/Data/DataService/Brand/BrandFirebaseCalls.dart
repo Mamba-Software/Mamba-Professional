@@ -30,8 +30,8 @@ class BrandFirebaseCalls {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
 
-  // Firebase collections 
-  String users = 'Users';  
+  // Firebase collections
+  String users = 'Users';
   String brands = 'Brands';
   String events = 'Events';
   String locations = 'Locations';
@@ -562,13 +562,12 @@ class BrandFirebaseCalls {
   Future<Subscription> getBrandSubscription(
       String brandId, String subscriptionId) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await _firestore
-              .collection(brands)
-              .doc(brandId)
-              .collection('Subscriptions')
-              .doc(subscriptionId)
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection('Subscriptions')
+          .doc(subscriptionId)
+          .get();
       return Subscription.fromObjectAllData(
           documentSnapshot.id, documentSnapshot);
     } catch (e) {
@@ -657,9 +656,8 @@ class BrandFirebaseCalls {
     // Add each brand to the .../BrandId/images directory
     final uid = const Uuid().v4();
     // Upload the image to Firebase Storage
-    var storageRef = _firebaseStorage
-        .ref()
-        .child("brands/$brandID/images/$uid.jpeg");
+    var storageRef =
+        _firebaseStorage.ref().child("brands/$brandID/images/$uid.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -685,9 +683,8 @@ class BrandFirebaseCalls {
       var image = images[i];
       final uid = const Uuid().v4();
       // Upload the image to Firebase Storage
-      var storageRef = _firebaseStorage
-          .ref()
-          .child("brands/$brandID/images/$uid.jpeg");
+      var storageRef =
+          _firebaseStorage.ref().child("brands/$brandID/images/$uid.jpeg");
       var uploadTask = storageRef.putFile(image);
       await uploadTask.whenComplete(() async {
         await storageRef.getDownloadURL().then((value) async {
@@ -741,6 +738,7 @@ class BrandFirebaseCalls {
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
       "cancelTime": condition.cancelTime,
+      "isRecurrent": bono.isRecurrent,
     }).catchError((err) {
       print(err);
     });
@@ -800,9 +798,8 @@ class BrandFirebaseCalls {
 
   Future<String> updateBrandPhoto(String brandID, File image) async {
     String result = "";
-    var storageRef = _firebaseStorage
-        .ref()
-        .child("brands/$brandID/images/$brandID.jpeg");
+    var storageRef =
+        _firebaseStorage.ref().child("brands/$brandID/images/$brandID.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -885,6 +882,7 @@ class BrandFirebaseCalls {
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
       "cancelTime": condition.cancelTime,
+      "isRecurrent": bono.isRecurrent,
     }).catchError((err) {
       print(err);
     });

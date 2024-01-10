@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -42,6 +43,9 @@ class _BonosProState extends State<BonosPro> {
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;
+
+  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
+
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
@@ -105,7 +109,8 @@ class _BonosProState extends State<BonosPro> {
         MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
     isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
-    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print(
+        "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
     print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
@@ -228,10 +233,12 @@ class _BonosProState extends State<BonosPro> {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.bonos,
-                            style:
-                                Theme.of(context).textTheme.displayLarge?.copyWith(
-                                      color: AppColors.white,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
+                                  color: AppColors.white,
+                                ),
                           ),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.08,
@@ -247,7 +254,8 @@ class _BonosProState extends State<BonosPro> {
                                     : Colors.transparent, // Button color
                                 child: InkWell(
                                   splashColor: Theme.of(context)
-                                      .colorScheme.background, // Splash color
+                                      .colorScheme
+                                      .background, // Splash color
                                   onTap: () async {
                                     mixpanel!
                                         .track('brand_bonos_filter_button');
@@ -378,9 +386,7 @@ class _BonosProState extends State<BonosPro> {
                                                                     );
                                                                   },
                                                                   title: Text(
-                                                                      "${AppLocalizations.of(context)!
-                                                                              .bono} ${AppLocalizations.of(context)!
-                                                                              .active}s",
+                                                                      "${AppLocalizations.of(context)!.bono} ${AppLocalizations.of(context)!.active}s",
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
@@ -879,8 +885,9 @@ class _BonosProState extends State<BonosPro> {
               })
         ],
       ),
-      floatingActionButton: canEdit
-          ? Padding(
+      floatingActionButton: whichFloatingActionButton(),
+      /*
+          Padding(
               padding: Platform.isAndroid
                   ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
                   : const EdgeInsets.all(10),
@@ -908,7 +915,113 @@ class _BonosProState extends State<BonosPro> {
                   ),
                 ),
               ))
-          : Container(),
+          : Container(), */
     );
+  }
+
+  Widget whichFloatingActionButton() {
+    return canEdit
+        ? Padding(
+            padding: Platform.isAndroid
+                ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
+                : const EdgeInsets.all(10),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.width * 0.15,
+              width: MediaQuery.of(context).size.width * 0.15,
+              child: SpeedDial(
+                heroTag: "46",
+                animatedIcon: AnimatedIcons.add_event,
+                animationDuration: const Duration(milliseconds: 300),
+                foregroundColor: AppColors.white,
+                overlayColor: Theme.of(context).scaffoldBackgroundColor,
+                overlayOpacity: 0.95,
+                spacing: MediaQuery.of(context).size.height * 0.02,
+                spaceBetweenChildren: MediaQuery.of(context).size.height * 0.02,
+                openCloseDial: isDialOpen,
+                children: [
+                  SpeedDialChild(
+                      child: const Icon(
+                        Icons.local_activity_outlined,
+                      ),
+                      elevation: 10,
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      labelWidget: Container(
+                        color: Colors.transparent,
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * 0.05),
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(AppLocalizations.of(context)!.bonoRecurrent,
+                                style: Theme.of(context).textTheme.displaySmall,
+                                textAlign: TextAlign.right),
+                            Text(
+                                AppLocalizations.of(context)!.bonoRecurrentText,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                textAlign: TextAlign.right),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        navigateToAddBonosScreen(
+                            Bono(
+                              color: "0",
+                              isActive: true,
+                              sessions: 0,
+                              opacity: 1,
+                              imageUrl: '',
+                              isDegradate: false,
+                              isRecurrent: true,
+                            ),
+                            currentBrand,
+                            false);
+                      }),
+                  SpeedDialChild(
+                      child: const Icon(
+                        Icons.confirmation_number_outlined,
+                      ),
+                      elevation: 10,
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      labelWidget: Container(
+                        color: Colors.transparent,
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * 0.05),
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(AppLocalizations.of(context)!.bonoSimple,
+                                style: Theme.of(context).textTheme.displaySmall,
+                                textAlign: TextAlign.right),
+                            Text(AppLocalizations.of(context)!.bonoSimpleText,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                textAlign: TextAlign.right),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        navigateToAddBonosScreen(
+                            Bono(
+                              color: "0",
+                              isActive: true,
+                              sessions: 0,
+                              opacity: 1,
+                              imageUrl: '',
+                              isDegradate: false,
+                              isRecurrent: false,
+                            ),
+                            currentBrand,
+                            false);
+                      }),
+                ],
+              ),
+            ),
+          )
+        : Container();
   }
 }
