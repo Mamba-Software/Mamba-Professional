@@ -31,6 +31,9 @@ class Brand {
   double? latitude;
   bool? notShow;
   bool? directPurchase;
+  int? gracePeriod;
+  int? maxCanWeek;
+  int? paymentTerms;
 
   Timestamp? endDatePay;
   String? subscriptionId;
@@ -69,6 +72,9 @@ class Brand {
     this.endDatePay,
     this.subscriptionId,
     this.subscription,
+    this.gracePeriod,
+    this.maxCanWeek,
+    this.paymentTerms,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +163,18 @@ class Brand {
         .containsKey('subscription')) {
       subscription = documentSnapshot.get("subscription");
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('gracePeriod')) {
+      gracePeriod = documentSnapshot.get("gracePeriod");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('maxCanWeek')) {
+      maxCanWeek = documentSnapshot.get("maxCanWeek");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('paymentTerms')) {
+      paymentTerms = documentSnapshot.get("paymentTerms");
+    }
   }
 
   Brand.fromObjectOnlyCoverData(
@@ -204,6 +222,9 @@ class Brand {
     latitude = brand.latitude;
     longitude = brand.longitude;
     notShow = brand.notShow;
+    gracePeriod = brand.gracePeriod;
+    maxCanWeek = brand.maxCanWeek;
+    paymentTerms = brand.paymentTerms;
   }
 
   // Requests

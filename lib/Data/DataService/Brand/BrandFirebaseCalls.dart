@@ -783,7 +783,10 @@ class BrandFirebaseCalls {
       int bookingWindow,
       int bookingWindowMin,
       bool? directPurchase,
-      bool? freeSession) async {
+      bool? freeSession,
+      int gracePeriod,
+      int maxCanWeek,
+      int paymentTerms) async {
     await _firestore.collection(brands).doc(brandID).update({
       "name": name,
       "description": description,
@@ -793,6 +796,9 @@ class BrandFirebaseCalls {
       "workShift": workShift,
       "directPurchase": directPurchase,
       "freeSession": freeSession,
+      "gracePeriod": gracePeriod,
+      "maxCanWeek": maxCanWeek,
+      "paymentTerms": paymentTerms,
     });
   }
 

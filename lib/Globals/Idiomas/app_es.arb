@@ -3618,5 +3618,51 @@
   "firstDayOfMonthDesc": "Se aplicaran cargos al cliente según las condiciones de tu marca",
   "@firstDayOfMonthDesc":{
   "description": "FirstDayOfMonthDesc text"
+  },
+  "gracePeriodTitle": "Periodo de gracia",
+  "@gracePeriodTitle": {
+    "description": "Título de la sección del Periodo de Gracia"
+  },
+  "gracePeriodDescription": "Periodo antes de aplicar cargos o penalizaciones",
+  "@gracePeriodDescription": {
+    "description": "Descripción breve del Periodo de Gracia"
+  },
+
+  "maximumCancellationsPerWeekTitle": "Cancelaciones máximas por semana",
+  "@maximumCancellationsPerWeekTitle": {
+    "description": "Título de la sección de Cancelaciones Máximas por Semana"
+  },
+  "maximumCancellationsPerWeekDescription": "Número máximo de cancelaciones permitidas semanalmente sin penalización",
+  "@maximumCancellationsPerWeekDescription": {
+    "description": "Descripción breve de Cancelaciones Máximas por Semana"
+  },
+
+  "paymentTermsTitle": "Términos de pago",
+  "@paymentTermsTitle": {
+    "description": "Título de la sección de Términos de Pago"
+  },
+  "paymentTermsDescription": "Condiciones y modalidades de los pagos",
+  "@paymentTermsDescription": {
+    "description": "Descripción breve de los Términos de Pago"
+  },
+  "proratedPaymentTitle": "Pago Prorrateado",
+  "@proratedPaymentTitle": {
+    "description": "Título de la opción de Pago Prorrateado"
+  },
+  "proratedPaymentDescription": "Al realizar la compra, se paga la diferencia hasta el primer día del siguiente mes y luego se continúa pagando desde cada día uno del mes",
+  "@proratedPaymentDescription": {
+    "description": "Descripción de cómo funciona el Pago Prorrateado"
+  },
+  "midMonthPaymentTitle": "Pago 15 y 15",
+  "@midMonthPaymentTitle": {
+    "description": "Título de la opción de Pago 15 y 15"
+  },
+  "midMonthPaymentDescription": "Si la compra se realiza en los primeros 15 días del mes, se paga el total del bono. Si se realiza en los últimos 15 días, se paga la mitad",
+  "@midMonthPaymentDescription": {
+    "description": "Descripción de cómo funciona el Pago 15 y 15"
+  },
+  "times": "Veces",
+  "@times": {
+    "description": "times text"
   }
 }

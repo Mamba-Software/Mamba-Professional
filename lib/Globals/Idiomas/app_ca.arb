@@ -818,5 +818,16 @@
   "firstDayOfMonth": "Primer dia de cada mes",
   "firstDayOfMonthDesc": "S'aplicaran càrregs al client segons les condicions de la teva marca",
   "createBonoSimple": "Crear val simple",
-  "editBonoSimple": "Editar val simple"
+  "editBonoSimple": "Editar val simple",
+  "gracePeriodTitle": "Període de gràcia",
+  "gracePeriodDescription": "Període abans d'aplicar càrrecs o penalitzacions",
+  "maximumCancellationsPerWeekTitle": "Cancel·lacions màximes per setmana",
+  "maximumCancellationsPerWeekDescription": "Nombre màxim de cancel·lacions permeses setmanalment sense penalització",
+  "paymentTermsTitle": "Termes de pagament",
+  "paymentTermsDescription": "Condicions i modalitats dels pagaments",
+  "proratedPaymentTitle": "Pagament Prorratejat",
+  "proratedPaymentDescription": "En realitzar la compra, es paga la diferència fins al primer dia del següent mes i després es continua pagant des de cada dia u del mes",
+  "midMonthPaymentTitle": "Pagament 15 i 15",
+  "midMonthPaymentDescription": "Si la compra es realitza en els primers 15 dies del mes, es paga el total del bo. Si es realitza en els últims 15 dies, es paga la meitat",
+  "times": "Cops"
 }
