@@ -28,6 +28,8 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 
+import '../../../../../Globals/Widgets/Components/CupertinoSelect/SelectOtherDialog.dart';
+
 // Tus Datos Widget.
 class BrandInfo extends StatefulWidget {
   Locale? locale;
@@ -2271,7 +2273,7 @@ class _BrandInfoState extends State<BrandInfo>
   Future selectNumberOfDaysGracePeriod() async {
     int? gracePeriodDaysAux = await showCupertinoModalPopup(
         context: context,
-        builder: (_) => SelectHoursDialog(
+        builder: (_) => SelectOtherDialog(
               title:
                   "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.days.toLowerCase()}",
               intialDays: gracePeriodDays,
@@ -2286,7 +2288,7 @@ class _BrandInfoState extends State<BrandInfo>
   Future selectNumberOfTimesCancelationsPerWeek() async {
     int? cancelationsPerWeekAux = await showCupertinoModalPopup(
         context: context,
-        builder: (_) => SelectHoursDialog(
+        builder: (_) => SelectOtherDialog(
               title:
                   "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.times.toLowerCase()}",
               intialDays: cancelationsPerWeek,
