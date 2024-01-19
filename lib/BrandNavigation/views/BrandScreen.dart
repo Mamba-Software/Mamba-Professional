@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/UtilsTest/UtilsTest.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -87,16 +88,16 @@ class _BrandScreenState extends State<BrandScreen> {
   //Return the ListTile of each screen of Mamba Pro
   Widget listTilePro(int pageIndexVar, [bool isFavourite = false]) {
     return ListTile(
-          leading: _mambaProUtils.iconSelectorListView(context, pageIndexVar),
-          title: _mambaProUtils.titlePageSelectorListView(context, pageIndexVar),          
-          onTap: () => {
-                Navigator.pop(context),
-                setBrandActive(),
-                setState(() {
-                  pageIndex = pageIndexVar;
-                  setFavourites();
-                }),
-              });
+        leading: _mambaProUtils.iconSelectorListView(context, pageIndexVar),
+        title: _mambaProUtils.titlePageSelectorListView(context, pageIndexVar),
+        onTap: () => {
+              Navigator.pop(context),
+              setBrandActive(),
+              setState(() {
+                pageIndex = pageIndexVar;
+                setFavourites();
+              }),
+            });
   }
 
   Widget buildHeader() {
@@ -186,7 +187,8 @@ class _BrandScreenState extends State<BrandScreen> {
                                   child: Text(
                                     returnBrandRoleString(),
                                     textAlign: TextAlign.left,
-                                    style: Theme.of(context).textTheme.bodySmall,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -845,6 +847,13 @@ class _BrandScreenState extends State<BrandScreen> {
             // Brand Options
             buildBrandListOptions(),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            TextButton(
+              onPressed: () {
+                UtilsTest ut = new UtilsTest();
+                ut.callTestFunction();
+              },
+              child: Text('FUNCION DE PRUEBA BONOS'),
+            ),
           ],
         ),
       ),
@@ -939,5 +948,4 @@ class _BrandScreenState extends State<BrandScreen> {
                       ],
                     ),
    */
-
 }

@@ -298,7 +298,8 @@ class _PurchasePageState extends State<PurchasePage> {
   }
 
   // Check If User Bonos Have Expired
-  Future<void> checkIfUserBonosHaveExpiredOrBeenReactivated(Purchase purchase) async {
+  Future<void> checkIfUserBonosHaveExpiredOrBeenReactivated(
+      Purchase purchase) async {
     // Check if we have active or not active status now.
     bool purchaseIsActive = purchase.isActive!;
     if (purchaseIsActive) {
@@ -320,10 +321,10 @@ class _PurchasePageState extends State<PurchasePage> {
           purchasedDate.month,
           purchasedDate.day,
         );
-        DateTime expirationDate =
-            purchasedDate.add(Duration(days: purchase.condition!.expirationTime!));
+        DateTime expirationDate = purchasedDate
+            .add(Duration(days: purchase.condition!.expirationTime!));
         DateTime now = DateTime.now();
-        if (now.isAfter(expirationDate)) {          
+        if (now.isAfter(expirationDate)) {
           await _userDataService.deleteUserBono(purchase.userId!,
               purchase.brandId!, purchase.bonoId!, purchase.id!);
         }
@@ -332,8 +333,8 @@ class _PurchasePageState extends State<PurchasePage> {
       // Sessions Done
       int sessionsDone = purchase.events.length;
       if (purchase.sessions! != sessionsDone) {
-        await _userDataService.activateUserBono(
-            purchase.userId!, purchase.brandId!, purchase.bonoId!, purchase.id!);
+        await _userDataService.activateUserBono(purchase.userId!,
+            purchase.brandId!, purchase.bonoId!, purchase.id!);
       }
       // After Expiration Date
       if (purchase.condition!.expirationTime! != 0) {
@@ -343,14 +344,14 @@ class _PurchasePageState extends State<PurchasePage> {
           purchasedDate.month,
           purchasedDate.day,
         );
-        DateTime expirationDate =
-            purchasedDate.add(Duration(days: purchase.condition!.expirationTime!));
+        DateTime expirationDate = purchasedDate
+            .add(Duration(days: purchase.condition!.expirationTime!));
         DateTime now = DateTime.now();
-        if (now.isBefore(expirationDate)) {          
+        if (now.isBefore(expirationDate)) {
           await _userDataService.activateUserBono(purchase.userId!,
               purchase.brandId!, purchase.bonoId!, purchase.id!);
         }
-      }      
+      }
     }
   }
 
@@ -730,10 +731,7 @@ class _PurchasePageState extends State<PurchasePage> {
                   duration: const Duration(milliseconds: 200),
                   child: Text(
                       editBono
-                          ? "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!
-                                  .directPurchasetext
-                                  .split(" ")[0]
-                                  .toLowerCase()}"
+                          ? "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase()}"
                           : isBonoRequest
                               ? StringUtils().toCapitalized(
                                   AppLocalizations.of(context)!
@@ -838,10 +836,7 @@ class _PurchasePageState extends State<PurchasePage> {
                         children: [
                           Text(
                               editBono
-                                  ? "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!
-                                          .directPurchasetext
-                                          .split(" ")[0]
-                                          .toLowerCase()}"
+                                  ? "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase()}"
                                   : isBonoRequest
                                       ? StringUtils().toCapitalized(
                                           AppLocalizations.of(context)!
@@ -888,7 +883,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                                         horizontal: 8),
                                                 decoration: BoxDecoration(
                                                   color: Theme.of(context)
-                                                      .colorScheme.background,
+                                                      .colorScheme
+                                                      .background,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           10.0),
@@ -977,7 +973,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                                         horizontal: 8),
                                                 decoration: BoxDecoration(
                                                   color: Theme.of(context)
-                                                      .colorScheme.background,
+                                                      .colorScheme
+                                                      .background,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           10.0),
@@ -1370,7 +1367,8 @@ class _PurchasePageState extends State<PurchasePage> {
                               Expanded(
                                 child: TextButton(
                                   style: TextButton.styleFrom(
-                                    foregroundColor: Theme.of(context).primaryColor,
+                                    foregroundColor:
+                                        Theme.of(context).primaryColor,
                                   ),
                                   onPressed: editBono
                                       ? null
@@ -1449,7 +1447,9 @@ class _PurchasePageState extends State<PurchasePage> {
                                   padding: EdgeInsets.all(
                                       MediaQuery.of(context).size.width * 0.05),
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.background,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   child: optionTextWrite(
@@ -1476,7 +1476,9 @@ class _PurchasePageState extends State<PurchasePage> {
                                   padding: EdgeInsets.all(
                                       MediaQuery.of(context).size.width * 0.05),
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.background,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   child: optionTextWrite(
@@ -1503,8 +1505,9 @@ class _PurchasePageState extends State<PurchasePage> {
                                         MediaQuery.of(context).size.width *
                                             0.05),
                                     decoration: BoxDecoration(
-                                        color:
-                                            Theme.of(context).colorScheme.background,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .background,
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(10))),
                                     child: optionConditionsWrite(
@@ -1533,7 +1536,9 @@ class _PurchasePageState extends State<PurchasePage> {
                                   padding: EdgeInsets.all(
                                       MediaQuery.of(context).size.width * 0.05),
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.background,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   child: optionConditionsWrite(
@@ -1562,7 +1567,9 @@ class _PurchasePageState extends State<PurchasePage> {
                                   padding: EdgeInsets.all(
                                       MediaQuery.of(context).size.width * 0.05),
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.background,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   child: optionConditionsWrite(
@@ -1664,8 +1671,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                           height: 1.5),
                                 ),
                                 TextSpan(
-                                    text: ". ${AppLocalizations.of(context)!
-                                            .paymentMethodEdit}",
+                                    text:
+                                        ". ${AppLocalizations.of(context)!.paymentMethodEdit}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall
@@ -1697,7 +1704,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                     MediaQuery.of(context).size.width * 0.25,
                                 width: MediaQuery.of(context).size.width * 0.25,
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.background,
+                                  color:
+                                      Theme.of(context).colorScheme.background,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(10),
                                   ),
@@ -1762,7 +1770,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                     MediaQuery.of(context).size.width * 0.25,
                                 width: MediaQuery.of(context).size.width * 0.25,
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.background,
+                                  color:
+                                      Theme.of(context).colorScheme.background,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(10),
                                   ),
@@ -1827,7 +1836,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                     MediaQuery.of(context).size.width * 0.25,
                                 width: MediaQuery.of(context).size.width * 0.25,
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.background,
+                                  color:
+                                      Theme.of(context).colorScheme.background,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(10),
                                   ),
@@ -1931,7 +1941,8 @@ class _PurchasePageState extends State<PurchasePage> {
                       purchase.events = newPurchase.events;
                     }
                     // Update Purchase As active or not.
-                    await checkIfUserBonosHaveExpiredOrBeenReactivated(purchase);
+                    await checkIfUserBonosHaveExpiredOrBeenReactivated(
+                        purchase);
 
                     /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
                     if (originalExpirationTime !=
@@ -1959,6 +1970,21 @@ class _PurchasePageState extends State<PurchasePage> {
                     purchase.price = bonoSelected.price;
                     purchase.userId = widget.bonoRequest?.userId!;
                     purchase.paymentMethod = paymentMethod;
+                    if (currentBrand.gracePeriod != null) {
+                      purchase.gracePeriod = currentBrand.gracePeriod;
+                    } else {
+                      purchase.gracePeriod = 30;
+                    }
+                    if (currentBrand.maxCanWeek != null) {
+                      purchase.maxCanWeek = currentBrand.maxCanWeek!;
+                    } else {
+                      purchase.maxCanWeek = 7;
+                    }
+                    if (currentBrand.paymentTerms != null) {
+                      purchase.paymentTerms = currentBrand.paymentTerms;
+                    } else {
+                      purchase.paymentTerms = 0;
+                    }
                     if (isPaid == false) {
                       purchase.directPurchase = true;
                     }
@@ -2000,6 +2026,21 @@ class _PurchasePageState extends State<PurchasePage> {
                     purchase.price = bonoSelected.price!;
                     purchase.userId = user.id!;
                     purchase.paymentMethod = paymentMethod;
+                    if (currentBrand.gracePeriod != null) {
+                      purchase.gracePeriod = currentBrand.gracePeriod;
+                    } else {
+                      purchase.gracePeriod = 30;
+                    }
+                    if (currentBrand.maxCanWeek != null) {
+                      purchase.maxCanWeek = currentBrand.maxCanWeek!;
+                    } else {
+                      purchase.maxCanWeek = 7;
+                    }
+                    if (currentBrand.paymentTerms != null) {
+                      purchase.paymentTerms = currentBrand.paymentTerms;
+                    } else {
+                      purchase.paymentTerms = 0;
+                    }
                     if (isPaid == false) {
                       purchase.directPurchase = true;
                     }
@@ -2224,7 +2265,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                         : "",
                                 suffixStyle:
                                     Theme.of(context).textTheme.bodySmall,
-                                hintStyle: Theme.of(context).textTheme.bodySmall,
+                                hintStyle:
+                                    Theme.of(context).textTheme.bodySmall,
                                 hintText: hintText,
                                 errorBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.red),
@@ -2252,8 +2294,7 @@ class _PurchasePageState extends State<PurchasePage> {
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height * 0.01),
                           child: Text(
-                            "${(bonoSelected.price! / bonoSelected.sessions!)
-                                    .toStringAsFixed(2)} € / ${AppLocalizations.of(context)!.session}",
+                            "${(bonoSelected.price! / bonoSelected.sessions!).toStringAsFixed(2)} € / ${AppLocalizations.of(context)!.session}",
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left,
                           ),
@@ -2558,7 +2599,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                         : "",
                                 suffixStyle:
                                     Theme.of(context).textTheme.bodySmall,
-                                hintStyle: Theme.of(context).textTheme.bodySmall,
+                                hintStyle:
+                                    Theme.of(context).textTheme.bodySmall,
                                 hintText: hintText,
                                 errorBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.red),
@@ -2742,13 +2784,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                 children: [
                                   Flexible(
                                     child: Text(
-                                      "${AppLocalizations.of(context)!.expiresAt} ${StringUtils().toCapitalized(
-                                              DateFormat(
-                                                      'EEEE - d MMM yyyy',
-                                                      Localizations.localeOf(
-                                                              context)
-                                                          .languageCode)
-                                                  .format(endDate))}",
+                                      "${AppLocalizations.of(context)!.expiresAt} ${StringUtils().toCapitalized(DateFormat('EEEE - d MMM yyyy', Localizations.localeOf(context).languageCode).format(endDate))}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
@@ -2764,21 +2800,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                   const SizedBox(height: 4),
                                   Flexible(
                                     child: Text(
-                                      "${AppLocalizations.of(context)!.from} ${StringUtils().toCapitalized(
-                                              DateFormat(
-                                                      'd/M/yy',
-                                                      Localizations.localeOf(
-                                                              context)
-                                                          .languageCode)
-                                                  .format(startDate))} ${AppLocalizations.of(context)!
-                                              .to
-                                              .toLowerCase()} ${StringUtils().toCapitalized(
-                                              DateFormat(
-                                                      'd/M/yy',
-                                                      Localizations.localeOf(
-                                                              context)
-                                                          .languageCode)
-                                                  .format(endDate))}",
+                                      "${AppLocalizations.of(context)!.from} ${StringUtils().toCapitalized(DateFormat('d/M/yy', Localizations.localeOf(context).languageCode).format(startDate))} ${AppLocalizations.of(context)!.to.toLowerCase()} ${StringUtils().toCapitalized(DateFormat('d/M/yy', Localizations.localeOf(context).languageCode).format(endDate))}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall
@@ -2887,7 +2909,7 @@ class _PurchasePageState extends State<PurchasePage> {
   }
 
   void _show() async {
-    FocusManager.instance.primaryFocus?.unfocus();    
+    FocusManager.instance.primaryFocus?.unfocus();
     List<DateTime>? result = await showModalBottomSheet<List<DateTime>>(
       context: context,
       isScrollControlled: true,

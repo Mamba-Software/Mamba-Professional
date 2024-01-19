@@ -3493,6 +3493,22 @@ exports.DeleteEventBono = functions
     }
 });
 
+// Daily Notification For Bonos
+//exports.scheduledCheckBonoFunction= functions
+//.region("europe-west1")
+//.pubsub
+//.schedule('every day 5:00')
+//.timeZone('Europe/Madrid')
+//.onRun( async (context) => {
+ exports.scheduledCheckBonoFunctionOnCall = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+      // Check if today is Monday, then backup the Firebase data only if on PRODUCTION      
+      let date = new Date();                   
+      functions.logger.log("Date time executed", date);
+    });
+
 async function deleteBonoEvents(brandRef, eventRef, bonoId) {
   const brandEventSnapshot = await brandRef.get();
 
