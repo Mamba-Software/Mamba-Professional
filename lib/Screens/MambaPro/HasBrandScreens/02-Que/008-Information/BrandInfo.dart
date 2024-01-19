@@ -254,12 +254,6 @@ class _BrandInfoState extends State<BrandInfo>
     } else {
       currentBrand.gracePeriod = 30;
     }
-    //Grace period
-    if (currentBrand.gracePeriod != null) {
-      gracePeriodDays = currentBrand.gracePeriod!;
-    } else {
-      currentBrand.gracePeriod = 30;
-    }
     //Max cancel per week
     if (currentBrand.maxCanWeek != null) {
       cancelationsPerWeek = currentBrand.maxCanWeek!;
