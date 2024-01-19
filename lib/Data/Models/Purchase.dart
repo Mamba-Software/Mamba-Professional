@@ -32,6 +32,7 @@ class Purchase {
   int? maxCanWeek = 7;
   int? paymentTerms = 0;
   bool? isRecurrent = false;
+  bool? isRecurrencyActive = true;
 
   Purchase({
     this.id,
@@ -48,6 +49,7 @@ class Purchase {
     this.maxCanWeek,
     this.paymentTerms,
     this.isRecurrent,
+    this.isRecurrencyActive,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -120,6 +122,10 @@ class Purchase {
         .containsKey('isRecurrent')) {
       isRecurrent = documentSnapshot.get("isRecurrent");
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isRecurrencyActive')) {
+      isRecurrencyActive = documentSnapshot.get("isRecurrencyActive");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +145,7 @@ class Purchase {
     maxCanWeek = purchase.maxCanWeek;
     paymentTerms = purchase.paymentTerms;
     isRecurrent = purchase.isRecurrent;
+    isRecurrencyActive = purchase.isRecurrencyActive;
   }
 
   // Set Basic Data

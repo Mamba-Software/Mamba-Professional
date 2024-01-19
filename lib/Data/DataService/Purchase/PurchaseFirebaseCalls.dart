@@ -507,6 +507,7 @@ class PurchaseFirebaseCalls {
         "paymentTerms": purchase.paymentTerms,
         "groupPurchases": purchasesId,
         "purchaseGroupId": uid,
+        "isRecurrencyActive": true,
       }).catchError((err) {
         print(err);
       });
