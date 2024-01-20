@@ -18,6 +18,8 @@ switch (environment) {
       break;    
 }
 
+
+
 // Initialize Functions
 const functions = require('firebase-functions');
 const { user } = require("firebase-functions/v1/auth");
@@ -36,6 +38,14 @@ const storage = new Storage();
 // SendGrid
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(envConfig.sendGridApiKey);
+
+const { v4: uuidv4 } = require('uuid');
+
+// functions/index.js
+//const recurrentPurchases = require('./RecurrentPurchases/recurrentPurchases.js');
+
+// Re-exporta las funciones
+//exports.scheduledCheckBonoFunctionOnCall = recurrentPurchases.scheduledCheckBonoFunctionOnCall;
 
 // Daily Notification For Events
 exports.scheduledDailyFunction = functions
@@ -3493,22 +3503,6 @@ exports.DeleteEventBono = functions
     }
 });
 
-// Daily Notification For Bonos
-//exports.scheduledCheckBonoFunction= functions
-//.region("europe-west1")
-//.pubsub
-//.schedule('every day 5:00')
-//.timeZone('Europe/Madrid')
-//.onRun( async (context) => {
- exports.scheduledCheckBonoFunctionOnCall = functions
-.region("europe-west1")
-.https
-.onCall(async (data, context) => {
-      // Check if today is Monday, then backup the Firebase data only if on PRODUCTION      
-      let date = new Date();                   
-      functions.logger.log("Date time executed", date);
-    });
-
 async function deleteBonoEvents(brandRef, eventRef, bonoId) {
   const brandEventSnapshot = await brandRef.get();
 
@@ -3680,6 +3674,163 @@ async function addLocalNotification(userRef, userId, notification, firesAt) {
       throw error;
   }
 }
+
+exports.scheduledCheckBonoFunctionOnCall = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+  var today = new Date();
+  const todayNew = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  functions.logger.log("Empezamos", todayNew);
+
+  // Ejecutar subfunciones
+  await processRegularPurchases();
+  await processDirectAndRecurrentPurchases();
+
+  functions.logger.log("Función ejecutada correctamente", todayNew);
+  return { result: "Success", executionDate: today.toISOString() };
+
+});
+
+
+// Subfunción para procesar las Purchases normales
+async function processRegularPurchases() {
+
+const purchasesRef = db.collection('Purchases');
+const snapshot = await purchasesRef
+  .where('isActive', '==', true)
+  .where('directPurchase', '==', true)
+  .where('brandId', '==', '1d16285c-54e8-4a6a-bd1f-ba7071c72774') //TODO: ELIMINAR
+  .get();
+
+for (const doc of snapshot.docs) {
+  const purchase = doc.data();
+  let { gracePeriod, isRecurrent } = purchase;
+
+  // Restar un día del período de gracia
+  gracePeriod = (gracePeriod || 0) - 1;
+
+  // Preparar el objeto de actualización
+  const updateData = {
+  gracePeriod: gracePeriod <= 0 ? 0 : gracePeriod,
+  isActive: gracePeriod > 0,
+  };
+
+  // Si es recurrente y el período de gracia es <= 0, desactivar también la recurrencia
+  if (isRecurrent && gracePeriod <= 0) {
+  updateData.isRecurrencyActive = false;
+  }
+
+  functions.logger.log("Compra", purchase);
+  functions.logger.log("Actualización", updateData);
+
+  // Actualizar la Purchase
+  await doc.ref.update(updateData);
+}
+}
+
+// Subfunción para procesar las Purchases directas y recurrentes
+async function processDirectAndRecurrentPurchases() {
+var today = new Date();
+const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+const purchasesRef = db.collection('Purchases');
+const snapshot = await purchasesRef
+  .where('directPurchase', 'in', [false, null])
+  .where('isRecurrencyActive', '==', true)
+  .where('isRecurrent', '==', true)
+  .where('brandId', '==', '1d16285c-54e8-4a6a-bd1f-ba7071c72774') //TODO: ELIMINAR
+  .get();
+
+
+for (const doc of snapshot.docs) {
+  const purchase = doc.data();
+  const { expirationTime, purchasedAt, purchaseGroupId } = purchase;
+  let shouldCreateNewPurchase = false;
+
+  functions.logger.log("purchasedAt", 'purchasedAt');
+
+  if (expirationTime > 0) {
+   
+  // Lógica para cuando expirationTime es mayor que 0
+  functions.logger.log("expirationTime", expirationTime);
+  const expirationTimeNew = new Date(purchasedAt.toDate().getTime() + expirationTime * 24 * 60 * 60 * 1000);
+  const expirationDateNormalized = new Date(expirationTimeNew.getFullYear(), expirationTimeNew.getMonth(), expirationTimeNew.getDate());
+
+  functions.logger.log("ExpirationTime", expirationDateNormalized);
+  functions.logger.log("today", todayNormalized);
+
+  shouldCreateNewPurchase = todayNormalized > expirationDateNormalized;
+  } else {
+    // Lógica para cuando expirationTime es 0 y estamos en día 1 del mes
+    // Crear una nueva fecha que es el primer día del mes siguiente a purchasedAt
+    const firstDayNextMonth = new Date(purchasedAt.getFullYear(), purchasedAt.getMonth() + 1, 1);
+    const firstDayNextMonthNormalized = new Date(firstDayNextMonth.getFullYear(), firstDayNextMonth.getMonth(), firstDayNextMonth.getDate());
+    functions.logger.log("firstDayNextMonth", firstDayNextMonthNormalized);
+    shouldCreateNewPurchase = (todayNormalized.getDate() >= 1) && (purchasedAt < firstDayNextMonth);
+  }
+
+  if (shouldCreateNewPurchase) {
+  // Crear nuevo registro en la colección Purchases
+  // ... Aquí iría tu lógica para obtener las características de la colección Brand/brandId o Bonos/bonoId si es necesario
+ 
+
+  const bonoSnapshot = await db.collection("Brands").doc(purchase.brandId).collection("Bonos").doc(purchase.bonoId).get();
+  const bonoSelected = bonoSnapshot.data();
+
+  const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
+  const brandSelected = brandSnapshot.data();
+
+  const newPurchaseData = {
+    purchasedAt: admin.firestore.Timestamp.fromDate(new Date()), // Fecha actual
+    userId: purchase.userId,
+    brandId: purchase.brandId,
+    bonoId: purchase.bonoId,
+    price: purchase.price, // o bonoSelected.price si necesitas el precio actualizado del bono
+    sessions: bonoSelected.sessions, // Asegúrate de tener el bonoSelected actualizado
+    weeklySessions: bonoSelected.weeklySessions,
+    cancelTime: bonoSelected.cancelTime,
+    expirationTime: bonoSelected.expirationTime,
+    paymentMethod: purchase.paymentMethod,
+    directPurchase: true, // Asumiendo que el nuevo purchase no es una compra directa
+    isActive: true,
+    purchasedAt: admin.firestore.Timestamp.fromDate(new Date()), // La fecha actual
+    isRecurrent: true,
+    gracePeriod: brandSelected.gracePeriod ?? 30,
+    maxCanWeek: brandSelected.maxCanWeek ?? 7,
+    paymentTerms: brandSelected.paymentTerms ?? 0,
+    purchaseGroupId: purchase.purchaseGroupId, // El ID del grupo de compras, si es aplicable
+    isRecurrencyActive: true, // o true/false según la lógica de negocio
+  };
+
+  // Añadir la nueva Purchase a la base de datos
+  var purchaseId = uuidv4();
+  const newDocRef = await db
+         .collection("Purchases")
+         .doc(purchaseId)
+         .set(
+          newPurchaseData
+        );
+  
+
+  // Añadir el ID del nuevo documento al array groupPurchases en Purchases/purchaseGroupId
+  const groupRef = db.collection('Purchases').doc(purchaseGroupId);
+  const groupDoc = await groupRef.get();
+  if (groupDoc.exists) {
+      const groupData = groupDoc.data();
+      const groupPurchases = groupData.groupPurchases || [];
+      groupPurchases.push(purchaseId);
+      await groupRef.update({ groupPurchases });
+  }
+
+  // Desactivar la recurrencia en la Purchase original
+  await doc.ref.update({ isRecurrencyActive: false, isActive: false });
+  }
+}
+}
+
+
 
 
 
