@@ -177,7 +177,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
       _timerLink?.cancel();
     }
     super.dispose();
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {

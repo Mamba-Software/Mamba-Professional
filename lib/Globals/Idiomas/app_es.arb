@@ -3378,13 +3378,30 @@
         "type": "String"
       }
     }
+  },  
+  "freeTrial":  "Prueba Gratuita",
+  "@freeTrial": {
+    "description": "chooseYourPlan message"
   },
-  "upgradeToPremium":  "Escoge tu plan",
+  "monthlyPlan":  "Plan Mensual",
+  "@monthlyPlan": {
+    "description": "chooseYourPlan message"
+  },
+  "monthlyPlanDayRenewal":  "Se renueva el día {daysLeft}",
+  "@monthlyPlanDayRenewal": {
+    "description": "freeTrialDaysLeft message",
+    "placeholders": {
+      "daysLeft": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseYourPlan":  "Escoge tu plan",  
   "@chooseYourPlan": {
     "description": "chooseYourPlan message"
   },
-  "chooseYourPlan":  "Escoge tu plan",
-  "@chooseYourPlan": {
+  "chooseYourPlanDesc":  "Desbloquea todas las funcionalidades",  
+  "@chooseYourPlanDesc": {
     "description": "chooseYourPlan message"
   },
   "yourPlan":  "Tu plan",
