@@ -33,7 +33,7 @@ class MambaProUtils {
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 5) {
-      return Text("${AppLocalizations.of(context)!.bonos}",
+      return Text("${AppLocalizations.of(context)!.rates}",
           style: Theme.of(context)
               .textTheme
               .bodyLarge
@@ -68,7 +68,7 @@ class MambaProUtils {
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 10) {
-      return Text(AppLocalizations.of(context)!.sesionsBottomNav,
+      return Text(AppLocalizations.of(context)!.bookings,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
@@ -118,7 +118,7 @@ class MambaProUtils {
     }
     if (pageIndex == 17) {
       return Text(
-          StringUtils().toCapitalized(AppLocalizations.of(context)!.boughts),
+          StringUtils().toCapitalized(AppLocalizations.of(context)!.yourPlan),
           style: Theme.of(context)
               .textTheme
               .bodyLarge
@@ -126,7 +126,7 @@ class MambaProUtils {
     }
     if (pageIndex == 18) {
       return Text(
-          StringUtils().toCapitalized(AppLocalizations.of(context)!.boughts),
+          StringUtils().toCapitalized(AppLocalizations.of(context)!.payments),
           style: Theme.of(context)
               .textTheme
               .bodyLarge

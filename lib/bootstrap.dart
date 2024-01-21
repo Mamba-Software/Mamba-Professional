@@ -277,13 +277,8 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                       settings: const RouteSettings(name: 'EventFeedback'),
                     );
                   case 'BonosRequests':
-                    setState(() {
-                      pageIndex = 18;
-                    });
-                    return CupertinoPageRoute(
-                      builder: (_) => const SplashScreen(),
-                      settings: const RouteSettings(name: 'SplashScreen'),
-                    );
+                    pageIndex = 18;
+                    break;
                   case 'MembershipRequests':
                     String brandId = args as String;
                     return CupertinoPageRoute(

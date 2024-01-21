@@ -394,7 +394,6 @@ class _BrandScreenState extends State<BrandScreen> {
         ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         listTilePro(10),
-        listTilePro(5),
         listTilePro(18),
         listTilePro(9),
 
@@ -403,12 +402,13 @@ class _BrandScreenState extends State<BrandScreen> {
           padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
-            AppLocalizations.of(context)!.members,
+            AppLocalizations.of(context)!.yourBrand,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
           ),
         ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+        listTilePro(5),
         listTilePro(2),
         listTilePro(1),
         //currentUser.brandRole < 3 ? listTilePro(15) : Container(),
@@ -418,7 +418,7 @@ class _BrandScreenState extends State<BrandScreen> {
           padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
-            AppLocalizations.of(context)!.yourBrand,
+            AppLocalizations.of(context)!.information,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
           ),

@@ -199,7 +199,7 @@ class _BonosProState extends State<BonosPro> {
             title: AnimatedOpacity(
                 opacity: appBarExpanded ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
-                child: Text(AppLocalizations.of(context)!.bonos,
+                child: Text(AppLocalizations.of(context)!.rates,
                     style:
                         Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
                               color: AppColors.white,
@@ -220,7 +220,7 @@ class _BonosProState extends State<BonosPro> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.bonos,
+                            AppLocalizations.of(context)!.rates,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge

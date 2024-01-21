@@ -244,7 +244,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                     title: AnimatedOpacity(
                         opacity: appBarExpanded ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 200),
-                        child: Text(AppLocalizations.of(context)!.boughts,
+                        child: Text(AppLocalizations.of(context)!.payments,
                             style: Theme.of(context)
                                 .appBarTheme
                                 .titleTextStyle
@@ -270,7 +270,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.boughts,
+                                    AppLocalizations.of(context)!.payments,
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge
@@ -871,7 +871,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.boughts.toLowerCase()}",
+                                        "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.payments.toLowerCase()}",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall,
@@ -915,7 +915,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                     title: AnimatedOpacity(
                         opacity: appBarExpanded ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 200),
-                        child: Text(AppLocalizations.of(context)!.boughts,
+                        child: Text(AppLocalizations.of(context)!.payments,
                             style: Theme.of(context)
                                 .appBarTheme
                                 .titleTextStyle
@@ -941,7 +941,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.boughts,
+                                    AppLocalizations.of(context)!.payments,
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge
