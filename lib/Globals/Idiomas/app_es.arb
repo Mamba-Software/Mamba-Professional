@@ -2155,12 +2155,20 @@
   "@bono":{
     "description": "Bonos text"
   },
+  "membership": "Membresía",
+  "@membership":{
+    "description": "Bonos text"  
+  },
   "rate": "Tarifa",
   "@rate":{
     "description": "Bonos text"  
   },
   "rates": "Tarifas",
   "@rates":{
+    "description": "Bonos text"  
+  },  
+  "typeRate": "Tipo de tarifa",
+  "@typeRate":{
     "description": "Bonos text"  
   },
   "bonos": "Bonos",
@@ -2565,6 +2573,14 @@
   },
   "giftPaymentMethod": "Regalo",
   "@giftPaymentMethod": {
+    "description": "Donde message"
+  },
+  "uniquePayment": "Pago único",
+  "@uniquePayment": {
+    "description": "Donde message"
+  },
+  "recurrentPayment": "Pago recurrente",
+  "@recurrentPayment": {
     "description": "Donde message"
   },
   "ilimitadas": "ilimitadas",
