@@ -30,6 +30,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/Bonos.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/009%20-%20Stats/Stats.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
@@ -737,13 +738,8 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 18:
         mixpanel!.track('brand_subscription_view');
-        return BrandSubscription(
-          locale: Localizations.localeOf(context),
+        return BrandPurchaseHistory(
           brandId: currentBrand.id!,
-          pinned: iconStar,
-          pinnedChanged: (boolean) {
-            handleChangedFavourites();
-          },
         );
       default:
         mixpanel!.track('brand_homepage_view');

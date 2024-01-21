@@ -18,7 +18,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Bono
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../../Globals/GlobalVars.dart';
@@ -112,18 +112,6 @@ class _BonosProState extends State<BonosPro> {
     print(
         "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
     print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
-  }
-
-  // Navigate to Bonos Request Screen
-  void navigateToPurchaseHistoryScreen() {
-    mixpanel!.track('brand_bonos_confirmation_requests');
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => BrandPurchaseHistory(
-            brandId: widget.brandId,
-          ),
-        ));
   }
 
   // Navigate to Add Bonos
@@ -646,6 +634,7 @@ class _BonosProState extends State<BonosPro> {
               SizedBox(width: MediaQuery.of(context).size.width * 0.03),
             ],
           ),
+          /*
           canEdit
               ? SliverToBoxAdapter(
                   child: Column(
@@ -810,6 +799,7 @@ class _BonosProState extends State<BonosPro> {
                   child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.0),
                 ),
+          */
           StreamBuilder<QuerySnapshot>(
               stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
               builder: (context, snapshot) {

@@ -18,9 +18,8 @@ import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
 import 'package:shimmer/shimmer.dart';
-
-import '../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({super.key});
@@ -1240,6 +1239,7 @@ class _NotificationsState extends State<Notifications> {
         }
       case "UserSendBonoRequest_Trainer":
         {
+          /*
           Navigator.push(
               context,
               CupertinoPageRoute<void>(
@@ -1247,6 +1247,7 @@ class _NotificationsState extends State<Notifications> {
                   brandId: currentBrand.id!,
                 ),
               ));
+              */
           break;
         }
       case "UserBuysBono_Trainer":

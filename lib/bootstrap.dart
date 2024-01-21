@@ -26,6 +26,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Clie
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/cubit/UnreadNotChatsCubit.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -38,7 +39,6 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'dart:io' show Platform;
 import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
-import 'Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 
 // Top Level -- Local BackGroundNotificationHandler
 Future<void> backgroundLocalMessageHandler(
@@ -90,16 +90,17 @@ class Bootstrap {
       FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
       // Firebase Dynamic Links
       DynamicLinkUtils().retrieveDynamicLink();
+
       /// Production and Staging Only
       if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Global Uncaught Errors
-        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;        
+        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
         // Set Log Level
         await Purchases.setLogLevel(LogLevel.info);
-      } 
+      }
       // Init MixPanel
       mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!,
-            trackAutomaticEvents: true, optOutTrackingDefault: false);
+          trackAutomaticEvents: true, optOutTrackingDefault: false);
       // Init Revenue Cat
       if (Platform.isAndroid) {
         PurchasesConfiguration configuration =
@@ -142,7 +143,7 @@ class Bootstrap {
 }
 
 // Material App
-class Mamba extends StatefulWidget {  
+class Mamba extends StatefulWidget {
   const Mamba({super.key});
   @override
   _MambaState createState() => _MambaState();
@@ -177,7 +178,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
       _timerLink?.cancel();
     }
     super.dispose();
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -276,13 +277,12 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                       settings: const RouteSettings(name: 'EventFeedback'),
                     );
                   case 'BonosRequests':
-                    String brandId = args as String;
                     setState(() {
-                      pageIndex = 5;
+                      pageIndex = 18;
                     });
                     return CupertinoPageRoute(
-                      builder: (_) => BrandPurchaseHistory(brandId: brandId),
-                      settings: const RouteSettings(name: 'BonosRequests'),
+                      builder: (_) => const SplashScreen(),
+                      settings: const RouteSettings(name: 'SplashScreen'),
                     );
                   case 'MembershipRequests':
                     String brandId = args as String;
