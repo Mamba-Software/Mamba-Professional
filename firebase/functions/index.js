@@ -3686,6 +3686,7 @@ exports.scheduledCheckBonoFunctionOnCall = functions
 
   // Ejecutar subfunciones
   await processRegularPurchases();
+  await processRegularPurchasesExpTime();
   await processDirectAndRecurrentPurchases();
 
   functions.logger.log("Función ejecutada correctamente", todayNew);
@@ -3737,7 +3738,6 @@ const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.ge
 
 const purchasesRef = db.collection('Purchases');
 const snapshot = await purchasesRef
-  .where('directPurchase', 'in', [false, null])
   .where('isRecurrencyActive', '==', true)
   .where('isRecurrent', '==', true)
   .where('brandId', '==', '1d16285c-54e8-4a6a-bd1f-ba7071c72774') //TODO: ELIMINAR
@@ -3752,23 +3752,28 @@ for (const doc of snapshot.docs) {
   functions.logger.log("purchasedAt", 'purchasedAt');
 
   if (expirationTime > 0) {
-   
-  // Lógica para cuando expirationTime es mayor que 0
-  functions.logger.log("expirationTime", expirationTime);
-  const expirationTimeNew = new Date(purchasedAt.toDate().getTime() + expirationTime * 24 * 60 * 60 * 1000);
-  const expirationDateNormalized = new Date(expirationTimeNew.getFullYear(), expirationTimeNew.getMonth(), expirationTimeNew.getDate());
 
-  functions.logger.log("ExpirationTime", expirationDateNormalized);
-  functions.logger.log("today", todayNormalized);
+    // Lógica para cuando expirationTime es mayor que 0
+    functions.logger.log("expirationTime", expirationTime);
 
-  shouldCreateNewPurchase = todayNormalized > expirationDateNormalized;
+    let expirationDate;
+    expirationDate = new Date(purchasedAt.toDate().getTime() + expirationTime * 24 * 60 * 60 * 1000);
+
+    const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
+
+    functions.logger.log("ExpirationTime", expirationDateNormalized);
+    functions.logger.log("today", todayNormalized);
+
+    shouldCreateNewPurchase = todayNormalized > expirationDateNormalized;
+
   } else {
     // Lógica para cuando expirationTime es 0 y estamos en día 1 del mes
     // Crear una nueva fecha que es el primer día del mes siguiente a purchasedAt
-    const firstDayNextMonth = new Date(purchasedAt.getFullYear(), purchasedAt.getMonth() + 1, 1);
+    const firstDayNextMonth = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth() + 1, 1);
     const firstDayNextMonthNormalized = new Date(firstDayNextMonth.getFullYear(), firstDayNextMonth.getMonth(), firstDayNextMonth.getDate());
     functions.logger.log("firstDayNextMonth", firstDayNextMonthNormalized);
-    shouldCreateNewPurchase = (todayNormalized.getDate() >= 1) && (purchasedAt < firstDayNextMonth);
+    functions.logger.log("purchasedAt.toDate()", purchasedAt.toDate());
+    shouldCreateNewPurchase = (todayNormalized.getDate() >= 1) && (purchasedAt.toDate() < firstDayNextMonth);
   }
 
   if (shouldCreateNewPurchase) {
@@ -3829,6 +3834,72 @@ for (const doc of snapshot.docs) {
   }
 }
 }
+
+// Subfunción para procesar las Purchases normales
+async function processRegularPurchasesExpTime() {
+
+  var today = new Date();
+  const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  const purchasesRef = db.collection('Purchases');
+  const snapshot = await purchasesRef
+    .where('isActive', '==', true)
+    .where('isRecurrent', '==', false)
+    .where('expirationTime', '>', 0)
+    .where('brandId', '==', '1d16285c-54e8-4a6a-bd1f-ba7071c72774') //TODO: ELIMINAR
+    .get();
+  
+  for (const doc of snapshot.docs) {
+    const purchase = doc.data();
+    const {expirationTime, purchasedAt} = purchase;
+    let shouldSetInactivePurchase = false;
+
+    if (expirationTime > 0) {
+
+      // Lógica para cuando expirationTime es mayor que 0
+      functions.logger.log("expirationTime", expirationTime);
+  
+      let expirationDate;
+  
+      if(expirationTime == 30) 
+      {
+        // Calcula la fecha para 1 mes después
+        expirationDate = new Date(purchasedAt.toDate());
+        expirationDate.setMonth(purchasedAt.toDate().getMonth() + 1);
+      }
+      if(expirationTime == 60) 
+      {
+        // Calcula la fecha para 1 mes después
+        expirationDate = new Date(purchasedAt.toDate());
+        expirationDate.setMonth(purchasedAt.toDate().getMonth() + 2);
+      }
+      if(expirationTime == 90) 
+      {
+        // Calcula la fecha para 1 mes después
+        expirationDate = new Date(purchasedAt.toDate());
+        expirationDate.setMonth(purchasedAt.toDate().getMonth() + 3);
+      }
+      else 
+      {
+        expirationDate = new Date(purchasedAt.toDate().getTime() + expirationTime * 24 * 60 * 60 * 1000);
+       
+      }
+  
+      const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
+  
+      functions.logger.log("ExpirationTime", expirationDateNormalized);
+      functions.logger.log("today", todayNormalized);
+  
+      shouldSetInactivePurchase = todayNormalized >= expirationDateNormalized;
+
+      if(shouldSetInactivePurchase) 
+      {
+        await doc.ref.update({isActive: false});
+      }
+  
+    }
+  }
+  }
 
 
 
