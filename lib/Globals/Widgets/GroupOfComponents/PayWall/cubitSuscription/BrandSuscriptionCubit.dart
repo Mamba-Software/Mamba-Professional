@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -11,16 +10,16 @@ import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:equatable/equatable.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-
 part 'BrandSuscriptionState.dart';
 
 class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
-
   late StreamSubscription<DocumentSnapshot> _streamBrandSuscription;
 
-  BrandSuscriptionCubit(final cubitAuth) : super(const BrandSuscriptionInitial()) {
-
-    Stream<DocumentSnapshot<Object?>> getBrandSubscriptionStream(String userId) {
+  BrandSuscriptionCubit(final cubitAuth
+      )
+      : super(const BrandSuscriptionInitial()) {
+    Stream<DocumentSnapshot<Object?>> getBrandSubscriptionStream(
+        String userId) {
       final brandDataService = BrandDataService();
       return brandDataService.getBrandSubscriptionStream(currentBrand.id!);
     }
@@ -29,22 +28,18 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
       cubitAuth.stream.distinct().listen((state) {
         // Handle the state change
         if (state is AuthUserBrand) {
-          _streamBrandSuscription = getBrandSubscriptionStream(currentBrand.id!).listen((querySnapshot) async {
+          _streamBrandSuscription = getBrandSubscriptionStream(currentBrand.id!)
+              .listen((querySnapshot) async {
             DocumentSnapshot document = querySnapshot;
             getBrandSuscription(document);
           });
-        }
-        else {
+        } else {
           //_streamBrandSuscription.cancel();
         }
       });
-    }
-    catch(e)
-    {
+    } catch (e) {
       emit(const BrandSuscriptionLoadedFalse());
     }
-
-
   }
 
   Future<void> getBrandSuscription(DocumentSnapshot document) async {
@@ -56,60 +51,61 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
     Subscription subscription = Subscription();
     try {
       //Está en la antigua suscripción metodo
-      if(brand.subscription == null) {
+      if (brand.subscription == null) {
         currentBrand.subscription = null;
-        if(brand.subscriptionId != null) {
+        if (brand.subscriptionId != null) {
           currentBrand.subscriptionId = brand.subscriptionId;
-          if(brand.endDatePay != null) {
-              currentBrand.endDatePay = brand.endDatePay;
+          if (brand.endDatePay != null) {
+            currentBrand.endDatePay = brand.endDatePay;
           }
-          subscription =
-          await brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
+          subscription = await brandDataService.getBrandSubscription(
+              currentBrand.id!, currentBrand.subscriptionId!);          
           subscription.unsuscribed = true;
           setBrandActive();
-          if(brandIsActive) {
+          if (brandIsActive) {
             emit(BrandSuscriptionLoadedTrue(subscription));
-          }
-          else {
+          } else {
             emit(const BrandSuscriptionLoadedFalse());
           }
-        }
-        else {
+        } else {
           emit(const BrandSuscriptionLoadedFalse());
         }
-
       }
       //Nuevo metodo de suscripcion
       else {
         currentBrand.subscription = brand.subscription!;
         setBrandActive();
-        if(brandIsActive) {
-
-          subscription.title = currentBrand.subscription!['product_plan_identifier'];
-          subscription.description = currentBrand.subscription!['product_plan_identifier'];
-          subscription.subscriptionId = currentBrand.subscription!['product_plan_identifier'];
-          subscription.endDate = Timestamp.fromDate(DateTime.parse(currentBrand.subscription!['expires_date'].toString()));
-          subscription.startDate = Timestamp.fromDate(DateTime.parse(currentBrand.subscription!['original_purchase_date'].toString()));
+        if (brandIsActive) {
+          subscription.title =
+              currentBrand.subscription!['product_plan_identifier'];
+          subscription.description =
+              currentBrand.subscription!['product_plan_identifier'];
+          subscription.subscriptionId =
+              currentBrand.subscription!['product_plan_identifier'];
+          subscription.endDate = Timestamp.fromDate(DateTime.parse(
+              currentBrand.subscription!['expires_date'].toString()));
+          subscription.startDate = Timestamp.fromDate(DateTime.parse(
+              currentBrand.subscription!['original_purchase_date'].toString()));
           subscription.unsuscribed = currentBrand.subscription!['unsuscribed'];
 
-          List<StoreProduct> product = await Purchases.getProducts([subscription.subscriptionId!]);
-          if(product.isNotEmpty) {
+          List<StoreProduct> product =
+              await Purchases.getProducts([subscription.subscriptionId!]);
+          if (product.isNotEmpty) {
             subscription.title = product[0].description;
-            if(subscription.title == 'month_sub') {
-              subscription.title = 'Month plan';
+            if (subscription.title == 'month_sub') {
+              subscription.title = 'Plan Mensual';
             }
             subscription.description = product[0].description;
-            if(subscription.description == 'month_sub') {
-              subscription.description = 'Month plan';
+            if (subscription.description == 'month_sub') {
+              subscription.description = 'Plan Mensual';                           
             }
           }
           emit(BrandSuscriptionLoadedTrue(subscription));
-        }
-        else {
+        } else {
           emit(const BrandSuscriptionLoadedFalse());
         }
       }
-    } catch(e) {
+    } catch (e) {
       print(e);
       emit(const BrandSuscriptionLoadedFalse());
     }

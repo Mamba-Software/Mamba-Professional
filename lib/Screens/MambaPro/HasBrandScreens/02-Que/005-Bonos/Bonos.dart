@@ -18,7 +18,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Bono
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../../Globals/GlobalVars.dart';
@@ -114,18 +114,6 @@ class _BonosProState extends State<BonosPro> {
     print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
-  // Navigate to Bonos Request Screen
-  void navigateToPurchaseHistoryScreen() {
-    mixpanel!.track('brand_bonos_confirmation_requests');
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => BrandPurchaseHistory(
-            brandId: widget.brandId,
-          ),
-        ));
-  }
-
   // Navigate to Add Bonos
   Future<void> navigateToAddBonosScreen(
       Bono bono, Brand brand, bool edit) async {
@@ -211,7 +199,7 @@ class _BonosProState extends State<BonosPro> {
             title: AnimatedOpacity(
                 opacity: appBarExpanded ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
-                child: Text(AppLocalizations.of(context)!.bonos,
+                child: Text(AppLocalizations.of(context)!.rates,
                     style:
                         Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
                               color: AppColors.white,
@@ -232,7 +220,7 @@ class _BonosProState extends State<BonosPro> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.bonos,
+                            AppLocalizations.of(context)!.rates,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -646,6 +634,7 @@ class _BonosProState extends State<BonosPro> {
               SizedBox(width: MediaQuery.of(context).size.width * 0.03),
             ],
           ),
+          /*
           canEdit
               ? SliverToBoxAdapter(
                   child: Column(
@@ -810,6 +799,7 @@ class _BonosProState extends State<BonosPro> {
                   child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.0),
                 ),
+          */
           StreamBuilder<QuerySnapshot>(
               stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
               builder: (context, snapshot) {

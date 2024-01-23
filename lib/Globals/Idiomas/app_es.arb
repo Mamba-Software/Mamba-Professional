@@ -331,7 +331,7 @@
   "@content":{
     "description": "Información Text"
   },
-  "settings": "Ajustes",
+  "settings": "Configuración",
   "@settings":{
     "description": "Ajustes Text"
   },
@@ -2155,6 +2155,22 @@
   "@bono":{
     "description": "Bonos text"
   },
+  "membership": "Membresía",
+  "@membership":{
+    "description": "Bonos text"  
+  },
+  "rate": "Tarifa",
+  "@rate":{
+    "description": "Bonos text"  
+  },
+  "rates": "Tarifas",
+  "@rates":{
+    "description": "Bonos text"  
+  },  
+  "typeRate": "Tipo de tarifa",
+  "@typeRate":{
+    "description": "Bonos text"  
+  },
   "bonos": "Bonos",
   "@bonos":{
     "description": "Bonos text"
@@ -2557,6 +2573,14 @@
   },
   "giftPaymentMethod": "Regalo",
   "@giftPaymentMethod": {
+    "description": "Donde message"
+  },
+  "uniquePayment": "Pago único",
+  "@uniquePayment": {
+    "description": "Donde message"
+  },
+  "recurrentPayment": "Pago recurrente",
+  "@recurrentPayment": {
     "description": "Donde message"
   },
   "ilimitadas": "ilimitadas",
@@ -2980,6 +3004,14 @@
   "@benefit": {
     "description": "benefit message"
   },
+  "bookings": "Reservas",
+  "@bookings": {
+    "description": "boughts message"
+  },
+  "payments": "Pagos",
+  "@payments": {
+    "description": "boughts message"
+  },
   "boughts": "Compras",
   "@boughts": {
     "description": "boughts message"
@@ -3378,13 +3410,30 @@
         "type": "String"
       }
     }
+  },  
+  "freeTrial":  "Prueba Gratuita",
+  "@freeTrial": {
+    "description": "chooseYourPlan message"
   },
-  "upgradeToPremium":  "Escoge tu plan",
+  "monthlyPlan":  "Plan Mensual",
+  "@monthlyPlan": {
+    "description": "chooseYourPlan message"
+  },
+  "monthlyPlanDayRenewal":  "Se renueva el día {daysLeft}",
+  "@monthlyPlanDayRenewal": {
+    "description": "freeTrialDaysLeft message",
+    "placeholders": {
+      "daysLeft": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseYourPlan":  "Escoge tu plan",  
   "@chooseYourPlan": {
     "description": "chooseYourPlan message"
   },
-  "chooseYourPlan":  "Escoge tu plan",
-  "@chooseYourPlan": {
+  "chooseYourPlanDesc":  "Desbloquea todas las funcionalidades",  
+  "@chooseYourPlanDesc": {
     "description": "chooseYourPlan message"
   },
   "yourPlan":  "Tu plan",

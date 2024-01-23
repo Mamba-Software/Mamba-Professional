@@ -32,18 +32,18 @@ class RolesInfo extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Flexible(
-                    child: Text(
-                        AppLocalizations.of(context)!.roles,
+                    child: Text(AppLocalizations.of(context)!.roles,
                         style: Theme.of(context).textTheme.displayLarge,
                         textAlign: TextAlign.left),
                   ),
                   Flexible(
-                    child:
-                    Text(
+                    child: Text(
                         AppLocalizations.of(context)!.rolesInfoDescription,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
-                        textAlign: TextAlign.center
-                    ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(height: 1.5),
+                        textAlign: TextAlign.center),
                   ),
                 ],
               ),
@@ -58,9 +58,10 @@ class RolesInfo extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * 0.3,
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                      bottom: BorderSide(
+                          width: 1.0,
+                          color: Theme.of(context).colorScheme.background),
                     ),
-
                   ),
                 ),
                 Container(
@@ -71,7 +72,7 @@ class RolesInfo extends StatelessWidget {
                     borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(5.0),
                       topLeft: Radius.circular(5.0),
-                    ),//
+                    ), //
                   ),
                   child: FittedBox(
                     fit: BoxFit.fitWidth,
@@ -108,7 +109,8 @@ class RolesInfo extends StatelessWidget {
               child: SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05),
                   child: Column(
                     children: [
                       // Events
@@ -141,8 +143,6 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.background,
                             ),
-
-
                           ),
                         ],
                       ),
@@ -154,7 +154,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -176,20 +180,41 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -205,7 +230,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -227,20 +256,41 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -262,7 +312,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.bonos,
+                                  AppLocalizations.of(context)!.rates,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 )
@@ -275,8 +325,6 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.background,
                             ),
-
-
                           ),
                         ],
                       ),
@@ -288,7 +336,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -310,20 +362,41 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -339,7 +412,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -361,20 +438,41 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -390,7 +488,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -398,7 +500,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.confirm} ${AppLocalizations.of(context)!.bonos.toLowerCase()}",
+                                  "${AppLocalizations.of(context)!.confirm} ${AppLocalizations.of(context)!.rates.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -412,20 +514,41 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -442,7 +565,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -464,20 +591,41 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -512,8 +660,6 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.background,
                             ),
-
-
                           ),
                         ],
                       ),
@@ -525,7 +671,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -547,20 +697,40 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -576,7 +746,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -598,20 +772,40 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -627,7 +821,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -649,20 +847,41 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -678,7 +897,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -700,20 +923,41 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -729,7 +973,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -751,20 +999,42 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -799,8 +1069,6 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.background,
                             ),
-
-
                           ),
                         ],
                       ),
@@ -812,7 +1080,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -834,20 +1106,40 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -863,7 +1155,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -885,20 +1181,40 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -1018,7 +1334,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -1040,20 +1360,42 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -1088,8 +1430,6 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.background,
                             ),
-
-
                           ),
                         ],
                       ),
@@ -1101,7 +1441,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -1123,20 +1467,42 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -1152,7 +1518,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -1174,20 +1544,42 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -1203,7 +1595,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -1225,20 +1621,42 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -1254,7 +1672,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -1276,20 +1698,42 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -1305,7 +1749,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -1327,20 +1775,42 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -1356,7 +1826,11 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                left: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: Row(
@@ -1367,14 +1841,21 @@ class RolesInfo extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      AppLocalizations.of(context)!.paySubscription,
-                                      style: Theme.of(context).textTheme.bodyMedium,
+                                      AppLocalizations.of(context)!
+                                          .paySubscription,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
                                       textAlign: TextAlign.left,
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      AppLocalizations.of(context)!.paySubscriptionDesc,
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
+                                      AppLocalizations.of(context)!
+                                          .paySubscriptionDesc,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(fontSize: 13),
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
@@ -1389,20 +1870,42 @@ class RolesInfo extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               border: Border(
-                                right: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.background),
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
                               ),
                             ),
                             child: FittedBox(
                               fit: BoxFit.fitWidth,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const SizedBox(width: 0),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -1421,7 +1924,7 @@ class RolesInfo extends StatelessWidget {
                               borderRadius: const BorderRadius.only(
                                 bottomLeft: Radius.circular(5.0),
                                 bottomRight: Radius.circular(5.0),
-                              ),//
+                              ), //
                             ),
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -1432,7 +1935,9 @@ class RolesInfo extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.05,)
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.05,
+                      )
                     ],
                   ),
                 ),
