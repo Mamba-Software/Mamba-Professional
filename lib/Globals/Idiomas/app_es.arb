@@ -809,7 +809,7 @@
   "@state":{
     "description": "disponibilidad text"
   },
-  "disponibilidad": "Disponibilidad",
+  "disponibilidad": "Disponible",
   "@disponibilidad":{
     "description": "disponibilidad text"
   },
@@ -2395,6 +2395,18 @@
   "@month": {
     "description": "seeMap message"
   },
+  "monthly": "Mensualmente",
+  "@monthly": {
+    "description": "seeMap message"
+  },  
+  "bimonthly": "Bimensualmente",
+  "@bimonthly": {
+    "description": "seeMap message"
+  },
+  "quarterly": "Trimestralmente",
+  "@quarterly": {
+    "description": "seeMap message"
+  },
   "year": "Año",
   "@year": {
     "description": "seeMap message"
@@ -2635,6 +2647,14 @@
   "@desactive": {
     "description": "desactive message"
   },
+  "disponible": "Disponible",
+  "@disponible": {
+    "description": "active message"
+  },
+  "noDisponible": "No disponible",
+  "@noDisponible": {
+    "description": "desactive message"
+  },
   "price": "Precio",
   "@price": {
     "description": "price message"
@@ -2674,11 +2694,15 @@
   "expiredAfter": "Expirado después de",
   "@expiredAfter":{
     "description": "expiresAt Text"
-  },
+  },  
   "expiresAt": "Expira en",
   "@expiresAt":{
     "description": "expiresAt Text"
   },
+  "renewsAt": "Se renueva",
+  "@renewsAt":{
+    "description": "expiresAt Text"
+  },  
   "expiresAtDesc": "Número de días hasta el vencimiento de este bono.",
   "@expiresAtDesc":{
     "description": "expiresAt Text"

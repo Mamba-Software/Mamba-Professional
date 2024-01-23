@@ -1597,7 +1597,7 @@ class _AddEditBonoState extends State<AddEditBono>
               children: [
                 Text(
                   numberDays != "0"
-                      ? "$numberDays ${AppLocalizations.of(context)!.days.toLowerCase()}"
+                      ? numberDays
                       : isRecurrent
                           ? AppLocalizations.of(context)!.firstDayOfMonth
                           : "No expira",
@@ -2322,12 +2322,27 @@ class _AddEditBonoState extends State<AddEditBono>
                 children: <Widget>[
                   SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   isRecurrent
-                      ? daysSelectoWidget(0, '0', editable, false, isRecurrent)
+                      ? Container()
                       : daysSelectoWidget(
                           0, '0', editable, noSessions, isRecurrent),
-                  daysSelectoWidget(1, '30', editable, false, isRecurrent),
-                  daysSelectoWidget(2, '60', editable, false, isRecurrent),
-                  daysSelectoWidget(3, '90', editable, false, isRecurrent),
+                  daysSelectoWidget(
+                      1,
+                      "${AppLocalizations.of(context)!.monthly} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)",
+                      editable,
+                      false,
+                      isRecurrent),
+                  daysSelectoWidget(
+                      2,
+                      "${AppLocalizations.of(context)!.bimonthly} (60 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)",
+                      editable,
+                      false,
+                      isRecurrent),
+                  daysSelectoWidget(
+                      3,
+                      "${AppLocalizations.of(context)!.quarterly} (90 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)",
+                      editable,
+                      false,
+                      isRecurrent),
                 ],
               )
             : variable == 'canFree' && cancelTimeSessions
