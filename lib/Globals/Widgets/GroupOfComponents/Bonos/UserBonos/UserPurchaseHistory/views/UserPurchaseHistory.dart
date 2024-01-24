@@ -15,14 +15,19 @@ import '../cubit/UserPurchasesCubit.dart';
 
 class UserPurchaseHistory extends StatelessWidget {
   final String userId;
-  final String brandId;  
+  final String brandId;
+  final String purchaseGroupId;
 
-  const UserPurchaseHistory({super.key, required this.brandId, required this.userId});
+  const UserPurchaseHistory(
+      {super.key,
+      required this.brandId,
+      required this.userId,
+      required this.purchaseGroupId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UserPurchasesCubit>(
-      create: (context) => UserPurchasesCubit(userId, brandId),
+      create: (context) => UserPurchasesCubit(userId, brandId, purchaseGroupId),
       child: UserPurchaseHistoryBody(brandId: brandId, userId: userId),
     );
   }
@@ -32,14 +37,15 @@ class UserPurchaseHistoryBody extends StatefulWidget {
   final String brandId;
   final String userId;
 
-  const UserPurchaseHistoryBody({super.key, required this.brandId, required this.userId});
+  const UserPurchaseHistoryBody(
+      {super.key, required this.brandId, required this.userId});
 
   @override
-  _UserPurchaseHistoryBodyState createState() => _UserPurchaseHistoryBodyState();
+  _UserPurchaseHistoryBodyState createState() =>
+      _UserPurchaseHistoryBodyState();
 }
 
 class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
-
   String brandId = "";
 
   @override
@@ -51,8 +57,9 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
   void dispose() {
     super.dispose();
   }
-  
-  void _show(BuildContext context, DateTime startDate, DateTime endDate, DateTime dateJoinedBrand) async {
+
+  void _show(BuildContext context, DateTime startDate, DateTime endDate,
+      DateTime dateJoinedBrand) async {
     List<DateTime>? result = await showModalBottomSheet<List<DateTime>>(
       context: context,
       isScrollControlled: true,
@@ -75,30 +82,46 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
       },
     );
     if (result != null) {
-      context.read<UserPurchasesCubit>().filterByDateRange(result.first, result.last);
+      context
+          .read<UserPurchasesCubit>()
+          .filterByDateRange(result.first, result.last);
     }
   }
 
-  String returnCorrectText(BuildContext context, DateTime startDate, DateTime endDate, DateTime dateJoinedBrand, bool acceptToday) {
+  String returnCorrectText(BuildContext context, DateTime startDate,
+      DateTime endDate, DateTime dateJoinedBrand, bool acceptToday) {
     DateTime now = DateTime.now();
-    DateTime maxEndDate = acceptToday ? now : now.subtract(const Duration(days: 1));
+    DateTime maxEndDate =
+        acceptToday ? now : now.subtract(const Duration(days: 1));
     int daysDifference = endDate.difference(startDate).inDays;
 
     // Check for "this month" selection
-    if (startDate.day == 1 && startDate.month == now.month && startDate.year == now.year
-        && endDate.day == maxEndDate.day && endDate.month == maxEndDate.month && endDate.year == maxEndDate.year) {
+    if (startDate.day == 1 &&
+        startDate.month == now.month &&
+        startDate.year == now.year &&
+        endDate.day == maxEndDate.day &&
+        endDate.month == maxEndDate.month &&
+        endDate.year == maxEndDate.year) {
       return "${AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.month)}";
     }
 
     // Check for "previous month" selection
-    if (startDate.day == 1 && startDate.month == now.month - 1 && startDate.year == now.year
-        && endDate.day == DateTime(now.year, now.month, 0).day && endDate.month == now.month - 1 && endDate.year == now.year) {
+    if (startDate.day == 1 &&
+        startDate.month == now.month - 1 &&
+        startDate.year == now.year &&
+        endDate.day == DateTime(now.year, now.month, 0).day &&
+        endDate.month == now.month - 1 &&
+        endDate.year == now.year) {
       return AppLocalizations.of(context)!.previousMonth;
     }
 
     // Check for "Historic" selection
-    if (startDate.day == dateJoinedBrand.day && startDate.month == dateJoinedBrand.month && startDate.year == dateJoinedBrand.year
-        && endDate.day == maxEndDate.day && endDate.month == maxEndDate.month && endDate.year == maxEndDate.year) {
+    if (startDate.day == dateJoinedBrand.day &&
+        startDate.month == dateJoinedBrand.month &&
+        startDate.year == dateJoinedBrand.year &&
+        endDate.day == maxEndDate.day &&
+        endDate.month == maxEndDate.month &&
+        endDate.year == maxEndDate.year) {
       return AppLocalizations.of(context)!.historic;
     }
 
@@ -107,8 +130,11 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
       case 14:
       case 30:
       case 90:
-        if (maxEndDate.day == endDate.day && maxEndDate.month == endDate.month && maxEndDate.year == endDate.year) {
-          return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        if (maxEndDate.day == endDate.day &&
+            maxEndDate.month == endDate.month &&
+            maxEndDate.year == endDate.year) {
+          return AppLocalizations.of(context)!
+              .lastNDays(endDate.difference(startDate).inDays.toString());
         } else {
           return AppLocalizations.of(context)!.personlized;
         }
@@ -170,9 +196,12 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
             DateTime startDate = loadedState.startDate;
             DateTime endDate = loadedState.endDate;
             DateTime dateJoinedBrand = loadedState.dateJoinedBrand;
-            List<bool> filterByPurchaseStatus = loadedState.filterByPurchaseStatus;
-            List<bool> filterByActivePurchases = loadedState.filterByActivePurchases;
-            List<bool> allFilters = filterByPurchaseStatus + filterByActivePurchases;
+            List<bool> filterByPurchaseStatus =
+                loadedState.filterByPurchaseStatus;
+            List<bool> filterByActivePurchases =
+                loadedState.filterByActivePurchases;
+            List<bool> allFilters =
+                filterByPurchaseStatus + filterByActivePurchases;
             return Scaffold(
               appBar: AppBar(
                 toolbarHeight: MediaQuery.of(context).size.height * 0.14,
@@ -192,23 +221,31 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                 ),
                 actions: [
                   Padding(
-                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.03),
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.05,
+                        right: MediaQuery.of(context).size.width * 0.03),
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.08,
                       height: MediaQuery.of(context).size.width * 0.08,
                       decoration: BoxDecoration(
-                        color: allFilters.contains(false) ? Theme.of(context).primaryColor : Colors.transparent,
+                        color: allFilters.contains(false)
+                            ? Theme.of(context).primaryColor
+                            : Colors.transparent,
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
                         splashRadius: 20,
-                        splashColor: Theme.of(context).colorScheme.background, // Splash color
+                        splashColor: Theme.of(context)
+                            .colorScheme
+                            .background, // Splash color
                         padding: EdgeInsets.zero,
                         alignment: Alignment.center,
                         icon: Icon(
                           Icons.filter_list,
-                          color: allFilters.contains(false) ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor,
-                          size: MediaQuery.of(context).size.width*0.06,
+                          color: allFilters.contains(false)
+                              ? Theme.of(context).primaryColorDark
+                              : Theme.of(context).primaryColor,
+                          size: MediaQuery.of(context).size.width * 0.06,
                         ),
                         onPressed: () async {
                           await showModalBottomSheet<int?>(
@@ -222,56 +259,88 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                             clipBehavior: Clip.antiAliasWithSaveLayer,
                             builder: (BuildContext context) {
                               return StatefulBuilder(
-                                builder: (BuildContext context, StateSetter setState) {
-                                  final PageController pageController = PageController(initialPage: 0);
-                                  ValueNotifier<int> currentPage = ValueNotifier(0);
-                                  ValueNotifier<bool> isTypePurchase = ValueNotifier(true);
+                                builder: (BuildContext context,
+                                    StateSetter setState) {
+                                  final PageController pageController =
+                                      PageController(initialPage: 0);
+                                  ValueNotifier<int> currentPage =
+                                      ValueNotifier(0);
+                                  ValueNotifier<bool> isTypePurchase =
+                                      ValueNotifier(true);
                                   return FractionallySizedBox(
                                     heightFactor: 0.33,
                                     child: SizedBox(
-                                      height: MediaQuery.of(context).size.height * 0.5,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.5,
                                       width: MediaQuery.of(context).size.width,
                                       child: Padding(
-                                        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                        padding: EdgeInsets.all(
+                                            MediaQuery.of(context).size.width *
+                                                0.02),
                                         child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           children: [
                                             ValueListenableBuilder<int>(
                                               valueListenable: currentPage,
                                               builder: (context, value, child) {
                                                 return ListTile(
                                                   title: Text(
-                                                      AppLocalizations.of(context)!.filterBy,
-                                                      style: Theme.of(context).textTheme.bodySmall,
-                                                      textAlign: TextAlign.left
-                                                  ),
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .filterBy,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodySmall,
+                                                      textAlign:
+                                                          TextAlign.left),
                                                   trailing: TextButton(
                                                       child: Text(
-                                                          AppLocalizations.of(context)!.clear,
-                                                          style: Theme.of(context).textTheme.bodySmall
-                                                      ),
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .clear,
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodySmall),
                                                       onPressed: () {
-                                                        filterByPurchaseStatus = [true, true, true];
-                                                        filterByActivePurchases = [true, true];
-                                                        userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
+                                                        filterByPurchaseStatus =
+                                                            [true, true, true];
+                                                        filterByActivePurchases =
+                                                            [true, true];
+                                                        userPurchasesCubit.filterBy(
+                                                            filterByPurchaseStatus,
+                                                            filterByActivePurchases);
                                                         Navigator.pop(context);
-                                                      }
-                                                  ),
+                                                      }),
                                                   dense: true,
-                                                  onTap: value == 0 ? null : () {
-                                                    pageController.previousPage(
-                                                      duration: const Duration(milliseconds: 500),
-                                                      curve: Curves.ease,
-                                                    );
-                                                  },
+                                                  onTap: value == 0
+                                                      ? null
+                                                      : () {
+                                                          pageController
+                                                              .previousPage(
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        500),
+                                                            curve: Curves.ease,
+                                                          );
+                                                        },
                                                 );
                                               },
                                             ),
                                             SizedBox(
-                                              height: MediaQuery.of(context).size.height * 0.21,
-                                              width: MediaQuery.of(context).size.width,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.21,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
                                               child: PageView(
-                                                physics: const NeverScrollableScrollPhysics(),
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
                                                 controller: pageController,
                                                 onPageChanged: (int page) {
                                                   currentPage.value = page;
@@ -281,175 +350,368 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                     children: [
                                                       ListTile(
                                                         onTap: () {
-                                                          isTypePurchase.value = true;
-                                                          pageController.nextPage(
-                                                            duration: const Duration(milliseconds: 500),
+                                                          isTypePurchase.value =
+                                                              true;
+                                                          pageController
+                                                              .nextPage(
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        500),
                                                             curve: Curves.ease,
                                                           );
                                                         },
                                                         title: Text(
-                                                            AppLocalizations.of(context)!.state,
-                                                            style: Theme.of(context).textTheme.bodyLarge,
-                                                            textAlign: TextAlign.left
-                                                        ),
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .state,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge,
+                                                            textAlign:
+                                                                TextAlign.left),
                                                         subtitle: Text(
-                                                            returnFilteredStatusString(filterByPurchaseStatus),
-                                                            style: Theme.of(context).textTheme.bodySmall,
+                                                            returnFilteredStatusString(
+                                                                filterByPurchaseStatus),
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodySmall,
                                                             maxLines: 1,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            textAlign: TextAlign.left
-                                                        ),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.left),
                                                         trailing: SizedBox(
-                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.15,
                                                           child: Center(
-                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
-                                                          ),
+                                                              child: Icon(
+                                                                  Icons
+                                                                      .arrow_forward_ios,
+                                                                  size: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      0.04,
+                                                                  color: AppColors
+                                                                      .grey)),
                                                         ),
                                                       ),
                                                       ListTile(
                                                         onTap: () {
-                                                          isTypePurchase.value = false;
-                                                          pageController.nextPage(
-                                                            duration: const Duration(milliseconds: 500),
+                                                          isTypePurchase.value =
+                                                              false;
+                                                          pageController
+                                                              .nextPage(
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        500),
                                                             curve: Curves.ease,
                                                           );
                                                         },
                                                         title: Text(
                                                             "${AppLocalizations.of(context)!.bono} ${AppLocalizations.of(context)!.active}s",
-                                                            style: Theme.of(context).textTheme.bodyLarge,
-                                                            textAlign: TextAlign.left
-                                                        ),
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge,
+                                                            textAlign:
+                                                                TextAlign.left),
                                                         subtitle: Text(
-                                                            returnFilteredActiveBonosString(filterByActivePurchases),
-                                                            style: Theme.of(context).textTheme.bodySmall,
+                                                            returnFilteredActiveBonosString(
+                                                                filterByActivePurchases),
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodySmall,
                                                             maxLines: 1,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            textAlign: TextAlign.left
-                                                        ),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.left),
                                                         trailing: SizedBox(
-                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.15,
                                                           child: Center(
-                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
-                                                          ),
+                                                              child: Icon(
+                                                                  Icons
+                                                                      .arrow_forward_ios,
+                                                                  size: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      0.04,
+                                                                  color: AppColors
+                                                                      .grey)),
                                                         ),
                                                       ),
                                                     ],
                                                   ),
                                                   ValueListenableBuilder<bool>(
-                                                    valueListenable: isTypePurchase,
-                                                    builder: (context, value, child) {
-                                                      return value ? Column(
-                                                        children: [
-                                                          ListTile(
-                                                            onTap: () {
-                                                              // Check if the Only True
-                                                              var filterActive = List.from(filterByPurchaseStatus);
-                                                              filterActive.retainWhere((element) => element == true);
-                                                              if (!(filterActive.length == 1 && filterByPurchaseStatus[0])) {
-                                                                filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
-                                                                userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
-                                                                Navigator.pop(context);
-                                                              }
-                                                            },
-                                                            title: Text(
-                                                                AppLocalizations.of(context)!.verfied,
-                                                                style: Theme.of(context).textTheme.bodyLarge,
-                                                                textAlign: TextAlign.left
-                                                            ),
-                                                            trailing: filterByPurchaseStatus[0] ? SizedBox(
-                                                              width: MediaQuery.of(context).size.width * 0.15,
-                                                              child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                            ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                          ),
-                                                          ListTile(
-                                                            onTap: () {
-                                                              // Check if the Only True
-                                                              var filterActive = List.from(filterByPurchaseStatus);
-                                                              filterActive.retainWhere((element) => element == true);
-                                                              if (!(filterActive.length == 1 && filterByPurchaseStatus[1])) {
-                                                                filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
-                                                                userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
-                                                                Navigator.pop(context);
-                                                              }
-                                                            },
-                                                            title: Text(
-                                                                AppLocalizations.of(context)!.unverfied,
-                                                                style: Theme.of(context).textTheme.bodyLarge,
-                                                                textAlign: TextAlign.left
-                                                            ),
-                                                            trailing: filterByPurchaseStatus[1] ? SizedBox(
-                                                              width: MediaQuery.of(context).size.width * 0.15,
-                                                              child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                            ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                          ),
-                                                          ListTile(
-                                                            onTap: () {
-                                                              // Check if the Only True
-                                                              var filterActive = List.from(filterByPurchaseStatus);
-                                                              filterActive.retainWhere((element) => element == true);
-                                                              if (!(filterActive.length == 1 && filterByPurchaseStatus[2])) {
-                                                                filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
-                                                                userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
-                                                                Navigator.pop(context);
-                                                              }
-                                                            },
-                                                            title: Text(
-                                                                AppLocalizations.of(context)!.toConfirm,
-                                                                style: Theme.of(context).textTheme.bodyLarge,
-                                                                textAlign: TextAlign.left
-                                                            ),
-                                                            trailing: filterByPurchaseStatus[2] ? SizedBox(
-                                                              width: MediaQuery.of(context).size.width * 0.15,
-                                                              child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                            ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                          ),
-                                                        ],
-                                                      ) : Column(
-                                                        children: [
-                                                          ListTile(
-                                                            onTap: () {
-                                                              // Check if the Only True
-                                                              var filterActive = List.from(filterByActivePurchases);
-                                                              filterActive.retainWhere((element) => element == true);
-                                                              if (!(filterActive.length == 1 && filterByActivePurchases[0])) {
-                                                                filterByActivePurchases[0] = !filterByActivePurchases[0];
-                                                                userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
-                                                                Navigator.pop(context);
-                                                              }
-                                                            },
-                                                            title: Text(
-                                                                AppLocalizations.of(context)!.active,
-                                                                style: Theme.of(context).textTheme.bodyLarge,
-                                                                textAlign: TextAlign.left
-                                                            ),
-                                                            trailing: filterByActivePurchases[0] ? SizedBox(
-                                                              width: MediaQuery.of(context).size.width * 0.15,
-                                                              child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                            ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                          ),
-                                                          ListTile(
-                                                            onTap: () {
-                                                              // Check if the Only True
-                                                              var filterActive = List.from(filterByActivePurchases);
-                                                              filterActive.retainWhere((element) => element == true);
-                                                              if (!(filterActive.length == 1 && filterByActivePurchases[1])) {
-                                                                filterByActivePurchases[1] = !filterByActivePurchases[1];
-                                                                userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
-                                                                Navigator.pop(context);
-                                                              }
-                                                            },
-                                                            title: Text(
-                                                                AppLocalizations.of(context)!.desactive,
-                                                                style: Theme.of(context).textTheme.bodyLarge,
-                                                                textAlign: TextAlign.left
-                                                            ),
-                                                            trailing: filterByActivePurchases[1] ? SizedBox(
-                                                              width: MediaQuery.of(context).size.width * 0.15,
-                                                              child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                            ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                          ),
-                                                        ],
-                                                      );
+                                                    valueListenable:
+                                                        isTypePurchase,
+                                                    builder: (context, value,
+                                                        child) {
+                                                      return value
+                                                          ? Column(
+                                                              children: [
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    // Check if the Only True
+                                                                    var filterActive =
+                                                                        List.from(
+                                                                            filterByPurchaseStatus);
+                                                                    filterActive.retainWhere(
+                                                                        (element) =>
+                                                                            element ==
+                                                                            true);
+                                                                    if (!(filterActive.length ==
+                                                                            1 &&
+                                                                        filterByPurchaseStatus[
+                                                                            0])) {
+                                                                      filterByPurchaseStatus[
+                                                                              0] =
+                                                                          !filterByPurchaseStatus[
+                                                                              0];
+                                                                      userPurchasesCubit.filterBy(
+                                                                          filterByPurchaseStatus,
+                                                                          filterByActivePurchases);
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    }
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(
+                                                                              context)!
+                                                                          .verfied,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyLarge,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing: filterByPurchaseStatus[
+                                                                          0]
+                                                                      ? SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                        )
+                                                                      : SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15),
+                                                                ),
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    // Check if the Only True
+                                                                    var filterActive =
+                                                                        List.from(
+                                                                            filterByPurchaseStatus);
+                                                                    filterActive.retainWhere(
+                                                                        (element) =>
+                                                                            element ==
+                                                                            true);
+                                                                    if (!(filterActive.length ==
+                                                                            1 &&
+                                                                        filterByPurchaseStatus[
+                                                                            1])) {
+                                                                      filterByPurchaseStatus[
+                                                                              1] =
+                                                                          !filterByPurchaseStatus[
+                                                                              1];
+                                                                      userPurchasesCubit.filterBy(
+                                                                          filterByPurchaseStatus,
+                                                                          filterByActivePurchases);
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    }
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(
+                                                                              context)!
+                                                                          .unverfied,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyLarge,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing: filterByPurchaseStatus[
+                                                                          1]
+                                                                      ? SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                        )
+                                                                      : SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15),
+                                                                ),
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    // Check if the Only True
+                                                                    var filterActive =
+                                                                        List.from(
+                                                                            filterByPurchaseStatus);
+                                                                    filterActive.retainWhere(
+                                                                        (element) =>
+                                                                            element ==
+                                                                            true);
+                                                                    if (!(filterActive.length ==
+                                                                            1 &&
+                                                                        filterByPurchaseStatus[
+                                                                            2])) {
+                                                                      filterByPurchaseStatus[
+                                                                              2] =
+                                                                          !filterByPurchaseStatus[
+                                                                              2];
+                                                                      userPurchasesCubit.filterBy(
+                                                                          filterByPurchaseStatus,
+                                                                          filterByActivePurchases);
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    }
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(
+                                                                              context)!
+                                                                          .toConfirm,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyLarge,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing: filterByPurchaseStatus[
+                                                                          2]
+                                                                      ? SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                        )
+                                                                      : SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Column(
+                                                              children: [
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    // Check if the Only True
+                                                                    var filterActive =
+                                                                        List.from(
+                                                                            filterByActivePurchases);
+                                                                    filterActive.retainWhere(
+                                                                        (element) =>
+                                                                            element ==
+                                                                            true);
+                                                                    if (!(filterActive.length ==
+                                                                            1 &&
+                                                                        filterByActivePurchases[
+                                                                            0])) {
+                                                                      filterByActivePurchases[
+                                                                              0] =
+                                                                          !filterByActivePurchases[
+                                                                              0];
+                                                                      userPurchasesCubit.filterBy(
+                                                                          filterByPurchaseStatus,
+                                                                          filterByActivePurchases);
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    }
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(
+                                                                              context)!
+                                                                          .active,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyLarge,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing: filterByActivePurchases[
+                                                                          0]
+                                                                      ? SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                        )
+                                                                      : SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15),
+                                                                ),
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    // Check if the Only True
+                                                                    var filterActive =
+                                                                        List.from(
+                                                                            filterByActivePurchases);
+                                                                    filterActive.retainWhere(
+                                                                        (element) =>
+                                                                            element ==
+                                                                            true);
+                                                                    if (!(filterActive.length ==
+                                                                            1 &&
+                                                                        filterByActivePurchases[
+                                                                            1])) {
+                                                                      filterByActivePurchases[
+                                                                              1] =
+                                                                          !filterByActivePurchases[
+                                                                              1];
+                                                                      userPurchasesCubit.filterBy(
+                                                                          filterByPurchaseStatus,
+                                                                          filterByActivePurchases);
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    }
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(
+                                                                              context)!
+                                                                          .desactive,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyLarge,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing: filterByActivePurchases[
+                                                                          1]
+                                                                      ? SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                        )
+                                                                      : SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15),
+                                                                ),
+                                                              ],
+                                                            );
                                                     },
                                                   ),
                                                 ],
@@ -472,10 +734,13 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(0),
                   child: Container(
-                    margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+                    margin: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height * 0.01),
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.06,
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.04,
+                          right: MediaQuery.of(context).size.width * 0.04),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -483,44 +748,66 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                             children: [
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.08,
-                                height: MediaQuery.of(context).size.width * 0.08,
-                                margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.015),
+                                height:
+                                    MediaQuery.of(context).size.width * 0.08,
+                                margin: EdgeInsets.only(
+                                    right: MediaQuery.of(context).size.width *
+                                        0.015),
                                 decoration: BoxDecoration(
                                   color: AppColors.grey.withOpacity(0.1),
                                   shape: BoxShape.circle,
                                 ),
                                 child: IconButton(
                                   splashRadius: 20,
-                                  splashColor: Theme.of(context).colorScheme.background, // Splash color
+                                  splashColor: Theme.of(context)
+                                      .colorScheme
+                                      .background, // Splash color
                                   padding: const EdgeInsets.only(right: 2),
                                   alignment: Alignment.center,
                                   icon: Icon(
-                                    loadedState.orderByDescending ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpShortWide,
+                                    loadedState.orderByDescending
+                                        ? FontAwesomeIcons.arrowDownWideShort
+                                        : FontAwesomeIcons.arrowUpShortWide,
                                     color: Theme.of(context).primaryColor,
-                                    size: MediaQuery.of(context).size.width*0.035,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.035,
                                   ),
                                   onPressed: () async {
-                                    context.read<UserPurchasesCubit>().orderByDate(!loadedState.orderByDescending);
+                                    context
+                                        .read<UserPurchasesCubit>()
+                                        .orderByDate(
+                                            !loadedState.orderByDescending);
                                   },
                                 ),
                               ),
                               TextButton(
                                 style: TextButton.styleFrom(
-                                  backgroundColor: AppColors.grey.withOpacity(0.1),
-                                  shape: RoundedRectangleBorder(  // add this
+                                  backgroundColor:
+                                      AppColors.grey.withOpacity(0.1),
+                                  shape: RoundedRectangleBorder(
+                                    // add this
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0, right: 10.0),
                                 ),
-                                onPressed: () => _show(context, startDate, endDate, dateJoinedBrand),
+                                onPressed: () => _show(context, startDate,
+                                    endDate, dateJoinedBrand),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
-                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                                      returnCorrectText(context, startDate,
+                                          endDate, dateJoinedBrand, true),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold),
                                     ),
-                                    Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
+                                    Icon(Icons.keyboard_arrow_down_outlined,
+                                        color: Theme.of(context).primaryColor)
                                   ],
                                 ),
                               ),
@@ -528,7 +815,10 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                           ),
                           Text(
                             '${DateFormat('d MMM, yy\'').format(startDate)} - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -537,57 +827,66 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                   ),
                 ),
               ),
-              body: loadedState.purchasesHistoryObjects.isNotEmpty ? Column(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        itemCount: state.purchasesHistoryObjects.length,
-                        itemBuilder: (context, index) {
-                          PurchaseHistoryModel obj = loadedState.purchasesHistoryObjects[index];
-                          return UserPurchaseCard(
-                            bono: obj.bono,
-                            user: obj.user,
-                            brand: obj.brand,
-                            bonoRequest: obj.bonoReq,
-                            purchase: obj.purchase,
-                          );
-                        }
+              body: loadedState.purchasesHistoryObjects.isNotEmpty
+                  ? Column(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.vertical,
+                              itemCount: state.purchasesHistoryObjects.length,
+                              itemBuilder: (context, index) {
+                                PurchaseHistoryModel obj =
+                                    loadedState.purchasesHistoryObjects[index];
+                                return UserPurchaseCard(
+                                  bono: obj.bono,
+                                  user: obj.user,
+                                  brand: obj.brand,
+                                  bonoRequest: obj.bonoReq,
+                                  purchase: obj.purchase,
+                                );
+                              }),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.30,
+                                child: Image.asset(Constants.emptyCalendar)),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.015),
+                            Text(
+                              AppLocalizations.of(context)!.noData,
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.1),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ) : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width*0.30,
-                          child: Image.asset(Constants.emptyCalendar)
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.015),
-                      Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.1),
-                    ],
-                  ),
-                ],
-              ),
             );
           default:
             // Handle all other states aka Loading or Initial
-            DateTime startDate = DateTime.now().subtract(const Duration(days: 7));
+            DateTime startDate =
+                DateTime.now().subtract(const Duration(days: 7));
             DateTime endDate = DateTime.now();
             DateTime dateJoinedBrand = DateTime(
                 int.parse(currentBrand.dateJoined!.split("-")[2]),
                 int.parse(currentBrand.dateJoined!.split("-")[1]),
                 int.parse(currentBrand.dateJoined!.split("-")[0]),
                 0,
-                0
-            );
+                0);
             return Scaffold(
               appBar: AppBar(
                 toolbarHeight: MediaQuery.of(context).size.height * 0.14,
@@ -607,21 +906,25 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                 ),
                 actions: [
                   Padding(
-                    padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04),
+                    padding: EdgeInsets.only(
+                        right: MediaQuery.of(context).size.width * 0.04),
                     child: Icon(
                       Icons.filter_list,
                       color: Theme.of(context).primaryColor,
-                      size: MediaQuery.of(context).size.width*0.06,
+                      size: MediaQuery.of(context).size.width * 0.06,
                     ),
                   ),
                 ],
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(0),
                   child: Container(
-                    margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+                    margin: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height * 0.01),
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.06,
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.04,
+                          right: MediaQuery.of(context).size.width * 0.04),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -629,8 +932,11 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                             children: [
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.08,
-                                height: MediaQuery.of(context).size.width * 0.08,
-                                margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.015),
+                                height:
+                                    MediaQuery.of(context).size.width * 0.08,
+                                margin: EdgeInsets.only(
+                                    right: MediaQuery.of(context).size.width *
+                                        0.015),
                                 decoration: BoxDecoration(
                                   color: AppColors.grey.withOpacity(0.1),
                                   shape: BoxShape.circle,
@@ -638,34 +944,48 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                 ),
                                 child: IconButton(
                                   splashRadius: 20,
-                                  splashColor: Theme.of(context).colorScheme.background, // Splash color
+                                  splashColor: Theme.of(context)
+                                      .colorScheme
+                                      .background, // Splash color
                                   padding: const EdgeInsets.only(right: 2),
                                   alignment: Alignment.center,
                                   icon: Icon(
                                     FontAwesomeIcons.arrowDownWideShort,
                                     color: Theme.of(context).primaryColor,
-                                    size: MediaQuery.of(context).size.width*0.035,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.035,
                                   ),
                                   onPressed: null,
                                 ),
                               ),
                               TextButton(
                                 style: TextButton.styleFrom(
-                                  backgroundColor: AppColors.grey.withOpacity(0.1),
-                                  shape: RoundedRectangleBorder(  // add this
+                                  backgroundColor:
+                                      AppColors.grey.withOpacity(0.1),
+                                  shape: RoundedRectangleBorder(
+                                    // add this
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0, right: 10.0),
                                 ),
-                                onPressed: () => _show(context, startDate, endDate, dateJoinedBrand),
+                                onPressed: () => _show(context, startDate,
+                                    endDate, dateJoinedBrand),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
-                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                                      returnCorrectText(context, startDate,
+                                          endDate, dateJoinedBrand, true),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold),
                                     ),
-                                    Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
+                                    Icon(Icons.keyboard_arrow_down_outlined,
+                                        color: Theme.of(context).primaryColor)
                                   ],
                                 ),
                               ),
@@ -673,7 +993,10 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                           ),
                           Text(
                             '${DateFormat('d MMM, yy\'').format(startDate)} - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -695,39 +1018,60 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                           itemBuilder: (context, index) {
                             return Container(
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.03),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * 0.04,
+                                  vertical:
+                                      MediaQuery.of(context).size.width * 0.03),
                               child: Row(
                                 children: [
                                   Shimmer.fromColors(
                                     baseColor: AppColors.grey,
-                                    highlightColor: AppColors.grey.withOpacity(0.5),
+                                    highlightColor:
+                                        AppColors.grey.withOpacity(0.5),
                                     child: Container(
-                                      height: MediaQuery.of(context).size.width*0.15,
-                                      width: MediaQuery.of(context).size.width*0.15,
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.15,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.15,
                                       decoration: const BoxDecoration(
                                         color: AppColors.grey,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: MediaQuery.of(context).size.width * 0.04), // adjust this value as needed
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.04), // adjust this value as needed
                                   Expanded(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         /// USER
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Shimmer.fromColors(
                                               baseColor: AppColors.grey,
-                                              highlightColor: AppColors.grey.withOpacity(0.5),
+                                              highlightColor: AppColors.grey
+                                                  .withOpacity(0.5),
                                               child: Container(
-                                                height: MediaQuery.of(context).size.height*0.02,
-                                                width: MediaQuery.of(context).size.width*0.25,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.02,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.25,
                                                 decoration: const BoxDecoration(
-                                                  borderRadius: BorderRadius.all(
+                                                  borderRadius:
+                                                      BorderRadius.all(
                                                     Radius.circular(5.0),
                                                   ),
                                                   color: AppColors.grey,
@@ -736,12 +1080,20 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                             ),
                                             Shimmer.fromColors(
                                               baseColor: AppColors.grey,
-                                              highlightColor: AppColors.grey.withOpacity(0.5),
+                                              highlightColor: AppColors.grey
+                                                  .withOpacity(0.5),
                                               child: Container(
-                                                height: MediaQuery.of(context).size.height*0.02,
-                                                width: MediaQuery.of(context).size.width*0.15,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.02,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15,
                                                 decoration: const BoxDecoration(
-                                                  borderRadius: BorderRadius.all(
+                                                  borderRadius:
+                                                      BorderRadius.all(
                                                     Radius.circular(5.0),
                                                   ),
                                                   color: AppColors.grey,
@@ -750,14 +1102,26 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.012),
+                                        SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.012),
+
                                         /// BONO
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
-                                          highlightColor: AppColors.grey.withOpacity(0.5),
+                                          highlightColor:
+                                              AppColors.grey.withOpacity(0.5),
                                           child: Container(
-                                            height: MediaQuery.of(context).size.height*0.015,
-                                            width: MediaQuery.of(context).size.width*0.45,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.015,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.45,
                                             decoration: const BoxDecoration(
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(5.0),
@@ -766,14 +1130,26 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.012),
+                                        SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.012),
+
                                         /// DETAILS
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
-                                          highlightColor: AppColors.grey.withOpacity(0.5),
+                                          highlightColor:
+                                              AppColors.grey.withOpacity(0.5),
                                           child: Container(
-                                            height: MediaQuery.of(context).size.height*0.015,
-                                            width: MediaQuery.of(context).size.width*0.55,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.015,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.55,
                                             decoration: const BoxDecoration(
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(5.0),
@@ -782,14 +1158,26 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.012),
+                                        SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.012),
+
                                         /// DATE
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
-                                          highlightColor: AppColors.grey.withOpacity(0.5),
+                                          highlightColor:
+                                              AppColors.grey.withOpacity(0.5),
                                           child: Container(
-                                            height: MediaQuery.of(context).size.height*0.013,
-                                            width: MediaQuery.of(context).size.width*0.25,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.013,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.25,
                                             decoration: const BoxDecoration(
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(5.0),
@@ -804,9 +1192,9 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                 ],
                               ),
                             );
-                          }
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                          }),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.03),
                     ],
                   ),
                 ),
@@ -816,7 +1204,4 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
       },
     );
   }
-
 }
-
-

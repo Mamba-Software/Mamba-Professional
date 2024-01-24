@@ -850,5 +850,7 @@
   "midMonthPaymentDescription": "Si la compra es realitza en els primers 15 dies del mes, es paga el total del bo. Si es realitza en els últims 15 dies, es paga la meitat",
   "times": "Cops",
   "exactDaysTitle": "Dies exactes",
-  "exactDaysTitleDescription": "El preu de la compra es calcularà exactament pels dies de la data d'expiració o renovació"
+  "exactDaysTitleDescription": "El preu de la compra es calcularà exactament pels dies de la data d'expiració o renovació",
+  "autoRenovation": "Renovació automàtica",
+  "notRenovation": "Renovació desactivada"
 }

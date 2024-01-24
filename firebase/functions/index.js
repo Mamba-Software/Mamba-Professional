@@ -2988,7 +2988,7 @@ exports.UserPurchasesBono = functions
 
   //Add purchases
 
-   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
+    var purchaseData = {
       "userId": purchaseDoc.userId,
       "brandId": brandId,
       "bonoId": bonoId,
@@ -3001,52 +3001,19 @@ exports.UserPurchasesBono = functions
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
       "directPurchase": purchaseDoc.directPurchase,
-   });
+    };
+    
+    if (purchaseDoc.purchaseGroupId != null) {
+      purchaseData["purchaseGroupId"] = purchaseDoc.purchaseGroupId;
+    }
 
-   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
-      "userId": purchaseDoc.userId,
-      "brandId": brandId,
-      "bonoId": bonoId,
-      "isActive": true,
-      "purchasedAt": purchaseDoc.purchasedAt,
-      "price": purchaseDoc.price,
-      "paymentMethod": purchaseDoc.paymentMethod,
-      "sessions": purchaseDoc.sessions,
-      "weeklySessions": purchaseDoc.weeklySessions,
-      "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime,
-      "directPurchase": purchaseDoc.directPurchase,
-  });
+   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set(purchaseData);
 
-   await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-      "userId": purchaseDoc.userId,
-      "brandId": brandId,
-      "bonoId": bonoId,
-      "isActive": true,
-      "purchasedAt": purchaseDoc.purchasedAt,
-      "price": purchaseDoc.price,
-      "paymentMethod": purchaseDoc.paymentMethod,
-      "sessions": purchaseDoc.sessions,
-      "weeklySessions": purchaseDoc.weeklySessions,
-      "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime,
-      "directPurchase": purchaseDoc.directPurchase,
-   });
+   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).set(purchaseData);
 
-   await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-    "userId": purchaseDoc.userId,
-    "brandId": brandId,
-    "bonoId": bonoId,
-    "isActive": true,
-    "purchasedAt": purchaseDoc.purchasedAt,
-    "price": purchaseDoc.price,
-    "paymentMethod": purchaseDoc.paymentMethod,
-    "sessions": purchaseDoc.sessions,
-    "weeklySessions": purchaseDoc.weeklySessions,
-    "cancelTime": purchaseDoc.cancelTime,
-    "expirationTime": purchaseDoc.expirationTime,
-    "directPurchase": purchaseDoc.directPurchase,
-   });
+   await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set(purchaseData);
+
+   await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set(purchaseData);
 
    await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
      "title": bonoDoc.title,

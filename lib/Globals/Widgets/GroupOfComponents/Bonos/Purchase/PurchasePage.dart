@@ -25,6 +25,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularIm
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchaseEvents/views/PurchaseEvents.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonos/UserPurchaseHistory/views/UserPurchaseHistory.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
@@ -106,6 +107,8 @@ class _PurchasePageState extends State<PurchasePage> {
 
   bool editBono = false;
   bool seeConditions = false;
+  bool isRecurrent = false;
+  bool isMainRecurrent = false;
 
   List<bool> isSelectedDays = [false, false, false, false, false];
 
@@ -168,6 +171,25 @@ class _PurchasePageState extends State<PurchasePage> {
                 appBarExpanded = false;
               }),
       );
+  }
+
+  Future<void> checkRecurrency() async {
+    if (purchase.isRecurrent != null && purchase.isRecurrent!) {
+      isRecurrent = true;
+      if (purchase.purchaseGroupId != null && purchase.purchaseGroupId != '') {
+        var result = await _purchaseDataService
+            .getRecurrentPurchaseGroup(purchase.purchaseGroupId!);
+        purchase.groupPurchases = result.cast<String>();
+
+        if (purchase.groupPurchases != null &&
+            purchase.groupPurchases!.isNotEmpty) {
+          var lastPurchase = purchase.groupPurchases!.last;
+          if (lastPurchase == purchase.id) {
+            isMainRecurrent = true;
+          }
+        }
+      }
+    }
   }
 
   Future<void> getBonos() async {
@@ -240,6 +262,10 @@ class _PurchasePageState extends State<PurchasePage> {
     paymentMethod = purchase.paymentMethod;
     originalExpirationTime = bonoSelected.condition!.expirationTime!;
     isFirstBuild = true;
+    purchase.isRecurrent = tempPurchase.isRecurrent ?? false;
+    purchase.isRecurrencyActive = tempPurchase.isRecurrencyActive ?? false;
+    purchase.purchaseGroupId = tempPurchase.purchaseGroupId ?? '';
+    await checkRecurrency();
     setBonoConditions(bonoSelected);
   }
 
@@ -1599,6 +1625,10 @@ class _PurchasePageState extends State<PurchasePage> {
                       : SizedBox(
                           height: MediaQuery.of(context).size.height * 0.04),
 
+                  //Membresia options
+                  editBono && isRecurrent ? membresiaWidget() : Container(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+
                   /// PAYMENT METHOD
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
@@ -1973,7 +2003,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     if (currentBrand.gracePeriod != null) {
                       purchase.gracePeriod = currentBrand.gracePeriod;
                     } else {
-                      purchase.gracePeriod = 30;
+                      purchase.gracePeriod = 0;
                     }
                     if (currentBrand.maxCanWeek != null) {
                       purchase.maxCanWeek = currentBrand.maxCanWeek!;
@@ -1983,7 +2013,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     if (currentBrand.paymentTerms != null) {
                       purchase.paymentTerms = currentBrand.paymentTerms;
                     } else {
-                      purchase.paymentTerms = 0;
+                      purchase.paymentTerms = 2;
                     }
                     if (isPaid == false) {
                       purchase.directPurchase = true;
@@ -2029,7 +2059,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     if (currentBrand.gracePeriod != null) {
                       purchase.gracePeriod = currentBrand.gracePeriod;
                     } else {
-                      purchase.gracePeriod = 30;
+                      purchase.gracePeriod = 0;
                     }
                     if (currentBrand.maxCanWeek != null) {
                       purchase.maxCanWeek = currentBrand.maxCanWeek!;
@@ -2039,7 +2069,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     if (currentBrand.paymentTerms != null) {
                       purchase.paymentTerms = currentBrand.paymentTerms;
                     } else {
-                      purchase.paymentTerms = 0;
+                      purchase.paymentTerms = 2;
                     }
                     if (isPaid == false) {
                       purchase.directPurchase = true;
@@ -2963,5 +2993,178 @@ class _PurchasePageState extends State<PurchasePage> {
     setState(() {
       purchase.isActive = activation;
     });
+  }
+
+  Widget membresiaWidget() {
+    return Column(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.06,
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(AppLocalizations.of(context)!.membership,
+                        style: Theme.of(context)
+                            .textTheme
+                            .displayLarge
+                            ?.copyWith(fontSize: 22),
+                        textAlign: TextAlign.center),
+                  ),
+                  TextButton(
+                      onPressed: navigateToBonoHistoryPurchaseScreen,
+                      child: Text(AppLocalizations.of(context)!.purchaseHistory,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  decoration: TextDecoration.underline))),
+                ],
+              ),
+            ],
+          ),
+        ),
+        isMainRecurrent
+            ? purchase.isRecurrencyActive!
+                ? Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.background,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.repeat,
+                                    color: Theme.of(context).primaryColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.05,
+                                  ),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.01),
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .autoRenovation,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.right,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.06,
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                child: CupertinoSwitch(
+                                  value: true,
+                                  onChanged: (bool newVal) {
+                                    setState(() {
+                                      purchase.isRecurrencyActive = false;
+                                    });
+                                  },
+                                  trackColor: AppColors.red.withOpacity(0.4),
+                                  thumbColor: AppColors.white,
+                                  activeColor: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.background,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.repeat,
+                                    color: AppColors.red,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.05,
+                                  ),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.01),
+                                  Text(
+                                    AppLocalizations.of(context)!.notRenovation,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(
+                                            color: AppColors.red,
+                                            fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.right,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.06,
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                child: CupertinoSwitch(
+                                  value: false,
+                                  onChanged: (bool newVal) {
+                                    setState(() {
+                                      purchase.isRecurrencyActive = true;
+                                    });
+                                  },
+                                  trackColor: AppColors.red.withOpacity(0.4),
+                                  thumbColor: AppColors.white,
+                                  activeColor: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+            : Container(),
+      ],
+    );
+  }
+
+  // Navigate to Event History Screen
+  void navigateToBonoHistoryPurchaseScreen() {
+    mixpanel!.track('profile_view_purchase_history');
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => UserPurchaseHistory(
+            userId: user.id!,
+            brandId: widget.brand.id!,
+            purchaseGroupId: purchase.purchaseGroupId!,
+          ),
+        ));
   }
 }

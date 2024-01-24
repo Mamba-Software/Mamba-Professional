@@ -33,6 +33,8 @@ class Purchase {
   int? paymentTerms = 0;
   bool? isRecurrent = false;
   bool? isRecurrencyActive = true;
+  List<String>? groupPurchases = [];
+  String? purchaseGroupId = '';
 
   Purchase({
     this.id,
@@ -50,6 +52,8 @@ class Purchase {
     this.paymentTerms,
     this.isRecurrent,
     this.isRecurrencyActive,
+    this.groupPurchases,
+    this.purchaseGroupId,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -126,6 +130,15 @@ class Purchase {
         .containsKey('isRecurrencyActive')) {
       isRecurrencyActive = documentSnapshot.get("isRecurrencyActive");
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('groupPurchases')) {
+      groupPurchases = documentSnapshot.get("groupPurchases");
+    }
+
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('purchaseGroupId')) {
+      purchaseGroupId = documentSnapshot.get("purchaseGroupId");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -146,6 +159,8 @@ class Purchase {
     paymentTerms = purchase.paymentTerms;
     isRecurrent = purchase.isRecurrent;
     isRecurrencyActive = purchase.isRecurrencyActive;
+    groupPurchases = purchase.groupPurchases;
+    purchaseGroupId = purchase.purchaseGroupId;
   }
 
   // Set Basic Data

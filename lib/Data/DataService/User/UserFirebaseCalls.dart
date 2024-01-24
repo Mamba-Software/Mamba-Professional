@@ -32,7 +32,7 @@ class UserFirebaseCalls {
   String nicknames = 'Nicknames';
   String brands = 'Brands';
   String conversations = 'Conversations';
-  String purchases = 'Purchases';  
+  String purchases = 'Purchases';
 
   // Authentication Services
   Future<User?> getCurrentUser() async {
@@ -67,9 +67,10 @@ class UserFirebaseCalls {
     if (error) return -1;
     if (authResult == null) {
       return -1;
-    }    
+    }
     if (authResult.user != null) {
-      if (currentFlavor != Flavor.development && authResult.user!.emailVerified == false) {
+      if (currentFlavor != Flavor.development &&
+          authResult.user!.emailVerified == false) {
         return -2;
       } else {
         return 0;
@@ -473,13 +474,12 @@ class UserFirebaseCalls {
   Future<ReceivedNotification?> getIndividualLocalNotification(
       String userId, String notificationId) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await _firestore
-              .collection(users)
-              .doc(userId)
-              .collection("Local Notifications")
-              .doc(notificationId)
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Local Notifications")
+          .doc(notificationId)
+          .get();
       return ReceivedNotification.fromObjectAllData(
           documentSnapshot.id, documentSnapshot);
     } catch (e) {
@@ -762,7 +762,7 @@ class UserFirebaseCalls {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
-    try {      
+    try {
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'europe-west1')
               .httpsCallable('createAuthUser');
@@ -1090,9 +1090,8 @@ class UserFirebaseCalls {
 
   Future<String> updateUserPhoto(String userId, File image) async {
     String imageURL = "";
-    var storageRef = _firebaseStorage
-        .ref()
-        .child("users/$userId/images/$userId.jpeg");
+    var storageRef =
+        _firebaseStorage.ref().child("users/$userId/images/$userId.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -1165,7 +1164,7 @@ class UserFirebaseCalls {
         .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime!-1,
+      "expirationTime": bono.condition!.expirationTime! - 1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
@@ -1175,11 +1174,12 @@ class UserFirebaseCalls {
     await _firestore.collection(purchases).doc(bono.purchaseId).update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime!-1,
+      "expirationTime": bono.condition!.expirationTime! - 1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
       "isActive": purchase.isActive,
+      "isRecurrencyActive": purchase.isRecurrencyActive,
     });
     // Update the User/Purchase Collection
     await _firestore
@@ -1190,11 +1190,12 @@ class UserFirebaseCalls {
         .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime!-1,
+      "expirationTime": bono.condition!.expirationTime! - 1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
       "isActive": purchase.isActive,
+      "isRecurrencyActive": purchase.isRecurrencyActive,
     });
     // Update the Brand/Bonos/Purchase Collection
     await _firestore
@@ -1205,11 +1206,12 @@ class UserFirebaseCalls {
         .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime!-1,
+      "expirationTime": bono.condition!.expirationTime! - 1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
       "isActive": purchase.isActive,
+      "isRecurrencyActive": purchase.isRecurrencyActive,
     });
     // Update the Brand/Bonos/Purchase Collection
     await _firestore
@@ -1222,11 +1224,12 @@ class UserFirebaseCalls {
         .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime!-1,
+      "expirationTime": bono.condition!.expirationTime! - 1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
       "isActive": purchase.isActive,
+      "isRecurrencyActive": purchase.isRecurrencyActive,
     });
     // Update the Brand/Bonos/Purchase Collection
     await _firestore
@@ -1239,11 +1242,12 @@ class UserFirebaseCalls {
         .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime!-1,
+      "expirationTime": bono.condition!.expirationTime! - 1,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
       "isActive": purchase.isActive,
+      "isRecurrencyActive": purchase.isRecurrencyActive,
     });
   }
 
@@ -1333,7 +1337,7 @@ class UserFirebaseCalls {
         .doc(purchaseId)
         .update({
       "isActive": false,
-    });    
+    });
   }
 
   //Get the user bonos
@@ -1416,7 +1420,7 @@ class UserFirebaseCalls {
         .delete();
   }
 
-  //STREAMS  
+  //STREAMS
 
   Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) {
     return _firestore

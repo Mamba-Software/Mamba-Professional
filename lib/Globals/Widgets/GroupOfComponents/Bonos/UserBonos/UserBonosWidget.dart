@@ -21,14 +21,18 @@ class UserBonosWidget extends StatefulWidget {
   double height = 0;
   double width = 0;
 
-  UserBonosWidget({super.key, required this.userId, required this.brandId, required this.height, required this.width});
+  UserBonosWidget(
+      {super.key,
+      required this.userId,
+      required this.brandId,
+      required this.height,
+      required this.width});
 
   @override
   _UserBonosWidgetState createState() => _UserBonosWidgetState();
 }
 
 class _UserBonosWidgetState extends State<UserBonosWidget> {
-
   // Boolean Loading
   bool isLoading = true;
   // Acceso a Base de Datos
@@ -53,9 +57,9 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
           builder: (context) => UserPurchaseHistory(
             userId: widget.userId,
             brandId: widget.brandId,
+            purchaseGroupId: '',
           ),
-        )
-    );
+        ));
   }
 
   @override
@@ -63,145 +67,159 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
     return Column(
       children: [
         SizedBox(
-          height: widget.height*0.05,
-          width: widget.width*0.9,
+          height: widget.height * 0.05,
+          width: widget.width * 0.9,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                  AppLocalizations.of(context)!.activeBono,
+              Text(AppLocalizations.of(context)!.activeBono,
                   style: Theme.of(context).textTheme.displaySmall,
-                  textAlign: TextAlign.center
-              ),
+                  textAlign: TextAlign.center),
               TextButton(
                   onPressed: navigateToBonoHistoryScreen,
-                  child: Text(
-                      AppLocalizations.of(context)!.purchaseHistory,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(decoration: TextDecoration.underline)
-                  )
-              ),
+                  child: Text(AppLocalizations.of(context)!.purchaseHistory,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(decoration: TextDecoration.underline))),
             ],
           ),
         ),
         StreamBuilder<QuerySnapshot>(
-          stream: _userDataService.getUserActivePurchasesFromBrandStream(widget.userId, currentBrand.id!),
-          builder: (context, snapshot) {
-            if (snapshot.hasData == false) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: SizedBox(
-                  height: widget.height*0.22,
-                  width: widget.width*0.9,
-                  child: LoadingView(
-                    hasLogo: false,
-                    isSmall: true,
-                  ),
-                ),
-              );
-            } else {
-              userBonosPurchases = _bonosUtils.documentsToPurchasesUser(snapshot.data!.docs);
-              if (userBonosPurchases.isNotEmpty) {
+            stream: _userDataService.getUserActivePurchasesFromBrandStream(
+                widget.userId, currentBrand.id!),
+            builder: (context, snapshot) {
+              if (snapshot.hasData == false) {
                 return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: widget.width*0.05),
-                  child: Column(
-                    children: [
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: userBonosPurchases.length,
-                        itemBuilder: (context, int index) {
-                          Purchase bonoPurchase = userBonosPurchases[index];
-                          Bono bono = userBonosPurchases[index].bono!;
-                          int sessions = bono.sessions!;
-                          double price = bono.price!;
-                          Condition bonoUserConditions = bono.condition!;
-                          return StreamBuilder<DocumentSnapshot>(
-                              stream: _brandDataService.getBonoInfoStream(bono.brandId!, bono.id!),
-                              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot2) {
-                                if (!snapshot2.hasData) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                    child: SizedBox(
-                                      height: widget.height*0.22,
-                                      width: widget.width*0.9,
-                                      child: LoadingView(
-                                        hasLogo: false,
-                                        isSmall: true,
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  bono = Bono.fromObjectAllData(snapshot2.data!.id, snapshot2.data!);
-                                  // Setting Personalized Information From Above
-                                  bono.setBonoSessions = sessions;
-                                  bono.setConditionsData = bonoUserConditions;
-                                  bono.setBonoPrice = price;
-                                  return StreamBuilder<QuerySnapshot>(
-                                    stream: _purchaseDataService.getPurchaseEventsStream(bonoPurchase.id!),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.data == null) {
-                                        return SizedBox(
-                                          height: widget.height*0.22,
-                                          width: widget.width*0.9,
-                                          child: LoadingView(
-                                            hasLogo: false,
-                                            isSmall: true,
-                                          ),
-                                        );
-                                      } else {
-                                        bonoPurchase.numberOfEvents = snapshot.data!.docs.length;
-                                        bonoPurchase.events = _bonosUtils.documentsToEvents(snapshot.data!.docs);
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                          child: ClientBonoCard(
-                                            height: widget.height*0.22,
-                                            width: widget.width*0.9,
-                                            bono: bono,
-                                            brand: currentBrand,
-                                            purchase: bonoPurchase,
-                                            canExpand: true,
-                                            onlyView: false,
-                                          ),
-                                        );
-                                      }
-                                    }
-                                  );
-                                }
-                              }
-                          );
-                        },
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                    ],
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: SizedBox(
+                    height: widget.height * 0.22,
+                    width: widget.width * 0.9,
+                    child: LoadingView(
+                      hasLogo: false,
+                      isSmall: true,
+                    ),
                   ),
                 );
               } else {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: widget.width*0.05),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.activeBono.toLowerCase()}",
-                            style: Theme.of(context).textTheme.bodySmall,
-                            textAlign: TextAlign.left,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                    ],
-                  ),
-                );
+                userBonosPurchases =
+                    _bonosUtils.documentsToPurchasesUser(snapshot.data!.docs);
+                if (userBonosPurchases.isNotEmpty) {
+                  return Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: widget.width * 0.05),
+                    child: Column(
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: userBonosPurchases.length,
+                          itemBuilder: (context, int index) {
+                            Purchase bonoPurchase = userBonosPurchases[index];
+                            Bono bono = userBonosPurchases[index].bono!;
+                            int sessions = bono.sessions!;
+                            double price = bono.price!;
+                            Condition bonoUserConditions = bono.condition!;
+                            return StreamBuilder<DocumentSnapshot>(
+                                stream: _brandDataService.getBonoInfoStream(
+                                    bono.brandId!, bono.id!),
+                                builder: (context,
+                                    AsyncSnapshot<DocumentSnapshot> snapshot2) {
+                                  if (!snapshot2.hasData) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0),
+                                      child: SizedBox(
+                                        height: widget.height * 0.22,
+                                        width: widget.width * 0.9,
+                                        child: LoadingView(
+                                          hasLogo: false,
+                                          isSmall: true,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    bono = Bono.fromObjectAllData(
+                                        snapshot2.data!.id, snapshot2.data!);
+                                    // Setting Personalized Information From Above
+                                    bono.setBonoSessions = sessions;
+                                    bono.setConditionsData = bonoUserConditions;
+                                    bono.setBonoPrice = price;
+                                    return StreamBuilder<QuerySnapshot>(
+                                        stream: _purchaseDataService
+                                            .getPurchaseEventsStream(
+                                                bonoPurchase.id!),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.data == null) {
+                                            return SizedBox(
+                                              height: widget.height * 0.22,
+                                              width: widget.width * 0.9,
+                                              child: LoadingView(
+                                                hasLogo: false,
+                                                isSmall: true,
+                                              ),
+                                            );
+                                          } else {
+                                            bonoPurchase.numberOfEvents =
+                                                snapshot.data!.docs.length;
+                                            bonoPurchase.events =
+                                                _bonosUtils.documentsToEvents(
+                                                    snapshot.data!.docs);
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: ClientBonoCard(
+                                                height: widget.height * 0.22,
+                                                width: widget.width * 0.9,
+                                                bono: bono,
+                                                brand: currentBrand,
+                                                purchase: bonoPurchase,
+                                                canExpand: true,
+                                                onlyView: false,
+                                              ),
+                                            );
+                                          }
+                                        });
+                                  }
+                                });
+                          },
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.04),
+                      ],
+                    ),
+                  );
+                } else {
+                  return Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: widget.width * 0.05),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.activeBono.toLowerCase()}",
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.05),
+                      ],
+                    ),
+                  );
+                }
               }
-            }
-          }
+            }),
+        SizedBox(
+          height: widget.height * 0.0,
         ),
-        SizedBox(height: widget.height*0.0,),
       ],
     );
   }

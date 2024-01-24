@@ -3745,5 +3745,13 @@
   "exactDaysTitleDescription": "El precio de la compra se calculará exactamente por los días de la fecha de expiración o renovación",
   "@exactDaysTitleDescription": {
     "description": "Descripción de cómo funciona el días exactos"
+  },
+  "autoRenovation": "Renovación automática",
+  "@autoRenovation": {
+    "description": "autoRenovation description"
+  },
+  "notRenovation": "Renovación desactivada",
+  "@notRenovation": {
+    "description": "notRenovation"
   }
 }

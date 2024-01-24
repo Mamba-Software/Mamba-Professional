@@ -66,6 +66,13 @@ class PurchaseFirebaseCalls {
     return "";
   }
 
+  Future<List<dynamic>> getRecurrentPurchaseGroup(
+      String purchaseGroupId) async {
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await _firestore.collection(purchases).doc(purchaseGroupId).get();
+    return documentSnapshot.get("groupPurchases");
+  }
+
   // Get Data
   Future<Purchase> getPurchaseInfo(String purchaseId) async {
     Purchase purchase;
@@ -492,6 +499,7 @@ class PurchaseFirebaseCalls {
     } else {
       directPurchase = purchase.directPurchase!;
     }
+    int expirationDays = calculateExpirationTime(purchase, bonoSelected) + 1;
     //SI ES LA PRIMERA PURCHASE AFEGIDA A PARTIR DE UN RECURRENT BONO
     if (isRecurrent) {
       await _firestore.collection(purchases).doc(uid).set({
@@ -503,7 +511,7 @@ class PurchaseFirebaseCalls {
         "sessions": bonoSelected.sessions,
         "weeklySessions": bonoSelected.condition?.weeklySessions,
         "cancelTime": bonoSelected.condition?.cancelTime,
-        "expirationTime": bonoSelected.condition?.expirationTime,
+        "expirationTime": expirationDays,
         "paymentMethod": purchase.paymentMethod,
         "directPurchase": directPurchase,
         "isActive": true,
@@ -525,7 +533,7 @@ class PurchaseFirebaseCalls {
         "sessions": bonoSelected.sessions,
         "weeklySessions": bonoSelected.condition?.weeklySessions,
         "cancelTime": bonoSelected.condition?.cancelTime,
-        "expirationTime": bonoSelected.condition?.expirationTime,
+        "expirationTime": expirationDays,
         "paymentMethod": purchase.paymentMethod,
         "directPurchase": directPurchase,
         "isActive": true,
@@ -535,6 +543,47 @@ class PurchaseFirebaseCalls {
       });
     }
     return uid;
+  }
+
+  int calculateExpirationTime(Purchase purchase, Bono bonoSelected) {
+    int expirationDays = 0;
+
+    //Días exactos
+    if (purchase.paymentTerms == 2) {
+      if (bonoSelected.condition!.expirationTime == 30) {
+        // Siguiente mes
+        final nextMonthDate = DateTime(
+            purchase.purchasedAt!.toDate().year,
+            purchase.purchasedAt!.toDate().month + 1,
+            purchase.purchasedAt!.toDate().day);
+        expirationDays =
+            nextMonthDate.difference(purchase.purchasedAt!.toDate()).inDays;
+      } else if (bonoSelected.condition!.expirationTime == 60) {
+        // Dos meses más adelante
+        final twoMonthsLater = DateTime(
+            purchase.purchasedAt!.toDate().year,
+            purchase.purchasedAt!.toDate().month + 2,
+            purchase.purchasedAt!.toDate().day);
+        expirationDays =
+            twoMonthsLater.difference(purchase.purchasedAt!.toDate()).inDays;
+      } else if (bonoSelected.condition!.expirationTime == 90) {
+        // Tres meses más adelante
+        final threeMonthsLater = DateTime(
+            purchase.purchasedAt!.toDate().year,
+            purchase.purchasedAt!.toDate().month + 3,
+            purchase.purchasedAt!.toDate().day);
+        expirationDays =
+            threeMonthsLater.difference(purchase.purchasedAt!.toDate()).inDays;
+      }
+    }
+    //Prorrateación o mitad y mitad
+    else {
+      final firstDayOfNextMonth = DateTime(purchase.purchasedAt!.toDate().year,
+          purchase.purchasedAt!.toDate().month + 1, 1);
+      expirationDays =
+          firstDayOfNextMonth.difference(purchase.purchasedAt!.toDate()).inDays;
+    }
+    return expirationDays;
   }
 
   Future<void> addEventToPurchase(String purchaseId, String eventId) async {
