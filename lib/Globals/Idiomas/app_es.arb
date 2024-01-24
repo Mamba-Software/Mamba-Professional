@@ -3713,5 +3713,13 @@
   "times": "Veces",
   "@times": {
     "description": "times text"
+  },
+  "exactDaysTitle": "Días exactos",
+  "@exactDaysTitle": {
+    "description": "Título de la opción de Pago Exacto"
+  },
+  "exactDaysTitleDescription": "El precio de la compra se calculará exactamente por los días de la fecha de expiración o renovación",
+  "@exactDaysTitleDescription": {
+    "description": "Descripción de cómo funciona el días exactos"
   }
 }

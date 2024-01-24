@@ -483,8 +483,14 @@ class PurchaseFirebaseCalls {
     var uid = const Uuid().v4();
     List<String> purchasesId = [uid];
     bool isRecurrent = false;
+    bool directPurchase;
     if (bonoSelected.isRecurrent != null && bonoSelected.isRecurrent!) {
       isRecurrent = true;
+    }
+    if (purchase.directPurchase == null) {
+      directPurchase = false;
+    } else {
+      directPurchase = purchase.directPurchase!;
     }
     //SI ES LA PRIMERA PURCHASE AFEGIDA A PARTIR DE UN RECURRENT BONO
     if (isRecurrent) {
@@ -499,11 +505,9 @@ class PurchaseFirebaseCalls {
         "cancelTime": bonoSelected.condition?.cancelTime,
         "expirationTime": bonoSelected.condition?.expirationTime,
         "paymentMethod": purchase.paymentMethod,
-        "directPurchase": purchase.directPurchase,
+        "directPurchase": directPurchase,
         "isActive": true,
         "isRecurrent": isRecurrent,
-        "gracePeriod": purchase.gracePeriod,
-        "maxCanWeek": purchase.maxCanWeek,
         "paymentTerms": purchase.paymentTerms,
         "groupPurchases": purchasesId,
         "purchaseGroupId": uid,
@@ -523,11 +527,9 @@ class PurchaseFirebaseCalls {
         "cancelTime": bonoSelected.condition?.cancelTime,
         "expirationTime": bonoSelected.condition?.expirationTime,
         "paymentMethod": purchase.paymentMethod,
-        "directPurchase": purchase.directPurchase,
+        "directPurchase": directPurchase,
         "isActive": true,
         "isRecurrent": isRecurrent,
-        "gracePeriod": purchase.gracePeriod,
-        "maxCanWeek": purchase.maxCanWeek,
       }).catchError((err) {
         print(err);
       });

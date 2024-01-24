@@ -685,6 +685,28 @@
           "order": "DESCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "Purchases",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "isActive",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "isRecurrent",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "expirationTime",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brandId",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []

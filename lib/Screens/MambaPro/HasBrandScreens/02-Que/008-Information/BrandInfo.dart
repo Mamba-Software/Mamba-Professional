@@ -103,9 +103,9 @@ class _BrandInfoState extends State<BrandInfo>
   // Purchase
   bool freeSession = false;
   bool directPurchase = false;
-  int gracePeriodDays = 30;
+  int gracePeriodDays = 7;
   int cancelationsPerWeek = 7;
-  List<bool> isSelectedTerms = [true, false];
+  List<bool> isSelectedTerms = [false, false, true];
 
   // Subscription
   int difference = 0;
@@ -252,7 +252,7 @@ class _BrandInfoState extends State<BrandInfo>
     if (currentBrand.gracePeriod != null) {
       gracePeriodDays = currentBrand.gracePeriod!;
     } else {
-      currentBrand.gracePeriod = 30;
+      currentBrand.gracePeriod = 7;
     }
     //Max cancel per week
     if (currentBrand.maxCanWeek != null) {
@@ -263,9 +263,10 @@ class _BrandInfoState extends State<BrandInfo>
     if (currentBrand.paymentTerms != null) {
       isSelectedTerms[0] = false;
       isSelectedTerms[1] = false;
+      isSelectedTerms[2] = false;
       isSelectedTerms[currentBrand.paymentTerms!] = true;
     } else {
-      currentBrand.paymentTerms = 0;
+      currentBrand.paymentTerms = 2;
     }
   }
 
@@ -376,8 +377,12 @@ class _BrandInfoState extends State<BrandInfo>
         if (isSelectedTerms[0] == false) {
           isUpdated = true;
         }
-      } else {
+      } else if (currentBrand.paymentTerms! == 1) {
         if (isSelectedTerms[1] == false) {
+          isUpdated = true;
+        }
+      } else if (currentBrand.paymentTerms! == 2) {
+        if (isSelectedTerms[2] == false) {
           isUpdated = true;
         }
       }
@@ -1778,7 +1783,7 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
-
+/*
                         ///CANCELACIONES MAXIMAS POR SEMANA
                         Row(
                           children: [
@@ -1853,7 +1858,7 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
-
+*/
                         ///TERMINOS DE PAGO
                         Row(
                           children: [
@@ -1916,6 +1921,12 @@ class _BrandInfoState extends State<BrandInfo>
                                         .midMonthPaymentTitle,
                                     AppLocalizations.of(context)!
                                         .midMonthPaymentDescription),
+                                selectedTerms(
+                                    2,
+                                    AppLocalizations.of(context)!
+                                        .exactDaysTitle,
+                                    AppLocalizations.of(context)!
+                                        .exactDaysTitleDescription),
                               ],
                             ),
                           ],
@@ -2211,6 +2222,8 @@ class _BrandInfoState extends State<BrandInfo>
 
                     if (isSelectedTerms[1]) {
                       termsSelected = 1;
+                    } else if (isSelectedTerms[2]) {
+                      termsSelected = 2;
                     }
                     // Update Brand Info
                     await _brandDataService.updateBrandInfo(
@@ -2501,6 +2514,7 @@ class _BrandInfoState extends State<BrandInfo>
               onPressed: () {
                 isSelectedTerms[0] = false;
                 isSelectedTerms[1] = false;
+                isSelectedTerms[2] = false;
 
                 isSelectedTerms[index] = true;
                 setState(() {});

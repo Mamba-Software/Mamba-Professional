@@ -842,5 +842,7 @@
   "proratedPaymentDescription": "En realitzar la compra, es paga la diferència fins al primer dia del següent mes i després es continua pagant des de cada dia u del mes",
   "midMonthPaymentTitle": "Pagament 15 i 15",
   "midMonthPaymentDescription": "Si la compra es realitza en els primers 15 dies del mes, es paga el total del bo. Si es realitza en els últims 15 dies, es paga la meitat",
-  "times": "Cops"
+  "times": "Cops",
+  "exactDaysTitle": "Dies exactes",
+  "exactDaysTitleDescription": "El preu de la compra es calcularà exactament pels dies de la data d'expiració o renovació"
 }

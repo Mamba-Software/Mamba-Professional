@@ -3685,7 +3685,7 @@ exports.scheduledCheckBonoFunctionOnCall = functions
   functions.logger.log("Empezamos", todayNew);
 
   // Ejecutar subfunciones
-  await processRegularPurchases();
+  await processGracePeriodPurchases();
   await processRegularPurchasesExpTime();
   await processDirectAndRecurrentPurchases();
 
@@ -3695,9 +3695,10 @@ exports.scheduledCheckBonoFunctionOnCall = functions
 });
 
 
-// Subfunción para procesar las Purchases normales
-async function processRegularPurchases() {
-
+// Subfunción para procesar los grace period de las purchases
+async function processGracePeriodPurchases() {
+var today = new Date();
+const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 const purchasesRef = db.collection('Purchases');
 const snapshot = await purchasesRef
   .where('isActive', '==', true)
@@ -3707,27 +3708,28 @@ const snapshot = await purchasesRef
 
 for (const doc of snapshot.docs) {
   const purchase = doc.data();
-  let { gracePeriod, isRecurrent } = purchase;
+  let { purchasedAt, isRecurrent } = purchase;
 
-  // Restar un día del período de gracia
-  gracePeriod = (gracePeriod || 0) - 1;
+  const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
+  const brandSelected = brandSnapshot.data();
 
-  // Preparar el objeto de actualización
-  const updateData = {
-  gracePeriod: gracePeriod <= 0 ? 0 : gracePeriod,
-  isActive: gracePeriod > 0,
-  };
+  let gracePeriod = brandSelected.gracePeriod ?? 0;
 
-  // Si es recurrente y el período de gracia es <= 0, desactivar también la recurrencia
-  if (isRecurrent && gracePeriod <= 0) {
-  updateData.isRecurrencyActive = false;
+  let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
+
+  // Convertir purchasedAt a una fecha y sumarle el gracePeriod
+  const gracePeriodEndDate = new Date(purchasedAtNormalized.getTime());
+  gracePeriodEndDate.setDate(gracePeriodEndDate.getDate() + gracePeriod);
+
+  if(gracePeriodEndDate >= todayNormalized) {
+    const updateData = {
+      isActive: false,
+      };
+      if (isRecurrent) {
+        updateData.isRecurrencyActive = false;
+      }
+      await doc.ref.update(updateData);
   }
-
-  functions.logger.log("Compra", purchase);
-  functions.logger.log("Actualización", updateData);
-
-  // Actualizar la Purchase
-  await doc.ref.update(updateData);
 }
 }
 
@@ -3738,6 +3740,7 @@ const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.ge
 
 const purchasesRef = db.collection('Purchases');
 const snapshot = await purchasesRef
+  .where('directPurchase', '==', false)
   .where('isRecurrencyActive', '==', true)
   .where('isRecurrent', '==', true)
   .where('brandId', '==', '1d16285c-54e8-4a6a-bd1f-ba7071c72774') //TODO: ELIMINAR
@@ -3764,17 +3767,9 @@ for (const doc of snapshot.docs) {
     functions.logger.log("ExpirationTime", expirationDateNormalized);
     functions.logger.log("today", todayNormalized);
 
-    shouldCreateNewPurchase = todayNormalized > expirationDateNormalized;
+    shouldCreateNewPurchase = todayNormalized >= expirationDateNormalized;
 
-  } else {
-    // Lógica para cuando expirationTime es 0 y estamos en día 1 del mes
-    // Crear una nueva fecha que es el primer día del mes siguiente a purchasedAt
-    const firstDayNextMonth = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth() + 1, 1);
-    const firstDayNextMonthNormalized = new Date(firstDayNextMonth.getFullYear(), firstDayNextMonth.getMonth(), firstDayNextMonth.getDate());
-    functions.logger.log("firstDayNextMonth", firstDayNextMonthNormalized);
-    functions.logger.log("purchasedAt.toDate()", purchasedAt.toDate());
-    shouldCreateNewPurchase = (todayNormalized.getDate() >= 1) && (purchasedAt.toDate() < firstDayNextMonth);
-  }
+  } 
 
   if (shouldCreateNewPurchase) {
   // Crear nuevo registro en la colección Purchases
@@ -3787,6 +3782,24 @@ for (const doc of snapshot.docs) {
   const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
   const brandSelected = brandSnapshot.data();
 
+  let exirationDays = 0;
+
+  if (bonoSelected.expirationTime === 30) {
+    // Siguiente mes
+    const nextMonthDate = new Date(todayNormalized.getFullYear(), todayNormalized.getMonth() + 1, todayNormalized.getDate());
+    exirationDays = (nextMonthDate - todayNormalized) / (1000 * 60 * 60 * 24);
+  }
+  if (bonoSelected.expirationTime === 60) {
+    // Dos meses más adelante
+    const twoMonthsLater = new Date(todayNormalized.getFullYear(), todayNormalized.getMonth() + 2, todayNormalized.getDate());
+    exirationDays = (twoMonthsLater - todayNormalized) / (1000 * 60 * 60 * 24);
+  }
+  if (bonoSelected.expirationTime === 90) {
+    // Tres meses más adelante
+    const threeMonthsLater = new Date(todayNormalized.getFullYear(), todayNormalized.getMonth() + 3, todayNormalized.getDate());
+    exirationDays = (threeMonthsLater - todayNormalized) / (1000 * 60 * 60 * 24);
+  }
+
   const newPurchaseData = {
     purchasedAt: admin.firestore.Timestamp.fromDate(new Date()), // Fecha actual
     userId: purchase.userId,
@@ -3796,15 +3809,13 @@ for (const doc of snapshot.docs) {
     sessions: bonoSelected.sessions, // Asegúrate de tener el bonoSelected actualizado
     weeklySessions: bonoSelected.weeklySessions,
     cancelTime: bonoSelected.cancelTime,
-    expirationTime: bonoSelected.expirationTime,
+    expirationTime: exirationDays,
     paymentMethod: purchase.paymentMethod,
     directPurchase: true, // Asumiendo que el nuevo purchase no es una compra directa
     isActive: true,
     purchasedAt: admin.firestore.Timestamp.fromDate(new Date()), // La fecha actual
     isRecurrent: true,
-    gracePeriod: brandSelected.gracePeriod ?? 30,
-    maxCanWeek: brandSelected.maxCanWeek ?? 7,
-    paymentTerms: brandSelected.paymentTerms ?? 0,
+    paymentTerms: brandSelected.paymentTerms ?? 2,
     purchaseGroupId: purchase.purchaseGroupId, // El ID del grupo de compras, si es aplicable
     isRecurrencyActive: true, // o true/false según la lógica de negocio
   };
@@ -3858,33 +3869,11 @@ async function processRegularPurchasesExpTime() {
 
       // Lógica para cuando expirationTime es mayor que 0
       functions.logger.log("expirationTime", expirationTime);
+      let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
   
       let expirationDate;
-  
-      if(expirationTime == 30) 
-      {
-        // Calcula la fecha para 1 mes después
-        expirationDate = new Date(purchasedAt.toDate());
-        expirationDate.setMonth(purchasedAt.toDate().getMonth() + 1);
-      }
-      if(expirationTime == 60) 
-      {
-        // Calcula la fecha para 1 mes después
-        expirationDate = new Date(purchasedAt.toDate());
-        expirationDate.setMonth(purchasedAt.toDate().getMonth() + 2);
-      }
-      if(expirationTime == 90) 
-      {
-        // Calcula la fecha para 1 mes después
-        expirationDate = new Date(purchasedAt.toDate());
-        expirationDate.setMonth(purchasedAt.toDate().getMonth() + 3);
-      }
-      else 
-      {
-        expirationDate = new Date(purchasedAt.toDate().getTime() + expirationTime * 24 * 60 * 60 * 1000);
-       
-      }
-  
+
+      expirationDate = new Date(purchasedAtNormalized.getTime() + expirationTime * 24 * 60 * 60 * 1000);
       const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
   
       functions.logger.log("ExpirationTime", expirationDateNormalized);
@@ -3896,7 +3885,6 @@ async function processRegularPurchasesExpTime() {
       {
         await doc.ref.update({isActive: false});
       }
-  
     }
   }
   }
