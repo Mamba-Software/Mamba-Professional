@@ -446,7 +446,7 @@ class BonoCardState extends State<BonoCard> {
                                                       : SizedBox(
                                                           height:
                                                               widget.height *
-                                                                  0.15,
+                                                                  0.13,
                                                           width: widget.width *
                                                               0.2,
                                                           child: FittedBox(
@@ -454,7 +454,7 @@ class BonoCardState extends State<BonoCard> {
                                                             child: Container(
                                                               padding:
                                                                   const EdgeInsets
-                                                                      .all(5),
+                                                                      .all(6),
                                                               decoration:
                                                                   BoxDecoration(
                                                                 borderRadius:
@@ -715,12 +715,8 @@ class BonoCardState extends State<BonoCard> {
                                                 ),
                                                 Text(
                                                   bono.isActive!
-                                                      ? AppLocalizations.of(
-                                                              context)!
-                                                          .active
-                                                      : AppLocalizations.of(
-                                                              context)!
-                                                          .desactive,
+                                                      ? "${AppLocalizations.of(context)!.yes} (${AppLocalizations.of(context)!.active})"
+                                                      : "${AppLocalizations.of(context)!.no} (${AppLocalizations.of(context)!.desactive})",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge
@@ -920,14 +916,16 @@ class BonoCardState extends State<BonoCard> {
                                                         minLeadingWidth:
                                                             widget.width * 0.07,
                                                         leading: Icon(
-                                                            Icons
-                                                                .query_builder_outlined,
+                                                            bono.isRecurrent!
+                                                                ? Icons.repeat
+                                                                : Icons
+                                                                    .query_builder_outlined,
                                                             size: widget.width *
                                                                 0.07,
                                                             color:
                                                                 Colors.white70),
                                                         title: Text(
-                                                          "${AppLocalizations.of(context)!.expiresAt} ${condition.expirationTime} ${AppLocalizations.of(context)!.days.toLowerCase()}",
+                                                          "${bono.isRecurrent! ? AppLocalizations.of(context)!.renewsAt : AppLocalizations.of(context)!.expiresAt.split(" ")[0]} ${condition.expirationTime == 30 ? "${AppLocalizations.of(context)!.monthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : condition.expirationTime == 60 ? "${AppLocalizations.of(context)!.bimonthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : "${AppLocalizations.of(context)!.quarterly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)"} ",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
