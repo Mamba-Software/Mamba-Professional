@@ -582,6 +582,21 @@ class PurchaseFirebaseCalls {
           purchase.purchasedAt!.toDate().month + 1, 1);
       expirationDays =
           firstDayOfNextMonth.difference(purchase.purchasedAt!.toDate()).inDays;
+
+      if (bonoSelected.condition!.expirationTime == 60) {
+        // Dos meses más adelante
+        final twoMonthsLater = DateTime(firstDayOfNextMonth.year,
+            firstDayOfNextMonth.month + 1, firstDayOfNextMonth.day);
+        expirationDays = twoMonthsLater.difference(firstDayOfNextMonth).inDays +
+            expirationDays;
+      } else if (bonoSelected.condition!.expirationTime == 90) {
+        // Tres meses más adelante
+        final threeMonthsLater = DateTime(firstDayOfNextMonth.year,
+            firstDayOfNextMonth.month + 2, firstDayOfNextMonth.day);
+        expirationDays =
+            threeMonthsLater.difference(firstDayOfNextMonth).inDays +
+                expirationDays;
+      }
     }
     return expirationDays;
   }
