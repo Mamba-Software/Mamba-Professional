@@ -132,7 +132,7 @@ class Purchase {
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('groupPurchases')) {
-      groupPurchases = documentSnapshot.get("groupPurchases");
+      groupPurchases = documentSnapshot.get("groupPurchases").cast<String>();
     }
 
     if ((documentSnapshot.data() as Map<String, dynamic>)
