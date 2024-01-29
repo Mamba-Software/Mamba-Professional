@@ -465,7 +465,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                             );
                                                                           },
                                                                           title: Text(
-                                                                              "${AppLocalizations.of(context)!.bono} ${AppLocalizations.of(context)!.active}s",
+                                                                              AppLocalizations.of(context)!.activeRates,
                                                                               style: Theme.of(context).textTheme.bodyLarge,
                                                                               textAlign: TextAlign.left),
                                                                           subtitle: Text(
@@ -566,7 +566,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                                         Navigator.pop(context);
                                                                                       }
                                                                                     },
-                                                                                    title: Text(AppLocalizations.of(context)!.active, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                    title: Text(AppLocalizations.of(context)!.activeFem, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                     trailing: filterByActivePurchases[0]
                                                                                         ? SizedBox(
                                                                                             width: MediaQuery.of(context).size.width * 0.15,
@@ -585,7 +585,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                                         Navigator.pop(context);
                                                                                       }
                                                                                     },
-                                                                                    title: Text(AppLocalizations.of(context)!.desactive, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                    title: Text(AppLocalizations.of(context)!.desactiveFem, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                     trailing: filterByActivePurchases[1]
                                                                                         ? SizedBox(
                                                                                             width: MediaQuery.of(context).size.width * 0.15,

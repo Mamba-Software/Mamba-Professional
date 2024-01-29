@@ -1802,7 +1802,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                           .size
                                                           .width *
                                                       0.07,
-                                                )),
+                                                )
+                                                ),
                                           ),
                                         ),
                                       ),

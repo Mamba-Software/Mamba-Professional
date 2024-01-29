@@ -79,9 +79,10 @@ class _BonosProState extends State<BonosPro> {
 
   // Filtrar bonos
   bool hasFilter = false;
-  List<bool> filterByBonos = [true, true];
+  List<bool> filterByBonos = [true, true, true, true];
 
   int filterBonosNumber = 0;
+  int filterTypeNumber = 0;
   int orderByBonosNumber = 0;
   int alphabeticOrder = 0;
   List<bool> orderByBonos = [true, false, true, false];
@@ -162,6 +163,26 @@ class _BonosProState extends State<BonosPro> {
     );
   }
 
+  String returnFilteredTypeRateString() {
+    String filteredRates = "";
+    int cnt = 0;
+    if (filterByBonos[2]) {
+      filteredRates += "${AppLocalizations.of(context)!.membership}, ";
+      cnt += 1;
+    }
+    if (filterByBonos[3]) {
+      filteredRates += "${AppLocalizations.of(context)!.bono}, ";
+      cnt += 1;
+    }
+    if (cnt == 1) {
+      return filteredRates.split(", ")[0];
+    }
+    if (cnt == 2) {
+      return "${filteredRates.split(", ")[0]}, ${filteredRates.split(", ")[1]}";
+    }
+    return filteredRates;
+  }
+  
   String returnFilteredActiveBonosString() {
     String activeStaff = "";
     int cnt = 0;
@@ -261,12 +282,13 @@ class _BonosProState extends State<BonosPro> {
                                         final PageController pageController =
                                             PageController(initialPage: 0);
                                         int currentPage = 0;
+                                        bool isTypeRate = true;
                                         // Widget
                                         return StatefulBuilder(
                                           builder: (BuildContext context,
                                               StateSetter setStateBottom) {
                                             return FractionallySizedBox(
-                                              heightFactor: 0.25,
+                                              heightFactor: 0.33,
                                               child: SizedBox(
                                                 height: MediaQuery.of(context)
                                                         .size
@@ -340,7 +362,7 @@ class _BonosProState extends State<BonosPro> {
                                                                     context)
                                                                 .size
                                                                 .height *
-                                                            0.15,
+                                                            0.21,
                                                         width: MediaQuery.of(
                                                                 context)
                                                             .size
@@ -363,7 +385,67 @@ class _BonosProState extends State<BonosPro> {
                                                                 ListTile(
                                                                   onTap: () {
                                                                     mixpanel!.track(
+                                                                        'brand_bonos_filter_type');
+                                                                        setStateBottom(
+                                                                            () {
+                                                                          isTypeRate =
+                                                                              true;
+                                                                        });
+                                                                    pageController
+                                                                        .nextPage(
+                                                                      duration: const Duration(
+                                                                          milliseconds:
+                                                                              500),
+                                                                      curve: Curves
+                                                                          .ease,
+                                                                    );
+                                                                    
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(
+                                                                              context)!
+                                                                          .typeRate,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyLarge,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  subtitle: Text(
+                                                                      returnFilteredTypeRateString(),
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodySmall,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing:
+                                                                      SizedBox(
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.15,
+                                                                    child: Center(
+                                                                        child: Icon(
+                                                                            Icons
+                                                                                .arrow_forward_ios,
+                                                                            size: MediaQuery.of(context).size.width *
+                                                                                0.04,
+                                                                            color:
+                                                                                AppColors.grey)),
+                                                                  ),
+                                                                ),
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    mixpanel!.track(
                                                                         'brand_bonos_filter_active');
+                                                                        setStateBottom(
+                                                                            () {
+                                                                          isTypeRate =
+                                                                              false;
+                                                                        });
                                                                     pageController
                                                                         .nextPage(
                                                                       duration: const Duration(
@@ -374,7 +456,7 @@ class _BonosProState extends State<BonosPro> {
                                                                     );
                                                                   },
                                                                   title: Text(
-                                                                      "${AppLocalizations.of(context)!.bono} ${AppLocalizations.of(context)!.active}s",
+                                                                      "${AppLocalizations.of(context)!.rates} ${AppLocalizations.of(context)!.disponible.toLowerCase()}s",
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
@@ -409,14 +491,109 @@ class _BonosProState extends State<BonosPro> {
                                                                 ),
                                                               ],
                                                             ),
-                                                            Column(
+                                                            isTypeRate ? Column(
                                                               children: [
                                                                 ListTile(
                                                                   onTap: () {
                                                                     // Check if the Only True
                                                                     var filterActive =
                                                                         List.from(
-                                                                            filterByBonos);
+                                                                            filterByBonos.sublist(2));
+                                                                    filterActive.retainWhere(
+                                                                        (element) =>
+                                                                            element ==
+                                                                            true);
+                                                                    if (!(filterActive.length ==
+                                                                            1 &&
+                                                                        filterByBonos[
+                                                                            2])) {
+                                                                      filterByBonos[
+                                                                              2] =
+                                                                          !filterByBonos[
+                                                                              2];                                                                      
+                                                                      // Navigator Pop
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    }
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(
+                                                                              context)!
+                                                                          .membership,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyLarge,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing: filterByBonos[
+                                                                          2]
+                                                                      ? SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                        )
+                                                                      : SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15),
+                                                                ),
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    // Check if the Only True
+                                                                    var filterActive =
+                                                                        List.from(
+                                                                            filterByBonos.sublist(2));
+                                                                    filterActive.retainWhere(
+                                                                        (element) =>
+                                                                            element ==
+                                                                            true);
+                                                                    if (!(filterActive.length ==
+                                                                            1 &&
+                                                                        filterByBonos[
+                                                                            3])) {
+                                                                      filterByBonos[
+                                                                              3] =
+                                                                          !filterByBonos[
+                                                                              3];
+                                                                      // Navigator Pop
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    }
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(
+                                                                              context)!
+                                                                          .bono,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyLarge,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left),
+                                                                  trailing: filterByBonos[
+                                                                          1]
+                                                                      ? SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                        )
+                                                                      : SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15),
+                                                                ),
+                                                              ],
+                                                            ) : Column(
+                                                              children: [
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    // Check if the Only True
+                                                                    var filterActive =
+                                                                        List.from(
+                                                                            filterByBonos.sublist(0,1));
                                                                     filterActive.retainWhere(
                                                                         (element) =>
                                                                             element ==
@@ -429,15 +606,6 @@ class _BonosProState extends State<BonosPro> {
                                                                               0] =
                                                                           !filterByBonos[
                                                                               0];
-                                                                      mixpanel!.track(
-                                                                          'brand_bonos_filter_active',
-                                                                          properties: {
-                                                                            'Values':
-                                                                                [
-                                                                              filterByBonos[0] ? 'Yes' : ' ',
-                                                                              filterByBonos[1] ? 'No' : ' '
-                                                                            ]
-                                                                          });
                                                                       // Navigator Pop
                                                                       Navigator.pop(
                                                                           context);
@@ -471,7 +639,7 @@ class _BonosProState extends State<BonosPro> {
                                                                     // Check if the Only True
                                                                     var filterActive =
                                                                         List.from(
-                                                                            filterByBonos);
+                                                                            filterByBonos.sublist(0,1));
                                                                     filterActive.retainWhere(
                                                                         (element) =>
                                                                             element ==
@@ -536,7 +704,7 @@ class _BonosProState extends State<BonosPro> {
                                       },
                                     ).whenComplete(() {
                                       setState(() {
-                                        // Filter By
+                                        // Filter By Active or not Active
                                         if (filterByBonos[0] &&
                                             filterByBonos[1]) {
                                           // Active/Inactive Selected
@@ -553,6 +721,24 @@ class _BonosProState extends State<BonosPro> {
                                         } else {
                                           // None Selected
                                           filterBonosNumber = 3;
+                                        }
+                                        // Filter By Type
+                                        if (filterByBonos[2] &&
+                                            filterByBonos[3]) {
+                                          // Membresía/Bonos Selected
+                                          hasFilter = false;
+                                          filterTypeNumber = 0;
+                                        } else if (filterByBonos[2]) {
+                                          // Membresía Selected
+                                          filterTypeNumber = 1;
+                                          hasFilter = true;
+                                        } else if (filterByBonos[3]) {
+                                          // Bonos Selected
+                                          filterTypeNumber = 2;
+                                          hasFilter = true;
+                                        } else {
+                                          // None Selected
+                                          filterTypeNumber = 3;
                                         }
                                       });
                                     });
@@ -813,7 +999,7 @@ class _BonosProState extends State<BonosPro> {
                   );
                 } else {
                   bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs,
-                      filterBonosNumber, orderByBonosNumber, alphabeticOrder);
+                      filterBonosNumber, filterTypeNumber, orderByBonosNumber, alphabeticOrder);
                   if (bonosList.isNotEmpty) {
                     return SliverList(
                       delegate: SliverChildBuilderDelegate(

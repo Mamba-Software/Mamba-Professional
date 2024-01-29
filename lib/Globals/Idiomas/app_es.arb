@@ -339,6 +339,10 @@
   "@sessions":{
     "description": "Sesiones Text"
   },
+  "allSessionsDone": "Caduca al finalizar todas las sesiones",
+  "@allSessionsDone":{
+    "description": "Sesiones Text"
+  },
   "sessionsDone": "Sesiones realizadas",
   "@sessionsDone":{
     "description": "Sesiones Text"
@@ -1274,7 +1278,7 @@
   "finished": "Realizado",
   "@finished": {
     "description": "Wellcome message"
-  },
+  }, 
   "todayString": "Hoy",
   "@todayString": {
     "description": "Wellcome message"
@@ -2166,7 +2170,11 @@
   "rates": "Tarifas",
   "@rates":{
     "description": "Bonos text"  
-  },  
+  },
+  "activeRates": "Tarifas activas",
+  "@activeRates":{
+    "description": "Bonos text"  
+  },    
   "typeRate": "Tipo de tarifa",
   "@typeRate":{
     "description": "Bonos text"  
@@ -2395,15 +2403,15 @@
   "@month": {
     "description": "seeMap message"
   },
-  "monthly": "Mensualmente",
+  "monthly": "Mensual",
   "@monthly": {
     "description": "seeMap message"
   },  
-  "bimonthly": "Bimensualmente",
+  "bimonthly": "Bimensual",
   "@bimonthly": {
     "description": "seeMap message"
   },
-  "quarterly": "Trimestralmente",
+  "quarterly": "Trimestral",
   "@quarterly": {
     "description": "seeMap message"
   },
@@ -2644,6 +2652,14 @@
     "description": "active message"
   },
   "desactive": "Inactivo",
+  "@desactive": {
+    "description": "desactive message"
+  },
+  "activeFem": "Activa",
+  "@active": {
+    "description": "active message"
+  },
+  "desactiveFem": "Inactiva",
   "@desactive": {
     "description": "desactive message"
   },
@@ -2894,6 +2910,15 @@
   },
   "comingNDays": "Próximos {days} Días",
   "@comingNDays": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },  
+  "nDaysAprox": "Cada {days} días aproximadamente",
+  "@nDaysAprox": {
     "description": "Wellcome message",
     "placeholders": {
       "days": {

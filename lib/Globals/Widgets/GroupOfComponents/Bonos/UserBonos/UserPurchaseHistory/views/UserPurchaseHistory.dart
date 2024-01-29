@@ -417,7 +417,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                           );
                                                         },
                                                         title: Text(
-                                                            "${AppLocalizations.of(context)!.bono} ${AppLocalizations.of(context)!.active}s",
+                                                            AppLocalizations.of(context)!.activeRates,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -642,7 +642,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                                   title: Text(
                                                                       AppLocalizations.of(
                                                                               context)!
-                                                                          .active,
+                                                                          .activeFem,
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
@@ -690,7 +690,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                                   title: Text(
                                                                       AppLocalizations.of(
                                                                               context)!
-                                                                          .desactive,
+                                                                          .desactiveFem,
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme

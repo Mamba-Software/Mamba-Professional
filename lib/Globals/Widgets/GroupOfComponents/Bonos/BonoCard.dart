@@ -65,6 +65,26 @@ class BonoCardState extends State<BonoCard> {
   bool isExpanded = false;
   double isExpandedHeight = 2.8;
 
+  Widget returnCorrectExpirationRenewalDate() {
+    if (bono.isRecurrent!) {
+      return Text(
+        "${AppLocalizations.of(context)!.renewsAt} ${condition.expirationTime == 30 ? "${AppLocalizations.of(context)!.monthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : condition.expirationTime == 60 ? "${AppLocalizations.of(context)!.bimonthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : "${AppLocalizations.of(context)!.quarterly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)"} ",
+        style: Theme.of(context)
+            .textTheme
+            .bodyLarge
+            ?.copyWith(color: Colors.white70),
+      );
+    } else {
+      return Text(
+        "${bono.isRecurrent! ? AppLocalizations.of(context)!.renewsAt : AppLocalizations.of(context)!.expiresAt.split(" ")[0]} ${condition.expirationTime == 30 ? "${AppLocalizations.of(context)!.monthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : condition.expirationTime == 60 ? "${AppLocalizations.of(context)!.bimonthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : "${AppLocalizations.of(context)!.quarterly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)"} ",
+        style: Theme.of(context)
+            .textTheme
+            .bodyLarge
+            ?.copyWith(color: Colors.white70),
+      );
+    }
+  }
+
   @override
   void initState() {
     bono = widget.bono;
@@ -915,17 +935,26 @@ class BonoCardState extends State<BonoCard> {
                                                             EdgeInsets.zero,
                                                         minLeadingWidth:
                                                             widget.width * 0.07,
-                                                        leading: Icon(
-                                                            bono.isRecurrent!
-                                                                ? Icons.repeat
-                                                                : Icons
-                                                                    .query_builder_outlined,
-                                                            size: widget.width *
-                                                                0.07,
-                                                            color:
-                                                                Colors.white70),
+                                                        leading: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Icon(
+                                                                bono.isRecurrent!
+                                                                    ? Icons
+                                                                        .repeat
+                                                                    : Icons
+                                                                        .query_builder_outlined,
+                                                                size: widget
+                                                                        .width *
+                                                                    0.07,
+                                                                color: Colors
+                                                                    .white70),
+                                                          ],
+                                                        ),
                                                         title: Text(
-                                                          "${bono.isRecurrent! ? AppLocalizations.of(context)!.renewsAt : AppLocalizations.of(context)!.expiresAt.split(" ")[0]} ${condition.expirationTime == 30 ? "${AppLocalizations.of(context)!.monthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : condition.expirationTime == 60 ? "${AppLocalizations.of(context)!.bimonthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : "${AppLocalizations.of(context)!.quarterly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)"} ",
+                                                          "${bono.isRecurrent! ? AppLocalizations.of(context)!.autoRenovation.split(" ")[0] : StringUtils().toCapitalized(AppLocalizations.of(context)!.expireDate.split(" ")[2])} ${condition.expirationTime == 30 ? AppLocalizations.of(context)!.monthly : condition.expirationTime == 60 ? AppLocalizations.of(context)!.bimonthly : AppLocalizations.of(context)!.quarterly}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
@@ -933,7 +962,22 @@ class BonoCardState extends State<BonoCard> {
                                                               ?.copyWith(
                                                                   color: Colors
                                                                       .white70),
-                                                        ))
+                                                        ),
+                                                        subtitle: Text(
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .nDaysAprox(condition
+                                                                  .expirationTime
+                                                                  .toString()),
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyMedium
+                                                              ?.copyWith(
+                                                                  color: Colors
+                                                                      .white),
+                                                        ),
+                                                      )
                                                     : ListTile(
                                                         dense: true,
                                                         contentPadding:
@@ -958,32 +1002,20 @@ class BonoCardState extends State<BonoCard> {
                                                               ?.copyWith(
                                                                   color: Colors
                                                                       .white70),
-                                                        )),
-                                                condition.cancelTime != 0
-                                                    ? ListTile(
-                                                        dense: true,
-                                                        contentPadding:
-                                                            EdgeInsets.zero,
-                                                        minLeadingWidth:
-                                                            widget.width * 0.07,
-                                                        leading: Icon(
-                                                            Icons
-                                                                .free_cancellation,
-                                                            size: widget.width *
-                                                                0.07,
-                                                            color:
-                                                                Colors.white70),
-                                                        title: Text(
-                                                          "${AppLocalizations.of(context)!.cancelTimeAt} ${condition.cancelTime} ${AppLocalizations.of(context)!.hours.toLowerCase()}",
+                                                        ),
+                                                        subtitle: Text(
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .allSessionsDone,
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .bodyLarge
+                                                              .bodyMedium
                                                               ?.copyWith(
                                                                   color: Colors
-                                                                      .white70),
-                                                        ))
-                                                    : Container(),
+                                                                      .white),
+                                                        ),
+                                                      ),
                                                 condition.weeklySessions != 0
                                                     ? ListTile(
                                                         dense: true,
@@ -991,14 +1023,23 @@ class BonoCardState extends State<BonoCard> {
                                                             EdgeInsets.zero,
                                                         minLeadingWidth:
                                                             widget.width * 0.07,
-                                                        leading: Icon(
-                                                            Icons.rule_outlined,
-                                                            size: widget.width *
-                                                                0.07,
-                                                            color:
-                                                                Colors.white70),
+                                                        leading: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Icon(
+                                                                Icons
+                                                                    .date_range_outlined,
+                                                                size: widget
+                                                                        .width *
+                                                                    0.07,
+                                                                color: Colors
+                                                                    .white70),
+                                                          ],
+                                                        ),
                                                         title: Text(
-                                                          "${AppLocalizations.of(context)!.max} ${condition.weeklySessions} ${AppLocalizations.of(context)!.trainsPerWeek.toLowerCase()}",
+                                                          "${AppLocalizations.of(context)!.trainsPerWeek.split(" ")[0]} ${AppLocalizations.of(context)!.trainsPerWeek.split(" ")[1]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.trainsPerWeek.split(" ")[2])}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
@@ -1006,7 +1047,62 @@ class BonoCardState extends State<BonoCard> {
                                                               ?.copyWith(
                                                                   color: Colors
                                                                       .white70),
-                                                        ))
+                                                        ),
+                                                        subtitle: Text(
+                                                          "${AppLocalizations.of(context)!.max} ${condition.weeklySessions} ${AppLocalizations.of(context)!.trainsPerWeek.toLowerCase()}",
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyMedium
+                                                              ?.copyWith(
+                                                                  color: Colors
+                                                                      .white),
+                                                        ),
+                                                      )
+                                                    : Container(),
+                                                condition.cancelTime != 0
+                                                    ? ListTile(
+                                                        dense: true,
+                                                        contentPadding:
+                                                            EdgeInsets.zero,
+                                                        minLeadingWidth:
+                                                            widget.width * 0.07,
+                                                        leading: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Icon(
+                                                                Icons
+                                                                    .free_cancellation,
+                                                                size: widget
+                                                                        .width *
+                                                                    0.07,
+                                                                color: Colors
+                                                                    .white70),
+                                                          ],
+                                                        ),
+                                                        title: Text(
+                                                          "${AppLocalizations.of(context)!.freeCancel.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.freeCancel.split(" ")[1])} ",
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyLarge
+                                                              ?.copyWith(
+                                                                  color: Colors
+                                                                      .white70),
+                                                        ),
+                                                        subtitle: Text(
+                                                          "${StringUtils().toCapitalized(AppLocalizations.of(context)!.cancelTimeAt.split(" ")[2])} ${condition.cancelTime} ${AppLocalizations.of(context)!.hours.toLowerCase()}",
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyMedium
+                                                              ?.copyWith(
+                                                                  color: Colors
+                                                                      .white),
+                                                        ),
+                                                      )
                                                     : Container(),
                                               ],
                                             ),
