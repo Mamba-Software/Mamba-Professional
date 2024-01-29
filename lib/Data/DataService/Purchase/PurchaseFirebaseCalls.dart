@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:uuid/uuid.dart';
 
 // Firebase Purchase Service Class. All calls to Firebase are in this class.
@@ -486,7 +487,8 @@ class PurchaseFirebaseCalls {
 
   // Add Data
 
-  Future<String> addPurchase(Purchase purchase, Bono bonoSelected) async {
+  Future<String> addPurchase(
+      Purchase purchase, Bono bonoSelected, Brand brand) async {
     var uid = const Uuid().v4();
     List<String> purchasesId = [uid];
     bool isRecurrent = false;
@@ -499,7 +501,10 @@ class PurchaseFirebaseCalls {
     } else {
       directPurchase = purchase.directPurchase!;
     }
-    int expirationDays = calculateExpirationTime(purchase, bonoSelected) + 1;
+    int expirationDays = BonosUtils().getExpirationTime(
+        brand,
+        bonoSelected
+            .condition!); //calculateExpirationTime(purchase, bonoSelected) + 1;
     //SI ES LA PRIMERA PURCHASE AFEGIDA A PARTIR DE UN RECURRENT BONO
     if (isRecurrent) {
       await _firestore.collection(purchases).doc(uid).set({
@@ -507,7 +512,7 @@ class PurchaseFirebaseCalls {
         "userId": purchase.userId,
         "brandId": purchase.brandId!,
         "bonoId": purchase.bonoId,
-        "price": purchase.price, //bonoSelected.price
+        "price": bonoSelected.price,
         "sessions": bonoSelected.sessions,
         "weeklySessions": bonoSelected.condition?.weeklySessions,
         "cancelTime": bonoSelected.condition?.cancelTime,
@@ -529,7 +534,7 @@ class PurchaseFirebaseCalls {
         "userId": purchase.userId,
         "brandId": purchase.brandId!,
         "bonoId": purchase.bonoId,
-        "price": purchase.price, //bonoSelected.price
+        "price": bonoSelected.price,
         "sessions": bonoSelected.sessions,
         "weeklySessions": bonoSelected.condition?.weeklySessions,
         "cancelTime": bonoSelected.condition?.cancelTime,

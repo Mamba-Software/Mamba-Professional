@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -19,6 +20,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -271,6 +273,13 @@ class _PurchasePageState extends State<PurchasePage> {
 
   void setBonoConditions(Bono bono) {
     int? days = bono.condition?.expirationTime!;
+    //Es una request o un regal
+    if (!editBono) {
+      bonoSelected.setBonoPrice =
+          BonosUtils().getPurchasePrice(widget.brand, bono, bono.condition!);
+      bono.setBonoPrice = bonoSelected.price!;
+      days = BonosUtils().getExpirationTime(widget.brand, bono.condition!);
+    }
     priceController.text = bono.price.toString();
     if (bono.sessions! > 5000) {
       sessionsController.text = '';
@@ -1327,6 +1336,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                           canExpand: false,
                                           onlyView: true,
                                           hideActive: true,
+                                          isDynamic: !editBono,
                                         ),
                                       );
                                     }),
@@ -1538,16 +1548,19 @@ class _PurchasePageState extends State<PurchasePage> {
                                             Radius.circular(10))),
                                     child: optionConditionsWrite(
                                         TextInputType.text,
-                                        AppLocalizations.of(context)!
-                                            .expireDate,
-                                        AppLocalizations.of(context)!
-                                            .expiresAtDesc,
-                                        AppLocalizations.of(context)!
-                                            .titleError,
-                                        AppLocalizations.of(context)!
-                                            .titleError,
-                                        AppLocalizations.of(context)!
-                                            .titleError,
+                                        bonoSelected.isRecurrent != null &&
+                                                bonoSelected.isRecurrent!
+                                            ? AppLocalizations.of(context)!
+                                                .renovationDate
+                                            : AppLocalizations.of(context)!
+                                                .expireDate,
+                                        bonoSelected.isRecurrent != null &&
+                                                bonoSelected.isRecurrent!
+                                            ? AppLocalizations.of(context)!.renovationDateDesc
+                                            : AppLocalizations.of(context)!.expiresAtDesc,
+                                        AppLocalizations.of(context)!.titleError,
+                                        AppLocalizations.of(context)!.titleError,
+                                        AppLocalizations.of(context)!.titleError,
                                         true,
                                         titleController,
                                         null,
@@ -2032,7 +2045,7 @@ class _PurchasePageState extends State<PurchasePage> {
                         widget.user.id!, widget.brand.id!, bonoSelected);
                     // Build Purchase Object
                     String purchaseId = await _purchaseDataService.addPurchase(
-                        purchase, bonoSelected);
+                        purchase, bonoSelected, widget.brand);
                     await _brandDataService.deleteBrandBonoRequest(
                         widget.brand.id!,
                         widget.user.id!,
@@ -2079,7 +2092,7 @@ class _PurchasePageState extends State<PurchasePage> {
                         widget.user.id!, widget.brand.id!, bonoSelected);
                     // Save Purchase Object
                     String purchaseId = await _purchaseDataService.addPurchase(
-                        purchase, bonoSelected);
+                        purchase, bonoSelected, widget.brand);
                     await _brandDataService.updateBonoCompras(
                         widget.brand.id!, bonoSelected.id!);
                     await Future.delayed(const Duration(seconds: 2));
@@ -2578,7 +2591,10 @@ class _PurchasePageState extends State<PurchasePage> {
                     children: <Widget>[
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.015),
-                      daysSelectorWidget(0, '0', editable, noSessions),
+                      bonoSelected.isRecurrent != null &&
+                              bonoSelected.isRecurrent!
+                          ? Container()
+                          : daysSelectorWidget(0, '0', editable, noSessions),
                       daysSelectorWidget(4, 'Edit', editable, false),
                     ],
                   )
