@@ -191,6 +191,10 @@ class Brand {
         .containsKey('dateJoined')) {
       dateJoined = documentSnapshot.get("dateJoined").toString();
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('paymentTerms')) {
+      paymentTerms = documentSnapshot.get("paymentTerms");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////

@@ -3,6 +3,7 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
@@ -141,5 +142,94 @@ class BonosUtils {
     }
     // Return Most Bought Bono
     return mostBuys;
+  }
+
+  double getPurchasePrice(Brand brand, Bono bono, Condition condition) {
+    double price = bono.price!;
+    double priceResta = 0;
+    DateTime today = DateTime.now();
+    brand.paymentTerms ??= 2;
+
+    if (brand.paymentTerms != 2) {
+      if (today.day != 1) {
+        final firstDayOfNextMonth = DateTime(today.year, today.month + 1, 1);
+        final firstDayOfMonth = DateTime(today.year, today.month, 1);
+        final fifthDayOfMonth = DateTime(today.year, today.month, 15);
+
+        int allDaysMonth =
+            firstDayOfNextMonth.difference(firstDayOfMonth).inDays;
+        int diferenceToFirstDay =
+            firstDayOfNextMonth.difference(today).inDays + 1;
+
+        if (condition.expirationTime == 60) {
+          price = price / 2;
+          priceResta = price;
+        } else if (condition.expirationTime == 90) {
+          price = price / 3;
+          priceResta = price * 2;
+        }
+
+        //Prorrateación
+        if (brand.paymentTerms == 0) {
+          price = price / allDaysMonth;
+          price = price * diferenceToFirstDay;
+          price = price + priceResta;
+        }
+        //Mitad y mitad
+        if (brand.paymentTerms == 1) {
+          if (today.isAfter(fifthDayOfMonth)) {
+            price = (price / 2) + priceResta;
+          } else {
+            price = bono.price!;
+          }
+        }
+      }
+    }
+    return price;
+  }
+
+  int getExpirationTime(Brand brand, Condition condition) {
+    int expirationDays = 0;
+    DateTime today = DateTime.now();
+    brand.paymentTerms ??= 2;
+
+    //Días exactos
+    if (brand.paymentTerms == 2) {
+      if (condition!.expirationTime == 30) {
+        // Siguiente mes
+        final nextMonthDate = DateTime(today.year, today.month + 1, today.day);
+        expirationDays = nextMonthDate.difference(today).inDays;
+      } else if (condition!.expirationTime == 60) {
+        // Dos meses más adelante
+        final twoMonthsLater = DateTime(today.year, today.month + 2, today.day);
+        expirationDays = twoMonthsLater.difference(today).inDays;
+      } else if (condition!.expirationTime == 90) {
+        // Tres meses más adelante
+        final threeMonthsLater =
+            DateTime(today.year, today.month + 3, today.day);
+        expirationDays = threeMonthsLater.difference(today).inDays;
+      }
+    }
+    //Prorrateación o mitad y mitad
+    else {
+      final firstDayOfNextMonth = DateTime(today.year, today.month + 1, 1);
+      expirationDays = firstDayOfNextMonth.difference(today).inDays;
+
+      if (condition.expirationTime == 60) {
+        // Dos meses más adelante
+        final twoMonthsLater = DateTime(firstDayOfNextMonth.year,
+            firstDayOfNextMonth.month + 1, firstDayOfNextMonth.day);
+        expirationDays = twoMonthsLater.difference(firstDayOfNextMonth).inDays +
+            expirationDays;
+      } else if (condition.expirationTime == 90) {
+        // Tres meses más adelante
+        final threeMonthsLater = DateTime(firstDayOfNextMonth.year,
+            firstDayOfNextMonth.month + 2, firstDayOfNextMonth.day);
+        expirationDays =
+            threeMonthsLater.difference(firstDayOfNextMonth).inDays +
+                expirationDays;
+      }
+    }
+    return expirationDays + 1;
   }
 }

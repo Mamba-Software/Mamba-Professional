@@ -3,11 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import '../../../../Data/LibraryModels/lColor.dart';
@@ -28,6 +30,7 @@ class BonoCard extends StatefulWidget {
   bool? onlyView;
   bool? clientView;
   bool? hideActive;
+  bool? isDynamic;
 
   BonoCard({
     super.key,
@@ -41,6 +44,7 @@ class BonoCard extends StatefulWidget {
     this.clientView,
     this.hideActive,
     required this.onlyView,
+    this.isDynamic,
   });
 
   @override
@@ -377,7 +381,7 @@ class BonoCardState extends State<BonoCard> {
                                           child: Row(
                                             children: [
                                               Text(
-                                                '${bono.price!.toStringAsFixed(2).toUpperCase()} €',
+                                                priceBono(),
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyLarge
@@ -843,7 +847,7 @@ class BonoCardState extends State<BonoCard> {
                                                 Row(
                                                   children: [
                                                     Text(
-                                                      "${bono.price!.toStringAsFixed(2)} €",
+                                                      priceBono(),
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyLarge
@@ -1442,5 +1446,13 @@ class BonoCardState extends State<BonoCard> {
         )).whenComplete(() => {
           if (isModalClicked) {Navigator.pop(context)}
         });
+  }
+
+  String priceBono() {
+    if (widget.isDynamic != null && widget.isDynamic == true) {
+      return "${BonosUtils().getPurchasePrice(brand, bono, condition).toStringAsFixed(2)} €";
+    } else {
+      return "${bono.price!.toStringAsFixed(2)} €";
+    }
   }
 }

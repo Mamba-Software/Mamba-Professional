@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseFirebaseCalls.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
@@ -56,8 +57,9 @@ class PurchaseDataService {
       _firebase.getRecurrentPurchaseGroup(purchaseGroupId);
 
   // Add Data
-  Future<String> addPurchase(Purchase purchase, Bono bonoSelected) =>
-      _firebase.addPurchase(purchase, bonoSelected);
+  Future<String> addPurchase(
+          Purchase purchase, Bono bonoSelected, Brand brand) =>
+      _firebase.addPurchase(purchase, bonoSelected, brand);
   Future<void> addEventToPurchase(String purchaseId, String eventId) =>
       _firebase.addEventToPurchase(purchaseId, eventId);
 
