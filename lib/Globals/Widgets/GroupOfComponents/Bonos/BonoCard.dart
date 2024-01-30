@@ -394,7 +394,8 @@ class BonoCardState extends State<BonoCard> {
                                               ),
                                               bono.sessions! > 5000
                                                   ? Text(
-                                                      "${AppLocalizations.of(context)!.sessions.toUpperCase()} ${AppLocalizations.of(context)!.ilimitadas.toUpperCase()}",
+                                                      "${AppLocalizations.of(context)!.sessions.toUpperCase().substring(0, 3)}. ${AppLocalizations.of(context)!.ilimitadas.toUpperCase()}",
+                                                      //"${AppLocalizations.of(context)!.ilimitadas.toUpperCase()}",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyLarge
@@ -444,7 +445,7 @@ class BonoCardState extends State<BonoCard> {
                                                                 child: Text(
                                                                   AppLocalizations.of(
                                                                           context)!
-                                                                      .desactive
+                                                                      .desactiveFem
                                                                       .toUpperCase(),
                                                                   style: Theme.of(
                                                                           context)
@@ -492,7 +493,7 @@ class BonoCardState extends State<BonoCard> {
                                                                 child: Text(
                                                                   AppLocalizations.of(
                                                                           context)!
-                                                                      .active
+                                                                      .activeFem
                                                                       .toUpperCase(),
                                                                   style: Theme.of(
                                                                           context)
@@ -739,8 +740,12 @@ class BonoCardState extends State<BonoCard> {
                                                 ),
                                                 Text(
                                                   bono.isActive!
-                                                      ? "${AppLocalizations.of(context)!.yes} (${AppLocalizations.of(context)!.active})"
-                                                      : "${AppLocalizations.of(context)!.no} (${AppLocalizations.of(context)!.desactive})",
+                                                      ? AppLocalizations.of(
+                                                              context)!
+                                                          .yes
+                                                      : AppLocalizations.of(
+                                                              context)!
+                                                          .no,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge
