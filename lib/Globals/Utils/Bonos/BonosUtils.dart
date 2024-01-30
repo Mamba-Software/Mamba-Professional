@@ -69,7 +69,7 @@ class BonosUtils {
     } else if (filterType == 1) {
       // Membresía Selected
       bonos.removeWhere((element) => element.isRecurrent == false);
-    } else if (filterActive == 2) {
+    } else if (filterType == 2) {
       // Bono Selected
       bonos.removeWhere((element) => element.isRecurrent == true);
     } else {
@@ -145,7 +145,6 @@ class BonosUtils {
   }
 
   double getPurchasePrice(Brand brand, Bono bono, Condition condition) {
-    
     double price = bono.price!;
     double priceResta = 0;
     DateTime today = DateTime.now();
