@@ -704,7 +704,7 @@ class BonoCardState extends State<BonoCard> {
                                               children: [
                                                 Text(
                                                   AppLocalizations.of(context)!
-                                                      .disponibilidad,
+                                                      .disponible,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium

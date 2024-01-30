@@ -813,7 +813,7 @@
   "@state":{
     "description": "disponibilidad text"
   },
-  "disponibilidad": "Disponible",
+  "disponibilidad": "Disponiblidad",
   "@disponibilidad":{
     "description": "disponibilidad text"
   },
@@ -1316,7 +1316,7 @@
   "@noEvents": {
     "description": "Wellcome message"
   },
-  "noEventsAccesibleBono": "No encontramos eventos que sean accesibles con este bono.",
+  "noEventsAccesibleBono": "No encontramos eventos que sean accesibles con esta tarifa",
   "@noEventsAccesibleBono": {
     "description": "Wellcome message"
   },
@@ -1869,7 +1869,7 @@
       }
     }
   },
-  "userSendsBonoRequestSubtitleBrand": "Espera confirmación para comprar el bono {bono}",
+  "userSendsBonoRequestSubtitleBrand": "Espera confirmación para comprar la tarifa {bono}",
   "@userSendsBonoRequestSubtitleBrand": {
     "description": "userJoinsBrandUser message",
     "placeholders": {
@@ -1887,7 +1887,7 @@
       }
     }
   },
-  "userCancelsBonoRequestSubtitleBrand": "El bono {bono} le ha dejado de interesar",
+  "userCancelsBonoRequestSubtitleBrand": "La tarifa {bono} le ha dejado de interesar",
   "@userCancelsBonoRequestSubtitleBrand": {
     "description": "userJoinsBrandUser message",
     "placeholders": {
@@ -1896,7 +1896,7 @@
       }
     }
   },
-  "userBuysBonoBrand": "{name} ha comprado el bono {bono}",
+  "userBuysBonoBrand": "{name} ha comprado la tarifa {bono}",
   "@userBuysBonoBrand": {
     "description": "userJoinsBrandUser message",
     "placeholders": {
@@ -2195,47 +2195,47 @@
   "@bonosClient":{
     "bonosClient": "Bonos client text"
   },
-  "bonosDescription": "Selecciona los bonos que permiten a los usuarios unirse a este evento",
+  "bonosDescription": "Selecciona las tarifas que permiten a los usuarios unirse a este evento",
   "@bonosDescription":{
     "bonosClient": "Bonos client text"
   },
-  "bonosDescriptionWarning": "No has seleccionado ningún bono.\nCualquier persona podrá unirse al evento y no se restringirá la entrada al mismo.",
+  "bonosDescriptionWarning": "No has seleccionado ninguna tarifa.\nCualquier persona podrá unirse al evento y no se restringirá la entrada al mismo.",
   "@bonosDescriptionWarning":{
     "bonosClient": "Bonos client text"
   },
-  "bonosDescriptionGreat": "Has seleccionado algún bono.\nLa entrada al evento esta restringida.",
+  "bonosDescriptionGreat": "Has seleccionado almenos una tarifa.\nLa entrada al evento esta restringida.",
   "@bonosDescriptionGreat":{
     "bonosClient": "Bonos client text"
   },
-  "bonosDescriptionPrivate": "Selecciona los bonos que debe tener un cliente para poder ser invitado a este evento",
+  "bonosDescriptionPrivate": "Selecciona las tarifas que debe tener un cliente para poder ser invitado a este evento",
   "@bonosDescriptionPrivate":{
     "bonosClient": "Bonos client text"
   },
-  "bonosDescriptionPrivateWarning": "No has seleccionado ningún bono.\nCualquier persona invitada podrá unirse al evento y no se restringirá la entrada al mismo.",
+  "bonosDescriptionPrivateWarning": "No has seleccionado ninguna tarifa.\nCualquier persona invitada podrá unirse al evento y no se restringirá la entrada al mismo.",
   "@bonosDescriptionPrivateWarning":{
     "bonosClient": "Bonos client text"
   },
-  "bonosCanPurchasedWarning": "Puedes cambiar el precio, las sesiones o las condiciones de este bono ya que ningún cliente lo ha comprado.",
+  "bonosCanPurchasedWarning": "Puedes cambiar el precio, las sesiones o las condiciones de esta tarifa ya que ningún cliente lo ha comprado.",
   "@bonosCanPurchasedWarning":{
     "bonosClient": "Bonos client text"
   },
-  "bonosPurchasedWarning": "No puedes cambiar el precio, las sesiones o las condiciones de este bono.\nDe esta manera, garantizamos la misma oferta entre todos los usuarios, ya que algunos ya lo han comprado.",
+  "bonosPurchasedWarning": "No puedes cambiar el precio, las sesiones o las condiciones de esta tarifa.\nDe esta manera, garantizamos la misma oferta entre todos los usuarios, ya que algunos ya la han comprado.",
   "@bonosPurchasedWarning":{
     "bonosClient": "Bonos client text"
   },
-  "deleteBonoConfirmation": "¿Seguro que quieres eliminar este bono?",
+  "deleteBonoConfirmation": "¿Seguro que quieres eliminar esta tarifa?",
   "@deleteBonoConfirmation":{
     "description": "addEvent text"
   },
-  "deactivateBonoConfirmation": "¿Seguro que quieres desactivar este bono?",
+  "deactivateBonoConfirmation": "¿Seguro que quieres desactivar esta tarifa?",
   "@deactivateBonoConfirmation":{
     "description": "addEvent text"
   },
-  "bonosCanDeleteWarning": "Puedes borrar esta bono por completo ya que ningún cliente lo ha comprado.",
+  "bonosCanDeleteWarning": "Puedes borrar esta tarifa por completo ya que ningún cliente la ha comprado.",
   "@bonosCanDeleteWarning":{
     "bonosClient": "Bonos client text"
   },
-  "bonosNoDeleteWarning": "No puedes borrar el bono porque ya lo compraron algunos clientes, pero puedes desactivarlo temporalmente.",
+  "bonosNoDeleteWarning": "No puedes borrar la tarifa porque ya lo compraron algunos clientes, pero puedes desactivarla.",
   "@bonosNoDeleteWarning":{
     "bonosClient": "Bonos client text"
   },
@@ -2339,11 +2339,11 @@
   "@trainersOnboardingSecondDesc1": {
     "description": "beforeEventBodyNotification message"
   },
-  "trainersOnboardingSecondDesc2": "bonos personalizados.",
+  "trainersOnboardingSecondDesc2": "tarifas personalizadas.",
   "@trainersOnboardingSecondDesc2": {
     "description": "beforeEventBodyNotification message"
   },
-  "trainersOnboardingSecondDesc3": " Escoge atentamente las condiciones y el estilo de tus bonos para maximizar el interés de los clientes",
+  "trainersOnboardingSecondDesc3": " Escoge atentamente las condiciones y el estilo de tus tarifas para maximizar el interés de los clientes",
   "@trainersOnboardingSecondDesc3": {
     "description": "beforeEventBodyNotification message"
   },
@@ -2491,19 +2491,19 @@
   "@editBono": {
     "description": "Edit bono message"
   },
-  "createBonoRecurrent": "Crear bono recurrente",
+  "createBonoRecurrent": "Crear membresía",
   "@createBonoRecurrent": {
     "description": "Create bono message"
   },
-  "editBonoRecurrent": "Editar bono recurrente",
+  "editBonoRecurrent": "Editar membresía",
   "@editBonoRecurrent": {
     "description": "Edit bono message"
   },
-  "createBonoSimple": "Crear bono simple",
+  "createBonoSimple": "Crear bono",
   "@createBonoRecurrent": {
     "description": "Create bono message"
   },
-  "editBonoSimple": "Editar bono simple",
+  "editBonoSimple": "Editar bono",
   "@editBonoRecurrent": {
     "description": "Edit bono message"
   },
@@ -2523,7 +2523,7 @@
   "@desactivarBono": {
     "description": "Active bono message"
   },
-  "activeBonoQuesDesc": "Tus clientes sólo pueden comprarlo si está activo. Puedes activar o desactivar el bono una vez creado.",
+  "activeBonoQuesDesc": "Tus clientes sólo pueden verlo y comprarlo si está disponible. Podrás cambiar la disponibilidad más tarde.",
   "@activeBonoQuesDesc": {
     "description": "Active bono message"
   },
@@ -2719,7 +2719,7 @@
   "@renewsAt":{
     "description": "expiresAt Text"
   },  
-  "expiresAtDesc": "Número de días hasta el vencimiento de este bono.",
+  "expiresAtDesc": "Número de días hasta el vencimiento de esta tarifa.",
   "@expiresAtDesc":{
     "description": "expiresAt Text"
   },
@@ -3597,7 +3597,7 @@
   "@directPurchasetext": {
     "description": "directPurchasetext message"
   },
-  "deletePurchase": "¿Estás seguro qué quieres eliminar esta compra?\n\n El cliente será eliminado de todos los eventos realizados con este bono.",
+  "deletePurchase": "¿Estás seguro qué quieres eliminar esta compra?\n\n El cliente será eliminado de todos los eventos realizados con esta tarifa.",
   "@deletePurchase": {
     "description": "deletePurchase message"
   },
@@ -3613,7 +3613,7 @@
   "@addEventsToPurchaseText": {
     "description": "addEventsToPurchaseText message"
   },
-  "addEventsToPurchaseSubText": "Afectaran al número de sesiones para este bono",
+  "addEventsToPurchaseSubText": "Afectaran al número de sesiones para esta tarifa",
   "@addEventsToPurchaseSubText": {
     "description": "addEventsToPurchaseSubText message"
   },

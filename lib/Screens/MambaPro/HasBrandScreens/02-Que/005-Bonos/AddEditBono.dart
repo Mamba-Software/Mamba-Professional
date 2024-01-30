@@ -714,9 +714,7 @@ class _AddEditBonoState extends State<AddEditBono>
                             'desc'),
                         optionTextWrite(
                             TextInputType.multiline,
-                            bono.isActive!
-                                ? AppLocalizations.of(context)!.desactivarBono
-                                : AppLocalizations.of(context)!.activarBono,
+                            AppLocalizations.of(context)!.disponibilidad,
                             AppLocalizations.of(context)!.activeBonoQuesDesc,
                             AppLocalizations.of(context)!.descriptionError,
                             AppLocalizations.of(context)!.descriptionError,
