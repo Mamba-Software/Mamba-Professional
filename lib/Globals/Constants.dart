@@ -1,4 +1,6 @@
 // Constants that are final and will NEVER change.
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Constants {
   // App Name
   static String appName = "Mamba";
@@ -61,7 +63,7 @@ class Constants {
   static String themeDarkImage = "assets/images/themeDarkImage.png";
   static String themeSystemImage = "assets/images/themeSystemImage.png";
   static String appUpdateImage = "assets/images/appUpdateImage.png";
-  static String subscriptionImage = "assets/images/MambaProLogo.png";  
+  static String subscriptionImage = "assets/images/MambaProLogo.png";
   static String mapsImg = "assets/images/map.png";
   static String fitnessMapIcon = "assets/images/fitnessMapIcon.png";
 
@@ -78,4 +80,16 @@ class Constants {
   static String exhalingEmojiImage = "assets/images/exhalingEmojiImage.png";
   static String fireEmojiImage = "assets/images/fireEmojiImage.png";
   static String clockEmojiImage = "assets/images/clockEmojiImage.png";
+
+  //STRIPE
+  static get userQuery => FirebaseFirestore.instance
+      .collection('TestUsers')
+      .where('isTrainer', isEqualTo: false)
+      .where('isAdmin', isEqualTo: false);
+  static get brandQuery => FirebaseFirestore.instance.collection('TestBrands');
+  static get bonosCollection => 'TestBonos';
+  static get baseUrl =>
+      'https://us-central1-mamba-fitness-dev.cloudfunctions.net/stripeApi';
+
+  static get merchantDisplayName => 'Mamba Software SL';
 }

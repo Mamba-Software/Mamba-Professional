@@ -27,6 +27,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/Eve
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
+import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -207,6 +208,9 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
         BlocProvider<BrandSuscriptionCubit>(
           create: (context) => BrandSuscriptionCubit(context.read<AuthCubit>()),
           lazy: false,
+        ),
+        BlocProvider(
+          create: (_) => StripeConnectCubit(),
         ),
       ],
       child:
