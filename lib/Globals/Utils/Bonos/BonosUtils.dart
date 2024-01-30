@@ -145,6 +145,7 @@ class BonosUtils {
   }
 
   double getPurchasePrice(Brand brand, Bono bono, Condition condition) {
+    
     double price = bono.price!;
     double priceResta = 0;
     DateTime today = DateTime.now();
