@@ -73,7 +73,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppLocalizations.of(context)!.activeBono,
+              Text(AppLocalizations.of(context)!.activeRates,
                   style: Theme.of(context).textTheme.displaySmall,
                   textAlign: TextAlign.center),
               TextButton(

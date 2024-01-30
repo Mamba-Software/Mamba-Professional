@@ -2699,11 +2699,11 @@
   "@conditions":{
     "description": "conditions Text"
   },
-  "expired": "Expirado",
+  "expired": "Expirada",
   "@expired":{
     "description": "expiresAt Text"
   },
-  "esgotat": "Agotado",
+  "esgotat": "Agotada",
   "@esgotat":{
     "description": "expiresAt Text"
   },
@@ -2715,7 +2715,7 @@
   "@expiresAt":{
     "description": "expiresAt Text"
   },
-  "renewsAt": "Se renueva",
+  "renewsAt": "Se renueva en",
   "@renewsAt":{
     "description": "expiresAt Text"
   },  
@@ -2917,8 +2917,17 @@
       }
     }
   },  
-  "nDaysAprox": "Cada {days} días aproximadamente",
-  "@nDaysAprox": {
+  "eachNDaysAprox": "Cada {days} días aproximadamente",
+  "@eachNDaysAprox": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "afterNDaysAprox": "Después de {days} días aproximadamente",
+  "@afterNDaysAprox": {
     "description": "Wellcome message",
     "placeholders": {
       "days": {

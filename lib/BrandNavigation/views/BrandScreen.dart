@@ -825,7 +825,7 @@ class _BrandScreenState extends State<BrandScreen> {
                   // Brand Options
                   buildBrandListOptions(),
 
-                  /* TODO: Delete this*/
+                  /* TODO: Delete this
                   SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                   TextButton(
                     onPressed: () {
@@ -835,6 +835,7 @@ class _BrandScreenState extends State<BrandScreen> {
                     child: const Text('FUNCION DE PRUEBA BONOS'),
                   ),
                   // TODO: Delete this
+                  */
 
                   SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                 ],

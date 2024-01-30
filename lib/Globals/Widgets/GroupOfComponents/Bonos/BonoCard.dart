@@ -69,26 +69,6 @@ class BonoCardState extends State<BonoCard> {
   bool isExpanded = false;
   double isExpandedHeight = 2.8;
 
-  Widget returnCorrectExpirationRenewalDate() {
-    if (bono.isRecurrent!) {
-      return Text(
-        "${AppLocalizations.of(context)!.renewsAt} ${condition.expirationTime == 30 ? "${AppLocalizations.of(context)!.monthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : condition.expirationTime == 60 ? "${AppLocalizations.of(context)!.bimonthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : "${AppLocalizations.of(context)!.quarterly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)"} ",
-        style: Theme.of(context)
-            .textTheme
-            .bodyLarge
-            ?.copyWith(color: Colors.white70),
-      );
-    } else {
-      return Text(
-        "${bono.isRecurrent! ? AppLocalizations.of(context)!.renewsAt : AppLocalizations.of(context)!.expiresAt.split(" ")[0]} ${condition.expirationTime == 30 ? "${AppLocalizations.of(context)!.monthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : condition.expirationTime == 60 ? "${AppLocalizations.of(context)!.bimonthly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)" : "${AppLocalizations.of(context)!.quarterly.toLowerCase()} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)"} ",
-        style: Theme.of(context)
-            .textTheme
-            .bodyLarge
-            ?.copyWith(color: Colors.white70),
-      );
-    }
-  }
-
   @override
   void initState() {
     bono = widget.bono;
@@ -973,9 +953,13 @@ class BonoCardState extends State<BonoCard> {
                                                                       .white70),
                                                         ),
                                                         subtitle: Text(
-                                                          AppLocalizations.of(
+                                                          bono.isRecurrent! ? AppLocalizations.of(
                                                                   context)!
-                                                              .nDaysAprox(condition
+                                                              .eachNDaysAprox(condition
+                                                                  .expirationTime
+                                                                  .toString()) : AppLocalizations.of(
+                                                                  context)!
+                                                              .afterNDaysAprox(condition
                                                                   .expirationTime
                                                                   .toString()),
                                                           style: Theme.of(
@@ -1092,7 +1076,7 @@ class BonoCardState extends State<BonoCard> {
                                                           ],
                                                         ),
                                                         title: Text(
-                                                          "${AppLocalizations.of(context)!.freeCancel.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.freeCancel.split(" ")[1])} ",
+                                                          "${AppLocalizations.of(context)!.freeCancel.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.freeCancel.split(" ")[1])}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme

@@ -642,7 +642,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                                   title: Text(
                                                                       AppLocalizations.of(
                                                                               context)!
-                                                                          .activeFem,
+                                                                          .yes,
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
@@ -690,7 +690,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                                   title: Text(
                                                                       AppLocalizations.of(
                                                                               context)!
-                                                                          .desactiveFem,
+                                                                          .no,
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
