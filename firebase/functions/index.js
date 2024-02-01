@@ -20,6 +20,8 @@ switch (environment) {
 
 
 
+
+
 // Initialize Functions
 const functions = require('firebase-functions');
 const { user } = require("firebase-functions/v1/auth");
@@ -40,6 +42,16 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(envConfig.sendGridApiKey);
 
 const { v4: uuidv4 } = require('uuid');
+
+const constants_1 = require("./lib/utils/constants");
+const v2_2 = require("firebase-functions/v2");
+const stripe_connect_1 = require("./lib/stripe_connect/stripe_connect");
+// import bodyParser = require('body-parser');
+const hook_1 = require("./lib/hooks/hook");
+const one_time_payment_1 = require("./lib/payment/one_time_payment");
+const products_1 = require("./lib/products/products");
+const subscription_1 = require("./lib/payment/subscription");
+const transfer_funds_1 = require("./lib/funds/transfer_funds");
 
 // functions/index.js
 //const recurrentPurchases = require('./RecurrentPurchases/recurrentPurchases.js');
@@ -3855,6 +3867,61 @@ async function processRegularPurchasesExpTime() {
     }
   }
   }
+
+  exports.onBonosCreateForStripeProd = functions.firestore.document('Brands/{brandId}/Bonos/{bonoId}').onCreate(async (snap, context) => {
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    v2_1.logger.info('created a new bono');
+    try {
+        let brandData = await constants_1.brandCollection.doc(context.params.brandId).get();
+        let productData = {
+            productId: snap.id,
+            brandId: context.params.brandId,
+            brandName: (_a = brandData.data()) === null || _a === void 0 ? void 0 : _a.brandName,
+            title: (_b = snap.data()) === null || _b === void 0 ? void 0 : _b.title,
+            description: (_c = snap.data()) === null || _c === void 0 ? void 0 : _c.description,
+            active: (_d = snap.data()) === null || _d === void 0 ? void 0 : _d.isActive,
+            priceId: (_f = (_e = snap.data()) === null || _e === void 0 ? void 0 : _e.priceId) !== null && _f !== void 0 ? _f : null,
+            price: ((_h = (_g = snap.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
+        };
+        (0, products_1.createProduct)(productData);
+    }
+    catch (e) {
+        v2_1.logger.error(e);
+    }
+});
+exports.onBonosUpdatedForStripeProd = functions.firestore.document('Brands/{brandId}/Bonos/{bonoId}').onUpdate(async (snap, context) => {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    try {
+        v2_1.logger.info('updated a bono');
+        let brandData = await constants_1.brandCollection.doc(context.params.brandId).get();
+        let productData = {
+            productId: snap.after.id,
+            brandId: context.params.brandId,
+            brandName: (_a = brandData.data()) === null || _a === void 0 ? void 0 : _a.brandName,
+            title: (_b = snap.after.data()) === null || _b === void 0 ? void 0 : _b.title,
+            description: (_c = snap.after.data()) === null || _c === void 0 ? void 0 : _c.description,
+            active: (_d = snap.after.data()) === null || _d === void 0 ? void 0 : _d.isActive,
+            priceId: (_f = (_e = snap.after.data()) === null || _e === void 0 ? void 0 : _e.priceId) !== null && _f !== void 0 ? _f : null,
+            price: ((_h = (_g = snap.after.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
+        };
+        (0, products_1.updateProduct)(productData);
+        if (((_j = snap.before.data()) === null || _j === void 0 ? void 0 : _j.price) !== ((_k = snap.after.data()) === null || _k === void 0 ? void 0 : _k.price)) {
+            (0, products_1.updatePrice)((_l = snap.after.data()) === null || _l === void 0 ? void 0 : _l.priceId, ((_o = (_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.price) !== null && _o !== void 0 ? _o : 0) * 100, snap.after.id);
+        }
+    }
+    catch (e) {
+        v2_1.logger.error(e);
+    }
+});
+exports.onBonosDeleteForStripeProd = functions.firestore.document('Brands/{brandId}/Bonos/{bonoId}').onDelete(async (snap, context) => {
+    try {
+        v2_1.logger.info('deleted a bono');
+        (0, products_1.deleteProduct)(snap.id);
+    }
+    catch (e) {
+        v2_1.logger.error(e);
+    }
+});
 
 
 

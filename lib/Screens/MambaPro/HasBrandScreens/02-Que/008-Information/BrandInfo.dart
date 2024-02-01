@@ -1730,8 +1730,8 @@ class _BrandInfoState extends State<BrandInfo>
                                         context
                                             .read<StripeConnectCubit>()
                                             .getLink(currentBrand);
-                                        var result = await Navigator.of(context)
-                                            .pushReplacement(
+                                        var result =
+                                            await Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   OnboardingWebView()),
@@ -1744,7 +1744,6 @@ class _BrandInfoState extends State<BrandInfo>
                                       child: Text(buttonText)),
                                 ],
                               ),
-                              Text('Brand Name: ${currentBrand.name}'),
                               if (currentBrand.balance != null)
                                 Text(
                                     'Balance: ${currentBrand.balance?.toStringAsFixed(2)}'),
