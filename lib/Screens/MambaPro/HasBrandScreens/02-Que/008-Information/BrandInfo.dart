@@ -31,6 +31,7 @@ import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotificat
 import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
 import 'package:mamba_castelldefels/Stripe/utils/routes.dart';
+import 'package:mamba_castelldefels/Stripe/views/onboarding_webview.dart';
 
 import '../../../../../Globals/Widgets/Components/CupertinoSelect/SelectOtherDialog.dart';
 
@@ -1729,8 +1730,12 @@ class _BrandInfoState extends State<BrandInfo>
                                         context
                                             .read<StripeConnectCubit>()
                                             .getLink(currentBrand);
-                                        var result = await Navigator.pushNamed(
-                                            context, AppRoutes.onboarding);
+                                        var result = await Navigator.of(context)
+                                            .pushReplacement(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OnboardingWebView()),
+                                        );
                                         if (result != null &&
                                             result is UserStripeModel) {
                                           currentBrand = currentBrand;
