@@ -25,6 +25,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSn
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -1802,8 +1803,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                           .size
                                                           .width *
                                                       0.07,
-                                                )
-                                                ),
+                                                )),
                                           ),
                                         ),
                                       ),
@@ -1845,29 +1845,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 ),
               ),
               actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    unreadNotifiactions(context),
-                    unreadChats(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                    GestureDetector(
-                      onTap: () => navigateToProfileScreen(context),
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.08,
-                        child: Center(
-                          child: CircularImage(
-                            size: MediaQuery.of(context).size.width * 0.08,
-                            image: currentUser.imageUrl,
-                            color: AppColors.grey,
-                            borderWidth: 0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                unreadNotifiactions(context),
+                unreadChats(context),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                profileImage(context),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.03),
               ],
             ),
