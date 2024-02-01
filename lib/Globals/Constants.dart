@@ -83,10 +83,10 @@ class Constants {
 
   //STRIPE
   static get userQuery => FirebaseFirestore.instance
-      .collection('TestUsers')
+      .collection('Users')
       .where('isTrainer', isEqualTo: false)
       .where('isAdmin', isEqualTo: false);
-  static get brandQuery => FirebaseFirestore.instance.collection('TestBrands');
+  static get brandQuery => FirebaseFirestore.instance.collection('Brands');
   static get bonosCollection => 'TestBonos';
   static get baseUrl =>
       'https://us-central1-mamba-fitness-dev.cloudfunctions.net/stripeApi';
