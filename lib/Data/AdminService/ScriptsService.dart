@@ -1941,6 +1941,113 @@ class ScriptsDatabaseService {
     }
   }
 
+  Future<bool> getStatisticsPurchases() async {
+    try {
+      // Define the start and end dates for the period
+      Timestamp start =
+          Timestamp.fromDate(DateTime(2023, 10, 1)); // October 1st, 2023
+      Timestamp end = Timestamp.fromDate(DateTime(
+          2023, 12, 31, 23, 59, 59)); // December 31st, 2023 at 23:59:59
+      // Construct the query
+      QuerySnapshot querySnapshot = await _firestore
+          .collection("Purchases")
+          .where("purchasedAt", isGreaterThanOrEqualTo: start)
+          .where("purchasedAt", isLessThanOrEqualTo: end)
+          .get();
+      // Build Purchase List
+      List<Purchase> purchasesList = [];
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
+        Purchase purchase =
+            Purchase.fromObjectAllData(documentSnapshot.id, documentSnapshot);
+        purchasesList.add(purchase);
+      }
+
+      // Commission multipliers
+      //List<double> multipliers = [2, 1.9, 1.8, 1.7, 1.6, 1.5];
+      List<double> multipliers = [2, 1.75, 1.5];
+      // Commission payout scenarios
+      List<double> payoutPercentages = [0.2, 0.3, 0.4, 0.5];
+
+      // Loop through each month
+      for (int month = 10; month <= 12; month++) {
+        // Clear statistics for the month
+        var totalPurchases = 0;
+        double totalAmount = 0;
+
+        // Filter purchases for the month
+        var monthlyPurchases = purchasesList
+            .where((p) =>
+                p.purchasedAt != null && p.purchasedAt!.toDate().month == month)
+            .toList();
+
+        // Process each purchase in the month
+        for (var p in monthlyPurchases) {
+          totalPurchases += 1;
+          totalAmount += p.price ?? 0;
+        }
+
+        // Print statistics for the month
+        print("\n----------------------");
+        print("\nStatistics for ${DateTime(2023, month).month}:");
+        print('totalPurchases: $totalPurchases');
+        print('totalAmount: $totalAmount');
+        print(
+            'averagePurchaseValue: ${totalPurchases > 0 ? (totalAmount / totalPurchases).toStringAsFixed(2) : "N/A"}');
+
+        double totalBaseCommission = 0;
+        // Calculate base commission for each purchase
+        for (var p in monthlyPurchases) {
+          double baseCommission = (p.price ?? 0) * 0.0175 + 0.35;
+          totalBaseCommission += baseCommission;
+        }
+
+        // Overall percentage of base commission versus total purchase value
+        double commissionPercentage =
+            totalAmount > 0 ? (totalBaseCommission / totalAmount) * 100 : 0;
+
+        // Print base commission statistics
+        print(
+            'Commission as a Percentage of Average Purchase Value: $commissionPercentage%');
+        print('Total Base Commission: $totalBaseCommission');
+
+        // Calculate and print base and platform commissions
+        for (double multiplier in multipliers) {
+          double platformCommission = totalBaseCommission * multiplier;
+          double platformCommissionPercentage =
+              totalAmount > 0 ? (platformCommission / totalAmount) * 100 : 0;
+
+          print('\n\nFor Multiplier $multiplier:');
+          print('Platform Commission: $platformCommission');
+          print(
+              'Platform Commission as a Percentage of Total Purchase Value: $platformCommissionPercentage%');
+
+          for (double payoutPercentage in payoutPercentages) {
+            double baseCommissionPayout =
+                totalBaseCommission * payoutPercentage;
+            double platformCommissionPayout =
+                platformCommission * payoutPercentage;
+            double additionalRevenue =
+                platformCommissionPayout - baseCommissionPayout;
+
+            print(
+                'Base Commission Payout for ${payoutPercentage * 100}% of Purchases: $baseCommissionPayout');
+            print(
+                'Platform Commission Payout for ${payoutPercentage * 100}% of Purchases: $platformCommissionPayout');
+            print(
+                'Additional Revenue over Base Commission: $additionalRevenue');
+            print("-------");
+          }
+        }
+      }
+
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
   Future<bool> migrateEventDataJuly24th() async {
     try {
       print('\n');
