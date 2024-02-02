@@ -24,6 +24,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSn
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
@@ -482,30 +484,16 @@ class _BrandInfoState extends State<BrandInfo>
             ),
             actions: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  unreadNotifications(context),
-                  unreadChats(context),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  GestureDetector(
-                    onTap: () => navigateToProfileScreen(context),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.08,
-                      child: Center(
-                        child: CircularImage(
-                          size: MediaQuery.of(context).size.width * 0.08,
-                          image: currentUser.imageUrl,
-                          color: AppColors.grey,
-                          borderWidth: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    askSupport(context),
+                    unreadNotifications(context),
+                    unreadChats(context),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                    profileImage(context),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  ],
+                ),
             ],
           ),
           if (isLoading)

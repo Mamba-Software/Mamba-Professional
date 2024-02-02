@@ -939,7 +939,7 @@ class _ProfileState extends State<Profile> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
               child: Text(
-                  AppLocalizations.of(context)!.getInTouchText,
+                  AppLocalizations.of(context)!.getInTouchTextDesc,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor),
                   textAlign: TextAlign.center
               ),

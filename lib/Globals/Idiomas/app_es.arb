@@ -2115,6 +2115,10 @@
   "@getInTouchText": {
     "description": "membersOfBrand message"
   },
+  "getInTouchTextDesc": "Envíanos un email y contacta con nosotros",
+  "@getInTouchTextDesc": {
+    "description": "membersOfBrand message"
+  },
   "getInTouchChat": "Envíanos un mensaje",
   "@getInTouchText": {
     "description": "membersOfBrand message"

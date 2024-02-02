@@ -214,7 +214,12 @@ class _PayWallState extends State<PayWall> {
                   Divider(
                       color: Theme.of(context).dividerColor, thickness: 1.5),
                       */
-                  buildContactUsContainer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      buildContactUsContainer(),
+                    ],
+                  ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 ],
               ),
@@ -908,7 +913,7 @@ class _PayWallState extends State<PayWall> {
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.0),
-            child: Text(AppLocalizations.of(context)!.getInTouchText,
+            child: Text(AppLocalizations.of(context)!.getInTouchTextDesc,
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge!

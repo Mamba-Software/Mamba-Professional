@@ -10,6 +10,8 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/models/PurchaseHistoryModel.dart';
@@ -661,30 +663,17 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                     actions: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          askSupport(context),
                           unreadNotifications(context),
                           unreadChats(context),
                           SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.025),
+                          profileImage(context),
+                          SizedBox(
                               width: MediaQuery.of(context).size.width * 0.03),
-                          GestureDetector(
-                            onTap: () => navigateToProfileScreen(context),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.width * 0.08,
-                              child: Center(
-                                child: CircularImage(
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.08,
-                                  image: currentUser.imageUrl,
-                                  color: AppColors.grey,
-                                  borderWidth: 0.5,
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                     ],
                   ),
                   SliverPersistentHeader(

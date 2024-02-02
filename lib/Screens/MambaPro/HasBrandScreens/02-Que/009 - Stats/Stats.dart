@@ -22,6 +22,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/Purc
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/PurchasesStats/TotalBenefit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import '../../../../../Events/crud_events/models/Event.dart';
@@ -352,34 +354,16 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                       ),
                       actions: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            unreadNotifications(context),
-                            unreadChats(context),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.03),
-                            GestureDetector(
-                              onTap: () => navigateToProfileScreen(context),
-                              child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.width * 0.08,
-                                child: Center(
-                                  child: CircularImage(
-                                    size: MediaQuery.of(context).size.width *
-                                        0.08,
-                                    image: currentUser.imageUrl,
-                                    color: AppColors.grey,
-                                    borderWidth: 0.5,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.03),
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    askSupport(context),
+                    unreadNotifications(context),
+                    unreadChats(context),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                    profileImage(context),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  ],
+                ),
                       ],
                     ),
                     SliverPersistentHeader(
