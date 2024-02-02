@@ -87,6 +87,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
   bool errorBreakTime = false;
   // Booking Window
   int bookingWindow = 3;
+  int minBookingWindow = 1;
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
@@ -123,7 +124,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
         descriptionController.text.trim(),
         _workShift,
         membersMax,
-        bookingWindow);
+        bookingWindow,
+        minBookingWindow);
     // Add Location
     String baseLocation = await _locationDataService.addLocation(
         result,

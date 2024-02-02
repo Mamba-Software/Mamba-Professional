@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -13,6 +14,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/BetaBadge.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
@@ -741,16 +743,16 @@ class _BonosProState extends State<BonosPro> {
             ),
             actions: [
               Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    askSupport(context),
-                    unreadNotifications(context),
-                    unreadChats(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                    profileImage(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  ],
-                ),
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  askSupport(context),
+                  unreadNotifications(context),
+                  unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                  profileImage(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                ],
+              ),
             ],
           ),
           /*
@@ -1043,7 +1045,7 @@ class _BonosProState extends State<BonosPro> {
               width: MediaQuery.of(context).size.width * 0.15,
               child: SpeedDial(
                 heroTag: "46",
-                animatedIcon: AnimatedIcons.add_event,
+                activeChild: const Icon(Icons.confirmation_number_outlined),
                 animationDuration: const Duration(milliseconds: 300),
                 foregroundColor: AppColors.white,
                 overlayColor: Theme.of(context).scaffoldBackgroundColor,
@@ -1054,7 +1056,7 @@ class _BonosProState extends State<BonosPro> {
                 children: [
                   SpeedDialChild(
                       child: const Icon(
-                        Icons.local_activity_outlined,
+                        Icons.repeat,
                       ),
                       elevation: 10,
                       backgroundColor: Theme.of(context).colorScheme.background,
@@ -1063,14 +1065,23 @@ class _BonosProState extends State<BonosPro> {
                         padding: EdgeInsets.only(
                             right: MediaQuery.of(context).size.width * 0.05),
                         height: MediaQuery.of(context).size.height * 0.1,
-                        width: MediaQuery.of(context).size.width * 0.6,
+                        width: MediaQuery.of(context).size.width * 0.8,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(AppLocalizations.of(context)!.bonoRecurrent,
-                                style: Theme.of(context).textTheme.displaySmall,
-                                textAlign: TextAlign.right),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                const BetaBadge(),
+                                Text(
+                                    AppLocalizations.of(context)!.bonoRecurrent,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall,
+                                    textAlign: TextAlign.right),
+                              ],
+                            ),
                             Text(
                                 AppLocalizations.of(context)!.bonoRecurrentText,
                                 style: Theme.of(context).textTheme.bodyMedium,
@@ -1094,7 +1105,8 @@ class _BonosProState extends State<BonosPro> {
                       }),
                   SpeedDialChild(
                       child: const Icon(
-                        Icons.confirmation_number_outlined,
+                        FontAwesomeIcons.one,
+                        size: 20,
                       ),
                       elevation: 10,
                       backgroundColor: Theme.of(context).colorScheme.background,
@@ -1103,7 +1115,7 @@ class _BonosProState extends State<BonosPro> {
                         padding: EdgeInsets.only(
                             right: MediaQuery.of(context).size.width * 0.05),
                         height: MediaQuery.of(context).size.height * 0.1,
-                        width: MediaQuery.of(context).size.width * 0.6,
+                        width: MediaQuery.of(context).size.width * 0.8,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -1132,6 +1144,7 @@ class _BonosProState extends State<BonosPro> {
                             false);
                       }),
                 ],
+                child: const Icon(Icons.add),
               ),
             ),
           )

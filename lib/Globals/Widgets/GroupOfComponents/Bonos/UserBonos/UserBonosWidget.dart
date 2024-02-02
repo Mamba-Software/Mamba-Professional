@@ -203,7 +203,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.activeBono.toLowerCase()}",
+                              "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.activeRates.toLowerCase()}",
                               style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.left,
                             ),

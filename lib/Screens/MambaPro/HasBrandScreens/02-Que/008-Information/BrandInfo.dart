@@ -101,7 +101,7 @@ class _BrandInfoState extends State<BrandInfo>
   int? errorBreakTime;
   // Booking Window
   int bookingWindow = 3;
-  int bookingWindowMin = 0;
+  int bookingWindowMin = 1;
   // Purchase
   bool freeSession = false;
   bool directPurchase = false;
@@ -942,7 +942,7 @@ class _BrandInfoState extends State<BrandInfo>
                                     width: MediaQuery.of(context).size.width *
                                         0.02),
                                 Text(
-                                  AppLocalizations.of(context)!.calendar,
+                                  AppLocalizations.of(context)!.bookings,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displaySmall
@@ -1534,54 +1534,7 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
-                      ],
-                    ),
-                  ),
 
-                  /// PURCHASES
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.05),
-                    child: Column(
-                      children: [
-                        const Divider(color: AppColors.grey, thickness: 1),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.03),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.confirmation_number_outlined,
-                              color: AppColors.grey,
-                              size: MediaQuery.of(context).size.width * 0.05,
-                            ),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.02),
-                            Text(
-                              StringUtils().toCapitalized(
-                                  AppLocalizations.of(context)!
-                                      .purchaseHistory
-                                      .split(" ")[2]),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall
-                                  ?.copyWith(color: AppColors.grey),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.03),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.05),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
                         /// FREE SESSION
                         Padding(
                             padding: EdgeInsets.only(
@@ -1642,6 +1595,54 @@ class _BrandInfoState extends State<BrandInfo>
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
 
+                      
+                      ],
+                    ),
+                  ),
+
+                  /// PURCHASES
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Column(
+                      children: [
+                        const Divider(color: AppColors.grey, thickness: 1),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.confirmation_number_outlined,
+                              color: AppColors.grey,
+                              size: MediaQuery.of(context).size.width * 0.05,
+                            ),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.02),
+                            Text(
+                              StringUtils().toCapitalized(
+                                  AppLocalizations.of(context)!
+                                      .payments),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall
+                                  ?.copyWith(color: AppColors.grey),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                         /// DIRECT PURCHASE
                         Padding(
                             padding: EdgeInsets.only(

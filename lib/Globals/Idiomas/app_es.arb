@@ -2231,7 +2231,7 @@
   "@bonosCanPurchasedWarning":{
     "bonosClient": "Bonos client text"
   },
-  "bonosPurchasedWarning": "No puedes cambiar el precio, las sesiones o las condiciones de esta tarifa.\nDe esta manera, garantizamos la misma oferta entre todos los usuarios, ya que algunos ya la han comprado.",
+  "bonosPurchasedWarning": "No puedes cambiar el precio, las sesiones o las condiciones de esta tarifa.\nDe esta manera, garantizamos la misma oferta para todos los usuarios, ya que algunos ya la han comprado.",
   "@bonosPurchasedWarning":{
     "bonosClient": "Bonos client text"
   },
@@ -2516,7 +2516,7 @@
     "description": "Create bono message"
   },
   "editBonoSimple": "Editar bono",
-  "@editBonoRecurrent": {
+  "@editBonoSimple": {
     "description": "Edit bono message"
   },
   "nameBono": "Nombre de tu bono",
@@ -2543,7 +2543,7 @@
   "@sesionsBono": {
     "description": "Sesions bono message"
   },
-  "sesionsBonoDesc": "Indica que tu bono cuenta con sesiones ilimitadas.",
+  "sesionsBonoDesc": "Esta tarifa cuenta con sesiones ilimitadas.",
   "@sesionsBonoDesc": {
     "description": "Sesions bono message"
   },
@@ -2623,7 +2623,7 @@
   "@verfied": {
     "description": "ilimitadas message"
   },
-  "verfiedDesc": "Se ha confirmado que se realizó el pago de esta compra. El cliente ha completado el proceso y ahora tiene acceso al bono correspondiente según las condiciones establecidas.",
+  "verfiedDesc": "Se ha confirmado que se realizó el pago de esta compra. El cliente ha completado el proceso y ahora tiene acceso a la tarifa correspondiente según las condiciones establecidas.",
   "@verfiedDesc": {
     "description": "ilimitadas message"
   },
@@ -2631,7 +2631,7 @@
   "@unverfied": {
     "description": "ilimitadas message"
   },
-  "unverfiedDesc": "Aún no se ha confirmado el pago de la compra realizada por el cliente. El cliente adquirió el bono directamente, pero se espera la validación. A pesar de ello, el bono ya está disponible para su uso.",
+  "unverfiedDesc": "Aún no se ha confirmado el pago de la compra realizada por el cliente. El cliente adquirió la tarifa yestá disponible para su uso, pero espera la validación del pago.",
   "@unverfiedDesc": {
     "description": "ilimitadas message"
   },
@@ -2639,7 +2639,7 @@
   "@toConfirm": {
     "description": "ilimitadas message"
   },
-  "toConfirmDesc": "El cliente solicitó el bono, pero está la espera de confirmación del professional. Puede implicar una revisión adicional antes de otorgar el bono. Sin respuesta, no hay acceso al bono.",
+  "toConfirmDesc": "El cliente solicitó la tarifa, pero está a la espera de confirmación por parte del profesional. Sin respuesta, no hay acceso a la tarifa.",
   "@toConfirmDesc": {
     "description": "ilimitadas message"
   },
@@ -2751,7 +2751,7 @@
   "@freeCancelDesc":{
     "description": "cancelTimeAt Text"
   },
-  "freeCancelInfo":  "Bono sin límite de sesiones, lo que significa que la cancelación es gratuita y sin restricciones.",
+  "freeCancelInfo":  "Tarifa sin límite de sesiones, lo que significa que la cancelación es gratuita y sin restricciones.",
   "@freeCancelInfo":{
     "description": "cancelTimeAt Text"
   },
@@ -2811,19 +2811,19 @@
   "@bonoBuys":{
     "description": "trainsPerWekk Text"
   },
-  "preseeBono": "Previsualiza tu bono",
+  "preseeBono": "Previsualiza tu tarifa",
   "@preseeBono":{
     "description": "trainsPerWekk Text"
   },
-  "acceptBono": "Otorgar bono",
+  "acceptBono": "Otorgar tarifa",
   "@acceptBono":{
     "description": "trainsPerWekk Text"
   },
-  "acceptBonoDesc": "Verifica la información antes de confirmar la compra del bono",
+  "acceptBonoDesc": "Verifica la información antes de confirmar la compra de la tarifa",
   "@acceptBonoDesc":{
     "description": "trainsPerWekk Text"
   },
-  "editBonoClientDesc": "Verifica la información antes de editar el bono del cliente",
+  "editBonoClientDesc": "Verifica la información antes de editar la tarifa del cliente",
   "@editBonoClientDesc":{
     "description": "editBonoClientDesc Text"
   },
@@ -2831,15 +2831,15 @@
   "@paymentIndication": {
     "description": "trainsPerWekk Text"
   },
-  "noBonosCreated": "No se ha creado ningún bono",
+  "noBonosCreated": "No se ha creado ninguna tarifa",
   "@noBonosCreated": {
     "description": "trainsPerWekk Text"
   },
-  "createFistBono": "Crea tu primer bono",
+  "createFistBono": "Crea tu primera tarifa",
   "@createFistBono": {
     "description": "trainsPerWekk Text"
   },
-  "userBuysBonoTrainer": "{user} ha comprado el bono {bono}",
+  "userBuysBonoTrainer": "{user} ha comprado la tarifa {bono}",
   "@userBuysBonoTrainer": {
     "description": "userJoinsBrandUser message",
     "placeholders": {
@@ -2875,7 +2875,7 @@
   "@personalizedFieldsFirst": {
     "description": "personalizedFieldsFirst message"
   },
-  "allBonosInClient": "Ya dispone de todos los bonos de tu marca",
+  "allBonosInClient": "Ya dispone de todos las tarifas disponibles",
   "@allBonosInClient": {
     "description": "allBonosInClient message"
   },
@@ -2895,7 +2895,7 @@
   "@desactiveTrainers": {
     "description": "desactiveTrainers message"
   },
-  "bonosNecesarios": "Bonos necesarios",
+  "bonosNecesarios": "Tarifas necesarios",
   "@bonosNecesarios": {
     "description": "userJoinsBrandUser message"
   },
@@ -3094,11 +3094,11 @@
   "@bookingWindowDescription": {
     "description": "boughts message"
   },
-  "minimumBookingWindow": "Reservas de última hora",
+  "minimumBookingWindow": "Alertas de reservas inminentes",
   "@minimumBookingWindow": {
     "description": "boughts message"
   },
-  "minimumBookingWindowDescription": "Establece el plazo mínimo antes de ser notificado. Por cada reserva inferior al plazo mínimo se te enviará una notificación personalizada",
+  "minimumBookingWindowDescription": "Configura el tiempo mínimo de anticipación para tus reservas. Recibirás una notificación personalizada cada vez que se realice una reserva que cumpla o esté por debajo de este plazo establecido, asegurándote de estar siempre informado sobre reservas de última hora",
   "@minimumBookingWindowDescription": {
     "description": "boughts message"
   },
@@ -3304,7 +3304,7 @@
   "@pricePolicyPayWallHeader": {
     "description": "pricePolicyPayWallHeader message"
   },
-  "pricePolicyPayWallText": "Gestiona tus pagos con bonos totalmente personalizables",
+  "pricePolicyPayWallText": "Gestiona tus pagos con tarifas totalmente personalizables",
   "@pricePolicyPayWallText": {
     "description": "pricePolicyPayWallText message"
   },
@@ -3344,7 +3344,7 @@
   "@sessionControActiveText": {
     "description": "sessionControActiveText message"
   },
-  "pricePolicyActiveText": "Política de precios mediante bonos personalizados",
+  "pricePolicyActiveText": "Política de precios mediante tarifas personalizadas",
   "@pricePolicyPayWallText": {
     "description": "pricePolicyPayWallText message"
   },
@@ -3534,7 +3534,7 @@
   "@autoRenovation": {
     "description": "autoRenovation message"
   },
-  "bonoExpirationWeekTitleNotification": "\uD83D\uDCC5 \uD83D\uDD52 ¡Tu bono caduca {bono} en una semana! \uD83D\uDD52 \uD83D\uDCC5 ",
+  "bonoExpirationWeekTitleNotification": "\uD83D\uDCC5 \uD83D\uDD52 ¡Tu tarifa caduca {bono} en una semana! \uD83D\uDD52 \uD83D\uDCC5 ",
   "@bonoExpirationWeekTitleNotification": {
     "description": "beforeEventBodyNotification message",
     "placeholders": {
@@ -3543,11 +3543,11 @@
       }
     }
   },
-  "bonoExpirationWeekBodyNotification": "Este es un recordatorio amistoso de que tu bono caducará en una semana. ¡Asegúrate de reservar tus sesiones antes de que sea demasiado tarde!",
+  "bonoExpirationWeekBodyNotification": "Este es un recordatorio amistoso de que tu tarifa caducará en una semana. ¡Asegúrate de reservar tus sesiones antes de que sea demasiado tarde!",
   "@bonoExpirationWeekBodyNotification": {
     "description": "beforeEventBodyNotification message"
   },
-  "bonoExpirationDaysTitleNotification": "⏰ \uD83D\uDCC6 ¡Tu bono {bono} caduca en 3 días! \uD83D\uDCC6 ⏰ ",
+  "bonoExpirationDaysTitleNotification": "⏰ \uD83D\uDCC6 ¡Tu tarifa {bono} caduca en 3 días! \uD83D\uDCC6 ⏰ ",
   "@bonoExpirationDaysTitleNotification": {
     "description": "beforeEventBodyNotification message",
     "placeholders": {
@@ -3556,11 +3556,11 @@
       }
     }
   },
-  "bonoExpirationDaysBodyNotification": "Este es un recordatorio amistoso de que tu bono caducará en tan solo 3 días. ¡No te quedes sin disfrutar de tus sesiones restantes!",
+  "bonoExpirationDaysBodyNotification": "Este es un recordatorio amistoso de que tu tarifa caducará en tan solo 3 días. ¡No te quedes sin disfrutar de tus sesiones restantes!",
   "@bonoExpirationDaysBodyNotification": {
     "description": "beforeEventBodyNotification message"
   },
-  "bonoExpirationTomorrowTitleNotification": "\uD83D\uDEA8 ❗️ ¡Tu bono {bono} caduca mañana! ❗️ \uD83D\uDEA8 ",
+  "bonoExpirationTomorrowTitleNotification": "\uD83D\uDEA8 ❗️ ¡Tu tarifa {bono} caduca mañana! ❗️ \uD83D\uDEA8 ",
   "@bonoExpirationTomorrowTitleNotification": {
     "description": "beforeEventBodyNotification message",
     "placeholders": {
@@ -3569,7 +3569,7 @@
       }
     }
   },
-  "bonoExpirationTomorrowBodyNotification": "Este es un recordatorio urgente de que tu bono caduca mañana. ¡No te pierdas la oportunidad de utilizar tus sesiones restantes! Reserva ahora.",
+  "bonoExpirationTomorrowBodyNotification": "Este es un recordatorio urgente de que tu tarifa caduca mañana. ¡No te pierdas la oportunidad de utilizar tus sesiones restantes! Reserva ahora.",
   "@bonoExpirationTomorrowBodyNotification": {
     "description": "beforeEventBodyNotification message"
   },
@@ -3601,11 +3601,11 @@
   "@freeSession": {
     "description": "directPurchasetext message"
   },
-  "directPurchaseDescription": "Permite que las compras de tus bonos se aprueben sin solicitud, el cliente obtendrá el bono al momento de hacer su compra",
+  "directPurchaseDescription": "Las solicitudes de compra se aprueban automáticamente, permitiendo que el cliente disponga de la tarifa al instante. Se debe confirmar el pago recibido posteriormente",
   "@directPurchaseDescription": {
     "description": "directPurchase message"
   },
-  "directPurchasetext": "Compra directa",
+  "directPurchasetext": "Aprobación instantánea",
   "@directPurchasetext": {
     "description": "directPurchasetext message"
   },
@@ -3613,7 +3613,7 @@
   "@deletePurchase": {
     "description": "deletePurchase message"
   },
-  "deletePurchaseRequest": "¿Estás seguro de que quieres eliminar esta solicitud de compra?\n\nEl cliente será notificado de que has rechazado su solicitud y no se le otorgará el bono.",
+  "deletePurchaseRequest": "¿Estás seguro de que quieres eliminar esta solicitud de compra?\n\nEl cliente será notificado de que has rechazado su solicitud y no se le otorgará la tarifa.",
   "@deletePurchaseRequest": {
     "description": "deletePurchase message"
   },
@@ -3654,15 +3654,15 @@
   "@desactivarCompra": {
     "description": "desactivarCompra message"
   },
-  "activePurchaseQuesDesc": "Tus clientes pueden usar la compra si está activa. Ésta se activa o desactiva automaticamente, pero se puede forzar su estado de manera manual.",
+  "activePurchaseQuesDesc": "Tus clientes pueden usar su tarifa si está activa. Ésta se activa o desactiva automaticamente, pero se puede forzar su estado de manera manual.",
   "@activePurchaseQuesDesc": {
     "description": "activePurchaseQuesDesc message"
   },
-  "deleteClientsWithPurchases": "Edite la sesión eliminando los clientes con compras, confirme la edición y posteriormente podrá borrar la sesión",
+  "deleteClientsWithPurchases": "Elimine los clientes que han comprado esta sesión, confirme la edición y posteriormente podrá borrar la sesión",
   "@deleteClientsWithPurchases": {
     "description": "deleteClientsWithPurchases message"
   },
-  "deleteClientsWithPurchasesBonos": "Elimine los clientes con compras para poder quitar bonos de la sesión",
+  "deleteClientsWithPurchasesBonos": "Elimine los clientes que han comprado la sesión para poder eliminar tarifas de esta sesión",
   "@deleteClientsWithPurchasesBonos": {
     "description": "deleteClientsWithPurchasesBonos message"
   },
@@ -3694,7 +3694,7 @@
   "@addClientDescription":{
     "bonosClient": "addClientDescription client text"
   },
-  "noActiveBonos": "No dispones de bonos activos para asignar al evento",
+  "noActiveBonos": "No dispone de tarifas disponibles para ser añadido a la sesión",
   "@noActiveBonos":{
     "noActiveBonos": "noActiveBonos text"
   },
@@ -3706,19 +3706,19 @@
   "@betaFeature":{
     "description": "processOnWork text"
   },
-  "bonoSimple": "Bono simple",
+  "bonoSimple": "Bono",
   "@bonoSimple":{
     "description": "bonoSimple text"
   },
-  "bonoSimpleText": "No se renueva",
+  "bonoSimpleText": "Pago único con vencimiento",
   "@bonoSimpleText":{
     "description": "bonoSimpleText text"
   },
-  "bonoRecurrent": "Bono recurrente",
+  "bonoRecurrent": "Membresía",
   "@bonoRecurrent":{
     "description": "bonoRecurrent text"
   },
-  "bonoRecurrentText": "Se renueva cuando se termina",
+  "bonoRecurrentText": "Pagos periódicos con renovación",
   "@bonoRecurrentText":{
     "description": "bonoRecurrentText text"
   },
@@ -3742,11 +3742,10 @@
   "@gracePeriodTitle": {
     "description": "Título de la sección del Periodo de Gracia"
   },
-  "gracePeriodDescription": "Periodo antes de aplicar cargos o penalizaciones",
+  "gracePeriodDescription": "Plazo adicional para confirmación de pagos por el profesional, asegurando acceso continuo a servicios. Tras el período de gracia, la tarifa permanecerá inactiva hasta la confirmación del pago",
   "@gracePeriodDescription": {
     "description": "Descripción breve del Periodo de Gracia"
   },
-
   "maximumCancellationsPerWeekTitle": "Cancelaciones máximas por semana",
   "@maximumCancellationsPerWeekTitle": {
     "description": "Título de la sección de Cancelaciones Máximas por Semana"
@@ -3776,7 +3775,7 @@
   "@midMonthPaymentTitle": {
     "description": "Título de la opción de Pago 15 y 15"
   },
-  "midMonthPaymentDescription": "Si la compra se realiza en los primeros 15 días del mes, se paga el total del bono. Si se realiza en los últimos 15 días, se paga la mitad",
+  "midMonthPaymentDescription": "Si la compra se realiza en los primeros 15 días del mes, se paga el total de la tarifa. Si se realiza en los últimos 15 días, se paga la mitad",
   "@midMonthPaymentDescription": {
     "description": "Descripción de cómo funciona el Pago 15 y 15"
   },

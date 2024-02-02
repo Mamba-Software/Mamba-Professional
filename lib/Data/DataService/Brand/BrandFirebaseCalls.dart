@@ -579,7 +579,7 @@ class BrandFirebaseCalls {
   //Add
 
   Future<String> addBrand(String name, File image, String description,
-      List<double> workShift, int maxMembers, int bookingWindow) async {
+      List<double> workShift, int maxMembers, int bookingWindow, int minBookingWindow) async {
     QuerySnapshot querySnapshot3 = await _firestore
         .collection(library)
         .doc('Images')
@@ -606,6 +606,7 @@ class BrandFirebaseCalls {
       "workShift": workShift,
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
+      "minBookingWindow": minBookingWindow,
       "isActive": false,
       "baseImage": ImageObject.fromObjectAllData(
               querySnapshot3.docs[index].id, querySnapshot3.docs[index])

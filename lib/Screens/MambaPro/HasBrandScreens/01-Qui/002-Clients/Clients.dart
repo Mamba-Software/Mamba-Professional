@@ -1183,8 +1183,8 @@ class _Clients extends State<Clients> {
               width: MediaQuery.of(context).size.width * 0.15,
               child: SpeedDial(
                 heroTag: "96",
-                activeChild: const Icon(Icons.group_add_outlined),
-                animationDuration: const Duration(milliseconds: 100),
+                activeChild: const Icon(Icons.group_outlined),
+                animationDuration: const Duration(milliseconds: 300),
                 foregroundColor: AppColors.white,
                 overlayColor: Theme.of(context).scaffoldBackgroundColor,
                 overlayOpacity: 0.95,

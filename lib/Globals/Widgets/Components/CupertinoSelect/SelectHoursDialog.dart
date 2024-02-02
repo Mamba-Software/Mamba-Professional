@@ -16,7 +16,7 @@ class SelectHoursDialog extends StatefulWidget {
 class _SelectHoursDialogState extends State<SelectHoursDialog> {
   // Initial Vars
   int pickedDays = 0;
-  int daysMax = 25;
+  int daysMax = 24;
 
   @override
   void initState() {
@@ -67,14 +67,14 @@ class _SelectHoursDialogState extends State<SelectHoursDialog> {
                     )),
                     child: CupertinoPicker(
                         scrollController: FixedExtentScrollController(
-                            initialItem: widget.intialDays),
+                            initialItem: widget.intialDays - 1),
                         itemExtent: 40.0,
                         backgroundColor: Colors.transparent,
                         onSelectedItemChanged: (int index) {
-                          pickedDays = index;
+                          pickedDays = index + 1;
                         },
                         children: List<Widget>.generate(daysMax, (int index) {
-                          var days = index;
+                          var days = index + 1;
                           return Center(
                             child: Text(
                               days.toString(),

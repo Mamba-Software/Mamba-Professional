@@ -13,7 +13,7 @@ class _BetaBadgeState extends State<BetaBadge> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
+      margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02),
       height: MediaQuery.of(context).size.width * 0.05,
       width: MediaQuery.of(context).size.width * 0.12,
       decoration: BoxDecoration(
