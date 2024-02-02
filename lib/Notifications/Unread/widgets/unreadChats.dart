@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Notifications/Unread/cubit/UnreadNotChatsCub
 Widget unreadChats(BuildContext context) {
   return BlocBuilder<UnreadNotChatsCubit, List<int>>(
       builder: (context, state) {
-      return CounterBadgeIcon(
+      return CounterBadgeIcon(        
         counter: state[1],
         top: 5,
         right: 7,
