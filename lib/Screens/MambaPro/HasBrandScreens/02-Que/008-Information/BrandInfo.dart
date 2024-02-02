@@ -484,16 +484,16 @@ class _BrandInfoState extends State<BrandInfo>
             ),
             actions: [
               Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    askSupport(context),
-                    unreadNotifications(context),
-                    unreadChats(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                    profileImage(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  ],
-                ),
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  askSupport(context),
+                  unreadNotifications(context),
+                  unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                  profileImage(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                ],
+              ),
             ],
           ),
           if (isLoading)
@@ -1594,8 +1594,6 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
-
-                      
                       ],
                     ),
                   ),
@@ -1621,8 +1619,7 @@ class _BrandInfoState extends State<BrandInfo>
                                     MediaQuery.of(context).size.width * 0.02),
                             Text(
                               StringUtils().toCapitalized(
-                                  AppLocalizations.of(context)!
-                                      .payments),
+                                  AppLocalizations.of(context)!.payments),
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -1896,6 +1893,12 @@ class _BrandInfoState extends State<BrandInfo>
                                     height: MediaQuery.of(context).size.height *
                                         0.015),
                                 selectedTerms(
+                                    2,
+                                    AppLocalizations.of(context)!
+                                        .exactDaysTitle,
+                                    AppLocalizations.of(context)!
+                                        .exactDaysTitleDescription),
+                                selectedTerms(
                                     0,
                                     AppLocalizations.of(context)!
                                         .proratedPaymentTitle,
@@ -1910,12 +1913,10 @@ class _BrandInfoState extends State<BrandInfo>
                                         .midMonthPaymentTitle,
                                     AppLocalizations.of(context)!
                                         .midMonthPaymentDescription),
-                                selectedTerms(
-                                    2,
-                                    AppLocalizations.of(context)!
-                                        .exactDaysTitle,
-                                    AppLocalizations.of(context)!
-                                        .exactDaysTitleDescription),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.015),
+                                
                               ],
                             ),
                           ],

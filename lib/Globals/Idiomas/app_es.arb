@@ -3759,7 +3759,7 @@
   "@paymentTermsTitle": {
     "description": "Título de la sección de Términos de Pago"
   },
-  "paymentTermsDescription": "Condiciones y modalidades de los pagos",
+  "paymentTermsDescription": "Explora las formas de realizar pagos, ya sea para compras únicas con vencimiento o para membresías con renovación automática, adaptándose a tus necesidades",
   "@paymentTermsDescription": {
     "description": "Descripción breve de los Términos de Pago"
   },
@@ -3767,15 +3767,15 @@
   "@proratedPaymentTitle": {
     "description": "Título de la opción de Pago Prorrateado"
   },
-  "proratedPaymentDescription": "Al realizar la compra, se paga la diferencia hasta el primer día del siguiente mes y luego se continúa pagando desde cada día uno del mes",
+  "proratedPaymentDescription": "Ajusta tu pago inicial hasta el primer día del siguiente mes, luego paga mensualmente desde el primer día de cada mes.",
   "@proratedPaymentDescription": {
     "description": "Descripción de cómo funciona el Pago Prorrateado"
   },
-  "midMonthPaymentTitle": "Pago 15 y 15",
+  "midMonthPaymentTitle": "Pago Mitad de Mes",
   "@midMonthPaymentTitle": {
     "description": "Título de la opción de Pago 15 y 15"
   },
-  "midMonthPaymentDescription": "Si la compra se realiza en los primeros 15 días del mes, se paga el total de la tarifa. Si se realiza en los últimos 15 días, se paga la mitad",
+  "midMonthPaymentDescription": "Paga el total si la compra es en la primera mitad del mes, o la mitad si es en la segunda, ajustando el costo según la fecha de compra.",
   "@midMonthPaymentDescription": {
     "description": "Descripción de cómo funciona el Pago 15 y 15"
   },
@@ -3787,7 +3787,7 @@
   "@exactDaysTitle": {
     "description": "Título de la opción de Pago Exacto"
   },
-  "exactDaysTitleDescription": "El precio de la compra se calculará exactamente por los días de la fecha de expiración o renovación",
+  "exactDaysTitleDescription": "El coste se calcula por el número exacto de días hasta tu próxima fecha de expiración o renovación, para un precio completo y preciso",
   "@exactDaysTitleDescription": {
     "description": "Descripción de cómo funciona el días exactos"
   },
