@@ -75,7 +75,7 @@ Widget buildGreetingWidget(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            unreadNotifiactions(context),
+            unreadNotifications(context),
             unreadChats(context),
           ],
         ),

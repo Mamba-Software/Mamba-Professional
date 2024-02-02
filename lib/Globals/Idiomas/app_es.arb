@@ -383,12 +383,16 @@
   "@feedbackNotSent":{
     "description": "Feedback Not Sent Text"
   },
-  "feedbackAnswered": "Actualmente no hay ningún Feedback que puedas responder",
+  "feedbackAnswered": "Actualmente no hay ningún cuestionario que puedas responder",
   "@feedbackAnswered":{
     "description": "Feedback Answered Text"
   },
   "feedbackNotAnswered": "Ayúdanos a mejorar respondiendo el Feedbak de esta semana\n¿A qué esperas?",
   "@feedbackNotAnswered":{
+    "description": "Feedback Not Answered Text"
+  },
+  "help": "Ayuda",
+  "@help":{
     "description": "Feedback Not Answered Text"
   },
   "responderFeedback": "!Vamos!",
@@ -2107,7 +2111,11 @@
   "@getInTouchTitle": {
     "description": "membersOfBrand message"
   },
-  "getInTouchText": "Envíanos un email para ponerte en contacto con nosotros",
+  "getInTouchText": "Envíanos un email",
+  "@getInTouchText": {
+    "description": "membersOfBrand message"
+  },
+  "getInTouchChat": "Envíanos un mensaje",
   "@getInTouchText": {
     "description": "membersOfBrand message"
   },

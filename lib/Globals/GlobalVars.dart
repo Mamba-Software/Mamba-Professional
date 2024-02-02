@@ -11,7 +11,9 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSn
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:page_transition/page_transition.dart';
 import '../Data/LibraryModels/lColor.dart';
 
 // Flavor Setup
@@ -31,8 +33,12 @@ var androidGooglePlayUrl =
 var iosAppStoreUrl =
     "https://apps.apple.com/es/app/mamba-professional/id1642701679";
 
-// Email
+// Contact
 var contactEmail = "contacto@mambafitness.es";
+var contactNumber = "+34677909194"; // Your platform's contact number
+var contactNumberMessage = "¡Hola! Estoy interesad@ en saber más sobre sus servicios. ¿Podrían proporcionarme más información?";
+var whatsappUrl = "whatsapp://send?phone=$contactNumber&text=${Uri.encodeComponent(contactNumberMessage)}";
+
 
 // Website
 var website = "https://mambafitness.es/";
@@ -164,3 +170,15 @@ Future<void> navigateToChatScreen(BuildContext context) async {
         builder: (context) => const ChatCore(),
       ));
 }
+
+
+// Navigate to Feedback Screen
+  void navigateToMainFeedbackScreen(BuildContext context) {
+    Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.bottomToTop,
+          child: const FeedBack(),
+        )
+    );
+  }

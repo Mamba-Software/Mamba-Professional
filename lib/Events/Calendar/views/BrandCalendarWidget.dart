@@ -27,6 +27,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -1845,11 +1846,17 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 ),
               ),
               actions: [
-                unreadNotifiactions(context),
-                unreadChats(context),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                profileImage(context),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    askSupport(context),
+                    unreadNotifications(context),
+                    unreadChats(context),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                    profileImage(context),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  ],
+                ),
               ],
             ),
             BlocBuilder<BrandEventsCubit, BrandEventsState>(

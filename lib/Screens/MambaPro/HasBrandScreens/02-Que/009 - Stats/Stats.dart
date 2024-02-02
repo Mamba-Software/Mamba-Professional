@@ -355,7 +355,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            unreadNotifiactions(context),
+                            unreadNotifications(context),
                             unreadChats(context),
                             SizedBox(
                                 width:

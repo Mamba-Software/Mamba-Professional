@@ -19,7 +19,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadlin
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsMade.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/FeedBack.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsYourData.dart';
 import 'package:page_transition/page_transition.dart';

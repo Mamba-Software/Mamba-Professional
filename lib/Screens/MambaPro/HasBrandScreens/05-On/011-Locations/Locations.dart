@@ -145,9 +145,8 @@ class _LocationsState extends State<Locations> {
                       if (boolean == true) {
                         setState(() {
                           isLoading = true;
-                          loadingText = "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!
-                                  .locations
-                                  .toLowerCase()}...";
+                          loadingText =
+                              "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!.locations.toLowerCase()}...";
                         });
                         await Future.delayed(const Duration(seconds: 4));
                         getAllLocations();
@@ -188,7 +187,8 @@ class _LocationsState extends State<Locations> {
         // Reload the Map
         setState(() {
           isLoading = true;
-          loadingText = "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!.locations.toLowerCase()}...";
+          loadingText =
+              "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!.locations.toLowerCase()}...";
         });
         Location location = Location();
         location.placeId = result.placeId;
@@ -304,10 +304,12 @@ class _LocationsState extends State<Locations> {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.locations,
-                            style:
-                                Theme.of(context).textTheme.displayLarge?.copyWith(
-                                      color: AppColors.white,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
+                                  color: AppColors.white,
+                                ),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
@@ -368,7 +370,7 @@ class _LocationsState extends State<Locations> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  unreadNotifiactions(context),
+                  unreadNotifications(context),
                   unreadChats(context),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                   GestureDetector(

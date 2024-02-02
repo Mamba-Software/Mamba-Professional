@@ -15,7 +15,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/FeedBack.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsLanguage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -239,7 +239,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.giveFeedbackTitle,
+                      AppLocalizations.of(context)!.help,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge

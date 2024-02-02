@@ -411,7 +411,8 @@ class _Trainers extends State<Trainers> {
                                       },
                                       splashRadius: 20,
                                       splashColor: Theme.of(context)
-                                          .colorScheme.background, // Splash color
+                                          .colorScheme
+                                          .background, // Splash color
                                       padding: EdgeInsets.zero,
                                       alignment: Alignment.center,
                                       icon: Icon(
@@ -432,7 +433,8 @@ class _Trainers extends State<Trainers> {
                                           : Colors.transparent, // Button color
                                       child: InkWell(
                                         splashColor: Theme.of(context)
-                                            .colorScheme.background, // Splash color
+                                            .colorScheme
+                                            .background, // Splash color
                                         onTap: () async {
                                           mixpanel!.track(
                                               'brand_trainers_filter_button');
@@ -626,7 +628,8 @@ class _Trainers extends State<Trainers> {
                                                                         },
                                                                         title: Text(
                                                                             "${AppLocalizations.of(context)!.active} ${AppLocalizations.of(context)!.lastNDays(30.toString())}",
-                                                                            style: Theme.of(context).textTheme.bodyLarge,
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodyLarge,
                                                                             textAlign: TextAlign.left),
                                                                         subtitle: Text(
                                                                             returnFilteredActiveStaffString(),
@@ -878,7 +881,7 @@ class _Trainers extends State<Trainers> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  unreadNotifiactions(context),
+                  unreadNotifications(context),
                   unreadChats(context),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                   GestureDetector(
@@ -942,9 +945,7 @@ class _Trainers extends State<Trainers> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!
-                                              .staff
-                                              .toLowerCase()}",
+                                      "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.staff.toLowerCase()}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
@@ -1288,8 +1289,9 @@ class _Trainers extends State<Trainers> {
                                 ),
                                 Text(
                                     "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.staff}",
-                                    style:
-                                        Theme.of(context).textTheme.displaySmall,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall,
                                     textAlign: TextAlign.right),
                               ],
                             ),

@@ -177,7 +177,7 @@ class _BrandInfoState extends State<BrandSubscription>
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  unreadNotifiactions(context),
+                  unreadNotifications(context),
                   unreadChats(context),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                   GestureDetector(
