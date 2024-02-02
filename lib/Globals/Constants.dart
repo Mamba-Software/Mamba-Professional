@@ -89,7 +89,7 @@ class Constants {
   static get brandQuery => FirebaseFirestore.instance.collection('Brands');
   static get bonosCollection => 'TestBonos';
   static get baseUrl =>
-      'https://us-central1-mamba-fitness-dev.cloudfunctions.net/stripeApi';
+      'https://europe-west1-mamba-fitness-dev.cloudfunctions.net/stripeApi';
 
   static get merchantDisplayName => 'Mamba Software SL';
 }
