@@ -2895,7 +2895,7 @@
   "@desactiveTrainers": {
     "description": "desactiveTrainers message"
   },
-  "bonosNecesarios": "Tarifas necesarios",
+  "bonosNecesarios": "Tarifas necesarias",
   "@bonosNecesarios": {
     "description": "userJoinsBrandUser message"
   },
