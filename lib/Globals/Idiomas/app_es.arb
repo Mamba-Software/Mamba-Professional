@@ -3759,37 +3759,41 @@
   "@paymentTermsTitle": {
     "description": "Título de la sección de Términos de Pago"
   },
-  "paymentTermsDescription": "Explora las formas de realizar pagos, ya sea para compras únicas con vencimiento o para membresías con renovación automática, adaptándose a tus necesidades",
+  "paymentTermsDescription": "Escoge cómo se aplica la fecha de vencimiento o renovación para las tarifas y cómo se calculan los precios en función de la fecha, ya sea para pagos únicos o para membresías con renovación automática, garantizando un ajuste preciso a sus necesidades financieras",
   "@paymentTermsDescription": {
     "description": "Descripción breve de los Términos de Pago"
   },
-  "proratedPaymentTitle": "Pago Prorrateado",
+  "proratedPaymentTitle": "Prorrateo Exacto",
   "@proratedPaymentTitle": {
     "description": "Título de la opción de Pago Prorrateado"
   },
-  "proratedPaymentDescription": "Ajusta tu pago inicial hasta el primer día del siguiente mes, luego paga mensualmente desde el primer día de cada mes.",
+  "proratedPaymentDescription": "Ajusta el pago inicial proporcionalmente hasta el inicio del próximo mes, modificando el precio y las sesiones disponibles de forma exacta",
   "@proratedPaymentDescription": {
     "description": "Descripción de cómo funciona el Pago Prorrateado"
   },
-  "midMonthPaymentTitle": "Pago Mitad de Mes",
+  "midMonthPaymentTitle": "Prorrateo Mitad de Mes",
   "@midMonthPaymentTitle": {
     "description": "Título de la opción de Pago 15 y 15"
   },
-  "midMonthPaymentDescription": "Paga el total si la compra es en la primera mitad del mes, o la mitad si es en la segunda, ajustando el costo según la fecha de compra.",
+  "midMonthPaymentDescription": "Compras antes del día 15, pagan y disponen de la tarifa completa. Después del día 15, el precio y las sesiones se reducen a la mitad",
   "@midMonthPaymentDescription": {
     "description": "Descripción de cómo funciona el Pago 15 y 15"
   },
+  "exactDaysTitle": "Vencimiento Exacto",
+  "@exactDaysTitle": {
+    "description": "Título de la opción de Pago Exacto"
+  },
+  "exactDaysTitleDescription": "Precio íntegro sin ajustes. Caduca o renueva automáticamente en la fecha prevista, sin cálculos adicionales",
+  "@exactDaysTitleDescription": {
+    "description": "Descripción de cómo funciona el días exactos"
+  },  
   "times": "Veces",
   "@times": {
     "description": "times text"
   },
-  "exactDaysTitle": "Días exactos",
-  "@exactDaysTitle": {
-    "description": "Título de la opción de Pago Exacto"
-  },
-  "exactDaysTitleDescription": "El coste se calcula por el número exacto de días hasta tu próxima fecha de expiración o renovación, para un precio completo y preciso",
-  "@exactDaysTitleDescription": {
-    "description": "Descripción de cómo funciona el días exactos"
+  "vencen": "Vencen",
+  "@vencen": {
+    "description": "times text"
   },
   "autoRenovation": "Renovación automática",
   "@autoRenovation": {

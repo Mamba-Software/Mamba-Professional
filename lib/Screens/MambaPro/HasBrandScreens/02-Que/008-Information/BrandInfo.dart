@@ -1865,21 +1865,6 @@ class _BrandInfoState extends State<BrandInfo>
                                 child: const BetaBadge())
                           ],
                         ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.015),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                AppLocalizations.of(context)!
-                                    .paymentTermsDescription,
-                                style: Theme.of(context).textTheme.bodySmall,
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ],
-                        ),
 
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1898,12 +1883,6 @@ class _BrandInfoState extends State<BrandInfo>
                                         .exactDaysTitle,
                                     AppLocalizations.of(context)!
                                         .exactDaysTitleDescription),
-                                selectedTerms(
-                                    0,
-                                    AppLocalizations.of(context)!
-                                        .proratedPaymentTitle,
-                                    AppLocalizations.of(context)!
-                                        .proratedPaymentDescription),
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.015),
@@ -1916,8 +1895,29 @@ class _BrandInfoState extends State<BrandInfo>
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.015),
-                                
+                                selectedTerms(
+                                    0,
+                                    AppLocalizations.of(context)!
+                                        .proratedPaymentTitle,
+                                    AppLocalizations.of(context)!
+                                        .proratedPaymentDescription),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.015),
                               ],
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .paymentTermsDescription,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                textAlign: TextAlign.left,
+                              ),
                             ),
                           ],
                         ),
@@ -2460,66 +2460,77 @@ class _BrandInfoState extends State<BrandInfo>
   }
 
   Widget selectedTerms(int index, String title, String description) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.1,
-      width: MediaQuery.of(context).size.width * 0.9,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Theme.of(context).primaryColor),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.01,
-                ),
-                Text(
-                  description,
-                  style: Theme.of(context).textTheme.bodySmall,
-                )
-              ],
+    return Material(
+      elevation: 4,
+      borderRadius: BorderRadius.circular(15.0),
+      child: Container(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Theme.of(context).primaryColor),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  isSelectedTerms[index] == true
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                            Text(
+                              description,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        )
+                      : Container(),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.034,
-            width: MediaQuery.of(context).size.height * 0.06,
-            child: MaterialButton(
-              elevation: 2,
-              color: isSelectedTerms[index] == true
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).colorScheme.background,
-              padding: EdgeInsets.zero,
-              shape: const CircleBorder(),
-              onPressed: () {
-                isSelectedTerms[0] = false;
-                isSelectedTerms[1] = false;
-                isSelectedTerms[2] = false;
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.034,
+              width: MediaQuery.of(context).size.height * 0.06,
+              child: MaterialButton(
+                elevation: 2,
+                color: isSelectedTerms[index] == true
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).colorScheme.background,
+                padding: EdgeInsets.zero,
+                shape: const CircleBorder(),
+                onPressed: () {
+                  isSelectedTerms[0] = false;
+                  isSelectedTerms[1] = false;
+                  isSelectedTerms[2] = false;
 
-                isSelectedTerms[index] = true;
-                setState(() {});
-              },
-              child: isSelectedTerms[index] == true
-                  ? Icon(Icons.check,
-                      color: Theme.of(context).primaryColorDark,
-                      size: MediaQuery.of(context).size.width * 0.05)
-                  : SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.03,
-                      width: MediaQuery.of(context).size.width * 0.03,
-                    ),
+                  isSelectedTerms[index] = true;
+                  setState(() {});
+                },
+                child: isSelectedTerms[index] == true
+                    ? Icon(Icons.check,
+                        color: Theme.of(context).primaryColorDark,
+                        size: MediaQuery.of(context).size.width * 0.05)
+                    : SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.03,
+                        width: MediaQuery.of(context).size.width * 0.03,
+                      ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
