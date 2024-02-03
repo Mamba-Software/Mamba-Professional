@@ -1579,11 +1579,12 @@ class _AddEditBonoState extends State<AddEditBono>
 
   Widget daysSelectoWidget(int index, String numberDays, bool editable,
       bool notShow, bool isRecurrent) {
-    return SizedBox(
+    return Container(
       height: isRecurrent && numberDays == "0" && isSelectedDays[0]
           ? MediaQuery.of(context).size.height * 0.065
           : MediaQuery.of(context).size.height * 0.05,
       width: MediaQuery.of(context).size.width * 0.9,
+      margin: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1595,7 +1596,7 @@ class _AddEditBonoState extends State<AddEditBono>
               children: [
                 Text(
                   numberDays != "0"
-                      ? numberDays
+                      ? numberDays.split("-")[0]
                       : isRecurrent
                           ? AppLocalizations.of(context)!.firstDayOfMonth
                           : "No expira",
@@ -1603,6 +1604,19 @@ class _AddEditBonoState extends State<AddEditBono>
                       color: notShow == false
                           ? Theme.of(context).primaryColor
                           : Theme.of(context).disabledColor),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  numberDays != "0"
+                      ? numberDays.split("-")[1]
+                      : isRecurrent
+                          ? AppLocalizations.of(context)!.firstDayOfMonth
+                          : AppLocalizations.of(context)!.allSessionsDone,
+                  style: Theme.of(context).textTheme.bodySmall,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -2325,19 +2339,19 @@ class _AddEditBonoState extends State<AddEditBono>
                           0, '0', editable, noSessions, isRecurrent),
                   daysSelectoWidget(
                       1,
-                      "${AppLocalizations.of(context)!.monthly} (30 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)",
+                      "${AppLocalizations.of(context)!.monthly}-${AppLocalizations.of(context)!.eachNDaysAprox(30.toString())}",
                       editable,
                       false,
                       isRecurrent),
                   daysSelectoWidget(
                       2,
-                      "${AppLocalizations.of(context)!.bimonthly} (60 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)",
+                      "${AppLocalizations.of(context)!.bimonthly}-${AppLocalizations.of(context)!.eachNDaysAprox(60.toString())}",
                       editable,
                       false,
                       isRecurrent),
                   daysSelectoWidget(
                       3,
-                      "${AppLocalizations.of(context)!.quarterly} (90 ${AppLocalizations.of(context)!.days.toLowerCase()} aprox.)",
+                      "${AppLocalizations.of(context)!.quarterly}-${AppLocalizations.of(context)!.eachNDaysAprox(90.toString())}",
                       editable,
                       false,
                       isRecurrent),

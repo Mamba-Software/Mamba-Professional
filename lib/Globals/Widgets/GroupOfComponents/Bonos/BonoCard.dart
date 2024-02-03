@@ -1339,7 +1339,7 @@ class BonoCardState extends State<BonoCard> {
                       color: Theme.of(context).primaryColor,
                       size: MediaQuery.of(context).size.width * 0.06),
                   title: Text(
-                      "${bono.isActive! ? AppLocalizations.of(context)!.mambaProActivated.split(" ")[0] : AppLocalizations.of(context)!.mambaProDesactivated.split(" ")[0]} ${AppLocalizations.of(context)!.bono.toLowerCase()}",
+                      "${bono.isActive! ? AppLocalizations.of(context)!.mambaProActivated.split(" ")[0] : AppLocalizations.of(context)!.mambaProDesactivated.split(" ")[0]} ${AppLocalizations.of(context)!.rate.toLowerCase()}",
                       style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left),
                 ),
@@ -1356,7 +1356,7 @@ class BonoCardState extends State<BonoCard> {
                   leading: Icon(Icons.edit,
                       color: Theme.of(context).primaryColor,
                       size: MediaQuery.of(context).size.width * 0.06),
-                  title: Text(AppLocalizations.of(context)!.editBono,
+                  title: Text("${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.rate.toLowerCase()}",
                       style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left),
                 ),
@@ -1374,7 +1374,7 @@ class BonoCardState extends State<BonoCard> {
                       color: Theme.of(context).primaryColor,
                       size: MediaQuery.of(context).size.width * 0.06),
                   title: Text(
-                      "${AppLocalizations.of(context)!.duplicate} ${AppLocalizations.of(context)!.bono.toLowerCase()}",
+                      "${AppLocalizations.of(context)!.duplicate} ${AppLocalizations.of(context)!.rate.toLowerCase()}",
                       style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left),
                 ),
@@ -1392,7 +1392,7 @@ class BonoCardState extends State<BonoCard> {
                       color: Colors.red,
                       size: MediaQuery.of(context).size.width * 0.06),
                   title: Text(
-                      "${AppLocalizations.of(context)!.delete} ${AppLocalizations.of(context)!.bono.toLowerCase()}",
+                      "${AppLocalizations.of(context)!.delete} ${AppLocalizations.of(context)!.rate.toLowerCase()}",
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
