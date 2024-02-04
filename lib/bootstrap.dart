@@ -69,7 +69,7 @@ class Bootstrap {
   }
   // Starting app function. After initialization, we define the global providers:
   Future<void> bootstrap() async {
-    runZonedGuarded(() async {      
+    runZonedGuarded(() async {
       // Load Env Variables
       print("Loading Environment Variables...");
       String envFileName = ".env.${currentFlavor.name}";
@@ -111,7 +111,8 @@ class Bootstrap {
             PurchasesConfiguration(dotenv.env['REVCAT_APPLE_API_KEY']!);
         await Purchases.configure(configuration);
       }
-      //Init Stripe     
+      //Init Stripe
+      Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
       if (Platform.isIOS) {
         Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
         await Stripe.instance.applySettings();

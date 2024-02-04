@@ -11,7 +11,7 @@ Future<void> main() async {
   // Initialize App
   WidgetsFlutterBinding.ensureInitialized();
   // Set Global Flavor
-  currentFlavor = Flavor.development;    
+  currentFlavor = Flavor.development;  
   // Firebase Crashlytics
   Bootstrap(
     firebaseOptions: kIsWeb ? DefaultFirebaseOptions.currentPlatform : null,
