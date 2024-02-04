@@ -242,14 +242,18 @@ class BonosUtils {
         final twoMonthsLater = DateTime(firstDayOfNextMonth.year,
             firstDayOfNextMonth.month + 1, firstDayOfNextMonth.day);
         expirationDays = twoMonthsLater.difference(firstDayOfNextMonth).inDays +
-            expirationDays;
+            expirationDays +
+            1;
       } else if (condition.expirationTime == 90) {
         // Tres meses más adelante
-        final threeMonthsLater = DateTime(firstDayOfNextMonth.year,
-            firstDayOfNextMonth.month + 2, firstDayOfNextMonth.day);
+        final threeMonthsLater = DateTime(
+            firstDayOfNextMonth.year,
+            firstDayOfNextMonth.month + 2,
+            firstDayOfNextMonth.day); //TODO SI CAMBIA EL ANY CUIDADO
         expirationDays =
             threeMonthsLater.difference(firstDayOfNextMonth).inDays +
-                expirationDays;
+                expirationDays +
+                1;
       }
     }
     return expirationDays;
