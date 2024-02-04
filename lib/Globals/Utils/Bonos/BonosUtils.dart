@@ -150,6 +150,13 @@ class BonosUtils {
     DateTime today = DateTime.now();
     brand.paymentTerms ??= 2;
 
+    if (condition.expirationTime == 0 ||
+        (condition.expirationTime != 30 &&
+            condition.expirationTime != 60 &&
+            condition.expirationTime != 90)) {
+      return price;
+    }
+
     if (brand.paymentTerms != 2) {
       if (today.day != 1) {
         final firstDayOfNextMonth = DateTime(today.year, today.month + 1, 1);
@@ -185,13 +192,28 @@ class BonosUtils {
         }
       }
     }
-    return price;
+    String truncatedString =
+        price.toStringAsFixed(2); // Convierte a string con 2 decimales.
+    double truncatedPrice =
+        double.parse(truncatedString); // Convierte el string de nuevo a double.
+
+    return truncatedPrice;
   }
 
   int getExpirationTime(Brand brand, Condition condition) {
     int expirationDays = 0;
     DateTime today = DateTime.now();
     brand.paymentTerms ??= 2;
+
+    if (condition.expirationTime == 0) {
+      return 0;
+    }
+
+    if (condition.expirationTime != 30 &&
+        condition.expirationTime != 60 &&
+        condition.expirationTime != 90) {
+      return condition.expirationTime!;
+    }
 
     //Días exactos
     if (brand.paymentTerms == 2) {
@@ -213,23 +235,27 @@ class BonosUtils {
     //Prorrateación o mitad y mitad
     else {
       final firstDayOfNextMonth = DateTime(today.year, today.month + 1, 1);
-      expirationDays = firstDayOfNextMonth.difference(today).inDays;
+      expirationDays = firstDayOfNextMonth.difference(today).inDays + 1;
 
       if (condition.expirationTime == 60) {
         // Dos meses más adelante
         final twoMonthsLater = DateTime(firstDayOfNextMonth.year,
             firstDayOfNextMonth.month + 1, firstDayOfNextMonth.day);
         expirationDays = twoMonthsLater.difference(firstDayOfNextMonth).inDays +
-            expirationDays;
+            expirationDays +
+            1;
       } else if (condition.expirationTime == 90) {
         // Tres meses más adelante
-        final threeMonthsLater = DateTime(firstDayOfNextMonth.year,
-            firstDayOfNextMonth.month + 2, firstDayOfNextMonth.day);
+        final threeMonthsLater = DateTime(
+            firstDayOfNextMonth.year,
+            firstDayOfNextMonth.month + 2,
+            firstDayOfNextMonth.day); //TODO SI CAMBIA EL ANY CUIDADO
         expirationDays =
             threeMonthsLater.difference(firstDayOfNextMonth).inDays +
-                expirationDays;
+                expirationDays +
+                1;
       }
     }
-    return expirationDays + 1;
+    return expirationDays;
   }
 }

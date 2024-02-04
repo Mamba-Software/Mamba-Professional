@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -29,6 +30,10 @@ import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.da
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
+import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
+import 'package:mamba_castelldefels/Stripe/utils/routes.dart';
+import 'package:mamba_castelldefels/Stripe/views/onboarding_webview.dart';
 
 import '../../../../../Globals/Widgets/Components/CupertinoSelect/SelectOtherDialog.dart';
 
@@ -1696,6 +1701,42 @@ class _BrandInfoState extends State<BrandInfo>
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
 
+                        ///CONEXION CON STRIPE
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        context
+                                            .read<StripeConnectCubit>()
+                                            .getLink(currentBrand);
+                                        var result =
+                                            await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OnboardingWebView()),
+                                        );
+                                        if (result != null &&
+                                            result is UserStripeModel) {
+                                          currentBrand = currentBrand;
+                                        }
+                                      },
+                                      child: Text(buttonText)),
+                                ],
+                              ),
+                              if (currentBrand.balance != null)
+                                Text(
+                                    'Balance: ${currentBrand.balance?.toStringAsFixed(2)}'),
+                            ],
+                          ),
+                        ),
+
                         ///PERIODO DE GRACIA
                         Row(
                           children: [
@@ -2533,5 +2574,16 @@ class _BrandInfoState extends State<BrandInfo>
         ),
       ),
     );
+  }
+
+  String get buttonText {
+    if (currentBrand.stripeAccountId == null ||
+        currentBrand.stripeAccountId == '') {
+      return 'Connect with Stripe';
+    } else if (!currentBrand.isVerified) {
+      return 'Complete your profile';
+    } else {
+      return 'update your profile';
+    }
   }
 }

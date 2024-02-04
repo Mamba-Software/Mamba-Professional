@@ -869,5 +869,6 @@
   "times": "Cops",
   "vencen": "Vencen",
   "autoRenovation": "Renovació automàtica",
-  "notRenovation": "Renovació desactivada"
+  "notRenovation": "Renovació desactivada",
+  "cantDeletePurchase": "Per eliminar la compra origianl d'una membresia, hauràs d'eliminar les seves compres relacionades"
 }

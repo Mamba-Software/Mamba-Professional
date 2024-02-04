@@ -35,6 +35,11 @@ class Brand {
   int? maxCanWeek;
   int? paymentTerms;
 
+  //STRIPE
+  String? stripeAccountId;
+  bool isVerified = false;
+  double? balance;
+
   Timestamp? endDatePay;
   String? subscriptionId;
   Map<String, dynamic>? subscription;
@@ -75,6 +80,9 @@ class Brand {
     this.gracePeriod,
     this.maxCanWeek,
     this.paymentTerms,
+    this.stripeAccountId,
+    this.isVerified = false,
+    this.balance,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -175,6 +183,18 @@ class Brand {
         .containsKey('paymentTerms')) {
       paymentTerms = documentSnapshot.get("paymentTerms");
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('stripeAccountId')) {
+      stripeAccountId = documentSnapshot.get("stripeAccountId").toString();
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isVerified')) {
+      isVerified = documentSnapshot.get("isVerified");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('balance')) {
+      balance = documentSnapshot.get("balance");
+    }
   }
 
   Brand.fromObjectOnlyCoverData(
@@ -194,6 +214,14 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('paymentTerms')) {
       paymentTerms = documentSnapshot.get("paymentTerms");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('stripeAccountId')) {
+      stripeAccountId = documentSnapshot.get("stripeAccountId");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isVerified')) {
+      isVerified = documentSnapshot.get("isVerified");
     }
   }
 
@@ -229,6 +257,9 @@ class Brand {
     gracePeriod = brand.gracePeriod;
     maxCanWeek = brand.maxCanWeek;
     paymentTerms = brand.paymentTerms;
+    isVerified = brand.isVerified;
+    stripeAccountId = brand.stripeAccountId;
+    balance = brand.balance;
   }
 
   // Requests

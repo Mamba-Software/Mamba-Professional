@@ -727,10 +727,21 @@ class PurchaseFirebaseCalls {
 
   // Delete Data
 
-  Future<void> detelePurchase(
-      String purchaseId, String userId, String brandId) async {
+  Future<void> detelePurchase(String purchaseId, String userId, String brandId,
+      String? purchaseGroupId) async {
     await deleteEventsFromUserPurchase(purchaseId, userId, brandId);
     await _firestore.collection(purchases).doc(purchaseId).delete();
+    if (purchaseGroupId != null &&
+        purchaseGroupId != '' &&
+        purchaseGroupId != purchaseId) {
+      var result = await getRecurrentPurchaseGroup(purchaseGroupId);
+      result.removeWhere((item) => item == purchaseId);
+      await _firestore.collection(purchases).doc(purchaseGroupId).update({
+        "groupPurchases": result,
+      }).catchError((err) {
+        print(err);
+      });
+    }
     /*
     Ho fa CF.
     // Delete the Purchase Collection

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "mamba-fitness-dev",
+  "private_key_id": "750fb79b59b29de6d0c47047750cd737599eb9c1",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC7Fpl+aDTT86WS\n+1pCfktmGh4asmoUXgPxalWGkBbvtr9bEdd4RvNpRWGx8LnnEWCpsASnrAdLxW7+\nu3wuMnlwCqSAnoTWplnMIZIfZ30TtqH5GfsHEH0QruOdQARlSG3aHXkoYvY+W2NI\neyjsLvHGhvQpIyfWd0/6tJNja4JUKZ+uqs6hA35Fois7q2zdf3c2khlv4T+JhAL5\nDuPBBeTwpjyss4InR5zRlb3kLY563Nz50yW2UAfNUmjGQmfbdEAQd/Vlk2lNbINw\nlglniybJmkaT6y8kBenpbKoThHF4vNcmrFHVyadh3GWDFTMJwY8APk07NbbVrMCI\nrBXAexfjAgMBAAECggEAVp5fgYlwkAMZ0SPDhc6gTQzhjD23ZGekzrSLFWqH3ANR\ntDHd/0dmMgKX+UD5aTR/+wBOH21D0X5+5bxbAa6Hz+p1gEEkQpcxMxQF6blJzQM9\nGa5ALWSiasN2CZuWjWgLyDTmH981n+hC3s96wmL3uJFJ4PPwYVjLNEk/hgPECv+P\n09q1z9Bzex1qUBfDxbr1858A/YbxP4efCx+LGG2exwl9KVA5u97xFZMOxKb1puNd\neuyyYd1LofZok24LR4dklzRm9B5KmaUFIJ9hClZEj4QJfnsWDR/AqxfdUANd6Njq\nkLxsTi+j14DyIBXWod0r3NLGtvImfViwQugHAXdNEQKBgQD7zq7DuGPR8rA+PGo7\njxGsJBq19IE4bhuqhgJWr3oQZOYqiE/xZpIUa2zHqnA0KORunPiN9IpGg6kxUJbY\nfOyi3xnqCzxhER/CUiOzh3eSlWMvV1ulrZ61tld28K5vuQb5d/vSw3QrNF3hHUNQ\nkUoaH3+BHZAFmEFXKp02c3Gf0QKBgQC+NA4Ie5tdEgTVbrT4eppk22gkWPcftame\nKZDvMPN/kBJuaTTUBkMpO9FS3cqLtSBSiPYJKq1BBIcdKbCMe7HtyVw0KIeurnKF\nNfKnDwE3dS3qWf0BxK7yEChTxpNji2+oeRw8lTSAFkkpEjA0Ug34jewWPdO/Djiv\n969oggO9cwKBgHRABw70oaDbmeIhoim88zu1r18xcjbLHpqrI4lBmejXrCsWo1Gf\nOPGUZrQHS6XI+yzV6yoeK3hCcGoD+qAXjGfk9+HFLirh7PeZVEId2GYj8ZZ5jiX+\n8baSZ+7RTrblhQLHEctL0OXhVzYGfH1FliBZSlQhgcwTbpb/ZXUt9tcBAoGAJMA8\nIel4SJBtvKuqbgSKhohaZAOIpGjegD/50C2+LtywowLTAVDAc1wqgv913m698xSh\nrX3AgjqUvM7MXSidZZutpCpcpSTx3clhvGPK0WNj3s9KcqgFQaJbmGxbGDXd+kiE\nazRNM56avkPUapecOXV6s4V4v4bI7z9FdkUA4f8CgYBovwBlRMbmJ9yd0H0uQBeS\nRqmc9uMcEWAjXpc9OwMd/9VoK9d9Yno9NfKrDYXs2nmwbqHRbOhjoJv/mw4qzM/D\nr+vDk0wgUkyzgKD+tFmU0sJzLb4jPTMwZ8Wvtkgbv2N7DS9tIYv94qFNM35emjDm\n+5I93AD0S8qQhz8p3jtMGA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fe7y6@mamba-fitness-dev.iam.gserviceaccount.com",
+  "client_id": "112889582548897873981",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fe7y6%40mamba-fitness-dev.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
