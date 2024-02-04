@@ -2160,9 +2160,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                         height:
                                             MediaQuery.of(context).size.width *
                                                 0.1,
-                                        color: paymentMethod == 4
-                                            ? AppColors.black
-                                            : AppColors.white,
+                                        color: AppColors.black,
                                         image: AssetImage(Constants.apple),
                                         opacity: AlwaysStoppedAnimation(
                                             paymentMethod == 4 ? 1 : 0.5),
