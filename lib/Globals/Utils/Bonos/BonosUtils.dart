@@ -252,6 +252,6 @@ class BonosUtils {
                 expirationDays;
       }
     }
-    return expirationDays + 1;
+    return expirationDays;
   }
 }
