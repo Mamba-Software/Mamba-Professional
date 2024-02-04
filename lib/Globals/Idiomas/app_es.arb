@@ -3778,5 +3778,9 @@
   "notRenovation": "Renovación desactivada",
   "@notRenovation": {
     "description": "notRenovation"
+  },
+  "cantDeletePurchase": "Para eliminar la compra origianl de una membresía, deberás eliminar sus compras relacionadas",
+  "@cantDeletePurchase": {
+    "description": "cantDeletePurchase message"
   }
 }

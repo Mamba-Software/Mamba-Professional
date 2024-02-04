@@ -1164,7 +1164,7 @@ class UserFirebaseCalls {
         .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime! - 1,
+      "expirationTime": bono.condition!.expirationTime!,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
@@ -1174,7 +1174,7 @@ class UserFirebaseCalls {
     await _firestore.collection(purchases).doc(bono.purchaseId).update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime! - 1,
+      "expirationTime": bono.condition!.expirationTime!,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
@@ -1190,7 +1190,7 @@ class UserFirebaseCalls {
         .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime! - 1,
+      "expirationTime": bono.condition!.expirationTime!,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
@@ -1206,7 +1206,7 @@ class UserFirebaseCalls {
         .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime! - 1,
+      "expirationTime": bono.condition!.expirationTime!,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
@@ -1224,7 +1224,7 @@ class UserFirebaseCalls {
         .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime! - 1,
+      "expirationTime": bono.condition!.expirationTime!,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,
@@ -1242,7 +1242,7 @@ class UserFirebaseCalls {
         .update({
       "sessions": bono.sessions,
       "price": bono.price,
-      "expirationTime": bono.condition!.expirationTime! - 1,
+      "expirationTime": bono.condition!.expirationTime!,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
       "paymentMethod": purchase.paymentMethod,

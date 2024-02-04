@@ -76,9 +76,9 @@ class PurchaseDataService {
       _firebase.updatePurchasePaymentStatus(purchaseId, isPaid);
 
   // Delete Data
-  Future<void> deletePurchase(
-          String purchaseId, String userId, String brandId) =>
-      _firebase.detelePurchase(purchaseId, userId, brandId);
+  Future<void> deletePurchase(String purchaseId, String userId, String brandId,
+          String? purchaseGroupId) =>
+      _firebase.detelePurchase(purchaseId, userId, brandId, purchaseGroupId);
   Future<void> deleteEventFromPurchase(String purchaseId, String eventId) =>
       _firebase.deleteEventFromPurchase(purchaseId, eventId);
   Future<void> deletedPurchaseUserFromEvent(Usuario user, String eventId) =>

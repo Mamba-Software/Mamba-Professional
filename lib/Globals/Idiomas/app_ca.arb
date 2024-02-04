@@ -856,5 +856,6 @@
   "exactDaysTitle": "Dies exactes",
   "exactDaysTitleDescription": "El preu de la compra es calcularà exactament pels dies de la data d'expiració o renovació",
   "autoRenovation": "Renovació automàtica",
-  "notRenovation": "Renovació desactivada"
+  "notRenovation": "Renovació desactivada",
+  "cantDeletePurchase": "Per eliminar la compra origianl d'una membresia, hauràs d'eliminar les seves compres relacionades"
 }

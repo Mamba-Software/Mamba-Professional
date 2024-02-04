@@ -119,6 +119,8 @@ class _PurchasePageState extends State<PurchasePage> {
   bool cancelTimeSessions = false;
   bool isBonoRequest = false;
   bool isPaid = true;
+  bool isOriginalPurchaseRecurrent = false;
+  bool canDeleteOriginalPurchase = false;
 
   // Page View Controller
   int _numPages = 0;
@@ -188,6 +190,12 @@ class _PurchasePageState extends State<PurchasePage> {
           var lastPurchase = purchase.groupPurchases!.last;
           if (lastPurchase == purchase.id) {
             isMainRecurrent = true;
+          }
+        }
+        if (purchase.purchaseGroupId == purchase.id) {
+          isOriginalPurchaseRecurrent = true;
+          if (purchase.groupPurchases!.length <= 1) {
+            canDeleteOriginalPurchase = true;
           }
         }
       }
@@ -823,8 +831,20 @@ class _PurchasePageState extends State<PurchasePage> {
                                   context: context,
                                   builder: (_) {
                                     return DeleteConfirmationDialog(
-                                        text: AppLocalizations.of(context)!
-                                            .deletePurchase);
+                                      permitDelete: isOriginalPurchaseRecurrent
+                                          ? canDeleteOriginalPurchase
+                                              ? null
+                                              : false
+                                          : null,
+                                      text: isOriginalPurchaseRecurrent
+                                          ? canDeleteOriginalPurchase
+                                              ? AppLocalizations.of(context)!
+                                                  .deletePurchase
+                                              : AppLocalizations.of(context)!
+                                                  .cantDeletePurchase
+                                          : AppLocalizations.of(context)!
+                                              .deletePurchase,
+                                    );
                                   });
                               if (result) {
                                 setState(() {
@@ -833,7 +853,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                 await _purchaseDataService.deletePurchase(
                                     purchase.id!,
                                     widget.user.id!,
-                                    widget.brand.id!);
+                                    widget.brand.id!,
+                                    purchase.purchaseGroupId!);
                                 mixpanel!.track('purchase_deleted');
                                 Navigator.of(context).pop();
                               }
@@ -2929,7 +2950,7 @@ class _PurchasePageState extends State<PurchasePage> {
                             }
                             if (isSelectedDays[4]) {
                               bonoSelected.condition?.expirationTime =
-                                  endDate.difference(startDate).inDays + 1;
+                                  endDate.difference(startDate).inDays;
                             }
                             setState(() {});
                           },
@@ -2999,8 +3020,31 @@ class _PurchasePageState extends State<PurchasePage> {
       }
       if (isSelectedDays[4]) {
         bonoSelected.condition?.expirationTime =
-            endDate.difference(startDate).inDays + 1;
+            endDate.difference(startDate).inDays;
       }
+      priceController.text = BonosUtils()
+          .getPurchasePrice(
+              widget.brand, bonos[_currentPage!], bonoSelected.condition!)
+          .toString();
+      purchase.price = double.parse(priceController.text);
+      bonoSelected.setBonoPrice = double.parse(priceController.text);
+      /*int days =
+          BonosUtils().getExpirationTime(widget.brand, bonoSelected.condition!);
+      priceController.text = BonosUtils()
+          .getPurchasePrice(widget.brand, widget.bono!, bonoSelected.condition!)
+          .toString();
+      purchase.price = double.parse(priceController.text);
+      isSelectedDays[0] = false;
+      isSelectedDays[1] = false;
+      isSelectedDays[2] = false;
+      isSelectedDays[3] = false;
+      isSelectedDays[4] = false;
+      if (bonoSelected.condition?.expirationTime == 0) {
+        isSelectedDays[0] = true;
+      } else {
+        isSelectedDays[4] = true;
+        endDate = startDate.add(Duration(days: days!));
+      }*/
       setState(() {});
     }
   }
