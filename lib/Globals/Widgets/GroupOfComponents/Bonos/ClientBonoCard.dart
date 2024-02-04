@@ -163,7 +163,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     if (condition.expirationTime != 0 && daysToExpire < 0) {
       isExpired = true;
       isNotActive = true;
-    } else if (daysToExpire == 0) {
+    } else if (condition.expirationTime != 0 && daysToExpire == 0) {
       hoursToExpire = diff.inHours;
     }
     // Check if Finished
@@ -562,7 +562,19 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                     TextAlign
                                                                         .left,
                                                               )
-                                                            : const Text(""),
+                                                            : Text(
+                                                                "No expira",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyLarge
+                                                                    ?.copyWith(
+                                                                        color: Colors
+                                                                            .white),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                              ),
                                                   ],
                                                 )
                                               : Row(
