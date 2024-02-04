@@ -191,7 +191,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
       timeToExpire =
           "$daysToExpire ${daysToExpire > 1 ? AppLocalizations.of(context)!.days.toLowerCase() : AppLocalizations.of(context)!.dayString.toLowerCase()}";
     }
-    if (bono.isRecurrent!) {
+    if (bono.isRecurrent! && purchase.isRecurrencyActive!) {
       return "${AppLocalizations.of(context)!.renewsAt} $timeToExpire";
     } else {
       return "${AppLocalizations.of(context)!.expiresAt} $timeToExpire";

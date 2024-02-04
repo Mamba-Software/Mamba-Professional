@@ -38,6 +38,7 @@ class Constants {
   static String imageCash = "assets/images/imageCash.png";
   static String imageTransfer = "assets/images/imageTransfer.png";
   static String imageGift = "assets/images/imageGift.png";
+  static String imageCard = "assets/images/imageCard.png";
   static String locationImage = "assets/images/locationImage.png";
   static String teamImage = "assets/images/teamImage.jpg";
   static String statisticsImage = "assets/images/statisticsImage.jpg";

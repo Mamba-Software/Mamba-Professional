@@ -170,7 +170,7 @@ class BrandPurchaseCard extends StatelessWidget {
         Flexible(
           child: Text(
             StringUtils()
-                .toCapitalized(AppLocalizations.of(context)!.desactive),
+                .toCapitalized(AppLocalizations.of(context)!.desactiveFem),
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -225,12 +225,15 @@ class BrandPurchaseCard extends StatelessWidget {
       paymentIcon = Icons.paid_outlined;
       paymentText = AppLocalizations.of(context)!.cashPaymentMethod;
     } else if (purchase!.paymentMethod! == 1) {
-      paymentIcon = Icons.payment_outlined;
+      paymentIcon = Icons.send_to_mobile_outlined;
       paymentText = AppLocalizations.of(context)!.transferPaymentMethod;
-    } else {
+    } else if (purchase!.paymentMethod! == 2) {
       paymentIcon = Icons.card_giftcard_outlined;
       paymentText = AppLocalizations.of(context)!.giftPaymentMethod;
       priceStyle = priceStyle?.copyWith(decoration: TextDecoration.lineThrough);
+    } else {
+      paymentIcon = Icons.payment_outlined;
+      paymentText = AppLocalizations.of(context)!.cardPaymentMethod;      
     }
 
     return Row(
@@ -264,8 +267,8 @@ class BrandPurchaseCard extends StatelessWidget {
         Flexible(
           child: Text(
             purchase!.isActive!
-                ? AppLocalizations.of(context)!.active
-                : AppLocalizations.of(context)!.desactive,
+                ? AppLocalizations.of(context)!.activeFem
+                : AppLocalizations.of(context)!.desactiveFem,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,

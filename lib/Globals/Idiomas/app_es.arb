@@ -2583,7 +2583,7 @@
   "@paymentMethod": {
     "description": "Donde message"
   },
-  "paymentMethodOriginal": "El método de pago indicado inicilamente es: ",
+  "paymentMethodOriginal": "El método de pago indicado inicialmente es: ",
   "@paymentMethodOriginal": {
     "description": "Donde message"
   },
@@ -2591,20 +2591,44 @@
   "@paymentMethodEdit": {
     "description": "Donde message"
   },
+  "paymentMethodNoEdit": "No puedes editar el método de pago ya que es un pago directo desde la plataforma.",
+  "@paymentMethodEdit": {
+    "description": "Donde message"
+  },
   "paymentMethodConfirm": "Confirma el método de pago por favor.",
   "@paymentMethodConfirm": {
+    "description": "Donde message"
+  },
+  "inmediatePaymentMethod": "Pagos inmediatos",
+  "@inmediatePaymentMethod": {
+    "description": "Donde message"
+  },
+  "intermediatePaymentMethod": "Pagos verificables",
+  "@intermediatePaymentMethod": {
     "description": "Donde message"
   },
   "cashPaymentMethod": "Efectivo",
   "@cashPaymentMethod": {
     "description": "Donde message"
   },
-  "transferPaymentMethod": "Transferencia",
+  "transferPaymentMethod": "Bizum",
   "@transferPaymentMethod": {
     "description": "Donde message"
   },
   "giftPaymentMethod": "Regalo",
   "@giftPaymentMethod": {
+    "description": "Donde message"
+  },
+  "cardPaymentMethod": "Targeta",
+  "@inAppPaymentMethod": {
+    "description": "Donde message"
+  },
+  "applePayPaymentMethod": "Apple Pay",
+  "@inAppPaymentMethod": {
+    "description": "Donde message"
+  },
+  "googlePayPaymentMethod": "Google Pay",
+  "@inAppPaymentMethod": {
     "description": "Donde message"
   },
   "uniquePayment": "Pago único",
@@ -2641,6 +2665,14 @@
   },
   "toConfirmDesc": "El cliente solicitó la tarifa, pero está a la espera de confirmación por parte del profesional. Sin respuesta, no hay acceso a la tarifa.",
   "@toConfirmDesc": {
+    "description": "ilimitadas message"
+  },
+  "automaticRenewalDesc": "Con la renovación automática activada, la tarifa se renovará automáticamente, generando una nueva compra con el método de pago establecido.",
+  "@automaticRenewalDesc": {
+    "description": "ilimitadas message"
+  },
+  "seeAutomaticRenewalPurchases": "Ver todas las compras relacionadas con esta membresía.",
+  "@seeAutomaticRenewalPurchases": {
     "description": "ilimitadas message"
   },
   "numberSessions": "Nº sesiones",
@@ -3704,6 +3736,10 @@
   },
   "betaFeature": "Función en fase Beta. Comparte tu experiencia para ayudarnos a perfeccionarla.",
   "@betaFeature":{
+    "description": "processOnWork text"
+  },
+  "soonFeature": "Función en última fase de desarrollo. Está a punto de estar disponible.",
+  "@soonFeature":{
     "description": "processOnWork text"
   },
   "bonoSimple": "Bono",

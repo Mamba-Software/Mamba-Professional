@@ -38,7 +38,9 @@ class UserPurchaseCard extends StatelessWidget {
       },
       child: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.03),
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.04,
+            vertical: MediaQuery.of(context).size.width * 0.03),
         child: Row(
           children: [
             BonoCard(
@@ -47,9 +49,10 @@ class UserPurchaseCard extends StatelessWidget {
                 bono: bono,
                 brand: brand,
                 canExpand: false,
-                onlyView: true
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.04), // adjust this value as needed
+                onlyView: true),
+            SizedBox(
+                width: MediaQuery.of(context).size.width *
+                    0.04), // adjust this value as needed
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -62,7 +65,10 @@ class UserPurchaseCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           bono.title!.toUpperCase(),
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -73,6 +79,7 @@ class UserPurchaseCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
                   /// USER
                   Row(
                     children: [
@@ -95,9 +102,13 @@ class UserPurchaseCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
                   /// DETAILS
-                  bonoRequest != null ? buildBonoRequestDetails(context) : buildPurchaseDetails(context),
+                  bonoRequest != null
+                      ? buildBonoRequestDetails(context)
+                      : buildPurchaseDetails(context),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
                   /// DATE
                   buildDateDetails(context),
                 ],
@@ -155,7 +166,8 @@ class UserPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            StringUtils().toCapitalized(AppLocalizations.of(context)!.desactive),
+            StringUtils()
+                .toCapitalized(AppLocalizations.of(context)!.desactiveFem),
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -193,7 +205,6 @@ class UserPurchaseCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
-
       ],
     );
   }
@@ -207,12 +218,15 @@ class UserPurchaseCard extends StatelessWidget {
       paymentIcon = Icons.paid_outlined;
       paymentText = AppLocalizations.of(context)!.cashPaymentMethod;
     } else if (purchase!.paymentMethod! == 1) {
-      paymentIcon = Icons.payment_outlined;
+      paymentIcon = Icons.send_to_mobile_outlined;
       paymentText = AppLocalizations.of(context)!.transferPaymentMethod;
-    } else {
+    } else if (purchase!.paymentMethod! == 2) {
       paymentIcon = Icons.card_giftcard_outlined;
       paymentText = AppLocalizations.of(context)!.giftPaymentMethod;
       priceStyle = priceStyle?.copyWith(decoration: TextDecoration.lineThrough);
+    } else {
+      paymentIcon = Icons.payment_outlined;
+      paymentText = AppLocalizations.of(context)!.cardPaymentMethod;
     }
 
     return Row(
@@ -245,7 +259,9 @@ class UserPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            purchase!.isActive! ? AppLocalizations.of(context)!.active : AppLocalizations.of(context)!.desactive,
+            purchase!.isActive!
+                ? AppLocalizations.of(context)!.activeFem
+                : AppLocalizations.of(context)!.desactiveFem,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -283,7 +299,6 @@ class UserPurchaseCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
-
       ],
     );
   }
@@ -294,8 +309,12 @@ class UserPurchaseCard extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(bonoRequest!.timeRequested!.toDate()).toUpperCase(),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
+              DateFormat("E dd MMMM yy, HH:mm",
+                      Localizations.localeOf(context).languageCode)
+                  .format(bonoRequest!.timeRequested!.toDate())
+                  .toUpperCase(),
+              style:
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -308,8 +327,12 @@ class UserPurchaseCard extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase!.purchasedAt!.toDate()).toUpperCase(),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
+              DateFormat("E dd MMMM yy, HH:mm",
+                      Localizations.localeOf(context).languageCode)
+                  .format(purchase!.purchasedAt!.toDate())
+                  .toUpperCase(),
+              style:
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -334,7 +357,10 @@ class UserPurchaseCard extends StatelessWidget {
           SizedBox(width: MediaQuery.of(context).size.width * 0.01),
           Text(
             AppLocalizations.of(context)!.toConfirm,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
             textAlign: TextAlign.right,
           ),
         ],
@@ -352,7 +378,10 @@ class UserPurchaseCard extends StatelessWidget {
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Text(
               AppLocalizations.of(context)!.unverfied,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
               textAlign: TextAlign.right,
             ),
           ],
@@ -376,7 +405,6 @@ class UserPurchaseCard extends StatelessWidget {
         );
       }
     }
-
   }
 
   void onTapPurchase(BuildContext context) async {
@@ -384,17 +412,16 @@ class UserPurchaseCard extends StatelessWidget {
       await navigateToPayWall(context);
     } else {
       await Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => PurchasePage(
-            bono: bono,
-            user: user,
-            brand: brand,
-            bonoRequest: bonoRequest,
-            purchase: purchase,
-          ),
-        )
-      );
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) => PurchasePage(
+              bono: bono,
+              user: user,
+              brand: brand,
+              bonoRequest: bonoRequest,
+              purchase: purchase,
+            ),
+          ));
     }
   }
 }
