@@ -610,7 +610,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
       isLoading = true;
     });
     // Delete Event Call
-    await _purchaseDataService.deletePurchase(purchaseId, userId, brandId);
+    await _purchaseDataService.deletePurchase(purchaseId, userId, brandId, null);
     mixpanel!.track('delete_purchase_completed');
     // Pop to Last Page
   }
