@@ -2145,6 +2145,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                 width: MediaQuery.of(context).size.width * 0.37,
                 child: isBeforeEdit
                     ? FloatingActionButton.extended(
+                  shape: const StadiumBorder(),(
                         heroTag: "9",
                         onPressed: () async {
                           // Create Dynamic Link
@@ -2186,6 +2187,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.25,
                 child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),(
                   heroTag: "10",
                   onPressed: () async {
                     if (!brandIsActive) {

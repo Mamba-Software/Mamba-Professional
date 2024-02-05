@@ -130,6 +130,7 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
               children: [
                 FloatingActionButton.extended(
                   heroTag: "43",
+                  shape: const StadiumBorder(),
                   onPressed: () {
                     Navigator.pop(context, pickedDate);
                   },

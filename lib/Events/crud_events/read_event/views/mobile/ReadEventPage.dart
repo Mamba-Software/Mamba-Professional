@@ -2675,6 +2675,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                 child: isBeforeEdit
                     ? FloatingActionButton.extended(
                         heroTag: "9",
+                        shape: const StadiumBorder(),
                         onPressed: () async {
                           // Create Dynamic Link
                           Uri eventLink =
@@ -2714,6 +2715,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                 width: MediaQuery.of(context).size.width * 0.25,
                 child: FloatingActionButton.extended(
                   heroTag: "10",
+                  shape: const StadiumBorder(),
                   onPressed: () async {
                     if (context.read<CrudEventCubit>().state.isWorking >= 100) {
                       context.read<CrudEventCubit>().populateNewEvent(event);

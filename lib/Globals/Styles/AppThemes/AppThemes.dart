@@ -5,7 +5,6 @@ import 'package:mamba_castelldefels/Globals/Styles/WidgetStyles/Text/TextStyles.
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
 class AppThemes {
-
   ThemeData returnResponsiveLightTheme(double screenHeight) {
     TextStyles textStyles = TextStyles(screenHeight);
     return ThemeData(
@@ -26,24 +25,31 @@ class AppThemes {
         // Body Texts for Descriptions
         bodyLarge: textStyles.blackBodyText1Style(),
         bodyMedium: textStyles.blackBodyText2Style(),
-        bodySmall: textStyles.greyBodyTextStyle()
+        bodySmall: textStyles.greyBodyTextStyle(),
       ),
       appBarTheme: AppBarTheme(
         elevation: 4.0,
+        foregroundColor: Colors.red,
         backgroundColor: AppColors.lightGrey,
-        iconTheme: const IconThemeData(
-            color: Colors.black
-        ),
+        iconTheme: const IconThemeData(color: Colors.black),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         titleTextStyle: textStyles.blackHeadline2TextStyle(),
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        shape: RoundedRectangleBorder(), // Customize shape
+        backgroundColor: AppColors.mainColor, // Customize color
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         elevation: 40,
         type: BottomNavigationBarType.fixed,
-        backgroundColor:  AppColors.white,
+        backgroundColor: AppColors.white,
         showUnselectedLabels: false,
         showSelectedLabels: true,
-      ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.mainColor, brightness: Brightness.light).copyWith(background: AppColors.white),
+      ),
+      colorScheme: ColorScheme.fromSwatch()
+          .copyWith(
+              secondary: AppColors.mainColor, brightness: Brightness.light)
+          .copyWith(background: AppColors.white),
     );
   }
 
@@ -58,21 +64,20 @@ class AppThemes {
       brightness: Brightness.dark,
       // Texts
       textTheme: TextTheme(
-        // Headlines for Titles
-        displayLarge: textStyles.whiteHeadline1TextStyle(),
-        displayMedium: textStyles.blackHeadline1TextStyle(),
-        // Headline 2 For Subtitles
-        displaySmall: textStyles.whiteHeadline2TextStyle(),
-        // Body Texts for Descriptions
-        bodyLarge: textStyles.whiteBodyText1Style(),
-        bodyMedium: textStyles.whiteBodyText2Style(),
-        bodySmall: textStyles.greyBodyTextStyle()
-      ),
+          // Headlines for Titles
+          displayLarge: textStyles.whiteHeadline1TextStyle(),
+          displayMedium: textStyles.blackHeadline1TextStyle(),
+          // Headline 2 For Subtitles
+          displaySmall: textStyles.whiteHeadline2TextStyle(),
+          // Body Texts for Descriptions
+          bodyLarge: textStyles.whiteBodyText1Style(),
+          bodyMedium: textStyles.whiteBodyText2Style(),
+          bodySmall: textStyles.greyBodyTextStyle()),
       appBarTheme: AppBarTheme(
         elevation: 4.0,
         backgroundColor: AppColors.darkerGrey,
         iconTheme: const IconThemeData(
-            color: AppColors.white,
+          color: AppColors.white,
         ),
         titleTextStyle: textStyles.whiteHeadline2TextStyle(),
         systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -83,8 +88,10 @@ class AppThemes {
         backgroundColor: AppColors.darkerGrey,
         showUnselectedLabels: false,
         showSelectedLabels: true,
-      ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.mainColor, brightness: Brightness.dark).copyWith(background: AppColors.darkGrey),
+      ),
+      colorScheme: ColorScheme.fromSwatch()
+          .copyWith(secondary: AppColors.mainColor, brightness: Brightness.dark)
+          .copyWith(background: AppColors.darkGrey),
     );
   }
-
 }

@@ -96,6 +96,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                         heroTag: "32",
                         label: Text(AppLocalizations.of(context)!.delete, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),),
                         icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06,),
@@ -106,6 +107,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                         } : null,
                       ),
                       FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                         heroTag: "33",
                         icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,),
                         label: Text(AppLocalizations.of(context)!.cancel, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark),),

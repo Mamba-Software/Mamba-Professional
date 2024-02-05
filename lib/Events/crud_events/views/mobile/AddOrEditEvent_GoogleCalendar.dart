@@ -126,7 +126,8 @@ class AddOrEditEvent extends StatelessWidget {
               child: SizedBox(
                 height: 50,
                 child: FloatingActionButton.extended(
-                  heroTag: "48",
+                  shape: const StadiumBorder(),
+                  heroTag: "48",                  
                   onPressed: () async {
                     if (state.isValidated.every((bool value) => value)) {
                       if (state.isNew) {

@@ -891,6 +891,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
             child: SizedBox(
               height: 50,
               child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                 heroTag: "97",
                 onPressed: () {
                   _tabController!.animateTo(_selectedIndex -= 1);
@@ -919,6 +920,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
             child: SizedBox(
               height: 50,
               child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                 heroTag: "98",
                 onPressed: () async {
                   if (_selectedIndex == 0) {

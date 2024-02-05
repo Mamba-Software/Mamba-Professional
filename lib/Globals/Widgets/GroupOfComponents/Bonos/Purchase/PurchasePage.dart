@@ -1131,7 +1131,7 @@ class _PurchasePageState extends State<PurchasePage> {
                         ],
                       ),
                     ),
-                  ),                  
+                  ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
 
                   /*
@@ -2366,6 +2366,7 @@ class _PurchasePageState extends State<PurchasePage> {
           vertical: MediaQuery.of(context).size.width * 0.03,
           horizontal: MediaQuery.of(context).size.width * 0.01),
       child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
         heroTag: "10",
         onPressed: isLoading
             ? null
@@ -3450,10 +3451,9 @@ class _PurchasePageState extends State<PurchasePage> {
     });
   }
 
-  Widget membresiaWidget() {    
+  Widget membresiaWidget() {
     return Column(
       children: [
-        
         isMainRecurrent
             ? Column(
                 children: [
@@ -3587,7 +3587,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                           setState(() {
                                             purchase.isRecurrencyActive = true;
                                           });
-                                          print(purchase.isRecurrencyActive); 
+                                          print(purchase.isRecurrencyActive);
                                         },
                                         trackColor:
                                             AppColors.red.withOpacity(0.4),
@@ -3617,8 +3617,8 @@ class _PurchasePageState extends State<PurchasePage> {
                                     ?.copyWith(fontSize: 12),
                                 children: [
                                   TextSpan(
-                                    text: "${AppLocalizations.of(context)!
-                                        .automaticRenewalDesc} ",
+                                    text:
+                                        "${AppLocalizations.of(context)!.automaticRenewalDesc} ",
                                   ),
                                   TextSpan(
                                       text: AppLocalizations.of(context)!

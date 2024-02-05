@@ -458,6 +458,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           child: SizedBox(
                             height: 50,
                             child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                               heroTag: "4",
                               onPressed: () {
                                 if (_selectedIndex == 1) {
@@ -538,6 +539,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     child: SizedBox(
                       height: 50,
                       child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                         heroTag: "5",
                         onPressed: () {
                           if (_selectedIndex == 0) {

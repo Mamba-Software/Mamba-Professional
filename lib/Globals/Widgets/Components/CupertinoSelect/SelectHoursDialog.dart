@@ -89,6 +89,7 @@ class _SelectHoursDialogState extends State<SelectHoursDialog> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                   heroTag: "42",
                   onPressed: () {
                     Navigator.pop(context, pickedDays);

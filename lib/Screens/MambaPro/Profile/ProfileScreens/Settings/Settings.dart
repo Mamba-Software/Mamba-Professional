@@ -777,6 +777,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                         heroTag: "39",
                         label: !isLoading
                             ? Text(
@@ -879,6 +880,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             : null,                        
                       ),
                       FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                         heroTag: "40",
                         icon: Icon(
                           Icons.cancel_outlined,

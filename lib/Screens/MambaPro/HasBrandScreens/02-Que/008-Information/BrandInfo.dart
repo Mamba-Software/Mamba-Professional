@@ -2220,6 +2220,7 @@ class _BrandInfoState extends State<BrandInfo>
           ? Padding(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
               child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                 heroTag: "81",
                 onPressed: () async {
                   if (validateInfo()) {

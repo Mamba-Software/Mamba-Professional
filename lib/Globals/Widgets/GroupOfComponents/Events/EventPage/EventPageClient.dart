@@ -1785,6 +1785,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
                           child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                             heroTag: "1",
                             onPressed: () async {
                               var result = await showDialog(
@@ -1832,6 +1833,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
                           child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                             heroTag: "2",
                             onPressed: () async {
                               var result = await showDialog(
@@ -1884,6 +1886,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
                         child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                           heroTag: "6",
                           onPressed: () async {
                             var result = await showDialog(
@@ -1939,6 +1942,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
                         child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                           heroTag: "51",
                           onPressed: () async {
                             var result = await showDialog(

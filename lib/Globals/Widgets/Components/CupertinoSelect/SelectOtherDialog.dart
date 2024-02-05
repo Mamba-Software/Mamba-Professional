@@ -89,6 +89,7 @@ class _SelectOtherDialogState extends State<SelectOtherDialog> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                   heroTag: "42",
                   onPressed: () {
                     Navigator.pop(context, pickedDays);
