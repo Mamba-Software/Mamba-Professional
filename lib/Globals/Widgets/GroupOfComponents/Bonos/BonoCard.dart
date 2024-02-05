@@ -67,7 +67,7 @@ class BonoCardState extends State<BonoCard> {
 
   // Booleans
   bool isExpanded = false;
-  double isExpandedHeight = 2.8;
+  double isExpandedHeight = 3;
 
   @override
   void initState() {
@@ -103,9 +103,9 @@ class BonoCardState extends State<BonoCard> {
       cnt += 1;
     }
     // Apliquem el Expanded Height
-    if (cnt == 1) isExpandedHeight = isExpandedHeight + 0.55;
-    if (cnt == 2) isExpandedHeight = isExpandedHeight + 0.8;
-    if (cnt == 3) isExpandedHeight = isExpandedHeight + 1;
+    if (cnt == 1) isExpandedHeight = isExpandedHeight + 0.6;
+    if (cnt == 2) isExpandedHeight = isExpandedHeight + 0.85;
+    if (cnt == 3) isExpandedHeight = isExpandedHeight + 1.15;
   }
 
   @override
@@ -121,7 +121,7 @@ class BonoCardState extends State<BonoCard> {
     );
 
      */
-    isExpandedHeight = 2.8;
+    isExpandedHeight = 3;
     calculateExpandedHeight();
   }
 
@@ -403,7 +403,7 @@ class BonoCardState extends State<BonoCard> {
                                                       ? SizedBox(
                                                           height:
                                                               widget.height *
-                                                                  0.15,
+                                                                  0.14,
                                                           width: widget.width *
                                                               0.2,
                                                           child: FittedBox(
@@ -451,7 +451,7 @@ class BonoCardState extends State<BonoCard> {
                                                       : SizedBox(
                                                           height:
                                                               widget.height *
-                                                                  0.13,
+                                                                  0.14,
                                                           width: widget.width *
                                                               0.2,
                                                           child: FittedBox(
@@ -1306,17 +1306,18 @@ class BonoCardState extends State<BonoCard> {
                 ListTile(
                   title: Text(AppLocalizations.of(context)!.choseOption,
                       style: Theme.of(context).textTheme.bodySmall,
-                      textAlign: TextAlign.left),
+                      textAlign: TextAlign.left,
+                      maxLines: 1,),
                   trailing: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.5,
+                    width: MediaQuery.of(context).size.width * 0.4,
                     child: Text(
-                      widget.bono.title!.toUpperCase(),
+                      widget.bono.title!.toUpperCase()+widget.bono.title!.toUpperCase(),
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.bold),
                       softWrap: false,
-                      overflow: TextOverflow.fade,
+                      overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.right,
                     ),
                   ),

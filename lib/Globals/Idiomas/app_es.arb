@@ -3504,7 +3504,7 @@
   "@shareInvitationText": {
     "description": "shareInvitationText message"
   },
-  "freeTrialDaysLeft":  "Te quedan {daysLeft} días para escoger tu plan",
+  "freeTrialDaysLeft":  "Quedan {daysLeft} días para escoger tu plan",
   "@freeTrialDaysLeft": {
     "description": "freeTrialDaysLeft message",
     "placeholders": {
