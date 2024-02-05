@@ -2167,10 +2167,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       child: Container(
                                         padding: EdgeInsets.all(
                                             MediaQuery.of(context).size.width *
-                                                0.0115),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.2,
+                                                0.0115),                                        
                                         decoration: BoxDecoration(
                                           color: Theme.of(context)
                                               .colorScheme
