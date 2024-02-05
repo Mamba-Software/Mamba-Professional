@@ -728,6 +728,8 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
+                          surfaceTintColor: MaterialStateProperty.all(
+                              Theme.of(context).colorScheme.background),
                           backgroundColor: MaterialStateProperty.all(
                               Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
@@ -773,6 +775,8 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
+                          surfaceTintColor: MaterialStateProperty.all(
+                              Theme.of(context).colorScheme.background),
                           backgroundColor: MaterialStateProperty.all(
                               Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
@@ -849,6 +853,8 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                         },
                         style: ButtonStyle(
                             elevation: MaterialStateProperty.all(4),
+                            surfaceTintColor: MaterialStateProperty.all(
+                              Theme.of(context).primaryColor),
                             backgroundColor: MaterialStateProperty.all(
                                 Theme.of(context).primaryColor),
                             animationDuration:
@@ -897,6 +903,8 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                         },
                         style: ButtonStyle(
                             elevation: MaterialStateProperty.all(4),
+                            surfaceTintColor: MaterialStateProperty.all(
+                              Theme.of(context).primaryColor),
                             backgroundColor: MaterialStateProperty.all(
                                 Theme.of(context).primaryColor),
                             animationDuration:

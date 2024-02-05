@@ -178,7 +178,7 @@ class BonoCardState extends State<BonoCard> {
                     ),
                     image: bono.imageUrl != null && bono.imageUrl != ''
                         ? DecorationImage(
-                            opacity: 225,
+                            scale: 1.5,
                             image: NetworkImage(bono.imageUrl!),
                             fit: BoxFit.cover,
                           )

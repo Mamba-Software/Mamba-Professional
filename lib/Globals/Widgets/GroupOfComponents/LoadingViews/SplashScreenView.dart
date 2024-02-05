@@ -58,6 +58,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
         appBar: AppBar(
           toolbarHeight: 0,
           backgroundColor: AppColors.black,
+          surfaceTintColor: AppColors.black,
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
         backgroundColor: AppColors.black,

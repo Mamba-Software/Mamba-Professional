@@ -565,6 +565,7 @@ class _ProfileState extends State<Profile> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
+                          surfaceTintColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
                           backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
@@ -601,6 +602,7 @@ class _ProfileState extends State<Profile> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
+                          surfaceTintColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
                           backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
@@ -668,6 +670,7 @@ class _ProfileState extends State<Profile> {
                         },
                         style: ButtonStyle(
                             elevation: MaterialStateProperty.all(4),
+                            surfaceTintColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                             backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                             animationDuration: const Duration(milliseconds: 100),
                             overlayColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background.withOpacity(0.2)),
@@ -704,6 +707,7 @@ class _ProfileState extends State<Profile> {
                         },
                         style: ButtonStyle(
                             elevation: MaterialStateProperty.all(4),
+                            surfaceTintColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                             backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                             animationDuration: const Duration(milliseconds: 100),
                             overlayColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background.withOpacity(0.2)),

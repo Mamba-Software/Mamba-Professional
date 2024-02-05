@@ -167,6 +167,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                     Colors.black.withOpacity(0.5)),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
+                                    surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
@@ -198,6 +200,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
                                 backgroundColor:
+                                    MaterialStateProperty.all(Colors.black),
+                                surfaceTintColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shadowColor: MaterialStateProperty.all(
                                     Colors.black.withOpacity(0.5)),
@@ -233,6 +237,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
@@ -264,6 +270,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
@@ -296,6 +304,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
@@ -328,6 +338,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
@@ -378,6 +390,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
@@ -415,6 +429,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
@@ -452,6 +468,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
@@ -488,6 +506,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
@@ -526,6 +546,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
@@ -562,6 +584,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
@@ -593,6 +617,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
+                                surfaceTintColor:
+                                    MaterialStateProperty.all(Colors.black),
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.black),
                                 shape: MaterialStateProperty.all<
