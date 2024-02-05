@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onBonosDeleteForStripe = exports.onBonosUpdatedForStripe = exports.onBonosCreateForStripe = exports.webhookListenerConnect = exports.webhookListenerAccount = exports.stripeApi = void 0;
+exports.onBonosDeleteForStripeProd = exports.onBonosUpdatedForStripeProd = exports.onBonosCreateForStripeProd = exports.webhookListenerConnect = exports.webhookListenerAccount = exports.stripeApi = void 0;
 const serviceAccount = require('../service_key.json');
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");

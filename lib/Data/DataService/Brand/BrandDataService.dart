@@ -62,12 +62,20 @@ class BrandDataService {
   Future<Subscription> getBrandSubscription(
           String brandId, String subscriptionId) =>
       _firebase.getBrandSubscription(brandId, subscriptionId);
+  Future<String?> getBrandStripeAccount(String brandId) =>
+      _firebase.getBrandStripeAccount(brandId);
 
   // Add Data
-  Future<String> addBrand(String name, File image, String description,
-          List<double> workShift, int maxMembers, int bookingWindow, int minBookingWindow) =>
-      _firebase.addBrand(
-          name, image, description, workShift, maxMembers, bookingWindow, minBookingWindow);
+  Future<String> addBrand(
+          String name,
+          File image,
+          String description,
+          List<double> workShift,
+          int maxMembers,
+          int bookingWindow,
+          int minBookingWindow) =>
+      _firebase.addBrand(name, image, description, workShift, maxMembers,
+          bookingWindow, minBookingWindow);
   Future<void> addUserToBrand(String userId, String brandId, int role,
           [bool invitedDirectly = false]) =>
       _firebase.addUserToBrand(userId, brandId, role, invitedDirectly);
