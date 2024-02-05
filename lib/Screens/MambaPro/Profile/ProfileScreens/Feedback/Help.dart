@@ -2,15 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'ReportBug.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 // Feedback Widget.
 // Here the Users will give us Weekly Feedback.
@@ -72,6 +68,7 @@ class _FeedBackState extends State<FeedBack> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          elevation: 0,
           title: Text(
             AppLocalizations.of(context)!.help,
             style: Theme.of(context).appBarTheme.titleTextStyle,
@@ -93,8 +90,7 @@ class _FeedBackState extends State<FeedBack> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: [
-              const Divider(color: AppColors.grey, height: 1),
+            children: [              
               ListTile(
                 onTap: () async {
                   mixpanel!.track('user_help_email');

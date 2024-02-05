@@ -292,7 +292,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
         fit: BoxFit.contain,
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 4),
-          child: isFull != false
+          child: isFull == false
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

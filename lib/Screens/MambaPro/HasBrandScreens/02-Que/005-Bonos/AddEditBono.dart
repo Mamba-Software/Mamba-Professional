@@ -1582,9 +1582,7 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget daysSelectoWidget(int index, String numberDays, bool editable,
       bool notShow, bool isRecurrent) {
     return Container(
-      height: isRecurrent && numberDays == "0" && isSelectedDays[0]
-          ? MediaQuery.of(context).size.height * 0.065
-          : MediaQuery.of(context).size.height * 0.05,
+      height: MediaQuery.of(context).size.height * 0.065,
       width: MediaQuery.of(context).size.width * 0.9,
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(

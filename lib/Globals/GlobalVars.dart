@@ -176,9 +176,8 @@ Future<void> navigateToChatScreen(BuildContext context) async {
   void navigateToMainFeedbackScreen(BuildContext context) {
     Navigator.push(
         context,
-        PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: const FeedBack(),
-        )
+        CupertinoPageRoute<void>(
+        builder: (context) => const FeedBack(),
+      )
     );
   }

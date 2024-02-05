@@ -12,7 +12,7 @@ class AppThemes {
       primaryColor: AppColors.black,
       primaryColorDark: AppColors.white,
       primaryColorLight: Colors.grey,
-      scaffoldBackgroundColor: AppColors.lightGrey,      
+      scaffoldBackgroundColor: AppColors.lightGrey,
       // Brightness
       brightness: Brightness.light,
       // Texts
@@ -50,6 +50,14 @@ class AppThemes {
           secondary: AppColors.mainColor,
           brightness: Brightness.light,
           background: AppColors.white),
+      // Define the global theme for your app
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.lightGrey,
+        surfaceTintColor: AppColors.lightGrey,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),        
+      ),
     );
   }
 
@@ -64,15 +72,16 @@ class AppThemes {
       brightness: Brightness.dark,
       // Texts
       textTheme: TextTheme(
-          // Headlines for Titles
-          displayLarge: textStyles.whiteHeadline1TextStyle(),
-          displayMedium: textStyles.blackHeadline1TextStyle(),
-          // Headline 2 For Subtitles
-          displaySmall: textStyles.whiteHeadline2TextStyle(),
-          // Body Texts for Descriptions
-          bodyLarge: textStyles.whiteBodyText1Style(),
-          bodyMedium: textStyles.whiteBodyText2Style(),
-          bodySmall: textStyles.greyBodyTextStyle()),
+        // Headlines for Titles
+        displayLarge: textStyles.whiteHeadline1TextStyle(),
+        displayMedium: textStyles.blackHeadline1TextStyle(),
+        // Headline 2 For Subtitles
+        displaySmall: textStyles.whiteHeadline2TextStyle(),
+        // Body Texts for Descriptions
+        bodyLarge: textStyles.whiteBodyText1Style(),
+        bodyMedium: textStyles.whiteBodyText2Style(),
+        bodySmall: textStyles.greyBodyTextStyle(),
+      ),
       appBarTheme: AppBarTheme(
         elevation: 4.0,
         surfaceTintColor: AppColors.darkerGrey,
@@ -89,10 +98,17 @@ class AppThemes {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,
-        type: BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.fixed,        
         backgroundColor: AppColors.darkerGrey,
         showUnselectedLabels: false,
         showSelectedLabels: true,
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: AppColors.darkerGrey,
+        surfaceTintColor: AppColors.darkerGrey,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),        
       ),
       colorScheme: ColorScheme.fromSwatch()
           .copyWith(secondary: AppColors.mainColor, brightness: Brightness.dark)

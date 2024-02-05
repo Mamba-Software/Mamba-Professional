@@ -804,7 +804,14 @@ class _BrandScreenState extends State<BrandScreen> {
     return Scaffold(
       key: mambaProScaffoldKey,
       drawer: Drawer(
+        surfaceTintColor: Theme.of(context).primaryColorDark,
         backgroundColor: Theme.of(context).primaryColorDark,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(0.0),
+            bottomRight: Radius.circular(0.0),
+          ),
+        ),
         child: Column(
           children: [
             // Header

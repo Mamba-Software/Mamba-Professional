@@ -792,7 +792,7 @@
   "reportUserFor":  "Vull reportar a l'usuari per: \n",
   "shareInvitation":  "Compartir invitació",
   "shareInvitationText":  "Invita clients a la teva marca",
-  "freeTrialDaysLeft":  "Et queden {daysLeft} dies per escollir el teu pla",
+  "freeTrialDaysLeft":  "Queden {daysLeft} dies per escollir el teu pla",
   "freeTrial":  "Prova Gratuïta",
   "monthlyPlan":  "Pla Mensual",
   "monthlyPlanDayRenewal":  "Es renova el dia {daysLeft}",

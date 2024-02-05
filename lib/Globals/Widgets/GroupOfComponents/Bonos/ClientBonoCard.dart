@@ -65,7 +65,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
   final _lColor = lColor();
   // Booleans
   bool isExpanded = false;
-  double isExpandedHeight = 2.8;
+  double isExpandedHeight = 3;
   // Client Current Bono Stats
   bool isNotActive = false;
   bool isFinished = false;
@@ -209,7 +209,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
       cancelTime: widget.bono.condition!.cancelTime,
       weeklySessions: widget.bono.condition!.weeklySessions,
     );
-    isExpandedHeight = 2.8;
+    isExpandedHeight = 3;
     if (widget.isExpanded != null && widget.isExpanded!) {
       isExpanded = true;
     } else {
@@ -426,7 +426,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                               isExpanded == false || widget.canExpand == false
                                   ? isNotActive == false
                                       ? SizedBox(
-                                          height: widget.height * 0.13,
+                                          height: widget.height * 0.14,
                                           width: widget.width * 0.2,
                                           child: FittedBox(
                                             fit: BoxFit.contain,
@@ -620,7 +620,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                     ),
                                                     SizedBox(
                                                       height:
-                                                          widget.height * 0.13,
+                                                          widget.height * 0.14,
                                                       width: widget.width * 0.2,
                                                       child: FittedBox(
                                                         fit: BoxFit.contain,
