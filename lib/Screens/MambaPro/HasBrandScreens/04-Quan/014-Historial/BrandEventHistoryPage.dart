@@ -17,20 +17,26 @@ class BrandEventHistoryPage extends StatefulWidget {
   String brandId;
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
-  BrandEventHistoryPage({super.key, required this.brandId, required this.pinned, required this.pinnedChanged});
+  BrandEventHistoryPage(
+      {super.key,
+      required this.brandId,
+      required this.pinned,
+      required this.pinnedChanged});
 
   @override
   _BrandEventHistoryPageState createState() => _BrandEventHistoryPageState();
 }
 
 class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
-
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+    return _scrollController!.hasClients &&
+        _scrollController!.offset >
+            (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
+
   // Screen Dimensions
   var safeAreaHeight;
   var safeAreaWidth;
@@ -51,13 +57,14 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
   void initState() {
     super.initState();
     _scrollController = ScrollController()
-      ..addListener(() => _isAppBarExpanded ?
-      setState(() {
-        appBarExpanded = true;
-      }) :
-      setState(() {
-        appBarExpanded = false;
-      }),
+      ..addListener(
+        () => _isAppBarExpanded
+            ? setState(() {
+                appBarExpanded = true;
+              })
+            : setState(() {
+                appBarExpanded = false;
+              }),
       );
     initEventHistory();
   }
@@ -70,12 +77,15 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
       isLoading = false;
     });
   }
-  
+
   // Init Device Sizes
   initDeviceSizes() {
-    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
+    safeAreaHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print(
+        "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
     print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
@@ -86,13 +96,15 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
 
   // Gets the Events Done by the Brand
   Future<void> getBrandFirstEvents() async {
-    listEvents = await _eventDataService.getBrandFirstCompletedEventsLimit(widget.brandId, 10);
+    listEvents = await _eventDataService.getBrandFirstCompletedEventsLimit(
+        widget.brandId, 10);
   }
 
   // Gets the Events Done by the Brand
   Future<void> getBrandMoreEvents(String lastEventId) async {
     var temp = listEvents;
-    var moreEvents = await _eventDataService.getBrandMoreCompletedEventsLimit(widget.brandId, lastEventId, 10);
+    var moreEvents = await _eventDataService.getBrandMoreCompletedEventsLimit(
+        widget.brandId, lastEventId, 10);
     temp.addAll(moreEvents);
     if (mounted) {
       setState(() {
@@ -114,8 +126,9 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
+            surfaceTintColor: AppColors.darkGrey,
             backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height*0.15,
+            expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: false,
@@ -128,26 +141,34 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          right: MediaQuery.of(context).size.width * 0.025),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             AppLocalizations.of(context)!.eventHistory,
-                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white,),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
+                                  color: AppColors.white,
+                                ),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
                             child: SizedBox(
-                              height: MediaQuery.of(context).size.height*0.08,
-                              width: MediaQuery.of(context).size.width*0.11,
+                              height: MediaQuery.of(context).size.height * 0.08,
+                              width: MediaQuery.of(context).size.width * 0.11,
                               child: TextButton(
                                 onPressed: null,
                                 child: Icon(
                                   Icons.filter_list,
                                   color: AppColors.darkGrey,
-                                  size: MediaQuery.of(context).size.width*0.07,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.07,
                                 ),
                               ),
                             ),
@@ -155,7 +176,9 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.01,
+                    ),
                     Container(
                       color: AppColors.grey,
                       height: 1.0,
@@ -166,29 +189,41 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.eventHistory, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
+            title: appBarExpanded
+                ? Text(
+                    AppLocalizations.of(context)!.eventHistory,
+                    style:
+                        Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
+                              color: AppColors.white,
+                            ),
+                  )
+                : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.02),
                 child: IconButton(
                     icon: Icon(
                       Icons.menu,
                       color: AppColors.white,
-                      size: MediaQuery.of(context).size.height*0.04,
+                      size: MediaQuery.of(context).size.height * 0.04,
                     ),
-                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
-                ),
+                    onPressed: () =>
+                        mambaProScaffoldKey.currentState?.openDrawer()),
               ),
             ),
             actions: [
               Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
+                padding: EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.01),
                 child: IconButton(
                   icon: Icon(
                     widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
+                    color: widget.pinned
+                        ? AppColors.red
+                        : AppColors.white.withOpacity(0.5),
+                    size: MediaQuery.of(context).size.width * 0.06,
                   ),
                   onPressed: () {
                     if (widget.pinned == true) {
@@ -205,198 +240,248 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
               ),
             ],
           ),
-          isLoading ? SliverList(
-            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-              return Column(
-                children: [
-                  index == 0 ? SizedBox(height: safeAreaWidth*0.08) : Container(),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
-                    child: Shimmer.fromColors(
-                      baseColor: AppColors.grey,
-                      highlightColor: AppColors.grey.withOpacity(0.5),
-                      child: SizedBox(
-                        height: safeAreaHeight*0.18,
-                        width: safeAreaWidth*0.9,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              height: (safeAreaWidth*0.9)*0.20,
-                              width: (safeAreaWidth*0.9)*0.20,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    height: (safeAreaWidth*0.9)*0.20,
-                                    width: (safeAreaWidth*0.9)*0.20,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.grey,
-                                      borderRadius: BorderRadius.circular(5.0),
+          isLoading
+              ? SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          index == 0
+                              ? SizedBox(height: safeAreaWidth * 0.08)
+                              : Container(),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: safeAreaWidth * 0.08),
+                            child: Shimmer.fromColors(
+                              baseColor: AppColors.grey,
+                              highlightColor: AppColors.grey.withOpacity(0.5),
+                              child: SizedBox(
+                                height: safeAreaHeight * 0.18,
+                                width: safeAreaWidth * 0.9,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      height: (safeAreaWidth * 0.9) * 0.20,
+                                      width: (safeAreaWidth * 0.9) * 0.20,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            height:
+                                                (safeAreaWidth * 0.9) * 0.20,
+                                            width: (safeAreaWidth * 0.9) * 0.20,
+                                            decoration: BoxDecoration(
+                                              color: AppColors.grey,
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          height: safeAreaHeight * 18,
+                                          width: safeAreaWidth * 0.9 * 0.56,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                height: safeAreaHeight * 0.03,
+                                                width: (safeAreaWidth * 0.9) *
+                                                    0.20,
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: safeAreaHeight * 0.02,
+                                              ),
+                                              Container(
+                                                height: safeAreaHeight * 0.02,
+                                                width: (safeAreaWidth * 0.9) *
+                                                    0.35,
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: safeAreaHeight * 0.015,
+                                              ),
+                                              Container(
+                                                height: safeAreaHeight * 0.02,
+                                                width:
+                                                    (safeAreaWidth * 0.9) * 0.5,
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: safeAreaHeight * 0.015,
+                                              ),
+                                              Container(
+                                                height: safeAreaHeight * 0.02,
+                                                width:
+                                                    (safeAreaWidth * 0.9) * 0.5,
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: safeAreaHeight * 0.015,
+                                              ),
+                                              Container(
+                                                height: safeAreaHeight * 0.02,
+                                                width:
+                                                    (safeAreaWidth * 0.9) * 0.5,
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: safeAreaHeight * 15,
+                                          width: (safeAreaWidth * 0.84) * 0.12,
+                                          child: Center(
+                                            child: Container(
+                                              height: safeAreaHeight * 0.05,
+                                              width: safeAreaHeight * 0.05,
+                                              decoration: BoxDecoration(
+                                                color: AppColors.grey,
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                            Row(
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: safeAreaHeight * 0.04,
+                                horizontal: safeAreaWidth * 0.08),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                SizedBox(
-                                  height: safeAreaHeight*18,
-                                  width: safeAreaWidth*0.9*0.56,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                Container(
+                                  height: 1,
+                                  width: safeAreaWidth * 0.61,
+                                  color: AppColors.grey,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    childCount: 6,
+                  ),
+                )
+              : listEvents.isNotEmpty
+                  ? LazyLoadScrollView(
+                      onEndOfPage: () {
+                        mixpanel!.track('brand_event_history_more_events');
+                        getBrandMoreEvents(listEvents[lastIndex].id!);
+                      },
+                      scrollOffset: safeAreaHeight.toInt(),
+                      child: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            Event event = listEvents[index];
+                            return Column(
+                              children: [
+                                index == 0
+                                    ? SizedBox(height: safeAreaWidth * 0.08)
+                                    : Container(),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: safeAreaWidth * 0.08),
+                                  child: EventListTile(
+                                    userId: currentUser.id!,
+                                    eventId: event.id!,
+                                    showFeedback: false,
+                                    showAverage: true,
+                                    height: safeAreaHeight,
+                                    width: safeAreaWidth * 0.9,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: safeAreaHeight * 0.04,
+                                      horizontal: safeAreaWidth * 0.08),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Container(
-                                        height: safeAreaHeight*0.03,
-                                        width: (safeAreaWidth*0.9)*0.20,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.grey,
-                                          borderRadius: BorderRadius.circular(5.0),
-                                        ),
+                                        height: 1,
+                                        width: safeAreaWidth * 0.61,
+                                        color: AppColors.grey,
                                       ),
-                                      SizedBox(height: safeAreaHeight*0.02,),
-                                      Container(
-                                        height: safeAreaHeight*0.02,
-                                        width: (safeAreaWidth*0.9)*0.35,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.grey,
-                                          borderRadius: BorderRadius.circular(5.0),
-                                        ),
-                                      ),
-                                      SizedBox(height: safeAreaHeight*0.015,),
-                                      Container(
-                                        height: safeAreaHeight*0.02,
-                                        width: (safeAreaWidth*0.9)*0.5,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.grey,
-                                          borderRadius: BorderRadius.circular(5.0),
-                                        ),
-                                      ),
-                                      SizedBox(height: safeAreaHeight*0.015,),
-                                      Container(
-                                        height: safeAreaHeight*0.02,
-                                        width: (safeAreaWidth*0.9)*0.5,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.grey,
-                                          borderRadius: BorderRadius.circular(5.0),
-                                        ),
-                                      ),
-                                      SizedBox(height: safeAreaHeight*0.015,),
-                                      Container(
-                                        height: safeAreaHeight*0.02,
-                                        width: (safeAreaWidth*0.9)*0.5,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.grey,
-                                          borderRadius: BorderRadius.circular(5.0),
-                                        ),
-                                      ),
-
                                     ],
                                   ),
                                 ),
-                                SizedBox(
-                                  height: safeAreaHeight*15,
-                                  width: (safeAreaWidth*0.84)*0.12,
-                                  child: Center(
-                                    child: Container(
-                                      height: safeAreaHeight*0.05,
-                                      width: safeAreaHeight*0.05,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.grey,
-                                        borderRadius: BorderRadius.circular(5.0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
                               ],
-                            )
-                          ],
+                            );
+                          },
+                          childCount: listEvents.length,
                         ),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: safeAreaHeight*0.04, horizontal: safeAreaWidth*0.08),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          height: 1,
-                          width: safeAreaWidth*0.61,
-                          color: AppColors.grey,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-              childCount: 6,
-            ),
-          ) :
-          listEvents.isNotEmpty ?
-          LazyLoadScrollView(
-            onEndOfPage: () {
-              mixpanel!.track('brand_event_history_more_events');
-              getBrandMoreEvents(listEvents[lastIndex].id!);
-            },
-            scrollOffset: safeAreaHeight.toInt(),
-            child: SliverList(
-              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                Event event = listEvents[index];
-                return Column(
-                  children: [
-                    index == 0 ? SizedBox(height: safeAreaWidth*0.08) : Container(),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
-                      child: EventListTile(
-                        userId: currentUser.id!,
-                        eventId: event.id!,
-                        showFeedback: false,
-                        showAverage: true,
-                        height: safeAreaHeight,
-                        width: safeAreaWidth*0.9,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: safeAreaHeight*0.04, horizontal: safeAreaWidth*0.08),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                    )
+                  : SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
                         children: [
-                          Container(
-                            height: 1,
-                            width: safeAreaWidth*0.61,
-                            color: AppColors.grey,
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.25,
+                              child: Image.asset(Constants.emptyCalendar)),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.005),
+                          Text(
+                            AppLocalizations.of(context)!.noEvents,
+                            style: Theme.of(context).textTheme.bodySmall,
+                            textAlign: TextAlign.center,
                           ),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.12),
                         ],
-                      ),
-                    ),
-                  ],
-                );
-              },
-              childCount: listEvents.length,
-              ),
-            ),
-          ) : SliverFillRemaining(
-            hasScrollBody: false,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox(
-                    width: MediaQuery.of(context).size.width*0.25,
-                    child: Image.asset(Constants.emptyCalendar)
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
-                SizedBox(height: MediaQuery.of(context).size.height*0.12),
-              ],
-            )
-          )
+                      ))
         ],
       ),
     );

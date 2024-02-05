@@ -251,6 +251,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
               controller: _scrollController,
               slivers: [
                 SliverAppBar(
+                  surfaceTintColor: AppColors.darkGrey,
                   backgroundColor: AppColors.darkGrey,
                   expandedHeight: MediaQuery.of(context).size.height * 0.15,
                   systemOverlayStyle: SystemUiOverlayStyle.light,

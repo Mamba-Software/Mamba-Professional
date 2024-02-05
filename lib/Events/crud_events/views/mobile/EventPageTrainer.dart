@@ -387,6 +387,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                       }, builder: (context, appBarExpandedCubit) {
                         appBarExpanded = appBarExpandedCubit;
                         return SliverAppBar(
+surfaceTintColor: AppColors.darkGrey,
                           expandedHeight:
                               MediaQuery.of(context).size.height * 0.22,
                           elevation: 0,

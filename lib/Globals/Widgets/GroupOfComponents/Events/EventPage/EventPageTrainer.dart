@@ -153,12 +153,12 @@ class _EventPageTrainerState extends State<EventPageTrainer>
         AppBar().preferredSize.height -
         MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print(
+        "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
     print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   void getEventInfo() async {
-    
     event = await _eventDataService.getSingleEvent(widget.eventId);
     titleController.text = "${event!.title}";
     titleString = "${event!.title}";
@@ -890,6 +890,8 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     SliverAppBar(
+                      surfaceTintColor:
+                                  Theme.of(context).scaffoldBackgroundColor,
                       expandedHeight: MediaQuery.of(context).size.height * 0.22,
                       elevation: 0,
                       systemOverlayStyle: returnSystemBarColor(),
@@ -1588,7 +1590,8 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                               0.9,
                                           decoration: BoxDecoration(
                                               color: Theme.of(context)
-                                                  .colorScheme.background,
+                                                  .colorScheme
+                                                  .background,
                                               borderRadius:
                                                   const BorderRadius.all(
                                                       Radius.circular(15.0))),
@@ -2336,7 +2339,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                 width: MediaQuery.of(context).size.width * 0.37,
                 child: isBeforeEdit
                     ? FloatingActionButton.extended(
-                  shape: const StadiumBorder(),
+                        shape: const StadiumBorder(),
                         heroTag: "9",
                         onPressed: () async {
                           // Create Dynamic Link
@@ -2360,9 +2363,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                           size: MediaQuery.of(context).size.width * 0.05,
                         ),
                         label: Text(
-                          "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!
-                                  .clients
-                                  .toLowerCase()}",
+                          "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.clients.toLowerCase()}",
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!

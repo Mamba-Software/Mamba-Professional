@@ -770,6 +770,7 @@ class _PurchasePageState extends State<PurchasePage> {
           controller: _scrollController,
           slivers: [
             SliverAppBar(
+              surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
               elevation: 0,
               scrolledUnderElevation: 2,
               pinned: true,
@@ -1847,18 +1848,13 @@ class _PurchasePageState extends State<PurchasePage> {
                                                 Theme.of(context).primaryColor,
                                             width: paymentMethod == 0 ? 2 : 1),
                                       ),
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Image(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.12,
-                                          image:
-                                              AssetImage(Constants.imageCash),
-                                          opacity: AlwaysStoppedAnimation(
-                                              paymentMethod == 0 ? 1 : 0.5),
-                                        ),
+                                      child: Image(
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.12,
+                                        image: AssetImage(Constants.imageCash),
+                                        opacity: AlwaysStoppedAnimation(
+                                            paymentMethod == 0 ? 1 : 0.5),
                                       ),
                                     ),
                                     SizedBox(
@@ -1930,18 +1926,14 @@ class _PurchasePageState extends State<PurchasePage> {
                                                 Theme.of(context).primaryColor,
                                             width: paymentMethod == 1 ? 2 : 1),
                                       ),
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Image(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.12,
-                                          image: AssetImage(
-                                              Constants.imageTransfer),
-                                          opacity: AlwaysStoppedAnimation(
-                                              paymentMethod == 1 ? 1 : 0.5),
-                                        ),
+                                      child: Image(
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.12,
+                                        image:
+                                            AssetImage(Constants.imageTransfer),
+                                        opacity: AlwaysStoppedAnimation(
+                                            paymentMethod == 1 ? 1 : 0.5),
                                       ),
                                     ),
                                     SizedBox(
@@ -2013,18 +2005,13 @@ class _PurchasePageState extends State<PurchasePage> {
                                                 Theme.of(context).primaryColor,
                                             width: paymentMethod == 2 ? 2 : 1),
                                       ),
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Image(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.12,
-                                          image:
-                                              AssetImage(Constants.imageGift),
-                                          opacity: AlwaysStoppedAnimation(
-                                              paymentMethod == 2 ? 1 : 0.5),
-                                        ),
+                                      child: Image(
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.12,
+                                        image: AssetImage(Constants.imageGift),
+                                        opacity: AlwaysStoppedAnimation(
+                                            paymentMethod == 2 ? 1 : 0.5),
                                       ),
                                     ),
                                     SizedBox(
@@ -2096,13 +2083,10 @@ class _PurchasePageState extends State<PurchasePage> {
                                           color: Theme.of(context).primaryColor,
                                           width: paymentMethod == 3 ? 2 : 1),
                                     ),
-                                    child: FittedBox(
-                                      fit: BoxFit.cover,
-                                      child: Image(
-                                        image: AssetImage(Constants.imageCard),
-                                        opacity: AlwaysStoppedAnimation(
-                                            paymentMethod == 3 ? 1 : 0.5),
-                                      ),
+                                    child: Image(
+                                      image: AssetImage(Constants.imageCard),
+                                      opacity: AlwaysStoppedAnimation(
+                                          paymentMethod == 3 ? 1 : 0.5),
                                     ),
                                   ),
                                   SizedBox(
@@ -2175,17 +2159,14 @@ class _PurchasePageState extends State<PurchasePage> {
                                           color: Theme.of(context).primaryColor,
                                           width: paymentMethod == 4 ? 2 : 1),
                                     ),
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Image(
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                0.1,
-                                        color: AppColors.black,
-                                        image: AssetImage(Constants.apple),
-                                        opacity: AlwaysStoppedAnimation(
-                                            paymentMethod == 4 ? 1 : 0.5),
-                                      ),
+                                    child: Image(
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.1,
+                                      color: AppColors.black,
+                                      image: AssetImage(Constants.apple),
+                                      opacity: AlwaysStoppedAnimation(
+                                          paymentMethod == 4 ? 1 : 0.5),
                                     ),
                                   ),
                                   SizedBox(
@@ -2258,17 +2239,14 @@ class _PurchasePageState extends State<PurchasePage> {
                                           color: Theme.of(context).primaryColor,
                                           width: paymentMethod == 5 ? 2 : 1),
                                     ),
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Image(
-                                        image: AssetImage(Constants.google),
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                0.1,
-                                        //color: paymentMethod == 4 ? AppColors.black : AppColors.white,
-                                        opacity: AlwaysStoppedAnimation(
-                                            paymentMethod != 5 ? 100 : 1),
-                                      ),
+                                    child: Image(
+                                      image: AssetImage(Constants.google),
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.1,
+                                      //color: paymentMethod == 4 ? AppColors.black : AppColors.white,
+                                      opacity: AlwaysStoppedAnimation(
+                                          paymentMethod != 5 ? 100 : 1),
                                     ),
                                   ),
                                   SizedBox(
@@ -2366,7 +2344,7 @@ class _PurchasePageState extends State<PurchasePage> {
           vertical: MediaQuery.of(context).size.width * 0.03,
           horizontal: MediaQuery.of(context).size.width * 0.01),
       child: FloatingActionButton.extended(
-                  shape: const StadiumBorder(),
+        shape: const StadiumBorder(),
         heroTag: "10",
         onPressed: isLoading
             ? null

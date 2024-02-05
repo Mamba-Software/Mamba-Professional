@@ -288,6 +288,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     SliverAppBar(
+                      surfaceTintColor: AppColors.darkGrey,
                       backgroundColor: AppColors.darkGrey,
                       expandedHeight: MediaQuery.of(context).size.height * 0.13,
                       systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -354,16 +355,20 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                       ),
                       actions: [
                         Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    askSupport(context),
-                    unreadNotifications(context),
-                    unreadChats(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                    profileImage(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  ],
-                ),
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            askSupport(context),
+                            unreadNotifications(context),
+                            unreadChats(context),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.025),
+                            profileImage(context),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.03),
+                          ],
+                        ),
                       ],
                     ),
                     SliverPersistentHeader(
@@ -485,6 +490,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     SliverAppBar(
+                      surfaceTintColor: AppColors.darkGrey,
                       backgroundColor: AppColors.darkGrey,
                       expandedHeight: MediaQuery.of(context).size.height * 0.13,
                       systemOverlayStyle: SystemUiOverlayStyle.light,

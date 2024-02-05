@@ -238,6 +238,7 @@ class _Clients extends State<Clients> {
           controller: _scrollController,
           slivers: [
             SliverAppBar(
+              surfaceTintColor: AppColors.darkGrey,
               backgroundColor: AppColors.darkGrey,
               expandedHeight: MediaQuery.of(context).size.height * 0.15,
               systemOverlayStyle: SystemUiOverlayStyle.light,

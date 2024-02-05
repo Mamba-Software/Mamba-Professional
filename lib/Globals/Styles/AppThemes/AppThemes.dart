@@ -12,7 +12,7 @@ class AppThemes {
       primaryColor: AppColors.black,
       primaryColorDark: AppColors.white,
       primaryColorLight: Colors.grey,
-      scaffoldBackgroundColor: AppColors.lightGrey,
+      scaffoldBackgroundColor: AppColors.lightGrey,      
       // Brightness
       brightness: Brightness.light,
       // Texts
@@ -29,14 +29,14 @@ class AppThemes {
       ),
       appBarTheme: AppBarTheme(
         elevation: 4.0,
-        foregroundColor: Colors.red,
+        surfaceTintColor: AppColors.lightGrey,
         backgroundColor: AppColors.lightGrey,
         iconTheme: const IconThemeData(color: Colors.black),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         titleTextStyle: textStyles.blackHeadline2TextStyle(),
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        shape: RoundedRectangleBorder(), // Customize shape
+        shape: StadiumBorder(), // Customize shape
         backgroundColor: AppColors.mainColor, // Customize color
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -46,10 +46,10 @@ class AppThemes {
         showUnselectedLabels: false,
         showSelectedLabels: true,
       ),
-      colorScheme: ColorScheme.fromSwatch()
-          .copyWith(
-              secondary: AppColors.mainColor, brightness: Brightness.light)
-          .copyWith(background: AppColors.white),
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+          secondary: AppColors.mainColor,
+          brightness: Brightness.light,
+          background: AppColors.white),
     );
   }
 
@@ -75,12 +75,17 @@ class AppThemes {
           bodySmall: textStyles.greyBodyTextStyle()),
       appBarTheme: AppBarTheme(
         elevation: 4.0,
+        surfaceTintColor: AppColors.darkerGrey,
         backgroundColor: AppColors.darkerGrey,
         iconTheme: const IconThemeData(
           color: AppColors.white,
         ),
         titleTextStyle: textStyles.whiteHeadline2TextStyle(),
         systemOverlayStyle: SystemUiOverlayStyle.light,
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        shape: StadiumBorder(), // Customize shape
+        backgroundColor: AppColors.mainColor, // Customize color
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,

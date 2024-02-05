@@ -401,6 +401,7 @@ class _BrandInfoState extends State<BrandInfo>
         controller: _scrollController,
         slivers: [
           SliverAppBar(
+            surfaceTintColor: AppColors.darkGrey,
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -2220,7 +2221,7 @@ class _BrandInfoState extends State<BrandInfo>
           ? Padding(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
               child: FloatingActionButton.extended(
-                  shape: const StadiumBorder(),
+                shape: const StadiumBorder(),
                 heroTag: "81",
                 onPressed: () async {
                   if (validateInfo()) {

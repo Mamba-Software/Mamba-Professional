@@ -237,6 +237,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                 controller: _scrollController,
                 slivers: [
                   SliverAppBar(
+                    surfaceTintColor: AppColors.darkGrey,
                     backgroundColor: AppColors.darkGrey,
                     expandedHeight: MediaQuery.of(context).size.height * 0.14,
                     systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -895,6 +896,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                 controller: _scrollController,
                 slivers: [
                   SliverAppBar(
+                    surfaceTintColor: AppColors.darkGrey,
                     backgroundColor: AppColors.darkGrey,
                     expandedHeight: MediaQuery.of(context).size.height * 0.14,
                     systemOverlayStyle: SystemUiOverlayStyle.light,

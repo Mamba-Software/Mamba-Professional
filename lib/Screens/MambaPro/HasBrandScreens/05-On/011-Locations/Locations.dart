@@ -282,6 +282,7 @@ class _LocationsState extends State<Locations> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
+            surfaceTintColor: AppColors.darkGrey,
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -369,16 +370,16 @@ class _LocationsState extends State<Locations> {
             ),
             actions: [
               Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    askSupport(context),
-                    unreadNotifications(context),
-                    unreadChats(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                    profileImage(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  ],
-                ),
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  askSupport(context),
+                  unreadNotifications(context),
+                  unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                  profileImage(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                ],
+              ),
             ],
           ),
           isLoading
