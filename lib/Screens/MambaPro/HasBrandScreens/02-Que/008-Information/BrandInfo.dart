@@ -1727,6 +1727,11 @@ class _BrandInfoState extends State<BrandInfo>
                                             result is UserStripeModel) {
                                           currentBrand = currentBrand;
                                         }
+                                        currentBrand.stripeAccountId =
+                                            await _brandDataService
+                                                .getBrandStripeAccount(
+                                                    currentBrand.id!);
+                                        setState(() {});
                                       },
                                       child: Text(buttonText)),
                                 ],

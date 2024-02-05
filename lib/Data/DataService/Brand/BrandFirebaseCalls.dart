@@ -576,10 +576,27 @@ class BrandFirebaseCalls {
     }
   }
 
+  Future<String> getBrandStripeAccount(String brandID) async {
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await _firestore.collection(brands).doc(brandID).get();
+    Brand brand =
+        Brand.fromObjectOnlyCoverData(documentSnapshot.id, documentSnapshot);
+    if (brand.stripeAccountId == null) {
+      return '';
+    }
+    return brand.stripeAccountId!;
+  }
+
   //Add
 
-  Future<String> addBrand(String name, File image, String description,
-      List<double> workShift, int maxMembers, int bookingWindow, int minBookingWindow) async {
+  Future<String> addBrand(
+      String name,
+      File image,
+      String description,
+      List<double> workShift,
+      int maxMembers,
+      int bookingWindow,
+      int minBookingWindow) async {
     QuerySnapshot querySnapshot3 = await _firestore
         .collection(library)
         .doc('Images')
