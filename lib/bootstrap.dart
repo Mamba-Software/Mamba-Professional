@@ -113,10 +113,6 @@ class Bootstrap {
       }
       //Init Stripe
       Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
-      if (Platform.isIOS) {
-        Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
-        await Stripe.instance.applySettings();
-      }
       // Run App
       runApp(MultiProvider(
         providers: [
