@@ -11,6 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
@@ -69,8 +70,6 @@ class Bootstrap {
   // Starting app function. After initialization, we define the global providers:
   Future<void> bootstrap() async {
     runZonedGuarded(() async {
-      // Initialize App
-      WidgetsFlutterBinding.ensureInitialized();
       // Load Env Variables
       print("Loading Environment Variables...");
       String envFileName = ".env.${currentFlavor.name}";
@@ -111,6 +110,12 @@ class Bootstrap {
         PurchasesConfiguration configuration =
             PurchasesConfiguration(dotenv.env['REVCAT_APPLE_API_KEY']!);
         await Purchases.configure(configuration);
+      }
+      //Init Stripe
+      Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+      if (Platform.isIOS) {
+        Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
+        await Stripe.instance.applySettings();
       }
       // Run App
       runApp(MultiProvider(
