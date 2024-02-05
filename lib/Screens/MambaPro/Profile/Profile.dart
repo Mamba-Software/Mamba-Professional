@@ -841,6 +841,7 @@ class _ProfileState extends State<Profile> {
                 style: OutlinedButton.styleFrom(
                   elevation: 4,
                   backgroundColor: Theme.of(context).colorScheme.background,
+                  surfaceTintColor: Theme.of(context).colorScheme.background,                  
                   fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                   side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
                   shape: const RoundedRectangleBorder(
@@ -899,6 +900,7 @@ class _ProfileState extends State<Profile> {
                 },
                 style: OutlinedButton.styleFrom(
                   elevation: 4,
+                  surfaceTintColor: Theme.of(context).colorScheme.background, 
                   backgroundColor: Theme.of(context).colorScheme.background,
                   fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                   side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
@@ -954,7 +956,8 @@ class _ProfileState extends State<Profile> {
               child: OutlinedButton(
                 onPressed: () => launchEmail(),
                 style: OutlinedButton.styleFrom(
-                  elevation: 4,
+                  elevation: 8,
+                  surfaceTintColor: Theme.of(context).colorScheme.background, 
                   backgroundColor: Theme.of(context).colorScheme.background,
                   fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                   side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
