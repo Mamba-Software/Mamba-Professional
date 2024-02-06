@@ -833,17 +833,22 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: MediaQuery.of(context).size.height*0.015),
             SizedBox(
               width: MediaQuery.of(context).size.width*0.4,
-              child: OutlinedButton(
+              child: ElevatedButton(
                 onPressed: () {
                   mixpanel!.track('user_profile_share_app');
                   _sharePlusUtils.shareMambaLink(currentUser.firstName!);
                 },
-                style: OutlinedButton.styleFrom(
+                style: ElevatedButton.styleFrom(
                   elevation: 4,
                   backgroundColor: Theme.of(context).colorScheme.background,
-                  surfaceTintColor: Theme.of(context).colorScheme.background,                  
-                  fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                  side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
+                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
+                      MediaQuery.of(context).size.height * 0.06),
+                  side: BorderSide(
+                      width: 1.0,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .background), // This might need adjustment
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(30),
@@ -893,17 +898,22 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: MediaQuery.of(context).size.height*0.015),
             SizedBox(
               width: MediaQuery.of(context).size.width*0.4,
-              child: OutlinedButton(
+              child: ElevatedButton(
                 onPressed: () {
                   mixpanel!.track('user_profile_feedback_open');
                   navigateToFeedbackScreen();
                 },
-                style: OutlinedButton.styleFrom(
+                style: ElevatedButton.styleFrom(
                   elevation: 4,
-                  surfaceTintColor: Theme.of(context).colorScheme.background, 
                   backgroundColor: Theme.of(context).colorScheme.background,
-                  fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                  side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
+                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
+                      MediaQuery.of(context).size.height * 0.06),
+                  side: BorderSide(
+                      width: 1.0,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .background), // This might need adjustment
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(30),
@@ -953,14 +963,19 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: MediaQuery.of(context).size.height*0.015),
             SizedBox(
               width: MediaQuery.of(context).size.width*0.4,
-              child: OutlinedButton(
+              child: ElevatedButton(
                 onPressed: () => launchEmail(),
-                style: OutlinedButton.styleFrom(
-                  elevation: 8,
-                  surfaceTintColor: Theme.of(context).colorScheme.background, 
+                style: ElevatedButton.styleFrom(
+                  elevation: 4,
                   backgroundColor: Theme.of(context).colorScheme.background,
-                  fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                  side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
+                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
+                      MediaQuery.of(context).size.height * 0.06),
+                  side: BorderSide(
+                      width: 1.0,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .background), // This might need adjustment
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(30),

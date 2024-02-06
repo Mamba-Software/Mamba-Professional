@@ -923,19 +923,25 @@ class _PayWallState extends State<PayWall> {
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.4,
-            child: OutlinedButton(
+            child: ElevatedButton(
               onPressed: () => launchEmail(),
-              style: OutlinedButton.styleFrom(
-                elevation: 4,
-                backgroundColor: Theme.of(context).primaryColor,
-                fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
-                    MediaQuery.of(context).size.height * 0.06),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(30),
+              style: ElevatedButton.styleFrom(
+                  elevation: 4,
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
+                      MediaQuery.of(context).size.height * 0.06),
+                  side: BorderSide(
+                      width: 1.0,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .background), // This might need adjustment
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
                   ),
                 ),
-              ),
               child: Text(
                 AppLocalizations.of(context)!.getInTouch,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
