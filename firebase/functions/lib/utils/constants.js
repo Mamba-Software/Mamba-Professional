@@ -11,10 +11,10 @@ exports.invoicePaid = admin.firestore().collection('InvoicePaid');
 exports.commonLogs = admin.firestore().collection('CommonLogs');
 exports.bonos = 'Bonos';
 exports.stripeAccounts = admin.firestore().collection('stripe_accounts');
-exports.webhookSecretForAccount = 'we_1ObgwHIhy0dvY0FfUiYku4q2';
-exports.webhookSecretForConnect = 'we_1OfMUAIhy0dvY0FfbgM9wNcp';
+exports.webhookSecretForAccount = 'whsec_mrWp9CrwYoA3VO2nGSaNdYcQWUyA5mbN';
+exports.webhookSecretForConnect = 'whsec_P66Yw68jtrUnZxYdKCVmeGwXkpOZ44EX';
 exports.stripe = new stripe_1.default(secretKey, {
     apiVersion: "2023-10-16",
-    typescript: true,
+    typescript: false,
 });
 //# sourceMappingURL=constants.js.map
