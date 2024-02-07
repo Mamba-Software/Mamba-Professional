@@ -48,10 +48,8 @@ class _FeedBackState extends State<FeedBack> {
     mixpanel!.track('user_help_email');
     String url = 'mailto:$contactEmail';
     if (await canLaunchUrlString(url)) {
-      await launchUrlString(url);
-      print("hola");
-    }
-    print("hola");
+      await launchUrlString(url);      
+    }    
   }
 
   Future<void> launchWhatsApp() async {
