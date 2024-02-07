@@ -273,11 +273,15 @@ class _BrandScreenState extends State<BrandScreen> {
                               .bodyLarge
                               ?.copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.left),
-                      subtitle: Text(
-                        AppLocalizations.of(context)!
-                            .freeTrialDaysLeft(difference.toString()),
-                        style: Theme.of(context).textTheme.bodySmall,
-                        textAlign: TextAlign.left,
+                      subtitle: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .freeTrialDaysLeft(difference.toString()),
+                          style: Theme.of(context).textTheme.bodySmall,
+                          maxLines: 1,
+                          textAlign: TextAlign.left,
+                        ),
                       ),
                       onTap: () => {
                             Navigator.pop(context),
