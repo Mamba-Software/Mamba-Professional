@@ -2149,9 +2149,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                     decoration: BoxDecoration(
                                       color: paymentMethod == 4
                                           ? AppColors.white
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .background,
+                                          : AppColors.grey.withOpacity(0.5),
                                       borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
@@ -2159,14 +2157,15 @@ class _PurchasePageState extends State<PurchasePage> {
                                           color: Theme.of(context).primaryColor,
                                           width: paymentMethod == 4 ? 2 : 1),
                                     ),
-                                    child: Image(
-                                      height:
-                                          MediaQuery.of(context).size.width *
-                                              0.1,
-                                      color: AppColors.black,
-                                      image: AssetImage(Constants.apple),
-                                      opacity: AlwaysStoppedAnimation(
-                                          paymentMethod == 4 ? 1 : 0.5),
+                                    child: Container(
+                                margin: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.02),
+                                      child: Image(
+                                        color: AppColors.black,
+                                        image: AssetImage(Constants.apple),
+                                        opacity: AlwaysStoppedAnimation(
+                                            paymentMethod == 4 ? 1 : 0.5),
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
@@ -2229,9 +2228,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                     decoration: BoxDecoration(
                                       color: paymentMethod == 5
                                           ? AppColors.white
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .background,
+                                          : AppColors.grey.withOpacity(0.5),
                                       borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
@@ -2239,14 +2236,15 @@ class _PurchasePageState extends State<PurchasePage> {
                                           color: Theme.of(context).primaryColor,
                                           width: paymentMethod == 5 ? 2 : 1),
                                     ),
-                                    child: Image(
-                                      image: AssetImage(Constants.google),
-                                      height:
-                                          MediaQuery.of(context).size.width *
-                                              0.1,
-                                      //color: paymentMethod == 4 ? AppColors.black : AppColors.white,
-                                      opacity: AlwaysStoppedAnimation(
-                                          paymentMethod != 5 ? 100 : 1),
+                                    child: Container(
+                                margin: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.02),
+                                      child: Image(
+                                        image: AssetImage(Constants.google),
+                                        //color: paymentMethod == 4 ? AppColors.black : AppColors.white,
+                                        opacity: AlwaysStoppedAnimation(
+                                            paymentMethod != 5 ? 100 : 1),
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
