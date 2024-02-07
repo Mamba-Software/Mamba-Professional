@@ -108,12 +108,12 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     // Height of Expanded Container
     // Llargada de la Descripció del Bono
     if (bono.description!.length <= 33) {
-      isExpandedHeight = 2.4;
+      isExpandedHeight = 2.45;
     } else if (bono.description!.length > 33 &&
         bono.description!.length <= 66) {
-      isExpandedHeight = 2.75;
+      isExpandedHeight = 2.8;
     } else {
-      isExpandedHeight = 2.85;
+      isExpandedHeight = 2.9;
     }
     // Primer Condicions
     int cnt = 0;
@@ -508,17 +508,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                 TextAlign.left,
                                                           )
                                                         : Text(
-                                                            sessionsDone
-                                                                    .toString() +
-                                                                "/" +
-                                                                bono.sessions!
-                                                                    .toString()
-                                                                    .toUpperCase() +
-                                                                ' ' +
-                                                                AppLocalizations.of(
-                                                                        context)!
-                                                                    .sessions
-                                                                    .toUpperCase(),
+                                                            "$sessionsDone/${bono.sessions!.toString().toUpperCase()} ${AppLocalizations.of(context)!.sessions.toUpperCase()}",
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -593,17 +583,12 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                 TextAlign.left,
                                                           )
                                                         : Text(
-                                                            sessionsDone
-                                                                    .toString() +
-                                                                "/" +
-                                                                bono.sessions!
+                                                            "$sessionsDone/${bono.sessions!
                                                                     .toString()
-                                                                    .toUpperCase() +
-                                                                ' ' +
-                                                                AppLocalizations.of(
+                                                                    .toUpperCase()} ${AppLocalizations.of(
                                                                         context)!
                                                                     .sessions
-                                                                    .toUpperCase(),
+                                                                    .toUpperCase()}",
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -820,6 +805,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                 SizedBox(
                                   height: widget.height * 0.15,
                                 ),
+                                
                                 SizedBox(
                                   width: widget.width * 0.9,
                                   child: Column(
@@ -1059,9 +1045,11 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                     ],
                                   ),
                                 ),
+                                
                                 SizedBox(
                                   height: widget.height * 0.15,
                                 ),
+                                
                                 SizedBox(
                                   width: widget.width * 0.9,
                                   child: Column(
@@ -1290,6 +1278,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                     ],
                                   ),
                                 ),
+                                
                                 SizedBox(
                                   height: widget.height * 0.05,
                                 ),
