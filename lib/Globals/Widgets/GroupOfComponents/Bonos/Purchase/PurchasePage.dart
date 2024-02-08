@@ -2143,9 +2143,9 @@ class _PurchasePageState extends State<PurchasePage> {
                                         MediaQuery.of(context).size.width *
                                             0.02),
                                     height: MediaQuery.of(context).size.width *
-                                        0.25,
+                                        0.20,
                                     width: MediaQuery.of(context).size.width *
-                                        0.25,
+                                        0.20,
                                     decoration: BoxDecoration(
                                       color: paymentMethod == 4
                                           ? AppColors.white
@@ -2225,9 +2225,9 @@ class _PurchasePageState extends State<PurchasePage> {
                                         MediaQuery.of(context).size.width *
                                             0.02),
                                     height: MediaQuery.of(context).size.width *
-                                        0.25,
+                                        0.20,
                                     width: MediaQuery.of(context).size.width *
-                                        0.25,
+                                        0.20,
                                     decoration: BoxDecoration(
                                       color: paymentMethod == 5
                                           ? AppColors.white
