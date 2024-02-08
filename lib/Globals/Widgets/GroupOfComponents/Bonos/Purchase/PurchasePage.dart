@@ -2330,7 +2330,7 @@ class _PurchasePageState extends State<PurchasePage> {
                   ),
                   */
 
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.17),
                 ],
               ),
             ),
