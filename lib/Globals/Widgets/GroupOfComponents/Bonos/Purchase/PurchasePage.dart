@@ -2143,13 +2143,15 @@ class _PurchasePageState extends State<PurchasePage> {
                                         MediaQuery.of(context).size.width *
                                             0.02),
                                     height: MediaQuery.of(context).size.width *
-                                        0.20,
+                                        0.25,
                                     width: MediaQuery.of(context).size.width *
-                                        0.20,
+                                        0.25,
                                     decoration: BoxDecoration(
                                       color: paymentMethod == 4
                                           ? AppColors.white
-                                          : AppColors.grey.withOpacity(0.5),
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .background,
                                       borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
@@ -2158,8 +2160,9 @@ class _PurchasePageState extends State<PurchasePage> {
                                           width: paymentMethod == 4 ? 2 : 1),
                                     ),
                                     child: Container(
-                                margin: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * 0.02),
+                                      margin: EdgeInsets.all(
+                                          MediaQuery.of(context).size.width *
+                                              0.02),
                                       child: Image(
                                         color: AppColors.black,
                                         image: AssetImage(Constants.apple),
@@ -2222,13 +2225,15 @@ class _PurchasePageState extends State<PurchasePage> {
                                         MediaQuery.of(context).size.width *
                                             0.02),
                                     height: MediaQuery.of(context).size.width *
-                                        0.20,
+                                        0.25,
                                     width: MediaQuery.of(context).size.width *
-                                        0.20,
+                                        0.25,
                                     decoration: BoxDecoration(
                                       color: paymentMethod == 5
                                           ? AppColors.white
-                                          : AppColors.grey.withOpacity(0.5),
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .background,
                                       borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
@@ -2237,13 +2242,14 @@ class _PurchasePageState extends State<PurchasePage> {
                                           width: paymentMethod == 5 ? 2 : 1),
                                     ),
                                     child: Container(
-                                margin: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * 0.02),
+                                      margin: EdgeInsets.all(
+                                          MediaQuery.of(context).size.width *
+                                              0.02),
                                       child: Image(
                                         image: AssetImage(Constants.google),
                                         //color: paymentMethod == 4 ? AppColors.black : AppColors.white,
                                         opacity: AlwaysStoppedAnimation(
-                                            paymentMethod != 5 ? 100 : 1),
+                                            paymentMethod != 5 ? 0.5 : 1),
                                       ),
                                     ),
                                   ),
