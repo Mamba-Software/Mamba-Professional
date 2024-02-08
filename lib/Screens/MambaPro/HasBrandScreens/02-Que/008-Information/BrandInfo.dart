@@ -2639,7 +2639,6 @@ class _BrandInfoState extends State<BrandInfo>
                                   isStripeActive = true;
                                 }
                               } else {
-                                currentBrand.stripeActivated = false;
                                 isStripeActive = newVal;
                               }
                             }

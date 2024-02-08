@@ -26,8 +26,9 @@ async function createAccount(userId, userName, stripeAccountId) {
                 country: 'ES',
                 type: 'custom',
                 individual: {
-                    first_name: userName,
-                    last_name: userName,
+                    first_name: userDocData.firstName,
+                    last_name: userDocData.lastName,
+                    email: userDocData.email,
                     dob: {
                         day: day,
                         month: month,
@@ -79,7 +80,7 @@ async function createAccount(userId, userName, stripeAccountId) {
             });
             constants_1.brandCollection.doc(userId).set({
                 stripeAccountId: account.id,
-                verified: false,
+                isVerified: false,
                 stripeActivated: true,
             }, { merge: true });
             console.log(account);
