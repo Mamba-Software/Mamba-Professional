@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_data_provider.dart';
 import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_repository.dart';
 part 'stripe_connect_state.dart';
 
@@ -21,6 +24,21 @@ class StripeConnectCubit extends Cubit<StripeConnectState> {
       emit(StripeConnectGetLinkSuccess(result.$1!));
     } else {
       emit(StripeConnectGetLinkError(result.$2!));
+    }
+  }
+
+  void createAccountApi(Brand trainerData) async {
+    try {
+      http.Response result =
+          await StripeConnectDataProvider.createStripeAccount(trainerData);
+
+      if (result.statusCode == 200) {
+        var bodyData = jsonDecode(result.body);
+        String? url = bodyData['url'];
+        if (url != null && url != '') {}
+      }
+    } catch (e) {
+      print('d');
     }
   }
 

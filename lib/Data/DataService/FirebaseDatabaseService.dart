@@ -197,6 +197,19 @@ class FirebaseDatabaseService {
     }
   }
 
+  Future<bool> getStripeActivated() async {
+    bool stripeActivated = false;
+
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await _firestore.collection("Settings").doc("MinimumAppVersion").get();
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('stripeActivated')) {
+      stripeActivated = documentSnapshot.get("stripeActivated");
+    }
+
+    return stripeActivated;
+  }
+
   Future<String> checkMonthOffer() async {
     // Get Minimum Version from Settings Collection
     DocumentSnapshot<Map<String, dynamic>> documentSnapshot =

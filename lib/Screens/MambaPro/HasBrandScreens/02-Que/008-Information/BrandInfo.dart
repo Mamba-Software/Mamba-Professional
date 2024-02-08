@@ -30,6 +30,7 @@ import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.da
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_repository.dart';
 import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
 import 'package:mamba_castelldefels/Stripe/utils/routes.dart';
@@ -113,6 +114,9 @@ class _BrandInfoState extends State<BrandInfo>
   int gracePeriodDays = 7;
   int cancelationsPerWeek = 7;
   List<bool> isSelectedTerms = [false, false, true];
+  bool isStripeActive = false;
+
+  StripeConnectRepository stripeConnectRepository = StripeConnectRepository();
 
   // Subscription
   int difference = 0;
@@ -275,6 +279,11 @@ class _BrandInfoState extends State<BrandInfo>
     } else {
       currentBrand.paymentTerms = 2;
     }
+    if (currentBrand.stripeActivated != null && currentBrand.stripeActivated!) {
+      isStripeActive = true;
+    } else {
+      currentBrand.stripeActivated = false;
+    }
   }
 
   // Gets the user info from firebase.
@@ -392,6 +401,9 @@ class _BrandInfoState extends State<BrandInfo>
         if (isSelectedTerms[2] == false) {
           isUpdated = true;
         }
+      }
+      if (currentBrand.stripeActivated != isStripeActive) {
+        isUpdated = true;
       }
     }
     return Scaffold(
@@ -1703,45 +1715,7 @@ class _BrandInfoState extends State<BrandInfo>
                             height: MediaQuery.of(context).size.height * 0.03),
 
                         ///CONEXION CON STRIPE
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  ElevatedButton(
-                                      onPressed: () async {
-                                        context
-                                            .read<StripeConnectCubit>()
-                                            .getLink(currentBrand);
-                                        var result =
-                                            await Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  OnboardingWebView()),
-                                        );
-                                        if (result != null &&
-                                            result is UserStripeModel) {
-                                          currentBrand = currentBrand;
-                                        }
-                                        currentBrand.stripeAccountId =
-                                            await _brandDataService
-                                                .getBrandStripeAccount(
-                                                    currentBrand.id!);
-                                        setState(() {});
-                                      },
-                                      child: Text(buttonText)),
-                                ],
-                              ),
-                              if (currentBrand.balance != null)
-                                Text(
-                                    'Balance: ${currentBrand.balance?.toStringAsFixed(2)}'),
-                            ],
-                          ),
-                        ),
+                        stripeActivatedGlobal ? conectionStripe() : Container(),
 
                         ///PERIODO DE GRACIA
                         Row(
@@ -2276,7 +2250,8 @@ class _BrandInfoState extends State<BrandInfo>
                         freeSession,
                         gracePeriodDays,
                         cancelationsPerWeek,
-                        termsSelected);
+                        termsSelected,
+                        isStripeActive);
                     await getBrand();
                     mixpanel!.track('brand_info_changes_done');
                   }
@@ -2592,5 +2567,105 @@ class _BrandInfoState extends State<BrandInfo>
     } else {
       return 'update your profile';
     }
+  }
+
+  Widget conectionStripe() {
+    return Column(
+      children: [
+        Padding(
+            padding: EdgeInsets.only(
+                right: MediaQuery.of(context).size.height * 0.01),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.stripeAccountText,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.035,
+                  width: MediaQuery.of(context).size.width * 0.1,
+                  child: CupertinoSwitch(
+                    value: isStripeActive,
+                    onChanged: canEdit
+                        ? (bool newVal) async {
+                            if (newVal) {
+                              context
+                                  .read<StripeConnectCubit>()
+                                  .getLink(currentBrand);
+
+                              var result = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => OnboardingWebView()),
+                              );
+                              if (result != null) {
+                                currentBrand.isVerified = result.isVerified;
+                                currentBrand.stripeAccountId =
+                                    result.stripeAccountId;
+                                currentBrand.stripeActivated = true;
+                                isStripeActive = true;
+                              }
+                              /*
+                              currentBrand.stripeAccountId =
+                                  await _brandDataService
+                                      .getBrandStripeAccount(currentBrand.id!);
+                              if (currentBrand.stripeAccountId != '') {
+                                currentBrand.stripeActivated = true;
+                                isStripeActive = true;
+                              }*/
+                            } else {
+                              if (isStripeActive && !currentBrand.isVerified) {
+                                context
+                                    .read<StripeConnectCubit>()
+                                    .getLink(currentBrand);
+
+                                var result = await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          OnboardingWebView()),
+                                );
+                                if (result != null &&
+                                    result is UserStripeModel) {
+                                  currentBrand = currentBrand;
+                                }
+                              } else {
+                                isStripeActive = newVal;
+                              }
+                            }
+                            setState(() {});
+                          }
+                        : null,
+                    trackColor: Colors.green.withOpacity(0.4),
+                    thumbColor: AppColors.white,
+                    activeColor: currentBrand.stripeActivated == null
+                        ? Colors.green.withOpacity(0.4)
+                        : currentBrand.stripeActivated! &&
+                                currentBrand.isVerified
+                            ? Colors.green
+                            : Colors.yellow,
+                  ),
+                ),
+              ],
+            )),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                AppLocalizations.of(context)!.stripeAccountDescription,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+      ],
+    );
   }
 }

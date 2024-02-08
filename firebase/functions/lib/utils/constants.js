@@ -6,6 +6,7 @@ const admin = require("firebase-admin");
 const secretKey = 'sk_test_51OWbhYIhy0dvY0FfOinR0wbP0UoVeu2WEr1ovTTw1crqSqNy51tza6koJuVUwkg8JdLYLStZIwCXKwwKQ9nmarSp00ykqCvB62';
 exports.userCollection = admin.firestore().collection('Users');
 exports.brandCollection = admin.firestore().collection('Brands');
+exports.locationCollection = admin.firestore().collection('Locations');
 exports.chargeAmount = admin.firestore().collection('ChargeAmount');
 exports.invoicePaid = admin.firestore().collection('InvoicePaid');
 exports.commonLogs = admin.firestore().collection('CommonLogs');

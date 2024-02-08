@@ -870,5 +870,7 @@
   "vencen": "Vencen",
   "autoRenovation": "Renovació automàtica",
   "notRenovation": "Renovació desactivada",
-  "cantDeletePurchase": "Per eliminar la compra origianl d'una membresia, hauràs d'eliminar les seves compres relacionades"
+  "cantDeletePurchase": "Per eliminar la compra origianl d'una membresia, hauràs d'eliminar les seves compres relacionades",
+  "stripeAccountText": "Conexió amb Stripe",
+  "stripeAccountDescription": "Activa la teva conta per a que els teus clients puguin pagar les teves tarifes per l'aplicació"
 }

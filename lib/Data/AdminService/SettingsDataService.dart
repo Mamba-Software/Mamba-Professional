@@ -2,14 +2,15 @@ import 'package:mamba_castelldefels/Data/DataService/FirebaseDatabaseService.dar
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class SettingsDataService {
-
   final _firebase = FirebaseDatabaseService();
 
   // Check Data
-  Future<List<bool>> checkIfMinimumAppVersion(String clientAppVersion) => _firebase.checkIfMinimumAppVersion(clientAppVersion);
+  Future<List<bool>> checkIfMinimumAppVersion(String clientAppVersion) =>
+      _firebase.checkIfMinimumAppVersion(clientAppVersion);
   Future<List<bool>> checkAppVersion() => _firebase.checkAppVersion();
   Future<bool> checkIfIsMaintenance() => _firebase.checkIfIsMaintenance();
   Future<String> checkMonthOffer() => _firebase.checkMonthOffer();
+  Future<bool> getStripeActivated() => _firebase.getStripeActivated();
 
   // Get Data
 
@@ -21,6 +22,4 @@ class SettingsDataService {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
-
-
 }

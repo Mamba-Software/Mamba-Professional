@@ -8,6 +8,20 @@ async function createAccount(userId, userName, stripeAccountId) {
     try {
         let account;
         if (!stripeAccountId) {
+            console.log('BRAND ' + userId);
+            const brandDocRef = constants_1.brandCollection.doc(userId);
+            const brandDoc = await brandDocRef.get();
+            const brandDocData = brandDoc.data();
+            console.log(brandDocData);
+            console.log('USER' + brandDocData.adminID);
+            const userDocRef = constants_1.userCollection.doc(brandDocData.adminID);
+            const userDoc = await userDocRef.get();
+            const userDocData = userDoc.data();
+            console.log('LOCATION');
+            const locationDocRef = constants_1.locationCollection.doc(brandDocData.baseLocation);
+            const locationDoc = await locationDocRef.get();
+            const locationDocData = locationDoc.data();
+            const [day, month, year] = userDocData.dateOfBirth.split("-");
             account = await constants_1.stripe.accounts.create({
                 country: 'ES',
                 type: 'custom',
@@ -15,19 +29,19 @@ async function createAccount(userId, userName, stripeAccountId) {
                     first_name: userName,
                     last_name: userName,
                     dob: {
-                        day: 1,
-                        month: 1,
-                        year: 1990,
-                    },
+                        day: day,
+                        month: month,
+                        year: year,
+                    }, //PROPIETARIO DE LA MARCA
                     // email: email,
-                    phone: '+34666777888',
-                    id_number: '000000000',
+                    phone: '+34677909194',
+                    //id_number: '000000000',
                     address: {
                         country: 'ES',
-                        state: 'Barcelona',
-                        city: 'Barcelona',
-                        line1: 'Carrer de la Diputació, 238',
-                        postal_code: '08007',
+                        state: locationDocData.city,
+                        city: locationDocData.city,
+                        line1: locationDocData.street + locationDocData.streetNumber != 'N/A'? ',' + locationDocData.streetNumber : '',
+                        postal_code: locationDocData.zipCode,
                     },
                 },
                 tos_acceptance: {
@@ -45,8 +59,8 @@ async function createAccount(userId, userName, stripeAccountId) {
                 // },
                 business_type: 'individual',
                 business_profile: {
-                    mcc: '8999',
-                    url: 'https://techanion.com',
+                    mcc: '7997', //TODO
+                    url: 'https://mambafitness.es/',
                 },
                 // email: email,
                 metadata: {
@@ -66,6 +80,7 @@ async function createAccount(userId, userName, stripeAccountId) {
             constants_1.brandCollection.doc(userId).set({
                 stripeAccountId: account.id,
                 verified: false,
+                stripeActivated: true,
             }, { merge: true });
             console.log(account);
         }

@@ -111,7 +111,8 @@ class BrandDataService {
           bool? freeSession,
           int gracePeriod,
           int maxCanWeek,
-          int paymentTerms) =>
+          int paymentTerms,
+          bool isStripeActive) =>
       _firebase.updateBrandInfo(
           brandID,
           name,
@@ -124,7 +125,8 @@ class BrandDataService {
           freeSession,
           gracePeriod,
           maxCanWeek,
-          paymentTerms);
+          paymentTerms,
+          isStripeActive);
   Future<String> updateBrandPhoto(String brandID, File image) =>
       _firebase.updateBrandPhoto(brandID, image);
   Future<void> updateBrandBaseImage(
@@ -154,6 +156,9 @@ class BrandDataService {
           String? unsuscribedAT) =>
       _firebase.updateBrandSubscriptionRevenueCat(brandID, expiresDate,
           originalPurchaseDate, productPlanIdentifier, unsuscribedAT);
+  Future<void> updateBrandStripe(
+          String brandID, bool verified, String stripeAccountId) =>
+      _firebase.updateBrandStripe(brandID, verified, stripeAccountId);
 
   // Delete Data
   Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);

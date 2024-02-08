@@ -804,7 +804,8 @@ class BrandFirebaseCalls {
       bool? freeSession,
       int gracePeriod,
       int maxCanWeek,
-      int paymentTerms) async {
+      int paymentTerms,
+      bool isStripeActive) async {
     await _firestore.collection(brands).doc(brandID).update({
       "name": name,
       "description": description,
@@ -817,6 +818,7 @@ class BrandFirebaseCalls {
       "gracePeriod": gracePeriod,
       "maxCanWeek": maxCanWeek,
       "paymentTerms": paymentTerms,
+      "stripeActivated": isStripeActive,
     });
   }
 
@@ -1031,6 +1033,14 @@ class BrandFirebaseCalls {
     print(map);
     await _firestore.collection(brands).doc(brandID).update({
       "subscription": map,
+    });
+  }
+
+  Future<void> updateBrandStripe(
+      String brandID, bool verified, String stripeAccountId) async {
+    await _firestore.collection(brands).doc(brandID).update({
+      "verified": verified,
+      "stripeAccountId": stripeAccountId,
     });
   }
 

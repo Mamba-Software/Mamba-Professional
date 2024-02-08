@@ -3695,7 +3695,6 @@ const purchasesRef = db.collection('Purchases');
 const snapshot = await purchasesRef
   .where('isActive', '==', true)
   .where('directPurchase', '==', true)
-  .where('brandId', '==', '1d16285c-54e8-4a6a-bd1f-ba7071c72774') //TODO: ELIMINAR
   .get();
 
 for (const doc of snapshot.docs) {
@@ -3735,7 +3734,6 @@ const snapshot = await purchasesRef
   .where('directPurchase', '==', false)
   .where('isRecurrencyActive', '==', true)
   .where('isRecurrent', '==', true)
-  .where('brandId', '==', '1d16285c-54e8-4a6a-bd1f-ba7071c72774') //TODO: ELIMINAR
   .get();
 
 
@@ -3848,9 +3846,9 @@ async function processRegularPurchasesExpTime() {
   const snapshot = await purchasesRef
     .where('isActive', '==', true)
     .where('isRecurrent', '==', false)
-    .where('expirationTime', '>', 0)
-    .where('brandId', '==', '1d16285c-54e8-4a6a-bd1f-ba7071c72774') //TODO: ELIMINAR
     .get();
+    //.where('expirationTime', '>', 0)
+    
   
   for (const doc of snapshot.docs) {
     const purchase = doc.data();

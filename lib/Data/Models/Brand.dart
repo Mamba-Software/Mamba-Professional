@@ -39,6 +39,7 @@ class Brand {
   String? stripeAccountId;
   bool isVerified = false;
   double? balance;
+  bool? stripeActivated = false;
 
   Timestamp? endDatePay;
   String? subscriptionId;
@@ -83,6 +84,7 @@ class Brand {
     this.stripeAccountId,
     this.isVerified = false,
     this.balance,
+    this.stripeActivated,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -195,6 +197,10 @@ class Brand {
         .containsKey('balance')) {
       balance = documentSnapshot.get("balance");
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('stripeActivated')) {
+      stripeActivated = documentSnapshot.get("stripeActivated");
+    }
   }
 
   Brand.fromObjectOnlyCoverData(
@@ -222,6 +228,10 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('isVerified')) {
       isVerified = documentSnapshot.get("isVerified");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('stripeActivated')) {
+      stripeActivated = documentSnapshot.get("stripeActivated");
     }
   }
 
@@ -260,6 +270,7 @@ class Brand {
     isVerified = brand.isVerified;
     stripeAccountId = brand.stripeAccountId;
     balance = brand.balance;
+    stripeActivated = brand.stripeActivated;
   }
 
   // Requests

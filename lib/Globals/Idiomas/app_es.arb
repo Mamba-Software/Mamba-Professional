@@ -3842,5 +3842,14 @@
   "cantDeletePurchase": "Para eliminar la compra origianl de una membresía, deberás eliminar sus compras relacionadas",
   "@cantDeletePurchase": {
     "description": "cantDeletePurchase message"
+  },
+  "stripeAccountText": "Conexión con Stripe",
+  "@stripeAccountText": {
+    "description": "stripeAccountText message"
+  },
+  "stripeAccountDescription": "Activa tu cuenta para que tus clientes puedan pagar tus tarifas por la aplicación",
+  "@stripeAccountDescription": {
+    "description": "stripeAccountDescription message"
   }
+
 }
