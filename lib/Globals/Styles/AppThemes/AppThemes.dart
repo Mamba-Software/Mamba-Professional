@@ -45,12 +45,7 @@ class AppThemes {
         backgroundColor: AppColors.white,
         showUnselectedLabels: false,
         showSelectedLabels: true,
-      ),
-      colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: AppColors.mainColor,
-          brightness: Brightness.light,
-          background: AppColors.white),
-      // Define the global theme for your app
+      ),    
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.lightGrey,
         surfaceTintColor: AppColors.lightGrey,
@@ -58,6 +53,11 @@ class AppThemes {
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),        
       ),
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+          secondary: AppColors.mainColor,
+          brightness: Brightness.light,
+          background: AppColors.white),
+      
     );
   }
 

@@ -1105,6 +1105,7 @@ class BonoCardState extends State<BonoCard> {
                                     ],
                                   ),
                                 ),
+                                
                                 SizedBox(
                                   height: widget.height * 0.05,
                                 ),
