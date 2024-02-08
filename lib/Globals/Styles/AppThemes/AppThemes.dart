@@ -13,6 +13,7 @@ class AppThemes {
       primaryColorDark: AppColors.white,
       primaryColorLight: Colors.grey,
       scaffoldBackgroundColor: AppColors.lightGrey,
+      dividerColor: Colors.grey,
       // Brightness
       brightness: Brightness.light,
       // Texts
@@ -68,6 +69,7 @@ class AppThemes {
       primaryColor: AppColors.white,
       primaryColorDark: AppColors.black,
       scaffoldBackgroundColor: AppColors.darkerGrey,
+      dividerColor: Colors.grey,
       // Brightness
       brightness: Brightness.dark,
       // Texts

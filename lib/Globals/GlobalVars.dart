@@ -49,6 +49,10 @@ var termsAndConditions = "https://mambafitness.es/terminos-y-condiciones/";
 var privacy = "https://mambafitness.es/privacidad/";
 var functionalities = "https://mambafitness.es/profesionales/";
 
+// Stripe
+var stripeConnect = "https://stripe.com/es/privacy";
+var stripeTermsAndConditions = "https://stripe.com/es/connect";
+
 // User & Brand Global Variables
 var currentUser = Usuario();
 var currentBrand = Brand();

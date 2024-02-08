@@ -10,7 +10,7 @@ class OnboardingWebView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('WebView'),
+        title: Text('Connecting to Stripe ...'),
       ),
       body: BlocConsumer<StripeConnectCubit, StripeConnectState>(
         listener: (context, state) {

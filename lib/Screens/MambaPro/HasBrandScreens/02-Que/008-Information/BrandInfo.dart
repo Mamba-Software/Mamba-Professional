@@ -33,7 +33,6 @@ import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotificat
 import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_repository.dart';
 import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
-import 'package:mamba_castelldefels/Stripe/utils/routes.dart';
 import 'package:mamba_castelldefels/Stripe/views/onboarding_webview.dart';
 
 import '../../../../../Globals/Widgets/Components/CupertinoSelect/SelectOtherDialog.dart';
@@ -123,6 +122,10 @@ class _BrandInfoState extends State<BrandInfo>
   bool ShowTextExpired = true;
   final _topSnackBar = TopSnackBarDef();
 
+  // Stripe Read More
+  bool readMore = false;
+  int? lines;
+
   // App Bar and Scroll View
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
@@ -130,8 +133,6 @@ class _BrandInfoState extends State<BrandInfo>
       return false;
     }
     // Use the same condition as before to check if AppBar is expanded.
-    return _scrollController!.offset >
-        (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
     return _scrollController!.offset >
         (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
   }
@@ -150,6 +151,7 @@ class _BrandInfoState extends State<BrandInfo>
               }),
       );
     canEdit = currentUser.brandRole < 2 ? true : false;
+    lines = 3;
     initBrand();
   }
 
@@ -1657,7 +1659,10 @@ class _BrandInfoState extends State<BrandInfo>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
-                      children: [
+                      children: [                        
+                        ///CONEXION CON STRIPE
+                        stripeActivatedGlobal ? conectionStripe() : Container(),
+
                         /// DIRECT PURCHASE
                         Padding(
                             padding: EdgeInsets.only(
@@ -1713,9 +1718,6 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
-
-                        ///CONEXION CON STRIPE
-                        stripeActivatedGlobal ? conectionStripe() : Container(),
 
                         ///PERIODO DE GRACIA
                         Row(
@@ -1886,7 +1888,6 @@ class _BrandInfoState extends State<BrandInfo>
                                 child: const BetaBadge())
                           ],
                         ),
-
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1942,9 +1943,8 @@ class _BrandInfoState extends State<BrandInfo>
                             ),
                           ],
                         ),
-
                         SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.03),
+                            height: MediaQuery.of(context).size.height * 0.03),                      
                       ],
                     ),
                   ),
@@ -2652,7 +2652,7 @@ class _BrandInfoState extends State<BrandInfo>
                         : currentBrand.stripeActivated! &&
                                 currentBrand.isVerified
                             ? Colors.green
-                            : Colors.yellow,
+                            : AppColors.mainColor,
                   ),
                 ),
               ],
@@ -2662,10 +2662,54 @@ class _BrandInfoState extends State<BrandInfo>
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Expanded(
-              child: Text(
-                AppLocalizations.of(context)!.stripeAccountDescription,
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.left,
+              child: TextButton(
+                onPressed: () async {
+                  setState(() {
+                    readMore = !readMore;
+                    if (readMore) {
+                      lines = null;
+                    } else {
+                      lines = 3;
+                    }
+                  });
+                },
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Theme.of(context)
+                      .colorScheme
+                      .background
+                      .withOpacity(0.2)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                  ),
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                ),
+                child: RichText(
+                  textAlign: TextAlign.left,
+                  maxLines: lines,
+                  overflow:
+                      readMore ? TextOverflow.visible : TextOverflow.ellipsis,
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.bodySmall,
+                    children: [
+                      TextSpan(
+                        text:
+                            "${AppLocalizations.of(context)!.stripeAccountDescription}. ",
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      TextSpan(
+                        text: !readMore
+                            ? AppLocalizations.of(context)!.readMore
+                            : AppLocalizations.of(context)!.readLess,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(decoration: TextDecoration.underline),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],

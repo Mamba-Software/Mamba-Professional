@@ -946,7 +946,7 @@ class _PayWallState extends State<PayWall> {
                 AppLocalizations.of(context)!.getInTouch,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).primaryColorDark),
+                    color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.center,
               ),
             ),

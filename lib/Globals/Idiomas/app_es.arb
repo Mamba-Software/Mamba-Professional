@@ -3843,11 +3843,11 @@
   "@cantDeletePurchase": {
     "description": "cantDeletePurchase message"
   },
-  "stripeAccountText": "Conexión con Stripe",
+  "stripeAccountText": "Pagos In-App",
   "@stripeAccountText": {
     "description": "stripeAccountText message"
   },
-  "stripeAccountDescription": "Activa tu cuenta para que tus clientes puedan pagar tus tarifas por la aplicación",
+  "stripeAccountDescription": "Permite que tus clientes paguen tus tarifas directamente desde la aplicación con su tarjeta. Los cobros se automatizan, recibiendo el dinero en tu banco en 3 días laborales.\n\nTodo bajo una comisión del 3.42% por transacción (2.42% para Stripe y 1% para Mamba). Stripe es la plataforma líder en el sector de pago online, todas las transacciones y pagos son conforme a los términos y condiciones de Stripe",
   "@stripeAccountDescription": {
     "description": "stripeAccountDescription message"
   }
