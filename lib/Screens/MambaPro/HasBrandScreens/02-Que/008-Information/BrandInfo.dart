@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -24,9 +25,17 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSn
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_repository.dart';
+import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
+import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
+import 'package:mamba_castelldefels/Stripe/views/onboarding_webview.dart';
+
+import '../../../../../Globals/Widgets/Components/CupertinoSelect/SelectOtherDialog.dart';
 
 // Tus Datos Widget.
 class BrandInfo extends StatefulWidget {
@@ -97,14 +106,25 @@ class _BrandInfoState extends State<BrandInfo>
   int? errorBreakTime;
   // Booking Window
   int bookingWindow = 3;
-  int bookingWindowMin = 0;
+  int bookingWindowMin = 1;
   // Purchase
   bool freeSession = false;
   bool directPurchase = false;
+  int gracePeriodDays = 7;
+  int cancelationsPerWeek = 7;
+  List<bool> isSelectedTerms = [false, false, true];
+  bool isStripeActive = false;
+
+  StripeConnectRepository stripeConnectRepository = StripeConnectRepository();
+
   // Subscription
   int difference = 0;
   bool ShowTextExpired = true;
   final _topSnackBar = TopSnackBarDef();
+
+  // Stripe Read More
+  bool readMore = false;
+  int? lines;
 
   // App Bar and Scroll View
   bool appBarExpanded = false;
@@ -113,8 +133,6 @@ class _BrandInfoState extends State<BrandInfo>
       return false;
     }
     // Use the same condition as before to check if AppBar is expanded.
-    return _scrollController!.offset >
-        (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
     return _scrollController!.offset >
         (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
   }
@@ -133,6 +151,7 @@ class _BrandInfoState extends State<BrandInfo>
               }),
       );
     canEdit = currentUser.brandRole < 2 ? true : false;
+    lines = 3;
     initBrand();
   }
 
@@ -242,6 +261,31 @@ class _BrandInfoState extends State<BrandInfo>
     } else {
       currentBrand.freeSession = false;
     }
+    //Grace period
+    if (currentBrand.gracePeriod != null) {
+      gracePeriodDays = currentBrand.gracePeriod!;
+    } else {
+      currentBrand.gracePeriod = 7;
+    }
+    //Max cancel per week
+    if (currentBrand.maxCanWeek != null) {
+      cancelationsPerWeek = currentBrand.maxCanWeek!;
+    } else {
+      currentBrand.maxCanWeek = 7;
+    }
+    if (currentBrand.paymentTerms != null) {
+      isSelectedTerms[0] = false;
+      isSelectedTerms[1] = false;
+      isSelectedTerms[2] = false;
+      isSelectedTerms[currentBrand.paymentTerms!] = true;
+    } else {
+      currentBrand.paymentTerms = 2;
+    }
+    if (currentBrand.stripeActivated != null && currentBrand.stripeActivated!) {
+      isStripeActive = true;
+    } else {
+      currentBrand.stripeActivated = false;
+    }
   }
 
   // Gets the user info from firebase.
@@ -341,6 +385,28 @@ class _BrandInfoState extends State<BrandInfo>
       } else {
         isUpdated = false;
       }
+      if (currentBrand.gracePeriod != gracePeriodDays) {
+        isUpdated = true;
+      }
+      if (currentBrand.maxCanWeek != cancelationsPerWeek) {
+        isUpdated = true;
+      }
+      if (currentBrand.paymentTerms! == 0) {
+        if (isSelectedTerms[0] == false) {
+          isUpdated = true;
+        }
+      } else if (currentBrand.paymentTerms! == 1) {
+        if (isSelectedTerms[1] == false) {
+          isUpdated = true;
+        }
+      } else if (currentBrand.paymentTerms! == 2) {
+        if (isSelectedTerms[2] == false) {
+          isUpdated = true;
+        }
+      }
+      if (currentBrand.stripeActivated != isStripeActive) {
+        isUpdated = true;
+      }
     }
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -349,6 +415,7 @@ class _BrandInfoState extends State<BrandInfo>
         controller: _scrollController,
         slivers: [
           SliverAppBar(
+            surfaceTintColor: AppColors.darkGrey,
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -381,10 +448,12 @@ class _BrandInfoState extends State<BrandInfo>
                         children: [
                           Text(
                             AppLocalizations.of(context)!.settings,
-                            style:
-                                Theme.of(context).textTheme.displayLarge?.copyWith(
-                                      color: AppColors.white,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
+                                  color: AppColors.white,
+                                ),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
@@ -436,29 +505,15 @@ class _BrandInfoState extends State<BrandInfo>
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  unreadNotifiactions(context),
+                  askSupport(context),
+                  unreadNotifications(context),
                   unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                  profileImage(context),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  GestureDetector(
-                    onTap: () => navigateToProfileScreen(context),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.08,
-                      child: Center(
-                        child: CircularImage(
-                          size: MediaQuery.of(context).size.width * 0.08,
-                          image: currentUser.imageUrl,
-                          color: AppColors.grey,
-                          borderWidth: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
             ],
           ),
           if (isLoading)
@@ -584,7 +639,8 @@ class _BrandInfoState extends State<BrandInfo>
                                                 ),
                                                 decoration: BoxDecoration(
                                                   color: Theme.of(context)
-                                                      .colorScheme.background,
+                                                      .colorScheme
+                                                      .background,
                                                   borderRadius:
                                                       BorderRadius.circular(15),
                                                 ),
@@ -678,10 +734,12 @@ class _BrandInfoState extends State<BrandInfo>
                                     enabled: canEdit,
                                     decoration: InputDecoration(
                                         filled: true,
-                                        fillColor:
-                                            Theme.of(context).colorScheme.background,
-                                        hintStyle:
-                                            Theme.of(context).textTheme.bodySmall,
+                                        fillColor: Theme.of(context)
+                                            .colorScheme
+                                            .background,
+                                        hintStyle: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
                                         hintText: AppLocalizations.of(context)!
                                             .nameBrandError,
                                         border: OutlineInputBorder(
@@ -776,12 +834,14 @@ class _BrandInfoState extends State<BrandInfo>
                                       maxLines: 5,
                                       maxLength: 250,
                                       enabled: canEdit,
-                                      style:
-                                          Theme.of(context).textTheme.bodyMedium,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
                                       decoration: InputDecoration(
                                           filled: true,
-                                          fillColor:
-                                              Theme.of(context).colorScheme.background,
+                                          fillColor: Theme.of(context)
+                                              .colorScheme
+                                              .background,
                                           hintText:
                                               AppLocalizations.of(context)!
                                                   .descriptionHint,
@@ -863,12 +923,7 @@ class _BrandInfoState extends State<BrandInfo>
                             children: [
                               Expanded(
                                 child: Text(
-                                  "${AppLocalizations.of(context)!
-                                          .createdBy(admin.name!)} el ${DateTimeUtils()
-                                          .formatDateTimeToStringDDMMMMYYYY(
-                                              dateJoinedBrand,
-                                              Localizations.localeOf(context)
-                                                  .languageCode)}",
+                                  "${AppLocalizations.of(context)!.createdBy(admin.name!)} el ${DateTimeUtils().formatDateTimeToStringDDMMMMYYYY(dateJoinedBrand, Localizations.localeOf(context).languageCode)}",
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -907,7 +962,7 @@ class _BrandInfoState extends State<BrandInfo>
                                     width: MediaQuery.of(context).size.width *
                                         0.02),
                                 Text(
-                                  AppLocalizations.of(context)!.calendar,
+                                  AppLocalizations.of(context)!.bookings,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displaySmall
@@ -1004,7 +1059,9 @@ class _BrandInfoState extends State<BrandInfo>
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15)),
-                                    color: Theme.of(context).colorScheme.background,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background,
                                   ),
                                   child: Text(
                                     startTimeController.text,
@@ -1018,7 +1075,8 @@ class _BrandInfoState extends State<BrandInfo>
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Text("-",
-                                  style: Theme.of(context).textTheme.displaySmall),
+                                  style:
+                                      Theme.of(context).textTheme.displaySmall),
                             ),
                             TextButton(
                               onPressed: canEdit
@@ -1067,7 +1125,9 @@ class _BrandInfoState extends State<BrandInfo>
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15)),
-                                    color: Theme.of(context).colorScheme.background,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background,
                                   ),
                                   child: Text(
                                     endTimeController.text,
@@ -1125,14 +1185,6 @@ class _BrandInfoState extends State<BrandInfo>
                                   .bodyLarge
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
-                            GestureDetector(
-                                onTap: () {
-                                  _topSnackBar.showSnackBarBottom(
-                                      context,
-                                      AppLocalizations.of(context)!.betaFeature,
-                                      5);
-                                },
-                                child: const BetaBadge())
                           ],
                         ),
                         SizedBox(
@@ -1195,7 +1247,9 @@ class _BrandInfoState extends State<BrandInfo>
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15)),
-                                    color: Theme.of(context).colorScheme.background,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background,
                                   ),
                                   child: Text(
                                     breakStartTimeController.text,
@@ -1209,7 +1263,8 @@ class _BrandInfoState extends State<BrandInfo>
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Text("-",
-                                  style: Theme.of(context).textTheme.displaySmall),
+                                  style:
+                                      Theme.of(context).textTheme.displaySmall),
                             ),
                             TextButton(
                               onPressed: canEdit
@@ -1266,7 +1321,9 @@ class _BrandInfoState extends State<BrandInfo>
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15)),
-                                    color: Theme.of(context).colorScheme.background,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background,
                                   ),
                                   child: Text(
                                     breakEndTimeController.text,
@@ -1402,9 +1459,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    "$bookingWindow ${AppLocalizations.of(context)!
-                                            .days
-                                            .toLowerCase()}",
+                                    "$bookingWindow ${AppLocalizations.of(context)!.days.toLowerCase()}",
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),
@@ -1442,14 +1497,6 @@ class _BrandInfoState extends State<BrandInfo>
                                   .bodyLarge
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
-                            GestureDetector(
-                                onTap: () {
-                                  _topSnackBar.showSnackBarBottom(
-                                      context,
-                                      AppLocalizations.of(context)!.betaFeature,
-                                      5);
-                                },
-                                child: const BetaBadge())
                           ],
                         ),
                         SizedBox(
@@ -1507,54 +1554,7 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
-                      ],
-                    ),
-                  ),
 
-                  /// PURCHASES
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.05),
-                    child: Column(
-                      children: [
-                        const Divider(color: AppColors.grey, thickness: 1),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.03),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.confirmation_number_outlined,
-                              color: AppColors.grey,
-                              size: MediaQuery.of(context).size.width * 0.05,
-                            ),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.02),
-                            Text(
-                              StringUtils().toCapitalized(
-                                  AppLocalizations.of(context)!
-                                      .purchaseHistory
-                                      .split(" ")[2]),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall
-                                  ?.copyWith(color: AppColors.grey),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.03),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.05),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
                         /// FREE SESSION
                         Padding(
                             padding: EdgeInsets.only(
@@ -1574,15 +1574,6 @@ class _BrandInfoState extends State<BrandInfo>
                                           ?.copyWith(
                                               fontWeight: FontWeight.bold),
                                     ),
-                                    GestureDetector(
-                                        onTap: () {
-                                          _topSnackBar.showSnackBarBottom(
-                                              context,
-                                              AppLocalizations.of(context)!
-                                                  .betaFeature,
-                                              5);
-                                        },
-                                        child: const BetaBadge())
                                   ],
                                 ),
                                 SizedBox(
@@ -1623,6 +1614,54 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
+                      ],
+                    ),
+                  ),
+
+                  /// PURCHASES
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Column(
+                      children: [
+                        const Divider(color: AppColors.grey, thickness: 1),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.confirmation_number_outlined,
+                              color: AppColors.grey,
+                              size: MediaQuery.of(context).size.width * 0.05,
+                            ),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.02),
+                            Text(
+                              StringUtils().toCapitalized(
+                                  AppLocalizations.of(context)!.payments),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall
+                                  ?.copyWith(color: AppColors.grey),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [                        
+                        ///CONEXION CON STRIPE
+                        stripeActivatedGlobal ? conectionStripe() : Container(),
 
                         /// DIRECT PURCHASE
                         Padding(
@@ -1679,6 +1718,233 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
+
+                        ///PERIODO DE GRACIA
+                        Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.gracePeriodTitle,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  _topSnackBar.showSnackBarBottom(
+                                      context,
+                                      AppLocalizations.of(context)!.betaFeature,
+                                      5);
+                                },
+                                child: const BetaBadge())
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.015),
+                        GestureDetector(
+                          onTap: canEdit
+                              ? () {
+                                  selectNumberOfDaysGracePeriod();
+                                }
+                              : null,
+                          child: Material(
+                            elevation: 4,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15)),
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                color: Theme.of(context).colorScheme.background,
+                              ),
+                              height: MediaQuery.of(context).size.width * 0.1,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    "$gracePeriodDays ${AppLocalizations.of(context)!.days.toLowerCase()}",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.015),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .gracePeriodDescription,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
+/*
+                        ///CANCELACIONES MAXIMAS POR SEMANA
+                        Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!
+                                  .maximumCancellationsPerWeekTitle,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  _topSnackBar.showSnackBarBottom(
+                                      context,
+                                      AppLocalizations.of(context)!.betaFeature,
+                                      5);
+                                },
+                                child: const BetaBadge())
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.015),
+                        GestureDetector(
+                          onTap: canEdit
+                              ? () {
+                                  selectNumberOfTimesCancelationsPerWeek();
+                                }
+                              : null,
+                          child: Material(
+                            elevation: 4,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15)),
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                color: Theme.of(context).colorScheme.background,
+                              ),
+                              height: MediaQuery.of(context).size.width * 0.1,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    "$cancelationsPerWeek ${AppLocalizations.of(context)!.times.toLowerCase()}",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.015),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .maximumCancellationsPerWeekDescription,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
+*/
+                        ///TERMINOS DE PAGO
+                        Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.paymentTermsTitle,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  _topSnackBar.showSnackBarBottom(
+                                      context,
+                                      AppLocalizations.of(context)!.betaFeature,
+                                      5);
+                                },
+                                child: const BetaBadge())
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.015),
+                                selectedTerms(
+                                    2,
+                                    AppLocalizations.of(context)!
+                                        .exactDaysTitle,
+                                    AppLocalizations.of(context)!
+                                        .exactDaysTitleDescription),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.015),
+                                selectedTerms(
+                                    1,
+                                    AppLocalizations.of(context)!
+                                        .midMonthPaymentTitle,
+                                    AppLocalizations.of(context)!
+                                        .midMonthPaymentDescription),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.015),
+                                selectedTerms(
+                                    0,
+                                    AppLocalizations.of(context)!
+                                        .proratedPaymentTitle,
+                                    AppLocalizations.of(context)!
+                                        .proratedPaymentDescription),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.015),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .paymentTermsDescription,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),                      
                       ],
                     ),
                   ),
@@ -1934,6 +2200,7 @@ class _BrandInfoState extends State<BrandInfo>
           ? Padding(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
               child: FloatingActionButton.extended(
+                shape: const StadiumBorder(),
                 heroTag: "81",
                 onPressed: () async {
                   if (validateInfo()) {
@@ -1962,6 +2229,14 @@ class _BrandInfoState extends State<BrandInfo>
                     _workShift.add(toDouble(breakStart));
                     _workShift.add(toDouble(breakEnd));
                     print(_workShift);
+
+                    int termsSelected = 0;
+
+                    if (isSelectedTerms[1]) {
+                      termsSelected = 1;
+                    } else if (isSelectedTerms[2]) {
+                      termsSelected = 2;
+                    }
                     // Update Brand Info
                     await _brandDataService.updateBrandInfo(
                         widget.brandId,
@@ -1972,7 +2247,11 @@ class _BrandInfoState extends State<BrandInfo>
                         bookingWindow,
                         bookingWindowMin,
                         directPurchase,
-                        freeSession);
+                        freeSession,
+                        gracePeriodDays,
+                        cancelationsPerWeek,
+                        termsSelected,
+                        isStripeActive);
                     await getBrand();
                     mixpanel!.track('brand_info_changes_done');
                   }
@@ -2000,12 +2279,43 @@ class _BrandInfoState extends State<BrandInfo>
     int? pickedMembers = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDaysDialog(
-              title: "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.days.toLowerCase()}",
+              title:
+                  "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.days.toLowerCase()}",
               intialDays: bookingWindow - 1,
             ));
     if (pickedMembers != null) {
       setState(() {
         bookingWindow = pickedMembers;
+      });
+    }
+  }
+
+  Future selectNumberOfDaysGracePeriod() async {
+    int? gracePeriodDaysAux = await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectOtherDialog(
+              title:
+                  "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.days.toLowerCase()}",
+              intialDays: gracePeriodDays,
+            ));
+    if (gracePeriodDaysAux != null) {
+      setState(() {
+        gracePeriodDays = gracePeriodDaysAux;
+      });
+    }
+  }
+
+  Future selectNumberOfTimesCancelationsPerWeek() async {
+    int? cancelationsPerWeekAux = await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectOtherDialog(
+              title:
+                  "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.times.toLowerCase()}",
+              intialDays: cancelationsPerWeek,
+            ));
+    if (cancelationsPerWeekAux != null) {
+      setState(() {
+        cancelationsPerWeek = cancelationsPerWeekAux;
       });
     }
   }
@@ -2169,6 +2479,243 @@ class _BrandInfoState extends State<BrandInfo>
           ),
         ),
       ),
+    );
+  }
+
+  Widget selectedTerms(int index, String title, String description) {
+    return Material(
+      elevation: 4,
+      borderRadius: BorderRadius.circular(15.0),
+      child: Container(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Theme.of(context).primaryColor),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  isSelectedTerms[index] == true
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                            Text(
+                              description,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        )
+                      : Container(),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.034,
+              width: MediaQuery.of(context).size.height * 0.06,
+              child: MaterialButton(
+                elevation: 2,
+                color: isSelectedTerms[index] == true
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).colorScheme.background,
+                padding: EdgeInsets.zero,
+                shape: const CircleBorder(),
+                onPressed: () {
+                  isSelectedTerms[0] = false;
+                  isSelectedTerms[1] = false;
+                  isSelectedTerms[2] = false;
+
+                  isSelectedTerms[index] = true;
+                  setState(() {});
+                },
+                child: isSelectedTerms[index] == true
+                    ? Icon(Icons.check,
+                        color: Theme.of(context).primaryColorDark,
+                        size: MediaQuery.of(context).size.width * 0.05)
+                    : SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.03,
+                        width: MediaQuery.of(context).size.width * 0.03,
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String get buttonText {
+    if (currentBrand.stripeAccountId == null ||
+        currentBrand.stripeAccountId == '') {
+      return 'Connect with Stripe';
+    } else if (!currentBrand.isVerified) {
+      return 'Complete your profile';
+    } else {
+      return 'update your profile';
+    }
+  }
+
+  Widget conectionStripe() {
+    return Column(
+      children: [
+        Padding(
+            padding: EdgeInsets.only(
+                right: MediaQuery.of(context).size.height * 0.01),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.stripeAccountText,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.035,
+                  width: MediaQuery.of(context).size.width * 0.1,
+                  child: CupertinoSwitch(
+                    value: isStripeActive,
+                    onChanged: canEdit
+                        ? (bool newVal) async {
+                            if (newVal) {
+                              context
+                                  .read<StripeConnectCubit>()
+                                  .getLink(currentBrand);
+
+                              var result = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => OnboardingWebView()),
+                              );
+                              /*
+                              if (result != null) {
+                                currentBrand.isVerified = result.isVerified;
+                                currentBrand.stripeAccountId =
+                                    result.stripeAccountId;
+                                currentBrand.stripeActivated = true;
+                                isStripeActive = true;
+                              }*/
+                              currentBrand.stripeAccountId =
+                                  await _brandDataService
+                                      .getBrandStripeAccount(currentBrand.id!);
+                              if (currentBrand.stripeAccountId != '') {
+                                isStripeActive = true;
+                              }
+                            } else {
+                              if (isStripeActive && !currentBrand.isVerified) {
+                                context
+                                    .read<StripeConnectCubit>()
+                                    .getLink(currentBrand);
+
+                                var result = await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          OnboardingWebView()),
+                                );
+                                if (result != null &&
+                                    result is UserStripeModel) {
+                                  currentBrand = currentBrand;
+                                }
+                                currentBrand.stripeAccountId =
+                                    await _brandDataService
+                                        .getBrandStripeAccount(
+                                            currentBrand.id!);
+                                if (currentBrand.stripeAccountId != '') {
+                                  isStripeActive = true;
+                                }
+                              } else {
+                                isStripeActive = newVal;
+                              }
+                            }
+                            setState(() {});
+                          }
+                        : null,
+                    trackColor: Colors.green.withOpacity(0.4),
+                    thumbColor: AppColors.white,
+                    activeColor: currentBrand.stripeActivated == null
+                        ? Colors.green.withOpacity(0.4)
+                        : currentBrand.stripeActivated! &&
+                                currentBrand.isVerified
+                            ? Colors.green
+                            : AppColors.mainColor,
+                  ),
+                ),
+              ],
+            )),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: TextButton(
+                onPressed: () async {
+                  setState(() {
+                    readMore = !readMore;
+                    if (readMore) {
+                      lines = null;
+                    } else {
+                      lines = 3;
+                    }
+                  });
+                },
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Theme.of(context)
+                      .colorScheme
+                      .background
+                      .withOpacity(0.2)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                  ),
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                ),
+                child: RichText(
+                  textAlign: TextAlign.left,
+                  maxLines: lines,
+                  overflow:
+                      readMore ? TextOverflow.visible : TextOverflow.ellipsis,
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.bodySmall,
+                    children: [
+                      TextSpan(
+                        text:
+                            "${AppLocalizations.of(context)!.stripeAccountDescription}. ",
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      TextSpan(
+                        text: !readMore
+                            ? AppLocalizations.of(context)!.readMore
+                            : AppLocalizations.of(context)!.readLess,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(decoration: TextDecoration.underline),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+      ],
     );
   }
 }

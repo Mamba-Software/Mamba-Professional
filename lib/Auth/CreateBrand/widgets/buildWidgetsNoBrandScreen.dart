@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/QRCode/QRScanner.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
@@ -75,7 +76,8 @@ Widget buildGreetingWidget(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            unreadNotifiactions(context),
+            askSupport(context),
+            unreadNotifications(context),
             unreadChats(context),
           ],
         ),

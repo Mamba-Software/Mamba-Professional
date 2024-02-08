@@ -22,6 +22,7 @@ class Bono {
   // Ids
   String? purchaseId;
   String? brandId;
+  bool? isRecurrent = false;
 
   Bono({
     this.id,
@@ -38,6 +39,7 @@ class Bono {
     this.condition,
     this.purchaseId,
     this.brandId,
+    this.isRecurrent,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -106,6 +108,10 @@ class Bono {
         .containsKey('brandId')) {
       brandId = documentSnapshot.get("brandId").toString();
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isRecurrent')) {
+      isRecurrent = documentSnapshot.get("isRecurrent");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -125,6 +131,7 @@ class Bono {
     opacity = bono.opacity;
     purchaseId = bono.purchaseId;
     brandId = bono.brandId;
+    isRecurrent = bono.isRecurrent;
   }
 
   // Set Basic Data

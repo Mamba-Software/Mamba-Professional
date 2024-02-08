@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
@@ -38,7 +39,9 @@ class BrandPurchaseCard extends StatelessWidget {
       },
       child: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.03),
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.04,
+            vertical: MediaQuery.of(context).size.width * 0.03),
         child: Row(
           children: [
             CircularImage(
@@ -47,7 +50,9 @@ class BrandPurchaseCard extends StatelessWidget {
               color: Theme.of(context).primaryColor,
               borderWidth: 1.0,
             ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.04), // adjust this value as needed
+            SizedBox(
+                width: MediaQuery.of(context).size.width *
+                    0.04), // adjust this value as needed
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -60,7 +65,10 @@ class BrandPurchaseCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           user.name!,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -71,16 +79,18 @@ class BrandPurchaseCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
                   /// BONO
                   Row(
                     children: [
                       BonoCard(
-                          height: MediaQuery.of(context).size.width * 0.03,
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          bono: bono,
-                          brand: brand,
-                          canExpand: false,
-                          onlyView: true
+                        height: MediaQuery.of(context).size.width * 0.03,
+                        width: MediaQuery.of(context).size.width * 0.05,
+                        bono: bono,
+                        brand: brand,
+                        canExpand: false,
+                        onlyView: true,
+                        isDynamic: bonoRequest != null ? true : false,
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                       Flexible(
@@ -95,9 +105,13 @@ class BrandPurchaseCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
                   /// DETAILS
-                  bonoRequest != null ? buildBonoRequestDetails(context) : buildPurchaseDetails(context),
+                  bonoRequest != null
+                      ? buildBonoRequestDetails(context)
+                      : buildPurchaseDetails(context),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
                   /// DATE
                   buildDateDetails(context),
                 ],
@@ -155,7 +169,8 @@ class BrandPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            StringUtils().toCapitalized(AppLocalizations.of(context)!.desactive),
+            StringUtils()
+                .toCapitalized(AppLocalizations.of(context)!.desactiveFem),
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -171,7 +186,11 @@ class BrandPurchaseCard extends StatelessWidget {
         ),
         Flexible(
           child: Text(
-            "${bono.price!.toStringAsFixed(2)} €",
+            bonoRequest != null
+                ? "${BonosUtils().getPurchasePrice(brand, bono, bono.condition!).toStringAsFixed(2)} €"
+                : purchase != null && purchase!.price != null
+                    ? "${purchase!.price!.toStringAsFixed(2)} €"
+                    : "${bono.price!.toStringAsFixed(2)} €",
             style: priceStyle,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -193,7 +212,6 @@ class BrandPurchaseCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
-
       ],
     );
   }
@@ -207,12 +225,15 @@ class BrandPurchaseCard extends StatelessWidget {
       paymentIcon = Icons.paid_outlined;
       paymentText = AppLocalizations.of(context)!.cashPaymentMethod;
     } else if (purchase!.paymentMethod! == 1) {
-      paymentIcon = Icons.payment_outlined;
+      paymentIcon = Icons.send_to_mobile_outlined;
       paymentText = AppLocalizations.of(context)!.transferPaymentMethod;
-    } else {
+    } else if (purchase!.paymentMethod! == 2) {
       paymentIcon = Icons.card_giftcard_outlined;
       paymentText = AppLocalizations.of(context)!.giftPaymentMethod;
       priceStyle = priceStyle?.copyWith(decoration: TextDecoration.lineThrough);
+    } else {
+      paymentIcon = Icons.payment_outlined;
+      paymentText = AppLocalizations.of(context)!.cardPaymentMethod;      
     }
 
     return Row(
@@ -245,7 +266,9 @@ class BrandPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            purchase!.isActive! ? AppLocalizations.of(context)!.active : AppLocalizations.of(context)!.desactive,
+            purchase!.isActive!
+                ? AppLocalizations.of(context)!.activeFem
+                : AppLocalizations.of(context)!.desactiveFem,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -283,7 +306,6 @@ class BrandPurchaseCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
-
       ],
     );
   }
@@ -294,8 +316,12 @@ class BrandPurchaseCard extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(bonoRequest!.timeRequested!.toDate()).toUpperCase(),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
+              DateFormat("E dd MMMM yy, HH:mm",
+                      Localizations.localeOf(context).languageCode)
+                  .format(bonoRequest!.timeRequested!.toDate())
+                  .toUpperCase(),
+              style:
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -308,8 +334,12 @@ class BrandPurchaseCard extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase!.purchasedAt!.toDate()).toUpperCase(),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
+              DateFormat("E dd MMMM yy, HH:mm",
+                      Localizations.localeOf(context).languageCode)
+                  .format(purchase!.purchasedAt!.toDate())
+                  .toUpperCase(),
+              style:
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -334,7 +364,10 @@ class BrandPurchaseCard extends StatelessWidget {
           SizedBox(width: MediaQuery.of(context).size.width * 0.01),
           Text(
             AppLocalizations.of(context)!.toConfirm,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
             textAlign: TextAlign.right,
           ),
         ],
@@ -352,7 +385,10 @@ class BrandPurchaseCard extends StatelessWidget {
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Text(
               AppLocalizations.of(context)!.unverfied,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
               textAlign: TextAlign.right,
             ),
           ],
@@ -376,7 +412,6 @@ class BrandPurchaseCard extends StatelessWidget {
         );
       }
     }
-
   }
 
   void onTapPurchase(BuildContext context) async {
@@ -384,17 +419,16 @@ class BrandPurchaseCard extends StatelessWidget {
       await navigateToPayWall(context);
     } else {
       await Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => PurchasePage(
-            bono: bono,
-            user: user,
-            brand: brand,
-            bonoRequest: bonoRequest,
-            purchase: purchase,
-          ),
-        )
-      );
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) => PurchasePage(
+              bono: bono,
+              user: user,
+              brand: brand,
+              bonoRequest: bonoRequest,
+              purchase: purchase,
+            ),
+          ));
     }
   }
 }

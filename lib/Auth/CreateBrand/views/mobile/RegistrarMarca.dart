@@ -24,7 +24,6 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 
-
 class RegistrarMarca extends StatefulWidget {
   Locale? locale;
   RegistrarMarca({super.key, this.locale});
@@ -87,6 +86,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
   bool errorBreakTime = false;
   // Booking Window
   int bookingWindow = 3;
+  int minBookingWindow = 1;
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
@@ -123,7 +123,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
         descriptionController.text.trim(),
         _workShift,
         membersMax,
-        bookingWindow);
+        bookingWindow,
+        minBookingWindow);
     // Add Location
     String baseLocation = await _locationDataService.addLocation(
         result,
@@ -407,7 +408,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                           );
                                         },
                                   style: ElevatedButton.styleFrom(
-                                    elevation: 0, backgroundColor: _image != null
+                                    elevation: 0,
+                                    backgroundColor: _image != null
                                         ? Theme.of(context).primaryColor
                                         : Theme.of(context)
                                             .primaryColor
@@ -593,13 +595,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                           decoration: InputDecoration(
                                             filled: true,
                                             fillColor: AppColors.white,
-                                            hintText: "${AppLocalizations.of(
-                                                        context)!
-                                                    .descriptionError}. Max. 250 ${AppLocalizations.of(context)!
-                                                    .chars
-                                                    .toLowerCase()} (${AppLocalizations.of(context)!
-                                                    .optional
-                                                    .toLowerCase()})",
+                                            hintText:
+                                                "${AppLocalizations.of(context)!.descriptionError}. Max. 250 ${AppLocalizations.of(context)!.chars.toLowerCase()} (${AppLocalizations.of(context)!.optional.toLowerCase()})",
                                             hintStyle: Theme.of(context)
                                                 .textTheme
                                                 .displaySmall
@@ -665,10 +662,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                           children: [
                                             Flexible(
                                               child: Text(
-                                                "Max. 250 ${AppLocalizations.of(
-                                                            context)!
-                                                        .chars
-                                                        .toLowerCase()}",
+                                                "Max. 250 ${AppLocalizations.of(context)!.chars.toLowerCase()}",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyMedium
@@ -732,7 +726,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                           );
                                         },
                                   style: ElevatedButton.styleFrom(
-                                    elevation: 0, backgroundColor: nameCanGoNext
+                                    elevation: 0,
+                                    backgroundColor: nameCanGoNext
                                         ? Theme.of(context).primaryColor
                                         : Theme.of(context)
                                             .primaryColor
@@ -770,9 +765,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!
-                                          .baseLocation
-                                          .toLowerCase()}",
+                                  "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.baseLocation.toLowerCase()}",
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -1090,7 +1083,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                           registerBrand();
                                         },
                                   style: ElevatedButton.styleFrom(
-                                    elevation: 0, backgroundColor: _image != null
+                                    elevation: 0,
+                                    backgroundColor: _image != null
                                         ? Theme.of(context).primaryColor
                                         : Theme.of(context)
                                             .primaryColor
@@ -1126,9 +1120,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.02),
                         Text(
-                          "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!
-                                  .yourBrand
-                                  .toLowerCase()} ...",
+                          "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!.yourBrand.toLowerCase()} ...",
                           style: Theme.of(context)
                               .textTheme
                               .displayLarge
@@ -1952,6 +1944,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                 child: Container(
                   height: 50,
                   child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),(
+                  shape: const StadiumBorder(),(
                     heroTag: "72",
                     onPressed: () {
                       if (_selectedIndex == 1) {
@@ -1993,6 +1987,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                 child: Container(
                   height: 50,
                   child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),(
                     heroTag: "27",
                     onPressed: () async {
                       if (_selectedIndex == 0) {

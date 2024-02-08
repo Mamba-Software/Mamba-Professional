@@ -2,7 +2,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
@@ -10,15 +10,14 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Events/Calendar/views/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
@@ -26,6 +25,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/Bonos.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/009%20-%20Stats/Stats.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
@@ -87,16 +87,16 @@ class _BrandScreenState extends State<BrandScreen> {
   //Return the ListTile of each screen of Mamba Pro
   Widget listTilePro(int pageIndexVar, [bool isFavourite = false]) {
     return ListTile(
-          leading: _mambaProUtils.iconSelectorListView(context, pageIndexVar),
-          title: _mambaProUtils.titlePageSelectorListView(context, pageIndexVar),          
-          onTap: () => {
-                Navigator.pop(context),
-                setBrandActive(),
-                setState(() {
-                  pageIndex = pageIndexVar;
-                  setFavourites();
-                }),
-              });
+        leading: _mambaProUtils.iconSelectorListView(context, pageIndexVar),
+        title: _mambaProUtils.titlePageSelectorListView(context, pageIndexVar),
+        onTap: () => {
+              Navigator.pop(context),
+              setBrandActive(),
+              setState(() {
+                pageIndex = pageIndexVar;
+                setFavourites();
+              }),
+            });
   }
 
   Widget buildHeader() {
@@ -186,7 +186,8 @@ class _BrandScreenState extends State<BrandScreen> {
                                   child: Text(
                                     returnBrandRoleString(),
                                     textAlign: TextAlign.left,
-                                    style: Theme.of(context).textTheme.bodySmall,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -239,59 +240,107 @@ class _BrandScreenState extends State<BrandScreen> {
               ),
             ),
           ),
-          /*
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.07),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: navigateToProfileScreen,
-                      child: CircularImage(
-                        size: MediaQuery.of(context).size.height * 0.1,
-                        image: currentUser.imageUrl,
-                        color: AppColors.white,
-                        borderWidth: 1,
-                      ),
-                    ),
-
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                Text(
-                    currentUser.firstName! + ' ' + currentUser.lastName!,
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                TextButton(
-                  onPressed: navigateToRolesInformationModal,
-                  style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(50, 30),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      alignment: Alignment.centerLeft),
-                  child: Text(
-                    returnBrandRoleString(),
-                    textAlign: TextAlign.left,
-                    //style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
-                    style: Theme.of(context).textTheme.caption,
-                  )
-                ),
-              ],
-            ),
-          ),
-           */
         ],
       ),
     );
+  }
+
+  Widget buildBottomPayment() {
+    return BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
+        builder: (context, state) {
+      switch (state.runtimeType) {
+        case BrandSuscriptionLoadedTrue:
+          final suscriptionState = state as BrandSuscriptionLoadedTrue;
+          int difference = state.subscription.endDate!
+              .toDate()
+              .difference(DateTime.now())
+              .inDays;
+          String date = DateTimeUtils().formatDateTimeToStringDDMMYY(
+              state.subscription.endDate!.toDate());
+          return suscriptionState.subscription.subscriptionId == "7DAYSTRIAL"
+              ? Container(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: ListTile(
+                      title: Text(AppLocalizations.of(context)!.freeTrial,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left),
+                      subtitle: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .freeTrialDaysLeft(difference.toString()),
+                          style: Theme.of(context).textTheme.bodySmall,
+                          maxLines: 1,
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      onTap: () => {
+                            Navigator.pop(context),
+                            setBrandActive(),
+                            setState(() {
+                              pageIndex = 17;
+                              setFavourites();
+                            }),
+                          }),
+                )
+              : Container(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: ListTile(
+                      title: Text(AppLocalizations.of(context)!.monthlyPlan,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left),
+                      subtitle: Text(
+                        AppLocalizations.of(context)!
+                            .monthlyPlanDayRenewal(date.toString()),
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.left,
+                      ),
+                      onTap: () => {
+                            Navigator.pop(context),
+                            setBrandActive(),
+                            setState(() {
+                              pageIndex = 17;
+                              setFavourites();
+                            }),
+                          }),
+                );
+        case BrandSuscriptionLoadedFalse:
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.1,
+            padding: const EdgeInsets.only(left: 4.0),
+            child: ListTile(
+                title: Text(AppLocalizations.of(context)!.chooseYourPlan,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.left),
+                subtitle: Text(
+                  AppLocalizations.of(context)!.chooseYourPlanDesc,
+                  style: Theme.of(context).textTheme.bodySmall,
+                  textAlign: TextAlign.left,
+                ),
+                onTap: () => {
+                      Navigator.pop(context),
+                      setBrandActive(),
+                      setState(() {
+                        pageIndex = 17;
+                        setFavourites();
+                      }),
+                    }),
+          );
+        default:
+          return Container();
+      }
+    });
   }
 
   String returnBrandRoleString() {
@@ -344,23 +393,8 @@ class _BrandScreenState extends State<BrandScreen> {
         ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         listTilePro(10),
-        listTilePro(5),
+        listTilePro(18),
         listTilePro(9),
-
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.04),
-          child: Text(
-            AppLocalizations.of(context)!.members,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.left,
-          ),
-        ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        listTilePro(2),
-        listTilePro(1),
-        //currentUser.brandRole < 3 ? listTilePro(15) : Container(),
 
         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Padding(
@@ -373,10 +407,26 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
         ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        listTilePro(17),
+        listTilePro(5),
+        listTilePro(2),
+        listTilePro(1),
+        //currentUser.brandRole < 3 ? listTilePro(15) : Container(),
+
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+        Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.04),
+          child: Text(
+            AppLocalizations.of(context)!.information,
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.left,
+          ),
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+        //listTilePro(17),
+        listTilePro(8),
         listTilePro(7),
         listTilePro(11),
-        listTilePro(8),
         //listTilePro(14),
         /*
         ListTile(
@@ -574,86 +624,6 @@ class _BrandScreenState extends State<BrandScreen> {
     );
   }
 
-  Widget buildBrandLeaveOption() {
-    return currentUser.brandRole < 2
-        ? ListTile(
-            leading: Icon(Icons.delete_outline,
-                color: Colors.red,
-                size: MediaQuery.of(context).size.width * 0.07),
-            title: Text(
-              AppLocalizations.of(context)!.deleteBrand,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge
-                  ?.copyWith(color: Colors.red),
-            ),
-            onTap: () async {
-              mixpanel!.track('delete_brand_dialog_open');
-              var result = await showDialog(
-                  context: context,
-                  builder: (_) {
-                    return const DeleteBrandDialog();
-                  });
-              if (result) {
-                mixpanel!.track('delete_brand_confirmed');
-                setState(() {
-                  isLoading = true;
-                });
-                // New DataBase
-                await _brandDataService.deleteBrand(currentBrand.id!);
-                await _roomDataService.deleteRoom(currentBrand.roomId!);
-                currentUser.setBrandList = [];
-                await Future.delayed(const Duration(seconds: 4));
-                Navigator.pushReplacement(
-                    context,
-                    CupertinoPageRoute<void>(
-                      builder: (context) => const SplashScreen(),
-                      settings: const RouteSettings(name: 'SplashScreen'),
-                    ));
-              }
-            })
-        : ListTile(
-            leading: Icon(Icons.logout,
-                color: Colors.red,
-                size: MediaQuery.of(context).size.width * 0.07),
-            title: Text(
-              AppLocalizations.of(context)!.exitBrand,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge
-                  ?.copyWith(color: Colors.red),
-            ),
-            onTap: () async {
-              mixpanel!.track('exit_brand_dialog_open');
-              // Leaves Brand
-              var result = await showDialog(
-                  context: context,
-                  builder: (_) {
-                    return ConfirmationDialog(
-                        text: AppLocalizations.of(context)!.exitBrandConfirm);
-                  });
-              if (result) {
-                mixpanel!.track('exit_brand_confirmed');
-                setState(() {
-                  isLoading = true;
-                });
-                pageIndex = 10;
-                NotificationService()
-                    .userLeavesBrand(currentUser.id!, currentBrand.id!);
-                await _eventDataService.deleteUserFromUpcomingEvents(
-                    currentUser.id!, currentUser.isTrainer!);
-                await _brandDataService.deleteUserFromBrand(
-                    currentUser.id!, currentBrand.id!);
-                Navigator.pushReplacement(
-                    context,
-                    CupertinoPageRoute<void>(
-                      builder: (context) => const SplashScreen(),
-                      settings: const RouteSettings(name: 'SplashScreen'),
-                    ));
-              }
-            });
-  }
-
   Widget buildBodyNavigation() {
     print(pageIndex);
     switch (pageIndex) {
@@ -765,6 +735,11 @@ class _BrandScreenState extends State<BrandScreen> {
             handleChangedFavourites();
           },
         );
+      case 18:
+        mixpanel!.track('brand_subscription_view');
+        return BrandPurchaseHistory(
+          brandId: currentBrand.id!,
+        );
       default:
         mixpanel!.track('brand_homepage_view');
         return BrandCalendarWidget(
@@ -828,11 +803,15 @@ class _BrandScreenState extends State<BrandScreen> {
     return Scaffold(
       key: mambaProScaffoldKey,
       drawer: Drawer(
+        surfaceTintColor: Theme.of(context).primaryColorDark,
         backgroundColor: Theme.of(context).primaryColorDark,
-        child: ListView(
-          physics: const ClampingScrollPhysics(),
-          // Remove padding
-          padding: EdgeInsets.zero,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(0.0),
+            bottomRight: Radius.circular(0.0),
+          ),
+        ),
+        child: Column(
           children: [
             // Header
             buildHeader(),
@@ -841,10 +820,40 @@ class _BrandScreenState extends State<BrandScreen> {
               thickness: 0,
               height: 1,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-            // Brand Options
-            buildBrandListOptions(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            // Brand List Options
+            Expanded(
+              child: ListView(
+                physics: const ClampingScrollPhysics(),
+                // Remove padding
+                padding: EdgeInsets.zero,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  // Brand Options
+                  buildBrandListOptions(),
+
+                  /* TODO: Delete this
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                  TextButton(
+                    onPressed: () {
+                      UtilsTest ut = UtilsTest();
+                      ut.callTestFunction();
+                    },
+                    child: const Text('FUNCION DE PRUEBA BONOS'),
+                  ),
+                  // TODO: Delete this
+                  */
+
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                ],
+              ),
+            ),
+            // Payment
+            const Divider(
+              color: AppColors.grey,
+              thickness: 0,
+              height: 1,
+            ),
+            buildBottomPayment(),
           ],
         ),
       ),
@@ -939,5 +948,4 @@ class _BrandScreenState extends State<BrandScreen> {
                       ],
                     ),
    */
-
 }

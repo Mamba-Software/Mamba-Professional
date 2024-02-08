@@ -21,6 +21,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/Add
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
@@ -345,17 +347,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
         return dateTimeStart.year == DateTime.now().year
             ? Text(
                 "${StringUtils().toCapitalized(DateFormat(
-                      'EEEE',
+                  'EEEE',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))}, ${StringUtils().toCapitalized(DateFormat(
+                  'dd',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} ${StringUtils().toCapitalized(DateFormat(
+                      'MMMM',
                       Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))}, ${StringUtils().toCapitalized(DateFormat(
-                      'dd',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} ${StringUtils()
-                        .toCapitalized(DateFormat(
-                          'MMMM',
-                          Localizations.localeOf(context).languageCode,
-                        ).format(dateTimeStart))
-                        .substring(0, 3)} ",
+                    ).format(dateTimeStart)).substring(0, 3)} ",
                 style: Theme.of(context)
                     .textTheme
                     .displayLarge
@@ -364,12 +364,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
             : Text(
                 //StringUtils().toCapitalized(DateFormat('EE', Localizations.localeOf(context).languageCode,).format(dateTimeStart))+" "+
                 "${StringUtils().toCapitalized(DateFormat(
-                      'dd',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} ${StringUtils().toCapitalized(DateFormat(
-                      'MMMM yyyy',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} ",
+                  'dd',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} ${StringUtils().toCapitalized(DateFormat(
+                  'MMMM yyyy',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
                     .displayLarge
@@ -379,15 +379,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
         return dateTimeStart.year == DateTime.now().year
             ? Text(
                 "${StringUtils().toCapitalized(DateFormat(
-                      'dd',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
-                      'dd',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeEnd))} ${StringUtils().toCapitalized(DateFormat(
-                      'MMMM',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} ",
+                  'dd',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
+                  'dd',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeEnd))} ${StringUtils().toCapitalized(DateFormat(
+                  'MMMM',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
                     .displayLarge
@@ -395,15 +395,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
               )
             : Text(
                 "${StringUtils().toCapitalized(DateFormat(
-                      'dd',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
-                      'dd',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeEnd))} ${StringUtils().toCapitalized(DateFormat(
-                      'MMMM yy',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} ",
+                  'dd',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
+                  'dd',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeEnd))} ${StringUtils().toCapitalized(DateFormat(
+                  'MMMM yy',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
                     .displayLarge
@@ -426,15 +426,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
         return dateTimeStart.year == DateTime.now().year
             ? Text(
                 "${StringUtils().toCapitalized(DateFormat(
-                      'dd',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
-                      'dd',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart.add(const Duration(days: 6))))} ${StringUtils().toCapitalized(DateFormat(
-                      'MMMM',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} ",
+                  'dd',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
+                  'dd',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart.add(const Duration(days: 6))))} ${StringUtils().toCapitalized(DateFormat(
+                  'MMMM',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
                     .displayLarge
@@ -442,15 +442,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
               )
             : Text(
                 "${StringUtils().toCapitalized(DateFormat(
-                      'dd',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
-                      'dd',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart.add(const Duration(days: 6))))} ${StringUtils().toCapitalized(DateFormat(
-                      'MMMM yyyy',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart))} ",
+                  'dd',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
+                  'dd',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart.add(const Duration(days: 6))))} ${StringUtils().toCapitalized(DateFormat(
+                  'MMMM yyyy',
+                  Localizations.localeOf(context).languageCode,
+                ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
                     .displayLarge
@@ -459,8 +459,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
     }
   }
 
-  
-   Widget _buildTitleFromDate(
+  Widget _buildTitleFromDate(
       DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Container(
       color: AppColors.darkGrey,
@@ -648,7 +647,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
     );
   }
 
-
   Widget _buildEventContainer(
       CalendarAppointmentDetails details, List<Event> eventsList) {
     final Appointment appointment = details.appointments.first;
@@ -691,9 +689,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     child: Container(
                       margin: const EdgeInsets.only(top: 8),
                       child: Text(
-                        "${appointment.subject} ${AppLocalizations.of(context)!
-                                .asistants
-                                .toLowerCase()}",
+                        "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
@@ -849,9 +845,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           TextSpan(text: event.title!),
                           event.isPrivate!
                               ? TextSpan(
-                                  text: "   ${appointment.subject} ${AppLocalizations.of(context)!
-                                          .asistants
-                                          .toLowerCase()}   ",
+                                  text:
+                                      "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -859,9 +854,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                           color: AppColors.white, fontSize: 11),
                                 )
                               : TextSpan(
-                                  text: "   ${appointment.subject} ${AppLocalizations.of(context)!
-                                          .asistants
-                                          .toLowerCase()}   ",
+                                  text:
+                                      "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -939,9 +933,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           TextSpan(text: event.title!),
                           event.isPrivate!
                               ? TextSpan(
-                                  text: "   ${appointment.subject} ${AppLocalizations.of(context)!
-                                          .asistants
-                                          .toLowerCase()}   ",
+                                  text:
+                                      "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -949,9 +942,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                           color: AppColors.white, fontSize: 11),
                                 )
                               : TextSpan(
-                                  text: "   ${appointment.subject} ${AppLocalizations.of(context)!
-                                          .asistants
-                                          .toLowerCase()}   ",
+                                  text:
+                                      "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -1033,10 +1025,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           TextSpan(text: "${event.title!}\n"),
                           TextSpan(
                             text: event.isPrivate!
-                                ? "${appointment.subject} ${AppLocalizations.of(context)!
-                                        .asistants
-                                        .toLowerCase()
-                                        .substring(0, 4)}."
+                                ? "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase().substring(0, 4)}."
                                 : appointment.subject,
                             style: Theme.of(context)
                                 .textTheme
@@ -1069,10 +1058,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           TextSpan(
                             //text: event.isPrivate! ? appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase() : appointment.subject,
                             text: event.isPrivate!
-                                ? "${appointment.subject} ${AppLocalizations.of(context)!
-                                        .asistants
-                                        .toLowerCase()
-                                        .substring(0, 4)}."
+                                ? "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase().substring(0, 4)}."
                                 : appointment.subject,
                             style: Theme.of(context)
                                 .textTheme
@@ -1191,9 +1177,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "${appointment.subject} ${AppLocalizations.of(context)!
-                                            .asistants
-                                            .toLowerCase()}",
+                                    "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                     overflow: TextOverflow.fade,
@@ -1201,15 +1185,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                     softWrap: false,
                                   ),
                                   Text(
-                                    "${DateFormat(
-                                                'Hm',
-                                                Localizations.localeOf(context)
-                                                    .languageCode)
-                                            .format(appointment.startTime)} - ${DateFormat(
-                                                'Hm',
-                                                Localizations.localeOf(context)
-                                                    .languageCode)
-                                            .format(appointment.endTime)}",
+                                    "${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime)} - ${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime)}",
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                     overflow: TextOverflow.fade,
@@ -1318,6 +1294,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
+            surfaceTintColor: AppColors.darkGrey,
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -1377,7 +1354,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                         : Colors.transparent, // Button color
                                     child: InkWell(
                                       splashColor: Theme.of(context)
-                                          .colorScheme.background, // Splash color
+                                          .colorScheme
+                                          .background, // Splash color
                                       onTap: () async {
                                         await showModalBottomSheet<int?>(
                                           context: context,
@@ -1464,8 +1442,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                     }),
                                                             dense: true,
                                                             onTap:
-                                                                currentPage ==
-                                                                        0
+                                                                currentPage == 0
                                                                     ? null
                                                                     : () {
                                                                         pageController
@@ -1501,8 +1478,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                       page;
                                                                 });
                                                               },
-                                                              children: <
-                                                                  Widget>[
+                                                              children: <Widget>[
                                                                 Column(
                                                                   children: [
                                                                     ListTile(
@@ -1522,10 +1498,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                         );
                                                                       },
                                                                       title: Text(
-                                                                          "${AppLocalizations.of(context)!.typeProfile.split(" ")[0]} ${AppLocalizations.of(context)!.typeProfile.split(" ")[
-                                                                                  1]} ${AppLocalizations.of(context)!
-                                                                                  .events
-                                                                                  .toLowerCase()}",
+                                                                          "${AppLocalizations.of(context)!.typeProfile.split(" ")[0]} ${AppLocalizations.of(context)!.typeProfile.split(" ")[1]} ${AppLocalizations.of(context)!.events.toLowerCase()}",
                                                                           style: Theme.of(context)
                                                                               .textTheme
                                                                               .bodyLarge,
@@ -1842,28 +1815,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  unreadNotifiactions(context),
+                  askSupport(context),
+                  unreadNotifications(context),
                   unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                  profileImage(context),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  GestureDetector(
-                    onTap: () => navigateToProfileScreen(context),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.08,
-                      child: Center(
-                        child: CircularImage(
-                          size: MediaQuery.of(context).size.width * 0.08,
-                          image: currentUser.imageUrl,
-                          color: AppColors.grey,
-                          borderWidth: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
             ],
           ),
           BlocBuilder<BrandEventsCubit, BrandEventsState>(
@@ -2050,8 +2010,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                     textAlign: TextAlign.start,
                                     backgroundColor: Theme.of(context)
                                         .scaffoldBackgroundColor,
-                                    monthTextStyle:
-                                        Theme.of(context).textTheme.displayLarge,
+                                    monthTextStyle: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge,
                                   )),
                               scheduleViewMonthHeaderBuilder:
                                   (BuildContext buildContext,
@@ -2171,15 +2132,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       width: MediaQuery.of(context).size.width *
                                           0.2,
                                       decoration: BoxDecoration(
-                                        color:
-                                            Theme.of(context).colorScheme.background,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .background,
                                         borderRadius: const BorderRadius.all(
                                           Radius.circular(10),
                                         ),
                                       ),
                                       child: Text(
-                                          "Zoom: ${(_timeSlotViewScale * 100)
-                                                  .toStringAsFixed(0)} %",
+                                          "Zoom: ${(_timeSlotViewScale * 100).toStringAsFixed(0)} %",
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall

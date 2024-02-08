@@ -25,7 +25,9 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSn
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -1352,6 +1354,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
           controller: _scrollController,
           slivers: [
             SliverAppBar(
+              surfaceTintColor: AppColors.darkGrey,
               backgroundColor: AppColors.darkGrey,
               expandedHeight: MediaQuery.of(context).size.height * 0.15,
               systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -1846,28 +1849,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
               actions: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    unreadNotifiactions(context),
+                    askSupport(context),
+                    unreadNotifications(context),
                     unreadChats(context),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                    profileImage(context),
                     SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                    GestureDetector(
-                      onTap: () => navigateToProfileScreen(context),
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.08,
-                        child: Center(
-                          child: CircularImage(
-                            size: MediaQuery.of(context).size.width * 0.08,
-                            image: currentUser.imageUrl,
-                            color: AppColors.grey,
-                            borderWidth: 0,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.03),
               ],
             ),
             BlocBuilder<BrandEventsCubit, BrandEventsState>(
@@ -2179,9 +2169,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                         padding: EdgeInsets.all(
                                             MediaQuery.of(context).size.width *
                                                 0.0115),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.2,
                                         decoration: BoxDecoration(
                                           color: Theme.of(context)
                                               .colorScheme

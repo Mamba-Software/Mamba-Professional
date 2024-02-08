@@ -30,8 +30,8 @@ class BrandFirebaseCalls {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
 
-  // Firebase collections 
-  String users = 'Users';  
+  // Firebase collections
+  String users = 'Users';
   String brands = 'Brands';
   String events = 'Events';
   String locations = 'Locations';
@@ -562,13 +562,12 @@ class BrandFirebaseCalls {
   Future<Subscription> getBrandSubscription(
       String brandId, String subscriptionId) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await _firestore
-              .collection(brands)
-              .doc(brandId)
-              .collection('Subscriptions')
-              .doc(subscriptionId)
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection('Subscriptions')
+          .doc(subscriptionId)
+          .get();
       return Subscription.fromObjectAllData(
           documentSnapshot.id, documentSnapshot);
     } catch (e) {
@@ -577,10 +576,31 @@ class BrandFirebaseCalls {
     }
   }
 
+  Future<String> getBrandStripeAccount(String brandID) async {
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await _firestore.collection(brands).doc(brandID).get();
+    Brand brand =
+        Brand.fromObjectOnlyCoverData(documentSnapshot.id, documentSnapshot);
+    if (brand.stripeAccountId != null) {
+      currentBrand.stripeAccountId = brand.stripeAccountId;
+      currentBrand.stripeActivated = true;
+    }
+    if (brand.isVerified != null) {
+      currentBrand.isVerified = brand.isVerified;
+    }
+    return brand.stripeAccountId!;
+  }
+
   //Add
 
-  Future<String> addBrand(String name, File image, String description,
-      List<double> workShift, int maxMembers, int bookingWindow) async {
+  Future<String> addBrand(
+      String name,
+      File image,
+      String description,
+      List<double> workShift,
+      int maxMembers,
+      int bookingWindow,
+      int minBookingWindow) async {
     QuerySnapshot querySnapshot3 = await _firestore
         .collection(library)
         .doc('Images')
@@ -607,6 +627,7 @@ class BrandFirebaseCalls {
       "workShift": workShift,
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
+      "minBookingWindow": minBookingWindow,
       "isActive": false,
       "baseImage": ImageObject.fromObjectAllData(
               querySnapshot3.docs[index].id, querySnapshot3.docs[index])
@@ -657,9 +678,8 @@ class BrandFirebaseCalls {
     // Add each brand to the .../BrandId/images directory
     final uid = const Uuid().v4();
     // Upload the image to Firebase Storage
-    var storageRef = _firebaseStorage
-        .ref()
-        .child("brands/$brandID/images/$uid.jpeg");
+    var storageRef =
+        _firebaseStorage.ref().child("brands/$brandID/images/$uid.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -685,9 +705,8 @@ class BrandFirebaseCalls {
       var image = images[i];
       final uid = const Uuid().v4();
       // Upload the image to Firebase Storage
-      var storageRef = _firebaseStorage
-          .ref()
-          .child("brands/$brandID/images/$uid.jpeg");
+      var storageRef =
+          _firebaseStorage.ref().child("brands/$brandID/images/$uid.jpeg");
       var uploadTask = storageRef.putFile(image);
       await uploadTask.whenComplete(() async {
         await storageRef.getDownloadURL().then((value) async {
@@ -741,6 +760,7 @@ class BrandFirebaseCalls {
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
       "cancelTime": condition.cancelTime,
+      "isRecurrent": bono.isRecurrent,
     }).catchError((err) {
       print(err);
     });
@@ -785,7 +805,11 @@ class BrandFirebaseCalls {
       int bookingWindow,
       int bookingWindowMin,
       bool? directPurchase,
-      bool? freeSession) async {
+      bool? freeSession,
+      int gracePeriod,
+      int maxCanWeek,
+      int paymentTerms,
+      bool isStripeActive) async {
     await _firestore.collection(brands).doc(brandID).update({
       "name": name,
       "description": description,
@@ -795,14 +819,17 @@ class BrandFirebaseCalls {
       "workShift": workShift,
       "directPurchase": directPurchase,
       "freeSession": freeSession,
+      "gracePeriod": gracePeriod,
+      "maxCanWeek": maxCanWeek,
+      "paymentTerms": paymentTerms,
+      "stripeActivated": isStripeActive,
     });
   }
 
   Future<String> updateBrandPhoto(String brandID, File image) async {
     String result = "";
-    var storageRef = _firebaseStorage
-        .ref()
-        .child("brands/$brandID/images/$brandID.jpeg");
+    var storageRef =
+        _firebaseStorage.ref().child("brands/$brandID/images/$brandID.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -885,6 +912,7 @@ class BrandFirebaseCalls {
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
       "cancelTime": condition.cancelTime,
+      "isRecurrent": bono.isRecurrent,
     }).catchError((err) {
       print(err);
     });
@@ -1009,6 +1037,14 @@ class BrandFirebaseCalls {
     print(map);
     await _firestore.collection(brands).doc(brandID).update({
       "subscription": map,
+    });
+  }
+
+  Future<void> updateBrandStripe(
+      String brandID, bool verified, String stripeAccountId) async {
+    await _firestore.collection(brands).doc(brandID).update({
+      "verified": verified,
+      "stripeAccountId": stripeAccountId,
     });
   }
 

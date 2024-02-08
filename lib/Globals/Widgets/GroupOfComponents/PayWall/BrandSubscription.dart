@@ -10,6 +10,8 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 
@@ -81,6 +83,7 @@ class _BrandInfoState extends State<BrandSubscription>
         controller: _scrollController,
         slivers: [
           SliverAppBar(
+            surfaceTintColor: AppColors.darkGrey,
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -118,10 +121,12 @@ class _BrandInfoState extends State<BrandSubscription>
                                 AppLocalizations.of(context)!
                                     .yourPlan
                                     .split(" ")[1]),
-                            style:
-                                Theme.of(context).textTheme.displayLarge?.copyWith(
-                                      color: AppColors.white,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
+                                  color: AppColors.white,
+                                ),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
@@ -173,28 +178,15 @@ class _BrandInfoState extends State<BrandSubscription>
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  unreadNotifiactions(context),
+                  askSupport(context),
+                  unreadNotifications(context),
                   unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                  profileImage(context),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  GestureDetector(
-                    onTap: () => navigateToProfileScreen(context),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.08,
-                      child: Center(
-                        child: CircularImage(
-                          size: MediaQuery.of(context).size.width * 0.08,
-                          image: currentUser.imageUrl,
-                          color: AppColors.grey,
-                          borderWidth: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
             ],
           ),
           BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
@@ -520,8 +512,9 @@ class _BrandInfoState extends State<BrandSubscription>
                                   child: Text(
                                     AppLocalizations.of(context)!
                                         .subscriptionIncludes,
-                                    style:
-                                        Theme.of(context).textTheme.displayLarge,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
@@ -606,12 +599,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                                     0.05,
                                                 child: Center(
                                                     child: Text(
-                                                  "${AppLocalizations.of(context)!
-                                                          .seeAllMasc
-                                                          .split(" ")[0]} ${AppLocalizations.of(
-                                                              context)!
-                                                          .subscriptionsAppBar
-                                                          .toLowerCase()}",
+                                                  "${AppLocalizations.of(context)!.seeAllMasc.split(" ")[0]} ${AppLocalizations.of(context)!.subscriptionsAppBar.toLowerCase()}",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .displaySmall
@@ -667,105 +655,111 @@ class _BrandInfoState extends State<BrandSubscription>
                     children: [
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03),
-                      Material(
-                        elevation: 4,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(15.0)), // BorderRadius
-                        ),
-                        child: Container(
-                          //margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
-                          constraints: BoxConstraints(
-                            maxHeight:
-                                MediaQuery.of(context).size.height * 0.65,
-                            maxWidth: MediaQuery.of(context).size.width * 0.9,
-                            minWidth: MediaQuery.of(context).size.width * 0.9,
-                          ),
-                          padding: EdgeInsets.all(
-                              MediaQuery.of(context).size.width * 0.02),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .secondary
-                                .withOpacity(0.2),
-                            border: Border.all(
-                                color: Theme.of(context).colorScheme.secondary,
-                                width: 2),
-                            borderRadius: const BorderRadius.all(
+                      GestureDetector(
+                        onTap: navigateToPaywallScreen,
+                        child: Material(
+                          elevation: 4,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
                                 Radius.circular(15.0)), // BorderRadius
-                          ), // BoxDecoration
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.01,
-                              ),
-                              ListTile(
-                                leading: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Icon(
-                                    Icons.new_releases,
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    size: MediaQuery.of(context).size.width *
-                                        0.10,
-                                  ),
+                          ),
+                          child: Container(
+                            //margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
+                            constraints: BoxConstraints(
+                              maxHeight:
+                                  MediaQuery.of(context).size.height * 0.65,
+                              maxWidth: MediaQuery.of(context).size.width * 0.9,
+                              minWidth: MediaQuery.of(context).size.width * 0.9,
+                            ),
+                            padding: EdgeInsets.all(
+                                MediaQuery.of(context).size.width * 0.02),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .secondary
+                                  .withOpacity(0.2),
+                              border: Border.all(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  width: 2),
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(15.0)), // BorderRadius
+                            ), // BoxDecoration
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.01,
                                 ),
-                                title: Text(
-                                    AppLocalizations.of(context)!
-                                        .chooseYourPlan,
+                                ListTile(
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Icon(
+                                      Icons.new_releases,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      size: MediaQuery.of(context).size.width *
+                                          0.10,
+                                    ),
+                                  ),
+                                  title: Text(
+                                      AppLocalizations.of(context)!
+                                          .chooseYourPlan,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displaySmall
+                                          ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                                      textAlign: TextAlign.left),
+                                  dense: true,
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.01,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.05),
+                                  child: Divider(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      thickness: 1),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.05,
+                                      vertical:
+                                          MediaQuery.of(context).size.height *
+                                              0.015),
+                                  child: Text(
+                                    ShowTextExpired
+                                        ? AppLocalizations.of(context)!
+                                            .subscriptionExpired
+                                        : AppLocalizations.of(context)!
+                                            .noSubscription,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .displaySmall
+                                        .bodyMedium
                                         ?.copyWith(
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .secondary),
-                                    textAlign: TextAlign.left),
-                                dense: true,
-                              ),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.01,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.05),
-                                child: Divider(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    thickness: 1),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.05,
-                                    vertical:
-                                        MediaQuery.of(context).size.height *
-                                            0.015),
-                                child: Text(
-                                  ShowTextExpired
-                                      ? AppLocalizations.of(context)!
-                                          .subscriptionExpired
-                                      : AppLocalizations.of(context)!
-                                          .noSubscription,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary),
-                                  textAlign: TextAlign.left,
+                                    textAlign: TextAlign.left,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -810,8 +804,9 @@ class _BrandInfoState extends State<BrandSubscription>
                                   child: Text(
                                     AppLocalizations.of(context)!
                                         .subscriptionIncludes,
-                                    style:
-                                        Theme.of(context).textTheme.displayLarge,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),

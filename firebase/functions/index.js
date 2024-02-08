@@ -18,12 +18,24 @@ switch (environment) {
       break;    
 }
 
+
+
 // Initialize Functions
 const functions = require('firebase-functions');
 const { user } = require("firebase-functions/v1/auth");
 const admin = require('firebase-admin');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.onBonosDeleteForStripe = exports.onBonosUpdatedForStripe = exports.onBonosCreateForStripe = exports.webhookListenerConnect = exports.webhookListenerAccount = exports.stripeApi = void 0;
+const serviceAccount = require('./service_key.json');
+const v2_1 = require("firebase-functions/v2");
+
 // Initialize Firebase
-admin.initializeApp();
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://insights-books-app.firebaseio.com",
+}
+);
 const db = admin.firestore();
 
 // Environment-specific values
@@ -36,6 +48,29 @@ const storage = new Storage();
 // SendGrid
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(envConfig.sendGridApiKey);
+
+const { v4: uuidv4 } = require('uuid');
+
+const express = require("express");
+const constants_1 = require("./lib/utils/constants");
+const v2_2 = require("firebase-functions/v2");
+const stripe_connect_1 = require("./lib/stripe_connect/stripe_connect");
+// import bodyParser = require('body-parser');
+const hook_1 = require("./lib/hooks/hook");
+const one_time_payment_1 = require("./lib/payment/one_time_payment");
+const products_1 = require("./lib/products/products");
+const subscription_1 = require("./lib/payment/subscription");
+const transfer_funds_1 = require("./lib/funds/transfer_funds");
+(0, v2_2.setGlobalOptions)({ maxInstances: 10 });
+const app = express();
+// app.use(express.json());
+admin.firestore().settings({ ignoreUndefinedProperties: true });
+
+// functions/index.js
+//const recurrentPurchases = require('./RecurrentPurchases/recurrentPurchases.js');
+
+// Re-exporta las funciones
+//exports.scheduledCheckBonoFunctionOnCall = recurrentPurchases.scheduledCheckBonoFunctionOnCall;
 
 // Daily Notification For Events
 exports.scheduledDailyFunction = functions
@@ -2978,7 +3013,7 @@ exports.UserPurchasesBono = functions
 
   //Add purchases
 
-   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
+    var purchaseData = {
       "userId": purchaseDoc.userId,
       "brandId": brandId,
       "bonoId": bonoId,
@@ -2991,52 +3026,19 @@ exports.UserPurchasesBono = functions
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
       "directPurchase": purchaseDoc.directPurchase,
-   });
+    };
+    
+    if (purchaseDoc.purchaseGroupId != null) {
+      purchaseData["purchaseGroupId"] = purchaseDoc.purchaseGroupId;
+    }
 
-   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
-      "userId": purchaseDoc.userId,
-      "brandId": brandId,
-      "bonoId": bonoId,
-      "isActive": true,
-      "purchasedAt": purchaseDoc.purchasedAt,
-      "price": purchaseDoc.price,
-      "paymentMethod": purchaseDoc.paymentMethod,
-      "sessions": purchaseDoc.sessions,
-      "weeklySessions": purchaseDoc.weeklySessions,
-      "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime,
-      "directPurchase": purchaseDoc.directPurchase,
-  });
+   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set(purchaseData);
 
-   await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-      "userId": purchaseDoc.userId,
-      "brandId": brandId,
-      "bonoId": bonoId,
-      "isActive": true,
-      "purchasedAt": purchaseDoc.purchasedAt,
-      "price": purchaseDoc.price,
-      "paymentMethod": purchaseDoc.paymentMethod,
-      "sessions": purchaseDoc.sessions,
-      "weeklySessions": purchaseDoc.weeklySessions,
-      "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime,
-      "directPurchase": purchaseDoc.directPurchase,
-   });
+   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).set(purchaseData);
 
-   await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-    "userId": purchaseDoc.userId,
-    "brandId": brandId,
-    "bonoId": bonoId,
-    "isActive": true,
-    "purchasedAt": purchaseDoc.purchasedAt,
-    "price": purchaseDoc.price,
-    "paymentMethod": purchaseDoc.paymentMethod,
-    "sessions": purchaseDoc.sessions,
-    "weeklySessions": purchaseDoc.weeklySessions,
-    "cancelTime": purchaseDoc.cancelTime,
-    "expirationTime": purchaseDoc.expirationTime,
-    "directPurchase": purchaseDoc.directPurchase,
-   });
+   await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set(purchaseData);
+
+   await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set(purchaseData);
 
    await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
      "title": bonoDoc.title,
@@ -3665,5 +3667,445 @@ async function addLocalNotification(userRef, userId, notification, firesAt) {
   }
 }
 
+exports.scheduledCheckBonoFunctionOnCall = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+  var today = new Date();
+  const todayNew = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  functions.logger.log("Empezamos", todayNew);
+
+  // Ejecutar subfunciones
+  await processGracePeriodPurchases();
+  await processRegularPurchasesExpTime();
+  await processDirectAndRecurrentPurchases();
+
+  functions.logger.log("Función ejecutada correctamente", todayNew);
+  return { result: "Success", executionDate: today.toISOString() };
+
+});
+
+
+// Subfunción para procesar los grace period de las purchases
+async function processGracePeriodPurchases() {
+var today = new Date();
+const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+const purchasesRef = db.collection('Purchases');
+const snapshot = await purchasesRef
+  .where('isActive', '==', true)
+  .where('directPurchase', '==', true)
+  .get();
+
+for (const doc of snapshot.docs) {
+  const purchase = doc.data();
+  let { purchasedAt, isRecurrent } = purchase;
+
+  const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
+  const brandSelected = brandSnapshot.data();
+
+  let gracePeriod = brandSelected.gracePeriod ?? 0;
+
+  let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
+
+  // Convertir purchasedAt a una fecha y sumarle el gracePeriod
+  const gracePeriodEndDate = new Date(purchasedAtNormalized.getTime());
+  gracePeriodEndDate.setDate(gracePeriodEndDate.getDate() + gracePeriod);
+
+  if(gracePeriodEndDate >= todayNormalized) {
+    const updateData = {
+      isActive: false,
+      };
+      if (isRecurrent) {
+        updateData.isRecurrencyActive = false;
+      }
+      await doc.ref.update(updateData);
+  }
+}
+}
+
+// Subfunción para procesar las Purchases directas y recurrentes
+async function processDirectAndRecurrentPurchases() {
+var today = new Date();
+const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+const purchasesRef = db.collection('Purchases');
+const snapshot = await purchasesRef
+  .where('directPurchase', '==', false)
+  .where('isRecurrencyActive', '==', true)
+  .where('isRecurrent', '==', true)
+  .get();
+
+
+for (const doc of snapshot.docs) {
+  const purchase = doc.data();
+  const { expirationTime, purchasedAt, purchaseGroupId } = purchase;
+  let shouldCreateNewPurchase = false;
+
+  functions.logger.log("purchasedAt", 'purchasedAt');
+
+  if (expirationTime > 0) {
+
+    // Lógica para cuando expirationTime es mayor que 0
+    functions.logger.log("expirationTime", expirationTime);
+
+    let expirationDate;
+    expirationDate = new Date(purchasedAt.toDate().getTime() + expirationTime * 24 * 60 * 60 * 1000);
+
+    const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
+
+    functions.logger.log("ExpirationTime", expirationDateNormalized);
+    functions.logger.log("today", todayNormalized);
+
+    shouldCreateNewPurchase = todayNormalized >= expirationDateNormalized;
+
+  } 
+
+  if (shouldCreateNewPurchase) {
+  // Crear nuevo registro en la colección Purchases
+  // ... Aquí iría tu lógica para obtener las características de la colección Brand/brandId o Bonos/bonoId si es necesario
+ 
+
+  const bonoSnapshot = await db.collection("Brands").doc(purchase.brandId).collection("Bonos").doc(purchase.bonoId).get();
+  const bonoSelected = bonoSnapshot.data();
+
+  const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
+  const brandSelected = brandSnapshot.data();
+
+  let exirationDays = 0;
+
+  if (bonoSelected.expirationTime === 30) {
+    // Siguiente mes
+    const nextMonthDate = new Date(todayNormalized.getFullYear(), todayNormalized.getMonth() + 1, todayNormalized.getDate());
+    exirationDays = (nextMonthDate - todayNormalized) / (1000 * 60 * 60 * 24);
+  }
+  if (bonoSelected.expirationTime === 60) {
+    // Dos meses más adelante
+    const twoMonthsLater = new Date(todayNormalized.getFullYear(), todayNormalized.getMonth() + 2, todayNormalized.getDate());
+    exirationDays = (twoMonthsLater - todayNormalized) / (1000 * 60 * 60 * 24);
+  }
+  if (bonoSelected.expirationTime === 90) {
+    // Tres meses más adelante
+    const threeMonthsLater = new Date(todayNormalized.getFullYear(), todayNormalized.getMonth() + 3, todayNormalized.getDate());
+    exirationDays = (threeMonthsLater - todayNormalized) / (1000 * 60 * 60 * 24);
+  }
+
+  const newPurchaseData = {
+    purchasedAt: admin.firestore.Timestamp.fromDate(new Date()), // Fecha actual
+    userId: purchase.userId,
+    brandId: purchase.brandId,
+    bonoId: purchase.bonoId,
+    price: purchase.price, // o bonoSelected.price si necesitas el precio actualizado del bono
+    sessions: bonoSelected.sessions, // Asegúrate de tener el bonoSelected actualizado
+    weeklySessions: bonoSelected.weeklySessions,
+    cancelTime: bonoSelected.cancelTime,
+    expirationTime: exirationDays,
+    paymentMethod: purchase.paymentMethod,
+    directPurchase: true, // Asumiendo que el nuevo purchase no es una compra directa
+    isActive: true,
+    purchasedAt: admin.firestore.Timestamp.fromDate(new Date()), // La fecha actual
+    isRecurrent: true,
+    paymentTerms: brandSelected.paymentTerms ?? 2,
+    purchaseGroupId: purchase.purchaseGroupId, // El ID del grupo de compras, si es aplicable
+    isRecurrencyActive: true, // o true/false según la lógica de negocio
+  };
+
+  // Añadir la nueva Purchase a la base de datos
+  var purchaseId = uuidv4();
+  const newDocRef = await db
+         .collection("Purchases")
+         .doc(purchaseId)
+         .set(
+          newPurchaseData
+        );
+  
+
+  // Añadir el ID del nuevo documento al array groupPurchases en Purchases/purchaseGroupId
+  const groupRef = db.collection('Purchases').doc(purchaseGroupId);
+  const groupDoc = await groupRef.get();
+  if (groupDoc.exists) {
+      const groupData = groupDoc.data();
+      const groupPurchases = groupData.groupPurchases || [];
+      groupPurchases.push(purchaseId);
+      await groupRef.update({ groupPurchases });
+  }
+
+  // Desactivar la recurrencia en la Purchase original
+  await doc.ref.update({ isRecurrencyActive: false, isActive: false });
+  }
+}
+}
+
+// Subfunción para procesar las Purchases normales
+async function processRegularPurchasesExpTime() {
+
+  var today = new Date();
+  const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  const purchasesRef = db.collection('Purchases');
+  const snapshot = await purchasesRef
+    .where('isActive', '==', true)
+    .where('isRecurrent', '==', false)
+    .get();
+    //.where('expirationTime', '>', 0)
+    
+  
+  for (const doc of snapshot.docs) {
+    const purchase = doc.data();
+    const {expirationTime, purchasedAt} = purchase;
+    let shouldSetInactivePurchase = false;
+
+    if (expirationTime > 0) {
+
+      // Lógica para cuando expirationTime es mayor que 0
+      functions.logger.log("expirationTime", expirationTime);
+      let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
+  
+      let expirationDate;
+
+      expirationDate = new Date(purchasedAtNormalized.getTime() + expirationTime * 24 * 60 * 60 * 1000);
+      const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
+  
+      functions.logger.log("ExpirationTime", expirationDateNormalized);
+      functions.logger.log("today", todayNormalized);
+  
+      shouldSetInactivePurchase = todayNormalized >= expirationDateNormalized;
+
+      if(shouldSetInactivePurchase) 
+      {
+        await doc.ref.update({isActive: false});
+      }
+    }
+  }
+  }
+
+  /* ---------------------- Create stripe connect account --------------------- */
+app.get('/createAccount', async (req, res) => {
+  if (req.query.userId === undefined || req.query.userName === undefined) {
+      res.send('Missing parameters');
+      return;
+  }
+  let result = await (0, stripe_connect_1.createAccount)(req.query.userId, req.query.userName, req.query.stripeAccountId);
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+
+  exports.onBonosCreateForStripeProd = functions.region("europe-west1").firestore.document('Brands/{brandId}/Bonos/{bonoId}').onCreate(async (snap, context) => {
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    v2_1.logger.info('created a new bono');
+    try {
+        let brandData = await constants_1.brandCollection.doc(context.params.brandId).get();
+        let productData = {
+            productId: snap.id,
+            brandId: context.params.brandId,
+            brandName: (_a = brandData.data()) === null || _a === void 0 ? void 0 : _a.brandName,
+            title: (_b = snap.data()) === null || _b === void 0 ? void 0 : _b.title,
+            description: (_c = snap.data()) === null || _c === void 0 ? void 0 : _c.description,
+            active: (_d = snap.data()) === null || _d === void 0 ? void 0 : _d.isActive,
+            priceId: (_f = (_e = snap.data()) === null || _e === void 0 ? void 0 : _e.priceId) !== null && _f !== void 0 ? _f : null,
+            price: ((_h = (_g = snap.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
+        };
+        (0, products_1.createProduct)(productData);
+    }
+    catch (e) {
+        v2_1.logger.error(e);
+    }
+});
+exports.onBonosUpdatedForStripeProd = functions.region("europe-west1").firestore.document('Brands/{brandId}/Bonos/{bonoId}').onUpdate(async (snap, context) => {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    try {
+        v2_1.logger.info('updated a bono');
+        let brandData = await constants_1.brandCollection.doc(context.params.brandId).get();
+        let productData = {
+            productId: snap.after.id,
+            brandId: context.params.brandId,
+            brandName: (_a = brandData.data()) === null || _a === void 0 ? void 0 : _a.brandName,
+            title: (_b = snap.after.data()) === null || _b === void 0 ? void 0 : _b.title,
+            description: (_c = snap.after.data()) === null || _c === void 0 ? void 0 : _c.description,
+            active: (_d = snap.after.data()) === null || _d === void 0 ? void 0 : _d.isActive,
+            priceId: (_f = (_e = snap.after.data()) === null || _e === void 0 ? void 0 : _e.priceId) !== null && _f !== void 0 ? _f : null,
+            price: ((_h = (_g = snap.after.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
+        };
+        (0, products_1.updateProduct)(productData);
+        if (((_j = snap.before.data()) === null || _j === void 0 ? void 0 : _j.price) !== ((_k = snap.after.data()) === null || _k === void 0 ? void 0 : _k.price)) {
+            (0, products_1.updatePrice)((_l = snap.after.data()) === null || _l === void 0 ? void 0 : _l.priceId, ((_o = (_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.price) !== null && _o !== void 0 ? _o : 0) * 100, snap.after.id);
+        }
+    }
+    catch (e) {
+        v2_1.logger.error(e);
+    }
+});
+
+exports.onBonosDeleteForStripeProd = functions
+.region("europe-west1")
+.firestore
+.document("/Brands/{brandId}/Bonos/{bonoId}")
+.onDelete( async (snap, context) => {
+  try {
+    v2_1.logger.info('deleted a bono');
+    (0, products_1.deleteProduct)(snap.id);
+}
+catch (e) {
+    v2_1.logger.error(e);
+}
+});
+
+/* --------------------------- Firebase Functions --------------------------- */
+exports.stripeApi = functions.region("europe-west1").https.onRequest(app);
+exports.webhookListenerAccount = functions.region("europe-west1").https.onRequest(async (request, res) => {
+    try {
+        let signingSecret = constants_1.webhookSecretForAccount;
+        let sig = request.headers['stripe-signature'];
+        let event = constants_1.stripe.webhooks.constructEvent(request.rawBody, sig, signingSecret);
+        let result = await (0, hook_1.webhookHandler)(event);
+        res.status(200).send(result);
+    }
+    catch (e) {
+        v2_1.logger.error(e);
+        res.status(400).send(e);
+    }
+});
+exports.webhookListenerConnect = functions.region("europe-west1").https.onRequest(async (request, res) => {
+    try {
+        let signingSecret = constants_1.webhookSecretForConnect;
+        let sig = request.headers['stripe-signature'];
+        let event = constants_1.stripe.webhooks.constructEvent(request.rawBody, sig, signingSecret);
+        let result = await (0, hook_1.webhookHandler)(event);
+        res.status(200).send(result);
+    }
+    catch (e) {
+        v2_1.logger.error(e);
+        res.status(400).send(e);
+    }
+});
+
+/* ---------------------- Create stripe connect account --------------------- */
+app.get('/createAccount', async (req, res) => {
+  if (req.query.userId === undefined || req.query.userName === undefined) {
+      res.send('Missing parameters');
+      return;
+  }
+  let result = await (0, stripe_connect_1.createAccount)(req.query.userId, req.query.userName, req.query.stripeAccountId);
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+
+/* ----------------------- create,delete or update a product ----------------------- */
+// This is for local testing otherwise this function triggered when a bono is created,deleted or updated
+app.post('/createUpdateProduct', async (req, res) => {
+  //convert to json
+  var _a, _b;
+  console.log(req.body);
+  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.brandName === undefined || req.body.title === undefined || req.body.description === undefined || req.body.active === undefined) {
+      res.send({
+          message: 'Missing parameters', required: ['productId', 'brandId', 'brandName', 'title', 'description', 'price', 'active'], optional: ['updateProduct:true/false(by default false)']
+      });
+      return;
+  }
+  let productData = {
+      productId: req.body.productId,
+      brandId: req.body.brandId,
+      brandName: req.body.brandName,
+      title: req.body.title,
+      description: req.body.description,
+      active: req.body.active,
+      priceId: (_a = req.body.priceId) !== null && _a !== void 0 ? _a : null,
+      price: (_b = req.body.price) !== null && _b !== void 0 ? _b : null,
+  };
+  let result;
+  if (req.body.updateProduct) {
+      result = await (0, products_1.updateProduct)(productData);
+  }
+  else {
+      result = await (0, products_1.createProduct)(productData);
+  }
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+app.delete('/deleteProduct', async (req, res) => {
+  if (req.query.productId === undefined) {
+      res.send('Missing parameters');
+      return;
+  }
+  let result = await (0, products_1.deleteProduct)(req.query.productId);
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+app.post('/updatePrice', async (req, res) => {
+  if (req.body.priceId === undefined || req.body.amount === undefined || req.body.productId === undefined) {
+      res.send({ message: 'Missing parameters', required: ['priceId', 'amount', 'productId'] });
+      return;
+  }
+  let result = await (0, products_1.updatePrice)(req.body.priceId, req.body.amount, req.body.productId);
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+/* --------------------------- create payment intent -------------------------- */
+app.get('/createPaymentIntent', async (req, res) => {
+  if (req.query.amount === undefined || req.query.customerId === undefined) {
+      res.send('Missing parameters');
+      return;
+  }
+  let result = await (0, one_time_payment_1.createPaymentIntent)(req.query.amount, req.query.customerId, req.query.brandId);
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+/* ------------------- get payment methods for a user ------------------- */
+app.get('/paymentMethod', async (req, res) => {
+  if (req.query.userId === undefined) {
+      res.send({
+          message: 'Missing parameters', required: ['userId']
+      });
+      return;
+  }
+  let result = await (0, subscription_1.getPaymentMethods)(req.query.userId);
+  res.send(result).status(200);
+});
+/* --------------------------- create subscription -------------------------- */
+app.post('/createSubscription', async (req, res) => {
+  console.log(req.body);
+  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.customerId === undefined || req.body.priceId === undefined || req.body.paymentMethodId === undefined) {
+      res.status(400).send({
+          message: 'Missing parameters', required: ['productId', 'brandId', 'customerId', 'priceId', 'paymentMethodId']
+      });
+      return;
+  }
+  let result = await (0, subscription_1.createSubscription)(req.body.customerId, req.body.priceId, req.body.brandId, req.body.productId, req.body.paymentMethodId);
+  if (result.error == null) {
+      res.send(result.data).status(200);
+  }
+  else {
+      res.send(result.error).status(400);
+  }
+});
+/* ---------------------------- transfer funds ---------------------------- */
+app.get('/transferFunds', async (req, res) => {
+  await (0, transfer_funds_1.transferFunds)();
+  res.send('Function executed Successfully').status(200);
+});
 
 

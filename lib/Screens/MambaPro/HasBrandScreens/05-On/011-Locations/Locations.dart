@@ -17,6 +17,8 @@ import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Location/LocationImageTile.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:uuid/uuid.dart';
@@ -145,9 +147,8 @@ class _LocationsState extends State<Locations> {
                       if (boolean == true) {
                         setState(() {
                           isLoading = true;
-                          loadingText = "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!
-                                  .locations
-                                  .toLowerCase()}...";
+                          loadingText =
+                              "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!.locations.toLowerCase()}...";
                         });
                         await Future.delayed(const Duration(seconds: 4));
                         getAllLocations();
@@ -188,7 +189,8 @@ class _LocationsState extends State<Locations> {
         // Reload the Map
         setState(() {
           isLoading = true;
-          loadingText = "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!.locations.toLowerCase()}...";
+          loadingText =
+              "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!.locations.toLowerCase()}...";
         });
         Location location = Location();
         location.placeId = result.placeId;
@@ -280,6 +282,7 @@ class _LocationsState extends State<Locations> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
+            surfaceTintColor: AppColors.darkGrey,
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -304,10 +307,12 @@ class _LocationsState extends State<Locations> {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.locations,
-                            style:
-                                Theme.of(context).textTheme.displayLarge?.copyWith(
-                                      color: AppColors.white,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
+                                  color: AppColors.white,
+                                ),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
@@ -366,28 +371,15 @@ class _LocationsState extends State<Locations> {
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  unreadNotifiactions(context),
+                  askSupport(context),
+                  unreadNotifications(context),
                   unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                  profileImage(context),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  GestureDetector(
-                    onTap: () => navigateToProfileScreen(context),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.08,
-                      child: Center(
-                        child: CircularImage(
-                          size: MediaQuery.of(context).size.width * 0.08,
-                          image: currentUser.imageUrl,
-                          color: AppColors.grey,
-                          borderWidth: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
             ],
           ),
           isLoading

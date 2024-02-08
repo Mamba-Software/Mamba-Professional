@@ -15,6 +15,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/FavouriteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -91,7 +93,8 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
     isLoading = true;
     Future.delayed(Duration.zero, () {
       setState(() {
-        isLoadingText = "${AppLocalizations.of(context)!.loading.split(".")[0]} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
+        isLoadingText =
+            "${AppLocalizations.of(context)!.loading.split(".")[0]} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
       });
     });
     getBrandContentImages();
@@ -135,7 +138,8 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
           int currentImage = 1;
           setState(() {
             isLoading = true;
-            isLoadingText = "${AppLocalizations.of(context)!.adding} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
+            isLoadingText =
+                "${AppLocalizations.of(context)!.adding} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
             maxImagesAdded = false;
           });
           for (File f in temp) {
@@ -247,6 +251,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
               controller: _scrollController,
               slivers: [
                 SliverAppBar(
+                  surfaceTintColor: AppColors.darkGrey,
                   backgroundColor: AppColors.darkGrey,
                   expandedHeight: MediaQuery.of(context).size.height * 0.15,
                   systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -341,29 +346,17 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                   actions: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        unreadNotifiactions(context),
-                        unreadChats(context),                        
+                        askSupport(context),
+                        unreadNotifications(context),
+                        unreadChats(context),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.025),
+                        profileImage(context),
                         SizedBox(
                             width: MediaQuery.of(context).size.width * 0.03),
-                        GestureDetector(
-                          onTap: () => navigateToProfileScreen(context),
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.width * 0.08,
-                            child: Center(
-                              child: CircularImage(
-                                size: MediaQuery.of(context).size.width * 0.08,
-                                image: currentUser.imageUrl,
-                                color: AppColors.grey,
-                                borderWidth: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                   ],
                 ),
                 isLoading
@@ -459,13 +452,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                 children: [
                                   Flexible(
                                     child: Text(
-                                      "${AppLocalizations.of(context)!
-                                              .noData
-                                              .split(" ")[0]} ${AppLocalizations.of(context)!
-                                              .photos
-                                              .toLowerCase()}. ${AppLocalizations.of(context)!
-                                              .yourImagesDescription
-                                              .split("\n")[2]}",
+                                      "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.photos.toLowerCase()}. ${AppLocalizations.of(context)!.yourImagesDescription.split("\n")[2]}",
                                       style:
                                           Theme.of(context).textTheme.bodySmall,
                                       textAlign: TextAlign.center,
@@ -698,12 +685,8 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                               'brand_images_delete');
                                                           setState(() {
                                                             isLoading = true;
-                                                            isLoadingText = "${AppLocalizations.of(
-                                                                        context)!
-                                                                    .deleting} ${AppLocalizations.of(
-                                                                        context)!
-                                                                    .photos
-                                                                    .toLowerCase()}...";
+                                                            isLoadingText =
+                                                                "${AppLocalizations.of(context)!.deleting} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
                                                             isLoadingTextExtra =
                                                                 " (${1}/${1})";
                                                           });
@@ -784,22 +767,16 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                                     context,
                                                                 builder: (_) {
                                                                   return DeleteConfirmationDialog(
-                                                                      text: "${AppLocalizations.of(context)!
-                                                                              .myImagesDeleteDescription}\n\n${AppLocalizations.of(context)!
-                                                                              .yourImagesDescription
-                                                                              .split("\n")[2]}");
+                                                                      text:
+                                                                          "${AppLocalizations.of(context)!.myImagesDeleteDescription}\n\n${AppLocalizations.of(context)!.yourImagesDescription.split("\n")[2]}");
                                                                 });
                                                         if (result) {
                                                           mixpanel!.track(
                                                               'brand_images_delete');
                                                           setState(() {
                                                             isLoading = true;
-                                                            isLoadingText = "${AppLocalizations.of(
-                                                                        context)!
-                                                                    .deleting} ${AppLocalizations.of(
-                                                                        context)!
-                                                                    .photos
-                                                                    .toLowerCase()}...";
+                                                            isLoadingText =
+                                                                "${AppLocalizations.of(context)!.deleting} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
                                                             isLoadingTextExtra =
                                                                 " (${1}/${1})";
                                                           });
@@ -956,7 +933,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                 child: Container(
                   padding: EdgeInsets.all(
                       MediaQuery.of(context).size.width * 0.0115),
-                  width: MediaQuery.of(context).size.width * 0.2,
+                  //width: MediaQuery.of(context).size.width * 0.25,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.background,
                     borderRadius: const BorderRadius.all(
@@ -964,6 +941,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                     ),
                   ),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Flexible(
                         child: Text(
@@ -976,8 +954,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Text(
-                          " ${_imagesUploaded.length}/$_maxImages",
+                      Text(" ${_imagesUploaded.length}/$_maxImages",
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall

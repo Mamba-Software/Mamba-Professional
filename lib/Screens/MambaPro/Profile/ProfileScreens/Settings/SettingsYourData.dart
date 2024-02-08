@@ -152,6 +152,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                       heroTag: "43",
                       onPressed: () {
                         Navigator.of(ctx).pop();
@@ -757,6 +758,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
       floatingActionButton: isUpdated ? Padding(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
         child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
           heroTag: "61",
           onPressed: () async {
             if (_formKey.currentState!.validate()) {

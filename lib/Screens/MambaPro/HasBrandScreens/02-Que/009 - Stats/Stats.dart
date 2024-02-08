@@ -22,6 +22,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/Purc
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/PurchasesStats/TotalBenefit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import '../../../../../Events/crud_events/models/Event.dart';
@@ -57,12 +59,14 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
     if (!_scrollController!.hasClients) {
       return false;
     }
-    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+    if (_scrollController!.position.userScrollDirection ==
+        ScrollDirection.forward) {
       // User is down up, so AppBar should expand.
       return false;
     }
     // Use the same condition as before to check if AppBar is expanded.
-    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
+    return _scrollController!.offset >
+        (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
   }
 
   final DateFormat formatter = DateFormat('dd-MM-yyyy');
@@ -76,7 +80,9 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   bool isFirstBuild = true;
 
   //DateTime endDate = DateTime.now().subtract(const Duration(days: 1));
-  DateTime endDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day, 23, 59).subtract(const Duration(days: 1));
+  DateTime endDate = DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59)
+      .subtract(const Duration(days: 1));
 
   DateTime startDate = DateTime.now().subtract(const Duration(days: 31));
 
@@ -137,7 +143,8 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         AppBar().preferredSize.height -
         MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print(
+        "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
     print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
@@ -145,19 +152,17 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   Future<void> getBrandDetails() async {
     brand = await _brandDataService.getBrandDetails(widget.brandId);
     var dateJoinedSplit = brand.dateJoined!.split("-");
-    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]), int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
+    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]),
+        int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
   }
 
   Future<void> getCollections() async {
     events = await _brandDataService.getAllEventsFromBrandStats(widget.brandId);
-    users = await _brandDataService
-        .getBrandClients(widget.brandId);
+    users = await _brandDataService.getBrandClients(widget.brandId);
     //purchases = await _brandDataService.getBrandPurchases(widget.brandId);
     //bonos = await _brandDataService.getAllBonosFromBrandList(widget.brandId);
-    purchases = await _brandDataService
-        .getBrandPurchases(widget.brandId);
-    bonos = await _brandDataService
-        .getAllBonosFromBrandStats(widget.brandId);
+    purchases = await _brandDataService.getBrandPurchases(widget.brandId);
+    bonos = await _brandDataService.getAllBonosFromBrandStats(widget.brandId);
     setState(() {
       setActiveUsers();
       applyAllFilters();
@@ -231,13 +236,11 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   }
 
   void applyFilteredUsers() {
-    for(int j = 0; j < users.length; ++j)
-      {
-        if(users[j].dateJoined != null)
-          {
-            filteredUsers.add(users[j]);
-          }
+    for (int j = 0; j < users.length; ++j) {
+      if (users[j].dateJoined != null) {
+        filteredUsers.add(users[j]);
       }
+    }
     filteredUsers = filteredUsers
         .where((element) =>
             DateFormat('dd-MM-yy')
@@ -272,358 +275,414 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
       isFirstBuild = false;
     }
     return Scaffold(
-      body: currentUser.brandRole < 2 ? DefaultTabController(
-        length: 3,
-        initialIndex: _selectedIndex,
-        child: ExtendedNestedScrollView(
-          pinnedHeaderSliverHeightBuilder: () {
-            return MediaQuery.of(context).size.height * 0.12;
-          },
-          controller: _scrollController,
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                backgroundColor: AppColors.darkGrey,
-                expandedHeight: MediaQuery.of(context).size.height * 0.13,
-                systemOverlayStyle: SystemUiOverlayStyle.light,
-                elevation: 0,
-                floating: false,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    color: AppColors.darkGrey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05, right: MediaQuery.of(context).size.width * 0.025),
-                          child: Text(
-                            AppLocalizations.of(context)!.stats,
-                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white,),
-                          ),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.015,),
-                      ],
-                    ),
-                  ),
-                  titlePadding: EdgeInsets.zero,
-                  //centerTitle: true,
-                ),
-                title: AnimatedOpacity(
-                  opacity: appBarExpanded ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: Text(
-                    AppLocalizations.of(context)!.stats,
-                    style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
-                  )
-                ),
-                centerTitle: false,
-                leading: Builder(
-                  builder: (BuildContext innerContext) => Padding(
-                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.menu,
-                        color: AppColors.white,
-                        size: MediaQuery.of(context).size.height * 0.04,
-                      ),
-                      onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()),
-                  ),
-                ),
-                actions: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      unreadNotifiactions(context),
-                      unreadChats(context),
-                      SizedBox(width: MediaQuery.of(context).size.width*0.03),
-                      GestureDetector(
-                        onTap: () => navigateToProfileScreen(context),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.width * 0.08,
-                          child: Center(
-                            child: CircularImage(
-                              size: MediaQuery.of(context).size.width * 0.08,
-                              image: currentUser.imageUrl,
-                              color: AppColors.grey,
-                              borderWidth: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
-                ],
-              ),
-              SliverPersistentHeader(
-                delegate: _SliverAppBarDelegateSecond(
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
-                    color: AppColors.darkGrey,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: AppColors.lightGrey.withOpacity(0.1),
-                            shape: RoundedRectangleBorder(  // add this
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: const EdgeInsets.only(left: 16.0, right: 10.0),
-                          ),
-                          onPressed: _show,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: currentUser.brandRole < 2
+          ? DefaultTabController(
+              length: 3,
+              initialIndex: _selectedIndex,
+              child: ExtendedNestedScrollView(
+                pinnedHeaderSliverHeightBuilder: () {
+                  return MediaQuery.of(context).size.height * 0.12;
+                },
+                controller: _scrollController,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverAppBar(
+                      surfaceTintColor: AppColors.darkGrey,
+                      backgroundColor: AppColors.darkGrey,
+                      expandedHeight: MediaQuery.of(context).size.height * 0.13,
+                      systemOverlayStyle: SystemUiOverlayStyle.light,
+                      elevation: 0,
+                      floating: false,
+                      pinned: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: Container(
+                          color: AppColors.darkGrey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                returnCorrectText(),
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width *
+                                        0.05,
+                                    right: MediaQuery.of(context).size.width *
+                                        0.025),
+                                child: Text(
+                                  AppLocalizations.of(context)!.stats,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayLarge
+                                      ?.copyWith(
+                                        color: AppColors.white,
+                                      ),
+                                ),
                               ),
-                              const Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.white)
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.015,
+                              ),
                             ],
                           ),
                         ),
-                        Text(
-                          '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
+                        titlePadding: EdgeInsets.zero,
+                        //centerTitle: true,
+                      ),
+                      title: AnimatedOpacity(
+                          opacity: appBarExpanded ? 1.0 : 0.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Text(AppLocalizations.of(context)!.stats,
+                              style: Theme.of(context)
+                                  .appBarTheme
+                                  .titleTextStyle
+                                  ?.copyWith(
+                                    color: AppColors.white,
+                                  ))),
+                      centerTitle: false,
+                      leading: Builder(
+                        builder: (BuildContext innerContext) => Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.02),
+                          child: IconButton(
+                              icon: Icon(
+                                Icons.menu,
+                                color: AppColors.white,
+                                size: MediaQuery.of(context).size.height * 0.04,
+                              ),
+                              onPressed: () => mambaProScaffoldKey.currentState
+                                  ?.openDrawer()),
+                        ),
+                      ),
+                      actions: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            askSupport(context),
+                            unreadNotifications(context),
+                            unreadChats(context),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.025),
+                            profileImage(context),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.03),
+                          ],
                         ),
                       ],
                     ),
-                  ),
-                  MediaQuery.of(context).size.height * 0.06,
+                    SliverPersistentHeader(
+                      delegate: _SliverAppBarDelegateSecond(
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.06,
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.04,
+                              right: MediaQuery.of(context).size.width * 0.04),
+                          color: AppColors.darkGrey,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor:
+                                      AppColors.lightGrey.withOpacity(0.1),
+                                  shape: RoundedRectangleBorder(
+                                    // add this
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0, right: 10.0),
+                                ),
+                                onPressed: _show,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      returnCorrectText(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              color: AppColors.white,
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    const Icon(
+                                        Icons.keyboard_arrow_down_outlined,
+                                        color: AppColors.white)
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: AppColors.white,
+                                        fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                        MediaQuery.of(context).size.height * 0.06,
+                      ),
+                      pinned: true,
+                    ),
+                    SliverPersistentHeader(
+                      delegate: _SliverAppBarDelegate(
+                        TabBar(
+                          indicatorWeight: 3,
+                          indicatorColor: AppColors.grey,
+                          labelColor: AppColors.white,
+                          unselectedLabelColor: AppColors.white,
+                          labelStyle: Theme.of(context).textTheme.bodyMedium,
+                          tabs: [
+                            Tab(
+                              text: AppLocalizations.of(context)!.events,
+                            ),
+                            Tab(
+                              text: AppLocalizations.of(context)!.clients,
+                            ),
+                            Tab(
+                              text: AppLocalizations.of(context)!.facturation,
+                            ),
+                          ],
+                          onTap: (index) {
+                            switch (index) {
+                              case 0:
+                                mixpanel!.track('brand_stats_view_events_tab');
+                                break;
+                              case 1:
+                                mixpanel!.track('brand_stats_view_clients_tab');
+                                break;
+                              case 2:
+                                mixpanel!.track('brand_stats_view_fact_tab');
+                                break;
+                            }
+                          },
+                        ),
+                      ),
+                      pinned: true,
+                    ),
+                  ];
+                },
+                body: TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    buildEventsStatsPage(),
+                    buildClientsStatsPage(),
+                    buildFactStatsPage(),
+                  ],
                 ),
-                pinned: true,
               ),
-              SliverPersistentHeader(
-                delegate: _SliverAppBarDelegate(
-                  TabBar(
-                    indicatorWeight: 3,
-                    indicatorColor: AppColors.grey,
-                    labelColor: AppColors.white,
-                    unselectedLabelColor: AppColors.white,
-                    labelStyle: Theme.of(context).textTheme.bodyMedium,
-                    tabs: [
-                      Tab(
-                        text: AppLocalizations.of(context)!.events,
+            )
+          : DefaultTabController(
+              length: 2,
+              initialIndex: _selectedIndex,
+              child: ExtendedNestedScrollView(
+                pinnedHeaderSliverHeightBuilder: () {
+                  return MediaQuery.of(context).size.height * 0.17;
+                },
+                controller: _scrollController,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverAppBar(
+                      surfaceTintColor: AppColors.darkGrey,
+                      backgroundColor: AppColors.darkGrey,
+                      expandedHeight: MediaQuery.of(context).size.height * 0.13,
+                      systemOverlayStyle: SystemUiOverlayStyle.light,
+                      floating: true,
+                      pinned: true,
+                      snap: true,
+                      forceElevated: false,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: Container(
+                          color: AppColors.darkGrey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width *
+                                        0.05,
+                                    right: MediaQuery.of(context).size.width *
+                                        0.025),
+                                child: Text(
+                                  AppLocalizations.of(context)!.stats,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayLarge
+                                      ?.copyWith(
+                                        color: AppColors.white,
+                                      ),
+                                ),
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.015,
+                              ),
+                            ],
+                          ),
+                        ),
+                        titlePadding: EdgeInsets.zero,
+                        //centerTitle: true,
                       ),
-                      Tab(
-                        text: AppLocalizations.of(context)!.clients,
+                      title: appBarExpanded
+                          ? Text(
+                              AppLocalizations.of(context)!.stats,
+                              style: Theme.of(context)
+                                  .appBarTheme
+                                  .titleTextStyle
+                                  ?.copyWith(
+                                    color: AppColors.white,
+                                  ),
+                            )
+                          : Container(),
+                      centerTitle: true,
+                      leading: Builder(
+                        builder: (BuildContext innerContext) => Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.02),
+                          child: IconButton(
+                              icon: Icon(
+                                Icons.menu,
+                                color: AppColors.white,
+                                size: MediaQuery.of(context).size.height * 0.04,
+                              ),
+                              onPressed: () => mambaProScaffoldKey.currentState
+                                  ?.openDrawer()),
+                        ),
                       ),
-                      Tab(
-                        text: AppLocalizations.of(context)!.facturation,
-                      ),
-                    ],
-                    onTap: (index) {
-                      switch (index) {
-                        case 0:
-                          mixpanel!.track('brand_stats_view_events_tab');
-                          break;
-                        case 1:
-                          mixpanel!.track('brand_stats_view_clients_tab');
-                          break;
-                        case 2:
-                          mixpanel!.track('brand_stats_view_fact_tab');
-                          break;
-                      }
-                    },
-                  ),
-                ),
-                pinned: true,
-              ),
-            ];
-          },
-          body: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              buildEventsStatsPage(),
-              buildClientsStatsPage(),
-              buildFactStatsPage(),
-            ],
-          ),
-        ),
-      ) : DefaultTabController(
-        length: 2,
-        initialIndex: _selectedIndex,
-        child: ExtendedNestedScrollView(
-          pinnedHeaderSliverHeightBuilder: () {
-            return MediaQuery.of(context).size.height * 0.17;
-          },
-          controller: _scrollController,
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                backgroundColor: AppColors.darkGrey,
-                expandedHeight: MediaQuery.of(context).size.height * 0.13,
-                systemOverlayStyle: SystemUiOverlayStyle.light,
-                floating: true,
-                pinned: true,
-                snap: true,
-                forceElevated: false,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    color: AppColors.darkGrey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      actions: [
                         Padding(
                           padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.05,
-                              right: MediaQuery.of(context).size.width * 0.025),
-                          child: Text(
-                            AppLocalizations.of(context)!.stats,
-                            style:
-                            Theme.of(context).textTheme.displayLarge?.copyWith(
-                              color: AppColors.white,
+                              right: MediaQuery.of(context).size.width * 0.01),
+                          child: IconButton(
+                            icon: Icon(
+                              widget.pinned
+                                  ? Icons.push_pin
+                                  : Icons.push_pin_outlined,
+                              color: widget.pinned
+                                  ? AppColors.red
+                                  : AppColors.white.withOpacity(0.5),
+                              size: MediaQuery.of(context).size.width * 0.06,
                             ),
+                            onPressed: () {
+                              setState(() {
+                                widget.pinned = !widget.pinned;
+                              });
+                              widget.pinnedChanged(widget.pinned);
+                            },
                           ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.015,
                         ),
                       ],
                     ),
-                  ),
-                  titlePadding: EdgeInsets.zero,
-                  //centerTitle: true,
-                ),
-                title: appBarExpanded
-                    ? Text(
-                  AppLocalizations.of(context)!.stats,
-                  style: Theme.of(context)
-                      .appBarTheme
-                      .titleTextStyle
-                      ?.copyWith(
-                    color: AppColors.white,
-                  ),
-                )
-                    : Container(),
-                centerTitle: true,
-                leading: Builder(
-                  builder: (BuildContext innerContext) => Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.02),
-                    child: IconButton(
-                        icon: Icon(
-                          Icons.menu,
-                          color: AppColors.white,
-                          size: MediaQuery.of(context).size.height * 0.04,
-                        ),
-                        onPressed: () =>
-                            mambaProScaffoldKey.currentState?.openDrawer()),
-                  ),
-                ),
-                actions: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        right: MediaQuery.of(context).size.width * 0.01),
-                    child: IconButton(
-                      icon: Icon(
-                        widget.pinned
-                            ? Icons.push_pin
-                            : Icons.push_pin_outlined,
-                        color: widget.pinned
-                            ? AppColors.red
-                            : AppColors.white.withOpacity(0.5),
-                        size: MediaQuery.of(context).size.width * 0.06,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          widget.pinned = !widget.pinned;
-                        });
-                        widget.pinnedChanged(widget.pinned);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SliverPersistentHeader(
-                delegate: _SliverAppBarDelegateSecond(
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
-                    color: AppColors.darkGrey,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Theme.of(context).primaryColor, backgroundColor: AppColors.lightGrey.withOpacity(0.1),
-                            shape: RoundedRectangleBorder(  // add this
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: const EdgeInsets.only(left: 16.0, right: 10.0),
-                          ),
-                          onPressed: _show,
+                    SliverPersistentHeader(
+                      delegate: _SliverAppBarDelegateSecond(
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.06,
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.04,
+                              right: MediaQuery.of(context).size.width * 0.04),
+                          color: AppColors.darkGrey,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                returnCorrectText(),
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  foregroundColor:
+                                      Theme.of(context).primaryColor,
+                                  backgroundColor:
+                                      AppColors.lightGrey.withOpacity(0.1),
+                                  shape: RoundedRectangleBorder(
+                                    // add this
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0, right: 10.0),
+                                ),
+                                onPressed: _show,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      returnCorrectText(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              color: AppColors.white,
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    const Icon(
+                                        Icons.keyboard_arrow_down_outlined,
+                                        color: AppColors.white)
+                                  ],
+                                ),
                               ),
-                              const Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.white)
+                              Text(
+                                '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: AppColors.white,
+                                        fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
                             ],
                           ),
                         ),
-                        Text(
-                          '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                        MediaQuery.of(context).size.height * 0.06,
+                      ),
+                      pinned: true,
                     ),
-                  ),
-                  MediaQuery.of(context).size.height * 0.06,
-                ),
-                pinned: true,
-              ),
-              SliverPersistentHeader(
-                delegate: _SliverAppBarDelegate(
-                  TabBar(
-                    indicatorWeight: 3,
-                    indicatorColor: AppColors.grey,
-                    labelColor: AppColors.white,
-                    unselectedLabelColor: AppColors.white,
-                    labelStyle: Theme.of(context).textTheme.bodyMedium,
-                    tabs: [
-                      Tab(
-                        text: AppLocalizations.of(context)!.events,
+                    SliverPersistentHeader(
+                      delegate: _SliverAppBarDelegate(
+                        TabBar(
+                          indicatorWeight: 3,
+                          indicatorColor: AppColors.grey,
+                          labelColor: AppColors.white,
+                          unselectedLabelColor: AppColors.white,
+                          labelStyle: Theme.of(context).textTheme.bodyMedium,
+                          tabs: [
+                            Tab(
+                              text: AppLocalizations.of(context)!.events,
+                            ),
+                            Tab(
+                              text: AppLocalizations.of(context)!.clients,
+                            ),
+                          ],
+                          onTap: (index) {
+                            switch (index) {
+                              case 0:
+                                mixpanel!.track('brand_stats_view_events_tab');
+                                break;
+                              case 1:
+                                mixpanel!.track('brand_stats_view_clients_tab');
+                                break;
+                            }
+                          },
+                        ),
                       ),
-                      Tab(
-                        text: AppLocalizations.of(context)!.clients,
-                      ),
-                    ],
-                    onTap: (index) {
-                      switch (index) {
-                        case 0:
-                          mixpanel!.track('brand_stats_view_events_tab');
-                          break;
-                        case 1:
-                          mixpanel!.track('brand_stats_view_clients_tab');
-                          break;
-                      }
-                    },
-                  ),
+                      pinned: true,
+                    ),
+                  ];
+                },
+                body: TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    buildEventsStatsPage(),
+                    buildClientsStatsPage(),
+                  ],
                 ),
-                pinned: true,
               ),
-            ];
-          },
-          body: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              buildEventsStatsPage(),
-              buildClientsStatsPage(),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -888,19 +947,23 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         Padding(
           padding: EdgeInsets.symmetric(
               vertical: MediaQuery.of(context).size.height * 0.02),
-          child: PaymentMethodStat(purchases: filteredPurchases, context: context,),
+          child: PaymentMethodStat(
+            purchases: filteredPurchases,
+            context: context,
+          ),
         ),
         Padding(
           padding:
               EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.06),
           child: Column(
             children: [
-              statsTitle(AppLocalizations.of(context)!.bonos),
+              statsTitle(AppLocalizations.of(context)!.rates),
             ],
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.02),
           child: BonosPurchased(
             purchases: filteredPurchases,
             bonos: bonos,
@@ -947,26 +1010,39 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
 
   String returnCorrectText() {
     DateTime now = DateTime.now();
-    DateTime maxEndDate = acceptToday ? now : now.subtract(const Duration(days: 1));
+    DateTime maxEndDate =
+        acceptToday ? now : now.subtract(const Duration(days: 1));
 
     int daysDifference = endDate.difference(startDate).inDays;
     //print(daysDifference);
 
     // Check for "this month" selection
-    if (startDate.day == 1 && startDate.month == now.month && startDate.year == now.year
-        && endDate.day == maxEndDate.day && endDate.month == maxEndDate.month && endDate.year == maxEndDate.year) {
+    if (startDate.day == 1 &&
+        startDate.month == now.month &&
+        startDate.year == now.year &&
+        endDate.day == maxEndDate.day &&
+        endDate.month == maxEndDate.month &&
+        endDate.year == maxEndDate.year) {
       return "${AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.month)}";
     }
 
     // Check for "previous month" selection
-    if (startDate.day == 1 && startDate.month == now.month - 1 && startDate.year == now.year
-        && endDate.day == DateTime(now.year, now.month, 0).day && endDate.month == now.month - 1 && endDate.year == now.year) {
+    if (startDate.day == 1 &&
+        startDate.month == now.month - 1 &&
+        startDate.year == now.year &&
+        endDate.day == DateTime(now.year, now.month, 0).day &&
+        endDate.month == now.month - 1 &&
+        endDate.year == now.year) {
       return AppLocalizations.of(context)!.previousMonth;
     }
 
     // Check for "Historic" selection
-    if (startDate.day == dateJoinedBrand.day && startDate.month == dateJoinedBrand.month && startDate.year == dateJoinedBrand.year
-        && endDate.day == maxEndDate.day && endDate.month == maxEndDate.month && endDate.year == maxEndDate.year) {
+    if (startDate.day == dateJoinedBrand.day &&
+        startDate.month == dateJoinedBrand.month &&
+        startDate.year == dateJoinedBrand.year &&
+        endDate.day == maxEndDate.day &&
+        endDate.month == maxEndDate.month &&
+        endDate.year == maxEndDate.year) {
       return AppLocalizations.of(context)!.historic;
     }
 
@@ -975,8 +1051,11 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
       case 14:
       case 30:
       case 90:
-        if (maxEndDate.day == endDate.day && maxEndDate.month == endDate.month && maxEndDate.year == endDate.year) {
-          return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        if (maxEndDate.day == endDate.day &&
+            maxEndDate.month == endDate.month &&
+            maxEndDate.year == endDate.year) {
+          return AppLocalizations.of(context)!
+              .lastNDays(endDate.difference(startDate).inDays.toString());
         } else {
           return AppLocalizations.of(context)!.personlized;
         }

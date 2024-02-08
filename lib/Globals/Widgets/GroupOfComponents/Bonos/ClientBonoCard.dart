@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
@@ -11,6 +12,7 @@ import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
 import '../../../../Data/LibraryModels/lColor.dart';
@@ -63,7 +65,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
   final _lColor = lColor();
   // Booleans
   bool isExpanded = false;
-  double isExpandedHeight = 2.5;
+  double isExpandedHeight = 3;
   // Client Current Bono Stats
   bool isNotActive = false;
   bool isFinished = false;
@@ -73,6 +75,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
   DateTime purchasedDate = DateTime.now();
   DateTime expirationDate = DateTime.now();
   int daysToExpire = 0;
+  int? hoursToExpire;
   int weeklySessions = 0;
 
   @override
@@ -105,12 +108,12 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     // Height of Expanded Container
     // Llargada de la Descripció del Bono
     if (bono.description!.length <= 33) {
-      isExpandedHeight = 2.4;
+      isExpandedHeight = 2.45;
     } else if (bono.description!.length > 33 &&
         bono.description!.length <= 66) {
-      isExpandedHeight = 2.45;
+      isExpandedHeight = 2.8;
     } else {
-      isExpandedHeight = 2.55;
+      isExpandedHeight = 2.9;
     }
     // Primer Condicions
     int cnt = 0;
@@ -160,6 +163,8 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     if (condition.expirationTime != 0 && daysToExpire < 0) {
       isExpired = true;
       isNotActive = true;
+    } else if (condition.expirationTime != 0 && daysToExpire == 0) {
+      hoursToExpire = diff.inHours;
     }
     // Check if Finished
     if (bono.sessions == purchase.numberOfEvents) {
@@ -177,6 +182,22 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     }
   }
 
+  String returnTimeToExpireString() {
+    String timeToExpire = "";
+    if (hoursToExpire != null) {
+      timeToExpire =
+          "$hoursToExpire ${hoursToExpire! > 1 ? AppLocalizations.of(context)!.hoursString.toLowerCase() : AppLocalizations.of(context)!.hour.toLowerCase()}";
+    } else {
+      timeToExpire =
+          "$daysToExpire ${daysToExpire > 1 ? AppLocalizations.of(context)!.days.toLowerCase() : AppLocalizations.of(context)!.dayString.toLowerCase()}";
+    }
+    if (bono.isRecurrent! && purchase.isRecurrencyActive!) {
+      return "${AppLocalizations.of(context)!.renewsAt} $timeToExpire";
+    } else {
+      return "${AppLocalizations.of(context)!.expiresAt} $timeToExpire";
+    }
+  }
+
   @override
   void didUpdateWidget(ClientBonoCard oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -188,7 +209,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
       cancelTime: widget.bono.condition!.cancelTime,
       weeklySessions: widget.bono.condition!.weeklySessions,
     );
-    isExpandedHeight = 2.5;
+    isExpandedHeight = 3;
     if (widget.isExpanded != null && widget.isExpanded!) {
       isExpanded = true;
     } else {
@@ -196,7 +217,6 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     }
     calculateExpandedHeight();
     calculateCurrentBonoStats();
-    print("rebuild");
   }
 
   @override
@@ -252,7 +272,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                     ),
                     image: bono.imageUrl != null && bono.imageUrl != ''
                         ? DecorationImage(
-                            opacity: 225,
+                            opacity: 0.33,                 
                             image: NetworkImage(bono.imageUrl!),
                             fit: BoxFit.cover,
                           )
@@ -262,7 +282,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                 : BoxDecoration(
                     image: bono.imageUrl != null && bono.imageUrl != ''
                         ? DecorationImage(
-                            opacity: 225,
+                            opacity: 0.33,  
                             image: NetworkImage(bono.imageUrl!),
                             fit: BoxFit.cover,
                           )
@@ -349,15 +369,55 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                   alignment: Alignment.centerLeft,
                                   child: FittedBox(
                                     fit: BoxFit.contain,
-                                    child: Text(
-                                      bono.title!.toUpperCase(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayLarge
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white),
-                                      textAlign: TextAlign.left,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          bono.title!.toUpperCase(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displayLarge
+                                              ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                        isExpanded == false
+                                            ? Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: widget.width * 0.015),
+                                                child: SizedBox(
+                                                    height: widget.width * 0.06,
+                                                    width: widget.width * 0.06,
+                                                    child: ClipOval(
+                                                        child: Material(
+                                                            color: AppColors
+                                                                .white
+                                                                .withOpacity(
+                                                                    0.33),
+                                                            child: InkWell(
+                                                              splashColor: Theme
+                                                                      .of(context)
+                                                                  .colorScheme
+                                                                  .background, // Splash color
+
+                                                              child: Icon(
+                                                                bono.isRecurrent!
+                                                                    ? Icons
+                                                                        .repeat
+                                                                    : FontAwesomeIcons
+                                                                        .one,
+                                                                color: AppColors
+                                                                    .white,
+                                                                size: bono
+                                                                        .isRecurrent!
+                                                                    ? widget.width *
+                                                                        0.04
+                                                                    : widget.width *
+                                                                        0.033,
+                                                              ),
+                                                            )))))
+                                            : Container(),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -366,7 +426,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                               isExpanded == false || widget.canExpand == false
                                   ? isNotActive == false
                                       ? SizedBox(
-                                          height: widget.height * 0.15,
+                                          height: widget.height * 0.14,
                                           width: widget.width * 0.2,
                                           child: FittedBox(
                                             fit: BoxFit.contain,
@@ -380,7 +440,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                               child: Center(
                                                 child: Text(
                                                   AppLocalizations.of(context)!
-                                                      .active
+                                                      .activeFem
                                                       .toUpperCase(),
                                                   style: Theme.of(context)
                                                       .textTheme
@@ -436,13 +496,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                   children: [
                                                     bono.sessions! > 5000
                                                         ? Text(
-                                                            "${AppLocalizations.of(
-                                                                        context)!
-                                                                    .sessions
-                                                                    .toUpperCase()} ${AppLocalizations.of(
-                                                                        context)!
-                                                                    .ilimitadas
-                                                                    .toUpperCase()}",
+                                                            "${AppLocalizations.of(context)!.sessions.toUpperCase().substring(0, 3)}. ${AppLocalizations.of(context)!.ilimitadas.toUpperCase()}",
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -454,17 +508,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                 TextAlign.left,
                                                           )
                                                         : Text(
-                                                            sessionsDone
-                                                                    .toString() +
-                                                                "/" +
-                                                                bono.sessions!
-                                                                    .toString()
-                                                                    .toUpperCase() +
-                                                                ' ' +
-                                                                AppLocalizations.of(
-                                                                        context)!
-                                                                    .sessions
-                                                                    .toUpperCase(),
+                                                            "$sessionsDone/${bono.sessions!.toString().toUpperCase()} ${AppLocalizations.of(context)!.sessions.toUpperCase()}",
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -482,11 +526,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                     condition.weeklySessions !=
                                                             0
                                                         ? Text(
-                                                            "${eventsThisWeek
-                                                                    .length}/${condition.weeklySessions} ${AppLocalizations.of(
-                                                                        context)!
-                                                                    .thisWeek
-                                                                    .toUpperCase()}",
+                                                            "${eventsThisWeek.length}/${condition.weeklySessions} ${AppLocalizations.of(context)!.thisWeek.toUpperCase()}",
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -500,12 +540,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                         : condition.expirationTime !=
                                                                 0
                                                             ? Text(
-                                                                "${AppLocalizations.of(
-                                                                            context)!
-                                                                        .expiresAt} $daysToExpire ${AppLocalizations.of(
-                                                                            context)!
-                                                                        .days
-                                                                        .toLowerCase()}",
+                                                                returnTimeToExpireString(),
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -517,17 +552,26 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                     TextAlign
                                                                         .left,
                                                               )
-                                                            : const Text(""),
+                                                            : Text(
+                                                                "No expira",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyLarge
+                                                                    ?.copyWith(
+                                                                        color: Colors
+                                                                            .white),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                              ),
                                                   ],
                                                 )
                                               : Row(
                                                   children: [
                                                     bono.sessions! > 5000
                                                         ? Text(
-                                                            '$sessionsDone ${AppLocalizations.of(
-                                                                        context)!
-                                                                    .sessions
-                                                                    .toUpperCase()}',
+                                                            '$sessionsDone ${AppLocalizations.of(context)!.sessions.toUpperCase()}',
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -539,17 +583,12 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                 TextAlign.left,
                                                           )
                                                         : Text(
-                                                            sessionsDone
-                                                                    .toString() +
-                                                                "/" +
-                                                                bono.sessions!
+                                                            "$sessionsDone/${bono.sessions!
                                                                     .toString()
-                                                                    .toUpperCase() +
-                                                                ' ' +
-                                                                AppLocalizations.of(
+                                                                    .toUpperCase()} ${AppLocalizations.of(
                                                                         context)!
                                                                     .sessions
-                                                                    .toUpperCase(),
+                                                                    .toUpperCase()}",
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -564,46 +603,58 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       width:
                                                           widget.width * 0.05,
                                                     ),
-                                                    Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              5),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        color: AppColors.red,
-                                                      ),
-                                                      child: Text(
-                                                        isFinished
-                                                            ? AppLocalizations
-                                                                    .of(
-                                                                        context)!
-                                                                .esgotat
-                                                                .toUpperCase()
-                                                            : isExpired
+                                                    SizedBox(
+                                                      height:
+                                                          widget.height * 0.14,
+                                                      width: widget.width * 0.2,
+                                                      child: FittedBox(
+                                                        fit: BoxFit.contain,
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(5),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            color:
+                                                                AppColors.red,
+                                                          ),
+                                                          child: Text(
+                                                            isFinished
                                                                 ? AppLocalizations.of(
                                                                         context)!
-                                                                    .expired
+                                                                    .esgotat
                                                                     .toUpperCase()
-                                                                : AppLocalizations.of(
-                                                                        context)!
-                                                                    .desactive
-                                                                    .toUpperCase(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyLarge
-                                                            ?.copyWith(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        maxLines: 4,
-                                                        overflow: TextOverflow
-                                                            .visible,
+                                                                : isExpired
+                                                                    ? AppLocalizations.of(
+                                                                            context)!
+                                                                        .expired
+                                                                        .toUpperCase()
+                                                                    : AppLocalizations.of(
+                                                                            context)!
+                                                                        .desactiveFem
+                                                                        .toUpperCase(),
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge
+                                                                ?.copyWith(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                            maxLines: 4,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .visible,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
@@ -637,7 +688,91 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                           ),
                                   ],
                                 )
-                              : Container(),
+                              : Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      height: widget.height * 0.2,
+                                      width: widget.width * 0.8,
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: FittedBox(
+                                          fit: BoxFit.contain,
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                  height: widget.width * 0.07,
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical:
+                                                          widget.width * 0.01,
+                                                      horizontal:
+                                                          widget.width * 0.02),
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.white
+                                                        .withOpacity(
+                                                      0.33,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                widget.width *
+                                                                    0.05)),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        bono.isRecurrent!
+                                                            ? Icons.repeat
+                                                            : FontAwesomeIcons
+                                                                .one,
+                                                        color: AppColors.white,
+                                                        size: bono.isRecurrent!
+                                                            ? widget.width *
+                                                                0.04
+                                                            : widget.width *
+                                                                0.033,
+                                                      ),
+                                                      SizedBox(
+                                                          width: widget.width *
+                                                              0.01),
+                                                      bono.isRecurrent!
+                                                          ? Text(
+                                                              "${StringUtils().toCapitalized(AppLocalizations.of(context)!.recurrentPayment.split(" ")[0])} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.recurrentPayment.split(" ")[1])}",
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodySmall
+                                                                  ?.copyWith(
+                                                                      color: Colors
+                                                                          .white),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left,
+                                                            )
+                                                          : Text(
+                                                              "${StringUtils().toCapitalized(AppLocalizations.of(context)!.uniquePayment.split(" ")[0])} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.uniquePayment.split(" ")[1])}",
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodySmall
+                                                                  ?.copyWith(
+                                                                      color: Colors
+                                                                          .white),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left,
+                                                            ),
+                                                    ],
+                                                  )),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
                         ],
                       ),
                     ],
@@ -670,6 +805,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                 SizedBox(
                                   height: widget.height * 0.15,
                                 ),
+                                
                                 SizedBox(
                                   width: widget.width * 0.9,
                                   child: Column(
@@ -686,8 +822,104 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                               children: [
                                                 Text(
                                                   AppLocalizations.of(context)!
-                                                      .numberSessions
-                                                      .toUpperCase(),
+                                                      .typeRate,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              AppColors.white),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                                SizedBox(
+                                                  height: widget.width * 0.02,
+                                                ),
+                                                Text(
+                                                  bono.isRecurrent!
+                                                      ? AppLocalizations.of(
+                                                              context)!
+                                                          .membership
+                                                      : AppLocalizations.of(
+                                                              context)!
+                                                          .bono,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge
+                                                      ?.copyWith(
+                                                          color:
+                                                              Colors.white70),
+                                                  textAlign: TextAlign.left,
+                                                  maxLines: 4,
+                                                  overflow:
+                                                      TextOverflow.visible,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: widget.width * 0.4,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  AppLocalizations.of(context)!
+                                                      .activeFem,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              AppColors.white),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                                SizedBox(
+                                                  height: widget.width * 0.02,
+                                                ),
+                                                Text(
+                                                  bono.isActive!
+                                                      ? AppLocalizations.of(
+                                                              context)!
+                                                          .yes
+                                                      : AppLocalizations.of(
+                                                              context)!
+                                                          .no,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge
+                                                      ?.copyWith(
+                                                          color:
+                                                              Colors.white70),
+                                                  textAlign: TextAlign.left,
+                                                  maxLines: 4,
+                                                  overflow:
+                                                      TextOverflow.visible,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: widget.width * 0.05,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: widget.width * 0.4,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  AppLocalizations.of(context)!
+                                                      .sessions,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium
@@ -703,10 +935,10 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                 ),
                                                 bono.sessions! > 5000
                                                     ? Text(
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .ilimitadas
-                                                            .toUpperCase(),
+                                                        StringUtils().toCapitalized(
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .ilimitadas),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyLarge
@@ -737,79 +969,14 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                             ),
                                           ),
                                           SizedBox(
-                                            width: widget.width * 0.4,
+                                            width: widget.width * 0.3,
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   AppLocalizations.of(context)!
-                                                      .state
-                                                      .toUpperCase(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium
-                                                      ?.copyWith(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color:
-                                                              AppColors.white),
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                                SizedBox(
-                                                  height: widget.width * 0.02,
-                                                ),
-                                                Text(
-                                                  isFinished == false &&
-                                                          isExpired == false
-                                                      ? AppLocalizations.of(
-                                                              context)!
-                                                          .active
-                                                      : isFinished
-                                                          ? AppLocalizations.of(
-                                                                  context)!
-                                                              .esgotat
-                                                          : isExpired
-                                                              ? AppLocalizations
-                                                                      .of(
-                                                                          context)!
-                                                                  .expired
-                                                              : AppLocalizations
-                                                                      .of(context)!
-                                                                  .expired,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge
-                                                      ?.copyWith(
-                                                          color:
-                                                              Colors.white70),
-                                                  textAlign: TextAlign.left,
-                                                  maxLines: 4,
-                                                  overflow:
-                                                      TextOverflow.visible,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: widget.width * 0.05,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: widget.width * 0.7,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  AppLocalizations.of(context)!
-                                                      .price
-                                                      .toUpperCase(),
+                                                      .price,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium
@@ -826,9 +993,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                 Row(
                                                   children: [
                                                     Text(
-                                                      "${bono.price!
-                                                              .toStringAsFixed(
-                                                                  2)} €",
+                                                      "${bono.price!.toStringAsFixed(2)} €",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyLarge
@@ -840,10 +1005,11 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       overflow:
                                                           TextOverflow.visible,
                                                     ),
+                                                    /* Commeting Precio por Sesión
                                                     SizedBox(
                                                       width:
                                                           widget.width * 0.05,
-                                                    ),
+                                                    ),                                                    
                                                     bono.sessions! > 5000
                                                         ? Container()
                                                         : Text(
@@ -868,6 +1034,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             textAlign:
                                                                 TextAlign.left,
                                                           ),
+                                                    */
                                                   ],
                                                 ),
                                               ],
@@ -878,9 +1045,11 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                     ],
                                   ),
                                 ),
+                                
                                 SizedBox(
                                   height: widget.height * 0.15,
                                 ),
+                                
                                 SizedBox(
                                   width: widget.width * 0.9,
                                   child: Column(
@@ -912,6 +1081,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                 SizedBox(
                                                   height: widget.width * 0.02,
                                                 ),
+                                                // EXPIRATION DATE
                                                 condition.expirationTime != 0
                                                     ? ListTile(
                                                         dense: true,
@@ -919,69 +1089,43 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             EdgeInsets.zero,
                                                         minLeadingWidth:
                                                             widget.width * 0.07,
-                                                        leading: Icon(
-                                                            Icons
-                                                                .query_builder_outlined,
-                                                            size: widget.width *
-                                                                0.07,
-                                                            color:
-                                                                Colors.white70),
-                                                        title:
-                                                            isNotActive == false
-                                                                ? Text(
-                                                                    "${AppLocalizations.of(
-                                                                                context)!
-                                                                            .expiresAt} $daysToExpire ${AppLocalizations.of(context)!
-                                                                            .days
-                                                                            .toLowerCase()}",
-                                                                    style: Theme.of(
-                                                                            context)
-                                                                        .textTheme
-                                                                        .bodyLarge
-                                                                        ?.copyWith(
-                                                                            color:
-                                                                                Colors.white70),
-                                                                  )
-                                                                : Text(
-                                                                    "${AppLocalizations.of(
-                                                                                context)!
-                                                                            .expiredAfter} ${condition
-                                                                            .expirationTime} ${AppLocalizations.of(context)!
-                                                                            .days
-                                                                            .toLowerCase()}",
-                                                                    style: Theme.of(
-                                                                            context)
-                                                                        .textTheme
-                                                                        .bodyLarge
-                                                                        ?.copyWith(
-                                                                            color:
-                                                                                Colors.white70),
-                                                                  ),
-                                                        subtitle: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
+                                                        leading: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
                                                           children: [
-                                                            const SizedBox(
-                                                              height: 8,
-                                                            ),
-                                                            Text(
-                                                              "${AppLocalizations.of(
-                                                                          context)!
-                                                                      .expireDate}: ${DateTimeUtils().formatDateTimeToStringDDMMYYYY(
-                                                                      expirationDate,
-                                                                      Localizations.localeOf(
-                                                                              context)
-                                                                          .languageCode)}",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyLarge
-                                                                  ?.copyWith(
-                                                                      color: Colors
-                                                                          .white),
-                                                            ),
+                                                            Icon(
+                                                                bono.isRecurrent!
+                                                                    ? Icons
+                                                                        .repeat
+                                                                    : Icons
+                                                                        .query_builder_outlined,
+                                                                size: widget
+                                                                        .width *
+                                                                    0.07,
+                                                                color: Colors
+                                                                    .white70),
                                                           ],
+                                                        ),
+                                                        title: Text(
+                                                          returnTimeToExpireString(),
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyLarge
+                                                              ?.copyWith(
+                                                                  color: Colors
+                                                                      .white70),
+                                                        ),
+                                                        subtitle: Text(
+                                                          "${bono.isRecurrent! ? AppLocalizations.of(context)!.renovationDate : AppLocalizations.of(context)!.expireDate}: ${DateTimeUtils().formatDateTimeToStringDDMMYYYY(expirationDate, Localizations.localeOf(context).languageCode)}",
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyMedium
+                                                              ?.copyWith(
+                                                                  color: Colors
+                                                                      .white),
                                                         ),
                                                       )
                                                     : ListTile(
@@ -1009,33 +1153,20 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                                   color: Colors
                                                                       .white70),
                                                         ),
-                                                        subtitle: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            const SizedBox(
-                                                              height: 8,
-                                                            ),
-                                                            Text(
-                                                              "${AppLocalizations.of(
-                                                                          context)!
-                                                                      .buyDate}: ${DateTimeUtils().formatDateTimeToStringDDMMYYYY(
-                                                                      purchasedDate,
-                                                                      Localizations.localeOf(
-                                                                              context)
-                                                                          .languageCode)}",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyLarge
-                                                                  ?.copyWith(
-                                                                      color: Colors
-                                                                          .white),
-                                                            ),
-                                                          ],
+                                                        subtitle: Text(
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .allSessionsDone,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyMedium
+                                                              ?.copyWith(
+                                                                  color: Colors
+                                                                      .white),
                                                         ),
                                                       ),
+                                                // WEEKLY SESSIONS
                                                 condition.weeklySessions != 0
                                                     ? ListTile(
                                                         dense: true,
@@ -1043,20 +1174,23 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             EdgeInsets.zero,
                                                         minLeadingWidth:
                                                             widget.width * 0.07,
-                                                        leading: Icon(
-                                                            Icons.rule_outlined,
-                                                            size: widget.width *
-                                                                0.07,
-                                                            color:
-                                                                Colors.white70),
+                                                        leading: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Icon(
+                                                                Icons
+                                                                    .date_range_outlined,
+                                                                size: widget
+                                                                        .width *
+                                                                    0.07,
+                                                                color: Colors
+                                                                    .white70),
+                                                          ],
+                                                        ),
                                                         title: Text(
-                                                          "${AppLocalizations.of(
-                                                                      context)!
-                                                                  .max} ${condition
-                                                                  .weeklySessions} ${AppLocalizations.of(
-                                                                      context)!
-                                                                  .trainsPerWeek
-                                                                  .toLowerCase()}",
+                                                          "${AppLocalizations.of(context)!.max} de ${condition.weeklySessions} ${AppLocalizations.of(context)!.trainsPerWeek.toLowerCase()}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
@@ -1067,27 +1201,29 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                         ),
                                                         subtitle:
                                                             isNotActive == false
-                                                                ? Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            8,
-                                                                      ),
-                                                                      Text(
-                                                                        "${AppLocalizations.of(context)!.thisWeek}: ${eventsThisWeek.length}/${condition.weeklySessions} ${AppLocalizations.of(context)!.sessions.toLowerCase()}",
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .bodySmall
-                                                                            ?.copyWith(color: Colors.white),
-                                                                      ),
-                                                                    ],
+                                                                ? Text(
+                                                                    "${AppLocalizations.of(context)!.thisWeek}: ${eventsThisWeek.length}/${condition.weeklySessions} ${AppLocalizations.of(context)!.sessions.toLowerCase()}",
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .bodySmall
+                                                                        ?.copyWith(
+                                                                            color:
+                                                                                Colors.white),
                                                                   )
-                                                                : null,
+                                                                : Text(
+                                                                    "${AppLocalizations.of(context)!.max} ${condition.weeklySessions} ${AppLocalizations.of(context)!.trainsPerWeek.toLowerCase()}",
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .bodyMedium
+                                                                        ?.copyWith(
+                                                                            color:
+                                                                                Colors.white),
+                                                                  ),
                                                       )
                                                     : Container(),
+                                                // CANCEL TIME
                                                 condition.cancelTime != 0
                                                     ? ListTile(
                                                         dense: true,
@@ -1095,21 +1231,25 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                             EdgeInsets.zero,
                                                         minLeadingWidth:
                                                             widget.width * 0.07,
-                                                        leading: Icon(
-                                                            Icons
-                                                                .free_cancellation,
-                                                            size: widget.width *
-                                                                0.07,
-                                                            color:
-                                                                Colors.white70),
+                                                        leading: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Icon(
+                                                                Icons
+                                                                    .free_cancellation,
+                                                                size: widget
+                                                                        .width *
+                                                                    0.07,
+                                                                color: Colors
+                                                                    .white70),
+                                                          ],
+                                                        ),
                                                         title: Text(
-                                                          "${AppLocalizations.of(
-                                                                      context)!
-                                                                  .cancelTimeAt} ${condition
-                                                                  .cancelTime} ${AppLocalizations.of(
-                                                                      context)!
-                                                                  .hours
-                                                                  .toLowerCase()}",
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .freeCancel,
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
@@ -1117,7 +1257,18 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                               ?.copyWith(
                                                                   color: Colors
                                                                       .white70),
-                                                        ))
+                                                        ),
+                                                        subtitle: Text(
+                                                          "${StringUtils().toCapitalized(AppLocalizations.of(context)!.cancelTimeAt.split(" ")[2])} ${condition.cancelTime} ${AppLocalizations.of(context)!.hours.toLowerCase()}",
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyMedium
+                                                              ?.copyWith(
+                                                                  color: Colors
+                                                                      .white),
+                                                        ),
+                                                      )
                                                     : Container(),
                                               ],
                                             ),
@@ -1127,6 +1278,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                     ],
                                   ),
                                 ),
+                                
                                 SizedBox(
                                   height: widget.height * 0.05,
                                 ),
