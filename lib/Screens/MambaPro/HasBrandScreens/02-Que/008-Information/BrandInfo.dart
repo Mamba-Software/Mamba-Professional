@@ -2602,21 +2602,20 @@ class _BrandInfoState extends State<BrandInfo>
                                 MaterialPageRoute(
                                     builder: (context) => OnboardingWebView()),
                               );
+                              /*
                               if (result != null) {
                                 currentBrand.isVerified = result.isVerified;
                                 currentBrand.stripeAccountId =
                                     result.stripeAccountId;
                                 currentBrand.stripeActivated = true;
                                 isStripeActive = true;
-                              }
-                              /*
+                              }*/
                               currentBrand.stripeAccountId =
                                   await _brandDataService
                                       .getBrandStripeAccount(currentBrand.id!);
                               if (currentBrand.stripeAccountId != '') {
-                                currentBrand.stripeActivated = true;
                                 isStripeActive = true;
-                              }*/
+                              }
                             } else {
                               if (isStripeActive && !currentBrand.isVerified) {
                                 context
@@ -2632,7 +2631,15 @@ class _BrandInfoState extends State<BrandInfo>
                                     result is UserStripeModel) {
                                   currentBrand = currentBrand;
                                 }
+                                currentBrand.stripeAccountId =
+                                    await _brandDataService
+                                        .getBrandStripeAccount(
+                                            currentBrand.id!);
+                                if (currentBrand.stripeAccountId != '') {
+                                  isStripeActive = true;
+                                }
                               } else {
+                                currentBrand.stripeActivated = false;
                                 isStripeActive = newVal;
                               }
                             }

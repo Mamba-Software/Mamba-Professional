@@ -581,8 +581,12 @@ class BrandFirebaseCalls {
         await _firestore.collection(brands).doc(brandID).get();
     Brand brand =
         Brand.fromObjectOnlyCoverData(documentSnapshot.id, documentSnapshot);
-    if (brand.stripeAccountId == null) {
-      return '';
+    if (brand.stripeAccountId != null) {
+      currentBrand.stripeAccountId = brand.stripeAccountId;
+      currentBrand.stripeActivated = true;
+    }
+    if (brand.isVerified != null) {
+      currentBrand.isVerified = brand.isVerified;
     }
     return brand.stripeAccountId!;
   }
