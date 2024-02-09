@@ -7,7 +7,7 @@ class SelectDaysDialog extends StatefulWidget {
   String title;
   int intialDays;
   int? daysMax;
-  SelectDaysDialog({Key? key, required this.title, required this.intialDays, this.daysMax}) : super(key: key);
+  SelectDaysDialog({super.key, required this.title, required this.intialDays, this.daysMax});
 
   @override
   _SelectDaysDialogState createState() => _SelectDaysDialogState();
@@ -31,7 +31,7 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
       ),
       child: Container(
@@ -51,7 +51,7 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
                 Expanded(
                     child: Text(
                       widget.title,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center
                     )
                 ),
@@ -63,7 +63,7 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
                 child: CupertinoTheme(
                     data: CupertinoThemeData(
                         textTheme: CupertinoTextThemeData(
-                          dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
+                          dateTimePickerTextStyle: Theme.of(context).textTheme.bodyMedium,
                         )
                     ),
                     child: CupertinoPicker(
@@ -81,7 +81,7 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
                           return Center(
                             child: Text(
                               days.toString(),
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           );
                         }
@@ -96,6 +96,7 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
               children: [
                 FloatingActionButton.extended(
                   heroTag: "42",
+                  shape: const StadiumBorder(),
                   onPressed: () {
                     Navigator.pop(context, pickedDays);
                   },
@@ -103,7 +104,7 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
                   icon: Container(),
                   label: Text(
                       AppLocalizations.of(context)!.confirm,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark)
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark)
                   ),
                 ),
               ],

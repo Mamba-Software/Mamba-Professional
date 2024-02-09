@@ -9,7 +9,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 class AdminTool extends StatefulWidget {
   final String title;
 
-  const AdminTool({Key? key, required this.title}) : super(key: key);
+  const AdminTool({super.key, required this.title});
 
   @override
   _AdminToolState createState() => _AdminToolState();
@@ -68,7 +68,7 @@ class _AdminToolState extends State<AdminTool> {
                 .copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
         centerTitle: true,
         elevation: 10,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.white, //change your color here
         ),
       ),
@@ -97,7 +97,7 @@ class _AdminToolState extends State<AdminTool> {
                         onChanged: (value) {
                           filterSearchResults(value);
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             labelText: "Look for people!",
                             hintText: "Search",
                             prefixIcon: Icon(Icons.search),
@@ -118,11 +118,11 @@ class _AdminToolState extends State<AdminTool> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.record_voice_over,
                                   color: Styles.accent,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
@@ -140,11 +140,11 @@ class _AdminToolState extends State<AdminTool> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.directions_run,
                                   color: Styles.accent,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
@@ -346,10 +346,11 @@ class _AdminToolState extends State<AdminTool> {
     List<Usuario> usersFiltered = [];
     List<Usuario> usersToAnalyze = [];
 
-    if (filtredByTrainerClient == false)
+    if (filtredByTrainerClient == false) {
       usersToAnalyze = usersListTrainer;
-    else
+    } else {
       usersToAnalyze = usersListTrainer;
+    }
 
     if (query.isNotEmpty) {
       for (var item in usersToAnalyze) {
@@ -383,24 +384,24 @@ class _AdminToolState extends State<AdminTool> {
 class UserTile extends StatelessWidget {
   final Usuario user;
 
-  UserTile(this.user);
+  const UserTile(this.user, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return new Card(
-      margin: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
+    return Card(
+      margin: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
       child: ListTile(
         leading: CircularImage(
             size: MediaQuery.of(context).size.width * 0.15,
             image: user.imageUrl,
             borderWidth: 3,
             color: Colors.red),
-        trailing: Icon(Icons.east),
+        trailing: const Icon(Icons.east),
         title: Text(
           user.name!,
-          style: TextStyle(fontSize: 20.0),
+          style: const TextStyle(fontSize: 20.0),
         ),
-        subtitle: Text("Admin Tool"),
+        subtitle: const Text("Admin Tool"),
         onTap: () {},
       ),
     );

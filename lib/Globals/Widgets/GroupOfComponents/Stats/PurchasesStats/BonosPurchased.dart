@@ -1,15 +1,10 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
@@ -30,8 +25,8 @@ class BonosPurchased extends StatefulWidget {
     required this.purchases,
     required this.bonos,
     required this.brand,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   BonosPurchasedState createState() => BonosPurchasedState();
@@ -43,7 +38,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
   // Models i base de Dades
   Brand brand = Brand();
   List <Purchase> filteredPurchase = [];
-  ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
+  final ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
     enablePanning: true);
   double difference = 0;
   TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true);
@@ -95,8 +90,11 @@ class BonosPurchasedState extends State<BonosPurchased> {
   void orderBonos()
   {
     bonos.sort((a, b){ //sorting in ascending order
-      if(a.isActive!) return -1;
-          else return 1;
+      if(a.isActive!) {
+        return -1;
+      } else {
+        return 1;
+      }
     });
   }
 
@@ -107,7 +105,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
     BonoStat bonoStat;
     for(int i = 0; i < bonos.length; ++i) {
       purchasesList = filteredPurchase.where((element) => element.bonoId == bonos[i].id).toList();
-      bonoStat = new BonoStat(purchasesList.length, getMoney(purchasesList), makeBonoStats(purchasesList));
+      bonoStat = BonoStat(purchasesList.length, getMoney(purchasesList), makeBonoStats(purchasesList));
       bonoStats.add(bonoStat);
     }
   }
@@ -244,14 +242,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       width: MediaQuery.of(context).size.width*0.4,
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
+                        color: Theme.of(context).colorScheme.background,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(bonoStats[index].money.toStringAsFixed(2)  + ' €',
-                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text('${bonoStats[index].money.toStringAsFixed(2)} €',
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text( AppLocalizations.of(context)!.benefit),
                           ]
                       ),
@@ -260,14 +258,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       width: MediaQuery.of(context).size.width*0.4,
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
+                        color: Theme.of(context).colorScheme.background,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(bonoStats[index].purchases.toString(),
-                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text( AppLocalizations.of(context)!.boughts),
                           ]
                       ),
@@ -284,14 +282,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       width: MediaQuery.of(context).size.width*0.4,
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
+                        color: Theme.of(context).colorScheme.background,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(0.toStringAsFixed(2)  + ' €',
-                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text('${0.toStringAsFixed(2)} €',
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text( AppLocalizations.of(context)!.benefit),
                           ]
                       ),
@@ -300,14 +298,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       width: MediaQuery.of(context).size.width*0.4,
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
+                        color: Theme.of(context).colorScheme.background,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(0.toString(),
-                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text( AppLocalizations.of(context)!.boughts),
                           ]
                       ),
@@ -331,7 +329,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                 child: Image.asset(Constants.emptyCalendar)
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                            Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                            Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
                             SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
                         ) : Container(),
@@ -363,8 +361,8 @@ class BonosPurchasedState extends State<BonosPurchased> {
                               //Hide the axis line of x-axis
                               axisLine: const AxisLine(width: 0),
                             ),
-                            axes: [],
-                            indicators: [],
+                            axes: const [],
+                            indicators: const [],
                             legend: null,
                             tooltipBehavior: _tooltipBehavior,
                             enableSideBySideSeriesPlacement: false,
@@ -409,7 +407,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                 child: Image.asset(Constants.emptyCalendar)
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.005),
-            Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+            Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
             SizedBox(height: MediaQuery.of(context).size.height*0.05),
           ],
         ),
@@ -426,14 +424,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       width: MediaQuery.of(context).size.width*0.4,
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
+                        color: Theme.of(context).colorScheme.background,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(bonoStats[index].money.toStringAsFixed(2)  + ' €',
-                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text('${bonoStats[index].money.toStringAsFixed(2)} €',
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text( AppLocalizations.of(context)!.benefit),
                           ]
                       ),
@@ -442,14 +440,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       width: MediaQuery.of(context).size.width*0.4,
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
+                        color: Theme.of(context).colorScheme.background,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(bonoStats[index].purchases.toString(),
-                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text( AppLocalizations.of(context)!.boughts),
                           ]
                       ),
@@ -466,14 +464,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       width: MediaQuery.of(context).size.width*0.4,
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
+                        color: Theme.of(context).colorScheme.background,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(0.toStringAsFixed(2)  + ' €',
-                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text('${0.toStringAsFixed(2)} €',
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text( AppLocalizations.of(context)!.benefit),
                           ]
                       ),
@@ -482,14 +480,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       width: MediaQuery.of(context).size.width*0.4,
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
+                        color: Theme.of(context).colorScheme.background,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(0.toString(),
-                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text( AppLocalizations.of(context)!.boughts),
                           ]
                       ),

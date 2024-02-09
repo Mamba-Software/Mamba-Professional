@@ -10,9 +10,7 @@ import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -21,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MediaQuery/MediaQuery.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../../../../Data/LibraryModels/lDegradate.dart';
 import '../../../../../Globals/Utils/Bonos/BonosUtils.dart';
 import '../../../../../Globals/Widgets/Components/Images/RectangularImage.dart';
@@ -36,8 +33,12 @@ class AddEditBono extends StatefulWidget {
   bool delete;
 
   AddEditBono(
-      {Key? key, required this.brand, required this.bono, required this.edit, required this.duplicate, required this.delete})
-      : super(key: key);
+      {super.key,
+      required this.brand,
+      required this.bono,
+      required this.edit,
+      required this.duplicate,
+      required this.delete});
 
   @override
   _AddEditBonoState createState() => _AddEditBonoState();
@@ -157,8 +158,9 @@ class _AddEditBonoState extends State<AddEditBono>
   initState() {
     isLoading = false;
     _tabController = TabController(length: 5, vsync: this);
-    var color;
-    var degradate1, degradate2;
+    Color color;
+    Color degradate1, degradate2;
+    bono.isRecurrent = widget.bono.isRecurrent;
     if (widget.edit == true || widget.duplicate == true) {
       bono.id = widget.bono.id;
       bono.title = widget.bono.title;
@@ -241,7 +243,8 @@ class _AddEditBonoState extends State<AddEditBono>
   }
 
   Future<void> getPurchases() async {
-    bool temp = await _brandDataService.checkIfBrandBonoHasPurchases(widget.brand.id!, widget.bono.id!);
+    bool temp = await _brandDataService.checkIfBrandBonoHasPurchases(
+        widget.brand.id!, widget.bono.id!);
     setState(() {
       hasPurchases = temp;
     });
@@ -253,18 +256,18 @@ class _AddEditBonoState extends State<AddEditBono>
     if (widget.delete == true) {
       // DeleteDialog
       var result = await showDialog(
-        context: context,
-        builder: (_) {
-          return DeleteBonoDialog(
-            hasPurchases: hasPurchases,
-            isActive: bono.isActive!,
-          );
-        }
-      );
+          context: context,
+          builder: (_) {
+            return DeleteBonoDialog(
+              hasPurchases: hasPurchases,
+              isActive: bono.isActive!,
+            );
+          });
       if (result) {
         if (hasPurchases) {
           // Deactivate
-          await _brandDataService.updateBonoActive(widget.brand.id!, bono.id!, !bono.isActive!);
+          await _brandDataService.updateBonoActive(
+              widget.brand.id!, bono.id!, !bono.isActive!);
           Navigator.pop(context);
         } else {
           // Delete Bono
@@ -299,38 +302,45 @@ class _AddEditBonoState extends State<AddEditBono>
                 preferredSize: const Size.fromHeight(0),
                 child: IgnorePointer(
                     child: Column(
-                      children: [
-                        Padding(padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.015,
-                            width: MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                              child: LinearProgressIndicator(
-                                value: addBonosTabValue,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Theme.of(context).colorScheme.secondary),
-                                backgroundColor: Colors.grey.shade100,
-                              ),
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical:
+                                MediaQuery.of(context).size.height * 0.01),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.015,
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.01),
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            child: LinearProgressIndicator(
+                              value: addBonosTabValue,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).colorScheme.secondary),
+                              backgroundColor: Colors.grey.shade100,
                             ),
-                        )
-                      ),
-                    ],
-                  )
-                ),
+                          ),
+                        )),
+                  ],
+                )),
               ),
             ),
             body: LoadingView(),
           )
         : Scaffold(
             appBar: AppBar(
-              toolbarHeight: MediaQuery.of(context).size.height*0.08,
+              toolbarHeight: MediaQuery.of(context).size.height * 0.08,
               title: Text(
                 widget.edit
-                    ? AppLocalizations.of(context)!.editBono
-                    : AppLocalizations.of(context)!.createBono,
+                    ? bono.isRecurrent!
+                        ? AppLocalizations.of(context)!.editBonoRecurrent
+                        : AppLocalizations.of(context)!.editBonoSimple
+                    : bono.isRecurrent!
+                        ? AppLocalizations.of(context)!.createBonoRecurrent
+                        : AppLocalizations.of(context)!.createBonoSimple,
                 style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
               centerTitle: true,
@@ -344,54 +354,60 @@ class _AddEditBonoState extends State<AddEditBono>
                 },
               ),
               actions: [
-                widget.edit == true ? IconButton(
-                    onPressed: () async {
-                      // DeleteDialog
-                      var result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return DeleteBonoDialog(
-                              hasPurchases: hasPurchases,
-                              isActive: bono.isActive!,
-                            );
+                widget.edit == true
+                    ? IconButton(
+                        onPressed: () async {
+                          // DeleteDialog
+                          var result = await showDialog(
+                              context: context,
+                              builder: (_) {
+                                return DeleteBonoDialog(
+                                  hasPurchases: hasPurchases,
+                                  isActive: bono.isActive!,
+                                );
+                              });
+                          if (result != null && result) {
+                            if (hasPurchases) {
+                              // Deactivate
+                              await _brandDataService.updateBonoActive(
+                                  widget.brand.id!, bono.id!, !bono.isActive!);
+                              Navigator.pop(context);
+                            } else {
+                              // Delete Bono
+                              await _brandDataService.deleteBrandBono(
+                                  widget.brand.id!, bono.id!);
+                              Navigator.pop(context);
+                            }
                           }
-                      );
-                      if (result != null && result) {
-                        if (hasPurchases) {
-                          // Deactivate
-                          await _brandDataService.updateBonoActive(widget.brand.id!, bono.id!, !bono.isActive!);
-                          Navigator.pop(context);
-                        } else {
-                          // Delete Bono
-                          await _brandDataService.deleteBrandBono(widget.brand.id!, bono.id!);
-                          Navigator.pop(context);
-                        }
-                      }
-                    },
-                    icon: SizedBox(
-                      width: MediaQuery.of(context).size.width*0.15,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
-                        ],
-                      ),
-                    )
-                ) : Container(),
-                SizedBox(width: MediaQuery.of(context).size.width*0.03)
+                        },
+                        icon: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.15,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.delete_outlined,
+                                color: AppColors.red,
+                                size: MediaQuery.of(context).size.width * 0.07,
+                              ),
+                            ],
+                          ),
+                        ))
+                    : Container(),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03)
               ],
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(0),
                 child: IgnorePointer(
-                  child: Column(
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.width*0.03),
-                      LinearProgressIndicator(
-                        value: addBonosTabValue,
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
+                    child: Column(
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.width * 0.03),
+                    LinearProgressIndicator(
+                      value: addBonosTabValue,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                   ],
                 )),
               ),
@@ -442,6 +458,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           child: SizedBox(
                             height: 50,
                             child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                               heroTag: "4",
                               onPressed: () {
                                 if (_selectedIndex == 1) {
@@ -452,7 +469,8 @@ class _AddEditBonoState extends State<AddEditBono>
                                   }
                                   setState(() {
                                     tabs[1] = false;
-                                    FocusManager.instance.primaryFocus?.unfocus();
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                   });
                                 } else if (_selectedIndex == 2) {
                                   if (widget.edit) {
@@ -473,7 +491,8 @@ class _AddEditBonoState extends State<AddEditBono>
                                   }
                                   setState(() {
                                     tabs[3] = false;
-                                    FocusManager.instance.primaryFocus?.unfocus();
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                   });
                                 } else if (_selectedIndex == 4) {
                                   if (widget.edit) {
@@ -498,7 +517,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                 AppLocalizations.of(context)!.back,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .copyWith(
                                         color:
                                             Theme.of(context).primaryColorDark),
@@ -520,6 +539,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     child: SizedBox(
                       height: 50,
                       child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                         heroTag: "5",
                         onPressed: () {
                           if (_selectedIndex == 0) {
@@ -550,7 +570,8 @@ class _AddEditBonoState extends State<AddEditBono>
                               });
                               addBonosTabValue += 0.20;
                               tabs[2] = true;
-                              priceController.text = bono.price!.toStringAsFixed(2);
+                              priceController.text =
+                                  bono.price!.toStringAsFixed(2);
                               if (widget.edit) {
                                 mixpanel!.track('edit_bono_conditions');
                               } else {
@@ -579,11 +600,13 @@ class _AddEditBonoState extends State<AddEditBono>
                             } else {
                               if (weekSessions && !cancelTimeSessions) {
                                 if (weeklyController.text.isNotEmpty) {
-                                  _tabController!.animateTo(_selectedIndex += 1);
+                                  _tabController!
+                                      .animateTo(_selectedIndex += 1);
                                   setState(() {
                                     addBonosTabValue += 0.20;
                                     tabs[3] = true;
-                                    FocusManager.instance.primaryFocus?.unfocus();
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                   });
                                   if (widget.edit) {
                                     mixpanel!.track('edit_bono_style');
@@ -594,11 +617,13 @@ class _AddEditBonoState extends State<AddEditBono>
                               }
                               if (!weekSessions && cancelTimeSessions) {
                                 if (freeCancellController.text.isNotEmpty) {
-                                  _tabController!.animateTo(_selectedIndex += 1);
+                                  _tabController!
+                                      .animateTo(_selectedIndex += 1);
                                   setState(() {
                                     addBonosTabValue += 0.20;
                                     tabs[3] = true;
-                                    FocusManager.instance.primaryFocus?.unfocus();
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                   });
                                   if (widget.edit) {
                                     mixpanel!.track('edit_bono_style');
@@ -636,7 +661,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               : AppLocalizations.of(context)!.next,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodyLarge!
                               .copyWith(color: AppColors.white),
                         ),
                       ),
@@ -652,162 +677,187 @@ class _AddEditBonoState extends State<AddEditBono>
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Form(
-              key: formKeyInfo,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      optionTextWrite(
-                          TextInputType.text,
-                          AppLocalizations.of(context)!.title,
-                          "",
-                          AppLocalizations.of(context)!.titleHint,
-                          AppLocalizations.of(context)!.titleError,
-                          null,
-                          true,
-                          titleController,
-                          focusNodetitleController,
-                          false,
-                          'title'),
-                      optionTextWrite(
-                          TextInputType.text,
-                          AppLocalizations.of(context)!.description,
-                          "",
-                          AppLocalizations.of(context)!.descriptionHint,
-                          AppLocalizations.of(context)!.descriptionError,
-                          null,
-                          true,
-                          descriptionController,
-                          focusNodeDescController,
-                          false,
-                          'desc'),
-                      optionTextWrite(
-                          TextInputType.multiline,
-                          bono.isActive! ? AppLocalizations.of(context)!.desactivarBono : AppLocalizations.of(context)!.activarBono,
-                          AppLocalizations.of(context)!.activeBonoQuesDesc,
-                          AppLocalizations.of(context)!.descriptionError,
-                          AppLocalizations.of(context)!.descriptionError,
-                          null,
-                          true,
-                          null,
-                          null,
-                          true,
-                          bono.isActive),
-                    ]),
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Form(
+                key: formKeyInfo,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        optionTextWrite(
+                            TextInputType.text,
+                            AppLocalizations.of(context)!.title,
+                            "",
+                            AppLocalizations.of(context)!.titleHint,
+                            AppLocalizations.of(context)!.titleError,
+                            null,
+                            true,
+                            titleController,
+                            focusNodetitleController,
+                            false,
+                            'title'),
+                        optionTextWrite(
+                            TextInputType.text,
+                            AppLocalizations.of(context)!.description,
+                            "",
+                            AppLocalizations.of(context)!.descriptionHint,
+                            AppLocalizations.of(context)!.descriptionError,
+                            null,
+                            true,
+                            descriptionController,
+                            focusNodeDescController,
+                            false,
+                            'desc'),
+                        optionTextWrite(
+                            TextInputType.multiline,
+                            AppLocalizations.of(context)!.disponible,
+                            AppLocalizations.of(context)!.activeBonoQuesDesc,
+                            AppLocalizations.of(context)!.descriptionError,
+                            AppLocalizations.of(context)!.descriptionError,
+                            null,
+                            true,
+                            null,
+                            null,
+                            true,
+                            bono.isActive),
+                      ]),
+                ),
               ),
-            ),
-          ],
-        )
-      ),
-
+            ],
+          )),
     );
   }
 
   Widget pricePage() {
     return Scaffold(
       body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          children: [
-          widget.edit == true ? hasPurchases ? Container(
-              height: MediaQuery.of(context).size.height*0.15,
-              width: MediaQuery.of(context).size.width*0.9,
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.red.withOpacity(0.2),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            children: [
+              widget.edit == true
+                  ? hasPurchases
+                      ? Container(
+                          height: MediaQuery.of(context).size.height * 0.15,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          margin: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.03),
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.red.withOpacity(0.2),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            border: Border.all(color: AppColors.red, width: 2),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.info_outlined,
+                                color: AppColors.red,
+                                size: MediaQuery.of(context).size.width * 0.08,
+                              ),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                      .bonosPurchasedWarning,
+                                  textAlign: TextAlign.left,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                          color: AppColors.red, height: 1.3),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          height: MediaQuery.of(context).size.height * 0.10,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          margin: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.03),
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.2),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            border: Border.all(color: Colors.green, width: 2),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.info_outlined,
+                                color: Colors.green,
+                                size: MediaQuery.of(context).size.width * 0.08,
+                              ),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                      .bonosCanPurchasedWarning,
+                                  textAlign: TextAlign.left,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                          color: Colors.green, height: 1.3),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                  : Container(),
+              Form(
+                key: formKeyPrice,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        optionTextWrite(
+                            TextInputType.number,
+                            AppLocalizations.of(context)!.sessions,
+                            AppLocalizations.of(context)!.sesionsBonoDesc,
+                            AppLocalizations.of(context)!.sessionHint,
+                            AppLocalizations.of(context)!.sessionPlease,
+                            AppLocalizations.of(context)!.sessionPlease,
+                            widget.edit && hasPurchases ? false : true,
+                            sessionsController,
+                            focusNodeSessionsController,
+                            false,
+                            'ses'),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
+                        optionTextWrite(
+                            const TextInputType.numberWithOptions(
+                                decimal: true),
+                            AppLocalizations.of(context)!.price,
+                            "",
+                            AppLocalizations.of(context)!.priceHint,
+                            AppLocalizations.of(context)!.pricePlease,
+                            null,
+                            widget.edit && hasPurchases ? false : true,
+                            priceController,
+                            focusNodePriceController,
+                            false,
+                            'price'),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1),
+                      ]),
                 ),
-                border: Border.all(color: AppColors.red, width: 2),
               ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outlined, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.08,),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      AppLocalizations.of(context)!.bonosPurchasedWarning,
-                      textAlign: TextAlign.left,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
-                    ),
-                  ),
-                ],
-              ),
-            ) : Container(
-            height: MediaQuery.of(context).size.height*0.10,
-            width: MediaQuery.of(context).size.width*0.9,
-            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.2),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(10),
-              ),
-              border: Border.all(color: Colors.green, width: 2),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.info_outlined, color: Colors.green, size:  MediaQuery.of(context).size.width*0.08,),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    AppLocalizations.of(context)!.bonosCanPurchasedWarning,
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
-                  ),
-                ),
-              ],
-            ),
-          ) : Container(),
-          Form(
-            key: formKeyPrice,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    optionTextWrite(
-                        TextInputType.number,
-                        AppLocalizations.of(context)!.sessions,
-                        AppLocalizations.of(context)!.sesionsBonoDesc,
-                        AppLocalizations.of(context)!.sessionHint,
-                        AppLocalizations.of(context)!.sessionPlease,
-                        AppLocalizations.of(context)!.sessionPlease,
-                        widget.edit && hasPurchases ? false : true,
-                        sessionsController,
-                        focusNodeSessionsController,
-                        false,
-                        'ses'),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                    optionTextWrite(
-                        const TextInputType.numberWithOptions(decimal: true),
-                        AppLocalizations.of(context)!.price,
-                        "",
-                        AppLocalizations.of(context)!.priceHint,
-                        AppLocalizations.of(context)!.pricePlease,
-                        null,
-                        widget.edit && hasPurchases ? false : true,
-                        priceController,
-                        focusNodePriceController,
-                        false,
-                        'price'),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                  ]
-              ),
-            ),
-          ),
-        ],
-      )),
+            ],
+          )),
       resizeToAvoidBottomInset: true,
     );
   }
@@ -815,111 +865,154 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget conditionsPage() {
     return Scaffold(
       body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          children: [
-            widget.edit == true ? hasPurchases ? Container(
-              height: MediaQuery.of(context).size.height*0.15,
-              width: MediaQuery.of(context).size.width*0.9,
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.red.withOpacity(0.2),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            children: [
+              widget.edit == true
+                  ? hasPurchases
+                      ? Container(
+                          height: MediaQuery.of(context).size.height * 0.15,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          margin: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.03),
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.red.withOpacity(0.2),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            border: Border.all(color: AppColors.red, width: 2),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.info_outlined,
+                                color: AppColors.red,
+                                size: MediaQuery.of(context).size.width * 0.08,
+                              ),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                      .bonosPurchasedWarning,
+                                  textAlign: TextAlign.left,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                          color: AppColors.red, height: 1.3),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          height: MediaQuery.of(context).size.height * 0.10,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          margin: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.03),
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.2),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            border: Border.all(color: Colors.green, width: 2),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.info_outlined,
+                                color: Colors.green,
+                                size: MediaQuery.of(context).size.width * 0.08,
+                              ),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                      .bonosCanPurchasedWarning,
+                                  textAlign: TextAlign.left,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                          color: Colors.green, height: 1.3),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                  : Container(),
+              Form(
+                key: formKeyConditions,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        bono.isRecurrent!
+                            ? optionConditionsWrite(
+                                TextInputType.text,
+                                AppLocalizations.of(context)!.renovationDate,
+                                AppLocalizations.of(context)!
+                                    .renovationDateDesc,
+                                AppLocalizations.of(context)!.titleError,
+                                AppLocalizations.of(context)!.titleError,
+                                AppLocalizations.of(context)!.titleError,
+                                widget.edit && hasPurchases ? false : true,
+                                titleController,
+                                null,
+                                'exp',
+                                bono.isRecurrent!)
+                            : optionConditionsWrite(
+                                TextInputType.text,
+                                AppLocalizations.of(context)!.expireDate,
+                                AppLocalizations.of(context)!.expiresAtDesc,
+                                AppLocalizations.of(context)!.titleError,
+                                AppLocalizations.of(context)!.titleError,
+                                AppLocalizations.of(context)!.titleError,
+                                widget.edit && hasPurchases ? false : true,
+                                titleController,
+                                null,
+                                'exp',
+                                bono.isRecurrent!),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.01),
+                        optionConditionsWrite(
+                            TextInputType.number,
+                            AppLocalizations.of(context)!.trainsPerWeek,
+                            AppLocalizations.of(context)!.trainsPerWeekDesc,
+                            AppLocalizations.of(context)!.sessionHint,
+                            AppLocalizations.of(context)!.sessionPlease,
+                            AppLocalizations.of(context)!.trainsPerWeekError,
+                            widget.edit && hasPurchases ? false : true,
+                            weeklyController,
+                            focusNodeWeeklyController,
+                            'maxw',
+                            bono.isRecurrent!),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
+                        optionConditionsWrite(
+                            TextInputType.number,
+                            AppLocalizations.of(context)!.freeCancel,
+                            AppLocalizations.of(context)!.freeCancelDesc,
+                            AppLocalizations.of(context)!.freeCancelHint,
+                            AppLocalizations.of(context)!.freeCancelError,
+                            AppLocalizations.of(context)!.freeCancelErrorSecond,
+                            widget.edit && hasPurchases ? false : true,
+                            freeCancellController,
+                            focusNodeFreeCancelController,
+                            'canFree',
+                            bono.isRecurrent!),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.2),
+                      ]),
                 ),
-                border: Border.all(color: AppColors.red, width: 2),
               ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outlined, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.08,),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      AppLocalizations.of(context)!.bonosPurchasedWarning,
-                      textAlign: TextAlign.left,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
-                    ),
-                  ),
-                ],
-              ),
-            ) : Container(
-              height: MediaQuery.of(context).size.height*0.10,
-              width: MediaQuery.of(context).size.width*0.9,
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.2),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                border: Border.all(color: Colors.green, width: 2),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outlined, color: Colors.green, size:  MediaQuery.of(context).size.width*0.08,),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      AppLocalizations.of(context)!.bonosCanPurchasedWarning,
-                      textAlign: TextAlign.left,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
-                    ),
-                  ),
-                ],
-              ),
-            ) : Container(),
-            Form(
-              key: formKeyConditions,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      optionConditionsWrite(
-                          TextInputType.text,
-                          AppLocalizations.of(context)!.expireDate,
-                          AppLocalizations.of(context)!.expiresAtDesc,
-                          AppLocalizations.of(context)!.titleError,
-                          AppLocalizations.of(context)!.titleError,
-                          AppLocalizations.of(context)!.titleError,
-                          widget.edit && hasPurchases ? false : true,
-                          titleController,
-                          null,
-                          'exp'),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                      optionConditionsWrite(
-                          TextInputType.number,
-                          AppLocalizations.of(context)!.trainsPerWeek,
-                          AppLocalizations.of(context)!.trainsPerWeekDesc,
-                          AppLocalizations.of(context)!.sessionHint,
-                          AppLocalizations.of(context)!.sessionPlease,
-                          AppLocalizations.of(context)!.trainsPerWeekError,
-                          widget.edit && hasPurchases ? false : true,
-                          weeklyController,
-                          focusNodeWeeklyController,
-                          'maxw'),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                      optionConditionsWrite(
-                          TextInputType.number,
-                          AppLocalizations.of(context)!.freeCancel,
-                          AppLocalizations.of(context)!.freeCancelDesc,
-                          AppLocalizations.of(context)!.freeCancelHint,
-                          AppLocalizations.of(context)!.freeCancelError,
-                          AppLocalizations.of(context)!.freeCancelErrorSecond,
-                          widget.edit && hasPurchases ? false : true,
-                          freeCancellController,
-                          focusNodeFreeCancelController,
-                          'canFree'),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.2),
-                    ]),
-              ),
-            ),
-          ],
-        )
-      ),
+            ],
+          )),
       resizeToAvoidBottomInset: true,
     );
   }
@@ -972,7 +1065,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                     "Opacidad",
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline1,
+                                        .displayLarge,
                                   ),
                                 ],
                               ),
@@ -999,7 +1092,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                 label: _currentSliderValue.round().toString(),
                                 activeColor: Theme.of(context).primaryColor,
                                 inactiveColor:
-                                    Theme.of(context).backgroundColor,
+                                    Theme.of(context).colorScheme.background,
                                 onChanged: (double value) {
                                   setState(() {
                                     _currentSliderValue = value;
@@ -1029,9 +1122,8 @@ class _AddEditBonoState extends State<AddEditBono>
                               children: <Widget>[
                                 Text(
                                   AppLocalizations.of(context)!.photo,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1,
+                                  style:
+                                      Theme.of(context).textTheme.displayLarge,
                                 ),
                               ],
                             ),
@@ -1154,15 +1246,10 @@ class _AddEditBonoState extends State<AddEditBono>
                                                         .width *
                                                     0.1),
                                             Text(
-                                              AppLocalizations.of(context)!
-                                                      .select +
-                                                  " " +
-                                                  AppLocalizations.of(context)!
-                                                      .photo
-                                                      .toLowerCase(),
+                                              "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.photo.toLowerCase()}",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .caption
+                                                  .bodySmall
                                                   ?.copyWith(
                                                     color: imageError
                                                         ? AppColors.grey
@@ -1196,7 +1283,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                       AppLocalizations.of(context)!.colorSolid,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline1,
+                                          .displayLarge,
                                     ),
                                   ],
                                 ),
@@ -1279,7 +1366,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                         .degradateSolid,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline1,
+                                        .displayLarge,
                                   ),
                                 ],
                               ),
@@ -1389,9 +1476,7 @@ class _AddEditBonoState extends State<AddEditBono>
                   Flexible(
                     child: Text(
                       AppLocalizations.of(context)!.preseeBono,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline1,
+                      style: Theme.of(context).textTheme.displayLarge,
                     ),
                   ),
                 ],
@@ -1494,10 +1579,12 @@ class _AddEditBonoState extends State<AddEditBono>
     });
   }
 
-  Widget daysSelectoWidget(int index, String numberDays, bool editable, bool notShow) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.05,
+  Widget daysSelectoWidget(int index, String numberDays, bool editable,
+      bool notShow, bool isRecurrent) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.065,
       width: MediaQuery.of(context).size.width * 0.9,
+      margin: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1508,70 +1595,112 @@ class _AddEditBonoState extends State<AddEditBono>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  numberDays != "0" ? numberDays+" "+AppLocalizations.of(context)!.days.toLowerCase() : "No expira",
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: notShow == false ? Theme.of(context).primaryColor : Theme.of(context).disabledColor),
+                  numberDays != "0"
+                      ? numberDays.split("-")[0]
+                      : isRecurrent
+                          ? AppLocalizations.of(context)!.firstDayOfMonth
+                          : "No expira",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: notShow == false
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).disabledColor),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
+                SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  numberDays != "0"
+                      ? numberDays.split("-")[1]
+                      : isRecurrent
+                          ? AppLocalizations.of(context)!.firstDayOfMonth
+                          : AppLocalizations.of(context)!.allSessionsDone,
+                  style: Theme.of(context).textTheme.bodySmall,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                numberDays == "0" && isRecurrent && isSelectedDays[0]
+                    ? Text(
+                        AppLocalizations.of(context)!.firstDayOfMonthDesc,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      )
+                    : Container(),
               ],
             ),
           ),
-          notShow == false ? SizedBox(
-            height: MediaQuery.of(context).size.height * 0.034,
-            width: MediaQuery.of(context).size.height * 0.06,
-            child: MaterialButton(
-              elevation: 2,
-              color: isSelectedDays[index] == true ? editable ? Theme.of(context).primaryColor : Theme.of(context).disabledColor : Theme.of(context).backgroundColor,
-              child: isSelectedDays[index] == true ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
-              padding: EdgeInsets.zero,
-              shape: const CircleBorder(),
-              onPressed: editable == false ? () {} : () {
-                FocusScopeNode currentFocus = FocusScope.of(context);
-                if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                }
-                isSelectedDays[0] = false;
-                isSelectedDays[1] = false;
-                isSelectedDays[2] = false;
-                isSelectedDays[3] = false;
-                isSelectedDays[index] = true;
-                if (isSelectedDays[0]) {
-                  condition.expirationTime = 0;
-                }
-                if (isSelectedDays[1]) {
-                  condition.expirationTime = 30;
-                }
-                if (isSelectedDays[2]) {
-                  condition.expirationTime = 60;
-                }
-                if (isSelectedDays[3]) {
-                  condition.expirationTime = 90;
-                }
-                setState(() {});
-              },
-            ),
-          ) : Container(),
+          notShow == false
+              ? SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.034,
+                  width: MediaQuery.of(context).size.height * 0.06,
+                  child: MaterialButton(
+                    elevation: 2,
+                    color: isSelectedDays[index] == true
+                        ? editable
+                            ? Theme.of(context).primaryColor
+                            : Theme.of(context).disabledColor
+                        : Theme.of(context).colorScheme.background,
+                    padding: EdgeInsets.zero,
+                    shape: const CircleBorder(),
+                    onPressed: editable == false
+                        ? () {}
+                        : () {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus &&
+                                currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
+                            isSelectedDays[0] = false;
+                            isSelectedDays[1] = false;
+                            isSelectedDays[2] = false;
+                            isSelectedDays[3] = false;
+                            isSelectedDays[index] = true;
+                            if (isSelectedDays[0]) {
+                              condition.expirationTime = 0;
+                            }
+                            if (isSelectedDays[1]) {
+                              condition.expirationTime = 30;
+                            }
+                            if (isSelectedDays[2]) {
+                              condition.expirationTime = 60;
+                            }
+                            if (isSelectedDays[3]) {
+                              condition.expirationTime = 90;
+                            }
+                            setState(() {});
+                          },
+                    child: isSelectedDays[index] == true
+                        ? Icon(Icons.check,
+                            color: Theme.of(context).primaryColorDark,
+                            size: MediaQuery.of(context).size.width * 0.05)
+                        : SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.03,
+                            width: MediaQuery.of(context).size.width * 0.03,
+                          ),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
   }
 
   Future<void> _addBono() async {
+    if (isSelectedDays[0]) {
+      condition.expirationTime = 0;
+    }
+    if (isSelectedDays[1]) {
+      condition.expirationTime = 30;
+    }
+    if (isSelectedDays[2]) {
+      condition.expirationTime = 60;
+    }
+    if (isSelectedDays[3]) {
+      condition.expirationTime = 90;
+    }
 
-      if (isSelectedDays[0]) {
-        condition.expirationTime = 0;
-      }
-      if (isSelectedDays[1]) {
-        condition.expirationTime = 30;
-      }
-      if (isSelectedDays[2]) {
-        condition.expirationTime = 60;
-      }
-      if (isSelectedDays[3]) {
-        condition.expirationTime = 90;
-      }
-
-   /* if(bono.sessions == 0) {
+    /* if(bono.sessions == 0) {
       bono.sessions = 10000;
     }
 
@@ -1579,32 +1708,34 @@ class _AddEditBonoState extends State<AddEditBono>
     if (widget.edit == false) {
       _brandDataService.addBonoToBrand(widget.brand.id!, bono, condition);
       mixpanel!.track('add_bono_completed', properties: {
-        'descriptionLength':bono.description!.length.toString(),
-        'isActive':bono.isActive!,
-        'sessions':bono.sessions!.toString(),
-        'price':bono.price!.toString(),
-        'expirationTime':condition.expirationTime!.toString(),
-        'cancelTime':condition.cancelTime!.toString(),
-        'weeklySessions':condition.weeklySessions!.toString(),
-        'opacity':bono.opacity!.toString(),
-        'hasImage':bono.imageUrl != null ? true : false,
-        'isDegradate':bono.isDegradate!,
-        'color':bono.color!,
+        'descriptionLength': bono.description!.length.toString(),
+        'isActive': bono.isActive!,
+        'sessions': bono.sessions!.toString(),
+        'price': bono.price!.toString(),
+        'expirationTime': condition.expirationTime!.toString(),
+        'cancelTime': condition.cancelTime!.toString(),
+        'weeklySessions': condition.weeklySessions!.toString(),
+        'opacity': bono.opacity!.toString(),
+        'hasImage': bono.imageUrl != null ? true : false,
+        'isDegradate': bono.isDegradate!,
+        'color': bono.color!,
+        'isRecurrent': bono.isRecurrent,
       });
     } else {
       _brandDataService.updateBono(widget.brand.id!, bono, condition);
       mixpanel!.track('edit_bono_completed', properties: {
-        'descriptionLength':bono.description!.length.toString(),
-        'isActive':bono.isActive!,
-        'sessions':bono.sessions!.toString(),
-        'price':bono.price!.toString(),
-        'expirationTime':condition.expirationTime!.toString(),
-        'cancelTime':condition.cancelTime!.toString(),
-        'weeklySessions':condition.weeklySessions!.toString(),
-        'opacity':bono.opacity!.toString(),
-        'hasImage':bono.imageUrl != null ? true : false,
-        'isDegradate':bono.isDegradate!,
-        'color':bono.color!,
+        'descriptionLength': bono.description!.length.toString(),
+        'isActive': bono.isActive!,
+        'sessions': bono.sessions!.toString(),
+        'price': bono.price!.toString(),
+        'expirationTime': condition.expirationTime!.toString(),
+        'cancelTime': condition.cancelTime!.toString(),
+        'weeklySessions': condition.weeklySessions!.toString(),
+        'opacity': bono.opacity!.toString(),
+        'hasImage': bono.imageUrl != null ? true : false,
+        'isDegradate': bono.isDegradate!,
+        'color': bono.color!,
+        'isRecurrent': bono.isRecurrent,
       });
     }
     Navigator.pop(context);
@@ -1625,244 +1756,301 @@ class _AddEditBonoState extends State<AddEditBono>
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              !checkBox && variable != 'ses'
-                  ? Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            titleText,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1,
-                          ),
-                          subtitleText != ""
-                              ?  Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                    subtitleText,
-                                    style: Theme.of(context).textTheme.caption,
-                                  ),
-                              )
-                              :  Container(),
-                        ],
-                      ),
-                    )
-                  : variable != 'ses'
-                      ? Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Text(
-                                  titleText,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1
-                              ),
-                              subtitleText != ""
-                                  ? Padding(
+            padding:
+                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                !checkBox && variable != 'ses'
+                    ? Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(
+                              titleText,
+                              style: Theme.of(context).textTheme.displayLarge,
+                            ),
+                            subtitleText != ""
+                                ? Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                              subtitleText,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .caption,
-                                          ),
-                                        ),
-                                        checkBox ? Container(
-                                          margin: const EdgeInsets.only(left: 4.0),
-                                          child: CupertinoSwitch(
-                                            value: bono.isActive!,
-                                            onChanged: setBonoActivation,
-                                            trackColor: Colors.green.withOpacity(0.4),
-                                            thumbColor: AppColors.white,
-                                            activeColor: Colors.green,
-                                          ),
-                                        )
-                                            : Container(),
-                                      ],
-                                    ), 
+                                    child: Text(
+                                      subtitleText,
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
                                   )
-                                  : Container(),
-                            ],
-                          ),
-                        )
-                      : Container(),
-
-              variable == 'ses'
-                  ? Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            titleText,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1,
-                          ),
-                          subtitleText != "" ?
-                            variable != 'ses' ? Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                subtitleText,
-                                style: Theme.of(context).textTheme.caption,
-                              ),
-                          ) : Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    subtitleText,
+                                : Container(),
+                          ],
+                        ),
+                      )
+                    : variable != 'ses'
+                        ? Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(titleText,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .caption,
-                                  ),
-                                ),
-                                Container(
-                                    margin: const EdgeInsets.only(left: 4.0),
-                                    child: CupertinoSwitch(
-                                      value: noSessions,
-                                      onChanged: widget.edit == true && hasPurchases ? null : setSeeSessions,
-                                      thumbColor: AppColors.white,
-                                      activeColor: editable ? Colors.green : Colors.green.withOpacity(0.4),
-                                      trackColor: editable ? Colors.green.withOpacity(0.4) : Theme.of(context).disabledColor,
-                                    )
-                                )
+                                        .displayLarge),
+                                subtitleText != ""
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                subtitleText,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
+                                              ),
+                                            ),
+                                            checkBox
+                                                ? Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            left: 4.0),
+                                                    child: CupertinoSwitch(
+                                                      value: bono.isActive!,
+                                                      onChanged:
+                                                          setBonoActivation,
+                                                      trackColor: Colors.green
+                                                          .withOpacity(0.4),
+                                                      thumbColor:
+                                                          AppColors.white,
+                                                      activeColor: Colors.green,
+                                                    ),
+                                                  )
+                                                : Container(),
+                                          ],
+                                        ),
+                                      )
+                                    : Container(),
                               ],
                             ),
                           )
-                          : Container(),
-                        ],
-                      ),
-                    )
-                  : Container(),
-            ],
-          )
-        ),
+                        : Container(),
+                variable == 'ses'
+                    ? Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(
+                              titleText,
+                              style: Theme.of(context).textTheme.displayLarge,
+                            ),
+                            subtitleText != ""
+                                ? variable != 'ses'
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
+                                        child: Text(
+                                          subtitleText,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                subtitleText,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
+                                              ),
+                                            ),
+                                            Container(
+                                                margin: const EdgeInsets.only(
+                                                    left: 4.0),
+                                                child: CupertinoSwitch(
+                                                  value: noSessions,
+                                                  onChanged:
+                                                      widget.edit == true &&
+                                                              hasPurchases
+                                                          ? null
+                                                          : setSeeSessions,
+                                                  thumbColor: AppColors.white,
+                                                  activeColor: editable
+                                                      ? Colors.green
+                                                      : Colors.green
+                                                          .withOpacity(0.4),
+                                                  trackColor: editable
+                                                      ? Colors.green
+                                                          .withOpacity(0.4)
+                                                      : Theme.of(context)
+                                                          .disabledColor,
+                                                ))
+                                          ],
+                                        ),
+                                      )
+                                : Container(),
+                          ],
+                        ),
+                      )
+                    : Container(),
+              ],
+            )),
         !checkBox && variable != 'ses'
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.00),
-                    child: Row(
-                      children: [
-                        Flexible(
-                          child: TextFormField(
-                            keyboardType: keyboard,
-                            inputFormatters:
-                                variable == 'ses' || variable == 'price'
-                                    ? [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp('[0-9.,]')),
-                                      ]
-                                    : null,
-                            initialValue: widget.edit == true || widget.duplicate == true
-                                ? variable == 'title'
-                                    ? bono.title
-                                    : variable == 'desc'
-                                        ? bono.description
-                                        : variable == 'ses'
-                                            ? bono.sessions.toString()
-                                            : variable == 'price'
-                                                ? bono.price!.toStringAsFixed(2)
-                                                : null
-                                : null,
-                            maxLines: variable == 'desc' ? 5 : null,
-                            minLines: 1,
-                            maxLength: variable == 'title'
-                                ? 20
-                                : variable == 'desc'
-                                    ? 100
-                                    : null,
-                            autofocus: widget.edit == true || widget.duplicate == true ? false : variable == 'title' && titleController.text.isEmpty ? true : false,
-                            controller: widget.edit == true || widget.duplicate == true ? null : controller,
-                            focusNode: variable == 'title'
-                                ? focusNodetitleController
-                                : variable == 'desc'
-                                ? focusNodeDescController
-                                : variable == 'ses'
-                                ? focusNodeSessionsController
-                                : focusNodePriceController,
-                            onEditingComplete: () {
-                              if (variable == 'title' && descriptionController.text.isEmpty) {
-                                focusNodeDescController.requestFocus();
-                              } else if (variable == 'desc') {
-                                focusNodeDescController.unfocus();
-                              } else if (variable == 'ses') {
-                                focusNodetitleController.unfocus();
-                              } else {
-                                focusNodetitleController.unfocus();
-                              }
-                            },
-                            validator: (val) => val!.isEmpty ? errorText : null,
-                            textCapitalization: variable == 'title'
-                                ? TextCapitalization.words
-                                : TextCapitalization.sentences,
-                            onChanged: (val) {
-                              setState(() {
-                                if (variable == 'title') {
-                                  bono.title = val;
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.00),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: TextFormField(
+                              keyboardType: keyboard,
+                              inputFormatters:
+                                  variable == 'ses' || variable == 'price'
+                                      ? [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp('[0-9.,]')),
+                                        ]
+                                      : null,
+                              initialValue: widget.edit == true ||
+                                      widget.duplicate == true
+                                  ? variable == 'title'
+                                      ? bono.title
+                                      : variable == 'desc'
+                                          ? bono.description
+                                          : variable == 'ses'
+                                              ? bono.sessions.toString()
+                                              : variable == 'price'
+                                                  ? bono.price!
+                                                      .toStringAsFixed(2)
+                                                  : null
+                                  : null,
+                              maxLines: variable == 'desc' ? 5 : null,
+                              minLines: 1,
+                              maxLength: variable == 'title'
+                                  ? 20
+                                  : variable == 'desc'
+                                      ? 100
+                                      : null,
+                              autofocus: widget.edit == true ||
+                                      widget.duplicate == true
+                                  ? false
+                                  : variable == 'title' &&
+                                          titleController.text.isEmpty
+                                      ? true
+                                      : false,
+                              controller: widget.edit == true ||
+                                      widget.duplicate == true
+                                  ? null
+                                  : controller,
+                              focusNode: variable == 'title'
+                                  ? focusNodetitleController
+                                  : variable == 'desc'
+                                      ? focusNodeDescController
+                                      : variable == 'ses'
+                                          ? focusNodeSessionsController
+                                          : focusNodePriceController,
+                              onEditingComplete: () {
+                                if (variable == 'title' &&
+                                    descriptionController.text.isEmpty) {
+                                  focusNodeDescController.requestFocus();
                                 } else if (variable == 'desc') {
-                                  bono.description = val;
+                                  focusNodeDescController.unfocus();
                                 } else if (variable == 'ses') {
-                                  bono.sessions = int.parse(val);
-                                } else if (variable == 'price') {
-                                  double price = double.parse(val.replaceAll(',', '.'));
-                                  print(roundDouble(price, 2));
-                                  bono.price = roundDouble(price, 2);
+                                  focusNodetitleController.unfocus();
+                                } else {
+                                  focusNodetitleController.unfocus();
                                 }
-                              });
-                            },
-                            style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                            decoration: InputDecoration(
-                              suffixText: variable == 'ses' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'price' ? "euros (€)" : "",
-                              suffixStyle: Theme.of(context).textTheme.caption,
-                              hintStyle: Theme.of(context).textTheme.caption,
-                              hintText: hintText,
-                              errorBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
+                              },
+                              validator: (val) =>
+                                  val!.isEmpty ? errorText : null,
+                              textCapitalization: variable == 'title'
+                                  ? TextCapitalization.words
+                                  : TextCapitalization.sentences,
+                              onChanged: (val) {
+                                setState(() {
+                                  if (variable == 'title') {
+                                    bono.title = val;
+                                  } else if (variable == 'desc') {
+                                    bono.description = val;
+                                  } else if (variable == 'ses') {
+                                    bono.sessions = int.parse(val);
+                                  } else if (variable == 'price') {
+                                    double price =
+                                        double.parse(val.replaceAll(',', '.'));
+                                    print(roundDouble(price, 2));
+                                    bono.price = roundDouble(price, 2);
+                                  }
+                                });
+                              },
+                              style: editable
+                                  ? Theme.of(context).textTheme.bodyLarge
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(
+                                          color:
+                                              Theme.of(context).disabledColor),
+                              decoration: InputDecoration(
+                                suffixText: variable == 'ses'
+                                    ? AppLocalizations.of(context)!
+                                        .sessions
+                                        .toLowerCase()
+                                    : variable == 'price'
+                                        ? "euros (€)"
+                                        : "",
+                                suffixStyle:
+                                    Theme.of(context).textTheme.bodySmall,
+                                hintStyle:
+                                    Theme.of(context).textTheme.bodySmall,
+                                hintText: hintText,
+                                errorBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
+                                disabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
                               ),
-                              disabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              enabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
+                              enabled: editable,
                             ),
-                            enabled: editable,
                           ),
-                        ),
-                      ],
-                    )
-                  ),
-                  variable == 'price' && priceController.text.isNotEmpty && priceController.text != "0" && sessionsController.text != "" && sessionsController.text != "0" && noSessions == false  ? Padding(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
-                    child: Text(
-                      (bono.price! / bono.sessions!).toStringAsFixed(2) + " € / " + AppLocalizations.of(context)!.session,
-                      style: Theme.of(context).textTheme.caption,
-                      textAlign: TextAlign.left,
-                    ),
-                  ) : Container(),
+                        ],
+                      )),
+                  variable == 'price' &&
+                          priceController.text.isNotEmpty &&
+                          priceController.text != "0" &&
+                          sessionsController.text != "" &&
+                          sessionsController.text != "0" &&
+                          noSessions == false
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.01),
+                          child: Text(
+                            "${(bono.price! / bono.sessions!).toStringAsFixed(2)} € / ${AppLocalizations.of(context)!.session}",
+                            style: Theme.of(context).textTheme.bodySmall,
+                            textAlign: TextAlign.left,
+                          ),
+                        )
+                      : Container(),
                 ],
               )
             : variable == 'ses' && !noSessions
@@ -1870,7 +2058,9 @@ class _AddEditBonoState extends State<AddEditBono>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                          padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.00),
+                          padding: EdgeInsets.only(
+                              bottom:
+                                  MediaQuery.of(context).size.height * 0.00),
                           child: Row(
                             children: [
                               Flexible(
@@ -1878,34 +2068,46 @@ class _AddEditBonoState extends State<AddEditBono>
                                   keyboardType: keyboard,
                                   focusNode: focusNodeSessionsController,
                                   inputFormatters:
-                                  variable == 'ses' || variable == 'price'
-                                      ? [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp('[0-9.,]')),
-                                  ]
-                                      : null,
-                                  initialValue: widget.edit == true || widget.duplicate == true
+                                      variable == 'ses' || variable == 'price'
+                                          ? [
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp('[0-9.,]')),
+                                            ]
+                                          : null,
+                                  initialValue: widget.edit == true ||
+                                          widget.duplicate == true
                                       ? variable == 'title'
-                                      ? bono.title
-                                      : variable == 'desc'
-                                      ? bono.description
-                                      : variable == 'ses'
-                                      ? bono.sessions.toString()
-                                      : variable == 'price'
-                                      ? bono.price!.toStringAsFixed(2)
-                                      : null
+                                          ? bono.title
+                                          : variable == 'desc'
+                                              ? bono.description
+                                              : variable == 'ses'
+                                                  ? bono.sessions.toString()
+                                                  : variable == 'price'
+                                                      ? bono.price!
+                                                          .toStringAsFixed(2)
+                                                      : null
                                       : null,
                                   maxLines: variable == 'desc' ? 5 : null,
                                   minLines: 1,
                                   maxLength: variable == 'title'
                                       ? 20
                                       : variable == 'desc'
-                                      ? 100
-                                      : null,
-                                  autofocus: widget.edit == true || widget.duplicate == true ? false : variable == 'ses' && sessionsController.text.isEmpty && noSessions == false ? true : false,
-                                  controller: widget.edit == true || widget.duplicate == true ? null : controller,
+                                          ? 100
+                                          : null,
+                                  autofocus: widget.edit == true ||
+                                          widget.duplicate == true
+                                      ? false
+                                      : variable == 'ses' &&
+                                              sessionsController.text.isEmpty &&
+                                              noSessions == false
+                                          ? true
+                                          : false,
+                                  controller: widget.edit == true ||
+                                          widget.duplicate == true
+                                      ? null
+                                      : controller,
                                   validator: (val) =>
-                                  val!.isEmpty ? errorText : null,
+                                      val!.isEmpty ? errorText : null,
                                   textCapitalization: variable == 'title'
                                       ? TextCapitalization.words
                                       : TextCapitalization.sentences,
@@ -1918,40 +2120,56 @@ class _AddEditBonoState extends State<AddEditBono>
                                       } else if (variable == 'ses') {
                                         bono.sessions = int.parse(val);
                                       } else if (variable == 'price') {
-                                        double price = double.parse(val.replaceAll(',', '.'));
+                                        double price = double.parse(
+                                            val.replaceAll(',', '.'));
                                         print(roundDouble(price, 2));
                                         bono.price = roundDouble(price, 2);
                                       }
                                     });
                                   },
-                                  style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                                  style: editable
+                                      ? Theme.of(context).textTheme.bodyLarge
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .disabledColor),
                                   decoration: InputDecoration(
-                                    suffixText: variable == 'ses' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'price' ? "euros (€)" : "",
-                                    suffixStyle: Theme.of(context).textTheme.caption,
-                                    hintStyle: Theme.of(context).textTheme.caption,
+                                    suffixText: variable == 'ses'
+                                        ? AppLocalizations.of(context)!
+                                            .sessions
+                                            .toLowerCase()
+                                        : variable == 'price'
+                                            ? "euros (€)"
+                                            : "",
+                                    suffixStyle:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    hintStyle:
+                                        Theme.of(context).textTheme.bodySmall,
                                     hintText: hintText,
                                     //border: InputBorder.none,
                                     errorBorder: const UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.red),
                                     ),
                                     disabledBorder: const UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.grey),
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
                                     ),
                                     enabledBorder: const UnderlineInputBorder(
                                       borderSide:
-                                      BorderSide(color: Colors.grey),
+                                          BorderSide(color: Colors.grey),
                                     ),
                                     focusedBorder: const UnderlineInputBorder(
                                       borderSide:
-                                      BorderSide(color: Colors.grey),
+                                          BorderSide(color: Colors.grey),
                                     ),
                                   ),
                                   enabled: editable,
                                 ),
                               ),
                             ],
-                          )
-                      ),
+                          )),
                     ],
                   )
                 : Container(),
@@ -1960,14 +2178,13 @@ class _AddEditBonoState extends State<AddEditBono>
   }
 
   Future<int?> selectInteger(String text, int initial, int max) async {
-    int? pickedMembers =  await showCupertinoModalPopup(
+    int? pickedMembers = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDaysDialog(
-          title: text,
-          intialDays: initial,
-          daysMax: max,
-        )
-    );
+              title: text,
+              intialDays: initial,
+              daysMax: max,
+            ));
     return pickedMembers;
   }
 
@@ -1981,198 +2198,284 @@ class _AddEditBonoState extends State<AddEditBono>
       bool editable,
       var controller,
       var focusNode,
-      var variable) {
+      var variable,
+      bool isRecurrent) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      titleText,
-                      style: Theme.of(context).textTheme.headline1,
-                    ),
-                    variable == 'exp' ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        subtitleText,
-                        style: Theme.of(context).textTheme.caption,
+            padding:
+                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        titleText,
+                        style: Theme.of(context).textTheme.displayLarge,
                       ),
-                    ) :
-                    variable == 'canFree' ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: noSessions == true ? Text(
-                                  AppLocalizations.of(context)!.freeCancelInfo,
-                                  style: Theme.of(context).textTheme.caption,
-                                ) : Text(
-                                  subtitleText,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption,
-                                ),
+                      variable == 'exp'
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                subtitleText,
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
-                              Container(
-                                  margin: const EdgeInsets.only(left: 4.0),
-                                  child: CupertinoSwitch(
-                                    value: cancelTimeSessions,
-                                    onChanged: (widget.edit == true && hasPurchases) || noSessions == true ? null : setCancelHours,
-                                    thumbColor: AppColors.white,
-                                    activeColor: editable ? Colors.green : Colors.green.withOpacity(0.4),
-                                    trackColor: !noSessions && editable ? Colors.green.withOpacity(0.4) : Theme.of(context).disabledColor,
-                                  )
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ) :
-                    variable == 'maxw' ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              subtitleText,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .caption,
+                            )
+                          : variable == 'canFree'
+                              ? Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: noSessions == true
+                                                ? Text(
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .freeCancelInfo,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall,
+                                                  )
+                                                : Text(
+                                                    subtitleText,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall,
+                                                  ),
+                                          ),
+                                          Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 4.0),
+                                              child: CupertinoSwitch(
+                                                value: cancelTimeSessions,
+                                                onChanged:
+                                                    (widget.edit == true &&
+                                                                hasPurchases) ||
+                                                            noSessions == true
+                                                        ? null
+                                                        : setCancelHours,
+                                                thumbColor: AppColors.white,
+                                                activeColor: editable
+                                                    ? Colors.green
+                                                    : Colors.green
+                                                        .withOpacity(0.4),
+                                                trackColor:
+                                                    !noSessions && editable
+                                                        ? Colors.green
+                                                            .withOpacity(0.4)
+                                                        : Theme.of(context)
+                                                            .disabledColor,
+                                              ))
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : variable == 'maxw'
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              subtitleText,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall,
+                                            ),
+                                          ),
+                                          Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 4.0),
+                                              child: CupertinoSwitch(
+                                                value: weekSessions,
+                                                onChanged:
+                                                    widget.edit == true &&
+                                                            hasPurchases
+                                                        ? null
+                                                        : setWeekSessions,
+                                                thumbColor: AppColors.white,
+                                                activeColor: editable
+                                                    ? Colors.green
+                                                    : Colors.green
+                                                        .withOpacity(0.4),
+                                                trackColor: editable
+                                                    ? Colors.green
+                                                        .withOpacity(0.4)
+                                                    : Theme.of(context)
+                                                        .disabledColor,
+                                              ))
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
+                    ],
+                  ),
+                ),
+              ],
+            )),
+        variable == 'exp'
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                  isRecurrent
+                      ? Container()
+                      : daysSelectoWidget(
+                          0, '0', editable, noSessions, isRecurrent),
+                  daysSelectoWidget(
+                      1,
+                      "${AppLocalizations.of(context)!.monthly}-${AppLocalizations.of(context)!.eachNDaysAprox(30.toString())}",
+                      editable,
+                      false,
+                      isRecurrent),
+                  daysSelectoWidget(
+                      2,
+                      "${AppLocalizations.of(context)!.bimonthly}-${AppLocalizations.of(context)!.eachNDaysAprox(60.toString())}",
+                      editable,
+                      false,
+                      isRecurrent),
+                  daysSelectoWidget(
+                      3,
+                      "${AppLocalizations.of(context)!.quarterly}-${AppLocalizations.of(context)!.eachNDaysAprox(90.toString())}",
+                      editable,
+                      false,
+                      isRecurrent),
+                ],
+              )
+            : variable == 'canFree' && cancelTimeSessions
+                ? Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: TextFormField(
+                          keyboardType: keyboard,
+                          focusNode: focusNode,
+                          controller: controller,
+                          maxLines: null,
+                          minLines: 1,
+                          validator: (val) => val!.isEmpty
+                              ? errorText
+                              : int.parse(val) > 72
+                                  ? errorTextSecond
+                                  : null,
+                          onChanged: (val) {
+                            setState(() {
+                              if (variable == 'maxw') {
+                                condition.weeklySessions = int.parse(val);
+                              } else if (variable == 'canFree') {
+                                condition.cancelTime = int.parse(val);
+                              }
+                            });
+                          },
+                          style: editable
+                              ? Theme.of(context).textTheme.bodyLarge
+                              : Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  color: Theme.of(context).disabledColor),
+                          decoration: InputDecoration(
+                            suffixText: variable == 'maxw'
+                                ? AppLocalizations.of(context)!
+                                    .trainsPerWeek
+                                    .toLowerCase()
+                                : variable == 'canFree'
+                                    ? AppLocalizations.of(context)!
+                                        .hoursString
+                                        .toLowerCase()
+                                    : "",
+                            suffixStyle: Theme.of(context).textTheme.bodySmall,
+                            hintStyle: Theme.of(context).textTheme.bodySmall,
+                            hintText: hintText,
+                            errorBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red),
+                            ),
+                            disabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
                             ),
                           ),
-                          Container(
-                              margin: const EdgeInsets.only(left: 4.0),
-                              child: CupertinoSwitch(
-                                value: weekSessions,
-                                onChanged: widget.edit == true && hasPurchases ? null : setWeekSessions,
-                                thumbColor: AppColors.white,
-                                activeColor: editable ? Colors.green : Colors.green.withOpacity(0.4),
-                                trackColor: editable ? Colors.green.withOpacity(0.4) : Theme.of(context).disabledColor,
-                              )
-                          )
-                        ],
+                          enabled: editable,
+                        ),
                       ),
-                    ) :
-                    Container(),
-                  ],
-                ),
-              ),
-            ],
-          )
-        ),
-        variable == 'exp' ?
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-            daysSelectoWidget(0, '0', editable, noSessions),
-            daysSelectoWidget(1, '30', editable, false),
-            daysSelectoWidget(2, '60', editable, false),
-            daysSelectoWidget(3, '90', editable, false),
-          ],
-        )
-        : variable == 'canFree' && cancelTimeSessions ?
-        Row(
-            children: <Widget>[
-              Flexible(
-                child: TextFormField(
-                  keyboardType: keyboard,
-                  focusNode: focusNode,
-                  controller: controller,
-                  maxLines: null,
-                  minLines: 1,
-                  validator: (val) => val!.isEmpty ? errorText : int.parse(val) > 72 ? errorTextSecond : null,
-                  onChanged: (val) {
-                    setState(() {
-                      if (variable == 'maxw') {
-                        condition.weeklySessions = int.parse(val);
-                      } else if (variable == 'canFree') {
-                        condition.cancelTime = int.parse(val);
-                      }
-                    });
-                  },
-                  style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                  decoration: InputDecoration(
-                    suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.trainsPerWeek.toLowerCase() : variable == 'canFree' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
-                    suffixStyle: Theme.of(context).textTheme.caption,
-                    hintStyle: Theme.of(context).textTheme.caption,
-                    hintText: hintText,
-                    errorBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                    ),
-                    disabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    enabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                  ),
-                  enabled: editable,
-                ),
-              ),
-            ],
-          )
-        : variable == 'maxw' && weekSessions ?
-        Row(
-          children: <Widget>[
-            Flexible(
-              child: TextFormField(
-                keyboardType: keyboard,
-                focusNode: focusNode,
-                controller: controller,
-                maxLines: null,
-                minLines: 1,
-                validator: (val) => val!.isEmpty ? errorText : null,
-                onChanged: (val) {
-                  setState(() {
-                    condition.weeklySessions = int.parse(val);
-                  });
-                },
-                style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                decoration: InputDecoration(
-                  suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'canFree' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
-                  suffixStyle: Theme.of(context).textTheme.caption,
-                  hintStyle: Theme.of(context).textTheme.caption,
-                  hintText: hintText,
-                  errorBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red),
-                  ),
-                  disabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                enabled: editable,
-              ),
-            ),
-          ],
-        )
-        : Container(),
+                    ],
+                  )
+                : variable == 'maxw' && weekSessions
+                    ? Row(
+                        children: <Widget>[
+                          Flexible(
+                            child: TextFormField(
+                              keyboardType: keyboard,
+                              focusNode: focusNode,
+                              controller: controller,
+                              maxLines: null,
+                              minLines: 1,
+                              validator: (val) =>
+                                  val!.isEmpty ? errorText : null,
+                              onChanged: (val) {
+                                setState(() {
+                                  condition.weeklySessions = int.parse(val);
+                                });
+                              },
+                              style: editable
+                                  ? Theme.of(context).textTheme.bodyLarge
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(
+                                          color:
+                                              Theme.of(context).disabledColor),
+                              decoration: InputDecoration(
+                                suffixText: variable == 'maxw'
+                                    ? AppLocalizations.of(context)!
+                                        .sessions
+                                        .toLowerCase()
+                                    : variable == 'canFree'
+                                        ? AppLocalizations.of(context)!
+                                            .hoursString
+                                            .toLowerCase()
+                                        : "",
+                                suffixStyle:
+                                    Theme.of(context).textTheme.bodySmall,
+                                hintStyle:
+                                    Theme.of(context).textTheme.bodySmall,
+                                hintText: hintText,
+                                errorBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
+                                disabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                              ),
+                              enabled: editable,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(),
       ],
     );
   }
-
 }

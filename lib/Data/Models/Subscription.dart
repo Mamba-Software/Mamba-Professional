@@ -1,7 +1,6 @@
 // This class represents the Object <Event> that will be showed in the Calendar Widget.
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'Condition.dart';
 
 class Subscription {
   String? id;

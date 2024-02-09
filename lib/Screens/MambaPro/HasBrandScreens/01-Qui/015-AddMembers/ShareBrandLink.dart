@@ -1,12 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -15,7 +11,7 @@ class ShareBrandLink extends StatefulWidget {
   final bool? addStaff;
   final bool? onlyStaff;
 
-  const ShareBrandLink({Key? key, this.addStaff, this.onlyStaff}) : super(key: key);
+  const ShareBrandLink({super.key, this.addStaff, this.onlyStaff});
 
   @override
   State<StatefulWidget> createState() => _ShareBrandLinkState();
@@ -76,8 +72,8 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
               children: [
                 Flexible(
                   child: Text(
-                      AppLocalizations.of(context)!.invite+" "+AppLocalizations.of(context)!.clients,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
+                      "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.clients}",
+                      style: Theme.of(context).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.w600),
                       textAlign: TextAlign.left
                   ),
                 ),
@@ -93,7 +89,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 Flexible(
                   child: Text(
                       AppLocalizations.of(context)!.scanQRCode,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.left
                   ),
                 ),
@@ -161,7 +157,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 ),
                 Text(
                     "o",
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                     textAlign: TextAlign.center
                 ),
                 Expanded(
@@ -197,7 +193,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                   Flexible(
                     child: Text(
                       AppLocalizations.of(context)!.copyCodeMessage,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.green),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.green),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -213,18 +209,18 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.02),
           (widget.addStaff != null && widget.addStaff == false) ? Container() : currentUser.brandRole < 3 ? TextButton(
-              child: Text(
-                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff,
-                style: Theme.of(context).textTheme.caption?.copyWith(fontWeight: FontWeight.w700),
-              ),
               style: TextButton.styleFrom(
-                primary: Theme.of(context).primaryColor,
+                foregroundColor: Theme.of(context).primaryColor,
               ),
               onPressed: () {
                 setState(() {
                   isTrainer = true;
                 });
-              }
+              },
+              child: Text(
+                "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.staff}",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+              )
           ) : Container(),
         ],
       ),
@@ -253,8 +249,8 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
               children: [
                 Flexible(
                   child: Text(
-                      AppLocalizations.of(context)!.invite+" "+AppLocalizations.of(context)!.staff,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
+                      "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.staff}",
+                      style: Theme.of(context).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.w600),
                       textAlign: TextAlign.left
                   ),
                 ),
@@ -270,7 +266,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 Flexible(
                   child: Text(
                       AppLocalizations.of(context)!.scanQRCode,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.left
                   ),
                 ),
@@ -338,7 +334,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 ),
                 Text(
                     "o",
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                     textAlign: TextAlign.center
                 ),
                 Expanded(
@@ -374,7 +370,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                   Flexible(
                     child: Text(
                       AppLocalizations.of(context)!.copyCodeMessage,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.green),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.green),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -390,18 +386,18 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.02),
           (widget.onlyStaff != null && widget.onlyStaff == true) ? Container() : currentUser.brandRole < 3 ? TextButton(
-              child: Text(
-                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.clients,
-                style: Theme.of(context).textTheme.caption?.copyWith(fontWeight: FontWeight.w700),
-              ),
               style: TextButton.styleFrom(
-                primary: Theme.of(context).primaryColor,
+                foregroundColor: Theme.of(context).primaryColor,
               ),
               onPressed: () {
                 setState(() {
                   isTrainer = false;
                 });
-              }
+              },
+              child: Text(
+                "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.clients}",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+              )
           ) : Container(),
         ],
       ),

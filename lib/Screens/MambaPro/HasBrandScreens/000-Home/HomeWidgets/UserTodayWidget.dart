@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,31 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandEventCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 
 class UserTodayWidget extends StatefulWidget {
-
   ValueChanged<bool?> onClicked;
 
-  UserTodayWidget({Key? key, required this.onClicked}) : super(key: key);
+  UserTodayWidget({super.key, required this.onClicked});
 
   @override
   _UserTodayWidgetState createState() => _UserTodayWidgetState();
 }
 
 class _UserTodayWidgetState extends State<UserTodayWidget> {
-
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _eventDataService = EventDataService();
@@ -47,19 +45,19 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
 
   List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
     List<Event> events = [];
-    for(int i = 0; i < documents.length; i++) {
+    for (int i = 0; i < documents.length; i++) {
       events.add(Event.fromObjectOnlyCoverData(documents[i].id, documents[i]));
     }
     // Order Notification List Descending Time
-    events.sort((a,b) {
-      var aDate =  DateTime(
+    events.sort((a, b) {
+      var aDate = DateTime(
         int.parse(a.year!),
         int.parse(a.month!),
         int.parse(a.day!),
         int.parse(a.hour!),
         int.parse(a.minute!),
       );
-      var bDate =  DateTime(
+      var bDate = DateTime(
         int.parse(b.year!),
         int.parse(b.month!),
         int.parse(b.day!),
@@ -73,28 +71,21 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
 
   // Navigate to Notifications Screen
   void navigateToProfileScreen() {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<void>(
-            builder: (context) => const Profile(),
-            settings: const RouteSettings(name: 'Profile'),
-          )
-      );
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => const Profile(),
+          settings: const RouteSettings(name: 'Profile'),
+        ));
   }
-  
+
   // Navigate to Notifications Screen
   Future<void> navigateToNotificationsScreen() async {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const Notifications(),
-        )
-    ).whenComplete(() async {
-      var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
-      setState(() {
-        unreadNotifications = temp;
-      });
-    });
+        ));
   }
 
   // Navigate to Notifications Screen
@@ -103,31 +94,22 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const ChatCore(),
-        )
-    ).whenComplete(() async {
-      var temp = await _userDataService.getUnreadConversations(currentUser.id!);
-      setState(() {
-        unreadChats = temp;
-      });
-    });
+        ));
   }
 
   // Navigate to Event Screen on Tap
   Future<void> navigateToEventScreen(String eventId) async {
-    if(brandIsActive) {
+    if (brandIsActive) {
       mixpanel!.track('brand_homepage_user_event_view');
       // Navigate to Event Screen
       Navigator.push(
           context,
           CupertinoPageRoute<void>(
-            builder: (context) =>
-                EventPage(
-                  eventId: eventId,
-                ),
-          )
-      );
-    }
-    else {
+            builder: (context) => EventPage(
+              eventId: eventId,
+            ),
+          ));
+    } else {
       await navigateToPayWall(context);
     }
   }
@@ -137,10 +119,10 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
     bool indexFound = false;
     DateTime now = DateTime.now();
     todayEventsLabels = [];
-    for (var i=0; i < userEventsToday.length; i++) {
+    for (var i = 0; i < userEventsToday.length; i++) {
       Event event = userEventsToday[i];
       // Event Time
-      var startDate =  DateTime(
+      var startDate = DateTime(
         int.parse(event.year!),
         int.parse(event.month!),
         int.parse(event.day!),
@@ -149,7 +131,8 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
       );
       var hour = event.duration.toString().split(".")[0];
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
-      var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+      var endDate = startDate
+          .add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       if (startDate.isBefore(now) && endDate.isBefore(now)) {
         // Done
         todayEventsLabels.add(2);
@@ -171,25 +154,29 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
       }
     }
     if (!indexFound) {
-      _current = userEventsToday.length-1;
+      _current = userEventsToday.length - 1;
     }
-    eventSliders = userEventsToday.map((item) =>
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            buildEventContainer(item, MediaQuery.of(context).size.height*0.15, MediaQuery.of(context).size.width*0.8, buildBadge(userEventsToday.indexOf(item))),
-            SizedBox(height: MediaQuery.of(context).size.height*0.01)
-          ],
-        )
-    ).toList();
+    eventSliders = userEventsToday
+        .map((item) => Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                buildEventContainer(
+                    item,
+                    MediaQuery.of(context).size.height * 0.15,
+                    MediaQuery.of(context).size.width * 0.8,
+                    buildBadge(userEventsToday.indexOf(item))),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01)
+              ],
+            ))
+        .toList();
   }
 
   // Return bade on events Today
   Widget buildBadge(int index) {
     int label = todayEventsLabels[index];
-    var badgeHeight = MediaQuery.of(context).size.height*0.03;
+    var badgeHeight = MediaQuery.of(context).size.height * 0.03;
     switch (label) {
-    // To Do
+      // To Do
       case 0:
         return Material(
           elevation: 4,
@@ -201,17 +188,17 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
           child: Container(
             height: badgeHeight,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.25,
+              maxWidth: MediaQuery.of(context).size.width * 0.25,
             ),
             decoration: BoxDecoration(
-                color: Colors.red, borderRadius: BorderRadius.circular(10)
-            ),
+                color: Colors.red, borderRadius: BorderRadius.circular(10)),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-              child: Row(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.02),
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Icon(
                     Icons.update_outlined,
                     color: Colors.white,
@@ -222,7 +209,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
             ),
           ),
         );
-    // Doing
+      // Doing
       case 1:
         return Material(
           elevation: 4,
@@ -234,17 +221,18 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
           child: Container(
             height: badgeHeight,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.25,
+              maxWidth: MediaQuery.of(context).size.width * 0.25,
             ),
             decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(10)
-            ),
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: BorderRadius.circular(10)),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-              child: Row(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.02),
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
+                children: [
                   /*
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.doing,
@@ -262,7 +250,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
             ),
           ),
         );
-    // Done
+      // Done
       case 2:
         return Material(
           elevation: 4,
@@ -274,17 +262,17 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
           child: Container(
             height: badgeHeight,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.25,
+              maxWidth: MediaQuery.of(context).size.width * 0.25,
             ),
             decoration: BoxDecoration(
-                color: Colors.green, borderRadius: BorderRadius.circular(10)
-            ),
+                color: Colors.green, borderRadius: BorderRadius.circular(10)),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-              child: Row(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.02),
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   /*
                   Text(AppLocalizations.of(context)!.finished,
                       style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
@@ -314,18 +302,18 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
       // Colors
       double numClients = double.parse(event.numClients.toString());
       double maxMembers = double.parse(event.maxMembers.toString());
-      double bookedCapacity = numClients/maxMembers;
-      if(bookedCapacity <= 0.20) {
+      double bookedCapacity = numClients / maxMembers;
+      if (bookedCapacity <= 0.20) {
         color = Colors.green;
-      } else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
+      } else if (bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
         color = const Color(0xFFA8C76C);
-      } else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
+      } else if (bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
         color = const Color(0xFFECE014);
-      } else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
+      } else if (bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
         color = Colors.orangeAccent;
-      } else if(bookedCapacity > 0.80 && bookedCapacity < 1) {
+      } else if (bookedCapacity > 0.80 && bookedCapacity < 1) {
         color = Colors.deepOrangeAccent;
-      } else if(bookedCapacity >= 1) {
+      } else if (bookedCapacity >= 1) {
         color = Colors.red;
       }
     }
@@ -355,38 +343,41 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
       child: Container(
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height,
-          maxWidth: MediaQuery.of(context).size.width*0.9,
-          minWidth: MediaQuery.of(context).size.width*0.9,
+          maxWidth: MediaQuery.of(context).size.width * 0.9,
+          minWidth: MediaQuery.of(context).size.width * 0.9,
         ),
         decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
+          color: Theme.of(context).colorScheme.background,
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(15.0),
             bottomRight: Radius.circular(15.0),
-          ),//
-        ),// BoxDecoration
+          ), //
+        ), // BoxDecoration
         child: Container(
           margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1),
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height,
-            maxWidth: MediaQuery.of(context).size.width*0.9,
-            minWidth: MediaQuery.of(context).size.width*0.9,
+            maxWidth: MediaQuery.of(context).size.width * 0.9,
+            minWidth: MediaQuery.of(context).size.width * 0.9,
           ),
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.05),
           //padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(15.0),
               bottomRight: Radius.circular(15.0),
-            ),// BorderRadius
-          ),// BoxDecoration
+            ), // BorderRadius
+          ), // BoxDecoration
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.05,
+                    right: MediaQuery.of(context).size.width * 0.05),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -398,29 +389,32 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                           child: CircularImage(
                             size: MediaQuery.of(context).size.width * 0.15,
                             image: currentUser.imageUrl,
-                            color: Theme.of(context).backgroundColor,
+                            color: Theme.of(context).colorScheme.background,
                             borderWidth: 1,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(width: MediaQuery.of(context).size.width*0.02,),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.02,
+                    ),
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(StringUtils().greetingMessage(context),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: AppColors.grey),
+                              textAlign: TextAlign.center),
                           Text(
-                              StringUtils().greetingMessage(context),
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
-                              textAlign: TextAlign.center
-                          ),
-                          Text(
-                              currentUser.firstName!,
-                              style: Theme.of(context).textTheme.headline1,
-                              textAlign: TextAlign.left,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
+                            currentUser.firstName!,
+                            style: Theme.of(context).textTheme.displayLarge,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
                         ],
                       ),
@@ -429,42 +423,29 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CounterBadgeIcon(
-                          counter: unreadNotifications,
-                          child: IconButton(
-                            icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
-                            alignment: Alignment.centerRight,
-                            onPressed: navigateToNotificationsScreen,
-                          ),
-                        ),
-                        CounterBadgeIcon(
-                          counter: unreadChats,
-                          child: IconButton(
-                            icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
-                            alignment: Alignment.centerRight,
-                            onPressed: navigateToChatScreen,
-                          ),
-                        ),
+                        unreadNotifications(context),
+                        unreadChats(context),
                       ],
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
               StreamBuilder<QuerySnapshot>(
-                  stream: _eventDataService.getUserEventsTodayStream(currentUser.id!),
+                  stream: _eventDataService
+                      .getUserEventsTodayStream(currentUser.id!),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return SizedBox(
-                        height: MediaQuery.of(context).size.height*0.10,
-                        width: MediaQuery.of(context).size.width,
-                        child: Center(
-                          child: LoadingView(
+                          height: MediaQuery.of(context).size.height * 0.10,
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                              child: LoadingView(
                             isSmall: true,
                             hasLogo: false,
-                          )
-                        )
-                      );
+                          )));
                     } else {
                       userEventsToday = documentsToEvents(snapshot.data!.docs);
                       if (userEventsToday.isNotEmpty) {
@@ -474,14 +455,21 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(
-                              height: MediaQuery.of(context).size.height*0.04,
+                              height: MediaQuery.of(context).size.height * 0.04,
                               child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
-                                child: Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.bodyText1),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            0.06),
+                                child: Text(
+                                    AppLocalizations.of(context)!
+                                        .todaysBrandEvents,
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge),
                               ),
                             ),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height*0.16,
+                              height: MediaQuery.of(context).size.height * 0.16,
                               width: MediaQuery.of(context).size.width,
                               child: CarouselSlider(
                                 options: CarouselOptions(
@@ -495,8 +483,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                                       setState(() {
                                         _current = index;
                                       });
-                                    }
-                                ),
+                                    }),
                                 items: eventSliders,
                               ),
                             ),
@@ -504,56 +491,78 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                         );
                       } else {
                         return SizedBox(
-                          height: MediaQuery.of(context).size.height*0.10,
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Flexible(child: Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start)),
-                                TextButton(
-                                  onPressed: () {
-                                    widget.onClicked(true);
-                                  },
-                                  child: Text(
-                                    AppLocalizations.of(context)!.calendarWeekBrandText(currentBrand.name!),
-                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                            height: MediaQuery.of(context).size.height * 0.10,
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                      child: Text(
+                                          AppLocalizations.of(context)!
+                                              .noEventsToday,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displaySmall
+                                              ?.copyWith(
+                                                  fontWeight: FontWeight.w400),
+                                          textAlign: TextAlign.start)),
+                                  TextButton(
+                                    onPressed: () {
+                                      widget.onClicked(true);
+                                    },
+                                    child: Text(
+                                      AppLocalizations.of(context)!
+                                          .calendarWeekBrandText(
+                                              currentBrand.name!),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
-                        );
+                                ],
+                              ),
+                            ));
                       }
                     }
-                  }
-              ),
-              userEventsToday.length > 1 ? SizedBox(
-                height: MediaQuery.of(context).size.height*0.03,
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: eventSliders.asMap().entries.map((entry) {
-                    return Container(
-                      width: _current == entry.key ? 8.0 : 5.0,
-                      height: _current == entry.key ? 8.0 : 5.0,
-                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: (Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.black)
-                              .withOpacity(_current == entry.key ? 0.9 : 0.4)),
-                    );
-                  }).toList(),
-                ),
-              ) : SizedBox(height: MediaQuery.of(context).size.height*0.0,),
+                  }),
+              userEventsToday.length > 1
+                  ? SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.03,
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: eventSliders.asMap().entries.map((entry) {
+                          return Container(
+                            width: _current == entry.key ? 8.0 : 5.0,
+                            height: _current == entry.key ? 8.0 : 5.0,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 4.0),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: (Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black)
+                                    .withOpacity(
+                                        _current == entry.key ? 0.9 : 0.4)),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  : SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.0,
+                    ),
             ],
           ),
         ),
       ),
-    );// Container
-
+    ); // Container
   }
 }

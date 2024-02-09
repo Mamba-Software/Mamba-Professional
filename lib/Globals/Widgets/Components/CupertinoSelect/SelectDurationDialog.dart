@@ -6,7 +6,7 @@ class SelectDurationDialog extends StatefulWidget {
 
   String title;
   String initialDuration;
-  SelectDurationDialog({Key? key, required this.title, required this.initialDuration}) : super(key: key);
+  SelectDurationDialog({super.key, required this.title, required this.initialDuration});
 
   @override
   _SelectDurationDialogState createState() => _SelectDurationDialogState();
@@ -26,7 +26,7 @@ class _SelectDurationDialogState extends State<SelectDurationDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
       ),
       child: Container(
@@ -46,7 +46,7 @@ class _SelectDurationDialogState extends State<SelectDurationDialog> {
                 Expanded(
                     child: Text(
                       widget.title,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center
                     )
                 ),
@@ -58,11 +58,11 @@ class _SelectDurationDialogState extends State<SelectDurationDialog> {
                 child: CupertinoTheme(
                     data: CupertinoThemeData(
                         textTheme: CupertinoTextThemeData(
-                          dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
+                          dateTimePickerTextStyle: Theme.of(context).textTheme.bodyMedium,
                         )
                     ),
                     child: CupertinoPicker(
-                        scrollController: new FixedExtentScrollController(
+                        scrollController: FixedExtentScrollController(
                             initialItem: durations.indexWhere((element) => element == widget.initialDuration),
                         ),
                         itemExtent: 40.0,
@@ -70,15 +70,15 @@ class _SelectDurationDialogState extends State<SelectDurationDialog> {
                         onSelectedItemChanged: (int index) {
                           pickedDuration = durations[index];
                         },
-                        children: new List<Widget>.generate(
+                        children: List<Widget>.generate(
                             durations.length, (int index) {
                           var item = durations[index];
                           var hour = item.split(".")[0];
                           var min = item.split(".")[1];
-                          return new Center(
-                            child: new Text(
+                          return Center(
+                            child: Text(
                               "${hour}h ${min}min",
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           );
                         }
@@ -92,7 +92,8 @@ class _SelectDurationDialogState extends State<SelectDurationDialog> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 FloatingActionButton.extended(
-                  heroTag: "41",
+                  shape: const StadiumBorder(),
+                  heroTag: "41",                  
                   onPressed: () {
                     Navigator.pop(context, pickedDuration);
                   },
@@ -100,7 +101,7 @@ class _SelectDurationDialogState extends State<SelectDurationDialog> {
                   icon: Container(),
                   label: Text(
                       AppLocalizations.of(context)!.confirm,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark)
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark)
                   ),
                 ),
               ],

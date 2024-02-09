@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -6,7 +5,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 class EditRecurrentEventDialog extends StatefulWidget {
   bool isCompleted;
   bool clientsModified;
-  EditRecurrentEventDialog({Key? key, required this.isCompleted, required this.clientsModified}) : super(key: key);
+  EditRecurrentEventDialog({super.key, required this.isCompleted, required this.clientsModified});
 
   @override
   _EditRecurrentEventDialogState createState() => _EditRecurrentEventDialogState();
@@ -58,7 +57,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 8.0, bottom: 0, right: 10, left: 10),
-                    child: Text(AppLocalizations.of(context)!.saveRecurrentEvent, style: Theme.of(context).textTheme.bodyText1?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                    child: Text(AppLocalizations.of(context)!.saveRecurrentEvent, style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                   ),
                 ),
                 widget.isCompleted == false ? Flexible(
@@ -66,7 +65,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                     padding: EdgeInsets.only(top: 4.0, bottom: 4.0, right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
                     child: Text(
                       AppLocalizations.of(context)!.saveRecurrentEventDetails,
-                      style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -81,7 +80,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                         contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
                           AppLocalizations.of(context)!.thisEvent,
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         leading: Transform.scale(
                           scale: 1.2,
@@ -103,14 +102,14 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                         contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
                           AppLocalizations.of(context)!.thisEventAndRest,
-                          style: widget.isCompleted ? Theme.of(context).textTheme.caption : Theme.of(context).textTheme.bodyText2,
+                          style: widget.isCompleted ? Theme.of(context).textTheme.bodySmall : Theme.of(context).textTheme.bodyMedium,
                         ),
                         subtitle: widget.clientsModified? Text(
                           AppLocalizations.of(context)!.notAvailableClientsModifiedEvents,
-                          style:  Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+                          style:  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12.5),
                         ) : widget.isCompleted ? Text(
                           AppLocalizations.of(context)!.notAvailableFinishedEvents,
-                          style:  Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+                          style:  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12.5),
                         ) : null,
                         leading: Transform.scale(
                           scale: 1.2,
@@ -148,7 +147,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.save,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: _value == 0 ? AppColors.white.withOpacity(0.5) : AppColors.white),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: _value == 0 ? AppColors.white.withOpacity(0.5) : AppColors.white),
                         ),
                         icon: Icon(Icons.save, size: MediaQuery.of(context).size.width*0.06, color: _value == 0 ? AppColors.white.withOpacity(0.5) : AppColors.white),
                         onPressed: _value != 0 ? () {
@@ -169,7 +168,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark,),
                         ),
                         icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                         onPressed: () {

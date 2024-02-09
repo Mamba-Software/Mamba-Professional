@@ -1,13 +1,10 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -24,8 +21,8 @@ class SessionsMade extends StatefulWidget {
   SessionsMade({
     required this.events,
     required this.backEvents,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   SessionsMadeState createState() => SessionsMadeState();
@@ -90,7 +87,7 @@ class SessionsMadeState extends State<SessionsMade> {
   {
    // print(filteredBackEvents.length);
    // print(filteredEvents.length);
-    if(filteredBackEvents.length != 0 && filteredEvents.length != 0) {
+    if(filteredBackEvents.isNotEmpty && filteredEvents.isNotEmpty) {
       difference = ((filteredEvents.length - filteredBackEvents.length) /
           ((filteredBackEvents.length + filteredEvents.length)/2)) * 100;
       if (difference != 0) {
@@ -151,15 +148,15 @@ class SessionsMadeState extends State<SessionsMade> {
                 children: [
                   Text(
                       filteredEvents.length.toString(),
-            style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 45),
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 45),
 
           ),
                   Padding(
                     padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
                     child: Text(
-                      difference < 0? difference.toStringAsFixed(2) + '%' :
-                      '+' + difference.toStringAsFixed(2) + '%',
-                      style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                      difference < 0? '${difference.toStringAsFixed(2)}%' :
+                      '+${difference.toStringAsFixed(2)}%',
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey),
 
                     ),
                   ),
@@ -182,7 +179,7 @@ class SessionsMadeState extends State<SessionsMade> {
                               child: Image.asset(Constants.emptyCalendar)
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                          Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                          Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
                         ],
                       ) : Container(),
@@ -196,13 +193,13 @@ class SessionsMadeState extends State<SessionsMade> {
                                   plotAreaBorderWidth: 1,
                                   primaryXAxis: CategoryAxis(
                                     //Hide the gridlines of x-axis
-                                    majorGridLines: MajorGridLines(width: 0),
+                                    majorGridLines: const MajorGridLines(width: 0),
                                     isVisible: false,
                                     //Hide the axis line of x-axis
-                                    axisLine: AxisLine(width: 0),
+                                    axisLine: const AxisLine(width: 0),
                                   ),
                                   primaryYAxis: NumericAxis(
-                                    majorTickLines: MajorTickLines(
+                                    majorTickLines: const MajorTickLines(
                                       width: 0,
                                     ),
                                     enableAutoIntervalOnZooming: false,
@@ -211,12 +208,12 @@ class SessionsMadeState extends State<SessionsMade> {
                                     //maximum: double.parse(maxNumber.toString()),
                                     //isVisible: false,
                                     //Hide the gridlines of x-axis
-                                    majorGridLines: MajorGridLines(width: 0),
+                                    majorGridLines: const MajorGridLines(width: 0),
                                     //Hide the axis line of x-axis
-                                    axisLine: AxisLine(width: 0),
+                                    axisLine: const AxisLine(width: 0),
                                   ),
-                                  axes: [],
-                                  indicators: [],
+                                  axes: const [],
+                                  indicators: const [],
                                   legend: null,
                                   tooltipBehavior: _tooltipBehavior,
                                 enableSideBySideSeriesPlacement: false,

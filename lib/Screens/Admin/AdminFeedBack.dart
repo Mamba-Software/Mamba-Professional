@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
@@ -11,7 +10,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 class AdminFeedBack extends StatefulWidget {
   final String title;
 
-  const AdminFeedBack({Key? key, required this.title}) : super(key: key);
+  const AdminFeedBack({super.key, required this.title});
 
   @override
   _AdminFeedBackState createState() => _AdminFeedBackState();
@@ -19,7 +18,7 @@ class AdminFeedBack extends StatefulWidget {
 
 class _AdminFeedBackState extends State<AdminFeedBack> {
   //DataBase Access
-  var _feedbackDataService = new FeedbackDataService();
+  final _feedbackDataService = FeedbackDataService();
 
   String? displayType = "Selecciona un tipus";
   String? displayQuestion1 = "Selecciona una pregunta",
@@ -58,14 +57,14 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                 .copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
         centerTitle: true,
         elevation: 10,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.white, //change your color here
         ),
       ),
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -94,7 +93,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
@@ -112,7 +111,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
@@ -145,40 +144,40 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                                 border: OutlineInputBorder(),
                                 hintText: 'New question spanish'),
                           ),
-                          new DropdownButton<String>(
+                          DropdownButton<String>(
                             items: <String>[
                               'YesOrNo',
                               'OneToTen',
                               'Options',
                               'FreeAns'
                             ].map((String value) {
-                              return new DropdownMenuItem<String>(
+                              return DropdownMenuItem<String>(
                                 value: value,
-                                child: new Text(value),
+                                child: Text(value),
                               );
                             }).toList(),
                             onChanged: (item) {
                               setState(() {
-                                this.displayType = item;
+                                displayType = item;
                               });
                             },
                           ),
                           Text(
-                            this.displayType!,
-                            style: TextStyle(
+                            displayType!,
+                            style: const TextStyle(
                               fontSize: 17,
                             ),
                           ),
                           TextButton(
-                            child: Text(
+                            child: const Text(
                               'New question',
                               style: TextStyle(fontSize: 20.0),
                             ),
                             onPressed: () {
-                              this._feedbackDataService.addQuestion(
+                              _feedbackDataService.addQuestion(
                                   editingControllerCat.text,
                                   editingControllerSpn.text,
-                                  this.displayType);
+                                  displayType);
                             },
                           ),
                         ],
@@ -189,133 +188,125 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                           if (snapshot.data == null) {
                             return LoadingView();
                           } else {
-                            this.allQuestions =
+                            allQuestions =
                                 documentsToQuestions(snapshot.data!.docs);
-                            this.questionsTypeYesOrNo = this
-                                .allQuestions
+                            questionsTypeYesOrNo = allQuestions
                                 .where((i) => i.type == "YesOrNo")
                                 .toList();
-                            this.questionsTypeOneToTen = this
-                                .allQuestions
+                            questionsTypeOneToTen = allQuestions
                                 .where((i) => i.type == "OneToTen")
                                 .toList();
-                            this.questionsTypeOptions = this
-                                .allQuestions
+                            questionsTypeOptions = allQuestions
                                 .where((i) => i.type == "Options")
                                 .toList();
-                            this.questionsTypeFreeAns = this
-                                .allQuestions
+                            questionsTypeFreeAns = allQuestions
                                 .where((i) => i.type == "FreeAns")
                                 .toList();
                             return Column(
                               children: [
-                                new DropdownButton<Question>(
-                                  items: this
-                                      .questionsTypeYesOrNo
+                                DropdownButton<Question>(
+                                  items: questionsTypeYesOrNo
                                       .map<DropdownMenuItem<Question>>(
                                           (Question value) {
                                     return DropdownMenuItem<Question>(
                                       value: value,
-                                      child: new Text(value.questionCat!),
+                                      child: Text(value.questionCat!),
                                     );
                                   }).toList(),
                                   onChanged: (Question? newQuestion) {
                                     setState(() {
-                                      this.displayQuestion1 =
+                                      displayQuestion1 =
                                           newQuestion!.questionCat;
-                                          this.questionOne = newQuestion.id!;
+                                          questionOne = newQuestion.id!;
                                     });
                                   },
                                 ),
                                 Text(
-                                  this.displayQuestion1!,
-                                  style: TextStyle(
+                                  displayQuestion1!,
+                                  style: const TextStyle(
                                     fontSize: 17,
                                   ),
                                 ),
-                                new DropdownButton<Question>(
-                                  items: this
-                                      .questionsTypeOneToTen
+                                DropdownButton<Question>(
+                                  items: questionsTypeOneToTen
                                       .map<DropdownMenuItem<Question>>(
                                           (Question value) {
                                     return DropdownMenuItem<Question>(
                                       value: value,
-                                      child: new Text(value.questionCat!),
+                                      child: Text(value.questionCat!),
                                     );
                                   }).toList(),
                                   onChanged: (Question? newQuestion) {
                                     setState(() {
-                                      this.displayQuestion2 =
+                                      displayQuestion2 =
                                           newQuestion!.questionCat;
-                                      this.questionTwo = newQuestion.id!;
+                                      questionTwo = newQuestion.id!;
                                     });
                                   },
                                 ),
                                 Text(
-                                  this.displayQuestion2!,
-                                  style: TextStyle(
+                                  displayQuestion2!,
+                                  style: const TextStyle(
                                     fontSize: 17,
                                   ),
                                 ),
-                                new DropdownButton<Question>(
-                                  items: this
-                                      .questionsTypeOptions
+                                DropdownButton<Question>(
+                                  items: questionsTypeOptions
                                       .map<DropdownMenuItem<Question>>(
                                           (Question value) {
                                     return DropdownMenuItem<Question>(
                                       value: value,
-                                      child: new Text(value.questionCat!),
+                                      child: Text(value.questionCat!),
                                     );
                                   }).toList(),
                                   onChanged: (Question? newQuestion) {
                                     setState(() {
-                                      this.displayQuestion3 =
+                                      displayQuestion3 =
                                           newQuestion!.questionCat;
-                                      this.questionThree = newQuestion.id!;
+                                      questionThree = newQuestion.id!;
                                     });
                                   },
                                 ),
                                 Text(
-                                  this.displayQuestion3!,
-                                  style: TextStyle(
+                                  displayQuestion3!,
+                                  style: const TextStyle(
                                     fontSize: 17,
                                   ),
                                 ),
-                                new DropdownButton<Question>(
-                                  items: this
-                                      .questionsTypeFreeAns
+                                DropdownButton<Question>(
+                                  items: questionsTypeFreeAns
                                       .map<DropdownMenuItem<Question>>(
                                           (Question value) {
                                     return DropdownMenuItem<Question>(
                                       value: value,
-                                      child: new Text(value.questionCat!),
+                                      child: Text(value.questionCat!),
                                     );
                                   }).toList(),
                                   onChanged: (Question? newQuestion) {
                                     setState(() {
-                                      this.displayQuestion4 =
+                                      displayQuestion4 =
                                           newQuestion!.questionCat;
-                                      this.questionFour = newQuestion.id!;
+                                      questionFour = newQuestion.id!;
                                     });
                                   },
                                 ),
                                 Text(
-                                  this.displayQuestion4!,
-                                  style: TextStyle(
+                                  displayQuestion4!,
+                                  style: const TextStyle(
                                     fontSize: 17,
                                   ),
                                 ),
                                 TextButton(
-                                  child: Text(
+                                  child: const Text(
                                     'New group of questions',
                                     style: TextStyle(fontSize: 20.0),
                                   ),
                                   onPressed: () {
-                                    this._feedbackDataService.addGroupOfQuestions(
-                                        this.questionOne,
-                                        this.questionTwo,
-                                        this.questionThree,
-                                        this.questionFour);
+                                    _feedbackDataService.addGroupOfQuestions(
+                                        questionOne,
+                                        questionTwo,
+                                        questionThree,
+                                        questionFour);
                                   },
                                 ),
                               ],
@@ -347,24 +338,24 @@ List<Question> documentsToQuestions(List<DocumentSnapshot> documents) {
 class UserTile extends StatelessWidget {
   final Usuario user;
 
-  UserTile(this.user);
+  const UserTile(this.user, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return new Card(
-      margin: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
+    return Card(
+      margin: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
       child: ListTile(
         leading: CircularImage(
             size: MediaQuery.of(context).size.width * 0.15,
             image: user.imageUrl,
             borderWidth: 3,
             color: Colors.red),
-        trailing: Icon(Icons.east),
+        trailing: const Icon(Icons.east),
         title: Text(
           user.name!,
-          style: TextStyle(fontSize: 20.0),
+          style: const TextStyle(fontSize: 20.0),
         ),
-        subtitle: Text("Admin Tool"),
+        subtitle: const Text("Admin Tool"),
         onTap: () {},
       ),
     );

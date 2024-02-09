@@ -10,7 +10,7 @@ class CircularImage extends StatefulWidget {
   final File? file;
   final Color? color;
 
-  CircularImage({Key? key, this.size, this.borderWidth, this.image, this.file, this.color}) : super(key: key);
+  const CircularImage({super.key, this.size, this.borderWidth, this.image, this.file, this.color});
 
   @override
   _CircularImageState createState() => _CircularImageState();

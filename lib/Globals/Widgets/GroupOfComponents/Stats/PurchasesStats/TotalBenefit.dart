@@ -1,16 +1,12 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 import '../../../../Constants.dart';
 import '../../../../GlobalVars.dart';
@@ -24,8 +20,8 @@ class TotalBenefitPurchases extends StatefulWidget {
   TotalBenefitPurchases({
     required this.purchases,
     required this.backPurchases,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   TotalBenefitPurchasesState createState() => TotalBenefitPurchasesState();
@@ -36,7 +32,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
 
 
   List <Purchase> filteredPurchases = [], filteredBackPurchases = [];
-  ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
+  final ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
     enablePanning: true);
   double difference = 0;
   TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true);
@@ -168,16 +164,16 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
               child: Row(
                 children: [
                   Text(
-                    money.toStringAsFixed(2) + '€',
-            style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 45),
+                    '${money.toStringAsFixed(2)}€',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 45),
 
           ),
                   Padding(
                     padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
                     child: Text(
-                      difference < 0? difference.toStringAsFixed(2) + '%' :
-                      '+' + difference.toStringAsFixed(2) + '%',
-                      style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                      difference < 0? '${difference.toStringAsFixed(2)}%' :
+                      '+${difference.toStringAsFixed(2)}%',
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey),
 
                     ),
                   ),
@@ -198,7 +194,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                             child: Image.asset(Constants.emptyCalendar)
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
                         SizedBox(height: MediaQuery.of(context).size.height*0.05),
                       ],
                     ) : Container(),
@@ -210,15 +206,15 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                             plotAreaBorderWidth: 1,
                             primaryXAxis: CategoryAxis(
                               //Hide the gridlines of x-axis
-                              majorGridLines: MajorGridLines(width: 0),
+                              majorGridLines: const MajorGridLines(width: 0),
                               isVisible: false,
                               //Hide the axis line of x-axis
-                              axisLine: AxisLine(width: 0),
+                              axisLine: const AxisLine(width: 0),
                             ),
                             primaryYAxis: NumericAxis(
                               decimalPlaces: 2,
                               labelFormat: '{value}€',
-                              majorTickLines: MajorTickLines(
+                              majorTickLines: const MajorTickLines(
                                 width: 0,
                               ),
                               enableAutoIntervalOnZooming: false,
@@ -227,12 +223,12 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                               //maximum: double.parse(maxNumber.toString()),
                               //isVisible: false,
                               //Hide the gridlines of x-axis
-                              majorGridLines: MajorGridLines(width: 0),
+                              majorGridLines: const MajorGridLines(width: 0),
                               //Hide the axis line of x-axis
-                              axisLine: AxisLine(width: 0),
+                              axisLine: const AxisLine(width: 0),
                             ),
-                            axes: [],
-                            indicators: [],
+                            axes: const [],
+                            indicators: const [],
                             legend: null,
                             tooltipBehavior: _tooltipBehavior,
                           enableSideBySideSeriesPlacement: false,

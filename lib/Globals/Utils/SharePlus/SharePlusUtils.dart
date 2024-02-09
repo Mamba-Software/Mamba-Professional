@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../GlobalVars.dart';
 
 //SharePlusUtils Class is used to administrate the share links
 class SharePlusUtils {
@@ -28,7 +26,7 @@ class SharePlusUtils {
         minimumVersion: '1',
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
-          title: userFirstName! + ' te está invitando a Mamba Professional',
+          title: '${userFirstName!} te está invitando a Mamba Professional',
           description: '¡Haz clic para descargar!',
           imageUrl: Uri.parse('https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6')),
     );

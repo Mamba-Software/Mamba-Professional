@@ -4,10 +4,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class LongTextContainer extends StatefulWidget {
   final String text;
 
-  LongTextContainer({Key? key, required this.text}) : super(key: key);
+  const LongTextContainer({super.key, required this.text});
 
   @override
-  _LongTextContainerState createState() => new _LongTextContainerState();
+  _LongTextContainerState createState() => _LongTextContainerState();
 }
 
 class _LongTextContainerState extends State<LongTextContainer> {
@@ -23,7 +23,7 @@ class _LongTextContainerState extends State<LongTextContainer> {
         children: [
           Text(
             widget.text,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
             maxLines: lines,
             // overflow properties is used to show 3 dot in text widget
             // so that user can understand there are few more line to read.
@@ -35,12 +35,12 @@ class _LongTextContainerState extends State<LongTextContainer> {
                 readMore = !readMore;
               });
             },
-            style: ButtonStyle(
+            style: const ButtonStyle(
 
             ),
             child: Text(
               !readMore ? AppLocalizations.of(context)!.readMore : AppLocalizations.of(context)!.readLess,
-              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.secondary),
               textAlign: TextAlign.left
             )
           )

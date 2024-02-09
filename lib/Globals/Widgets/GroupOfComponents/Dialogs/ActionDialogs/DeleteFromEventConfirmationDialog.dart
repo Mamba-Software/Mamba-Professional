@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -10,7 +9,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 class DeleteFromEventConfirmationDialog extends StatefulWidget {
   final String text;
   final String userId;
-  const DeleteFromEventConfirmationDialog({Key? key, required this.text, required this.userId}) : super(key: key);
+  const DeleteFromEventConfirmationDialog({super.key, required this.text, required this.userId});
 
   @override
   _DeleteFromEventConfirmationDialogState createState() => _DeleteFromEventConfirmationDialogState();
@@ -18,7 +17,7 @@ class DeleteFromEventConfirmationDialog extends StatefulWidget {
 
 class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfirmationDialog> {
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
+  final _userDataService = UserDataService();
   // Boolean Loading
   bool isLoading = false;
   // User Requesting
@@ -44,7 +43,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
     return isLoading ?
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: const EdgeInsets.all(20),
         child: Container(
           height: MediaQuery.of(context).size.height*0.4,
           decoration: BoxDecoration(
@@ -62,9 +61,9 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
         :
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: const EdgeInsets.all(20),
         child: Container(
-          padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
+          padding: const EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
           height: MediaQuery.of(context).size.height*0.4,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -84,7 +83,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Flexible(
-                          child: Text(widget.text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                          child: Text(widget.text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                         ),
                       ],
                     ),
@@ -107,7 +106,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
                           ),
                           label: Text(
                             AppLocalizations.of(context)!.delete,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                           ),
                           icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                           onPressed: () {
@@ -128,7 +127,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
                           ),
                           label: Text(
                             AppLocalizations.of(context)!.cancel,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark,),
                           ),
                           icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                           onPressed: () {
@@ -152,7 +151,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
                         borderWidth: 2,
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width*0.9,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.10),
@@ -162,7 +161,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
                               Flexible(
                                 child: Text(
                                   user.name!,
-                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                  style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),
                               ),

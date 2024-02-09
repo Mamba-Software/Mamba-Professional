@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class DeleteRecurrentEventDialog extends StatefulWidget {
   bool isCompleted;
-  DeleteRecurrentEventDialog({Key? key, required this.isCompleted}) : super(key: key);
+  DeleteRecurrentEventDialog({super.key, required this.isCompleted});
 
   @override
   _DeleteRecurrentEventDialogState createState() => _DeleteRecurrentEventDialogState();
@@ -56,7 +55,7 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 10, left: 10),
-                    child: Text(AppLocalizations.of(context)!.deleteRecurrentEvent, style: Theme.of(context).textTheme.bodyText1?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                    child: Text(AppLocalizations.of(context)!.deleteRecurrentEvent, style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                   ),
                 ),
                 Padding(
@@ -69,7 +68,7 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
                         contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
                           AppLocalizations.of(context)!.thisEvent,
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         leading: Transform.scale(
                           scale: 1.2,
@@ -91,11 +90,11 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
                         contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
                           AppLocalizations.of(context)!.thisEventAndRest,
-                          style: widget.isCompleted ? Theme.of(context).textTheme.caption : Theme.of(context).textTheme.bodyText2,
+                          style: widget.isCompleted ? Theme.of(context).textTheme.bodySmall : Theme.of(context).textTheme.bodyMedium,
                         ),
                         subtitle: widget.isCompleted ? Text(
                           AppLocalizations.of(context)!.notAvailableFinishedEvents,
-                          style:  Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+                          style:  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12.5),
                         ) : null,
                         leading: Transform.scale(
                           scale: 1.2,
@@ -133,7 +132,7 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.delete,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: _value == 0 ? AppColors.white.withOpacity(0.5) : AppColors.white),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: _value == 0 ? AppColors.white.withOpacity(0.5) : AppColors.white),
                         ),
                         icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06, color: _value == 0 ? AppColors.white.withOpacity(0.5) : AppColors.white),
                         onPressed: _value != 0 ? () {
@@ -154,7 +153,7 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark,),
                         ),
                         icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                         onPressed: () {

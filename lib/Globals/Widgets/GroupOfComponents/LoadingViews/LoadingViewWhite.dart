@@ -4,11 +4,13 @@ import '../../../Constants.dart';
 
 // Loading View Widget which displays a Circular Progress indicator with the Mamba "M" inside.
 class LoadingViewWhite extends StatelessWidget {
+  const LoadingViewWhite({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Center(
+        const Center(
           child: SizedBox(
             //width: MediaQuery.of(context).size.width * 0.14,
             width: 50,

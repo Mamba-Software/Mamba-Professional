@@ -3,20 +3,25 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import '../../../Data/LibraryModels/lDegradate.dart';
 
 //BonosUtils Class is used to administrate all the bonos
 class BonosUtils {
-
   final _lDegradate = lDegradate();
   final _lColor = lColor();
   final _brandDataService = BrandDataService();
 
   //Function to transform documents to bonos
-  List<Bono> documentsToBonos(List<DocumentSnapshot> documents, int filterSelection, int orderByBonosNumber, int alphabeticOrder) {
+  List<Bono> documentsToBonos(
+      List<DocumentSnapshot> documents,
+      int filterActive,
+      int filterType,
+      int orderByBonosNumber,
+      int alphabeticOrder) {
     List<Bono> bonos = [];
     List<Bono> activeBonos = [];
     List<Bono> inactiveBonos = [];
@@ -30,31 +35,43 @@ class BonosUtils {
     }
     // Order By
     activeBonos.sort((a, b) {
-      return a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase());
+      return a.title
+          .toString()
+          .toLowerCase()
+          .compareTo(b.title.toString().toLowerCase());
     });
     inactiveBonos.sort((a, b) {
-      return a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase());
+      return a.title
+          .toString()
+          .toLowerCase()
+          .compareTo(b.title.toString().toLowerCase());
     });
     if (alphabeticOrder == 1) {
       activeBonos = List.from(activeBonos.reversed);
       inactiveBonos = List.from(inactiveBonos.reversed);
     }
     // Filter By
-    if (filterSelection == 0) {
-      // Active/Inactive Selected
-      if (orderByBonosNumber == 0) {
-        bonos.addAll(activeBonos);
-        bonos.addAll(inactiveBonos);
-      } else {
-        bonos.addAll(inactiveBonos);
-        bonos.addAll(activeBonos);
-      }
-    } else if(filterSelection == 1) {
+    if (filterActive == 0) {
+      bonos.addAll(activeBonos);
+      bonos.addAll(inactiveBonos);
+    } else if (filterActive == 1) {
       // Active Selected
       bonos.addAll(activeBonos);
-    } else if(filterSelection == 2) {
+    } else if (filterActive == 2) {
       // Inactive Selected
       bonos.addAll(inactiveBonos);
+    } else {
+      // None Selected
+    }
+    // Filter By
+    if (filterType == 0) {
+      // Membresía/Bono Selected
+    } else if (filterType == 1) {
+      // Membresía Selected
+      bonos.removeWhere((element) => element.isRecurrent == false);
+    } else if (filterType == 2) {
+      // Bono Selected
+      bonos.removeWhere((element) => element.isRecurrent == true);
     } else {
       // None Selected
     }
@@ -66,20 +83,28 @@ class BonosUtils {
   List<BonoRequest> documentsToBonosRequests(List<DocumentSnapshot> documents) {
     List<BonoRequest> bonosRequests = [];
     for (int i = 0; i < documents.length; i++) {
-      BonoRequest bonoRequest = BonoRequest.fromObjectAllData(documents[i].id, documents[i]);
+      BonoRequest bonoRequest =
+          BonoRequest.fromObjectAllData(documents[i].id, documents[i]);
       bonosRequests.add(bonoRequest);
     }
     return bonosRequests;
   }
 
+  List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
+    List<Event> events = [];
+    for (int i = 0; i < documents.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(documents[i].id, documents[i]));
+    }
+    return events;
+  }
+
   //Function to transform documents to bonos
   List<Purchase> documentsToPurchasesUser(List<DocumentSnapshot> documents) {
     List<Purchase> userPurchases = [];
-    for(int i = 0; i < documents.length; i++) {
-      Purchase purchase = Purchase.fromObjectAllData(documents[i].id, documents[i]);
-      Bono bono = Bono(
-        id: purchase.bonoId
-      );
+    for (int i = 0; i < documents.length; i++) {
+      Purchase purchase =
+          Purchase.fromObjectAllData(documents[i].id, documents[i]);
+      Bono bono = Bono(id: purchase.bonoId);
       // Add Conditions of This purchase
       bono.setBrandId = purchase.brandId!;
       bono.setPurchaseId = documents[i].id;
@@ -105,9 +130,9 @@ class BonosUtils {
       bonos.add(bono);
     }
     // Check which one has the most buys
-    bonos.sort((a,b) {
-      var aCompras =  a.compras!;
-      var bCompras =  b.compras!;
+    bonos.sort((a, b) {
+      var aCompras = a.compras!;
+      var bCompras = b.compras!;
       return aCompras.compareTo(bCompras);
     });
     if (bonos.isNotEmpty) {
@@ -119,5 +144,118 @@ class BonosUtils {
     return mostBuys;
   }
 
+  double getPurchasePrice(Brand brand, Bono bono, Condition condition) {
+    double price = bono.price!;
+    double priceResta = 0;
+    DateTime today = DateTime.now();
+    brand.paymentTerms ??= 2;
 
+    if (condition.expirationTime == 0 ||
+        (condition.expirationTime != 30 &&
+            condition.expirationTime != 60 &&
+            condition.expirationTime != 90)) {
+      return price;
+    }
+
+    if (brand.paymentTerms != 2) {
+      if (today.day != 1) {
+        final firstDayOfNextMonth = DateTime(today.year, today.month + 1, 1);
+        final firstDayOfMonth = DateTime(today.year, today.month, 1);
+        final fifthDayOfMonth = DateTime(today.year, today.month, 15);
+
+        int allDaysMonth =
+            firstDayOfNextMonth.difference(firstDayOfMonth).inDays;
+        int diferenceToFirstDay =
+            firstDayOfNextMonth.difference(today).inDays + 1;
+
+        if (condition.expirationTime == 60) {
+          price = price / 2;
+          priceResta = price;
+        } else if (condition.expirationTime == 90) {
+          price = price / 3;
+          priceResta = price * 2;
+        }
+
+        //Prorrateación
+        if (brand.paymentTerms == 0) {
+          price = price / allDaysMonth;
+          price = price * diferenceToFirstDay;
+          price = price + priceResta;
+        }
+        //Mitad y mitad
+        if (brand.paymentTerms == 1) {
+          if (today.isAfter(fifthDayOfMonth)) {
+            price = (price / 2) + priceResta;
+          } else {
+            price = bono.price!;
+          }
+        }
+      }
+    }
+    String truncatedString =
+        price.toStringAsFixed(2); // Convierte a string con 2 decimales.
+    double truncatedPrice =
+        double.parse(truncatedString); // Convierte el string de nuevo a double.
+
+    return truncatedPrice;
+  }
+
+  int getExpirationTime(Brand brand, Condition condition) {
+    int expirationDays = 0;
+    DateTime today = DateTime.now();
+    brand.paymentTerms ??= 2;
+
+    if (condition.expirationTime == 0) {
+      return 0;
+    }
+
+    if (condition.expirationTime != 30 &&
+        condition.expirationTime != 60 &&
+        condition.expirationTime != 90) {
+      return condition.expirationTime!;
+    }
+
+    //Días exactos
+    if (brand.paymentTerms == 2) {
+      if (condition!.expirationTime == 30) {
+        // Siguiente mes
+        final nextMonthDate = DateTime(today.year, today.month + 1, today.day);
+        expirationDays = nextMonthDate.difference(today).inDays;
+      } else if (condition!.expirationTime == 60) {
+        // Dos meses más adelante
+        final twoMonthsLater = DateTime(today.year, today.month + 2, today.day);
+        expirationDays = twoMonthsLater.difference(today).inDays;
+      } else if (condition!.expirationTime == 90) {
+        // Tres meses más adelante
+        final threeMonthsLater =
+            DateTime(today.year, today.month + 3, today.day);
+        expirationDays = threeMonthsLater.difference(today).inDays;
+      }
+    }
+    //Prorrateación o mitad y mitad
+    else {
+      final firstDayOfNextMonth = DateTime(today.year, today.month + 1, 1);
+      expirationDays = firstDayOfNextMonth.difference(today).inDays + 1;
+
+      if (condition.expirationTime == 60) {
+        // Dos meses más adelante
+        final twoMonthsLater = DateTime(firstDayOfNextMonth.year,
+            firstDayOfNextMonth.month + 1, firstDayOfNextMonth.day);
+        expirationDays = twoMonthsLater.difference(firstDayOfNextMonth).inDays +
+            expirationDays +
+            1;
+      } else if (condition.expirationTime == 90) {
+        // Tres meses más adelante
+        final threeMonthsLater = DateTime(
+            firstDayOfNextMonth.year,
+            firstDayOfNextMonth.month + 2,
+            firstDayOfNextMonth.day); //TODO SI CAMBIA EL ANY CUIDADO
+        expirationDays =
+            threeMonthsLater.difference(firstDayOfNextMonth).inDays +
+                expirationDays +
+                1;
+      }
+    }
+    return expirationDays;
+  }
 }

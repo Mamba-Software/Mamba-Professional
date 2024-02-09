@@ -1,7 +1,6 @@
 // This class represents the Object <RecievedNotification> that will handle local notifications.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class ReceivedNotification {
   ReceivedNotification({
@@ -26,30 +25,50 @@ class ReceivedNotification {
   Timestamp? createdAt;
   DateTime? firesAt;
 
-  ReceivedNotification.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'body': body,
+      'payload': payload,
+      'bonoId': bonoId,
+      'eventId': eventId,
+      'purchaseId': purchaseId,
+    };
+  }
+
+  ReceivedNotification.fromObjectAllData(
+      String documentId, DocumentSnapshot documentSnapshot) {
     id = int.parse(documentId);
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('title')) {
       title = documentSnapshot.get("title").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('body')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('body')) {
       body = documentSnapshot.get("body").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('payload')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('payload')) {
       payload = documentSnapshot.get("payload").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('eventId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('eventId')) {
       eventId = documentSnapshot.get("eventId").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonoId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('bonoId')) {
       bonoId = documentSnapshot.get("bonoId").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchaseId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('purchaseId')) {
       purchaseId = documentSnapshot.get("purchaseId").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('createdAt')) {
       createdAt = documentSnapshot.get("createdAt");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firesAt')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('firesAt')) {
       firesAt = (documentSnapshot.get("firesAt") as Timestamp).toDate();
     }
   }

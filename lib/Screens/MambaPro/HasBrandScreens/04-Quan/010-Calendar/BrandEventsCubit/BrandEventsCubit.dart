@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -18,7 +18,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
   List<Event> upcomingEventsList = [];
   late StreamSubscription<QuerySnapshot> _subscription;
 
-  Future<void> getInitialBrandEvents(List<Usuario> _brandTrainers) async {
+  Future<void> getInitialBrandEvents(List<Usuario> brandTrainers) async {
     try {
       // Set the State to Loading
       emit(const BrandEventsLoading());
@@ -29,7 +29,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       // Add The Trainers to the Event
       List<Usuario> eventTrainers = [];
       for (Event evt in finishedEventsList) {
-        for (Usuario trainer in _brandTrainers) {
+        for (Usuario trainer in brandTrainers) {
           int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
           if (index != -1) {
             eventTrainers.add(trainer);
@@ -41,7 +41,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       // Open the Stream to Get Brand Upcoming Events
       _subscription = _eventDataService.getBrandUpcomingEventsStream(brandId).listen((querySnapshot) async {
           List<DocumentSnapshot> documents = querySnapshot.docs;
-          upcomingEventsList = documentsToEvents(documents, _brandTrainers);
+          upcomingEventsList = documentsToEvents(documents, brandTrainers);
           List<Event> finalList = finishedEventsList+upcomingEventsList;
           // Order Notification List Descending Time
           finalList.sort((a,b) {
@@ -65,12 +65,12 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
           emit(BrandEventsLoaded(finalList));
         },
           onError: (e) {
-            print("Brand Events Error"+e.toString());
+            print("Brand Events Error$e");
             emit(BrandEventsError(e.toString()));
           },
         );
       } catch(e) {
-        print("Brand Events Error"+e.toString());
+        print("Brand Events Error$e");
         emit(BrandEventsError(e.toString()));
       }
       /* Open the Stream to Get Brand Upcoming Events
@@ -128,7 +128,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
        */
   }
 
-  Future<void> getMoreBrandEvents(String eventId, List<Usuario> _brandTrainers) async {
+  Future<void> getMoreBrandEvents(String eventId, List<Usuario> brandTrainers) async {
     try {
       print("Getting More Brand Events");
       // Set the State to Loading
@@ -138,7 +138,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       // Add The Trainers to the Event
       List<Usuario> eventTrainers = [];
       for (Event evt in moreFinishedEvents) {
-        for (Usuario trainer in _brandTrainers) {
+        for (Usuario trainer in brandTrainers) {
           int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
           if (index != -1) {
             eventTrainers.add(trainer);
@@ -169,12 +169,12 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       });
       emit(BrandEventsLoaded(finalList));
     } catch(e) {
-      print("More Brand Events Error"+e.toString());
+      print("More Brand Events Error$e");
       emit(BrandEventsError(e.toString()));
     }
   }
 
-  Future<void> updateBrandEvent(String eventId, List<Usuario> _brandTrainers) async {
+  Future<void> updateBrandEvent(String eventId, List<Usuario> brandTrainers) async {
     try {
       print("Update Brand Event");
       // Set the State to Loading
@@ -183,7 +183,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       Event event = await _eventDataService.getSingleEvent(eventId);
       // Add The Trainers to the Event
       List<Usuario> eventTrainers = [];
-      for (Usuario trainer in _brandTrainers) {
+      for (Usuario trainer in brandTrainers) {
         int index = trainer.eventsList.indexWhere((element) => element.id == event.id);
         if (index != -1) {
           eventTrainers.add(trainer);
@@ -215,7 +215,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       emit(BrandEventsLoaded(finalList));
       print("Event $eventId Successfully Updated");
     } catch(e) {
-      print("Delete Brand Event Error"+e.toString());
+      print("Delete Brand Event Error$e");
       emit(BrandEventsError(e.toString()));
     }
   }
@@ -247,7 +247,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       emit(BrandEventsLoaded(finalList));
       print("Event $eventId Successfully Deleted");
     } catch(e) {
-      print("Delete Brand Event Error"+e.toString());
+      print("Delete Brand Event Error$e");
       emit(BrandEventsError(e.toString()));
     }
   }
@@ -286,13 +286,13 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
 }
 
 
-List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> _brandTrainers) {
+List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> brandTrainers) {
   List<Event> events = [];
   List<Usuario> eventTrainers = [];
   for(int i = 0; i < documents.length; i++) {
     Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
     // Check Trainers in Event
-    for (Usuario trainer in _brandTrainers) {
+    for (Usuario trainer in brandTrainers) {
       int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
       if (index != -1) {
         eventTrainers.add(trainer);
@@ -312,11 +312,11 @@ List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> _b
   return events;
 }
 
-Event documentToEvent(DocumentSnapshot document, List<Usuario> _brandTrainers) {
+Event documentToEvent(DocumentSnapshot document, List<Usuario> brandTrainers) {
   List<Usuario> eventTrainers = [];
   Event evt = Event.fromObjectOnlyCoverData(document.id, document);
   // Check Trainers in Event
-  for (Usuario trainer in _brandTrainers) {
+  for (Usuario trainer in brandTrainers) {
     int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
     if (index != -1) {
       eventTrainers.add(trainer);

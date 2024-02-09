@@ -1,20 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoEvents/cubit/BonoEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoEvents/views/SelectAllEvents.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchaseEvents/cubit/PurchaseEventsCubit.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:shimmer/shimmer.dart';
 
 
@@ -23,7 +19,7 @@ class PurchaseEvents extends StatelessWidget {
   final Purchase purchase;
   final void Function(Purchase) executeFunction;
 
-  const PurchaseEvents({Key? key, required this.context, required this.purchase, required this.executeFunction}) : super(key: key);
+  const PurchaseEvents({super.key, required this.context, required this.purchase, required this.executeFunction});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +40,7 @@ class PurchaseEventsBody extends StatelessWidget {
   final context;
   final void Function(Purchase) executeFunction;
 
-  const PurchaseEventsBody({Key? key, required this.context, required this.executeFunction, required this.purchase}) : super(key: key);
+  const PurchaseEventsBody({super.key, required this.context, required this.executeFunction, required this.purchase});
 
   @override
   Widget build(BuildContext context) {
@@ -71,65 +67,14 @@ class PurchaseEventsBody extends StatelessWidget {
                           children: [
                             Text(
                               AppLocalizations.of(context)!.sessions,
-                              style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
+                              style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 22),
                               textAlign: TextAlign.center,
                             ),
                             Row(
                               children: [
                                 TextButton(
-                                  child: events.isNotEmpty ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      state is BonoEventsLoaded ? Text(
-                                        AppLocalizations.of(context)!.edit,
-                                        style: Theme.of(context).textTheme.bodyText1,
-                                      ) : Text(
-                                        AppLocalizations.of(context)!.chargingEvents,
-                                        style: Theme.of(context).textTheme.bodyText1,
-                                      ),
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                      state is BonoEventsLoaded ? Icon(
-                                        Icons.edit,
-                                        color: Theme.of(context).primaryColor,
-                                        size: MediaQuery.of(context).size.width*0.05,
-                                      ) : Container(
-                                        width: MediaQuery.of(context).size.width * 0.04,
-                                        height: MediaQuery.of(context).size.width * 0.04,
-                                        margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.02),
-                                        child: CircularProgressIndicator(
-                                          color: Theme.of(context).primaryColor,
-                                          strokeWidth: 1.5,
-                                        ),
-                                      )
-                                    ],
-                                  ) : Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      state is BonoEventsLoaded ? Text(
-                                        AppLocalizations.of(context)!.add,
-                                        style: Theme.of(context).textTheme.bodyText1,
-                                      ) : Text(
-                                        AppLocalizations.of(context)!.chargingEvents,
-                                        style: Theme.of(context).textTheme.bodyText1,
-                                      ),
-                                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                                      state is BonoEventsLoaded ? Icon(
-                                        Icons.add,
-                                        color: Theme.of(context).primaryColor,
-                                        size: MediaQuery.of(context).size.width*0.05,
-                                      ) : Container(
-                                        width: MediaQuery.of(context).size.width * 0.04,
-                                        height: MediaQuery.of(context).size.width * 0.04,
-                                        margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.02),
-                                        child: CircularProgressIndicator(
-                                          color: Theme.of(context).primaryColor,
-                                          strokeWidth: 1.5,
-                                        ),
-                                      )
-                                    ],
-                                  ) ,
                                   style: TextButton.styleFrom(
-                                    backgroundColor: Theme.of(context).backgroundColor,
+                                    backgroundColor: Theme.of(context).colorScheme.background,
                                     shape: RoundedRectangleBorder(  // add this
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -162,6 +107,57 @@ class PurchaseEventsBody extends StatelessWidget {
                                       }
                                     }
                                   },
+                                  child: events.isNotEmpty ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      state is BonoEventsLoaded ? Text(
+                                        AppLocalizations.of(context)!.edit,
+                                        style: Theme.of(context).textTheme.bodyLarge,
+                                      ) : Text(
+                                        AppLocalizations.of(context)!.chargingEvents,
+                                        style: Theme.of(context).textTheme.bodyLarge,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                      state is BonoEventsLoaded ? Icon(
+                                        Icons.edit,
+                                        color: Theme.of(context).primaryColor,
+                                        size: MediaQuery.of(context).size.width*0.05,
+                                      ) : Container(
+                                        width: MediaQuery.of(context).size.width * 0.04,
+                                        height: MediaQuery.of(context).size.width * 0.04,
+                                        margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.02),
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).primaryColor,
+                                          strokeWidth: 1.5,
+                                        ),
+                                      )
+                                    ],
+                                  ) : Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      state is BonoEventsLoaded ? Text(
+                                        AppLocalizations.of(context)!.add,
+                                        style: Theme.of(context).textTheme.bodyLarge,
+                                      ) : Text(
+                                        AppLocalizations.of(context)!.chargingEvents,
+                                        style: Theme.of(context).textTheme.bodyLarge,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                                      state is BonoEventsLoaded ? Icon(
+                                        Icons.add,
+                                        color: Theme.of(context).primaryColor,
+                                        size: MediaQuery.of(context).size.width*0.05,
+                                      ) : Container(
+                                        width: MediaQuery.of(context).size.width * 0.04,
+                                        height: MediaQuery.of(context).size.width * 0.04,
+                                        margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.02),
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).primaryColor,
+                                          strokeWidth: 1.5,
+                                        ),
+                                      )
+                                    ],
+                                  ) ,
                                 ),
                               ],
                             ),
@@ -255,7 +251,7 @@ class PurchaseEventsBody extends StatelessWidget {
                                 Flexible(
                                   child: Text(
                                     AppLocalizations.of(context)!.noEvents,
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.start,
                                   ),
                                 ),
@@ -282,16 +278,24 @@ class PurchaseEventsBody extends StatelessWidget {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.sessions,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
+                        style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 22),
                         textAlign: TextAlign.center,
                       ),
                       TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.background,
+                          shape: RoundedRectangleBorder(  // add this
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+                        ),
+                        onPressed: null,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               AppLocalizations.of(context)!.edit,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                             ),
                             SizedBox(width: MediaQuery.of(context).size.width*0.02),
                             Container(
@@ -305,14 +309,6 @@ class PurchaseEventsBody extends StatelessWidget {
                             )
                           ],
                         ),
-                        style: TextButton.styleFrom(
-                          backgroundColor: Theme.of(context).backgroundColor,
-                          shape: RoundedRectangleBorder(  // add this
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          padding: const EdgeInsets.only(left: 16.0, right: 10.0),
-                        ),
-                        onPressed: null,
                       ),
                     ],
                   ),
@@ -329,7 +325,7 @@ class PurchaseEventsBody extends StatelessWidget {
                     height: MediaQuery.of(context).size.height * 0.15,
                     width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                       //border: Border.all(color: Theme.of(context).primaryColor, width: 0.5),
                       borderRadius: const BorderRadius.all(
                         Radius.circular(15.0),
@@ -338,13 +334,13 @@ class PurchaseEventsBody extends StatelessWidget {
                     child: Column(
                       children: [
                         Shimmer.fromColors(
-                          baseColor: Theme.of(context).backgroundColor,
-                          highlightColor: Theme.of(context).backgroundColor.withOpacity(0.5),
+                          baseColor: Theme.of(context).colorScheme.background,
+                          highlightColor: Theme.of(context).colorScheme.background.withOpacity(0.5),
                           child: Container(
                             height: MediaQuery.of(context).size.height * 0.15*0.66,
                             width: MediaQuery.of(context).size.width * 0.9,
                             decoration: BoxDecoration(
-                              color: Theme.of(context).backgroundColor,
+                              color: Theme.of(context).colorScheme.background,
                               //border: Border.all(color: Theme.of(context).primaryColor, width: 0.5),
                               borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(15),

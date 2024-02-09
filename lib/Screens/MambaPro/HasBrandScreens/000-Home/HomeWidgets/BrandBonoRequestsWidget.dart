@@ -14,7 +14,7 @@ class BrandBonoRequestsWidget extends StatefulWidget {
   double width = 0;
   ValueChanged<bool?> onClicked;
 
-  BrandBonoRequestsWidget({Key? key, required this.height, required this.width, required this.brandId, required this.onClicked}) : super(key: key);
+  BrandBonoRequestsWidget({super.key, required this.height, required this.width, required this.brandId, required this.onClicked});
 
   @override
   _BrandBonoRequestsWidgetState createState() => _BrandBonoRequestsWidgetState();
@@ -63,7 +63,7 @@ class _BrandBonoRequestsWidgetState extends State<BrandBonoRequestsWidget> {
                     height: widget.height,
                     width: widget.width,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                       borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
                     ),
                     child: Container(
@@ -101,7 +101,7 @@ class _BrandBonoRequestsWidgetState extends State<BrandBonoRequestsWidget> {
                                     Flexible(
                                       child: Text(
                                         AppLocalizations.of(context)!.bonoRequestDescription,
-                                        style: Theme.of(context).textTheme.bodyText2,
+                                        style: Theme.of(context).textTheme.bodyMedium,
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -116,13 +116,13 @@ class _BrandBonoRequestsWidgetState extends State<BrandBonoRequestsWidget> {
                                     width: MediaQuery.of(context).size.width * 0.08,
                                     decoration: BoxDecoration(
                                         color: Theme.of(context).primaryColor,
-                                        borderRadius: BorderRadius.all(Radius.circular(15))
+                                        borderRadius: const BorderRadius.all(Radius.circular(15))
                                     ),
                                     child: Align(
                                       alignment: Alignment.center,
                                       child: Text(
                                           requests.toString(),
-                                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColorDark,),
+                                          style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColorDark,),
                                           textAlign: TextAlign.center
                                       ),
                                     ),

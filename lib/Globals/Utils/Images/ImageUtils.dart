@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -60,13 +59,13 @@ class ImageUtils {
 
   Future<File> urlToFile(String imageUrl) async {
     // generate random number.
-    var rng = new Random();
+    var rng = Random();
     // get temporary directory of device.
     Directory tempDir = await getTemporaryDirectory();
     // get temporary path from temporary directory.
     String tempPath = tempDir.path;
     // create a new file in temporary path with random file name.
-    File file = new File('$tempPath'+ (rng.nextInt(100)).toString() +'.jpeg');
+    File file = File('$tempPath${rng.nextInt(100)}.jpeg');
     // call http.get method and pass imageUrl into it to get response.
     http.Response response = await http.get(Uri.parse(imageUrl));
     // write bodyBytes received in response to file.
@@ -81,7 +80,7 @@ class ImageUtils {
     if (bytes <= 0) return "0 B";
     const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
     var i = (log(bytes) / log(1024)).floor();
-    return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + ' ' + suffixes[i];
+    return '${(bytes / pow(1024, i)).toStringAsFixed(decimals)} ${suffixes[i]}';
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

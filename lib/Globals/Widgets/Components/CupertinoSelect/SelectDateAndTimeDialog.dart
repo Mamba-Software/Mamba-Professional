@@ -7,7 +7,7 @@ class SelectDateAndTimeDialog extends StatefulWidget {
   String title;
   DateTime startDate;
   bool onlyFuture;
-  SelectDateAndTimeDialog({Key? key, required this.title, required this.startDate, required this.onlyFuture}) : super(key: key);
+  SelectDateAndTimeDialog({super.key, required this.title, required this.startDate, required this.onlyFuture});
 
   @override
   _SelectDateAndTimeDialogState createState() => _SelectDateAndTimeDialogState();
@@ -26,7 +26,7 @@ class _SelectDateAndTimeDialogState extends State<SelectDateAndTimeDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
       ),
       child: Container(
@@ -46,7 +46,7 @@ class _SelectDateAndTimeDialogState extends State<SelectDateAndTimeDialog> {
                 Expanded(
                     child: Text(
                       widget.title,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center
                     )
                 ),
@@ -59,14 +59,14 @@ class _SelectDateAndTimeDialogState extends State<SelectDateAndTimeDialog> {
                 child: CupertinoTheme(
                   data: CupertinoThemeData(
                       textTheme: CupertinoTextThemeData(
-                        dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+                        dateTimePickerTextStyle: Theme.of(context).textTheme.bodyLarge,
                       )
                   ),
                   child: CupertinoDatePicker(
                       mode: CupertinoDatePickerMode.dateAndTime,
                       initialDateTime: DateTime(widget.startDate.year, widget.startDate.month, widget.startDate.day, widget.startDate.hour,widget.startDate.minute),
-                      minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(Duration(minutes: 1)): widget.startDate.subtract(Duration(days: 365*80)),
-                      maximumDate: widget.onlyFuture ? (DateTime.now()).add(Duration(days: 365*1)): DateTime(widget.startDate.year, 12, 31, 0, 0),
+                      minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(const Duration(minutes: 1)): widget.startDate.subtract(const Duration(days: 365*80)),
+                      maximumDate: widget.onlyFuture ? (DateTime.now()).add(const Duration(days: 365*1)): DateTime(widget.startDate.year, 12, 31, 0, 0),
                       maximumYear: DateTime.now().year+1,
                       use24hFormat: true,
                       minuteInterval: 15,
@@ -86,7 +86,7 @@ class _SelectDateAndTimeDialogState extends State<SelectDateAndTimeDialog> {
                   child: TextButton(
                       child: Text(
                           AppLocalizations.of(context)!.entendido,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)
+                          style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)
                       ),
                       onPressed: () {
                         Navigator.pop(context, pickedDate);

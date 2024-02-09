@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,16 +13,21 @@ import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/BetaBadge.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 
 class Trainers extends StatefulWidget {
   String brandId;
@@ -31,14 +35,18 @@ class Trainers extends StatefulWidget {
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
 
-  Trainers({Key? key,  required this.brandId, required this.numTrainers, required this.pinned, required this.pinnedChanged}) : super(key: key);
+  Trainers(
+      {super.key,
+      required this.brandId,
+      required this.numTrainers,
+      required this.pinned,
+      required this.pinnedChanged});
 
   @override
   _Trainers createState() => _Trainers();
 }
 
 class _Trainers extends State<Trainers> {
-
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
@@ -46,12 +54,14 @@ class _Trainers extends State<Trainers> {
     if (!_scrollController!.hasClients) {
       return false;
     }
-    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+    if (_scrollController!.position.userScrollDirection ==
+        ScrollDirection.forward) {
       // User is down up, so AppBar should expand.
       return false;
     }
     // Use the same condition as before to check if AppBar is expanded.
-    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
+    return _scrollController!.offset >
+        (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
 
   // Brand Data Service
@@ -83,9 +93,10 @@ class _Trainers extends State<Trainers> {
   var chatUsers = [];
 
   Future<void> getAllUsers() async {
-    List<Usuario> brandUsers = await _brandDataService.getBrandTrainers(widget.brandId);
+    List<Usuario> brandUsers =
+        await _brandDataService.getBrandTrainers(widget.brandId);
     allMembers = [];
-    for (var i=0; i< brandUsers.length; i++) {
+    for (var i = 0; i < brandUsers.length; i++) {
       Usuario user = brandUsers[i];
       allMembers.add(user);
       if (user.brandRole == 1) {
@@ -104,7 +115,10 @@ class _Trainers extends State<Trainers> {
     */
     // Add All Members
     allMembers.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+      return a.name
+          .toString()
+          .toLowerCase()
+          .compareTo(b.name.toString().toLowerCase());
     });
     filteredMembers = allMembers;
     // Return Future Delayed
@@ -136,7 +150,10 @@ class _Trainers extends State<Trainers> {
   void filterByRolesAndActive() {
     // Filter By
     allMembers.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+      return a.name
+          .toString()
+          .toLowerCase()
+          .compareTo(b.name.toString().toLowerCase());
     });
     filteredMembers = List.from(allMembers);
     int cnt = 0;
@@ -157,7 +174,8 @@ class _Trainers extends State<Trainers> {
     }
     if (filterByTrainers[3] == false) {
       filteredMembers.removeWhere((element) {
-        DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 31));
+        DateTime oneMonthAgo =
+            DateTime.now().subtract(const Duration(days: 31));
         if (element.lastEventAt == null) {
           return false;
         } else {
@@ -169,7 +187,8 @@ class _Trainers extends State<Trainers> {
     }
     if (filterByTrainers[4] == false) {
       filteredMembers.removeWhere((element) {
-        DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 31));
+        DateTime oneMonthAgo =
+            DateTime.now().subtract(const Duration(days: 31));
         if (element.lastEventAt == null) {
           return true;
         } else {
@@ -211,11 +230,11 @@ class _Trainers extends State<Trainers> {
     String filteredRoles = "";
     int cnt = 0;
     if (filterByTrainers[0]) {
-      filteredRoles += AppLocalizations.of(context)!.owner+", ";
+      filteredRoles += "${AppLocalizations.of(context)!.owner}, ";
       cnt += 1;
     }
     if (filterByTrainers[1]) {
-      filteredRoles += AppLocalizations.of(context)!.administrador+", ";
+      filteredRoles += "${AppLocalizations.of(context)!.administrador}, ";
       cnt += 1;
     }
     if (filterByTrainers[2]) {
@@ -226,7 +245,7 @@ class _Trainers extends State<Trainers> {
       return filteredRoles.split(", ")[0];
     }
     if (cnt == 2 && filterByTrainers[2] == false) {
-      return filteredRoles.split(", ")[0]+", "+filteredRoles.split(", ")[1];
+      return "${filteredRoles.split(", ")[0]}, ${filteredRoles.split(", ")[1]}";
     }
     return filteredRoles;
   }
@@ -235,7 +254,7 @@ class _Trainers extends State<Trainers> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByTrainers[3]) {
-      activeStaff += AppLocalizations.of(context)!.yes+", ";
+      activeStaff += "${AppLocalizations.of(context)!.yes}, ";
       cnt += 1;
     }
     if (filterByTrainers[4]) {
@@ -252,13 +271,14 @@ class _Trainers extends State<Trainers> {
   initState() {
     super.initState();
     _scrollController = ScrollController()
-      ..addListener(() => _isAppBarExpanded ?
-      setState(() {
-        appBarExpanded = true;
-      }) :
-      setState(() {
-        appBarExpanded = false;
-      }),
+      ..addListener(
+        () => _isAppBarExpanded
+            ? setState(() {
+                appBarExpanded = true;
+              })
+            : setState(() {
+                appBarExpanded = false;
+              }),
       );
     isLoading = true;
     getAllUsers();
@@ -272,8 +292,9 @@ class _Trainers extends State<Trainers> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
+            surfaceTintColor: AppColors.darkGrey,
             backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height*0.15,
+            expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: true,
@@ -281,7 +302,7 @@ class _Trainers extends State<Trainers> {
             snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                height: MediaQuery.of(context).size.height*0.2,
+                height: MediaQuery.of(context).size.height * 0.2,
                 width: double.infinity,
                 color: AppColors.darkGrey,
                 child: Column(
@@ -289,55 +310,81 @@ class _Trainers extends State<Trainers> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.03),
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          right: MediaQuery.of(context).size.width * 0.03),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          searchClicked == false ? Text(
-                            AppLocalizations.of(context)!.staff,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
-                          ) : SizedBox(
-                            width: MediaQuery.of(context).size.width*0.65,
-                            child: TextField(
-                              autofocus: true,
-                              controller: searchController,
-                              onChanged: (value) {
-                                filterSearchResults(value);
-                              },
-                              style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white),
-                              textAlign: TextAlign.left,
-                              decoration: InputDecoration(
-                                hintStyle: Theme.of(context).textTheme.caption,
-                                hintText: AppLocalizations.of(context)!.search,
-                                enabledBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: AppColors.grey),
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                          searchClicked == false
+                              ? Text(
+                                  AppLocalizations.of(context)!.staff,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayLarge
+                                      ?.copyWith(
+                                        color: AppColors.white,
+                                      ),
+                                )
+                              : SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.65,
+                                  child: TextField(
+                                    autofocus: true,
+                                    controller: searchController,
+                                    onChanged: (value) {
+                                      filterSearchResults(value);
+                                    },
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(color: AppColors.white),
+                                    textAlign: TextAlign.left,
+                                    decoration: InputDecoration(
+                                      hintStyle:
+                                          Theme.of(context).textTheme.bodySmall,
+                                      hintText:
+                                          AppLocalizations.of(context)!.search,
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: AppColors.grey),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0))),
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: AppColors.grey),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0))),
+                                      border: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: AppColors.grey),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0))),
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          mixpanel!.track(
+                                              'brand_trainers_search_clean');
+                                          searchController.clear();
+                                          filterSearchResults("");
+                                        },
+                                        icon: const Icon(
+                                          Icons.delete_outline,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      contentPadding: EdgeInsets.only(
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.04),
+                                    ),
+                                  ),
                                 ),
-                                focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: AppColors.grey),
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
-                                ),
-                                border: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: AppColors.grey),
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
-                                ),
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    mixpanel!.track('brand_trainers_search_clean');
-                                    searchController.clear();
-                                    filterSearchResults("");
-                                  },
-                                  icon: const Icon(Icons.delete_outline, color: Colors.grey,),
-                                ),
-                                contentPadding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04),
-                              ),
-                            ),
-                          ),
                           FittedBox(
                             fit: BoxFit.fitWidth,
                             child: SizedBox(
-                              width: MediaQuery.of(context).size.width*0.23,
+                              width: MediaQuery.of(context).size.width * 0.23,
                               /*
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.green, width: 1.0),
@@ -345,16 +392,19 @@ class _Trainers extends State<Trainers> {
                               ),
                                */
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Material(
                                     color: Colors.transparent,
                                     child: IconButton(
                                       onPressed: () {
                                         if (searchClicked == false) {
-                                          mixpanel!.track('brand_trainers_search_button');
+                                          mixpanel!.track(
+                                              'brand_trainers_search_button');
                                         } else {
-                                          mixpanel!.track('brand_trainers_search_close');
+                                          mixpanel!.track(
+                                              'brand_trainers_search_close');
                                         }
                                         setState(() {
                                           searchController.clear();
@@ -363,292 +413,394 @@ class _Trainers extends State<Trainers> {
                                         });
                                       },
                                       splashRadius: 20,
-                                      splashColor: Theme.of(context).backgroundColor, // Splash color
+                                      splashColor: Theme.of(context)
+                                          .colorScheme
+                                          .background, // Splash color
                                       padding: EdgeInsets.zero,
                                       alignment: Alignment.center,
                                       icon: Icon(
-                                        searchClicked == false ? Icons.search_outlined : Icons.close_outlined,
+                                        searchClicked == false
+                                            ? Icons.search_outlined
+                                            : Icons.close_outlined,
                                         color: AppColors.white,
-                                        size: MediaQuery.of(context).size.width*0.07,
+                                        size:
+                                            MediaQuery.of(context).size.width *
+                                                0.07,
                                       ),
                                     ),
                                   ),
                                   ClipOval(
                                     child: Material(
-                                      color: hasFilter ? AppColors.white : Colors.transparent, // Button color
+                                      color: hasFilter
+                                          ? AppColors.white
+                                          : Colors.transparent, // Button color
                                       child: InkWell(
-                                        splashColor: Theme.of(context).backgroundColor, // Splash color
+                                        splashColor: Theme.of(context)
+                                            .colorScheme
+                                            .background, // Splash color
                                         onTap: () async {
-                                          mixpanel!.track('brand_trainers_filter_button');
+                                          mixpanel!.track(
+                                              'brand_trainers_filter_button');
                                           await showModalBottomSheet<int?>(
                                             context: context,
                                             isScrollControlled: true,
                                             shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
                                                 top: Radius.circular(20),
                                               ),
                                             ),
-                                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                                            clipBehavior:
+                                                Clip.antiAliasWithSaveLayer,
                                             builder: (BuildContext context) {
                                               // Page View Controller
-                                              final PageController _pageController = PageController(initialPage: 0);
-                                              int _currentPage = 0;
+                                              final PageController
+                                                  pageController =
+                                                  PageController(
+                                                      initialPage: 0);
+                                              int currentPage = 0;
                                               bool isRoles = true;
                                               // Widget
                                               return StatefulBuilder(
-                                                builder: (BuildContext context, StateSetter setStateBottom) {
+                                                builder: (BuildContext context,
+                                                    StateSetter
+                                                        setStateBottom) {
                                                   return FractionallySizedBox(
                                                     heightFactor: 0.33,
                                                     child: SizedBox(
-                                                      height: MediaQuery.of(context).size.height * 0.5,
-                                                      width: MediaQuery.of(context).size.width,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.5,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
                                                       child: Padding(
-                                                        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                                        padding: EdgeInsets.all(
+                                                            MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.02),
                                                         child: Column(
                                                           mainAxisAlignment:
-                                                          MainAxisAlignment.start,
+                                                              MainAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             ListTile(
                                                               title: Text(
-                                                                  AppLocalizations.of(context)!.filterBy,
-                                                                  style: Theme.of(context).textTheme.caption,
-                                                                  textAlign: TextAlign.left
-                                                              ),
-                                                              trailing: TextButton(
-                                                                  child: Text(
-                                                                      AppLocalizations.of(context)!.clear,
-                                                                      style: Theme.of(context).textTheme.caption
-                                                                  ),
-                                                                  onPressed: () {
-                                                                    mixpanel!.track('brand_trainers_filter_clean');
-                                                                    setStateBottom(() {
-                                                                      searchController.clear();
-                                                                      filterSearchResults("");
-                                                                      filterByTrainers = [true, true, true, true, true];
-                                                                      filterByRolesAndActive();
-                                                                    });
-                                                                  }
-                                                              ),
+                                                                  AppLocalizations.of(
+                                                                          context)!
+                                                                      .filterBy,
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodySmall,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              trailing:
+                                                                  TextButton(
+                                                                      child: Text(
+                                                                          AppLocalizations.of(context)!
+                                                                              .clear,
+                                                                          style: Theme.of(context)
+                                                                              .textTheme
+                                                                              .bodySmall),
+                                                                      onPressed:
+                                                                          () {
+                                                                        mixpanel!
+                                                                            .track('brand_trainers_filter_clean');
+                                                                        setStateBottom(
+                                                                            () {
+                                                                          searchController
+                                                                              .clear();
+                                                                          filterSearchResults(
+                                                                              "");
+                                                                          filterByTrainers =
+                                                                              [
+                                                                            true,
+                                                                            true,
+                                                                            true,
+                                                                            true,
+                                                                            true
+                                                                          ];
+                                                                          filterByRolesAndActive();
+                                                                        });
+                                                                      }),
                                                               dense: true,
-                                                              onTap: _currentPage == 0 ? null : () {
-                                                                mixpanel!.track('brand_trainers_filter_back');
-                                                                _pageController.previousPage(
-                                                                  duration: const Duration(milliseconds: 500),
-                                                                  curve: Curves.ease,
-                                                                );
-                                                              },
+                                                              onTap:
+                                                                  currentPage ==
+                                                                          0
+                                                                      ? null
+                                                                      : () {
+                                                                          mixpanel!
+                                                                              .track('brand_trainers_filter_back');
+                                                                          pageController
+                                                                              .previousPage(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 500),
+                                                                            curve:
+                                                                                Curves.ease,
+                                                                          );
+                                                                        },
                                                             ),
                                                             SizedBox(
-                                                              height: MediaQuery.of(context).size.height * 0.21,
-                                                              width: MediaQuery.of(context).size.width,
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height *
+                                                                  0.21,
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
                                                               child: PageView(
-                                                                physics: const NeverScrollableScrollPhysics(),
-                                                                controller: _pageController,
-                                                                onPageChanged: (int page) {
-                                                                  setStateBottom(() {
-                                                                    _currentPage = page;
+                                                                physics:
+                                                                    const NeverScrollableScrollPhysics(),
+                                                                controller:
+                                                                    pageController,
+                                                                onPageChanged:
+                                                                    (int page) {
+                                                                  setStateBottom(
+                                                                      () {
+                                                                    currentPage =
+                                                                        page;
                                                                   });
                                                                 },
                                                                 children: <Widget>[
                                                                   Column(
                                                                     children: [
                                                                       ListTile(
-                                                                        onTap: () {
-                                                                          setStateBottom(() {
-                                                                            isRoles = true;
+                                                                        onTap:
+                                                                            () {
+                                                                          setStateBottom(
+                                                                              () {
+                                                                            isRoles =
+                                                                                true;
                                                                           });
-                                                                          mixpanel!.track('brand_trainers_filter_roles');
-                                                                          _pageController.nextPage(
-                                                                            duration: const Duration(milliseconds: 500),
-                                                                            curve: Curves.ease,
+                                                                          mixpanel!
+                                                                              .track('brand_trainers_filter_roles');
+                                                                          pageController
+                                                                              .nextPage(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 500),
+                                                                            curve:
+                                                                                Curves.ease,
                                                                           );
                                                                         },
                                                                         title: Text(
-                                                                            AppLocalizations.of(context)!.roles,
-                                                                            style: Theme.of(context).textTheme.bodyText1,
-                                                                            textAlign: TextAlign.left
-                                                                        ),
+                                                                            AppLocalizations.of(context)!
+                                                                                .roles,
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodyLarge,
+                                                                            textAlign: TextAlign.left),
                                                                         subtitle: Text(
                                                                             returnFilteredRolesString(),
-                                                                            style: Theme.of(context).textTheme.caption,
-                                                                            textAlign: TextAlign.left
-                                                                        ),
-                                                                        trailing: SizedBox(
-                                                                          width: MediaQuery.of(context).size.width * 0.15,
-                                                                          child: Center(
-                                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
-                                                                          ),
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodySmall,
+                                                                            textAlign: TextAlign.left),
+                                                                        trailing:
+                                                                            SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
                                                                         ),
                                                                       ),
                                                                       ListTile(
-                                                                        onTap: () {
-                                                                          setStateBottom(() {
-                                                                            isRoles = false;
+                                                                        onTap:
+                                                                            () {
+                                                                          setStateBottom(
+                                                                              () {
+                                                                            isRoles =
+                                                                                false;
                                                                           });
-                                                                          mixpanel!.track('brand_trainers_filter_active');
-                                                                          _pageController.nextPage(
-                                                                            duration: const Duration(milliseconds: 500),
-                                                                            curve: Curves.ease,
+                                                                          mixpanel!
+                                                                              .track('brand_trainers_filter_active');
+                                                                          pageController
+                                                                              .nextPage(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 500),
+                                                                            curve:
+                                                                                Curves.ease,
                                                                           );
                                                                         },
                                                                         title: Text(
-                                                                            AppLocalizations.of(context)!.active+" "+AppLocalizations.of(context)!.lastNDays(30.toString()),
-                                                                            style: Theme.of(context).textTheme.bodyText1,
-                                                                            textAlign: TextAlign.left
-                                                                        ),
+                                                                            "${AppLocalizations.of(context)!.active} ${AppLocalizations.of(context)!.lastNDays(30.toString())}",
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodyLarge,
+                                                                            textAlign: TextAlign.left),
                                                                         subtitle: Text(
                                                                             returnFilteredActiveStaffString(),
-                                                                            style: Theme.of(context).textTheme.caption,
-                                                                            textAlign: TextAlign.left
-                                                                        ),
-                                                                        trailing: SizedBox(
-                                                                          width: MediaQuery.of(context).size.width * 0.15,
-                                                                          child: Center(
-                                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
-                                                                          ),
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodySmall,
+                                                                            textAlign: TextAlign.left),
+                                                                        trailing:
+                                                                            SizedBox(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width * 0.15,
+                                                                          child:
+                                                                              Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
                                                                         ),
                                                                       ),
                                                                     ],
                                                                   ),
-                                                                  isRoles ? Column(
-                                                                    children: [
-                                                                      ListTile(
-                                                                        onTap: () {
-                                                                          setStateBottom(() {
-                                                                            // Check if the Only True
-                                                                            var filterRoles = filterByTrainers.sublist(0,3);
-                                                                            filterRoles.retainWhere((element) => element == true);
-                                                                            if (!(filterRoles.length == 1 && filterByTrainers[0])) {
-                                                                              searchController.clear();
-                                                                              filterSearchResults("");
-                                                                              filterByTrainers[0] = !filterByTrainers[0];
-                                                                              mixpanel!.track('brand_trainers_filter_roles', properties: {
-                                                                                'Values': [filterByTrainers[0] ? 'Owner' : ' ', filterByTrainers[1] ? 'Admin' : ' ', filterByTrainers[2] ? 'Coach' : ' ' ]
-                                                                              });
-                                                                              filterByRolesAndActive();
-                                                                            }
-                                                                          });
-                                                                        },
-                                                                        title: Text(
-                                                                            AppLocalizations.of(context)!.owner,
-                                                                            style: Theme.of(context).textTheme.bodyText1,
-                                                                            textAlign: TextAlign.left
+                                                                  isRoles
+                                                                      ? Column(
+                                                                          children: [
+                                                                            ListTile(
+                                                                              onTap: () {
+                                                                                setStateBottom(() {
+                                                                                  // Check if the Only True
+                                                                                  var filterRoles = filterByTrainers.sublist(0, 3);
+                                                                                  filterRoles.retainWhere((element) => element == true);
+                                                                                  if (!(filterRoles.length == 1 && filterByTrainers[0])) {
+                                                                                    searchController.clear();
+                                                                                    filterSearchResults("");
+                                                                                    filterByTrainers[0] = !filterByTrainers[0];
+                                                                                    mixpanel!.track('brand_trainers_filter_roles', properties: {
+                                                                                      'Values': [
+                                                                                        filterByTrainers[0] ? 'Owner' : ' ',
+                                                                                        filterByTrainers[1] ? 'Admin' : ' ',
+                                                                                        filterByTrainers[2] ? 'Coach' : ' '
+                                                                                      ]
+                                                                                    });
+                                                                                    filterByRolesAndActive();
+                                                                                  }
+                                                                                });
+                                                                              },
+                                                                              title: Text(AppLocalizations.of(context)!.owner, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                              trailing: filterByTrainers[0]
+                                                                                  ? SizedBox(
+                                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                                      child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                                    )
+                                                                                  : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                            ),
+                                                                            ListTile(
+                                                                              onTap: () {
+                                                                                setStateBottom(() {
+                                                                                  // Check if the Only True
+                                                                                  var filterRoles = filterByTrainers.sublist(0, 3);
+                                                                                  filterRoles.retainWhere((element) => element == true);
+                                                                                  if (!(filterRoles.length == 1 && filterByTrainers[1])) {
+                                                                                    searchController.clear();
+                                                                                    filterSearchResults("");
+                                                                                    filterByTrainers[1] = !filterByTrainers[1];
+                                                                                    mixpanel!.track('brand_trainers_filter_roles', properties: {
+                                                                                      'Values': [
+                                                                                        filterByTrainers[0] ? 'Owner' : ' ',
+                                                                                        filterByTrainers[1] ? 'Admin' : ' ',
+                                                                                        filterByTrainers[2] ? 'Coach' : ' '
+                                                                                      ]
+                                                                                    });
+                                                                                    filterByRolesAndActive();
+                                                                                  }
+                                                                                });
+                                                                              },
+                                                                              title: Text(AppLocalizations.of(context)!.administrador, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                              trailing: filterByTrainers[1]
+                                                                                  ? SizedBox(
+                                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                                      child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                                    )
+                                                                                  : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                            ),
+                                                                            ListTile(
+                                                                              onTap: () {
+                                                                                setStateBottom(() {
+                                                                                  // Check if the Only True
+                                                                                  var filterRoles = filterByTrainers.sublist(0, 3);
+                                                                                  filterRoles.retainWhere((element) => element == true);
+                                                                                  if (!(filterRoles.length == 1 && filterByTrainers[2])) {
+                                                                                    searchController.clear();
+                                                                                    filterSearchResults("");
+                                                                                    filterByTrainers[2] = !filterByTrainers[2];
+                                                                                    mixpanel!.track('brand_trainers_filter_roles', properties: {
+                                                                                      'Values': [
+                                                                                        filterByTrainers[0] ? 'Owner' : ' ',
+                                                                                        filterByTrainers[1] ? 'Admin' : ' ',
+                                                                                        filterByTrainers[2] ? 'Coach' : ' '
+                                                                                      ]
+                                                                                    });
+                                                                                    filterByRolesAndActive();
+                                                                                  }
+                                                                                });
+                                                                              },
+                                                                              title: Text(AppLocalizations.of(context)!.trainer, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                              trailing: filterByTrainers[2]
+                                                                                  ? SizedBox(
+                                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                                      child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                                    )
+                                                                                  : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                            ),
+                                                                          ],
+                                                                        )
+                                                                      : Column(
+                                                                          children: [
+                                                                            ListTile(
+                                                                              onTap: () {
+                                                                                setStateBottom(() {
+                                                                                  // Check if the Only True
+                                                                                  var filterActive = filterByTrainers.sublist(3);
+                                                                                  filterActive.retainWhere((element) => element == true);
+                                                                                  if (!(filterActive.length == 1 && filterByTrainers[3])) {
+                                                                                    searchController.clear();
+                                                                                    filterSearchResults("");
+                                                                                    filterByTrainers[3] = !filterByTrainers[3];
+                                                                                    mixpanel!.track('brand_trainers_filter_active', properties: {
+                                                                                      'Values': [
+                                                                                        filterByTrainers[3] ? 'Yes' : ' ',
+                                                                                        filterByTrainers[4] ? 'No' : ' '
+                                                                                      ]
+                                                                                    });
+                                                                                    filterByRolesAndActive();
+                                                                                  }
+                                                                                });
+                                                                              },
+                                                                              title: Text(AppLocalizations.of(context)!.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                              trailing: filterByTrainers[3]
+                                                                                  ? SizedBox(
+                                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                                      child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                                    )
+                                                                                  : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                            ),
+                                                                            ListTile(
+                                                                              onTap: () {
+                                                                                setStateBottom(() {
+                                                                                  // Check if the Only True
+                                                                                  var filterActive = filterByTrainers.sublist(3);
+                                                                                  filterActive.retainWhere((element) => element == true);
+                                                                                  if (!(filterActive.length == 1 && filterByTrainers[4])) {
+                                                                                    searchController.clear();
+                                                                                    filterSearchResults("");
+                                                                                    filterByTrainers[4] = !filterByTrainers[4];
+                                                                                    mixpanel!.track('brand_trainers_filter_active', properties: {
+                                                                                      'Values': [
+                                                                                        filterByTrainers[3] ? 'Yes' : ' ',
+                                                                                        filterByTrainers[4] ? 'No' : ' '
+                                                                                      ]
+                                                                                    });
+                                                                                    filterByRolesAndActive();
+                                                                                  }
+                                                                                });
+                                                                              },
+                                                                              title: Text(AppLocalizations.of(context)!.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                              trailing: filterByTrainers[4]
+                                                                                  ? SizedBox(
+                                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                                      child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                                    )
+                                                                                  : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                            ),
+                                                                          ],
                                                                         ),
-                                                                        trailing: filterByTrainers[0] ? SizedBox(
-                                                                          width: MediaQuery.of(context).size.width * 0.15,
-                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                      ),
-                                                                      ListTile(
-                                                                        onTap: () {
-                                                                          setStateBottom(() {
-                                                                            // Check if the Only True
-                                                                            var filterRoles = filterByTrainers.sublist(0,3);
-                                                                            filterRoles.retainWhere((element) => element == true);
-                                                                            if (!(filterRoles.length == 1 && filterByTrainers[1])) {
-                                                                              searchController.clear();
-                                                                              filterSearchResults("");
-                                                                              filterByTrainers[1] = !filterByTrainers[1];
-                                                                              mixpanel!.track('brand_trainers_filter_roles', properties: {
-                                                                              'Values': [filterByTrainers[0] ? 'Owner' : ' ', filterByTrainers[1] ? 'Admin' : ' ', filterByTrainers[2] ? 'Coach' : ' ' ]
-                                                                              });
-                                                                              filterByRolesAndActive();
-                                                                            }
-                                                                          });
-                                                                        },
-                                                                        title: Text(
-                                                                            AppLocalizations.of(context)!.administrador,
-                                                                            style: Theme.of(context).textTheme.bodyText1,
-                                                                            textAlign: TextAlign.left
-                                                                        ),
-                                                                        trailing: filterByTrainers[1] ? SizedBox(
-                                                                          width: MediaQuery.of(context).size.width * 0.15,
-                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                      ),
-                                                                      ListTile(
-                                                                        onTap: () {
-                                                                          setStateBottom(() {
-                                                                            // Check if the Only True
-                                                                            var filterRoles = filterByTrainers.sublist(0,3);
-                                                                            filterRoles.retainWhere((element) => element == true);
-                                                                            if (!(filterRoles.length == 1 && filterByTrainers[2])) {
-                                                                              searchController.clear();
-                                                                              filterSearchResults("");
-                                                                              filterByTrainers[2] = !filterByTrainers[2];
-                                                                              mixpanel!.track('brand_trainers_filter_roles', properties: {
-                                                                              'Values': [filterByTrainers[0] ? 'Owner' : ' ', filterByTrainers[1] ? 'Admin' : ' ', filterByTrainers[2] ? 'Coach' : ' ' ]
-                                                                              });
-                                                                              filterByRolesAndActive();
-                                                                            }
-                                                                          });
-                                                                        },
-                                                                        title: Text(
-                                                                            AppLocalizations.of(context)!.trainer,
-                                                                            style: Theme.of(context).textTheme.bodyText1,
-                                                                            textAlign: TextAlign.left
-                                                                        ),
-                                                                        trailing: filterByTrainers[2] ? SizedBox(
-                                                                          width: MediaQuery.of(context).size.width * 0.15,
-                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                      ),
-                                                                    ],
-                                                                  ) :
-                                                                  Column(
-                                                                    children: [
-                                                                      ListTile(
-                                                                        onTap: () {
-                                                                          setStateBottom(() {
-                                                                            // Check if the Only True
-                                                                            var filterActive = filterByTrainers.sublist(3);
-                                                                            filterActive.retainWhere((element) => element == true);
-                                                                            if (!(filterActive.length == 1 && filterByTrainers[3])) {
-                                                                              searchController.clear();
-                                                                              filterSearchResults("");
-                                                                              filterByTrainers[3] = !filterByTrainers[3];
-                                                                              mixpanel!.track('brand_trainers_filter_active', properties: {'Values': [filterByTrainers[3] ? 'Yes' : ' ', filterByTrainers[4] ? 'No' : ' ' ]});
-                                                                              filterByRolesAndActive();
-                                                                            }
-                                                                          });
-                                                                        },
-                                                                        title: Text(
-                                                                            AppLocalizations.of(context)!.yes,
-                                                                            style: Theme.of(context).textTheme.bodyText1,
-                                                                            textAlign: TextAlign.left
-                                                                        ),
-                                                                        trailing: filterByTrainers[3] ? SizedBox(
-                                                                          width: MediaQuery.of(context).size.width * 0.15,
-                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                      ),
-                                                                      ListTile(
-                                                                        onTap: () {
-                                                                          setStateBottom(() {
-                                                                            // Check if the Only True
-                                                                            var filterActive = filterByTrainers.sublist(3);
-                                                                            filterActive.retainWhere((element) => element == true);
-                                                                            if (!(filterActive.length == 1 && filterByTrainers[4])) {
-                                                                              searchController.clear();
-                                                                              filterSearchResults("");
-                                                                              filterByTrainers[4] = !filterByTrainers[4];
-                                                                              mixpanel!.track('brand_trainers_filter_active', properties: {'Values': [filterByTrainers[3] ? 'Yes' : ' ', filterByTrainers[4] ? 'No' : ' ' ]});
-                                                                              filterByRolesAndActive();
-                                                                            }
-                                                                          });
-                                                                        },
-                                                                        title: Text(
-                                                                            AppLocalizations.of(context)!.no,
-                                                                            style: Theme.of(context).textTheme.bodyText1,
-                                                                            textAlign: TextAlign.left
-                                                                        ),
-                                                                        trailing: filterByTrainers[4] ? SizedBox(
-                                                                          width: MediaQuery.of(context).size.width * 0.15,
-                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                      ),
-                                                                    ],
-                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
@@ -657,16 +809,30 @@ class _Trainers extends State<Trainers> {
                                                       ),
                                                     ),
                                                   );
-                                                } ,
+                                                },
                                               );
                                             },
                                           );
                                         },
-                                        child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
-                                          Icons.filter_list,
-                                          color: hasFilter ? AppColors.darkGrey :  AppColors.white,
-                                          size: MediaQuery.of(context).size.width*0.07,
-                                        )),
+                                        child: SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.09,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.09,
+                                            child: Icon(
+                                              Icons.filter_list,
+                                              color: hasFilter
+                                                  ? AppColors.darkGrey
+                                                  : AppColors.white,
+                                              size: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.07,
+                                            )),
                                       ),
                                     ),
                                   )
@@ -677,7 +843,9 @@ class _Trainers extends State<Trainers> {
                         ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
                     Container(
                       color: AppColors.grey,
                       height: 1.0,
@@ -689,302 +857,367 @@ class _Trainers extends State<Trainers> {
               //centerTitle: true,
             ),
             title: AnimatedOpacity(
-                opacity: appBarExpanded || searchClicked  ? 1.0 : 0.0,
+                opacity: appBarExpanded || searchClicked ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
-                child: Text(
-                    AppLocalizations.of(context)!.staff,
-                    style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
-                )
-            ),
+                child: Text(AppLocalizations.of(context)!.staff,
+                    style:
+                        Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
+                              color: AppColors.white,
+                            ))),
             centerTitle: false,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.02),
                 child: IconButton(
                     icon: Icon(
                       Icons.menu,
                       color: AppColors.white,
-                      size: MediaQuery.of(context).size.height*0.04,
+                      size: MediaQuery.of(context).size.height * 0.04,
                     ),
-                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
-                ),
+                    onPressed: () =>
+                        mambaProScaffoldKey.currentState?.openDrawer()),
               ),
             ),
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CounterBadgeIcon(
-                    counter: unreadNotifications,
-                    top: 5,
-                    right: 7,
-                    child: IconButton(
-                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => navigateToNotificationsScreen(context),
-                    ),
-                  ),
-                  CounterBadgeIcon(
-                    counter: unreadChats,
-                    top: 5,
-                    right: 7,
-                    child: IconButton(
-                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => navigateToChatScreen(context),
-                    ),
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
-                  GestureDetector(
-                    onTap: () => navigateToProfileScreen(context),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.08,
-                      child: Center(
-                        child: CircularImage(
-                          size: MediaQuery.of(context).size.width * 0.08,
-                          image: currentUser.imageUrl,
-                          color: AppColors.grey,
-                          borderWidth: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
+                  askSupport(context),
+                  unreadNotifications(context),
+                  unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                  profileImage(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                 ],
               ),
-              SizedBox(width: MediaQuery.of(context).size.width*0.03),
             ],
           ),
-          currentUser.brandRole < 2 ? SliverToBoxAdapter(
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                GestureDetector(
-                  onTap: navigateToRolesScreen,
-                  child: Container(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                    height: MediaQuery.of(context).size.height*0.1,
-                    width: MediaQuery.of(context).size.width*0.9,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.manage_accounts_outlined,
-                          color: Theme.of(context).colorScheme.secondary,
-                          size: MediaQuery.of(context).size.width*0.10,
-                        ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                        Flexible(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+          currentUser.brandRole < 2
+              ? SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.03),
+                      GestureDetector(
+                        onTap: navigateToRolesScreen,
+                        child: Container(
+                          padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.width * 0.05),
+                          height: MediaQuery.of(context).size.height * 0.1,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondary
+                                .withOpacity(0.2),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.secondary,
+                                width: 2),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text(
-                                AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
-                                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                              Icon(
+                                Icons.manage_accounts_outlined,
+                                color: Theme.of(context).colorScheme.secondary,
+                                size: MediaQuery.of(context).size.width * 0.10,
                               ),
-                              Text(
-                                AppLocalizations.of(context)!.rolesDescription,
-                                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: false,
+                              SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.05),
+                              Flexible(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.staff.toLowerCase()}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                          .rolesDescription,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: false,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Divider(color: AppColors.grey, thickness: 1, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
-                SizedBox(height: MediaQuery.of(context).size.height*0.01)
-              ],
-            ),
-          ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
-          isLoading ? SliverList(
-            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-              return Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.02),
-                child: Row(
-                  children: [
-                    Shimmer.fromColors(
-                      baseColor: AppColors.grey,
-                      highlightColor: AppColors.grey.withOpacity(0.5),
-                      child: Container(
-                        height: MediaQuery.of(context).size.width*0.14,
-                        width: MediaQuery.of(context).size.width*0.14,
-                        decoration: const BoxDecoration(
-                          color: AppColors.grey,
-                          shape: BoxShape.circle,
-                        ),
                       ),
-                    ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.04), // adjust this value as needed
-                    Expanded(
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02),
+                      Divider(
+                          color: AppColors.grey,
+                          thickness: 1,
+                          indent: MediaQuery.of(context).size.width * 0.05,
+                          endIndent: MediaQuery.of(context).size.width * 0.05),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01)
+                    ],
+                  ),
+                )
+              : const SliverToBoxAdapter(
+                  child: SizedBox(
+                  height: 10,
+                )),
+          isLoading
+              ? SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return Container(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.04,
+                            vertical: MediaQuery.of(context).size.width * 0.02),
+                        child: Row(
+                          children: [
+                            Shimmer.fromColors(
+                              baseColor: AppColors.grey,
+                              highlightColor: AppColors.grey.withOpacity(0.5),
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).size.width * 0.14,
+                                width: MediaQuery.of(context).size.width * 0.14,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.grey,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width *
+                                    0.04), // adjust this value as needed
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  /// USER
+                                  Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor:
+                                        AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.02,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0),
+                                        ),
+                                        color: AppColors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.007),
+
+                                  /// BONO
+                                  Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor:
+                                        AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.015,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.45,
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0),
+                                        ),
+                                        color: AppColors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.007),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.04),
+                            Shimmer.fromColors(
+                              baseColor: AppColors.grey,
+                              highlightColor: AppColors.grey.withOpacity(0.5),
+                              child: Icon(
+                                Icons.arrow_forward_ios,
+                                color: Theme.of(context).primaryColor,
+                                size: MediaQuery.of(context).size.height * 0.03,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    childCount: widget.numTrainers,
+                  ),
+                )
+              : filteredMembers.isNotEmpty
+                  ? SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          Usuario user = filteredMembers[index];
+                          return ListTile(
+                            leading: CircularImage(
+                              size: MediaQuery.of(context).size.width * 0.15,
+                              image: user.imageUrl,
+                              color: Theme.of(context).primaryColor,
+                              borderWidth: 1.0,
+                            ),
+                            title: Text(
+                              user.name!,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left,
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  returnBrandRoleString(user),
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
+                            trailing: user.id! == currentUser.id
+                                ? IconButton(
+                                    icon: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Theme.of(context).primaryColor,
+                                      size: MediaQuery.of(context).size.height *
+                                          0.03,
+                                    ),
+                                    alignment: Alignment.centerRight,
+                                    padding: const EdgeInsets.all(0),
+                                    onPressed: false ? () {} : null,
+                                  )
+                                : IconButton(
+                                    icon: Icon(
+                                      Icons.chat_outlined,
+                                      color: Theme.of(context).primaryColor,
+                                      size: MediaQuery.of(context).size.height *
+                                          0.03,
+                                    ),
+                                    alignment: Alignment.centerRight,
+                                    padding: const EdgeInsets.all(0),
+                                    onPressed: () async {
+                                      mixpanel!
+                                          .track('brand_trainers_chat_button');
+                                      types.User otherUser = types.User(
+                                        firstName: user.firstName,
+                                        lastName: user.lastName,
+                                        id: user
+                                            .id!, // UID from Firebase Authentication
+                                        imageUrl: user.imageUrl,
+                                      );
+                                      final room = await FirebaseChatCore
+                                          .instance
+                                          .createRoom(otherUser, metadata: {
+                                        "trainer${user.id!}": user.isTrainer,
+                                        "trainer${currentUser.id!}":
+                                            currentUser.isTrainer,
+                                        "active${user.id!}": false,
+                                        "active${currentUser.id!}": true,
+                                      });
+
+                                      bool? deleteRoom = await Navigator.push(
+                                        context,
+                                        CupertinoPageRoute<bool>(
+                                            builder: (context) =>
+                                                ChatPage(room: room)),
+                                      ).whenComplete(() async {
+                                        room.metadata![
+                                            "active${currentUser.id!}"] = false;
+                                        _roomDataService.updateRoom(
+                                            room.id, room.metadata!);
+                                      });
+                                      if (!deleteRoom!) {
+                                        _roomDataService.deleteRoom(room.id);
+                                        mixpanel!
+                                            .track('brand_trainers_chat_empty');
+                                      }
+                                    },
+                                  ),
+                            onTap: () async {
+                              mixpanel!.track('brand_trainers_profile_view');
+                              var result = await Navigator.push(
+                                  context,
+                                  CupertinoPageRoute<bool?>(
+                                      builder: (context) => ProfileViewUser(
+                                            userID: user.id!,
+                                            viewOnly: false,
+                                          )));
+                              if (result == true) {
+                                await getAllUsers();
+                              }
+                            },
+                          );
+                        },
+                        childCount: filteredMembers.length, // 1000 list items
+                      ),
+                    )
+                  : SliverFillRemaining(
+                      hasScrollBody: false,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
                         children: [
-                          /// USER
-                          Shimmer.fromColors(
-                            baseColor: AppColors.grey,
-                            highlightColor: AppColors.grey.withOpacity(0.5),
-                            child: Container(
-                              height: MediaQuery.of(context).size.height*0.02,
-                              width: MediaQuery.of(context).size.width*0.25,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5.0),
-                                ),
-                                color: AppColors.grey,
-                              ),
-                            ),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.30,
+                              child: Image.asset(Constants.emptyCalendar)),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.005),
+                          Text(
+                            AppLocalizations.of(context)!.noData,
+                            style: Theme.of(context).textTheme.bodySmall,
+                            textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.007),
-                          /// BONO
-                          Shimmer.fromColors(
-                            baseColor: AppColors.grey,
-                            highlightColor: AppColors.grey.withOpacity(0.5),
-                            child: Container(
-                              height: MediaQuery.of(context).size.height*0.015,
-                              width: MediaQuery.of(context).size.width*0.45,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5.0),
-                                ),
-                                color: AppColors.grey,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.007),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.12),
                         ],
                       ),
                     ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-                    Shimmer.fromColors(
-                      baseColor: AppColors.grey,
-                      highlightColor: AppColors.grey.withOpacity(0.5),
-                      child: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                    ),
-
-                  ],
-                ),
-              );
-            },
-              childCount: widget.numTrainers,
-            ),
-          ) : filteredMembers.isNotEmpty ?
-          SliverList(
-            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-              Usuario user = filteredMembers[index];
-              return ListTile(
-                leading: CircularImage(
-                  size: MediaQuery.of(context).size.width*0.15,
-                  image: user.imageUrl,
-                  color: Theme.of(context).primaryColor,
-                  borderWidth: 1.0,
-                ),
-                title: Text(
-                  user.name!,
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.left,
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      returnBrandRoleString(user),
-                      style: Theme.of(context).textTheme.caption,
-                    ),
-                  ],
-                ),
-                trailing: user.id! == currentUser.id ? IconButton(
-                  icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.all(0),
-                  onPressed: false ? () {
-                  } : null,
-                ) : IconButton(
-                  icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () async {
-                    mixpanel!.track('brand_trainers_chat_button');
-                    types.User otherUser = types.User(
-                      firstName: user.firstName,
-                      lastName: user.lastName,
-                      id: user.id!, // UID from Firebase Authentication
-                      imageUrl: user.imageUrl,
-                    );
-                    final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                      "trainer" + user.id!: user.isTrainer,
-                      "trainer" + currentUser.id!: currentUser.isTrainer,
-                      "active" + user.id!: false,
-                      "active" + currentUser.id!: true,
-                    });
-
-                    bool? deleteRoom = await Navigator.push(
-                      context,
-                      CupertinoPageRoute<bool>(
-                          builder: (context) => ChatPage(room: room)),).whenComplete(() async {
-                      room.metadata!["active" + currentUser.id!] = false;
-                      _roomDataService.updateRoom(room.id, room.metadata!);
-                    });
-                    if (!deleteRoom!) {
-                      _roomDataService.deleteRoom(room.id);
-                      mixpanel!.track('brand_trainers_chat_empty');
-                    }
-                  },
-                ),
-                onTap: () async {
-                  mixpanel!.track('brand_trainers_profile_view');
-                  var result = await Navigator.push(
-                      context,
-                      CupertinoPageRoute<bool?>(
-                          builder: (context) => ProfileViewUser(
-                            userID: user.id!,
-                            viewOnly: false,
-                          )
-                      )
-                  );
-                  if (result == true) {
-                    await getAllUsers();
-                  }
-                },
-              );
-            },
-              childCount: filteredMembers.length,               // 1000 list items
-            ),
-          ) : SliverFillRemaining(
-            hasScrollBody: false,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox(
-                    width: MediaQuery.of(context).size.width*0.30,
-                    child: Image.asset(Constants.emptyCalendar)
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-                SizedBox(height: MediaQuery.of(context).size.height*0.12),
-              ],
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 10,)),
+          const SliverToBoxAdapter(
+              child: SizedBox(
+            height: 10,
+          )),
         ],
       ),
       floatingActionButton: whichFloatingActionButton(),
@@ -992,95 +1225,126 @@ class _Trainers extends State<Trainers> {
   }
 
   Widget whichFloatingActionButton() {
-    return currentUser.brandRole < 2 ? Padding(
-      padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.width*0.15,
-        width: MediaQuery.of(context).size.width*0.15,
-        child: SpeedDial(
-          heroTag: "106",
-          child: const Icon(Icons.add),
-          activeChild: const Icon(Icons.group_add_outlined),
-          animationDuration: const Duration(milliseconds: 100),
-          foregroundColor: AppColors.white,
-          overlayColor: Theme.of(context).scaffoldBackgroundColor,
-          overlayOpacity: 0.95,
-          spacing: MediaQuery.of(context).size.height*0.02,
-          spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
-          openCloseDial: isDialOpen,
-          children: [
-            SpeedDialChild(
-                child: const Icon(
-                  Icons.edit_note_outlined,
-                  size: 30,
-                ),
-                elevation: 10,
-                backgroundColor: Theme.of(context).backgroundColor,
-                labelWidget: Container(
-                  color: Colors.transparent,
-                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
-                  height: MediaQuery.of(context).size.height*0.1,
-                  width: MediaQuery.of(context).size.width*0.7,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                          AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff,
-                          style: Theme.of(context).textTheme.headline3,
-                          textAlign: TextAlign.right
+    return currentUser.brandRole < 2
+        ? Padding(
+            padding: Platform.isAndroid
+                ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
+                : const EdgeInsets.all(10),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.width * 0.15,
+              width: MediaQuery.of(context).size.width * 0.15,
+              child: SpeedDial(
+                heroTag: "106",
+                activeChild: const Icon(Icons.group_outlined),
+                animationDuration: const Duration(milliseconds: 300),
+                foregroundColor: AppColors.white,
+                overlayColor: Theme.of(context).scaffoldBackgroundColor,
+                overlayOpacity: 0.95,
+                spacing: MediaQuery.of(context).size.height * 0.02,
+                spaceBetweenChildren: MediaQuery.of(context).size.height * 0.02,
+                openCloseDial: isDialOpen,
+                children: [
+                  SpeedDialChild(
+                      child: const Icon(
+                        Icons.edit_note_outlined,
+                        size: 30,
                       ),
-                      Text(
-                          AppLocalizations.of(context)!.addClientsManually.split(AppLocalizations.of(context)!.client.toLowerCase())[0]+AppLocalizations.of(context)!.staff.toLowerCase()+AppLocalizations.of(context)!.addClientsManually.split(AppLocalizations.of(context)!.client.toLowerCase())[1],
-                          style: Theme.of(context).textTheme.bodyText2,
-                          textAlign: TextAlign.right
+                      elevation: 10,
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      labelWidget: Container(
+                        color: Colors.transparent,
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * 0.05),
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                GestureDetector(
+                                    onTap: () {
+                                      TopSnackBarDef().showSnackBarBottom(
+                                          context,
+                                          AppLocalizations.of(context)!
+                                              .betaFeature,
+                                          5);
+                                    },
+                                    child: const BetaBadge()),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.02,
+                                ),
+                                Text(
+                                    "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.staff}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall,
+                                    textAlign: TextAlign.right),
+                              ],
+                            ),
+                            Text(
+                                AppLocalizations.of(context)!
+                                        .addClientsManually
+                                        .split(AppLocalizations.of(context)!
+                                            .client
+                                            .toLowerCase())[0] +
+                                    AppLocalizations.of(context)!
+                                        .staff
+                                        .toLowerCase() +
+                                    AppLocalizations.of(context)!
+                                        .addClientsManually
+                                        .split(AppLocalizations.of(context)!
+                                            .client
+                                            .toLowerCase())[1],
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                textAlign: TextAlign.right),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  navigateToAddMember();
-                }
+                      onTap: () {
+                        navigateToAddMember();
+                      }),
+                  SpeedDialChild(
+                      child: const Padding(
+                        padding: EdgeInsets.only(right: 5.0),
+                        child: Icon(
+                          Icons.share,
+                        ),
+                      ),
+                      elevation: 10,
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      labelWidget: Container(
+                        color: Colors.transparent,
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * 0.05),
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                                "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.staff}",
+                                style: Theme.of(context).textTheme.displaySmall,
+                                textAlign: TextAlign.right),
+                            Text(AppLocalizations.of(context)!.copyCodeMessage,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                textAlign: TextAlign.right),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        navigateShareBrandLink();
+                      }),
+                ],
+                child: const Icon(Icons.add),
+              ),
             ),
-            SpeedDialChild(
-                child: const Padding(
-                  padding: EdgeInsets.only(right: 5.0),
-                  child: Icon(
-                    Icons.share,
-                  ),
-                ),
-                elevation: 10,
-                backgroundColor: Theme.of(context).backgroundColor,
-                labelWidget: Container(
-                  color: Colors.transparent,
-                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
-                  height: MediaQuery.of(context).size.height*0.1,
-                  width: MediaQuery.of(context).size.width*0.7,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                          AppLocalizations.of(context)!.invite+" "+AppLocalizations.of(context)!.staff,
-                          style: Theme.of(context).textTheme.headline3,
-                          textAlign: TextAlign.right
-                      ),
-                      Text(
-                          AppLocalizations.of(context)!.copyCodeMessage,
-                          style: Theme.of(context).textTheme.bodyText2,
-                          textAlign: TextAlign.right
-                      ),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  navigateShareBrandLink();
-                }
-            ),
-          ],
-        ),
-      ),
-    ) : Container();
+          )
+        : Container();
   }
 
   // Navigate to Roles Screen
@@ -1093,8 +1357,7 @@ class _Trainers extends State<Trainers> {
             brandId: widget.brandId,
             trainers: allMembers,
           ),
-        )
-    );
+        ));
     if (result == null || result == true) {
       setState(() {
         isLoading = true;
@@ -1107,22 +1370,20 @@ class _Trainers extends State<Trainers> {
     var result = await Navigator.push(
         context,
         CupertinoPageRoute<bool?>(
-          builder: (context) =>
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  FocusScopeNode currentFocus = FocusScope.of(context);
-                  if (!currentFocus.hasPrimaryFocus &&
-                      currentFocus.focusedChild != null) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  }
-                },
-                child: const RegisterBrandMember(
-                  isTrainer: true,
-                ),
-              ),
-        )
-    );
+          builder: (context) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus &&
+                  currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
+            },
+            child: const RegisterBrandMember(
+              isTrainer: true,
+            ),
+          ),
+        ));
     if (result == true) {
       await getAllUsers();
     }
@@ -1153,5 +1414,4 @@ class _Trainers extends State<Trainers> {
   void dispose() {
     super.dispose();
   }
-
 }
