@@ -61,7 +61,7 @@ class FirebaseDatabaseService {
       'uid': id,
       'isMessageRead': isMessageRead,
     };
-  }  
+  }
 
   Future<int> resetPassword(String email) async {
     try {
@@ -195,6 +195,19 @@ class FirebaseDatabaseService {
       result.insert(0, false);
       return result;
     }
+  }
+
+  Future<bool> getStripeActivated() async {
+    bool stripeActivated = false;
+
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await _firestore.collection("Settings").doc("MinimumAppVersion").get();
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('stripeActivated')) {
+      stripeActivated = documentSnapshot.get("stripeActivated");
+    }
+
+    return stripeActivated;
   }
 
   Future<String> checkMonthOffer() async {
@@ -474,9 +487,8 @@ class FirebaseDatabaseService {
 
   Future<String> updateUserPhoto(String userId, File image) async {
     String imageURL = "";
-    var storageRef = _firebaseStorage
-        .ref()
-        .child("users/$userId/images/$userId.jpeg");
+    var storageRef =
+        _firebaseStorage.ref().child("users/$userId/images/$userId.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -539,9 +551,8 @@ class FirebaseDatabaseService {
 
   Future<String> updateBrandPhoto(String brandID, File image) async {
     String result = "";
-    var storageRef = _firebaseStorage
-        .ref()
-        .child("brands/$brandID/images/$brandID.jpeg");
+    var storageRef =
+        _firebaseStorage.ref().child("brands/$brandID/images/$brandID.jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -669,9 +680,8 @@ class FirebaseDatabaseService {
       var image = images[i];
       final uid = const Uuid().v4();
       // Upload the image to Firebase Storage
-      var storageRef = _firebaseStorage
-          .ref()
-          .child("brands/$brandID/images/$uid.jpeg");
+      var storageRef =
+          _firebaseStorage.ref().child("brands/$brandID/images/$uid.jpeg");
       var uploadTask = storageRef.putFile(image);
       await uploadTask.whenComplete(() async {
         await storageRef.getDownloadURL().then((value) async {
@@ -691,17 +701,11 @@ class FirebaseDatabaseService {
   }
 
   Future<void> deleteBrandContentPicture(String brandID) async {
-    await _firebaseStorage
-        .ref()
-        .child("brandPics/$brandID.png")
-        .delete();
+    await _firebaseStorage.ref().child("brandPics/$brandID.png").delete();
   }
 
   Future<void> deleteBrandPhoto(String brandID) async {
-    await _firebaseStorage
-        .ref()
-        .child("brandPics/$brandID.png")
-        .delete();
+    await _firebaseStorage.ref().child("brandPics/$brandID.png").delete();
   }
 
   Future<void> updateBrandInfo(String brandID, String name, String description,
@@ -958,16 +962,15 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       String bonoId = querySnapshot.docs[i].get("bonoId");
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await _firestore
-              .collection(brands)
-              .doc(brandId)
-              .collection("Bonos")
-              .doc(bonoId)
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection("Bonos")
+          .doc(bonoId)
+          .get();
       if (documentSnapshot.exists) {
-        bonos.add(
-            Bono.fromObjectAllData(documentSnapshot.id, documentSnapshot));
+        bonos
+            .add(Bono.fromObjectAllData(documentSnapshot.id, documentSnapshot));
       }
     }
     return bonos;
@@ -988,13 +991,12 @@ class FirebaseDatabaseService {
 
   Future<double?> getEventUserFeedback(String eventId, String userId) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await _firestore
-              .collection(events)
-              .doc(eventId)
-              .collection("Users")
-              .doc(userId)
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
+          .collection(events)
+          .doc(eventId)
+          .collection("Users")
+          .doc(userId)
+          .get();
       double feedbackScore = documentSnapshot.get("intensityScore").toDouble();
       return feedbackScore;
     } catch (e) {
@@ -1685,8 +1687,7 @@ class FirebaseDatabaseService {
       } else {
         DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
             await _firestore.collection(brands).doc(event.brandID).get();
-        brand =
-            Brand.fromObjectOnlyCoverData(event.brandID!, documentSnapshot);
+        brand = Brand.fromObjectOnlyCoverData(event.brandID!, documentSnapshot);
         brandLoaded.add(brand);
       }
       event.brandID = brand.id;
@@ -2281,13 +2282,12 @@ class FirebaseDatabaseService {
       String eventId, String userId, String purchaseId) async {
     try {
       final purchaseDataService = PurchaseDataService();
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await _firestore
-              .collection(events)
-              .doc(eventId)
-              .collection("Users")
-              .doc(userId)
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
+          .collection(events)
+          .doc(eventId)
+          .collection("Users")
+          .doc(userId)
+          .get();
       if (documentSnapshot.exists) {
         Usuario user =
             Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
@@ -2300,8 +2300,7 @@ class FirebaseDatabaseService {
               .update({
             "purchaseId": purchaseId,
           });
-          await purchaseDataService.deletedPurchaseUserFromEvent(
-              user, eventId);
+          await purchaseDataService.deletedPurchaseUserFromEvent(user, eventId);
           await purchaseDataService.addEventToPurchase(purchaseId, eventId);
         }
       }
@@ -2419,7 +2418,7 @@ class FirebaseDatabaseService {
   Future<int> addEventRecurrent(Event event, List<String> bonos,
       List<String> trainers, ReceivedNotification receivedNotification) async {
     String cloudFunction = 'CreateRecurrentEvent';
-    try {      
+    try {
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'europe-west1')
               .httpsCallable(cloudFunction);
@@ -2742,6 +2741,7 @@ class FirebaseDatabaseService {
       "isActive": bono.isActive,
       "color": bono.color,
       "compras": 0,
+      "isRecurrent": bono.isRecurrent,
     }).catchError((err) {
       print(err);
     });
@@ -3062,13 +3062,12 @@ class FirebaseDatabaseService {
   Future<ReceivedNotification?> getIndividualLocalNotification(
       String userId, String notificationId) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await _firestore
-              .collection(users)
-              .doc(userId)
-              .collection("Local Notifications")
-              .doc(notificationId)
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Local Notifications")
+          .doc(notificationId)
+          .get();
       return ReceivedNotification.fromObjectAllData(
           documentSnapshot.id, documentSnapshot);
     } catch (e) {
@@ -3516,8 +3515,8 @@ class FirebaseDatabaseService {
     try {
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _firestore.collection(subscriptions).doc(subscriptionId).get();
-      subscription = Subscription.fromObjectAllData(
-          documentSnapshot.id, documentSnapshot);
+      subscription =
+          Subscription.fromObjectAllData(documentSnapshot.id, documentSnapshot);
       if (subscription.isActive! &&
           subscription.startDate!.compareTo(tmstp) < 0 &&
           tmstp.compareTo(subscription.endDate!) < 0 &&

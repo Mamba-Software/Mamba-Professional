@@ -96,6 +96,7 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
               children: [
                 FloatingActionButton.extended(
                   heroTag: "42",
+                  shape: const StadiumBorder(),
                   onPressed: () {
                     Navigator.pop(context, pickedDays);
                   },

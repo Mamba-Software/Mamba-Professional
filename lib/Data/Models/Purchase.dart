@@ -28,6 +28,13 @@ class Purchase {
   List<Event> events = [];
   List<Event> initalEvents = [];
   int numberOfEvents = 0;
+  int? gracePeriod = 30;
+  int? maxCanWeek = 7;
+  int? paymentTerms = 0;
+  bool? isRecurrent = false;
+  bool? isRecurrencyActive = true;
+  List<String>? groupPurchases = [];
+  String? purchaseGroupId = '';
 
   Purchase({
     this.id,
@@ -40,6 +47,13 @@ class Purchase {
     this.purchasedAt,
     this.isActive,
     this.directPurchase,
+    this.gracePeriod,
+    this.maxCanWeek,
+    this.paymentTerms,
+    this.isRecurrent,
+    this.isRecurrencyActive,
+    this.groupPurchases,
+    this.purchaseGroupId,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -96,6 +110,35 @@ class Purchase {
         .containsKey('weeklySessions')) {
       condition!.weeklySessions = documentSnapshot.get("weeklySessions");
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('gracePeriod')) {
+      gracePeriod = documentSnapshot.get("gracePeriod");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('maxCanWeek')) {
+      maxCanWeek = documentSnapshot.get("maxCanWeek");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('paymentTerms')) {
+      paymentTerms = documentSnapshot.get("paymentTerms");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isRecurrent')) {
+      isRecurrent = documentSnapshot.get("isRecurrent");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isRecurrencyActive')) {
+      isRecurrencyActive = documentSnapshot.get("isRecurrencyActive");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('groupPurchases')) {
+      groupPurchases = documentSnapshot.get("groupPurchases").cast<String>();
+    }
+
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('purchaseGroupId')) {
+      purchaseGroupId = documentSnapshot.get("purchaseGroupId");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -111,6 +154,13 @@ class Purchase {
     sessions = purchase.sessions;
     purchasedAt = purchase.purchasedAt;
     isActive = purchase.isActive;
+    gracePeriod = purchase.gracePeriod;
+    maxCanWeek = purchase.maxCanWeek;
+    paymentTerms = purchase.paymentTerms;
+    isRecurrent = purchase.isRecurrent;
+    isRecurrencyActive = purchase.isRecurrencyActive;
+    groupPurchases = purchase.groupPurchases;
+    purchaseGroupId = purchase.purchaseGroupId;
   }
 
   // Set Basic Data

@@ -31,6 +31,15 @@ class Brand {
   double? latitude;
   bool? notShow;
   bool? directPurchase;
+  int? gracePeriod;
+  int? maxCanWeek;
+  int? paymentTerms;
+
+  //STRIPE
+  String? stripeAccountId;
+  bool isVerified = false;
+  double? balance;
+  bool? stripeActivated = false;
 
   Timestamp? endDatePay;
   String? subscriptionId;
@@ -69,6 +78,13 @@ class Brand {
     this.endDatePay,
     this.subscriptionId,
     this.subscription,
+    this.gracePeriod,
+    this.maxCanWeek,
+    this.paymentTerms,
+    this.stripeAccountId,
+    this.isVerified = false,
+    this.balance,
+    this.stripeActivated,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -150,8 +166,40 @@ class Brand {
       subscriptionId = documentSnapshot.get("subscriptionId").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('notShow')) {
+      notShow = documentSnapshot.get("notShow");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('subscription')) {
       subscription = documentSnapshot.get("subscription");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('gracePeriod')) {
+      gracePeriod = documentSnapshot.get("gracePeriod");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('maxCanWeek')) {
+      maxCanWeek = documentSnapshot.get("maxCanWeek");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('paymentTerms')) {
+      paymentTerms = documentSnapshot.get("paymentTerms");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('stripeAccountId')) {
+      stripeAccountId = documentSnapshot.get("stripeAccountId").toString();
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isVerified')) {
+      isVerified = documentSnapshot.get("isVerified");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('balance')) {
+      balance = documentSnapshot.get("balance");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('stripeActivated')) {
+      stripeActivated = documentSnapshot.get("stripeActivated");
     }
   }
 
@@ -168,6 +216,22 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('dateJoined')) {
       dateJoined = documentSnapshot.get("dateJoined").toString();
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('paymentTerms')) {
+      paymentTerms = documentSnapshot.get("paymentTerms");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('stripeAccountId')) {
+      stripeAccountId = documentSnapshot.get("stripeAccountId");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isVerified')) {
+      isVerified = documentSnapshot.get("isVerified");
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('stripeActivated')) {
+      stripeActivated = documentSnapshot.get("stripeActivated");
     }
   }
 
@@ -200,6 +264,13 @@ class Brand {
     latitude = brand.latitude;
     longitude = brand.longitude;
     notShow = brand.notShow;
+    gracePeriod = brand.gracePeriod;
+    maxCanWeek = brand.maxCanWeek;
+    paymentTerms = brand.paymentTerms;
+    isVerified = brand.isVerified;
+    stripeAccountId = brand.stripeAccountId;
+    balance = brand.balance;
+    stripeActivated = brand.stripeActivated;
   }
 
   // Requests

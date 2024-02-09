@@ -214,7 +214,12 @@ class _PayWallState extends State<PayWall> {
                   Divider(
                       color: Theme.of(context).dividerColor, thickness: 1.5),
                       */
-                  buildContactUsContainer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      buildContactUsContainer(),
+                    ],
+                  ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 ],
               ),
@@ -908,7 +913,7 @@ class _PayWallState extends State<PayWall> {
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.0),
-            child: Text(AppLocalizations.of(context)!.getInTouchText,
+            child: Text(AppLocalizations.of(context)!.getInTouchTextDesc,
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge!
@@ -918,24 +923,30 @@ class _PayWallState extends State<PayWall> {
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.4,
-            child: OutlinedButton(
+            child: ElevatedButton(
               onPressed: () => launchEmail(),
-              style: OutlinedButton.styleFrom(
-                elevation: 4,
-                backgroundColor: Theme.of(context).primaryColor,
-                fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
-                    MediaQuery.of(context).size.height * 0.06),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(30),
+              style: ElevatedButton.styleFrom(
+                  elevation: 4,
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
+                      MediaQuery.of(context).size.height * 0.06),
+                  side: BorderSide(
+                      width: 1.0,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .background), // This might need adjustment
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
                   ),
                 ),
-              ),
               child: Text(
                 AppLocalizations.of(context)!.getInTouch,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).primaryColorDark),
+                    color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.center,
               ),
             ),

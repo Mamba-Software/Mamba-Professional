@@ -811,8 +811,8 @@ class ScriptsDatabaseService {
           print('User with ID : $userId');
           DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
               await _firestore.collection(users).doc(userId).get();
-          Usuario user = Usuario.fromObjectAllData(
-              documentSnapshot.id, documentSnapshot);
+          Usuario user =
+              Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
           await _firestore
               .collection(events)
               .doc(event.id!)
@@ -836,8 +836,7 @@ class ScriptsDatabaseService {
         print('-----------------------------\n');
         DocumentSnapshot documentBrand =
             await _firestore.collection(brands).doc(event.brandID).get();
-        Brand brand =
-            Brand.fromObjectAllData(documentBrand.id, documentBrand);
+        Brand brand = Brand.fromObjectAllData(documentBrand.id, documentBrand);
         print('Brand with ID : ${brand.id!}');
         await _firestore
             .collection(events)
@@ -1737,7 +1736,7 @@ class ScriptsDatabaseService {
       for (int i = 1; i < 13; i++) {
         querySnapshot = await _firestore
             .collection("Events")
-            .where("year", isEqualTo: 2022.toString())
+            .where("year", isEqualTo: 2023.toString())
             .where("month", isEqualTo: i.toString())
             .get();
         print("Events Month $i: ${querySnapshot.docs.length}");
@@ -1745,7 +1744,7 @@ class ScriptsDatabaseService {
         querySnapshot = await _firestore
             .collection("Events")
             .where("numClients", isGreaterThan: 0)
-            .where("year", isEqualTo: 2022.toString())
+            .where("year", isEqualTo: 2023.toString())
             .where("month", isEqualTo: i.toString())
             .get();
         print("Events with Clients Month $i: ${querySnapshot.docs.length}");
@@ -1782,6 +1781,8 @@ class ScriptsDatabaseService {
       }
       print('totalPurchases: $totalPurchases');
       print('totalAmount: $totalAmount');
+      print(
+          'avergaePurchaseValue: ${(totalAmount / totalPurchases).toStringAsFixed(2)}');
       print('Payment Methods:');
       print(' % Cash: ${(paymentMethodCash / totalPurchases) * 100}');
       print(' € Cash: $totalCash');
@@ -1811,77 +1812,232 @@ class ScriptsDatabaseService {
 
   Future<bool> getStatisticsSpecific() async {
     try {
+      // Brands
       QuerySnapshot querySnapshot = await _firestore.collection("Brands").get();
+      var totalBrands = querySnapshot.docs.length;
+      print('Total Brands: $totalBrands');
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         String brandId = querySnapshot.docs[i].id;
         DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
             await _firestore.collection("Brands").doc(brandId).get();
         Brand brand =
             Brand.fromObjectAllData(documentSnapshot.id, documentSnapshot);
-        print(
-            '=================================================================================');
-        print("BRAND ${brand.name!}");
 
-        QuerySnapshot querySnapshotBrand = await _firestore
-            .collection("Brands")
-            .doc(brandId)
-            .collection("Users")
-            .get();
-        print("Users: ${querySnapshotBrand.docs.length}");
+        if (brand.notShow != true) {
+          print(
+              '=================================================================================');
+          print("REAL BRAND ${brand.name!}");
 
-        querySnapshotBrand = await _firestore
-            .collection("Brands")
-            .doc(brandId)
-            .collection("Users")
-            .where("isTrainer", isEqualTo: false)
-            .get();
-        print("Clients: ${querySnapshotBrand.docs.length}");
+          QuerySnapshot querySnapshotBrand = await _firestore
+              .collection("Brands")
+              .doc(brandId)
+              .collection("Users")
+              .where("isTrainer", isEqualTo: false)
+              .get();
+          print("Clients: ${querySnapshotBrand.docs.length}");
 
-        querySnapshotBrand = await _firestore
-            .collection("Brands")
-            .doc(brandId)
-            .collection("Users")
-            .where("isTrainer", isEqualTo: true)
-            .get();
-        print("Trainers: ${querySnapshotBrand.docs.length}");
-
-        querySnapshotBrand = await _firestore
-            .collection("Brands")
-            .doc(brandId)
-            .collection("Events")
-            .get();
-        print("Events: ${querySnapshotBrand.docs.length}");
-
-        for (int i = 1; i < 13; i++) {
           querySnapshotBrand = await _firestore
               .collection("Brands")
               .doc(brandId)
-              .collection("Events")
-              .where("year", isEqualTo: 2022.toString())
-              .where("month", isEqualTo: i.toString())
+              .collection("Users")
+              .where("isTrainer", isEqualTo: false)
+              .where("lastEventAt",
+                  isGreaterThan:
+                      DateTime.now().subtract(const Duration(days: 31)))
               .get();
-          print("Events Month $i: ${querySnapshotBrand.docs.length}");
-        }
+          print("Active Clients: ${querySnapshotBrand.docs.length}");
 
-        querySnapshotBrand = await _firestore
-            .collection("Brands")
-            .doc(brandId)
-            .collection("Events")
-            .where("numClients", isGreaterThan: 0)
-            .get();
-        print("Events with Clients: ${querySnapshotBrand.docs.length}");
+          querySnapshotBrand = await _firestore
+              .collection("Brands")
+              .doc(brandId)
+              .collection("Users")
+              .where("isTrainer", isEqualTo: true)
+              .get();
+          print("Trainers: ${querySnapshotBrand.docs.length}");
 
-        for (int i = 1; i < 13; i++) {
+          querySnapshotBrand = await _firestore
+              .collection("Brands")
+              .doc(brandId)
+              .collection("Users")
+              .where("isTrainer", isEqualTo: true)
+              .where("lastEventAt",
+                  isGreaterThan:
+                      DateTime.now().subtract(const Duration(days: 31)))
+              .get();
+          print("Active Trainers: ${querySnapshotBrand.docs.length}");
+
           querySnapshotBrand = await _firestore
               .collection("Brands")
               .doc(brandId)
               .collection("Events")
               .where("numClients", isGreaterThan: 0)
-              .where("year", isEqualTo: 2022.toString())
-              .where("month", isEqualTo: i.toString())
               .get();
+          print("Events with Clients: ${querySnapshotBrand.docs.length}");
+
+          for (int i = 1; i < 13; i++) {
+            querySnapshotBrand = await _firestore
+                .collection("Brands")
+                .doc(brandId)
+                .collection("Events")
+                .where("numClients", isGreaterThan: 0)
+                .where("year", isEqualTo: 2023.toString())
+                .where("month", isEqualTo: i.toString())
+                .get();
+            print(
+                "Events with Clients Month $i: ${querySnapshotBrand.docs.length}");
+          }
+
+          // Purchases
+          var totalPurchases = 0;
+          double totalAmount = 0;
+          double totalCash = 0;
+          double totalBizum = 0;
+          double totalGift = 0;
+          var paymentMethodCash = 0;
+          var paymentMethodBizum = 0;
+          var paymentMethodGift = 0;
+          querySnapshotBrand = await _firestore
+              .collection("Brands")
+              .doc(brandId)
+              .collection("Purchases")
+              .get();
+          totalPurchases = querySnapshotBrand.docs.length;
+          for (int i = 0; i < querySnapshotBrand.docs.length; i++) {
+            Purchase p = Purchase.fromObjectAllData(
+                querySnapshotBrand.docs[i].id, querySnapshotBrand.docs[i]);
+            // Total
+            totalAmount += p.price!;
+            // Payment Method
+            if (p.paymentMethod == 0) {
+              totalCash += p.price!;
+              paymentMethodCash += 1;
+            } else if (p.paymentMethod == 1) {
+              totalBizum += p.price!;
+              paymentMethodBizum += 1;
+            } else {
+              totalGift += p.price!;
+              paymentMethodGift += 1;
+            }
+          }
+          print('totalPurchases: $totalPurchases');
+          print('totalAmount: $totalAmount');
           print(
-              "Events with Clients Month $i: ${querySnapshotBrand.docs.length}");
+              'avergaePurchaseValue: ${(totalAmount / totalPurchases).toStringAsFixed(2)}');
+          print('totalAmount: $totalAmount');
+          print('Payment Methods:');
+          print(' % Cash: ${(paymentMethodCash / totalPurchases) * 100}');
+          print(' € Cash: $totalCash');
+          print(' % Bizum: ${(paymentMethodBizum / totalPurchases) * 100}');
+          print(' € Bizum: $totalBizum');
+          print(' % Gift: ${(paymentMethodGift / totalPurchases) * 100}');
+          print(' € Gift: $totalGift');
+          print("\n");
+        }
+      }
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> getStatisticsPurchases() async {
+    try {
+      // Define the start and end dates for the period
+      Timestamp start =
+          Timestamp.fromDate(DateTime(2023, 10, 1)); // October 1st, 2023
+      Timestamp end = Timestamp.fromDate(DateTime(
+          2023, 12, 31, 23, 59, 59)); // December 31st, 2023 at 23:59:59
+      // Construct the query
+      QuerySnapshot querySnapshot = await _firestore
+          .collection("Purchases")
+          .where("purchasedAt", isGreaterThanOrEqualTo: start)
+          .where("purchasedAt", isLessThanOrEqualTo: end)
+          .get();
+      // Build Purchase List
+      List<Purchase> purchasesList = [];
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
+        Purchase purchase =
+            Purchase.fromObjectAllData(documentSnapshot.id, documentSnapshot);
+        purchasesList.add(purchase);
+      }
+
+      // Commission multipliers
+      //List<double> multipliers = [2, 1.9, 1.8, 1.7, 1.6, 1.5];
+      List<double> multipliers = [2, 1.75, 1.5];
+      // Commission payout scenarios
+      List<double> payoutPercentages = [0.2, 0.3, 0.4, 0.5];
+
+      // Loop through each month
+      for (int month = 10; month <= 12; month++) {
+        // Clear statistics for the month
+        var totalPurchases = 0;
+        double totalAmount = 0;
+
+        // Filter purchases for the month
+        var monthlyPurchases = purchasesList
+            .where((p) =>
+                p.purchasedAt != null && p.purchasedAt!.toDate().month == month)
+            .toList();
+
+        // Process each purchase in the month
+        for (var p in monthlyPurchases) {
+          totalPurchases += 1;
+          totalAmount += p.price ?? 0;
+        }
+
+        // Print statistics for the month
+        print("\n----------------------");
+        print("\nStatistics for ${DateTime(2023, month).month}:");
+        print('totalPurchases: $totalPurchases');
+        print('totalAmount: $totalAmount');
+        print(
+            'averagePurchaseValue: ${totalPurchases > 0 ? (totalAmount / totalPurchases).toStringAsFixed(2) : "N/A"}');
+
+        double totalBaseCommission = 0;
+        // Calculate base commission for each purchase
+        for (var p in monthlyPurchases) {
+          double baseCommission = (p.price ?? 0) * 0.0175 + 0.35;
+          totalBaseCommission += baseCommission;
+        }
+
+        // Overall percentage of base commission versus total purchase value
+        double commissionPercentage =
+            totalAmount > 0 ? (totalBaseCommission / totalAmount) * 100 : 0;
+
+        // Print base commission statistics
+        print(
+            'Commission as a Percentage of Average Purchase Value: $commissionPercentage%');
+        print('Total Base Commission: $totalBaseCommission');
+
+        // Calculate and print base and platform commissions
+        for (double multiplier in multipliers) {
+          double platformCommission = totalBaseCommission * multiplier;
+          double platformCommissionPercentage =
+              totalAmount > 0 ? (platformCommission / totalAmount) * 100 : 0;
+
+          print('\n\nFor Multiplier $multiplier:');
+          print('Platform Commission: $platformCommission');
+          print(
+              'Platform Commission as a Percentage of Total Purchase Value: $platformCommissionPercentage%');
+
+          for (double payoutPercentage in payoutPercentages) {
+            double baseCommissionPayout =
+                totalBaseCommission * payoutPercentage;
+            double platformCommissionPayout =
+                platformCommission * payoutPercentage;
+            double additionalRevenue =
+                platformCommissionPayout - baseCommissionPayout;
+
+            print(
+                'Base Commission Payout for ${payoutPercentage * 100}% of Purchases: $baseCommissionPayout');
+            print(
+                'Platform Commission Payout for ${payoutPercentage * 100}% of Purchases: $platformCommissionPayout');
+            print(
+                'Additional Revenue over Base Commission: $additionalRevenue');
+            print("-------");
+          }
         }
       }
 
@@ -2020,8 +2176,8 @@ class ScriptsDatabaseService {
           print('User with ID : $userId');
           DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
               await _firestore.collection(users).doc(userId).get();
-          Usuario user = Usuario.fromObjectAllData(
-              documentSnapshot.id, documentSnapshot);
+          Usuario user =
+              Usuario.fromObjectAllData(documentSnapshot.id, documentSnapshot);
           await _firestore
               .collection(events)
               .doc(event.id!)
@@ -2045,8 +2201,7 @@ class ScriptsDatabaseService {
         print('-----------------------------\n');
         DocumentSnapshot documentBrand =
             await _firestore.collection(brands).doc(event.brandID).get();
-        Brand brand =
-            Brand.fromObjectAllData(documentBrand.id, documentBrand);
+        Brand brand = Brand.fromObjectAllData(documentBrand.id, documentBrand);
         print('Brand with ID : ${brand.id!}');
         await _firestore
             .collection(events)
@@ -2137,7 +2292,9 @@ class ScriptsDatabaseService {
             .getImageFileSize(File(compressedFileImage!.path), 2);
         print("Compressed Image Size: $compressedSize");
         // Upload Image
-        var storageRef = _firebaseStorage.ref().child("library/images/event/${querySnapshot.docs[i].id}.jpeg");
+        var storageRef = _firebaseStorage
+            .ref()
+            .child("library/images/event/${querySnapshot.docs[i].id}.jpeg");
         var uploadTask = storageRef.putFile(File(compressedFileImage.path));
         await uploadTask.whenComplete(() async {
           await storageRef.getDownloadURL().then((value) async {
@@ -3438,7 +3595,8 @@ class ScriptsDatabaseService {
             '=================================================================================');
         print(
             '=================================================================================');
-        print('PURCHASE WITH ID: ${purchase.id!} AND USER IS: ${purchase.userId!} FROM BRAND: ${purchase.brandId!}');
+        print(
+            'PURCHASE WITH ID: ${purchase.id!} AND USER IS: ${purchase.userId!} FROM BRAND: ${purchase.brandId!}');
         print('\n');
 
         /// Check if Purchase is active by checking if Users/{userId}/Bonos/{bonoId} exists
@@ -3595,7 +3753,8 @@ class ScriptsDatabaseService {
                     '=================================================================================');
                 print(
                     '=================================================================================');
-                print('PURCHASE WITH ID: $purchaseId AND USER IS: $userId HAS IT ON EVENT: $eventId');
+                print(
+                    'PURCHASE WITH ID: $purchaseId AND USER IS: $userId HAS IT ON EVENT: $eventId');
                 print('\n');
                 await _firestore
                     .collection(eventsCollection)

@@ -3101,6 +3101,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                         child: SizedBox(
                           height: 50,
                           child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                             heroTag: "47",
                             onPressed: () {
                               if (_selectedIndex == 1) {
@@ -3165,6 +3166,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                   child: SizedBox(
                     height: 50,
                     child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                       heroTag: "48",
                       onPressed: () async {
                         if (_selectedIndex == 0) {

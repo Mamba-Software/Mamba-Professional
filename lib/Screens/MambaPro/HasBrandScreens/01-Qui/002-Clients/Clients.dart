@@ -21,6 +21,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileVie
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:shimmer/shimmer.dart';
@@ -236,6 +238,7 @@ class _Clients extends State<Clients> {
           controller: _scrollController,
           slivers: [
             SliverAppBar(
+              surfaceTintColor: AppColors.darkGrey,
               backgroundColor: AppColors.darkGrey,
               expandedHeight: MediaQuery.of(context).size.height * 0.15,
               systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -785,28 +788,15 @@ class _Clients extends State<Clients> {
               actions: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    unreadNotifiactions(context),
+                    askSupport(context),
+                    unreadNotifications(context),
                     unreadChats(context),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                    profileImage(context),
                     SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                    GestureDetector(
-                      onTap: () => navigateToProfileScreen(context),
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.08,
-                        child: Center(
-                          child: CircularImage(
-                            size: MediaQuery.of(context).size.width * 0.08,
-                            image: currentUser.imageUrl,
-                            color: AppColors.grey,
-                            borderWidth: 0.5,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.03),
               ],
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 10)),
@@ -1194,8 +1184,8 @@ class _Clients extends State<Clients> {
               width: MediaQuery.of(context).size.width * 0.15,
               child: SpeedDial(
                 heroTag: "96",
-                activeChild: const Icon(Icons.group_add_outlined),
-                animationDuration: const Duration(milliseconds: 100),
+                activeChild: const Icon(Icons.group_outlined),
+                animationDuration: const Duration(milliseconds: 300),
                 foregroundColor: AppColors.white,
                 overlayColor: Theme.of(context).scaffoldBackgroundColor,
                 overlayOpacity: 0.95,

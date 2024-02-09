@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -74,6 +76,9 @@ class _ReportBugState extends State<ReportBug> {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.015,
+          ),
           TitleWidget(),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.03,
@@ -105,19 +110,47 @@ class _ReportBugState extends State<ReportBug> {
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.01,
         ),
-        TextFormField(
-          controller: tituloController,
-          validator: (val) =>
-              val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-          onChanged: (val) {
-            setState(() => tituloTemp = val);
-          },
-          style: Theme.of(context).textTheme.bodyMedium,
-          decoration: InputDecoration(
-            hintText: AppLocalizations.of(context)!.titleError,
-            hintStyle: Theme.of(context).textTheme.bodySmall,
+        Material(
+          elevation: 4,
+          borderRadius: BorderRadius.circular(15.0),
+          child: TextFormField(
+            controller: tituloController,
+            validator: (val) =>
+                val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+            onChanged: (val) {
+              setState(() => tituloTemp = val);
+            },
+            style: Theme.of(context).textTheme.bodyMedium,
+            decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.titleError,
+                hintStyle: Theme.of(context).textTheme.bodySmall,
+                errorStyle: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: AppColors.red),
+                border: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)),
+            enabled: true,
           ),
-          enabled: true,
         ),
       ],
     );
@@ -136,20 +169,49 @@ class _ReportBugState extends State<ReportBug> {
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.01,
         ),
-        TextFormField(
-          controller: descriptionController,
-          validator: (val) => val!.isEmpty
-              ? AppLocalizations.of(context)!.descriptionError
-              : null,
-          onChanged: (val) {
-            setState(() => descriptionTemp = val);
-          },
-          minLines: 1,
-          maxLines: 6,
-          style: Theme.of(context).textTheme.bodyMedium,
-          decoration: InputDecoration(
-            hintText: AppLocalizations.of(context)!.descriptionError,
-            hintStyle: Theme.of(context).textTheme.bodySmall,
+        Material(
+          elevation: 4,
+          borderRadius: BorderRadius.circular(15.0),
+          child: TextFormField(
+            controller: descriptionController,
+            validator: (val) => val!.isEmpty
+                ? AppLocalizations.of(context)!.descriptionError
+                : null,
+            onChanged: (val) {
+              setState(() => descriptionTemp = val);
+            },
+            minLines: 1,
+            maxLines: 6,
+            style: Theme.of(context).textTheme.bodyMedium,
+            decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.descriptionError,
+                hintStyle: Theme.of(context).textTheme.bodySmall,
+                errorStyle: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: AppColors.red),
+                border: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)),
+            enabled: true,
           ),
         ),
       ],
@@ -169,20 +231,48 @@ class _ReportBugState extends State<ReportBug> {
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.01,
         ),
-        TextFormField(
-          controller: stepsReproduceController,
-          onChanged: (val) {
-            setState(() => stepsReproduceTemp = val);
-          },
-          minLines: 1,
-          maxLines: 3,
-          style: Theme.of(context).textTheme.bodyMedium,
-          decoration: InputDecoration(
-            hintMaxLines: 2,
-            hintText: AppLocalizations.of(context)!.reproducteStepsHint,
-            hintStyle: Theme.of(context).textTheme.bodySmall,
+        Material(
+          elevation: 4,
+          borderRadius: BorderRadius.circular(15.0),
+          child: TextFormField(
+            controller: stepsReproduceController,
+            onChanged: (val) {
+              setState(() => stepsReproduceTemp = val);
+            },
+            minLines: 1,
+            maxLines: 5,
+            style: Theme.of(context).textTheme.bodyMedium,
+            decoration: InputDecoration(
+                hintMaxLines: 5,
+                hintText: AppLocalizations.of(context)!.reproducteStepsHint,
+                hintStyle: Theme.of(context).textTheme.bodySmall,
+                errorStyle: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: AppColors.red),
+                border: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 1.5),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)),
+            enabled: true,
           ),
-          enabled: true,
         ),
       ],
     );
@@ -196,14 +286,14 @@ class _ReportBugState extends State<ReportBug> {
           elevation: 4,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
+              Radius.circular(30.0),
             ),
           ),
           child: Container(
               height: MediaQuery.of(context).size.height * 0.06,
-              width: MediaQuery.of(context).size.width * 0.30,
+              width: MediaQuery.of(context).size.width * 0.5,
               decoration: BoxDecoration(
-                  color: Colors.green, borderRadius: BorderRadius.circular(10)),
+                  color: Colors.green, borderRadius: BorderRadius.circular(30)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -227,42 +317,6 @@ class _ReportBugState extends State<ReportBug> {
                             .bodyLarge
                             ?.copyWith(color: AppColors.white)),
                   )
-                ],
-              )),
-        ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.05,
-        ),
-        Material(
-          elevation: 4,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
-            ),
-          ),
-          child: Container(
-              height: MediaQuery.of(context).size.height * 0.06,
-              width: MediaQuery.of(context).size.width * 0.30,
-              decoration: BoxDecoration(
-                  color: Colors.red, borderRadius: BorderRadius.circular(10)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.clear,
-                    color: AppColors.white,
-                    size: MediaQuery.of(context).size.width * 0.06,
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      clearControllers();
-                    },
-                    child: Text(AppLocalizations.of(context)!.clear,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(color: AppColors.white)),
-                  ),
                 ],
               )),
         ),
@@ -308,6 +362,7 @@ class _ReportBugState extends State<ReportBug> {
                 },
               ),
             ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             body: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(

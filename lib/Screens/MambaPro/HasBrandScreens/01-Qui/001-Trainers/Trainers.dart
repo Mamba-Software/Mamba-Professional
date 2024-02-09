@@ -20,6 +20,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileVie
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
@@ -290,6 +292,7 @@ class _Trainers extends State<Trainers> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
+            surfaceTintColor: AppColors.darkGrey,
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -411,7 +414,8 @@ class _Trainers extends State<Trainers> {
                                       },
                                       splashRadius: 20,
                                       splashColor: Theme.of(context)
-                                          .colorScheme.background, // Splash color
+                                          .colorScheme
+                                          .background, // Splash color
                                       padding: EdgeInsets.zero,
                                       alignment: Alignment.center,
                                       icon: Icon(
@@ -432,7 +436,8 @@ class _Trainers extends State<Trainers> {
                                           : Colors.transparent, // Button color
                                       child: InkWell(
                                         splashColor: Theme.of(context)
-                                            .colorScheme.background, // Splash color
+                                            .colorScheme
+                                            .background, // Splash color
                                         onTap: () async {
                                           mixpanel!.track(
                                               'brand_trainers_filter_button');
@@ -626,7 +631,8 @@ class _Trainers extends State<Trainers> {
                                                                         },
                                                                         title: Text(
                                                                             "${AppLocalizations.of(context)!.active} ${AppLocalizations.of(context)!.lastNDays(30.toString())}",
-                                                                            style: Theme.of(context).textTheme.bodyLarge,
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodyLarge,
                                                                             textAlign: TextAlign.left),
                                                                         subtitle: Text(
                                                                             returnFilteredActiveStaffString(),
@@ -876,28 +882,15 @@ class _Trainers extends State<Trainers> {
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  unreadNotifiactions(context),
+                  askSupport(context),
+                  unreadNotifications(context),
                   unreadChats(context),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                  profileImage(context),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  GestureDetector(
-                    onTap: () => navigateToProfileScreen(context),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.08,
-                      child: Center(
-                        child: CircularImage(
-                          size: MediaQuery.of(context).size.width * 0.08,
-                          image: currentUser.imageUrl,
-                          color: AppColors.grey,
-                          borderWidth: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
             ],
           ),
           currentUser.brandRole < 2
@@ -942,9 +935,7 @@ class _Trainers extends State<Trainers> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!
-                                              .staff
-                                              .toLowerCase()}",
+                                      "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.staff.toLowerCase()}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
@@ -1244,8 +1235,8 @@ class _Trainers extends State<Trainers> {
               width: MediaQuery.of(context).size.width * 0.15,
               child: SpeedDial(
                 heroTag: "106",
-                activeChild: const Icon(Icons.group_add_outlined),
-                animationDuration: const Duration(milliseconds: 100),
+                activeChild: const Icon(Icons.group_outlined),
+                animationDuration: const Duration(milliseconds: 300),
                 foregroundColor: AppColors.white,
                 overlayColor: Theme.of(context).scaffoldBackgroundColor,
                 overlayOpacity: 0.95,
@@ -1288,8 +1279,9 @@ class _Trainers extends State<Trainers> {
                                 ),
                                 Text(
                                     "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.staff}",
-                                    style:
-                                        Theme.of(context).textTheme.displaySmall,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall,
                                     textAlign: TextAlign.right),
                               ],
                             ),

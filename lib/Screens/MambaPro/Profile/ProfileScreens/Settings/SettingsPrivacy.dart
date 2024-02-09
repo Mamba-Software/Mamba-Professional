@@ -166,6 +166,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
       floatingActionButton: isUpdated ? Padding(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
         child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
           heroTag: "82",
           onPressed: () async {
             setState(() {

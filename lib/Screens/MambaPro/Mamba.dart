@@ -108,6 +108,8 @@ class _MambaState extends State<Mamba> {
 
   // On StartUp Dialogs
   Future<void> launchOnStartUpDialogs() async {
+    //Stripe
+    stripeActivatedGlobal = await _settingsDataService.getStripeActivated();
     // First check if minimum version
     print("Checking Minimum App Version...");
     checkMinimumAppVersion();
@@ -151,7 +153,8 @@ class _MambaState extends State<Mamba> {
         AppBar().preferredSize.height -
         MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print(
+        "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
     print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 

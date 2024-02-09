@@ -183,7 +183,8 @@ class _EventPageTrainerState extends State<EventPageTrainer>
         AppBar().preferredSize.height -
         MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print(
+        "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
     print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
@@ -288,61 +289,44 @@ class _EventPageTrainerState extends State<EventPageTrainer>
   // Build Places Left Event
   Widget buildPlacesLeftWidget(int places) {
     return FittedBox(
-      fit: BoxFit.fitHeight,
-      child: isFull == false
-          ? Container(
-              height: MediaQuery.of(context).size.width * 0.1,
-              padding: const EdgeInsets.only(top: 4, bottom: 8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    places.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .displaySmall
-                        ?.copyWith(color: Colors.green),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    places == 1
-                        ? AppLocalizations.of(context)!.slot
-                        : AppLocalizations.of(context)!.slots,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 5, color: Colors.green),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ))
-          : Container(
-              height: MediaQuery.of(context).size.width * 0.1,
-              padding: const EdgeInsets.only(top: 4, bottom: 4),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        fit: BoxFit.contain,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          child: isFull == false
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.person,
-                      size: MediaQuery.of(context).size.width * 0.05,
-                      color: AppColors.red,
-                    ),
-                    /*
                     Text(
-                      AppLocalizations.of(context)!.full,
+                      places.toString(),
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
-                          ?.copyWith(fontSize: 5, color: AppColors.red),
+                          .displaySmall
+                          ?.copyWith(color: Colors.green),
                       textAlign: TextAlign.center,
                     ),
-                    */
+                    Text(
+                      places == 1
+                          ? AppLocalizations.of(context)!.slot
+                          : AppLocalizations.of(context)!.slots,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontSize: 5, color: Colors.green),
+                      textAlign: TextAlign.center,
+                    ),
                   ],
-                ),
+                )
+              : Container(
+                margin: const EdgeInsets.all( 4),
+                child: Center(
+                    child: Icon(
+                      Icons.lock_outlined,
+                      size: MediaQuery.of(context).size.width * 0.04,
+                      color: AppColors.red,
+                    ),
+                  ),
               ),
-            ),
-    );
+        ));
   }
 
   // Build Places Left Event
@@ -1254,6 +1238,8 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                           valueListenable: appBarExpanded,
                           builder: (context, appBarExpandedValue, child) {
                             return SliverAppBar(
+                              surfaceTintColor:
+                                  Theme.of(context).scaffoldBackgroundColor,
                               expandedHeight:
                                   MediaQuery.of(context).size.height * 0.22,
                               elevation: 0,
@@ -1322,7 +1308,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.06,
+                                              0.12,
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
@@ -1336,28 +1322,20 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                         ),
                                       )
                                     : !isBeforeEdit
-                                        ? Padding(
-                                            padding: EdgeInsets.only(
-                                                right: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.05),
-                                            child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.06,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.12,
-                                              decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .scaffoldBackgroundColor,
-                                                  shape: BoxShape.circle),
-                                              child:
-                                                  buildAverageFeedbackWidget(),
-                                            ),
+                                        ? Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.12,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.12,
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .scaffoldBackgroundColor,
+                                                shape: BoxShape.circle),
+                                            child: buildAverageFeedbackWidget(),
                                           )
                                         : Container(),
                               ],
@@ -1919,8 +1897,9 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                             MediaQuery.of(context).size.width *
                                                 0.9,
                                         decoration: BoxDecoration(
-                                          color:
-                                              Theme.of(context).colorScheme.background,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .background,
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(15.0)),
                                           image: DecorationImage(
@@ -2107,10 +2086,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                   ),
                                                                   Flexible(
                                                                     child: Text(
-                                                                      "${"${bono.sessions! == 10000
-                                                                              ? AppLocalizations.of(context)!.sessions + " " + AppLocalizations.of(context)!.ilimitadas
-                                                                              : bono.sessions!.toString() + " " + AppLocalizations.of(context)!.sessions.toLowerCase()} desde " +
-                                                                          bono.price!.toStringAsFixed(2)}€",
+                                                                      "${"${bono.sessions! == 10000 ? AppLocalizations.of(context)!.sessions + " " + AppLocalizations.of(context)!.ilimitadas : bono.sessions!.toString() + " " + AppLocalizations.of(context)!.sessions.toLowerCase()} desde " + bono.price!.toStringAsFixed(2)}€",
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
@@ -2637,7 +2613,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height *
-                                                0.2)
+                                                0.25)
                                         : SizedBox(
                                             height: MediaQuery.of(context)
                                                     .size
@@ -2675,6 +2651,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                 child: isBeforeEdit
                     ? FloatingActionButton.extended(
                         heroTag: "9",
+                        shape: const StadiumBorder(),
                         onPressed: () async {
                           // Create Dynamic Link
                           Uri eventLink =
@@ -2697,9 +2674,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                           size: MediaQuery.of(context).size.width * 0.05,
                         ),
                         label: Text(
-                          "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!
-                                  .clients
-                                  .toLowerCase()}",
+                          "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.clients.toLowerCase()}",
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
@@ -2714,6 +2689,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                 width: MediaQuery.of(context).size.width * 0.25,
                 child: FloatingActionButton.extended(
                   heroTag: "10",
+                  shape: const StadiumBorder(),
                   onPressed: () async {
                     if (context.read<CrudEventCubit>().state.isWorking >= 100) {
                       context.read<CrudEventCubit>().populateNewEvent(event);

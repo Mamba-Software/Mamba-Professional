@@ -19,7 +19,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadlin
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsMade.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/FeedBack.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsYourData.dart';
 import 'package:page_transition/page_transition.dart';
@@ -565,6 +565,7 @@ class _ProfileState extends State<Profile> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
+                          surfaceTintColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
                           backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
@@ -601,6 +602,7 @@ class _ProfileState extends State<Profile> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
+                          surfaceTintColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
                           backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
@@ -668,6 +670,7 @@ class _ProfileState extends State<Profile> {
                         },
                         style: ButtonStyle(
                             elevation: MaterialStateProperty.all(4),
+                            surfaceTintColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                             backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                             animationDuration: const Duration(milliseconds: 100),
                             overlayColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background.withOpacity(0.2)),
@@ -704,6 +707,7 @@ class _ProfileState extends State<Profile> {
                         },
                         style: ButtonStyle(
                             elevation: MaterialStateProperty.all(4),
+                            surfaceTintColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                             backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                             animationDuration: const Duration(milliseconds: 100),
                             overlayColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background.withOpacity(0.2)),
@@ -829,16 +833,22 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: MediaQuery.of(context).size.height*0.015),
             SizedBox(
               width: MediaQuery.of(context).size.width*0.4,
-              child: OutlinedButton(
+              child: ElevatedButton(
                 onPressed: () {
                   mixpanel!.track('user_profile_share_app');
                   _sharePlusUtils.shareMambaLink(currentUser.firstName!);
                 },
-                style: OutlinedButton.styleFrom(
+                style: ElevatedButton.styleFrom(
                   elevation: 4,
                   backgroundColor: Theme.of(context).colorScheme.background,
-                  fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                  side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
+                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
+                      MediaQuery.of(context).size.height * 0.06),
+                  side: BorderSide(
+                      width: 1.0,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .background), // This might need adjustment
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(30),
@@ -888,16 +898,22 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: MediaQuery.of(context).size.height*0.015),
             SizedBox(
               width: MediaQuery.of(context).size.width*0.4,
-              child: OutlinedButton(
+              child: ElevatedButton(
                 onPressed: () {
                   mixpanel!.track('user_profile_feedback_open');
                   navigateToFeedbackScreen();
                 },
-                style: OutlinedButton.styleFrom(
+                style: ElevatedButton.styleFrom(
                   elevation: 4,
                   backgroundColor: Theme.of(context).colorScheme.background,
-                  fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                  side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
+                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
+                      MediaQuery.of(context).size.height * 0.06),
+                  side: BorderSide(
+                      width: 1.0,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .background), // This might need adjustment
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(30),
@@ -939,7 +955,7 @@ class _ProfileState extends State<Profile> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
               child: Text(
-                  AppLocalizations.of(context)!.getInTouchText,
+                  AppLocalizations.of(context)!.getInTouchTextDesc,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor),
                   textAlign: TextAlign.center
               ),
@@ -947,13 +963,19 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: MediaQuery.of(context).size.height*0.015),
             SizedBox(
               width: MediaQuery.of(context).size.width*0.4,
-              child: OutlinedButton(
+              child: ElevatedButton(
                 onPressed: () => launchEmail(),
-                style: OutlinedButton.styleFrom(
+                style: ElevatedButton.styleFrom(
                   elevation: 4,
                   backgroundColor: Theme.of(context).colorScheme.background,
-                  fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                  side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
+                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
+                      MediaQuery.of(context).size.height * 0.06),
+                  side: BorderSide(
+                      width: 1.0,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .background), // This might need adjustment
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(30),
