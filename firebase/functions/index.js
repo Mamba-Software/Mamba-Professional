@@ -52,7 +52,12 @@ sgMail.setApiKey(envConfig.sendGridApiKey);
 const { v4: uuidv4 } = require('uuid');
 
 const express = require("express");
+const stripe_1 = require("stripe");
 const constants_1 = require("./lib/utils/constants");
+constants_1.stripe = new stripe_1.default(envConfig.secretKey, {
+  apiVersion: "2023-10-16",
+  typescript: false,
+});
 const v2_2 = require("firebase-functions/v2");
 const stripe_connect_1 = require("./lib/stripe_connect/stripe_connect");
 // import bodyParser = require('body-parser');
