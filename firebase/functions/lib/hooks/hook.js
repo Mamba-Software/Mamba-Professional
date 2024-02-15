@@ -105,6 +105,7 @@ async function invoicePaidHandler(event) {
                 balance: admin.firestore.FieldValue.increment(amount),
                 totalEarning: admin.firestore.FieldValue.increment(amount),
             });
+            //TODO POSAR EL SUSCRIPTION ID
         }
         return 'Success';
     }

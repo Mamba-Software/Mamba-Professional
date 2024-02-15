@@ -90,4 +90,28 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
     }
 }
 exports.createSubscription = createSubscription;
+/*
+async function createSubscription(customerId, priceId, brandId, productId, paymentMethodId) {
+    try {
+        let subscription = await constants_1.stripe.subscriptions.create({
+            customer: customerId,
+            items: [
+                { price: priceId },
+            ],
+            default_payment_method: paymentMethodId,
+            metadata: {
+                'brandId': brandId,
+                'customerId': customerId,
+                'productId': productId,
+                'priceId': priceId,
+            }
+        });
+        return { data: subscription, error: null };
+    }
+    catch (e) {
+        console.log(e);
+        return { data: null, error: e };
+    }
+}
+exports.cancelSubscription = cancelSubscription;*/
 //# sourceMappingURL=subscription.js.map
