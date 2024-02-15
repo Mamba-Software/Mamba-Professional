@@ -5,6 +5,7 @@
             "name": "development",
             "request": "launch",            
             "type": "dart",
+            "flutterMode": "release",
             "program": "lib/main_development.dart",
             "args": ["--flavor", "development", "--target", "lib/main_development.dart"]
         },
@@ -12,6 +13,7 @@
             "name": "staging",
             "request": "launch",            
             "type": "dart",
+            "flutterMode": "release",
             "program": "lib/main_staging.dart",
             "args": ["--flavor", "staging", "--target", "lib/main_staging.dart"]
         },
@@ -19,6 +21,7 @@
             "name": "production",
             "request": "launch",            
             "type": "dart",
+            "flutterMode": "release",
             "program": "lib/main_production.dart",
             "args": ["--flavor", "production", "--target", "lib/main_production.dart"]
         },
