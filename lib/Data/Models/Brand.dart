@@ -195,7 +195,7 @@ class Brand {
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('balance')) {
-      balance = documentSnapshot.get("balance");
+      balance = double.parse(documentSnapshot.get("balance").toString());
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('stripeActivated')) {

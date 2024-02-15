@@ -5,7 +5,6 @@
             "name": "development",
             "request": "launch",            
             "type": "dart",
-            "flutterMode": "release",
             "program": "lib/main_development.dart",
             "args": ["--flavor", "development", "--target", "lib/main_development.dart"]
         },
