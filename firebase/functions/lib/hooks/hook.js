@@ -94,6 +94,7 @@ async function invoicePaidHandler(event) {
         amount: event.data.object.amount_paid,
         data: event.data.object,
         timestamp: admin.firestore.Timestamp.now(),
+        subscription: event.data.object.subscription,
     });
     try {
         let objectData = event.data.object;
@@ -101,11 +102,15 @@ async function invoicePaidHandler(event) {
         if (metadata) {
             let amount = objectData.amount_paid / 100;
             let brandId = metadata.brandId;
+            let purchaseId = metadata.purchaseId;
             await constants_1.brandCollection.doc(brandId).update({
                 balance: admin.firestore.FieldValue.increment(amount),
                 totalEarning: admin.firestore.FieldValue.increment(amount),
             });
             //TODO POSAR EL SUSCRIPTION ID
+            await admin.firestore().collection('Purchases').doc(purchaseId).update({
+                subscriptionStripe: event.data.object.subscription,
+            });
         }
         return 'Success';
     }

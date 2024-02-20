@@ -3494,7 +3494,30 @@ class _PurchasePageState extends State<PurchasePage> {
                                           0.15,
                                       child: CupertinoSwitch(
                                         value: true,
-                                        onChanged: (bool newVal) {
+                                        onChanged: (bool newVal) async {
+                                          /*
+                                          var result = await showDialog(
+                                              context: context,
+                                              builder: (_) {
+                                                return CancelMembresiaConfirmationDialog(
+                                                  text: AppLocalizations.of(
+                                                          context)!
+                                                      .cancelRequestConfirmation,
+                                                  brand: widget.brand,
+                                                );
+                                              });
+                                          if (result) {
+                                            //TODO CANCEL SUSCRIPTION
+                                            _purchaseDataService
+                                                .updatePurchasePaymentRecurrency(
+                                                    purchase.id!,
+                                                    false,
+                                                    purchase.paymentMethod!);
+                                            setState(() {
+                                              purchase.isRecurrencyActive =
+                                                  false;
+                                            });
+                                          }*/
                                           setState(() {
                                             purchase.isRecurrencyActive = false;
                                           });

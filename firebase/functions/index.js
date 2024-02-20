@@ -3985,7 +3985,7 @@ exports.webhookListenerAccount = functions.region("europe-west1").https.onReques
 });
 exports.webhookListenerConnect = functions.region("europe-west1").https.onRequest(async (request, res) => {
     try {
-        let signingSecret = envConfig.webhookListenerAccount;
+        let signingSecret = envConfig.webhookSecretForConnect;
         let sig = request.headers['stripe-signature'];
         let event = constants_1.stripe.webhooks.constructEvent(request.rawBody, sig, signingSecret);
         let result = await (0, hook_1.webhookHandler)(event);
@@ -4102,13 +4102,13 @@ app.get('/paymentMethod', async (req, res) => {
 /* --------------------------- create subscription -------------------------- */
 app.post('/createSubscription', async (req, res) => {
   console.log(req.body);
-  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.customerId === undefined || req.body.priceId === undefined || req.body.paymentMethodId === undefined) {
+  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.customerId === undefined || req.body.priceId === undefined || req.body.paymentMethodId === undefined, req.body.purchaseId === undefined) {
       res.status(400).send({
-          message: 'Missing parameters', required: ['productId', 'brandId', 'customerId', 'priceId', 'paymentMethodId']
+          message: 'Missing parameters', required: ['productId', 'brandId', 'customerId', 'priceId', 'paymentMethodId', 'purchaseId']
       });
       return;
   }
-  let result = await (0, subscription_1.createSubscription)(req.body.customerId, req.body.priceId, req.body.brandId, req.body.productId, req.body.paymentMethodId);
+  let result = await (0, subscription_1.createSubscription)(req.body.customerId, req.body.priceId, req.body.brandId, req.body.productId, req.body.paymentMethodId, req.body.purchaseId);
   if (result.error == null) {
       res.send(result.data).status(200);
   }
@@ -4117,23 +4117,22 @@ app.post('/createSubscription', async (req, res) => {
   }
 });
 /* --------------------------- cancel subscription -------------------------- */
-/*
 app.post('/cancelSubscription', async (req, res) => {
   console.log(req.body);
-  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.customerId === undefined || req.body.priceId === undefined || req.body.paymentMethodId === undefined) {
+  if (req.body.subscriptionId === undefined) {
       res.status(400).send({
-          message: 'Missing parameters', required: ['productId', 'brandId', 'customerId', 'priceId', 'paymentMethodId']
+          message: 'Missing parameters', required: ['subscriptionId']
       });
       return;
   }
-  let result = await (0, subscription_1.createSubscription)(req.body.customerId, req.body.priceId, req.body.brandId, req.body.productId, req.body.paymentMethodId);
+  let result = await (0, subscription_1.cancelSubscription)(req.body.subscriptionId );
   if (result.error == null) {
       res.send(result.data).status(200);
   }
   else {
       res.send(result.error).status(400);
   }
-});*/
+});
 /* ---------------------------- transfer funds ---------------------------- */
 app.get('/transferFunds', async (req, res) => {
   await (0, transfer_funds_1.transferFunds)();

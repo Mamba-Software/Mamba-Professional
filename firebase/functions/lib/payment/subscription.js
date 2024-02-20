@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createSubscription = exports.getPaymentMethods = void 0;
+exports.createSubscription = exports.getPaymentMethods = exports.cancelSubscription = void 0;
 const constants_1 = require("../utils/constants");
 const helper_functions_1 = require("../utils/helper_functions");
 async function getPaymentMethods(userId) {
@@ -67,7 +67,7 @@ async function getPaymentMethods(userId) {
     }
 }
 exports.getPaymentMethods = getPaymentMethods;
-async function createSubscription(customerId, priceId, brandId, productId, paymentMethodId) {
+async function createSubscription(customerId, priceId, brandId, productId, paymentMethodId, purchaseId) {
     try {
         let subscription = await constants_1.stripe.subscriptions.create({
             customer: customerId,
@@ -80,6 +80,7 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
                 'customerId': customerId,
                 'productId': productId,
                 'priceId': priceId,
+                'purchaseId': purchaseId,
             }
         });
         return { data: subscription, error: null };
@@ -90,21 +91,11 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
     }
 }
 exports.createSubscription = createSubscription;
-/*
-async function createSubscription(customerId, priceId, brandId, productId, paymentMethodId) {
+
+async function cancelSubscription(subscriptionId) {
     try {
-        let subscription = await constants_1.stripe.subscriptions.create({
-            customer: customerId,
-            items: [
-                { price: priceId },
-            ],
-            default_payment_method: paymentMethodId,
-            metadata: {
-                'brandId': brandId,
-                'customerId': customerId,
-                'productId': productId,
-                'priceId': priceId,
-            }
+        let subscription = await constants_1.stripe.subscriptions.cancel({
+            subscriptionId: subscriptionId,
         });
         return { data: subscription, error: null };
     }
@@ -113,5 +104,5 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
         return { data: null, error: e };
     }
 }
-exports.cancelSubscription = cancelSubscription;*/
+exports.cancelSubscription = cancelSubscription;
 //# sourceMappingURL=subscription.js.map
