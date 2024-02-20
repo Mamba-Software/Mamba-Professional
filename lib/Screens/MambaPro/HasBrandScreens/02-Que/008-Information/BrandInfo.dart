@@ -33,7 +33,9 @@ import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotificat
 import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_repository.dart';
 import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
-import 'package:mamba_castelldefels/Stripe/views/onboarding_webview.dart';
+import 'package:mamba_castelldefels/Stripe/views/StripeOnboarding.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../../Globals/Widgets/Components/CupertinoSelect/SelectOtherDialog.dart';
 
@@ -1659,7 +1661,7 @@ class _BrandInfoState extends State<BrandInfo>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
-                      children: [                        
+                      children: [
                         ///CONEXION CON STRIPE
                         stripeActivatedGlobal ? conectionStripe() : Container(),
 
@@ -1944,7 +1946,7 @@ class _BrandInfoState extends State<BrandInfo>
                           ],
                         ),
                         SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.03),                      
+                            height: MediaQuery.of(context).size.height * 0.03),
                       ],
                     ),
                   ),
@@ -2594,22 +2596,14 @@ class _BrandInfoState extends State<BrandInfo>
                     onChanged: canEdit
                         ? (bool newVal) async {
                             if (newVal) {
+                              // Get Stripe Link
                               context
                                   .read<StripeConnectCubit>()
                                   .getLink(currentBrand);
 
-                              var result = await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => OnboardingWebView()),
-                              );
-                              /*
-                              if (result != null) {
-                                currentBrand.isVerified = result.isVerified;
-                                currentBrand.stripeAccountId =
-                                    result.stripeAccountId;
-                                currentBrand.stripeActivated = true;
-                                isStripeActive = true;
-                              }*/
+                              // Show Stripe Onboarding
+                              navigateToStripeOnboarding();
+                              // Check If Sripe Is Activated
                               currentBrand.stripeAccountId =
                                   await _brandDataService
                                       .getBrandStripeAccount(currentBrand.id!);
@@ -2618,19 +2612,18 @@ class _BrandInfoState extends State<BrandInfo>
                               }
                             } else {
                               if (isStripeActive && !currentBrand.isVerified) {
+                                // Get Stripe Link
                                 context
                                     .read<StripeConnectCubit>()
                                     .getLink(currentBrand);
-
-                                var result = await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          OnboardingWebView()),
-                                );
+                                // Show Stripe Onboarding
+                                var result = navigateToStripeOnboarding();
+                                // Check Result
                                 if (result != null &&
                                     result is UserStripeModel) {
                                   currentBrand = currentBrand;
                                 }
+                                // Check If Sripe Is Activated
                                 currentBrand.stripeAccountId =
                                     await _brandDataService
                                         .getBrandStripeAccount(
@@ -2716,6 +2709,16 @@ class _BrandInfoState extends State<BrandInfo>
         ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.03),
       ],
+    );
+  }
+
+  dynamic navigateToStripeOnboarding() async {
+    await Navigator.push(
+      context,
+      PageTransition<dynamic>(
+        type: PageTransitionType.bottomToTop,
+        child: StripeOnboarding(),
+      ),
     );
   }
 }
