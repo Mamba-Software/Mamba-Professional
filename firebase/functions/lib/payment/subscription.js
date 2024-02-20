@@ -67,14 +67,20 @@ async function getPaymentMethods(userId) {
     }
 }
 exports.getPaymentMethods = getPaymentMethods;
-async function createSubscription(customerId, priceId, brandId, productId, paymentMethodId, purchaseId) {
+async function createSubscription(customerId, priceId, brandId, productId, paymentMethodId, purchaseId, priceProrrateted, dayOfFirstTotalpayment) {
     try {
+        const now = new Date();
+        const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        const billingCycleAnchor = Math.floor(nextMonth.getTime() / 1000);
+
         let subscription = await constants_1.stripe.subscriptions.create({
             customer: customerId,
             items: [
                 { price: priceId },
             ],
             default_payment_method: paymentMethodId,
+            billing_cycle_anchor: billingCycleAnchor,
+            proration_behavior: 'create_prorations',
             metadata: {
                 'brandId': brandId,
                 'customerId': customerId,
@@ -94,9 +100,7 @@ exports.createSubscription = createSubscription;
 
 async function cancelSubscription(subscriptionId) {
     try {
-        let subscription = await constants_1.stripe.subscriptions.cancel({
-            subscriptionId: subscriptionId,
-        });
+        let subscription = await constants_1.stripe.subscriptions.cancel(subscriptionId);
         return { data: subscription, error: null };
     }
     catch (e) {

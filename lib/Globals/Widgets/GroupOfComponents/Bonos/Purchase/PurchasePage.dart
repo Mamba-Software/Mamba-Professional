@@ -291,6 +291,11 @@ class _PurchasePageState extends State<PurchasePage> {
     purchase.isRecurrent = tempPurchase.isRecurrent ?? false;
     purchase.isRecurrencyActive = tempPurchase.isRecurrencyActive ?? false;
     purchase.purchaseGroupId = tempPurchase.purchaseGroupId ?? '';
+    purchase.subscriptionStripe = '';
+    if (tempPurchase.subscriptionStripe != null &&
+        tempPurchase.subscriptionStripe != '') {
+      purchase.subscriptionStripe = tempPurchase.subscriptionStripe;
+    }
     await checkRecurrency();
     setBonoConditions(bonoSelected);
   }
