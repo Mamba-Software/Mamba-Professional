@@ -3440,6 +3440,10 @@
   "@seeSubscriptionPayWall": {
     "description": "seeSubscriptionPayWall message"
   },
+  "cancelSubscriptionPayWall": "Para cancelar tu suscripción, abre la aplicación Google Play Store en tu dispositivo. Toca el icono del menú (☰) y selecciona 'Suscripciones'. Encuentra la suscripción que deseas cancelar y tócala. Luego, toca 'Cancelar suscripción' y sigue las instrucciones en pantalla para completar el proceso de cancelación. Para más ayuda, visita el Centro de Ayuda de Google Play.",
+  "@cancelSubscriptionPayWall": {
+    "description": "seeSubscriptionPayWall message"
+  },
   "noPromotions": "No hay promociones",
   "@noPromotions": {
     "description": "noPromotions message"

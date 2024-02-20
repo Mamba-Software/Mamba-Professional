@@ -13,10 +13,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
-import 'package:page_transition/page_transition.dart';
 import '../Data/LibraryModels/lColor.dart';
 
-// Flavor Setup
+//Flavor Setup 
 enum Flavor {
   production,
   staging,

@@ -776,6 +776,8 @@
   "insertCode": "Introdueix el codi promocional",
   "anyDoubt": "Algun dubte?",
   "seeSubscriptionPayWall": "Veure plans",
+  
+"cancelSubscriptionPayWall": "Per cancel·lar la teva subscripció, obre l'aplicació Google Play Store al teu dispositiu. Toca la icona del menú (☰) i selecciona 'Subscripcions'. Troba la subscripció que vols cancel·lar i toca-la. Després, toca 'Cancel·lar subscripció' i segueix les instruccions en pantalla per completar el procés de cancel·lació. Per a més ajuda, visita el Centre d'Ajuda de Google Play.",
   "noPromotions": "No hi han promocions",
   "promotionDetected": "Promoció detectada",
   "uniquePromotion": "Et regalem una promoció única",
