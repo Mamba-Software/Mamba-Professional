@@ -34,6 +34,7 @@ import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_r
 import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
 import 'package:mamba_castelldefels/Stripe/views/StripeOnboarding.dart';
+import 'package:mamba_castelldefels/Stripe/views/StripeWebView.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -2715,9 +2716,9 @@ class _BrandInfoState extends State<BrandInfo>
   dynamic navigateToStripeOnboarding() async {
     await Navigator.push(
       context,
-      PageTransition<dynamic>(
-        type: PageTransitionType.bottomToTop,
-        child: StripeOnboarding(),
+      CupertinoPageRoute<String>(
+        builder: (context) => const StripeOnboarding(),
+        settings: const RouteSettings(name: 'StripeOnboarding'),
       ),
     );
   }

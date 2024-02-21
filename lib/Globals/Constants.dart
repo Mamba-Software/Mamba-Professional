@@ -73,6 +73,7 @@ class Constants {
   static String mambaProfesionalGif = "assets/animations/graph.gif";
   static String mobileProDark = "assets/animations/mambaMobileBlack.gif";
   static String mobileProLight = "assets/animations/mambaMobileWhite.gif";
+  static String stripeOnboardingOne = "assets/animations/stripeOnboardingOne.gif";
 
   // Emojis
   static String relaxedEmojiImage = "assets/images/relaxedEmojiImage.png";
