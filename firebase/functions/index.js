@@ -4102,13 +4102,14 @@ app.get('/paymentMethod', async (req, res) => {
 /* --------------------------- create subscription -------------------------- */
 app.post('/createSubscription', async (req, res) => {
   console.log(req.body);
-  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.customerId === undefined || req.body.priceId === undefined || req.body.paymentMethodId === undefined, req.body.purchaseId === undefined) {
+  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.customerId === undefined || req.body.priceId === undefined || req.body.paymentMethodId === undefined, req.body.purchaseId === undefined, req.body.expirationTime === undefined) {
       res.status(400).send({
-          message: 'Missing parameters', required: ['productId', 'brandId', 'customerId', 'priceId', 'paymentMethodId', 'purchaseId']
+          message: 'Missing parameters', required: ['productId', 'brandId', 'customerId', 'priceId', 'paymentMethodId', 'purchaseId', 'expirationTime']
       });
       return;
   }
-  let result = await (0, subscription_1.createSubscription)(req.body.customerId, req.body.priceId, req.body.brandId, req.body.productId, req.body.paymentMethodId, req.body.purchaseId);
+  v2_1.logger.info('created new suscription');
+  let result = await (0, subscription_1.createSubscription)(req.body.customerId, req.body.priceId, req.body.brandId, req.body.productId, req.body.paymentMethodId, req.body.purchaseId, req.body.expirationTime);
   if (result.error == null) {
       res.send(result.data).status(200);
   }
