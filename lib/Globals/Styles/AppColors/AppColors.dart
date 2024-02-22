@@ -21,4 +21,7 @@ class AppColors {
   static const Color red = Colors.red;
   static const Color ligthRed = Color(0xFFFF5D5D);
 
+  // Stripe Colors
+  static const Color stripeColor = Color(0xFF5433FF);
+
 }

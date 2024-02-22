@@ -73,7 +73,12 @@ class Constants {
   static String mambaProfesionalGif = "assets/animations/graph.gif";
   static String mobileProDark = "assets/animations/mambaMobileBlack.gif";
   static String mobileProLight = "assets/animations/mambaMobileWhite.gif";
-  static String stripeOnboardingOne = "assets/animations/stripeOnboardingOne.gif";
+  // Lottie
+  static String stripeOnboardingOne = "assets/animations/stripeOnboardingOne.json";
+  static String stripeOnboardingTwo = "assets/animations/stripeOnboardingTwo.json";
+  static String stripeOnboardingThree = "assets/animations/stripeOnboardingThree.json";
+  static String stripeOnboardingFour = "assets/animations/stripeOnboardingFour.json";
+  static String stripeOnboardingFive = "assets/animations/stripeOnboardingFive.json";
 
   // Emojis
   static String relaxedEmojiImage = "assets/images/relaxedEmojiImage.png";
