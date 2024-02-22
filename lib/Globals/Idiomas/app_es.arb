@@ -3883,11 +3883,11 @@
   "@stripeBankTransferDesc": {
     "description": "stripeAccountDescription message"
   },
-  "stripePlatform": "Contando con Stripe",
+  "stripePlatform": "Colaboración con Stripe",
   "@stripeBankTransfer": {
     "description": "stripeAccountText message"
   },
-  "stripePlatformDesc": "Con Stripe obtén una solución segura y confiable que te libera para crecer y mejorar la experiencia de compra de tus clientes.",
+  "stripePlatformDesc": "Obtén una solución segura y confiable que te libera para crecer y mejorar la experiencia de compra de tus clientes.",
   "@stripeBankTransferDesc": {
     "description": "stripeAccountDescription message"
   },
@@ -3899,4 +3899,53 @@
   "@stripeBankTransferDesc": {
     "description": "stripeAccountDescription message"
   },
+  "stripePlatformSecurity": "Solución Segura",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripePlatformSecurityDesc": "Reputación impecable en cuanto a seguridad y fiabilidad.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripePlatformIntegrado": "Integración Total",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripePlatformIntegradoDesc": "Integrada plenamente en Mamba, para una experiencia sencilla.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeComissions": "Comisiones",
+  "@stripeComissions": {
+    "description": "stripeAccountText message"
+  },
+  "stripeComissionsDesc": "Stripe define las las tarifas por sus servicios. Mamba añade lo necesario para mantener nuestra plataforma sostenible.",
+  "@stripeComissionsDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeComissionsPayment": "Tarifas por Transacción",
+  "@stripeComissionsPayment": {
+    "description": "stripeAccountText message"
+  },
+  "stripeComissionsPaymentDesc": "1,5 % + 0,25 € para tarjetas estándar del Espacio Económico Europeo.",
+  "@stripeComissionsPaymentDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeComissionsTransfer": "Tarifas por Transferencia",
+  "@stripeComissionsTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripeComissionsTransferDesc": "0,25 % + 0,10 € por transferencia enviada.",
+  "@stripeComissionsTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeComissionsMamba": "Tarifas por Servicio",
+  "@stripeComissionsMamba": {
+    "description": "stripeAccountText message"
+  },
+  "stripeComissionsMambaDesc": "1% por transacción dentro de la plataforma.",
+  "@stripeComissionsMambaDesc": {
+    "description": "stripeAccountDescription message"
+  }
+
 }
