@@ -873,6 +873,13 @@
   "autoRenovation": "Renovació automàtica",
   "notRenovation": "Renovació desactivada",
   "cantDeletePurchase": "Per eliminar la compra origianl d'una membresia, hauràs d'eliminar les seves compres relacionades",
-  "stripeAccountText": "Pagos In-App",
-  "stripeAccountDescription": "Permet als teus clients pagar les teves tarifes directament des de l'aplicació amb la seva targeta. Els cobraments s'automatitzen, rebent els diners al teu banc en 3 dies laborals.\n\nTot sota una comissió del 3.42% per transacció (2.42% per Stripe i 1% per Mamba). Stripe és la plataforma líder en el sector de pagament online, totes les transaccions i pagaments són conforme als termes i condicions de Stripe."
+  "stripeAccountText": "Pagaments In-App",
+  "stripeAccountDescription": "Permet que els teus clients paguin les teves tarifes directament des de l'aplicació. Automatitza els cobraments i rep els diners directament al teu compte bancari.",
+  "stripePaymentMethodDescription": "Facilita el procés de pagament oferint mètodes ràpids i senzills per abonar les teves tarifes.",
+  "stripeBankTransfer": "Transferències Automàtiques",
+  "stripeBankTransferDesc": "Els teus ingressos es transferiran directament i de manera automàtica a la teva compte bancària de forma recurrent.",
+  "stripeBankTransferDaily": "Tancament Diari",
+  "stripeBankTransferDailyDesc": "Transferència diària dels ingressos al tancar la jornada.",
+  "stripeBankTransferTransit": "Període de Trànsit",
+  "stripeBankTransferTransitDesc": "De 1 a 3 dies basat en l'entitat bancària."
 }

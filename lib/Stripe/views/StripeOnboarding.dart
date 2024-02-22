@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:provider/provider.dart';
 
 class StripeOnboarding extends StatefulWidget {
@@ -60,7 +62,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   width: double.infinity,
                   color:
                       Theme.of(context).colorScheme.secondary.withOpacity(0.33),
@@ -86,8 +88,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             .withOpacity(0.33),
                       ),
                       Container(
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.1),
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.width * 0.1,
+                          bottom: MediaQuery.of(context).size.width * 0.05,
+                          right: MediaQuery.of(context).size.width * 0.1,
+                          left: MediaQuery.of(context).size.width * 0.1,
+                        ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: const BorderRadius.only(
@@ -101,8 +107,10 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Page Title
                                 Text(
-                                  "Pagos In-App",
+                                  AppLocalizations.of(context)!
+                                      .stripeAccountText,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -112,35 +120,93 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.02),
-                                RichText(
+                                // Page Description
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .stripeAccountDescription,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
-                                  text: TextSpan(
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(height: 1.5),
-                                    children: [
-                                      TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .trainersOnboardingDesc
-                                            .split(" ")[0],
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge
-                                            ?.copyWith(
-                                                decoration:
-                                                    TextDecoration.underline),
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withOpacity(0.08),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Center(
+                                      child: Icon(
+                                        FontAwesomeIcons.one,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        size: 30,
                                       ),
-                                      TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .trainersOnboardingDesc
-                                            .substring(
-                                                AppLocalizations.of(context)!
-                                                    .trainersOnboardingDesc
-                                                    .split(" ")[0]
-                                                    .length),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!.bonoSimple,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Text(
+                                    AppLocalizations.of(context)!
+                                        .bonoSimpleText,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withOpacity(0.08),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.repeat,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        size: 30,
                                       ),
-                                    ],
+                                    ),
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!.bonoRecurrent,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Text(
+                                    AppLocalizations.of(context)!
+                                        .bonoRecurrentText,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
                                   ),
                                 ),
                               ],
@@ -222,7 +288,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   width: double.infinity,
                   color:
                       Theme.of(context).colorScheme.secondary.withOpacity(0.33),
@@ -246,8 +312,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             .withOpacity(0.33),
                       ),
                       Container(
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.1),
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.width * 0.1,
+                          bottom: MediaQuery.of(context).size.width * 0.05,
+                          right: MediaQuery.of(context).size.width * 0.1,
+                          left: MediaQuery.of(context).size.width * 0.1,
+                        ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: const BorderRadius.only(
@@ -261,8 +331,9 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Page Title
                                 Text(
-                                  "Payment Method",
+                                  "${AppLocalizations.of(context)!.paymentMethod.split(" ")[0]} ${AppLocalizations.of(context)!.paymentMethod.split(" ")[1]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.paymentMethod.split(" ")[2])}",
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -272,35 +343,119 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.02),
-                                RichText(
+                                // Page Description
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .stripePaymentMethodDescription,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
-                                  text: TextSpan(
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(height: 1.5),
-                                    children: [
-                                      TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .trainersOnboardingDesc
-                                            .split(" ")[0],
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge
-                                            ?.copyWith(
-                                                decoration:
-                                                    TextDecoration.underline),
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.03),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withOpacity(0.08),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Center(
+                                      child: Container(
+                                        margin: const EdgeInsets.all(5),
+                                        child: Image(
+                                          image:
+                                              AssetImage(Constants.imageCard),
+                                        ),
                                       ),
-                                      TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .trainersOnboardingDesc
-                                            .substring(
-                                                AppLocalizations.of(context)!
-                                                    .trainersOnboardingDesc
-                                                    .split(" ")[0]
-                                                    .length),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .cardPaymentMethod,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.02,
+                                ),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withOpacity(0.08),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Center(
+                                      child: Container(
+                                        margin: const EdgeInsets.all(10),
+                                        child: Image(
+                                          image: AssetImage(Constants.google),
+                                        ),
                                       ),
-                                    ],
+                                    ),
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .googlePayPaymentMethod,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.02,
+                                ),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withOpacity(0.08),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Center(
+                                      child: Container(
+                                        margin: const EdgeInsets.all(10),
+                                        child: Image(
+                                          image: AssetImage(Constants.apple),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .applePayPaymentMethod,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
                                   ),
                                 ),
                               ],
@@ -389,7 +544,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   width: double.infinity,
                   color:
                       Theme.of(context).colorScheme.secondary.withOpacity(0.33),
@@ -413,8 +568,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             .withOpacity(0.33),
                       ),
                       Container(
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.1),
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.width * 0.1,
+                          bottom: MediaQuery.of(context).size.width * 0.05,
+                          right: MediaQuery.of(context).size.width * 0.1,
+                          left: MediaQuery.of(context).size.width * 0.1,
+                        ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: const BorderRadius.only(
@@ -428,8 +587,10 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Page Title
                                 Text(
-                                  "Banc Transfer",
+                                  AppLocalizations.of(context)!
+                                      .stripeBankTransfer,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -439,35 +600,94 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.02),
-                                RichText(
+                                // Page Description
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .stripeBankTransferDesc,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
-                                  text: TextSpan(
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(height: 1.5),
-                                    children: [
-                                      TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .trainersOnboardingDesc
-                                            .split(" ")[0],
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge
-                                            ?.copyWith(
-                                                decoration:
-                                                    TextDecoration.underline),
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withOpacity(0.08),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.cached,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        size: 30,
                                       ),
-                                      TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .trainersOnboardingDesc
-                                            .substring(
-                                                AppLocalizations.of(context)!
-                                                    .trainersOnboardingDesc
-                                                    .split(" ")[0]
-                                                    .length),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripeBankTransferDaily,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripeBankTransferDailyDesc,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withOpacity(0.08),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.east,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        size: 30,
                                       ),
-                                    ],
+                                    ),
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripeBankTransferTransit,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripeBankTransferTransitDesc,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
                                   ),
                                 ),
                               ],
@@ -556,7 +776,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   width: double.infinity,
                   color: AppColors.stripeColor.withOpacity(0.33),
                   child: Center(
@@ -569,7 +789,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                           color: AppColors.white,
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.3,
+                          height: MediaQuery.of(context).size.height * 0.25,
                           child: Lottie.asset(
                             Constants.stripeOnboardingFour,
                             fit: BoxFit.fill,
@@ -586,8 +806,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                         color: AppColors.stripeColor.withOpacity(0.33),
                       ),
                       Container(
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.1),
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.width * 0.1,
+                          bottom: MediaQuery.of(context).size.width * 0.05,
+                          right: MediaQuery.of(context).size.width * 0.1,
+                          left: MediaQuery.of(context).size.width * 0.1,
+                        ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: const BorderRadius.only(
@@ -601,8 +825,9 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Page Title
                                 Text(
-                                  "Stripe",
+                                  AppLocalizations.of(context)!.stripePlatform,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -612,35 +837,130 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.02),
-                                RichText(
+                                // Page Description
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .stripePlatformDesc,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
-                                  text: TextSpan(
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(height: 1.5),
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Stack(
+                                    alignment: Alignment.center,
                                     children: [
-                                      TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .trainersOnboardingDesc
-                                            .split(" ")[0],
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge
-                                            ?.copyWith(
-                                                decoration:
-                                                    TextDecoration.underline),
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.lightGrey,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0),
+                                          ),
+                                        ),
                                       ),
-                                      TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .trainersOnboardingDesc
-                                            .substring(
-                                                AppLocalizations.of(context)!
-                                                    .trainersOnboardingDesc
-                                                    .split(" ")[0]
-                                                    .length),
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        decoration: BoxDecoration(
+                                            color: AppColors.stripeColor
+                                                .withOpacity(0.33),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5.0))),
+                                        child: const Center(
+                                          child: Icon(
+                                            FontAwesomeIcons.one,
+                                            color: AppColors.white,
+                                            size: 30,
+                                          ),
+                                        ),
                                       ),
                                     ],
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripePlatformLeader,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripePlatformLeaderDesc,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.lightGrey,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        decoration: BoxDecoration(
+                                            color: AppColors.stripeColor
+                                                .withOpacity(0.33),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5.0))),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.lock_outlined,
+                                            color: AppColors.white,
+                                            size: 30,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripePlatformLeader,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripePlatformLeaderDesc,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
                                   ),
                                 ),
                               ],
@@ -729,7 +1049,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   width: double.infinity,
                   color: AppColors.stripeColor.withOpacity(0.33),
                   child: Center(
@@ -892,7 +1212,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   width: double.infinity,
                   color:
                       Theme.of(context).colorScheme.secondary.withOpacity(0.33),

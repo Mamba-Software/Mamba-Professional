@@ -125,10 +125,6 @@ class _BrandInfoState extends State<BrandInfo>
   bool ShowTextExpired = true;
   final _topSnackBar = TopSnackBarDef();
 
-  // Stripe Read More
-  bool readMore = false;
-  int? lines;
-
   // App Bar and Scroll View
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
@@ -153,8 +149,7 @@ class _BrandInfoState extends State<BrandInfo>
                 appBarExpanded = false;
               }),
       );
-    canEdit = currentUser.brandRole < 2 ? true : false;
-    lines = 3;
+    canEdit = currentUser.brandRole < 2 ? true : false;    
     initBrand();
   }
 
@@ -2656,59 +2651,14 @@ class _BrandInfoState extends State<BrandInfo>
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Expanded(
-              child: TextButton(
-                onPressed: () async {
-                  setState(() {
-                    readMore = !readMore;
-                    if (readMore) {
-                      lines = null;
-                    } else {
-                      lines = 3;
-                    }
-                  });
-                },
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Theme.of(context)
-                      .colorScheme
-                      .background
-                      .withOpacity(0.2)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0),
-                    ),
-                  ),
-                  padding: MaterialStateProperty.all(EdgeInsets.zero),
-                ),
-                child: RichText(
-                  textAlign: TextAlign.left,
-                  maxLines: lines,
-                  overflow:
-                      readMore ? TextOverflow.visible : TextOverflow.ellipsis,
-                  text: TextSpan(
-                    style: Theme.of(context).textTheme.bodySmall,
-                    children: [
-                      TextSpan(
-                        text:
-                            "${AppLocalizations.of(context)!.stripeAccountDescription}. ",
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      TextSpan(
-                        text: !readMore
-                            ? AppLocalizations.of(context)!.readMore
-                            : AppLocalizations.of(context)!.readLess,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(decoration: TextDecoration.underline),
-                      ),
-                    ],
-                  ),
-                ),
+              child: Text(
+                AppLocalizations.of(context)!.stripeAccountDescription,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.left,
               ),
             ),
           ],
-        ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+        ),SizedBox(height: MediaQuery.of(context).size.height * 0.03),
       ],
     );
   }

@@ -3851,9 +3851,52 @@
   "@stripeAccountText": {
     "description": "stripeAccountText message"
   },
-  "stripeAccountDescription": "Permite que tus clientes paguen tus tarifas directamente desde la aplicación con su tarjeta. Los cobros se automatizan, recibiendo el dinero en tu banco en 3 días laborales.\n\nTodo bajo una comisión del 3.42% por transacción (2.42% para Stripe y 1% para Mamba). Stripe es la plataforma líder en el sector de pago online, todas las transacciones y pagos son conforme a los términos y condiciones de Stripe",
+  "stripeAccountDescription": "Permite que tus clientes paguen tus tarifas directamente desde la aplicación. Automatitza los cobros y recibe el dinero directamente en tu banco.",
   "@stripeAccountDescription": {
     "description": "stripeAccountDescription message"
-  }
-
+  },
+  "stripePaymentMethodDescription": "Facilita el proceso de pago ofreciendo métodos rápidos y sencillos para abonar tus tarifas.",
+  "@stripePaymentMethodDescription": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeBankTransfer": "Transferencias Automáticas",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripeBankTransferDesc": "Tus ingresos se transferirán directa y automáticamente a tu cuenta bancaria de manera recurrente.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeBankTransferDaily": "Cierre Diario",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripeBankTransferDailyDesc": "Transferencia diaria de ingresos al cerrar la jornada.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeBankTransferTransit": "Periodo de Tránsito",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripeBankTransferTransitDesc": "De 1 a 3 días basado en la entidad bancaria.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripePlatform": "Contando con Stripe",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripePlatformDesc": "Con Stripe obtén una solución segura y confiable que te libera para crecer y mejorar la experiencia de compra de tus clientes.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripePlatformLeader": "Lider Indiscutible",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripePlatformLeaderDesc": "Principal referente global en la industria de pagos online.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
 }
