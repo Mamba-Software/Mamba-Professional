@@ -950,14 +950,72 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ),
                                   title: Text(
                                     AppLocalizations.of(context)!
-                                        .stripePlatformLeader,
+                                        .stripePlatformSecurity,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                     textAlign: TextAlign.left,
                                   ),
                                   subtitle: Text(
                                     AppLocalizations.of(context)!
-                                        .stripePlatformLeaderDesc,
+                                        .stripePlatformSecurityDesc,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.lightGrey,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        decoration: BoxDecoration(
+                                            color: AppColors.stripeColor
+                                                .withOpacity(0.33),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5.0))),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.list_alt_outlined,
+                                            color: AppColors.white,
+                                            size: 30,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripePlatformIntegrado,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripePlatformIntegradoDesc,
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.left,
@@ -1069,8 +1127,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                         color: AppColors.stripeColor.withOpacity(0.33),
                       ),
                       Container(
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.1),
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.width * 0.1,
+                          bottom: MediaQuery.of(context).size.width * 0.05,
+                          right: MediaQuery.of(context).size.width * 0.1,
+                          left: MediaQuery.of(context).size.width * 0.1,
+                        ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: const BorderRadius.only(
@@ -1084,8 +1146,10 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Page Title
                                 Text(
-                                  "Comisiones",
+                                  AppLocalizations.of(context)!
+                                      .stripeComissions,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -1095,35 +1159,170 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.02),
-                                RichText(
+                                // Page Description
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .stripeComissionsDesc,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
-                                  text: TextSpan(
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(height: 1.5),
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Stack(
+                                    alignment: Alignment.center,
                                     children: [
-                                      TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .trainersOnboardingDesc
-                                            .split(" ")[0],
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge
-                                            ?.copyWith(
-                                                decoration:
-                                                    TextDecoration.underline),
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.lightGrey,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0),
+                                          ),
+                                        ),
                                       ),
-                                      TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .trainersOnboardingDesc
-                                            .substring(
-                                                AppLocalizations.of(context)!
-                                                    .trainersOnboardingDesc
-                                                    .split(" ")[0]
-                                                    .length),
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        decoration: BoxDecoration(
+                                            color: AppColors.stripeColor
+                                                .withOpacity(0.33),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5.0))),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.credit_card_outlined,
+                                            color: AppColors.white,
+                                            size: 30,
+                                          ),
+                                        ),
                                       ),
                                     ],
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripeComissionsPayment,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripeComissionsPaymentDesc,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.lightGrey,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
+                                        decoration: BoxDecoration(
+                                            color: AppColors.stripeColor
+                                                .withOpacity(0.33),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5.0))),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.credit_card_outlined,
+                                            color: AppColors.white,
+                                            size: 30,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripeComissionsTransfer,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripeComissionsTransferDesc,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                // Page Content
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withOpacity(0.33),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.send_to_mobile_outlined,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        size: 30,
+                                      ),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripeComissionsMamba,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Text(
+                                    AppLocalizations.of(context)!
+                                        .stripeComissionsMambaDesc,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
                                   ),
                                 ),
                               ],

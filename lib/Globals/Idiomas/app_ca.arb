@@ -881,5 +881,13 @@
   "stripeBankTransferDaily": "Tancament Diari",
   "stripeBankTransferDailyDesc": "Transferència diària dels ingressos al tancar la jornada.",
   "stripeBankTransferTransit": "Període de Trànsit",
-  "stripeBankTransferTransitDesc": "De 1 a 3 dies basat en l'entitat bancària."
+  "stripeBankTransferTransitDesc": "De 1 a 3 dies basat en l'entitat bancària.",
+  "stripePlatform": "Col·laboració amb Stripe",
+  "stripePlatformDesc": "Aconsegueix una solució segura i fiable que et permet créixer i millorar l'experiència de compra dels teus clients.",
+  "stripePlatformLeader": "Referent Global",
+  "stripePlatformLeaderDesc": "Referent mundial en la indústria de pagaments en línia.",
+  "stripePlatformSecurity": "Seguretat Garantida",
+  "stripePlatformSecurityDesc": "Reputació impecable en seguretat i fiabilitat.",
+  "stripePlatformIntegrado": "Integració Completa",
+  "stripePlatformIntegradoDesc": "Totalment integrat a Mamba, per a una experiència senzilla."
 }
