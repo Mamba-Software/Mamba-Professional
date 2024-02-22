@@ -146,7 +146,6 @@ class BonosUtils {
 
   double getPurchasePrice(Brand brand, Bono bono, Condition condition) {
     double price = bono.price!;
-    double priceResta = 0;
     DateTime today = DateTime.now();
     brand.paymentTerms ??= 2;
 
@@ -157,39 +156,41 @@ class BonosUtils {
       return price;
     }
 
+    DateTime dayOfNextMonths = today;
+    DateTime fromDay = today;
+    DateTime firstDayOfMonth = DateTime(today.year, today.month, 1);
+    DateTime fifthDayOfMonth = DateTime(today.year, today.month, 15);
+
     if (brand.paymentTerms != 2) {
       if (today.day != 1) {
-        final firstDayOfNextMonth = DateTime(today.year, today.month + 1, 1);
-        final firstDayOfMonth = DateTime(today.year, today.month, 1);
-        final fifthDayOfMonth = DateTime(today.year, today.month, 15);
-
-        int allDaysMonth =
-            firstDayOfNextMonth.difference(firstDayOfMonth).inDays;
-        int diferenceToFirstDay =
-            firstDayOfNextMonth.difference(today).inDays + 1;
-
-        if (condition.expirationTime == 60) {
-          price = price / 2;
-          priceResta = price;
+        if (condition.expirationTime == 30) {
+          dayOfNextMonths = DateTime(today.year, today.month + 1, 1);
+        } else if (condition.expirationTime == 60) {
+          dayOfNextMonths = DateTime(today.year, today.month + 2, 1);
         } else if (condition.expirationTime == 90) {
-          price = price / 3;
-          priceResta = price * 2;
+          dayOfNextMonths = DateTime(today.year, today.month + 3, 1);
         }
-
         //Prorrateación
         if (brand.paymentTerms == 0) {
-          price = price / allDaysMonth;
-          price = price * diferenceToFirstDay;
-          price = price + priceResta;
+          fromDay = DateTime(today.year, today.month, today.day);
         }
         //Mitad y mitad
         if (brand.paymentTerms == 1) {
           if (today.isAfter(fifthDayOfMonth)) {
-            price = (price / 2) + priceResta;
+            fromDay = DateTime(today.year, today.month, 15);
           } else {
-            price = bono.price!;
+            fromDay = DateTime(today.year, today.month, 1);
           }
         }
+
+        int daysSubscription =
+            dayOfNextMonths.difference(firstDayOfMonth).inDays;
+        int diferenceToNextSubscription =
+            dayOfNextMonths.difference(fromDay).inDays;
+
+        price = price / daysSubscription;
+
+        price = price * diferenceToNextSubscription;
       }
     }
     String truncatedString =
