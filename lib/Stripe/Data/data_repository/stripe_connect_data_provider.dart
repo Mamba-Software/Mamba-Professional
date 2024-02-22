@@ -67,4 +67,16 @@ class StripeConnectDataProvider {
     }
     return response;
   }
+
+  static Future cancelSubscription({required String subscriptionId}) async {
+    //TODO CANCEL SUB DESDE PRO
+    /*
+    http.Response result =
+        await http.post(Uri.parse("${AppConstants.baseUrl}/cancelSubscription"),
+            headers: {"Content-Type": "application/json"},
+            body: json.encode({
+              "subscriptionId": subscriptionId,
+            }));
+    return result;*/
+  }
 }

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createSubscription = exports.getPaymentMethods = void 0;
+exports.createSubscription = exports.getPaymentMethods = exports.cancelSubscription = void 0;
 const constants_1 = require("../utils/constants");
 const helper_functions_1 = require("../utils/helper_functions");
 async function getPaymentMethods(userId) {
@@ -67,21 +67,87 @@ async function getPaymentMethods(userId) {
     }
 }
 exports.getPaymentMethods = getPaymentMethods;
-async function createSubscription(customerId, priceId, brandId, productId, paymentMethodId) {
+async function createSubscription(customerId, priceId, brandId, productId, paymentMethodId, purchaseId, expirationTime) {
+    const v2_1 = require("firebase-functions/v2");
     try {
-        let subscription = await constants_1.stripe.subscriptions.create({
+        let brandData = await constants_1.brandCollection.doc(brandId).get();
+        let brandPaymentTerms = brandData.data().paymentTerms;
+        let subscription = null;
+        const now = new Date();
+        let addMonth = 1;
+
+        v2_1.logger.info(now.getDate());
+        v2_1.logger.info(brandPaymentTerms);
+        
+        if (now.getDate() !== 1 && brandPaymentTerms !== null && brandPaymentTerms !== 2) {
+        
+        const startOfToday = Math.floor(new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000);
+        const fifthDayMonth = new Date(now.getFullYear(), now.getMonth(), 15);
+        const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const firstOfMonthMath = Math.floor(firstOfMonth.getTime() / 1000);
+        if(expirationTime === '30') {
+            addMonth = 1;
+        }
+        else if(expirationTime === '60')
+        {
+            addMonth = 2;
+        }
+        else if(expirationTime === '90') 
+        {
+            addMonth = 3;
+        }
+        const nextMonth = new Date(now.getFullYear(), now.getMonth() + addMonth, 1);
+        const fifthDatMath = Math.floor(fifthDayMonth.getTime() / 1000);
+        const billingCycleAnchor = Math.floor(nextMonth.getTime() / 1000);
+        
+        let dayTouse = 0;
+        if(brandPaymentTerms === 0) {
+            dayTouse = startOfToday;
+        }
+        else {
+            if (now >= fifthDayMonth) {
+                dayTouse = fifthDatMath;
+            } else {
+                dayTouse = firstOfMonthMath;
+            }
+        }
+
+          subscription = await constants_1.stripe.subscriptions.create({
             customer: customerId,
             items: [
                 { price: priceId },
             ],
             default_payment_method: paymentMethodId,
+            backdate_start_date: dayTouse,
+            billing_cycle_anchor: billingCycleAnchor,
+            proration_behavior: 'create_prorations',
             metadata: {
                 'brandId': brandId,
                 'customerId': customerId,
                 'productId': productId,
                 'priceId': priceId,
+                'purchaseId': purchaseId,
             }
         });
+        }
+        else {
+
+          subscription = await constants_1.stripe.subscriptions.create({
+            customer: customerId,
+            items: [
+                { price: priceId },
+            ],
+            default_payment_method: paymentMethodId,
+            proration_behavior: 'none',
+            metadata: {
+                'brandId': brandId,
+                'customerId': customerId,
+                'productId': productId,
+                'priceId': priceId,
+                'purchaseId': purchaseId,
+            }
+        });
+    }
         return { data: subscription, error: null };
     }
     catch (e) {
@@ -90,4 +156,16 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
     }
 }
 exports.createSubscription = createSubscription;
+
+async function cancelSubscription(subscriptionId) {
+    try {
+        let subscription = await constants_1.stripe.subscriptions.cancel(subscriptionId);
+        return { data: subscription, error: null };
+    }
+    catch (e) {
+        console.log(e);
+        return { data: null, error: e };
+    }
+}
+exports.cancelSubscription = cancelSubscription;
 //# sourceMappingURL=subscription.js.map

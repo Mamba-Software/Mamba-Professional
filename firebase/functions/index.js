@@ -52,7 +52,12 @@ sgMail.setApiKey(envConfig.sendGridApiKey);
 const { v4: uuidv4 } = require('uuid');
 
 const express = require("express");
+const stripe_1 = require("stripe");
 const constants_1 = require("./lib/utils/constants");
+constants_1.stripe = new stripe_1.default(envConfig.secretKey, {
+  apiVersion: "2023-10-16",
+  typescript: false,
+});
 const v2_2 = require("firebase-functions/v2");
 const stripe_connect_1 = require("./lib/stripe_connect/stripe_connect");
 // import bodyParser = require('body-parser');
@@ -3895,10 +3900,11 @@ app.get('/createAccount', async (req, res) => {
 });
 
   exports.onBonosCreateForStripeProd = functions.region("europe-west1").firestore.document('Brands/{brandId}/Bonos/{bonoId}').onCreate(async (snap, context) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _p, _q;
     v2_1.logger.info('created a new bono');
     try {
         let brandData = await constants_1.brandCollection.doc(context.params.brandId).get();
+        if(brandData.data().stripeActivated === true && snap.data().isRecurrent === true) {
         let productData = {
             productId: snap.id,
             brandId: context.params.brandId,
@@ -3908,18 +3914,21 @@ app.get('/createAccount', async (req, res) => {
             active: (_d = snap.data()) === null || _d === void 0 ? void 0 : _d.isActive,
             priceId: (_f = (_e = snap.data()) === null || _e === void 0 ? void 0 : _e.priceId) !== null && _f !== void 0 ? _f : null,
             price: ((_h = (_g = snap.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
+            expirationTime: snap.data().expirationTime,
         };
         (0, products_1.createProduct)(productData);
+      }
     }
     catch (e) {
         v2_1.logger.error(e);
     }
 });
 exports.onBonosUpdatedForStripeProd = functions.region("europe-west1").firestore.document('Brands/{brandId}/Bonos/{bonoId}').onUpdate(async (snap, context) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
     try {
         v2_1.logger.info('updated a bono');
         let brandData = await constants_1.brandCollection.doc(context.params.brandId).get();
+        if(brandData.data().stripeActivated === true && snap.after.data().isRecurrent === true) {
         let productData = {
             productId: snap.after.id,
             brandId: context.params.brandId,
@@ -3929,11 +3938,16 @@ exports.onBonosUpdatedForStripeProd = functions.region("europe-west1").firestore
             active: (_d = snap.after.data()) === null || _d === void 0 ? void 0 : _d.isActive,
             priceId: (_f = (_e = snap.after.data()) === null || _e === void 0 ? void 0 : _e.priceId) !== null && _f !== void 0 ? _f : null,
             price: ((_h = (_g = snap.after.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
+            expirationTime:  snap.after.data().expirationTime,
         };
         (0, products_1.updateProduct)(productData);
-        if (((_j = snap.before.data()) === null || _j === void 0 ? void 0 : _j.price) !== ((_k = snap.after.data()) === null || _k === void 0 ? void 0 : _k.price)) {
-            (0, products_1.updatePrice)((_l = snap.after.data()) === null || _l === void 0 ? void 0 : _l.priceId, ((_o = (_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.price) !== null && _o !== void 0 ? _o : 0) * 100, snap.after.id);
+        if (
+          ((_j = snap.before.data()) === null || _j === void 0 ? void 0 : _j.price) !== ((_k = snap.after.data()) === null || _k === void 0 ? void 0 : _k.price) ||
+          ((_l = snap.before.data()) === null || _l === void 0 ? void 0 : _l.expirationTime) !== ((_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.expirationTime)
+        ) {
+            (0, products_1.updatePrice)((_l = snap.after.data()) === null || _l === void 0 ? void 0 : _l.priceId, ((_o = (_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.price) !== null && _o !== void 0 ? _o : 0) * 100, snap.after.id, snap.after.data().expirationTime);
         }
+      }
     }
     catch (e) {
         v2_1.logger.error(e);
@@ -3958,20 +3972,20 @@ catch (e) {
 exports.stripeApi = functions.region("europe-west1").https.onRequest(app);
 exports.webhookListenerAccount = functions.region("europe-west1").https.onRequest(async (request, res) => {
     try {
-        let signingSecret = constants_1.webhookSecretForAccount;
+        let signingSecret = envConfig.webhookSecretForAccount;
         let sig = request.headers['stripe-signature'];
         let event = constants_1.stripe.webhooks.constructEvent(request.rawBody, sig, signingSecret);
         let result = await (0, hook_1.webhookHandler)(event);
         res.status(200).send(result);
     }
     catch (e) {
-        v2_1.logger.error(e);
+        v2_1.logger.error(e.message);
         res.status(400).send(e);
     }
 });
 exports.webhookListenerConnect = functions.region("europe-west1").https.onRequest(async (request, res) => {
     try {
-        let signingSecret = constants_1.webhookSecretForConnect;
+        let signingSecret = envConfig.webhookSecretForConnect;
         let sig = request.headers['stripe-signature'];
         let event = constants_1.stripe.webhooks.constructEvent(request.rawBody, sig, signingSecret);
         let result = await (0, hook_1.webhookHandler)(event);
@@ -4088,13 +4102,31 @@ app.get('/paymentMethod', async (req, res) => {
 /* --------------------------- create subscription -------------------------- */
 app.post('/createSubscription', async (req, res) => {
   console.log(req.body);
-  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.customerId === undefined || req.body.priceId === undefined || req.body.paymentMethodId === undefined) {
+  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.customerId === undefined || req.body.priceId === undefined || req.body.paymentMethodId === undefined, req.body.purchaseId === undefined, req.body.expirationTime === undefined) {
       res.status(400).send({
-          message: 'Missing parameters', required: ['productId', 'brandId', 'customerId', 'priceId', 'paymentMethodId']
+          message: 'Missing parameters', required: ['productId', 'brandId', 'customerId', 'priceId', 'paymentMethodId', 'purchaseId', 'expirationTime']
       });
       return;
   }
-  let result = await (0, subscription_1.createSubscription)(req.body.customerId, req.body.priceId, req.body.brandId, req.body.productId, req.body.paymentMethodId);
+  v2_1.logger.info('created new suscription');
+  let result = await (0, subscription_1.createSubscription)(req.body.customerId, req.body.priceId, req.body.brandId, req.body.productId, req.body.paymentMethodId, req.body.purchaseId, req.body.expirationTime);
+  if (result.error == null) {
+      res.send(result.data).status(200);
+  }
+  else {
+      res.send(result.error).status(400);
+  }
+});
+/* --------------------------- cancel subscription -------------------------- */
+app.post('/cancelSubscription', async (req, res) => {
+  console.log(req.body);
+  if (req.body.subscriptionId === undefined) {
+      res.status(400).send({
+          message: 'Missing parameters', required: ['subscriptionId']
+      });
+      return;
+  }
+  let result = await (0, subscription_1.cancelSubscription)(req.body.subscriptionId );
   if (result.error == null) {
       res.send(result.data).status(200);
   }
