@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
@@ -30,6 +31,7 @@ class _StripeWebViewState extends State<StripeWebView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightGrey,
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height * 0.04,
         backgroundColor:
@@ -82,7 +84,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   LoadingView(
-                    color: Theme.of(context).primaryColor,
+                    color: AppColors.black,
                     hasLogo: false,
                     isSmall: true,
                   ),
@@ -108,7 +110,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   LoadingView(
-                    color: Theme.of(context).primaryColor,
+                    color: AppColors.black,
                     hasLogo: false,
                     isSmall: true,
                   ),
@@ -134,7 +136,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                   Icon(
                     Icons.report_outlined,
                     size: MediaQuery.of(context).size.width * 0.15,
-                    color: Theme.of(context).primaryColor,
+                    color: AppColors.black,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
@@ -158,7 +160,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                   Icon(
                     Icons.report_outlined,
                     size: MediaQuery.of(context).size.width * 0.15,
-                    color: Theme.of(context).primaryColor,
+                    color: AppColors.black,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
