@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
@@ -10,10 +11,15 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
+import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
 import 'package:mamba_castelldefels/Stripe/views/StripeWebView.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class StripeOnboarding extends StatefulWidget {
-  const StripeOnboarding({super.key});
+  bool? isStarted;
+  bool? isFinished;
+  StripeOnboarding({super.key, this.isStarted, this.isFinished});
 
   @override
   _StripeOnboardingState createState() => _StripeOnboardingState();
@@ -24,21 +30,28 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
   final _locationDataService = LocationDataService();
   // Wellcome Pages
   int _currentPage = 0;
-  final int _numPages = 4;
-  final PageController _pageController = PageController(initialPage: 0);
+  late PageController _pageController;
   // Brand Location
-  Location location = Location();
+  bool locationLoaded = false;
+  Location? location;
+  // Web View Controller
+  WebViewController? controller;
 
   @override
   void initState() {
     mixpanel!.track('onboarding_find_trainers');
+    _currentPage = widget.isStarted! || widget.isFinished! ? 6 : 0;
+    _pageController = PageController(initialPage: _currentPage);
     getLocationFromId(currentBrand.baseLocation!);
+    controller = WebViewController();
     super.initState();
   }
 
   Future<void> getLocationFromId(String locationId) async {
     location = await _locationDataService.getSingleLocation(locationId);
-    setState(() {});
+    setState(() {
+      locationLoaded = true;
+    });
   }
 
   @override
@@ -1529,9 +1542,9 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      location.id == null
+                                      locationLoaded == false
                                           ? "${currentBrand.city!}, ${currentBrand.zipCode!}"
-                                          : location.description!,
+                                          : location!.description!,
                                       style:
                                           Theme.of(context).textTheme.bodySmall,
                                       textAlign: TextAlign.left,
@@ -2732,86 +2745,90 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               .displayLarge,
                                           textAlign: TextAlign.left,
                                         ),
-                                        // Page Content
                                         SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.08,
-                                          child: ListTile(
-                                            contentPadding: EdgeInsets.zero,
-                                            leading: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.05,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.05,
-                                                    decoration: BoxDecoration(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary
-                                                          .withOpacity(0.20),
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                        Radius.circular(5.0),
-                                                      ),
-                                                      image: DecorationImage(
-                                                        fit: BoxFit.cover,
-                                                        image:
-                                                            CachedNetworkImageProvider(
-                                                                currentUser
-                                                                    .imageUrl!),
-                                                        opacity: 1,
-                                                      ),
-                                                    ),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.01),
+                                        // Page Content
+                                        ListTile(
+                                          minVerticalPadding: 0,
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.05,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.05,
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                      .withOpacity(0.20),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(5.0),
                                                   ),
-                                                ]),
-                                            title: Text(
-                                              currentUser.name!,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium,
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            subtitle: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  currentUser.dateOfBirth!,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall,
-                                                  textAlign: TextAlign.left,
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image:
+                                                        CachedNetworkImageProvider(
+                                                            currentUser
+                                                                .imageUrl!),
+                                                    opacity: 1,
+                                                  ),
                                                 ),
-                                                Text(
-                                                  currentUser.email!,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall,
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
+                                          ),
+                                          title: Text(
+                                            currentUser.name!,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium,
+                                            textAlign: TextAlign.left,
+                                          ),
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                currentUser.dateOfBirth!,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
+                                                textAlign: TextAlign.left,
+                                              ),
+                                              Text(
+                                                currentUser.email!,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ],
                                           ),
                                         ),
+                                        SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.01),
                                         // Page Content
                                         SizedBox(
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height *
-                                              0.08,
+                                              0.065,
                                           child: ListTile(
+                                            minVerticalPadding: 0,
                                             contentPadding: EdgeInsets.zero,
                                             leading: Container(
                                               height: MediaQuery.of(context)
@@ -2848,20 +2865,14 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
-                                            subtitle: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  location.id == null
-                                                      ? "${currentBrand.city!}, ${currentBrand.zipCode!}"
-                                                      : location.description!,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall,
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                              ],
+                                            subtitle: Text(
+                                              locationLoaded == false
+                                                  ? "${currentBrand.city!}, ${currentBrand.zipCode!}"
+                                                  : location!.description!,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall,
+                                              textAlign: TextAlign.left,
                                             ),
                                           ),
                                         ),
@@ -2870,8 +2881,9 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height *
-                                              0.08,
+                                              0.055,
                                           child: ListTile(
+                                            minVerticalPadding: 0,
                                             contentPadding: EdgeInsets.zero,
                                             leading: Stack(
                                               alignment: Alignment.center,
@@ -2940,13 +2952,19 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                             ),
                                           ),
                                         ),
+                                        SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.02),
                                         // Page Content
                                         SizedBox(
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height *
-                                              0.08,
+                                              0.07,
                                           child: ListTile(
+                                            minVerticalPadding: 0,
                                             contentPadding: EdgeInsets.zero,
                                             leading: Stack(
                                               alignment: Alignment.center,
@@ -3028,14 +3046,26 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               0.05,
                                         ),
                                         GestureDetector(
-                                          onTap: () async {
+                                          onTap: () {
+                                            dynamic result;
                                             Navigator.push(
                                               context,
-                                              CupertinoPageRoute<void>(
-                                                builder: (context) =>
-                                                    StripeWebView(),
-                                              ),
-                                            );
+                                              CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      StripeWebView()),
+                                            ).then((value) {
+                                              // Handle the result here
+                                              result = value;
+                                              print(
+                                                  "Navigation result: $result");
+                                            }).whenComplete(() {
+                                              if (result != null &&
+                                                  result is UserStripeModel) {
+                                                Navigator.of(context).pop(
+                                                  (context, result),
+                                                );
+                                              }
+                                            });
                                           },
                                           child: Material(
                                             elevation: 4,
@@ -3061,8 +3091,18 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                           30)),
                                               child: Center(
                                                 child: Text(
-                                                  AppLocalizations.of(context)!
-                                                      .crearCuentaStripe,
+                                                  widget.isStarted! == false
+                                                      ? AppLocalizations.of(
+                                                              context)!
+                                                          .crearCuentaStripe
+                                                      : widget.isFinished! ==
+                                                              false
+                                                          ? AppLocalizations.of(
+                                                                  context)!
+                                                              .completarCuentaStripe
+                                                          : AppLocalizations.of(
+                                                                  context)!
+                                                              .editarCuentaStripe,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .displaySmall
@@ -3117,7 +3157,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.03),
+                                                0.055),
                                       ],
                                     ),
                                   ],

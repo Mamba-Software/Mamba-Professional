@@ -120,6 +120,14 @@ class Brand {
       baseLocation = documentSnapshot.get("baseLocation").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('city')) {
+      city = documentSnapshot.get("city").toString();
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('zipCode')) {
+      zipCode = documentSnapshot.get("zipCode").toString();
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('numClients')) {
       numClients = documentSnapshot.get("numClients");
     }

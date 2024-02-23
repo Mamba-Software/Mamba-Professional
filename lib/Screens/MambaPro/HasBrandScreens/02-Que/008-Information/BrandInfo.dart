@@ -149,7 +149,7 @@ class _BrandInfoState extends State<BrandInfo>
                 appBarExpanded = false;
               }),
       );
-    canEdit = currentUser.brandRole < 2 ? true : false;    
+    canEdit = currentUser.brandRole < 2 ? true : false;
     initBrand();
   }
 
@@ -2593,26 +2593,23 @@ class _BrandInfoState extends State<BrandInfo>
                         ? (bool newVal) async {
                             if (newVal) {
                               // Get Stripe Link
-                              context
-                                  .read<StripeConnectCubit>()
-                                  .getLink(currentBrand);
+                              await context.read<StripeConnectCubit>().getLink(currentBrand);                              
                               // Show Stripe Onboarding
-                              navigateToStripeOnboarding();
+                              await navigateToStripeOnboarding(false, false);
                               // Check If Sripe Is Activated
-                              currentBrand.stripeAccountId =
-                                  await _brandDataService
-                                      .getBrandStripeAccount(currentBrand.id!);
+                              currentBrand.stripeAccountId = await _brandDataService.getBrandStripeAccount(currentBrand.id!);
                               if (currentBrand.stripeAccountId != '') {
                                 isStripeActive = true;
                               }
                             } else {
                               if (isStripeActive && !currentBrand.isVerified) {
+                                
                                 // Get Stripe Link
-                                context
+                                await context
                                     .read<StripeConnectCubit>()
-                                    .getLink(currentBrand);
+                                    .getLink(currentBrand);                                                                                              
                                 // Show Stripe Onboarding
-                                var result = navigateToStripeOnboarding();
+                                var result = await navigateToStripeOnboarding(true, false);
                                 // Check Result
                                 if (result != null &&
                                     result is UserStripeModel) {
@@ -2627,6 +2624,9 @@ class _BrandInfoState extends State<BrandInfo>
                                   isStripeActive = true;
                                 }
                               } else {
+                                // Edit or Desactive
+                                //var result = navigateToStripeOnboarding(true, false);
+                                // Verify if you want to desactivate so easliy
                                 isStripeActive = newVal;
                               }
                             }
@@ -2657,18 +2657,21 @@ class _BrandInfoState extends State<BrandInfo>
               ),
             ),
           ],
-        ),SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
       ],
     );
   }
 
-  dynamic navigateToStripeOnboarding() async {
-    await Navigator.push(
+  dynamic navigateToStripeOnboarding(bool isStarted, bool isFinished) async {
+    return Navigator.push(
       context,
-      CupertinoPageRoute<String>(
-        builder: (context) => const StripeOnboarding(),
-        settings: const RouteSettings(name: 'StripeOnboarding'),
+      CupertinoPageRoute<bool>(
+        builder: (context) => StripeOnboarding(
+          isStarted: isStarted,
+          isFinished: isFinished,
+        ),
       ),
-    );
+    );    
   }
 }
