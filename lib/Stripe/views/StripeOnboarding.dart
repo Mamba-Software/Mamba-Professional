@@ -3055,23 +3055,21 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                   0.8,
                                               padding: const EdgeInsets.all(5),
                                               decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
+                                                  color: Colors.green,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           30)),
                                               child: Center(
                                                 child: Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .next,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .displaySmall
-                                                        ?.copyWith(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColorDark)),
+                                                  AppLocalizations.of(context)!
+                                                      .crearCuentaStripe,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .displaySmall
+                                                      ?.copyWith(
+                                                        color: AppColors.white,
+                                                      ),
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -3119,7 +3117,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.1),
+                                                0.03),
                                       ],
                                     ),
                                   ],

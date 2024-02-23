@@ -904,5 +904,8 @@
   "stripePhoneNumber": "Número de Telèfon",
   "stripePhoneNumberDesc": "Rebràs un codi de verificació.",
   "stripeBankAccount": "Compte Bancari",
-  "stripeBankAccountDesc": "Rebràs els ingressos de les teves tarifes."
+  "stripeBankAccountDesc": "Rebràs els ingressos de les teves tarifes.",
+  "crearCuentaStripe": "Crear compte de Stripe",
+  "completarCuentaStripe": "Completar compte de Stripe",
+  "editarCuentaStripe": "Editar compte de Stripe "
 }

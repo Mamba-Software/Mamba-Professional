@@ -3974,5 +3974,18 @@
   "stripeBankAccountDesc": "Recibirás los ingresos de tus tarifas.",
   "@stripeBankAccountDesc": {
     "description": "stripeAccountDescription message"
+  },
+  "crearCuentaStripe": "Crear cuenta de Stripe",
+  "@connectToStripe": {
+    "description": "stripeAccountDescription message"
+  },
+  "completarCuentaStripe": "Completar cuenta de Stripe",
+  "@completarCuentaStripe": {
+    "description": "stripeAccountDescription message"
+  },
+  "editarCuentaStripe": "Editar cuenta de Stripe ",
+  "@editarCuentaStripe": {
+    "description": "stripeAccountDescription message"
   }
+
 }
