@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -9,6 +10,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Stripe/views/StripeWebView.dart';
 
 class StripeOnboarding extends StatefulWidget {
   const StripeOnboarding({super.key});
@@ -3027,10 +3029,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                         ),
                                         GestureDetector(
                                           onTap: () async {
-                                            _pageController.nextPage(
-                                              duration: const Duration(
-                                                  milliseconds: 500),
-                                              curve: Curves.easeIn,
+                                            Navigator.push(
+                                              context,
+                                              CupertinoPageRoute<void>(
+                                                builder: (context) =>
+                                                    StripeWebView(),
+                                              ),
                                             );
                                           },
                                           child: Material(
