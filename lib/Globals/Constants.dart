@@ -79,6 +79,7 @@ class Constants {
   static String stripeOnboardingThree = "assets/animations/stripeOnboardingThree.json";
   static String stripeOnboardingFour = "assets/animations/stripeOnboardingFour.json";
   static String stripeOnboardingFive = "assets/animations/stripeOnboardingFive.json";
+  static String stripeOnboardingSix = "assets/animations/stripeOnboardingSix.json";
 
   // Emojis
   static String relaxedEmojiImage = "assets/images/relaxedEmojiImage.png";

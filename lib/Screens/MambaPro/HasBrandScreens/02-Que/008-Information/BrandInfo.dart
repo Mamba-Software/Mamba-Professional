@@ -2589,14 +2589,13 @@ class _BrandInfoState extends State<BrandInfo>
                   width: MediaQuery.of(context).size.width * 0.1,
                   child: CupertinoSwitch(
                     value: isStripeActive,
-                    onChanged: canEdit
+                    onChanged: canEdit && currentBrand.adminID == currentUser.id
                         ? (bool newVal) async {
                             if (newVal) {
                               // Get Stripe Link
                               context
                                   .read<StripeConnectCubit>()
                                   .getLink(currentBrand);
-
                               // Show Stripe Onboarding
                               navigateToStripeOnboarding();
                               // Check If Sripe Is Activated

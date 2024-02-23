@@ -889,5 +889,20 @@
   "stripePlatformSecurity": "Seguretat Garantida",
   "stripePlatformSecurityDesc": "Reputació impecable en seguretat i fiabilitat.",
   "stripePlatformIntegrado": "Integració Completa",
-  "stripePlatformIntegradoDesc": "Totalment integrat a Mamba, per a una experiència senzilla."
+  "stripePlatformIntegradoDesc": "Totalment integrat a Mamba, per a una experiència senzilla.",
+  "stripeComissions": "Comissions",
+  "stripeComissionsDesc": "Stripe defineix les tarifes pels seus serveis. Mamba afegeix el necessari per mantenir la nostra plataforma sostenible.",
+  "stripeComissionsPayment": "Per Transacció",
+  "stripeComissionsPaymentDesc": "1,5 % + 0,25 € per a targetes estàndard de l'Espai Econòmic Europeu.",
+  "stripeComissionsTransfer": "Per Transferència",
+  "stripeComissionsTransferDesc": "0,25 % + 0,10 € per transferència enviada.",
+  "stripeComissionsMamba": "Servei i Gestió",
+  "stripeComissionsMambaDesc": "1% per transacció realitzada dins de la plataforma.",
+  "stripeSummary": "Resum",
+  "stripeYourAccount": "Compte de Stripe",
+  "stripeYourAccountDesc": "Preomplirem el teu compte de Stripe amb aquestes dades. És important que coincideixin. Només hauràs d'afegir el teu telèfon i compte bancari per finalitzar.",
+  "stripePhoneNumber": "Número de Telèfon",
+  "stripePhoneNumberDesc": "Rebràs un codi de verificació.",
+  "stripeBankAccount": "Compte Bancari",
+  "stripeBankAccountDesc": "Rebràs els ingressos de les teves tarifes."
 }

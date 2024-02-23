@@ -3923,7 +3923,7 @@
   "@stripeComissionsDesc": {
     "description": "stripeAccountDescription message"
   },
-  "stripeComissionsPayment": "Tarifas por Transacción",
+  "stripeComissionsPayment": "Por Transacción",
   "@stripeComissionsPayment": {
     "description": "stripeAccountText message"
   },
@@ -3931,7 +3931,7 @@
   "@stripeComissionsPaymentDesc": {
     "description": "stripeAccountDescription message"
   },
-  "stripeComissionsTransfer": "Tarifas por Transferencia",
+  "stripeComissionsTransfer": "Por Transferencia",
   "@stripeComissionsTransfer": {
     "description": "stripeAccountText message"
   },
@@ -3939,13 +3939,40 @@
   "@stripeComissionsTransferDesc": {
     "description": "stripeAccountDescription message"
   },
-  "stripeComissionsMamba": "Tarifas por Servicio",
+  "stripeComissionsMamba": "Servicio y Gestión",
   "@stripeComissionsMamba": {
     "description": "stripeAccountText message"
   },
-  "stripeComissionsMambaDesc": "1% por transacción dentro de la plataforma.",
+  "stripeComissionsMambaDesc": "1% por transacción realizada dentro de la plataforma.",
   "@stripeComissionsMambaDesc": {
     "description": "stripeAccountDescription message"
+  },
+  "stripeSummary": "Resumen",
+  "@stripeSummary": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeYourAccount": "Cuenta de Stripe",
+  "@stripeYourAccount": {
+    "description": "stripeAccountText message"
+  },
+  "stripeYourAccountDesc": "Prellenaremos tu cuenta de Stripe con estos datos. Es importante que coincidan. Solo deberás añadir tu teléfono y cuenta bancaria para finalizar.",
+  "@stripeYourAccountDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripePhoneNumber": "Número de Teléfono",
+  "@stripePhoneNumber": {
+    "description": "stripeAccountText message"
+  },
+  "stripePhoneNumberDesc": "Recibirás un códgio de verificación.",
+  "@stripePhoneNumberDesc": {
+    "description": "stripeAccountText message"
+  },
+  "stripeBankAccount": "Cuenta Bancaria",
+  "@stripeBankAccount": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeBankAccountDesc": "Recibirás los ingresos de tus tarifas.",
+  "@stripeBankAccountDesc": {
+    "description": "stripeAccountDescription message"
   }
-
 }
