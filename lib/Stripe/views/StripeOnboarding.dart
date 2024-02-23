@@ -3119,7 +3119,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.05),
+                                                0.1),
                                       ],
                                     ),
                                   ],
