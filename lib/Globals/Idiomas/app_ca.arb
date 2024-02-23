@@ -907,5 +907,10 @@
   "stripeBankAccountDesc": "Rebràs els ingressos de les teves tarifes.",
   "crearCuentaStripe": "Crear compte de Stripe",
   "completarCuentaStripe": "Completar compte de Stripe",
-  "editarCuentaStripe": "Editar compte de Stripe "
+  "editarCuentaStripe": "Editar compte de Stripe",  
+  "stripeAccountDeactivate": "Segur que vols desactivar els pagaments des de l'aplicació?",
+  "stripeAccountDeactivateDesc": "Els teus clients ja no podran pagar les tarifes directament des de l'aplicació; els pagaments i cobraments deixaran de ser automatitzats, i totes les subscripcions actives seran cancel·lades.\n\nSelecciona editar per revisar les condicions o veure el teu perfil de Stripe.",
+  "stripeConnecting": "Connectant amb Stripe...",
+  "stripeConnectionSuccessful": "Connexió amb Stripe finalitzada correctament...",
+  "stripeError": "Problema de comunicació amb Stripe. Torna-ho a intentar, si us plau."
 }

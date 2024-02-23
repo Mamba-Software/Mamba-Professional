@@ -2592,11 +2592,7 @@ class _BrandInfoState extends State<BrandInfo>
                     value: isStripeActive,
                     onChanged: canEdit && currentBrand.adminID == currentUser.id
                         ? (bool newVal) async {
-                            if (newVal) {
-                              // Get Stripe Link
-                              context
-                                  .read<StripeConnectCubit>()
-                                  .getLink(currentBrand);
+                            if (newVal) {                              
                               // Show Stripe Onboarding
                               await navigateToStripeOnboarding(false, false);
                               // Check If Sripe Is Activated
@@ -2607,11 +2603,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 isStripeActive = true;
                               }
                             } else {
-                              if (isStripeActive && !currentBrand.isVerified) {
-                                // Get Stripe Link
-                                context
-                                    .read<StripeConnectCubit>()
-                                    .getLink(currentBrand);
+                              if (isStripeActive && !currentBrand.isVerified) {                                
                                 // Show Stripe Onboarding
                                 var result = await navigateToStripeOnboarding(
                                     true, false);
@@ -2679,7 +2671,7 @@ class _BrandInfoState extends State<BrandInfo>
   dynamic navigateToStripeOnboarding(bool isStarted, bool isFinished) async {
     return Navigator.push(
       context,
-      CupertinoPageRoute<bool>(
+      CupertinoPageRoute(
         builder: (context) => StripeOnboarding(
           isStarted: isStarted,
           isFinished: isFinished,

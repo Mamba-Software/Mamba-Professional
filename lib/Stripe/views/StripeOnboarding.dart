@@ -1,17 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
 import 'package:mamba_castelldefels/Stripe/views/StripeWebView.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -3057,10 +3056,11 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               // Handle the result here
                                               result = value;
                                               print(
-                                                  "Navigation result: $result");
+                                                  "Stripe Connexion Result: $result");
+                                              
                                             }).whenComplete(() {
                                               if (result != null &&
-                                                  result is UserStripeModel) {
+                                                  result is Brand) {
                                                 Navigator.of(context).pop(
                                                   (context, result),
                                                 );
