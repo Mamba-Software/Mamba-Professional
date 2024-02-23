@@ -89,7 +89,6 @@ class Bootstrap {
       FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
       // Firebase Dynamic Links
       DynamicLinkUtils().retrieveDynamicLink();
-
       /// Production and Staging Only
       if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Global Uncaught Errors

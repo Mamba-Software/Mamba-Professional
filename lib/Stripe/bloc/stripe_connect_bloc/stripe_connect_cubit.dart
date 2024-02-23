@@ -14,12 +14,13 @@ class StripeConnectCubit extends Cubit<StripeConnectState> {
   StripeConnectRepository stripeConnectRepository = StripeConnectRepository();
   final BrandDataService _brandDataService = BrandDataService();
 
-  void getLink(Brand trainerData) async {
+  Future<void> getLink(Brand trainerData) async {
     brand = trainerData;
     emit(StripeConnectGettingLink());
     (String?, String?) result =
         await stripeConnectRepository.createAccount(brand);
-    if (result.$1 != null) {
+    if (result.$1 != null) {      
+      print("Get Link");
       print(result.$1);
       emit(StripeConnectGetLinkSuccess(result.$1!));
     } else {
