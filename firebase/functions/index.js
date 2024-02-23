@@ -127,6 +127,27 @@ exports.scheduledDailyFunction = functions
       }
     });
 
+// Daily for purchases
+exports.scheduledCheckBonoFunction = functions
+.region("europe-west1")
+.pubsub
+.schedule('every day 00:00')
+.timeZone('Europe/Madrid')
+.onRun( async (context) => {
+  var today = new Date();
+  const todayNew = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  functions.logger.log("Empezamos", todayNew);
+
+  // Ejecutar subfunciones
+  await processGracePeriodPurchases();
+  await processRegularPurchasesExpTime();
+  await processDirectAndRecurrentPurchases();
+
+  functions.logger.log("Función ejecutada correctamente", todayNew);
+  return { result: "Success", executionDate: today.toISOString() };
+      
+});
+
 // Daily Notification For Events
 exports.monthlyProductUpdates = functions
 .region("europe-west1")
@@ -3851,6 +3872,7 @@ async function processRegularPurchasesExpTime() {
   const snapshot = await purchasesRef
     .where('isActive', '==', true)
     .where('isRecurrent', '==', false)
+    .where('expirationTime', '!=', 0)
     .get();
     //.where('expirationTime', '>', 0)
     
