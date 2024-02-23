@@ -2602,8 +2602,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 isStripeActive = true;
                               }
                             } else {
-                              if (isStripeActive && !currentBrand.isVerified) {
-                                
+                              if (isStripeActive && !currentBrand.isVerified) {                                
                                 // Get Stripe Link
                                 await context
                                     .read<StripeConnectCubit>()
