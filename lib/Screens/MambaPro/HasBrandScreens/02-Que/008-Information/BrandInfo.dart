@@ -2593,7 +2593,7 @@ class _BrandInfoState extends State<BrandInfo>
                         ? (bool newVal) async {
                             if (newVal) {
                               // Get Stripe Link
-                              await context.read<StripeConnectCubit>().getLink(currentBrand);                              
+                              context.read<StripeConnectCubit>().getLink(currentBrand);                              
                               // Show Stripe Onboarding
                               await navigateToStripeOnboarding(false, false);
                               // Check If Sripe Is Activated
@@ -2604,9 +2604,7 @@ class _BrandInfoState extends State<BrandInfo>
                             } else {
                               if (isStripeActive && !currentBrand.isVerified) {                                
                                 // Get Stripe Link
-                                await context
-                                    .read<StripeConnectCubit>()
-                                    .getLink(currentBrand);                                                                                              
+                                context.read<StripeConnectCubit>().getLink(currentBrand);                                                                                              
                                 // Show Stripe Onboarding
                                 var result = await navigateToStripeOnboarding(true, false);
                                 // Check Result

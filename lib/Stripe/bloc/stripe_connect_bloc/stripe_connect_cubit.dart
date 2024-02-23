@@ -14,7 +14,7 @@ class StripeConnectCubit extends Cubit<StripeConnectState> {
   StripeConnectRepository stripeConnectRepository = StripeConnectRepository();
   final BrandDataService _brandDataService = BrandDataService();
 
-  Future<void> getLink(Brand trainerData) async {
+  void getLink(Brand trainerData) async {
     brand = trainerData;
     emit(StripeConnectGettingLink());
     (String?, String?) result =
