@@ -176,6 +176,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('gracePeriod')) {
       gracePeriod = documentSnapshot.get("gracePeriod");
+    } else {
+      gracePeriod = 6;
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('maxCanWeek')) {
@@ -184,6 +186,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('paymentTerms')) {
       paymentTerms = documentSnapshot.get("paymentTerms");
+    } else {
+      paymentTerms = 2;
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('stripeAccountId')) {
@@ -200,6 +204,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('stripeActivated')) {
       stripeActivated = documentSnapshot.get("stripeActivated");
+    } else {
+      stripeActivated = false;
     }
   }
 
@@ -220,6 +226,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('paymentTerms')) {
       paymentTerms = documentSnapshot.get("paymentTerms");
+    } else {
+      paymentTerms = 2;
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('stripeAccountId')) {
@@ -232,6 +240,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('stripeActivated')) {
       stripeActivated = documentSnapshot.get("stripeActivated");
+    } else {
+      stripeActivated = false;
     }
   }
 
