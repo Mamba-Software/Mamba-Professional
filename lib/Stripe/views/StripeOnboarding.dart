@@ -3052,7 +3052,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               context,
                                               CupertinoPageRoute(
                                                   builder: (context) =>
-                                                      StripeWebView()),
+                                                      const StripeWebView()),
                                             ).then((value) {
                                               // Handle the result here
                                               result = value;
