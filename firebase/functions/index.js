@@ -29,13 +29,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.onBonosDeleteForStripe = exports.onBonosUpdatedForStripe = exports.onBonosCreateForStripe = exports.webhookListenerConnect = exports.webhookListenerAccount = exports.stripeApi = void 0;
 const serviceAccount = require('./service_key.json');
 const v2_1 = require("firebase-functions/v2");
-
+admin.initializeApp();
 // Initialize Firebase
-admin.initializeApp({
+/*admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://insights-books-app.firebaseio.com",
 }
-);
+); */
 const db = admin.firestore();
 
 // Environment-specific values
@@ -3053,6 +3053,8 @@ exports.UserPurchasesBono = functions
       "expirationTime": purchaseDoc.expirationTime,
       "directPurchase": purchaseDoc.directPurchase,
     };
+
+    
     
     if (purchaseDoc.purchaseGroupId != null) {
       purchaseData["purchaseGroupId"] = purchaseDoc.purchaseGroupId;
