@@ -3983,9 +3983,28 @@
   "@completarCuentaStripe": {
     "description": "stripeAccountDescription message"
   },
-  "editarCuentaStripe": "Editar cuenta de Stripe ",
+  "editarCuentaStripe": "Editar cuenta de Stripe",
   "@editarCuentaStripe": {
     "description": "stripeAccountDescription message"
+  },
+  "stripeAccountDeactivate": "¿Seguro que quieres desactivar los pagos desde la aplicación?",
+  "@stripeAccountText": {
+    "description": "stripeAccountText message"
+  },
+  "stripeAccountDeactivateDesc": "Tus clientes ya no podrán pagar las tarifas directamente desde la aplicación; los pagos y cobros dejarán de ser automatizados, y todas las suscripciones activas serán canceladas.\n\nSelecciona editar para revisar las condiciones o ver tu perfil de Stripe.",
+  "@stripeAccountDescription": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeConnecting": "Conectando con Stripe...",
+  "@stripeConnecting": {
+    "description": "stripeAccountText message"
+  },
+  "stripeConnectionSuccessfull": "Conexión con Stripe finalizada correctamente...",
+  "@stripeConnectionSuccessfull": {
+    "description": "stripeAccountText message"
+  },  
+  "stripeError": "Problema de comunicación con Stripe. Vuelve a intentarlo, por favor.",
+  "@stripeError": {
+    "description": "stripeAccountDescription message"
   }
-
 }
