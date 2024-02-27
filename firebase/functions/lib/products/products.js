@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatePrice = exports.deleteProduct = exports.updateProduct = exports.createProduct = void 0;
 const constants_1 = require("../utils/constants");
 const v2_1 = require("firebase-functions/v2");
-async function createProduct(productData) {
+async function createProduct(productData, stripeAccountId) {
     var _a;
     try {
         let result = await productAvailable(productData.productId);
@@ -30,7 +30,8 @@ async function createProduct(productData) {
                         interval: 'month',
                         interval_count: productData.expirationTime === 30 ? 1 : productData.expirationTime === 60 ? 2 : productData.expirationTime === 90 ? 3 : 1,
                     },
-                }
+                },
+                stripeAccount: stripeAccountId,
             });
             return { product };
         }

@@ -3940,7 +3940,7 @@ app.get('/createAccount', async (req, res) => {
             price: ((_h = (_g = snap.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
             expirationTime: snap.data().expirationTime,
         };
-        (0, products_1.createProduct)(productData);
+        (0, products_1.createProduct)(productData, brandData.data().stripeAccountId);
       }
     }
     catch (e) {
