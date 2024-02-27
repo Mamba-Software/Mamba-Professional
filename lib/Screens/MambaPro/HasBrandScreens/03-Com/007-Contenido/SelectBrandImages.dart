@@ -1,22 +1,18 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class SelectBrandImages extends StatefulWidget {
   String brandId;
 
-  SelectBrandImages({Key? key, required this.brandId}) : super(key: key);
+  SelectBrandImages({super.key, required this.brandId});
 
   @override
   _SelectBrandImagesState createState() => _SelectBrandImagesState();
@@ -48,7 +44,7 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
     isLoading = true;
     Future.delayed(Duration.zero, () {
       setState(() {
-        isLoadingText = AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+        isLoadingText = "${AppLocalizations.of(context)!.loading.split(".")[0]} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
       });
     });
     getBrandContentImages();
@@ -65,13 +61,13 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
       int currentImage = 1;
       setState(() {
         isLoading = true;
-        isLoadingText = AppLocalizations.of(context)!.adding+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+        isLoadingText = "${AppLocalizations.of(context)!.adding} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
         maxImagesAdded = false;
       });
       for (File f in temp) {
         // Updating Loading Text
         setState(() {
-          isLoadingTextExtra =  " (" + currentImage.toString()+"/"+temp.length.toString()+")";
+          isLoadingTextExtra =  " ($currentImage/${temp.length})";
         });
         currentImage += 1;
         await _brandDataService.addBrandContentPictureIndividual(widget.brandId, f);
@@ -119,8 +115,8 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
               children: [
                 Flexible(
                   child: Text(
-                      AppLocalizations.of(context)!.select+" "+AppLocalizations.of(context)!.photo.toLowerCase(),
-                      style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
+                      "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.photo.toLowerCase()}",
+                      style: Theme.of(context).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.w600),
                       textAlign: TextAlign.center
                   ),
                 ),
@@ -159,7 +155,7 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                             Flexible(
                               child: Text(
                                 AppLocalizations.of(context)!.yourImagesDescription,
-                                style: Theme.of(context).textTheme.caption,
+                                style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -173,7 +169,7 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                       child: Center(
                         child: Text(
                           AppLocalizations.of(context)!.addBrandPhotosMaxLeft((_maxImages-_imagesUploaded.length).toString()),
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -207,22 +203,22 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                                               ),
                                               //SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                               Text(
-                                                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.photos.toLowerCase(),
-                                                style: Theme.of(context).textTheme.caption,
+                                                "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.photos.toLowerCase()}",
+                                                style: Theme.of(context).textTheme.bodySmall,
                                                 textAlign: TextAlign.left,
                                               ),
                                             ],
                                           ),
                                           Text(
                                             AppLocalizations.of(context)!.photosDimensions,
-                                            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
+                                            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 10),
                                             textAlign: TextAlign.left,
                                           ),
                                         ],
                                       ),
                                       Text(
-                                        "("+_imagesUploaded.length.toString()+"/"+_maxImages.toString()+")",
-                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                                        "(${_imagesUploaded.length}/$_maxImages)",
+                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
                                         textAlign: TextAlign.left,
                                       ),
                                     ],

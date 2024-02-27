@@ -7,7 +7,7 @@ class SelectTimeDialog extends StatefulWidget {
   String title;
   DateTime startDate;
   bool onlyFuture;
-  SelectTimeDialog({Key? key, required this.title, required this.startDate, required this.onlyFuture}) : super(key: key);
+  SelectTimeDialog({super.key, required this.title, required this.startDate, required this.onlyFuture});
 
   @override
   _SelectTimeDialogDialogState createState() => _SelectTimeDialogDialogState();
@@ -26,7 +26,7 @@ class _SelectTimeDialogDialogState extends State<SelectTimeDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
       ),
       child: Container(
@@ -46,7 +46,7 @@ class _SelectTimeDialogDialogState extends State<SelectTimeDialog> {
                 Expanded(
                     child: Text(
                       widget.title,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center
                     )
                 ),
@@ -58,13 +58,13 @@ class _SelectTimeDialogDialogState extends State<SelectTimeDialog> {
                 child: CupertinoTheme(
                   data: CupertinoThemeData(
                       textTheme: CupertinoTextThemeData(
-                        dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+                        dateTimePickerTextStyle: Theme.of(context).textTheme.bodyLarge,
                       )
                   ),
                   child: CupertinoDatePicker(
                       mode: CupertinoDatePickerMode.time,
                       initialDateTime: DateTime(widget.startDate.year, widget.startDate.month, widget.startDate.day, widget.startDate.hour,widget.startDate.minute),
-                      minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(Duration(minutes: 1)): widget.startDate.subtract(Duration(days: 365*80)),
+                      minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(const Duration(minutes: 1)): widget.startDate.subtract(const Duration(days: 365*80)),
                       maximumDate: DateTime(widget.startDate.year, 12, 31, 0, 0),
                       use24hFormat: true,
                       minuteInterval: 15,
@@ -80,6 +80,7 @@ class _SelectTimeDialogDialogState extends State<SelectTimeDialog> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                   heroTag: "45",
                   onPressed: () {
                     Navigator.pop(context, pickedDate);
@@ -88,7 +89,7 @@ class _SelectTimeDialogDialogState extends State<SelectTimeDialog> {
                   icon: Container(),
                   label: Text(
                       AppLocalizations.of(context)!.confirm,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark)
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark)
                   ),
                 ),
               ],

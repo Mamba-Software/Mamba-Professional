@@ -1,6 +1,4 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import '../../GlobalVars.dart';
 
 //DynamicLinksUtils Class is used to administrate all the dynamic links, creations and gets
@@ -14,7 +12,7 @@ class DynamicLinkUtils {
       // The Dynamic Link URI domain. You can view created URIs on your Firebase console
       uriPrefix: 'https://mambastyleapp.page.link',
       // The deep Link passed to your application which you can use to affect change
-      link: Uri.parse('https://mambastyleapp.page.link/?id=${id}'),
+      link: Uri.parse('https://mambastyleapp.page.link/?id=$id'),
       //link: Uri.parse('https://mambastyleapp.page.link/Share'),
       // Android application details needed for opening correct app on device/Play Store
       androidParameters: const AndroidParameters(
@@ -28,7 +26,7 @@ class DynamicLinkUtils {
         minimumVersion: '1',
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
-          title: 'Únete a ' + brandName,
+          title: 'Únete a $brandName',
           description: '¡Haz clic para descargar Mamba!',
           imageUrl: Uri.parse(urlImage)),
     );
@@ -43,7 +41,7 @@ class DynamicLinkUtils {
       // The Dynamic Link URI domain. You can view created URIs on your Firebase console
       uriPrefix: 'https://mambastyleapp.page.link',
       // The deep Link passed to your application which you can use to affect change
-      link: Uri.parse('https://mambastyleapp.page.link/?id=${id}'),
+      link: Uri.parse('https://mambastyleapp.page.link/?id=$id'),
       //link: Uri.parse('https://mambastyleapp.page.link/Share'),
       // Android application details needed for opening correct app on device/Play Store
       androidParameters: const AndroidParameters(
@@ -57,7 +55,7 @@ class DynamicLinkUtils {
         minimumVersion: '1',
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
-          title: 'Únete a ' + brandName,
+          title: 'Únete a $brandName',
           description: '¡Haz clic para descargar Mamba!',
           imageUrl: Uri.parse(urlImage)),
     );
@@ -69,15 +67,15 @@ class DynamicLinkUtils {
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
     String title = "";
     if (isPrivate) {
-      title = '${userName} de ${brandName} te está invitando a un evento privado titulado ${eventName}';
+      title = '$userName de $brandName te está invitando a un evento privado titulado $eventName';
     } else {
-      title = '${userName} de ${brandName} te está invitando a un evento grupal titulado ${eventName}';
+      title = '$userName de $brandName te está invitando a un evento grupal titulado $eventName';
     }
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       // The Dynamic Link URI domain. You can view created URIs on your Firebase console
       uriPrefix: 'https://mambastyleapp.page.link',
       // The deep Link passed to your application which you can use to affect change
-      link: Uri.parse('https://mambastyleapp.page.link/?eventId=${eventId}'),
+      link: Uri.parse('https://mambastyleapp.page.link/?eventId=$eventId'),
       //link: Uri.parse('https://mambastyleapp.page.link/Share'),
       // Android application details needed for opening correct app on device/Play Store
       androidParameters: const AndroidParameters(

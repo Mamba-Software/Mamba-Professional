@@ -13,7 +13,7 @@ class BrandRequestsWidget extends StatefulWidget {
   double width = 0;
   ValueChanged<bool?> onClicked;
 
-  BrandRequestsWidget({Key? key, required this.height, required this.width, required this.brandId, required this.onClicked}) : super(key: key);
+  BrandRequestsWidget({super.key, required this.height, required this.width, required this.brandId, required this.onClicked});
 
   @override
   _BrandRequestsWidgetState createState() => _BrandRequestsWidgetState();
@@ -61,7 +61,7 @@ class _BrandRequestsWidgetState extends State<BrandRequestsWidget> {
                     height: widget.height,
                     width: widget.width,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                       borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
                     ),
                     child: Container(
@@ -99,7 +99,7 @@ class _BrandRequestsWidgetState extends State<BrandRequestsWidget> {
                                     Flexible(
                                       child: Text(
                                         AppLocalizations.of(context)!.myRequestsDesc,
-                                        style: Theme.of(context).textTheme.bodyText2,
+                                        style: Theme.of(context).textTheme.bodyMedium,
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -114,13 +114,13 @@ class _BrandRequestsWidgetState extends State<BrandRequestsWidget> {
                                     width: MediaQuery.of(context).size.width * 0.08,
                                     decoration: BoxDecoration(
                                         color: Theme.of(context).primaryColor,
-                                        borderRadius: BorderRadius.all(Radius.circular(15))
+                                        borderRadius: const BorderRadius.all(Radius.circular(15))
                                     ),
                                     child: Align(
                                       alignment: Alignment.center,
                                       child: Text(
                                           requests.toString(),
-                                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColorDark,),
+                                          style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColorDark,),
                                           textAlign: TextAlign.center
                                       ),
                                     ),

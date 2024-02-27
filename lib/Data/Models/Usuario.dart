@@ -1,14 +1,11 @@
 // Model for a User in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 
 import 'Brand.dart';
 import 'RequestToBrand.dart';
 
 class Usuario {
-
   String? id;
   String? notificationToken;
   String? email;
@@ -21,6 +18,7 @@ class Usuario {
   bool? isFirst;
   bool? isTrainer;
   bool? isPrivate;
+  bool? freeSession;
   bool? isAdmin;
   bool? isDark;
   int? gender;
@@ -52,6 +50,7 @@ class Usuario {
     this.isFirst,
     this.isTrainer,
     this.isPrivate,
+    this.freeSession,
     this.isAdmin,
     this.isDark,
     this.gender,
@@ -67,122 +66,164 @@ class Usuario {
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
-  Usuario.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
+  Usuario.fromObjectAllData(
+      String documentId, DocumentSnapshot documentSnapshot) {
     id = documentId;
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('notificationToken')) {
       notificationToken = documentSnapshot.get("notificationToken").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('email')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('email')) {
       email = documentSnapshot.get("email").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('name')) {
       name = documentSnapshot.get("name").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firstName')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('firstName')) {
       firstName = documentSnapshot.get("firstName").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('lastName')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('lastName')) {
       lastName = documentSnapshot.get("lastName").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('nick')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('nick')) {
       nick = documentSnapshot.get("nick").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('imageUrl')) {
       imageUrl = documentSnapshot.get("imageUrl").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('noImageUrl')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('noImageUrl')) {
       noImageUrl = documentSnapshot.get("noImageUrl").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isFirst')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isFirst')) {
       isFirst = documentSnapshot.get("isFirst");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isTrainer')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isTrainer')) {
       isTrainer = documentSnapshot.get("isTrainer");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isPrivate')) {
       isPrivate = documentSnapshot.get("isPrivate");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isAdmin')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isAdmin')) {
       isAdmin = documentSnapshot.get("isAdmin");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isDark')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isDark')) {
       isDark = documentSnapshot.get("isDark");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('gender')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('gender')) {
       gender = documentSnapshot.get("gender");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('dateJoined')) {
       dateJoined = documentSnapshot.get("dateJoined").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateOfBirth')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('dateOfBirth')) {
       dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('testGroup')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('testGroup')) {
       testGroup = documentSnapshot.get("testGroup").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('idioma')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('idioma')) {
       idioma = documentSnapshot.get("idioma").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandID')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('brandID')) {
       brandID = documentSnapshot.get("brandID").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('sessions')) {
       sessions = documentSnapshot.get("sessions").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchaseId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('purchaseId')) {
       purchaseId = documentSnapshot.get("purchaseId").toString();
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('freeSession')) {
+      freeSession = documentSnapshot.get("freeSession");
     }
   }
 
-  Usuario.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
+  Usuario.fromObjectOnlyCoverData(
+      String documentId, DocumentSnapshot documentSnapshot) {
     id = documentId;
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('name')) {
       name = documentSnapshot.get("name").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firstName')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('firstName')) {
       firstName = documentSnapshot.get("firstName").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('lastName')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('lastName')) {
       lastName = documentSnapshot.get("lastName").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('nick')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('nick')) {
       nick = documentSnapshot.get("nick").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('imageUrl')) {
       imageUrl = documentSnapshot.get("imageUrl").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('noImageUrl')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('noImageUrl')) {
       noImageUrl = documentSnapshot.get("noImageUrl").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isTrainer')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isTrainer')) {
       isTrainer = documentSnapshot.get("isTrainer");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('isPrivate')) {
       isPrivate = documentSnapshot.get("isPrivate");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('notificationToken')) {
       notificationToken = documentSnapshot.get("notificationToken").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('sessions')) {
       sessions = documentSnapshot.get("sessions").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('role')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('role')) {
       brandRole = documentSnapshot.get("role");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('lastEventAt')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('lastEventAt')) {
       lastEventAt = documentSnapshot.get("lastEventAt");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('gender')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('gender')) {
       gender = documentSnapshot.get("gender");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('dateJoined')) {
       dateJoined = documentSnapshot.get("dateJoined").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateOfBirth')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('dateOfBirth')) {
       dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchaseId')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('purchaseId')) {
       purchaseId = documentSnapshot.get("purchaseId").toString();
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('freeSession')) {
+      freeSession = documentSnapshot.get("freeSession");
     }
   }
 
@@ -211,6 +252,7 @@ class Usuario {
     brandID = user.brandID;
     sessions = user.sessions;
     active = user.active;
+    freeSession = user.freeSession;
   }
 
   // Requests

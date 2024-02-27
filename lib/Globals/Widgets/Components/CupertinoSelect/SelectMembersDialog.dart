@@ -6,7 +6,7 @@ class SelectMembersDialog extends StatefulWidget {
 
   String title;
   int initialMembers;
-  SelectMembersDialog({Key? key, required this.title, required this.initialMembers}) : super(key: key);
+  SelectMembersDialog({super.key, required this.title, required this.initialMembers});
 
   @override
   _SelectMembersDialogState createState() => _SelectMembersDialogState();
@@ -27,7 +27,7 @@ class _SelectMembersDialogState extends State<SelectMembersDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
       ),
       child: Container(
@@ -47,7 +47,7 @@ class _SelectMembersDialogState extends State<SelectMembersDialog> {
                 Expanded(
                     child: Text(
                       widget.title,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center
                     )
                 ),
@@ -59,11 +59,11 @@ class _SelectMembersDialogState extends State<SelectMembersDialog> {
                 child: CupertinoTheme(
                     data: CupertinoThemeData(
                         textTheme: CupertinoTextThemeData(
-                          dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
+                          dateTimePickerTextStyle: Theme.of(context).textTheme.bodyMedium,
                         )
                     ),
                     child: CupertinoPicker(
-                        scrollController: new FixedExtentScrollController(
+                        scrollController: FixedExtentScrollController(
                             initialItem: widget.initialMembers
                         ),
                         itemExtent: 40.0,
@@ -71,13 +71,13 @@ class _SelectMembersDialogState extends State<SelectMembersDialog> {
                         onSelectedItemChanged: (int index) {
                           pickedMembers = index+1;
                         },
-                        children: new List<Widget>.generate(
+                        children: List<Widget>.generate(
                             membersMax, (int index) {
                           var member = index+1;
-                          return new Center(
-                            child: new Text(
-                              "${member.toString()}",
-                              style: Theme.of(context).textTheme.bodyText1,
+                          return Center(
+                            child: Text(
+                              member.toString(),
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           );
                         }
@@ -91,6 +91,7 @@ class _SelectMembersDialogState extends State<SelectMembersDialog> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
                   heroTag: "44",
                   onPressed: () {
                     Navigator.pop(context, pickedMembers);
@@ -99,7 +100,7 @@ class _SelectMembersDialogState extends State<SelectMembersDialog> {
                   icon: Container(),
                   label: Text(
                       AppLocalizations.of(context)!.confirm,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark)
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark)
                   ),
                 ),
               ],

@@ -7,7 +7,7 @@ class FullscreenSliderDemo extends StatefulWidget {
   int initialImage;
   List<ImageObject>? images;
 
-  FullscreenSliderDemo({Key? key, required this.images, required this.initialImage}) : super(key: key);
+  FullscreenSliderDemo({super.key, required this.images, required this.initialImage});
 
   @override
   _FullscreenSliderDemoState createState() => _FullscreenSliderDemoState();
@@ -21,7 +21,7 @@ class _FullscreenSliderDemoState extends State<FullscreenSliderDemo> {
       body: Stack(
         children: [
           Center(
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height*0.7,
               child: Builder(
                 builder: (context) {
@@ -41,7 +41,7 @@ class _FullscreenSliderDemoState extends State<FullscreenSliderDemo> {
                           child: Stack(
                               children: [
                                 AnimatedPositioned(
-                                  duration: Duration(milliseconds: 333),
+                                  duration: const Duration(milliseconds: 333),
                                   curve: Curves.fastOutSlowIn,
                                   top: 0,
                                   bottom: 0,
@@ -75,11 +75,6 @@ class _FullscreenSliderDemoState extends State<FullscreenSliderDemo> {
                 child: MaterialButton(
                   padding: const EdgeInsets.all(15),
                   elevation: 0,
-                  child: Icon(
-                    Icons.arrow_back,
-                    color: Theme.of(context).primaryColor,
-                    size: 25,
-                  ),
                   color: Theme.of(context).primaryColorDark.withOpacity(0.5),
                   highlightElevation: 0,
                   minWidth: double.minPositive,
@@ -88,6 +83,11 @@ class _FullscreenSliderDemoState extends State<FullscreenSliderDemo> {
                     borderRadius: BorderRadius.circular(100),
                   ),
                   onPressed: () => Navigator.of(context).pop(),
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: Theme.of(context).primaryColor,
+                    size: 25,
+                  ),
                 ),
               ),
             ),

@@ -3,7 +3,6 @@ import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
@@ -11,9 +10,9 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 class NotificationService {
 
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
-  var _brandDataService = new BrandDataService();
-  var _eventDataService = new EventDataService();
+  final _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
+  final _eventDataService = EventDataService();
 
   NotificationService();
 

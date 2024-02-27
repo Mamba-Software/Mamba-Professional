@@ -1,23 +1,12 @@
 import 'dart:math';
 
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../Constants.dart';
-import '../../../../Styles/AppColors/AppColors.dart';
 
 class PaymentMethodStat extends StatefulWidget {
   List<Purchase> purchases;
@@ -26,8 +15,8 @@ class PaymentMethodStat extends StatefulWidget {
   PaymentMethodStat({
     required this.purchases,
     required this.context,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   PaymentMethodStatState createState() => PaymentMethodStatState();
@@ -44,7 +33,7 @@ class PaymentMethodStatState extends State<PaymentMethodStat> {
 
   String mostPaymentMethod = '';
 
-  TooltipBehavior _tooltipBehavior = TooltipBehavior(header: '', enable: true, tooltipPosition: TooltipPosition.pointer);
+  final TooltipBehavior _tooltipBehavior = TooltipBehavior(header: '', enable: true, tooltipPosition: TooltipPosition.pointer);
 
   @override
   void initState() {
@@ -139,39 +128,39 @@ class PaymentMethodStatState extends State<PaymentMethodStat> {
                       plotAreaBorderWidth: 0,
 
                       primaryYAxis: NumericAxis(
-                        majorTickLines: MajorTickLines(
+                        majorTickLines: const MajorTickLines(
                           width: 0,
                         ),
-                        labelStyle: TextStyle(color: Colors.transparent),
+                        labelStyle: const TextStyle(color: Colors.transparent),
                         labelPosition: ChartDataLabelPosition.inside,
 
                         //Hide the gridlines of x-axis
                         //majorGridLines: MajorGridLines(width: 0),
-                        majorGridLines: MajorGridLines(
+                        majorGridLines: const MajorGridLines(
                             dashArray: <double>[5,5]
                         ),
-                        minorGridLines: MinorGridLines(
+                        minorGridLines: const MinorGridLines(
                             dashArray: <double>[5,5]
                         ),
                         isVisible: true,
                         //Hide the axis line of x-axis
-                        axisLine: AxisLine(width: 0),
+                        axisLine: const AxisLine(width: 0),
                         borderWidth: 0,
 
                       ),
                       primaryXAxis: CategoryAxis(
                         interval: 1,
-                        majorTickLines: MajorTickLines(
+                        majorTickLines: const MajorTickLines(
                           width: 0,
                         ),
-                        labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 12)),
+                        labelStyle: (Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor, fontSize: 12)),
                         placeLabelsNearAxisLine: true,
                         //maximum: double.parse(maxNumber.toString()),
                         //isVisible: false,
                         //Hide the gridlines of x-axis
-                        majorGridLines: MajorGridLines(width: 0),
+                        majorGridLines: const MajorGridLines(width: 0),
                         //Hide the axis line of x-axis
-                        axisLine: AxisLine(width: 0),
+                        axisLine: const AxisLine(width: 0),
                       ),
                       series: <ChartSeries<PaymentMethodObject, String>>[
                         ColumnSeries<PaymentMethodObject, String>(
@@ -180,7 +169,7 @@ class PaymentMethodStatState extends State<PaymentMethodStat> {
                             yValueMapper: (PaymentMethodObject data, _) => data.times,
                             pointColorMapper: (PaymentMethodObject data, _) => data.color,
                             // Sets the corner radius
-                            borderRadius: BorderRadius.all(Radius.circular(5))
+                            borderRadius: const BorderRadius.all(Radius.circular(5))
                         )
                       ]
                   )
@@ -196,7 +185,7 @@ class PaymentMethodStatState extends State<PaymentMethodStat> {
                 child: Image.asset(Constants.emptyCalendar)
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.005),
-            Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+            Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
             SizedBox(height: MediaQuery.of(context).size.height*0.05),
           ],
         ) : Container(),

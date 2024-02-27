@@ -1,6 +1,5 @@
 // This class represents the Object <Event> that will be showed in the Calendar Widget.
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'Condition.dart';
 
 class Promotion {
   String? id;

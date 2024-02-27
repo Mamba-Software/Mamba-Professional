@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../../../Styles/AppColors/AppColors.dart';
 
 class GenderWidget extends StatefulWidget {
   final ValueChanged<int> selectedGenderChanged;
   final int? genderTemp;
-  GenderWidget({Key? key, required this.selectedGenderChanged, required this.genderTemp}) : super(key: key);
+  const GenderWidget({super.key, required this.selectedGenderChanged, required this.genderTemp});
 
   @override
   _GenderWidgetState createState() => _GenderWidgetState();
@@ -35,7 +34,7 @@ class _GenderWidgetState extends State<GenderWidget> {
   }
   Widget _icon(int index, {required String text, required IconData icon}) {
     return SizedBox.fromSize(
-      size: Size(90, 90), // button width and height
+      size: const Size(90, 90), // button width and height
       child: ClipOval(
         child: Material(
           shape: CircleBorder(
@@ -54,7 +53,7 @@ class _GenderWidgetState extends State<GenderWidget> {
                 Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Text(text,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),)
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),)
                 ),
               ],
             ),

@@ -1,8 +1,9 @@
 // Constants that are final and will NEVER change.
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Constants {
   // App Name
   static String appName = "Mamba";
-
 
   // Constant Assets
   static String logoExtended = "assets/images/ExtendedWhite.png";
@@ -23,17 +24,23 @@ class Constants {
   static String onboardingApp = "assets/images/OnboardingApp.png";
   static String onboardingFindBrand = "assets/images/OnboardingFindBrand.png";
   static String onboardingExercise = "assets/images/OnboardingExercise.png";
-  static String clientOnboardingImage = "assets/images/clientOnboardingImage.png";
+  static String clientOnboardingImage =
+      "assets/images/clientOnboardingImage.png";
 
   // Create Brand Infro
-  static String portadaCreateBrandIntro = "assets/images/PortadaCreateBrandInfo.png";
-  static String informationCreateBrandIntro = "assets/images/InformationCreateBrandIntro.png";
-  static String locationCreateBrandIntro = "assets/images/LocationCreateBrandIntro.png";
-  static String horarioCreateBrandIntro = "assets/images/HorarioCreateBrandIntro.png";
+  static String portadaCreateBrandIntro =
+      "assets/images/PortadaCreateBrandInfo.png";
+  static String informationCreateBrandIntro =
+      "assets/images/InformationCreateBrandIntro.png";
+  static String locationCreateBrandIntro =
+      "assets/images/LocationCreateBrandIntro.png";
+  static String horarioCreateBrandIntro =
+      "assets/images/HorarioCreateBrandIntro.png";
 
   static String imageCash = "assets/images/imageCash.png";
   static String imageTransfer = "assets/images/imageTransfer.png";
   static String imageGift = "assets/images/imageGift.png";
+  static String imageCard = "assets/images/imageCard.png";
   static String locationImage = "assets/images/locationImage.png";
   static String teamImage = "assets/images/teamImage.jpg";
   static String statisticsImage = "assets/images/statisticsImage.jpg";
@@ -58,12 +65,21 @@ class Constants {
   static String themeSystemImage = "assets/images/themeSystemImage.png";
   static String appUpdateImage = "assets/images/appUpdateImage.png";
   static String subscriptionImage = "assets/images/MambaProLogo.png";
+  static String mapsImg = "assets/images/map.png";
+  static String fitnessMapIcon = "assets/images/fitnessMapIcon.png";
 
   // Animations
   static String runningFemale = "assets/animations/runningFemale.gif";
   static String mambaProfesionalGif = "assets/animations/graph.gif";
   static String mobileProDark = "assets/animations/mambaMobileBlack.gif";
   static String mobileProLight = "assets/animations/mambaMobileWhite.gif";
+  // Lottie
+  static String stripeOnboardingOne = "assets/animations/stripeOnboardingOne.json";
+  static String stripeOnboardingTwo = "assets/animations/stripeOnboardingTwo.json";
+  static String stripeOnboardingThree = "assets/animations/stripeOnboardingThree.json";
+  static String stripeOnboardingFour = "assets/animations/stripeOnboardingFour.json";
+  static String stripeOnboardingFive = "assets/animations/stripeOnboardingFive.json";
+  static String stripeOnboardingSix = "assets/animations/stripeOnboardingSix.json";
 
   // Emojis
   static String relaxedEmojiImage = "assets/images/relaxedEmojiImage.png";
@@ -73,4 +89,15 @@ class Constants {
   static String fireEmojiImage = "assets/images/fireEmojiImage.png";
   static String clockEmojiImage = "assets/images/clockEmojiImage.png";
 
+  //STRIPE
+  static get userQuery => FirebaseFirestore.instance
+      .collection('Users')
+      .where('isTrainer', isEqualTo: false)
+      .where('isAdmin', isEqualTo: false);
+  static get brandQuery => FirebaseFirestore.instance.collection('Brands');
+  static get bonosCollection => 'TestBonos';
+  static get baseUrl =>
+      'https://europe-west1-mamba-fitness-dev.cloudfunctions.net/stripeApi';
+
+  static get merchantDisplayName => 'Mamba Software SL';
 }

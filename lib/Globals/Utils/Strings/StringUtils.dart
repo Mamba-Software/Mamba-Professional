@@ -4,16 +4,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // Text Styles contains all the TextStyles used in the App.
 class StringUtils {
 
-  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
+  String toCapitalized(String s) => s.isNotEmpty ?'${s[0].toUpperCase()}${s.substring(1)}':'';
 
-  String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
+  String undoCapitalized(String s) => s.isNotEmpty ?'${s[0].toLowerCase()}${s.substring(1)}':'';
 
   String capitalizedAllWords(String s) {
     var result = "";
     var arrayStrings = splitByChar(s, " ");
     for (var i=0; i<arrayStrings.length; i++) {
       String temp = toCapitalized(arrayStrings[i]);
-      result += temp+" ";
+      result += "$temp ";
     }
     return result.trim();
   }
@@ -52,7 +52,7 @@ class StringUtils {
     String hourSt = hour.toString();
     String minuteSt;
     if (minutes < 10) {
-      minuteSt = "0" + minutes.toString();
+      minuteSt = "0$minutes";
     } else {
       minuteSt = minutes.toString();
     }

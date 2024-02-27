@@ -22,13 +22,13 @@ class UserPurchaseCard extends StatelessWidget {
   final Purchase? purchase;
 
   const UserPurchaseCard({
-    Key? key,
+    super.key,
     required this.user,
     required this.brand,
     required this.bono,
     this.bonoRequest,
     this.purchase,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,9 @@ class UserPurchaseCard extends StatelessWidget {
       },
       child: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.03),
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.04,
+            vertical: MediaQuery.of(context).size.width * 0.03),
         child: Row(
           children: [
             BonoCard(
@@ -47,9 +49,10 @@ class UserPurchaseCard extends StatelessWidget {
                 bono: bono,
                 brand: brand,
                 canExpand: false,
-                onlyView: true
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.04), // adjust this value as needed
+                onlyView: true),
+            SizedBox(
+                width: MediaQuery.of(context).size.width *
+                    0.04), // adjust this value as needed
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -62,7 +65,10 @@ class UserPurchaseCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           bono.title!.toUpperCase(),
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -73,6 +79,7 @@ class UserPurchaseCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
                   /// USER
                   Row(
                     children: [
@@ -86,7 +93,7 @@ class UserPurchaseCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           user.name!,
-                          style: Theme.of(context).textTheme.caption,
+                          style: Theme.of(context).textTheme.bodySmall,
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -95,9 +102,13 @@ class UserPurchaseCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
                   /// DETAILS
-                  bonoRequest != null ? buildBonoRequestDetails(context) : buildPurchaseDetails(context),
+                  bonoRequest != null
+                      ? buildBonoRequestDetails(context)
+                      : buildPurchaseDetails(context),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
                   /// DATE
                   buildDateDetails(context),
                 ],
@@ -112,7 +123,7 @@ class UserPurchaseCard extends StatelessWidget {
   Widget buildBonoRequestDetails(BuildContext context) {
     IconData paymentIcon;
     String paymentText;
-    TextStyle? priceStyle = Theme.of(context).textTheme.caption;
+    TextStyle? priceStyle = Theme.of(context).textTheme.bodySmall;
 
     if (bonoRequest!.paymentMethod! == 0) {
       paymentIcon = Icons.paid_outlined;
@@ -155,8 +166,9 @@ class UserPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            StringUtils().toCapitalized(AppLocalizations.of(context)!.desactive),
-            style: Theme.of(context).textTheme.caption,
+            StringUtils()
+                .toCapitalized(AppLocalizations.of(context)!.desactiveFem),
+            style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -171,7 +183,7 @@ class UserPurchaseCard extends StatelessWidget {
         ),
         Flexible(
           child: Text(
-            bono.price!.toStringAsFixed(2) + " €",
+            "${bono.price!.toStringAsFixed(2)} €",
             style: priceStyle,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -188,12 +200,11 @@ class UserPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Text(
           paymentText,
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
           textAlign: TextAlign.left,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
-
       ],
     );
   }
@@ -201,18 +212,21 @@ class UserPurchaseCard extends StatelessWidget {
   Widget buildPurchaseDetails(BuildContext context) {
     IconData paymentIcon;
     String paymentText;
-    TextStyle? priceStyle = Theme.of(context).textTheme.caption;
+    TextStyle? priceStyle = Theme.of(context).textTheme.bodySmall;
 
     if (purchase!.paymentMethod! == 0) {
       paymentIcon = Icons.paid_outlined;
       paymentText = AppLocalizations.of(context)!.cashPaymentMethod;
     } else if (purchase!.paymentMethod! == 1) {
-      paymentIcon = Icons.payment_outlined;
+      paymentIcon = Icons.send_to_mobile_outlined;
       paymentText = AppLocalizations.of(context)!.transferPaymentMethod;
-    } else {
+    } else if (purchase!.paymentMethod! == 2) {
       paymentIcon = Icons.card_giftcard_outlined;
       paymentText = AppLocalizations.of(context)!.giftPaymentMethod;
       priceStyle = priceStyle?.copyWith(decoration: TextDecoration.lineThrough);
+    } else {
+      paymentIcon = Icons.payment_outlined;
+      paymentText = AppLocalizations.of(context)!.cardPaymentMethod;
     }
 
     return Row(
@@ -245,8 +259,10 @@ class UserPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            purchase!.isActive! ? AppLocalizations.of(context)!.active : AppLocalizations.of(context)!.desactive,
-            style: Theme.of(context).textTheme.caption,
+            purchase!.isActive!
+                ? AppLocalizations.of(context)!.activeFem
+                : AppLocalizations.of(context)!.desactiveFem,
+            style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -261,7 +277,7 @@ class UserPurchaseCard extends StatelessWidget {
         ),
         Flexible(
           child: Text(
-            purchase!.price!.toStringAsFixed(2) + " €",
+            "${purchase!.price!.toStringAsFixed(2)} €",
             style: priceStyle,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -278,12 +294,11 @@ class UserPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Text(
           paymentText,
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
           textAlign: TextAlign.left,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
-
       ],
     );
   }
@@ -294,8 +309,12 @@ class UserPurchaseCard extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(bonoRequest!.timeRequested!.toDate()).toUpperCase(),
-              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
+              DateFormat("E dd MMMM yy, HH:mm",
+                      Localizations.localeOf(context).languageCode)
+                  .format(bonoRequest!.timeRequested!.toDate())
+                  .toUpperCase(),
+              style:
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -308,8 +327,12 @@ class UserPurchaseCard extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase!.purchasedAt!.toDate()).toUpperCase(),
-              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
+              DateFormat("E dd MMMM yy, HH:mm",
+                      Localizations.localeOf(context).languageCode)
+                  .format(purchase!.purchasedAt!.toDate())
+                  .toUpperCase(),
+              style:
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -334,7 +357,10 @@ class UserPurchaseCard extends StatelessWidget {
           SizedBox(width: MediaQuery.of(context).size.width * 0.01),
           Text(
             AppLocalizations.of(context)!.toConfirm,
-            style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
             textAlign: TextAlign.right,
           ),
         ],
@@ -352,7 +378,10 @@ class UserPurchaseCard extends StatelessWidget {
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Text(
               AppLocalizations.of(context)!.unverfied,
-              style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
               textAlign: TextAlign.right,
             ),
           ],
@@ -369,14 +398,13 @@ class UserPurchaseCard extends StatelessWidget {
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Text(
               AppLocalizations.of(context)!.verfied,
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.right,
             ),
           ],
         );
       }
     }
-
   }
 
   void onTapPurchase(BuildContext context) async {
@@ -384,17 +412,16 @@ class UserPurchaseCard extends StatelessWidget {
       await navigateToPayWall(context);
     } else {
       await Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => PurchasePage(
-            bono: bono,
-            user: user,
-            brand: brand,
-            bonoRequest: bonoRequest,
-            purchase: purchase,
-          ),
-        )
-      );
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) => PurchasePage(
+              bono: bono,
+              user: user,
+              brand: brand,
+              bonoRequest: bonoRequest,
+              purchase: purchase,
+            ),
+          ));
     }
   }
 }

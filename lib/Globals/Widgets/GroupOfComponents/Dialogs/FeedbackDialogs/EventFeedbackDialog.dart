@@ -1,10 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
@@ -18,7 +16,7 @@ class EventFeedbackDialog extends StatefulWidget {
   final Event event;
   final int? feedbackScore;
   final String brandLogo;
-  EventFeedbackDialog({Key? key, required this.event, required this.brandLogo, this.feedbackScore}) : super(key: key);
+  const EventFeedbackDialog({super.key, required this.event, required this.brandLogo, this.feedbackScore});
 
   @override
   _EventFeedbackDialogState createState() => _EventFeedbackDialogState();
@@ -27,7 +25,7 @@ class EventFeedbackDialog extends StatefulWidget {
 class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
 
   // User Data Service
-  var _eventDataService = new EventDataService();
+  final _eventDataService = EventDataService();
   // Event Date
   var eventDate;
   var eventDateString;
@@ -51,13 +49,13 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
   }
 
   Widget buildFeedbackWithStarIcon() {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height*0.15,
       width: MediaQuery.of(context).size.width*0.70,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             height: MediaQuery.of(context).size.height*0.1,
             width: MediaQuery.of(context).size.width*0.70,
             child: Center(
@@ -82,33 +80,33 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
   }
 
   Widget buildFeedbackLabel() {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height*0.05,
       width: MediaQuery.of(context).size.width*0.70,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width*0.23,
             child: Text(
               AppLocalizations.of(context)!.relaxedFeedbackLabel,
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
           ),
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width*0.23,
             child: Text(
               AppLocalizations.of(context)!.tiredFeedbackLabel,
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
           ),
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width*0.23,
             child: Text(
               AppLocalizations.of(context)!.exhaustedFeedbackLabel,
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
           ),
@@ -139,7 +137,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Text(
                     AppLocalizations.of(context)!.relaxedFeedbackLabel,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -164,7 +162,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Text(
                     AppLocalizations.of(context)!.tiredFeedbackLabel,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -188,7 +186,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Text(
                     AppLocalizations.of(context)!.exhaustedFeedbackLabel,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -200,7 +198,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
   }
 
   void userHasAnsweredFeedback(double value) {
-    var limitDateToAnswer = eventDate.add(Duration(days: 7));
+    var limitDateToAnswer = eventDate.add(const Duration(days: 7));
     print(widget.event.id!);
     if (DateTime.now().isBefore(limitDateToAnswer)) {
       // Database
@@ -255,11 +253,11 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.07),
                   Text(
                     widget.event.title!,
-                    style: Theme.of(context).textTheme.headline1?.copyWith(height: 1.5),
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(height: 1.5),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width*0.70,
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
@@ -273,7 +271,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                               SizedBox(width: MediaQuery.of(context).size.width *0.02),
                               Text(
                                   StringUtils().toCapitalized(eventDateString),
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.center
                               ),
                             ],
@@ -285,7 +283,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                               SizedBox(width: MediaQuery.of(context).size.width *0.02),
                               Text(
                                   StringUtils().toCapitalized(eventHourString),
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.center
                               ),
                             ],
@@ -297,11 +295,11 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   Text(
                     AppLocalizations.of(context)!.eventFeedbackText,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(height: 1.5),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width*0.70,
                     child: currentUser.testGroup == "A" ? buildFeedbackWithEmjois() : buildFeedbackWithStarIcon(),
                   ),

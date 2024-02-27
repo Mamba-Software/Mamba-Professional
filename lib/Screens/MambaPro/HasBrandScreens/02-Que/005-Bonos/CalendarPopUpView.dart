@@ -7,14 +7,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarPopupView extends StatefulWidget {
   const CalendarPopupView(
-      {Key? key,
+      {super.key,
         this.initialStartDate,
         this.initialEndDate,
         this.onApplyClick,
         this.barrierDismissible = true,
         this.minimumDate,
-        this.maximumDate})
-      : super(key: key);
+        this.maximumDate});
 
   final DateTime? minimumDate;
   final DateTime? maximumDate;
@@ -100,14 +99,14 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                                   Text(
                                     AppLocalizations.of(context)!.from,
                                     textAlign: TextAlign.left,
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                   ),
                                   const SizedBox(
                                     height: 4,
                                   ),
                                   Text(
                                     startDate != null ?  currentUser.idioma == 'es'? DateFormat.yMd('es').format(startDate!) :  DateFormat.yMd('cat').format(startDate!) : '--/-- ',
-                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.white),
+                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: AppColors.white),
                                   ),
                                 ],
                               ),
@@ -124,14 +123,14 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                                 children: <Widget>[
                                   Text(
                                     AppLocalizations.of(context)!.to,
-                                    style: Theme.of(context).textTheme.caption,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                   ),
                                   const SizedBox(
                                     height: 4,
                                   ),
                                   Text(
                                     endDate != null ? currentUser.idioma == 'es'? DateFormat.yMd('es').format(endDate!) : DateFormat.yMd('cat').format(endDate!) :  '--/-- ',
-                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.white),
+                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: AppColors.white),
                                   ),
                                 ],
                               ),
@@ -191,7 +190,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                               child:  Center(
                                 child: Text(
                                   AppLocalizations.of(context)!.confirm,
-                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
                                 ),
                               ),
                             ),

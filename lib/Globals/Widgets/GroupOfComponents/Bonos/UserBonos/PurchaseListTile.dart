@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -19,7 +17,7 @@ class PurchaseListTile extends StatefulWidget {
   double height = 0;
   double width = 0;
 
-  PurchaseListTile({Key? key, required this.purchase, required this.height, required this.width}) : super(key: key);
+  PurchaseListTile({super.key, required this.purchase, required this.height, required this.width});
 
   @override
   _BonoListTileState createState() => _BonoListTileState();
@@ -69,8 +67,8 @@ class _BonoListTileState extends State<PurchaseListTile> with TickerProviderStat
           SizedBox(width: widget.width*0.02),
           Flexible(
             child: Text(
-                AppLocalizations.of(context)!.paymentMethod+": "+AppLocalizations.of(context)!.cashPaymentMethod,
-                style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                "${AppLocalizations.of(context)!.paymentMethod}: ${AppLocalizations.of(context)!.cashPaymentMethod}",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                 textAlign: TextAlign.left
             ),
           ),
@@ -83,8 +81,8 @@ class _BonoListTileState extends State<PurchaseListTile> with TickerProviderStat
           SizedBox(width: widget.width*0.02),
           Flexible(
             child: Text(
-                AppLocalizations.of(context)!.paymentMethod+": "+AppLocalizations.of(context)!.transferPaymentMethod,
-                style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                "${AppLocalizations.of(context)!.paymentMethod}: ${AppLocalizations.of(context)!.transferPaymentMethod}",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                 textAlign: TextAlign.left
             ),
           ),
@@ -97,8 +95,8 @@ class _BonoListTileState extends State<PurchaseListTile> with TickerProviderStat
           SizedBox(width: widget.width*0.02),
           Flexible(
             child: Text(
-                AppLocalizations.of(context)!.paymentMethod+": "+AppLocalizations.of(context)!.giftPaymentMethod,
-                style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                "${AppLocalizations.of(context)!.paymentMethod}: ${AppLocalizations.of(context)!.giftPaymentMethod}",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                 textAlign: TextAlign.left
             ),
           ),
@@ -109,10 +107,6 @@ class _BonoListTileState extends State<PurchaseListTile> with TickerProviderStat
   }
 
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -267,7 +261,7 @@ class _BonoListTileState extends State<PurchaseListTile> with TickerProviderStat
                               Flexible(
                                 child: Text(
                                     bono.title!.toUpperCase(),
-                                    style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                                    style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.left
                                 ),
                               ),
@@ -286,7 +280,7 @@ class _BonoListTileState extends State<PurchaseListTile> with TickerProviderStat
                               Flexible(
                                 child: Text(
                                     brand.name!,
-                                    style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                                     textAlign: TextAlign.left
                                 ),
                               ),
@@ -299,8 +293,8 @@ class _BonoListTileState extends State<PurchaseListTile> with TickerProviderStat
                               SizedBox(width: widget.width*0.02),
                               Flexible(
                                 child: Text(
-                                    AppLocalizations.of(context)!.buyDate+": "+StringUtils().toCapitalized(DateFormat('EEEE dd/MM/yy', Localizations.localeOf(context).languageCode).format(widget.purchase.purchasedAt!.toDate())),
-                                    style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                                    "${AppLocalizations.of(context)!.buyDate}: ${StringUtils().toCapitalized(DateFormat('EEEE dd/MM/yy', Localizations.localeOf(context).languageCode).format(widget.purchase.purchasedAt!.toDate()))}",
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                                     textAlign: TextAlign.left
                                 ),
                               ),
@@ -322,7 +316,7 @@ class _BonoListTileState extends State<PurchaseListTile> with TickerProviderStat
                           children: [
                             Text(
                                 widget.purchase.price!.toStringAsFixed(2),
-                                style: Theme.of(context).textTheme.headline3,
+                                style: Theme.of(context).textTheme.displaySmall,
                                 textAlign: TextAlign.center
                             ),
                             Icon(Icons.euro_symbol_outlined, color: Theme.of(context).primaryColor, size: widget.width*0.05,),

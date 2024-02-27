@@ -9,7 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // Loading View Widget which displays a Circular Progress indicator with the Mamba "M" inside.
 class SplashScreenView extends StatefulWidget {
   bool isMaintenance;
-  SplashScreenView({Key? key, required this.isMaintenance}) : super(key: key);
+  SplashScreenView({super.key, required this.isMaintenance});
 
   @override
   _SplashScreenViewState createState() => _SplashScreenViewState();
@@ -58,6 +58,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
         appBar: AppBar(
           toolbarHeight: 0,
           backgroundColor: AppColors.black,
+          surfaceTintColor: AppColors.black,
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
         backgroundColor: AppColors.black,
@@ -147,7 +148,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                       width: MediaQuery.of(context).size.width*0.6,
                       child: Text(
                         AppLocalizations.of(context)!.isMaintenanceText,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                         textAlign: TextAlign.center,
                       ),
                     ),

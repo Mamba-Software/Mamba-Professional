@@ -7,7 +7,7 @@ import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:provider/provider.dart';
 
 class SettingsLanguage extends StatefulWidget {
-  const SettingsLanguage({Key? key}) : super(key: key);
+  const SettingsLanguage({super.key});
 
   @override
   _SettingsPrivacyState createState() => _SettingsPrivacyState();
@@ -64,10 +64,10 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 ListTile(
                   dense: true,
-                  contentPadding: EdgeInsets.only(left: 0.0, right: 16.0),
+                  contentPadding: const EdgeInsets.only(left: 0.0, right: 16.0),
                   title: Text(
                     "Español",
-                    style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   leading: Radio(
                     value: "es",
@@ -88,16 +88,16 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
                   ),
                   trailing:Text(
                     "ES",
-                    style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: _value == "es" ? Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor),
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.bold, color: _value == "es" ? Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor),
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 ListTile(
                   dense: true,
-                  contentPadding: EdgeInsets.only(left: 0.0, right: 16.0),
+                  contentPadding: const EdgeInsets.only(left: 0.0, right: 16.0),
                   title: Text(
                     "Català",
-                    style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   subtitle: null,
                   leading: Radio(
@@ -119,7 +119,7 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
                   ),
                   trailing:Text(
                     "CA",
-                    style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: _value == "ca" ? Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor),
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.bold, color: _value == "ca" ? Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor),
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.04),

@@ -1,10 +1,8 @@
-import 'dart:math';
 
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -18,8 +16,8 @@ class AgeRange extends StatefulWidget {
 
   AgeRange({
     required this.users,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   AgeRangeState createState() => AgeRangeState();
@@ -34,7 +32,7 @@ class AgeRangeState extends State<AgeRange> {
   List <Usuario> users = [];
 
   List<int> clientsAge = [0,0,0,0,0,0,0];
-  ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
+  final ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
     enablePanning: true);
   double difference = 0;
 
@@ -44,7 +42,7 @@ class AgeRangeState extends State<AgeRange> {
   List<ClientsAge> allClientsAgeTotalList = [];
   final _brandDataService = BrandDataService();
 
-  Timestamp tm = Timestamp.fromDate(DateTime.now().subtract(Duration(days: 5)));
+  Timestamp tm = Timestamp.fromDate(DateTime.now().subtract(const Duration(days: 5)));
 
   int maxValue = 0;
   int maxValueInt = 0;
@@ -146,7 +144,7 @@ class AgeRangeState extends State<AgeRange> {
       }
 
     clientsAgeTotal =
-      new ClientsAge(range, clientsAge[number]);
+      ClientsAge(range, clientsAge[number]);
       clientsAgeTotalList.add(clientsAgeTotal);
 
 
@@ -165,9 +163,11 @@ class AgeRangeState extends State<AgeRange> {
                           onDataLabelRender:(DataLabelRenderArgs args){
                             if(args.text == maxValueStr)
                               {
-                                args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.mainColor));
+                                args.textStyle = (Theme.of(context).textTheme.bodyLarge!.copyWith(color: AppColors.mainColor));
                               }
-                            else  args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorLight));
+                            else {
+                              args.textStyle = (Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColorLight));
+                            }
 
                           },
                           zoomPanBehavior: _zoomPanBehavior,
@@ -179,27 +179,27 @@ class AgeRangeState extends State<AgeRange> {
 
                             placeLabelsNearAxisLine: true,
                             //Hide the gridlines of x-axis
-                            majorGridLines: MajorGridLines(width: 0),
+                            majorGridLines: const MajorGridLines(width: 0),
                             isVisible: false,
                             //Hide the axis line of x-axis
-                            axisLine: AxisLine(width: 0),
+                            axisLine: const AxisLine(width: 0),
 
                           ),
                           primaryXAxis: CategoryAxis(
-                            majorTickLines: MajorTickLines(
+                            majorTickLines: const MajorTickLines(
                               width: 0,
                             ),
-                            labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor)),
+                            labelStyle: (Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor)),
                             placeLabelsNearAxisLine: true,
                             //maximum: double.parse(maxNumber.toString()),
                             //isVisible: false,
                             //Hide the gridlines of x-axis
-                            majorGridLines: MajorGridLines(width: 0),
+                            majorGridLines: const MajorGridLines(width: 0),
                             //Hide the axis line of x-axis
-                            axisLine: AxisLine(width: 0),
+                            axisLine: const AxisLine(width: 0),
                           ),
-                          axes: [],
-                          indicators: [],
+                          axes: const [],
+                          indicators: const [],
                           legend: null,
                          // tooltipBehavior: _tooltipBehavior,
                         enableSideBySideSeriesPlacement: false,
@@ -211,7 +211,7 @@ class AgeRangeState extends State<AgeRange> {
                           BarSeries<ClientsAge, String>(
                             spacing: 1,
                             width: 0.3,
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            borderRadius: const BorderRadius.all(Radius.circular(30)),
                             borderColor: Styles.mainColor,
                             borderWidth: 0,
                             /*
@@ -232,7 +232,7 @@ class AgeRangeState extends State<AgeRange> {
                             ),
                             dataSource: clientsAgeTotalList,
 
-                            dataLabelSettings: DataLabelSettings(isVisible: true),
+                            dataLabelSettings: const DataLabelSettings(isVisible: true),
                             xValueMapper: (ClientsAge events, _) => events.range,
                             yValueMapper: (ClientsAge events, _) => events.age,
                           ),

@@ -2,11 +2,11 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 class OrderFilter {
 
-  List<Usuario> orderFilter(List<Usuario> filteredUsers, List<Usuario> allUsers, List<Usuario> _activeUsers, List<Usuario> _inactiveUsers, int filterSelection, int orderByClientsNumber, int alphabeticOrder) {
+  List<Usuario> orderFilter(List<Usuario> filteredUsers, List<Usuario> allUsers, List<Usuario> activeUsersVar, List<Usuario> inactiveUsersVar, int filterSelection, int orderByClientsNumber, int alphabeticOrder) {
     List<Usuario> users = [];
     List<Usuario> usersToReturn = [];
-    List<Usuario> activeUsers = _activeUsers;
-    List<Usuario> inactiveUsers = _inactiveUsers;
+    List<Usuario> activeUsers = activeUsersVar;
+    List<Usuario> inactiveUsers = inactiveUsersVar;
 
     bool found = false;
 /*

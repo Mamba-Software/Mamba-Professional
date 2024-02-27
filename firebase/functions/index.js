@@ -1,25 +1,81 @@
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
+// MAMBA CLOUD FUNCTIONS 
 
-// Variables
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-admin.initializeApp();
-// Required NPM Packages
-const uuidv4 = require("uuid")
-// Firebase DataBase
+// Determine environment and load corresponding config
+const environment = process.env.GCLOUD_PROJECT;
+let envConfig;
+switch (environment) {  
+  case 'mamba-style': // Production    
+      envConfig = require('./config/config.production.js');
+      break;
+  case 'mamba-fitness-test': // Staging
+      envConfig = require('./config/config.staging.js');
+      break;
+  case 'mamba-fitness-dev': // Development
+      envConfig = require('./config/config.development.js');
+      break;    
+  default:
+      envConfig = require('./config/config.development.js');
+      break;    
+}
+
+
+
+// Initialize Functions
+const functions = require('firebase-functions');
+const { user } = require("firebase-functions/v1/auth");
+const admin = require('firebase-admin');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.onBonosDeleteForStripe = exports.onBonosUpdatedForStripe = exports.onBonosCreateForStripe = exports.webhookListenerConnect = exports.webhookListenerAccount = exports.stripeApi = void 0;
+const serviceAccount = require('./service_key.json');
+const v2_1 = require("firebase-functions/v2");
+
+// Initialize Firebase
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://insights-books-app.firebaseio.com",
+}
+);
 const db = admin.firestore();
-// Firebase Storage
-const {Storage} = require('@google-cloud/storage');
-const storage = new Storage();
-// Firebase Firestore
-// You need to require Google Cloud Firestore library
+
+// Environment-specific values
+// GCP Firestore
 const {FirestoreAdminClient} = require('@google-cloud/firestore').v1;
 const client = new FirestoreAdminClient();
-// Send Grid Integration
+// GCP Storage
+const { Storage } = require('@google-cloud/storage');
+const storage = new Storage();
+// SendGrid
 const sgMail = require('@sendgrid/mail');
-const { user } = require("firebase-functions/v1/auth");
-sgMail.setApiKey("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");
+sgMail.setApiKey(envConfig.sendGridApiKey);
+
+const { v4: uuidv4 } = require('uuid');
+
+const express = require("express");
+const stripe_1 = require("stripe");
+const constants_1 = require("./lib/utils/constants");
+constants_1.stripe = new stripe_1.default(envConfig.secretKey, {
+  apiVersion: "2023-10-16",
+  typescript: false,
+});
+const v2_2 = require("firebase-functions/v2");
+const stripe_connect_1 = require("./lib/stripe_connect/stripe_connect");
+// import bodyParser = require('body-parser');
+const hook_1 = require("./lib/hooks/hook");
+const one_time_payment_1 = require("./lib/payment/one_time_payment");
+const products_1 = require("./lib/products/products");
+const subscription_1 = require("./lib/payment/subscription");
+const transfer_funds_1 = require("./lib/funds/transfer_funds");
+(0, v2_2.setGlobalOptions)({ maxInstances: 10 });
+const app = express();
+// app.use(express.json());
+admin.firestore().settings({ ignoreUndefinedProperties: true });
+
+// functions/index.js
+//const recurrentPurchases = require('./RecurrentPurchases/recurrentPurchases.js');
+
+// Re-exporta las funciones
+//exports.scheduledCheckBonoFunctionOnCall = recurrentPurchases.scheduledCheckBonoFunctionOnCall;
 
 // Daily Notification For Events
 exports.scheduledDailyFunction = functions
@@ -28,187 +84,69 @@ exports.scheduledDailyFunction = functions
 .schedule('every day 7:00')
 .timeZone('Europe/Madrid')
 .onRun( async (context) => {
-      // For each User get Events of Today
-      let today = new Date();
-      const usersSnapshot = await db.collection("Users").get();
-      for (var i in usersSnapshot.docs) {
-        const userId = usersSnapshot.docs[i].id;
-        const userDoc = usersSnapshot.docs[i].data();
-        functions.logger.log(
-          "User with Id",
-          userId,
-          "and Name:",
-          userDoc.name,
-        );
-        // Get the Users events today
-        const userEventsSnapshot = await db
-        .collection("Users")
-        .doc(userId)
-        .collection("Events")
-        .where('year', '==', today.getFullYear().toString())
-        .where('month', '==', (today.getMonth()+1).toString())
-        .where('day', '==', today.getDate().toString())
-        .get();
-        functions.logger.log(
-          "User Events Num =",
-          userEventsSnapshot.size,
-          );
-        // Get The Time of the First Event
-        let firstHour = 100;
-        let firstMinute = 100;
-        let firstEventDoc;
-        for (var i in userEventsSnapshot.docs) {
-          const eventDoc = userEventsSnapshot.docs[i].data();
-          if (eventDoc.hour < firstHour) {
-            firstEventDoc = eventDoc;
-          } else if (eventDoc.hour == firstHour) {
-            if (eventDoc.minute < firstMinute) {
-              firstEventDoc = eventDoc;
-            }
-          }
-        }
-        // Send Notification if there is an Event Today
-        if (userEventsSnapshot.size > 0) {
-          if (userEventsSnapshot.size == 1) {
-            functions.logger.log(
-              "One Event this User"
-              );
-                // Send Good Morning Notification
-                var payload = 0;
-                if (userDoc.isTrainer == true) {
-                  functions.logger.log(
-                    "isTrainer"
-                    );
-                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                  if (userDoc.idioma == "es") {
-                    payload = {
-                      notification: {
-                        title: "Buenos días "+userDoc.firstName + " ☀️",
-                        body: "⏰ Hoy tienes 1 sesión prevista. Empiezas a las "+firstEventDoc.hour+":"+minutes,
-                      },
-                      data: {
-                        route: "SplashScreen",
-                      },
-                    };
-                  } else {
-                    payload = {
-                      notification: {
-                        title: "Bon dia "+userDoc.firstName + " ☀️",
-                        body: "⏰ Avui tens 1 sessió prevista. Comences a les "+firstEventDoc.hour+":"+minutes,
-                      },
-                      data: {
-                        route: "SplashScreen",
-                      },
-                    };
-                  }
-                } else {
-                  functions.logger.log(
-                    "isClient"
-                    );
-                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                  if (userDoc.idioma == "es") {
-                    payload = {
-                      notification: {
-                        title: "Buenos días "+userDoc.firstName+ " ☀️",
-                        body: "⚠️ ¡Recuerda! Hoy a las "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
-                      },
-                      data: {
-                        route: "SplashScreen",
-                      },
-                    };
-                  } else {
-                    payload = {
-                      notification: {
-                        title: "Bon dia "+userDoc.firstName+ " ☀️",
-                        body: "⚠️ Recorda! Avui a les "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
-                      },
-                      data: {
-                        route: "SplashScreen",
-                      },
-                    };
-                  }
-                }
-                functions.logger.log(
-                  "Payload",
-                  payload
-                  );
-                var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-                functions.logger.log(
-                  "Response",
-                  response
-                  );
-              } else {
-                functions.logger.log(
-                  "More Than Event this User"
-                  );
-                // Send Good Morning Notification
-                var payload = 0;
-                if (userDoc.isTrainer == true) {
-                  functions.logger.log(
-                  "isTrainer"
-                  );
-                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                  if (userDoc.idioma == "es") {
-                  payload = {
-                    notification: {
-                      title: "Buenos días "+userDoc.firstName+ " ☀️",
-                      body: "⏰ Hoy tienes "+userEventsSnapshot.size+" sesiones previstas. Empiezas a las "+firstEventDoc.hour+":"+minutes,
-                    },
-                    data: {
-                      route: "SplashScreen0",
-                    },
-                  };
-                } else {
-                  payload = {
-                    notification: {
-                      title: "Bon dia "+userDoc.firstName+ " ☀️",
-                      body: "⏰ Avui tens "+userEventsSnapshot.size+" sessions previstes. Comences a les "+firstEventDoc.hour+":"+minutes,
-                    },
-                    data: {
-                      route: "SplashScreen0",
-                    },
-                  };
-                }
-                functions.logger.log(
-                  "Payload",
-                  payload
-                  );
-                var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-                functions.logger.log(
-                  "Response",
-                  response
-                  );
-              }
-            }
-        }
-      }
-      
-      // Check if today is Monday, then backup the Firebase data       
-      let date = new Date();    
-      if (date.getDay() === 1) {
+      // Check if today is Monday, then backup the Firebase data only if on PRODUCTION      
+      let date = new Date();                   
+      if (date.getDay() === 1 && environment === 'mamba-style') {      
           console.log("It's Monday, it's time for ... AUTOMATIC BACKUP");
+          console.log("Environment: "+environment);
           const projectId = process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT; 
-          console.log("Project ID: "+projectId);
-          const databaseName = client.databasePath(projectId, '(default)');
+          console.log("Project ID: "+projectId);          
+          // Firestore Backup
+          const databaseName = client.databasePath(projectId, envConfig.firestoreDatabase);
           console.log("Database Name: "+databaseName);    
-          return client.exportDocuments({
-              name: databaseName,
-              outputUriPrefix: 'gs://mamba_app_backup',
-              // Leave collectionIds empty to export all collections
-              // or specify the collections you want to export
-              collectionIds: []
-          })
-          .then(responses => {
+          try {
+              const responses = await client.exportDocuments({
+                  name: databaseName,
+                  outputUriPrefix: `gs://${envConfig.firestoreBackupBucket}`,
+                  collectionIds: []
+              });
               const response = responses[0];
-              console.log(`Operation Finished with Name: ${response['name']}`);
-          })
-          .catch(err => {
-              console.error(err);
-              throw new Error('Export operation failed');
-          });
+              console.log(`Firestore Backup Finished with Name: ${response['name']}`);
+          } catch (err) {
+              console.error("Firestore Backup Error:", err);
+              throw new Error('Firestore Export operation failed');
+          }          
+          /*
+          // TODO: Storage backup commented as it needs to be more efficient and incremental, in the mean time we do monthly manual transfers.
+          // Storage Backup
+          const sourceBucketName = envConfig.storageBucket;
+          const destinationBucketName = envConfig.storageBucketBackup;
+          console.log("sourceBucketName: "+ envConfig.storageBucket);
+          console.log("destinationBucketName: "+ envConfig.storageBucketBackup);
+          try {
+              const [files] = await storage.bucket(sourceBucketName).getFiles();
+              const copyPromises = files.map(file => 
+                  storage.bucket(sourceBucketName).file(file.name).copy(storage.bucket(destinationBucketName).file(file.name))
+              );
+              await Promise.all(copyPromises);
+              console.log('Storage Backup completed successfully');
+          } catch (error) {
+              console.error('Storage Backup Error:', error);
+          }
+          */
       }
-
     });
+
+// Daily for purchases
+exports.scheduledCheckBonoFunction = functions
+.region("europe-west1")
+.pubsub
+.schedule('every day 00:00')
+.timeZone('Europe/Madrid')
+.onRun( async (context) => {
+  var today = new Date();
+  const todayNew = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  functions.logger.log("Empezamos", todayNew);
+
+  // Ejecutar subfunciones
+  await processGracePeriodPurchases();
+  await processRegularPurchasesExpTime();
+  await processDirectAndRecurrentPurchases();
+
+  functions.logger.log("Función ejecutada correctamente", todayNew);
+  return { result: "Success", executionDate: today.toISOString() };
+      
+});
 
 // Daily Notification For Events
 exports.monthlyProductUpdates = functions
@@ -238,7 +176,7 @@ exports.monthlyProductUpdates = functions
             content = content.replace(/{{email}}/g, user.email);
             const msg = {
                 to: user.email,
-                from: 'Joan de Mamba <info@mambaapp.app>',
+                from: updatesData.emailFrom,
                 subject: updatesData.emailTitle,
                 html: content,
             };
@@ -297,6 +235,52 @@ exports.monthlyProductUpdates = functions
             });
         }
     } else {
+        //TODO TEST UNIQUE USER
+        
+        //PROFESSIONAL
+        // Determine the base email content
+        let baseContent = updatesData.emailContentPro;
+        // Replace macros with actual data
+        let content = baseContent.replace(/{{firstName}}/g, 'Joan');
+        content = content.replace(/{{email}}/g, updatesData.emailTest);
+        const msg = {
+            to: updatesData.emailTest,
+            from: updatesData.emailFrom,
+            subject: updatesData.emailTitle,
+            html: content,
+        };
+        // Send Email
+        try {
+            sgMail.send(msg);
+            console.log('Email sent to ', updatesData.emailTest);
+            // delay between email sends
+            new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+          console.log('Email not sent to ', updatesData.emailTest);
+        }
+
+        //STYLE
+        // Determine the base email content
+        baseContent = updatesData.emailContent;
+        // Replace macros with actual data
+        content = baseContent.replace(/{{firstName}}/g, 'Joan');
+        content = content.replace(/{{email}}/g, updatesData.emailTest);
+        const msgStyle = {
+            to: updatesData.emailTest,
+            from: updatesData.emailFrom,
+            subject: updatesData.emailTitle,
+            html: content,
+        };
+        // Send Email
+        try {
+            sgMail.send(msgStyle);
+            console.log('Email sent to ', updatesData.emailTest);
+            // delay between email sends
+            new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+          console.log('Email not sent to ', updatesData.emailTest);
+        }
+
         console.log("Product updates email not sent because 'sendProductUpdates' is false.");
     }
 });
@@ -324,7 +308,7 @@ exports.sendVerificationEmail = functions
   content = content.replace(/{{email}}/g, email); 
   const msg = {
       to: email,
-      from: 'Equipo de Mamba <info@mambaapp.app>',
+      from: 'Equipo de Mamba <contacto@mambafitness.es>',
       subject: emailTitleString,
       html: content,        
   };  
@@ -363,7 +347,7 @@ exports.sendResetPasswordEmail = functions
   content = content.replace(/{{email}}/g, email);     
   const passwordMsg = {
       to: email,
-      from: 'Equipo de Mamba <info@mambaapp.app>',        
+      from: 'Equipo de Mamba <contacto@mambafitness.es>',        
       subject: emailTitleString,
       html: content,
   };  
@@ -404,7 +388,7 @@ exports.createAuthUser = functions
   content = content.replace(/{{email}}/g, email); 
   const msg = {
       to: email,
-      from: 'Equipo de Mamba <info@mambaapp.app>',
+      from: 'Equipo de Mamba <contacto@mambafitness.es>',
       subject: emailTitleString,
       html: content,        
   };  
@@ -429,7 +413,7 @@ exports.createAuthUser = functions
     content = content.replace(/{{email}}/g, email);     
     const passwordMsg = {
         to: email,
-        from: 'Equipo de Mamba <info@mambaapp.app>',        
+        from: 'Equipo de Mamba <contacto@mambafitness.es>',        
         subject: emailTitleString,
         html: content,
     };
@@ -1070,7 +1054,7 @@ exports.userAddsBrand = functions
       content = content.replace(/{{text}}/g, text);
       const msg = {
           to: 'mambastylecastelldefels@gmail.com',
-          from: 'Equipo de Mamba <info@mambaapp.app>',
+          from: 'Equipo de Mamba <contacto@mambafitness.es>',
           subject: 'Nuevo Profesional Registrado',
           html: content,
       };
@@ -1379,7 +1363,7 @@ exports.userJoinsBrand = functions
         content = content.replace(/{{imageUrl}}/g, brandDoc.baseImage);                  
         const msg = {
             to: userDoc.email,
-            from: 'Equipo de Mamba <info@mambaapp.app>',
+            from: 'Equipo de Mamba <contacto@mambafitness.es>',
             subject: emailTitleString,
             html: content,
         };
@@ -1957,15 +1941,50 @@ exports.userJoinsEvent = functions
       const userDoc = userSnapshot.data();
       // Get Event User Data
       const eventUserSnapshot = await db.collection("Events").doc(eventId).collection("Users").doc(userId).get();
-      const eventUserDoc = eventUserSnapshot.data();
+      const eventUserDoc = eventUserSnapshot.data();      
+      let freeSession = false;
+      if (eventUserDoc.freeSession == true) {
+        freeSession = true;
+      }      
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
+      // Get the first Brand document      
+      const firstBrandId = eventBrandsSnapshot.docs[0].id;      
+      const brandSnapshot = await db.collection("Brands").doc(firstBrandId).get();
+      const brandDoc = brandSnapshot.data();
+      functions.logger.log(
+        "Brand Doc:",
+        brandDoc,
+      ); 
+      // Check if bookingWindowMin is defined       
+      let bookingWindowMinNotifcations = false;
+      let bookingWindowMin = 0;       
+      if (brandDoc.bookingWindowMin != undefined) {
+          bookingWindowMin = brandDoc.bookingWindowMin;
+      }
+      // If minBookingWindow is defined
+      if (bookingWindowMin != 0) {
+        // Assuming eventDoc.doneAt is a Firestore timestamp
+        const eventStartTime = eventDoc.doneAt.toDate(); // Convert Firestore timestamp to JavaScript Date
+        const currentTime = new Date(); // Current time
+        console.log("eventStartTime", eventStartTime);
+        console.log("currentTime", currentTime);
+        // Calculate the difference in hours
+        const timeDifferenceInHours = (eventStartTime - currentTime) / (1000 * 60 * 60); // Convert milliseconds to hours
+        console.log("timeDifferenceInHours", timeDifferenceInHours);
+        // Check if the time difference is less than bookingWindowMin
+        if (timeDifferenceInHours <= bookingWindowMin) {
+            bookingWindowMinNotifcations = true;
+        }
+      }
+      console.log("Booking Window Min Notifications:", bookingWindowMinNotifcations);
       // Get Data of the Event Locations
       const eventLocationsSnapshot = await db.collection("Events").doc(eventId).collection("Locations").get();
       // Count the Number of Clients and Trainers
       const eventUsersSnapshot = await db.collection("Events").doc(eventId).collection("Users").get();
       let numClients = 0;
       let numTrainers = 0;
+      let numFreeSessions = 0;
       for (var i in eventUsersSnapshot.docs) {
         const eventUsersDoc = eventUsersSnapshot.docs[i].data();
         if (eventUsersDoc.isTrainer) {
@@ -1974,6 +1993,13 @@ exports.userJoinsEvent = functions
           numClients += 1;
         }
       }
+      // Count Number of Free Sessions
+      if (freeSession) {
+        if (eventDoc.numFreeSessions != undefined) {
+          numFreeSessions = eventDoc.numFreeSessions;
+        }
+        numFreeSessions += 1;
+      }      
       // Update Event Assisting Members
       await db
       .collection("Events")
@@ -1981,6 +2007,7 @@ exports.userJoinsEvent = functions
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
+        "numFreeSessions": numFreeSessions,
       });
       var isPrivate = false;
       if (eventDoc.isPrivate != undefined) {
@@ -2008,8 +2035,10 @@ exports.userJoinsEvent = functions
         "duration": eventDoc.duration,
         "numTrainers": numTrainers,
         "numClients": numClients,
+        "numFreeSessions": numFreeSessions,                
         "maxMembers": eventDoc.maxMembers,
         "brandID": eventDoc.brandID,
+        "freeSession": freeSession,
       });
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
@@ -2033,8 +2062,10 @@ exports.userJoinsEvent = functions
         "duration": eventDoc.duration,
         "numTrainers": numTrainers,
         "numClients": numClients,
+        "numFreeSessions": numFreeSessions,
         "maxMembers": eventDoc.maxMembers,
         "brandID": eventDoc.brandID,
+        "freeSession": freeSession,
       });
      }
       // Update Number of Client and Trainers on Each of Event Subcollection
@@ -2049,6 +2080,7 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
         // If Event Private
         // Update Cover Data Also
@@ -2063,6 +2095,7 @@ exports.userJoinsEvent = functions
           .update({
             "numClients": numClients,
             "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
           });
         }
       }
@@ -2087,6 +2120,7 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
         // If Event Private
         // Update Cover Data Also
@@ -2101,6 +2135,7 @@ exports.userJoinsEvent = functions
           .update({
             "numClients": numClients,
             "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
           });
         }
       }
@@ -2115,28 +2150,95 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
-          // If Event Private
-          // Update Cover Data Also
-          if (eventDoc.isPrivate == true) {
-            await db
-            .collection("Locations")
-            .doc(id)
-            .collection("Events")
-            .doc("Private Events")
-            .collection("Private Events")
-            .doc(eventId)
-            .update({
-              "numClients": numClients,
-              "numTrainers": numTrainers,
-            });
-          }
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
+          });
         }
+      }
       
       // Send Notifications
       if (userDoc.isTrainer == false) {
         // Don´t Send Full Notification When it is a Private Event
-        if (eventDoc.isPrivate != true) {
+        if (eventDoc.isPrivate != true) {          
+          // Send Notification per Invidual User if Under Booking Window
+          if (bookingWindowMinNotifcations) {
+            functions.logger.log(
+              "Send Notification per Invidual User Under Booking Window",
+            );
+            for (var i in eventUsersSnapshot.docs) {
+              const id = eventUsersSnapshot.docs[i].id;
+              const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+              if (eventUsersDoc.isTrainer) {
+                const trainerSnapshot = await db.collection("Users").doc(id).get();
+                const trainerDoc = trainerSnapshot.data();
+                functions.logger.log(
+                  "trainerDoc",
+                  trainerDoc,
+                  );
+                var payload = 0;
+                let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+                if (trainerDoc.idioma == "es") {
+                  // Date To String
+                  let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+                  // Hour and Minutes to String
+                  let eventTimeTime = eventDoc.hour+":";
+                  let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                  eventTimeTime += minutes;
+                  // Send Payload
+                  payload = {
+                    notification: {
+                      title: userDoc.name+" ha reservado su plaza 📆",
+                      body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
+                    },
+                    data: {
+                      route: eventId,
+                    },
+                  };
+                } else {
+                  // Date To String
+                  let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+                  // Hour and Minutes to String
+                  let eventTimeTime = eventDoc.hour+":";
+                  let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                  eventTimeTime += minutes;
+                  // Send Payload
+                  payload = {
+                    notification: {
+                      title: userDoc.name+" ha reservat la seva plaça 📆",                  
+                      body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
+                    },
+                    data: {
+                      route: eventId,
+                    },
+                  };
+                }
+                functions.logger.log(
+                  "Payload",
+                  payload
+                  );
+                try {
+                    const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                    functions.logger.log("Notification sent successfully", response);
+                } catch (error) {
+                    functions.logger.error("Error sending notification", error);
+                }
+              }
+            }
+          }          
           // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
           if (eventDoc.maxMembers == numClients) {
               // Event is full
@@ -2194,11 +2296,12 @@ exports.userJoinsEvent = functions
                     "Payload",
                     payload
                     );
-                  response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-                  functions.logger.log(
-                    "Response",
-                    response
-                    );
+                  try {
+                      const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                      functions.logger.log("Notification sent successfully", response);
+                  } catch (error) {
+                      functions.logger.error("Error sending notification", error);
+                  }
                 }
               }
           } else {
@@ -2259,17 +2362,18 @@ exports.userJoinsEvent = functions
                       "Payload",
                       payload
                       );
-                    response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-                    functions.logger.log(
-                      "Response",
-                      response
-                      );
+                    try {
+                        const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                        functions.logger.log("Notification sent successfully", response);
+                    } catch (error) {
+                        functions.logger.error("Error sending notification", error);
+                    }
                   }
                 }
             }
           }
         } else {
-          // Event is full
+          // Send Notification to Trainers Clients Join Private Event
           functions.logger.log(
             "NOTIFICATION PRIVATE EVENT",
           );
@@ -2324,11 +2428,12 @@ exports.userJoinsEvent = functions
                 "Payload",
                 payload
                 );
-              response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-              functions.logger.log(
-                "Response",
-                response
-                );
+              try {
+                  const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                  functions.logger.log("Notification sent successfully", response);
+              } catch (error) {
+                  functions.logger.error("Error sending notification", error);
+              }
             }
           }
         }
@@ -2385,12 +2490,79 @@ exports.userJoinsEvent = functions
           "Payload",
           payload
           );
-         response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-         functions.logger.log(
-          "Response",
-          response
-          );
-       }
+        try {
+            const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+            functions.logger.log("Notification sent successfully", response);
+        } catch (error) {
+            functions.logger.error("Error sending notification", error);
+        }
+      }
+
+      // Send Notification per Invidual User
+      if (eventDoc.isPrivate != true && eventUserDoc.freeSession == true) {
+        functions.logger.log(
+          "Send Notification per Invidual User",
+        );
+        for (var i in eventUsersSnapshot.docs) {
+          const id = eventUsersSnapshot.docs[i].id;
+          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+          if (eventUsersDoc.isTrainer) {
+            const trainerSnapshot = await db.collection("Users").doc(id).get();
+            const trainerDoc = trainerSnapshot.data();
+            functions.logger.log(
+              "trainerDoc",
+              trainerDoc,
+              );
+            var payload = 0;
+            let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+            if (trainerDoc.idioma == "es") {
+              // Date To String
+              let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+              // Hour and Minutes to String
+              let eventTimeTime = eventDoc.hour+":";
+              let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+              eventTimeTime += minutes;
+              // Send Payload
+              payload = {
+                notification: {
+                  title: userDoc.name+" ha reservado su sesión gratuita 📆",
+                  body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
+                },
+                data: {
+                  route: eventId,
+                },
+              };
+            } else {
+              // Date To String
+              let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+              // Hour and Minutes to String
+              let eventTimeTime = eventDoc.hour+":";
+              let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+              eventTimeTime += minutes;
+              // Send Payload
+              payload = {
+                notification: {
+                  title: userDoc.name+" ha reservat la seva sessió gratuïta 📆",                  
+                  body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
+                },
+                data: {
+                  route: eventId,
+                },
+              };
+            }
+            functions.logger.log(
+              "Payload",
+              payload
+              );
+            try {
+                const response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                functions.logger.log("Notification sent successfully", response);
+            } catch (error) {
+                functions.logger.error("Error sending notification", error);
+            }
+          }
+        }
+      }
        return null;
      });
 
@@ -2400,6 +2572,7 @@ exports.userLeavesEvent = functions
 .firestore
 .document("/Events/{eventId}/Users/{userId}")
 .onDelete( async (change, context) => {
+      console.log("Change object:", change);
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
@@ -2412,14 +2585,21 @@ exports.userLeavesEvent = functions
         );
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
+      // Get Event User Data            
+      const deletedUserEventDoc = change.data(); 
+      functions.logger.log(
+        "deletedUserEventDoc",
+        deletedUserEventDoc,
+        );     
+      let freeSession = false;
+      if (deletedUserEventDoc.freeSession != undefined && deletedUserEventDoc.freeSession) {
+        freeSession = true;
+      } 
       // Count the Number of Clients and Trainers
       const eventUsersSnapshot = await db.collection("Events").doc(eventId).collection("Users").get();
       // Get Data of the Event Locations
-      const eventLocationsSnapshot = await db.collection("Events").doc(eventId).collection("Locations").get();
-      functions.logger.log(
-        "eventLocationsSnapshot size",
-        eventLocationsSnapshot.size,
-        );
+      const eventLocationsSnapshot = await db.collection("Events").doc(eventId).collection("Locations").get();                       
+      // Count Number of Assiting Members
       let numClients = 0;
       let numTrainers = 0;
       for (var i in eventUsersSnapshot.docs) {
@@ -2430,6 +2610,14 @@ exports.userLeavesEvent = functions
           numClients += 1;
         }
       }
+      // Count Number of Free Sessions
+      let numFreeSessions = 0;
+      if (freeSession) {
+        if (eventDoc.numFreeSessions != undefined) {
+          numFreeSessions = eventDoc.numFreeSessions;
+        }
+        numFreeSessions -= 1;
+      } 
       // Delete Event To Users Event Subcollection
       await db
       .collection("Users")
@@ -2456,6 +2644,7 @@ exports.userLeavesEvent = functions
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
+        "numFreeSessions": numFreeSessions,
       });
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
@@ -2469,6 +2658,7 @@ exports.userLeavesEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
           // If Event Private
           // Update Cover Data Also
@@ -2483,6 +2673,7 @@ exports.userLeavesEvent = functions
             .update({
               "numClients": numClients,
               "numTrainers": numTrainers,
+              "numFreeSessions": numFreeSessions,
             });
           }
         }
@@ -2497,6 +2688,7 @@ exports.userLeavesEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
           // If Event Private
           // Update Cover Data Also
@@ -2511,6 +2703,7 @@ exports.userLeavesEvent = functions
             .update({
               "numClients": numClients,
               "numTrainers": numTrainers,
+              "numFreeSessions": numFreeSessions,
             });
           }
         }
@@ -2525,6 +2718,7 @@ exports.userLeavesEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
+          "numFreeSessions": numFreeSessions,
         });
         // If Event Private
         // Update Cover Data Also
@@ -2539,6 +2733,7 @@ exports.userLeavesEvent = functions
           .update({
             "numClients": numClients,
             "numTrainers": numTrainers,
+            "numFreeSessions": numFreeSessions,
           });
         }
       }
@@ -2759,2180 +2954,6 @@ exports.purchaseUpdatesCoverData = functions
       return null;
     });
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// 7777 TEST ENVIRONMENT CLOUD FUNCTIONS
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// New User Situate in Test Group
-exports.zzzzNewUserAddsTestGroup = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Users/{userId}")
-.onCreate( async (snap, context) => {
-      // Get the value of the context triggers.
-      const userId = context.params.userId;
-      // Get the number of total users
-      const totalUsersSnapshot = await db.collection("7777 Users").get();
-      let numberUsers = totalUsersSnapshot.size;
-      // Assign test group depending on isEven
-      let testGroup = "A";
-      if (numberUsers % 2 == 0) {
-        testGroup = "B"
-      }
-      // Update Firebase
-      await db
-      .collection("7777 Users")
-      .doc(userId)
-      .update({
-       "testGroup": testGroup,
-     });
-      return null;
-    });
-
-// User Updates Cover Data
-exports.zzzzUserUpdatesCoverData = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Users/{userId}")
-.onUpdate( async (change, context) => {
-      // Get the value of the context triggers.
-      const userId = context.params.userId;
-      // Get Value of the Change
-      const before = change.before.data();
-      const after = change.after.data();
-      functions.logger.log(
-        "BEFORE:",
-        before,
-        );
-      functions.logger.log(
-        "AFTER:",
-        after,
-        );
-      // Check if Cover Data has changed:
-      // COVER DATA: firstName, lastName, nick, imageUrl, noImageUrl, isTrainer, isPrivate, notificationToken
-      let coverDataChange = false;
-      if (before.firstName != after.firstName) {
-        coverDataChange = true;
-      } else if (before.lastName != after.lastName) {
-        coverDataChange = true;
-      } else if (before.nick != after.nick) {
-        coverDataChange = true;
-      } else if (before.imageUrl != after.imageUrl) {
-        coverDataChange = true;
-      } else if (before.noImageUrl != after.noImageUrl) {
-        coverDataChange = true;
-      } else if (before.isTrainer != after.isTrainer) {
-        coverDataChange = true;
-      } else if (before.isPrivate != after.isPrivate) {
-        coverDataChange = true;
-      } else if (before.notificationToken != after.notificationToken) {
-        coverDataChange = true;
-      } else if (before.gender != after.gender) {
-        coverDataChange = true;
-      } else if (before.dateOfBirth != after.dateOfBirth) {
-        coverDataChange = true;
-      } 
-      functions.logger.log(
-        "COVER DATA CHANGED?",
-        coverDataChange,
-        );
-      if (coverDataChange) {
-        // Update the Users Subcollection in Brands
-        const userBrandsSnapshot = await db.collection("7777 Users").doc(userId).collection("Brands").get();
-        functions.logger.log(
-          "User Brands Num =",
-          userBrandsSnapshot.size,
-          );
-        for (var i in userBrandsSnapshot.docs) {
-          const id = userBrandsSnapshot.docs[i].id;
-          await db
-          .collection("7777 Brands")
-          .doc(id)
-          .collection("Users")
-          .doc(userId)
-          .update({
-            "name": after.firstName+" "+after.lastName,
-            "firstName": after.firstName,
-            "lastName": after.lastName,
-            "nick": after.nick,
-            "imageUrl": after.imageUrl,
-            "noImageUrl": after.noImageUrl,
-            "isTrainer": after.isTrainer,
-            "isPrivate": after.isPrivate,            
-            "gender": after.gender,
-            "dateOfBirth": after.dateOfBirth,
-            "notificationToken": after.notificationToken,
-          });
-        }
-        // Update the Users Subcollection in Events
-        const userEventsSnapshot = await db.collection("7777 Users").doc(userId).collection("Events").get();
-        functions.logger.log(
-          "User Events Num =",
-          userEventsSnapshot.size,
-          );
-        for (var i in userEventsSnapshot.docs) {
-          const id = userEventsSnapshot.docs[i].id;
-          await db
-          .collection("7777 Events")
-          .doc(id)
-          .collection("Users")
-          .doc(userId)
-          .update({
-            "name": after.firstName+" "+after.lastName,
-            "firstName": after.firstName,
-            "lastName": after.lastName,
-            "nick": after.nick,
-            "imageUrl": after.imageUrl,
-            "noImageUrl": after.noImageUrl,
-            "isTrainer": after.isTrainer,
-            "isPrivate": after.isPrivate,
-            "gender": after.gender,
-            "dateOfBirth": after.dateOfBirth,
-            "notificationToken": after.notificationToken,
-          });
-        }
-      }
-      return null;
-    });
-
-// Brand Updates Cover Data
-exports.zzzzBrandUpdatesCoverData = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Brands/{brandId}")
-.onUpdate( async (change, context) => {
-      // Get the value of the context triggers.
-      const brandId = context.params.brandId;
-      // Get Value of the Change
-      const before = change.before.data();
-      const after = change.after.data();
-      functions.logger.log(
-        "BEFORE:",
-        before,
-        );
-      functions.logger.log(
-        "AFTER:",
-        after,
-        );
-      // Check if Cover Data has changed:
-      // COVER DATA: name, logoUrl
-      let coverDataChange = false;
-      if (before.name != after.name) {
-        coverDataChange = true;
-      } else if (before.logoUrl != after.logoUrl) {
-        coverDataChange = true;
-      }
-      //TODO INTEGRATE .12
-      else if(before.zipCode != after.zipCode || before.city != after.city || before.longitude != after.longitude || before.latitude != after.latitude) {
-        coverDataChange = true;
-      }
-      else if(before.baseImage != after.baseImage) {
-        coverDataChange = true;
-      }
-      //TODO INTEGRATE .12
-      functions.logger.log(
-        "COVER DATA CHANGED?",
-        coverDataChange,
-        );
-      if (coverDataChange) {
-        // Update the Brands Subcollection in Users
-        const brandsUsersSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Users").get();
-        functions.logger.log(
-          "Brands Users Num =",
-          brandsUsersSnapshot.size,
-          );
-          //TODO INTEGRATION VERSION .12
-        for (var i in brandsUsersSnapshot.docs) {
-          await db
-          .collection("7777 Users")
-          .doc(id)
-          .collection("Brands")
-          .doc(brandId)
-          .update({
-            "name": after.name,
-            "logoUrl": after.logoUrl,
-            "zipCode": after.zipCode,
-            "city": after.city,
-            "longitude": after.longitude,
-            "latitude": after.latitude,
-            "baseImage": after.baseImage,
-            "geoPosition": after.geoPosition,
-          });
-        }
-        //TODO INTEGRATE .12
-        // Update the Brands Subcollection in Events
-        const brandEventsSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Events").get();
-        functions.logger.log(
-          "Brand Events Num =",
-          brandEventsSnapshot.size,
-          );
-        for (var i in brandEventsSnapshot.docs) {
-          const id = brandEventsSnapshot.docs[i].id;
-          await db
-          .collection("7777 Events")
-          .doc(id)
-          .collection("Brands")
-          .doc(brandId)
-          .update({
-            "name": after.name,
-            "logoUrl": after.logoUrl,
-          });
-        }
-      }
-      return null;
-    });
-
-// Event Updates Data
-exports.zzzzEventUpdatesCoverData = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Events/{eventId}")
-.onUpdate( async (change, context) => {
-      // Get the value of the context triggers.
-      const eventId = context.params.eventId;
-      // Get Value of the Change
-      const before = change.before.data();
-      const after = change.after.data();
-      functions.logger.log(
-        "BEFORE:",
-        before,
-        );
-      functions.logger.log(
-        "AFTER:",
-        after,
-        );
-      // Event Users Snapshot
-      const eventUsersSnapshot = await db.collection("7777 Events").doc(eventId).collection("Users").get();
-      // Check if Location has changed:
-      let locationChange = false;
-      if (before.locationId != after.locationId) {
-        locationChange = true;
-      }
-      functions.logger.log(
-        "LOCATION CHANGED?",
-        locationChange,
-        );
-      if (locationChange) {
-        // Count the Number of Clients and Trainers
-        let numClients = 0;
-        let numTrainers = 0;
-        for (var i in eventUsersSnapshot.docs) {
-          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-          if (eventUsersDoc.isTrainer) {
-            numTrainers += 1;
-          } else {
-            numClients += 1;
-          }
-        }
-        functions.logger.log(
-          "numClients",
-          numClients,
-          "numTrainers",
-          numTrainers,
-          );
-        functions.logger.log(
-          "Delete Event from Location",
-          before.locationId,
-          );
-        // Delete Event From Old Location
-        await db
-        .collection("7777 Locations")
-        .doc(before.locationId)
-        .collection("Events")
-        .doc(eventId)
-        .delete();
-        // Update Private Event
-        if (after.isPrivate == true) {
-         await db
-         .collection("7777 Locations")
-         .doc(before.locationId)
-         .collection("Events")
-         .doc("Private Events")
-         .collection("Private Events")
-         .doc(eventId)
-         .delete();
-       }
-        // Add Event To New Location
-        functions.logger.log(
-          "Add Event To Location",
-          after.locationId,
-          );
-        // Add Event to New Location
-        await db
-        .collection("7777 Locations")
-        .doc(after.locationId)
-        .collection("Events")
-        .doc(eventId).set({
-          "title": after.title,
-          "imageUrl": after.imageUrl,
-          "doneAt": after.doneAt,
-          "year": after.year,
-          "month": after.month,
-          "day": after.day,
-          "hour": after.hour,
-          "minute": after.minute,
-          "duration": after.duration,
-          "numTrainers": numTrainers,
-          "numClients": numClients,
-          "maxMembers": after.maxMembers,
-        });
-        // Update Private Event
-        if (after.isPrivate == true) {
-         await db
-         .collection("7777 Locations")
-         .doc(after.locationId)
-         .collection("Events")
-         .doc("Private Events")
-         .collection("Private Events")
-         .doc(eventId)
-         .set({
-          "title": after.title,
-          "imageUrl": after.imageUrl,
-          "doneAt": after.doneAt,
-          "year": after.year,
-          "month": after.month,
-          "day": after.day,
-          "hour": after.hour,
-          "minute": after.minute,
-          "duration": after.duration,
-          "numTrainers": numTrainers,
-          "numClients": numClients,
-          "maxMembers": after.maxMembers,
-        });
-       }
-       functions.logger.log(
-        "DONE",
-        );
-     }
-      // Check if Cover Data has changed:
-      // COVER DATA: title, year, month, day, hour, minute, duration
-      let coverDataChange = false;
-      if (before.title != after.title) {
-        coverDataChange = true;
-      } else if (before.imageUrl != after.imageUrl) {
-        coverDataChange = true;
-      } else if (before.doneAt != after.doneAt) {
-        coverDataChange = true;
-      } else if (before.year != after.year) {
-        coverDataChange = true;
-      } else if (before.month != after.month) {
-        coverDataChange = true;
-      } else if (before.day != after.day) {
-        coverDataChange = true;
-      } else if (before.hour != after.hour) {
-        coverDataChange = true;
-      } else if (before.minute != after.minute) {
-        coverDataChange = true;
-      } else if (before.duration != after.duration) {
-        coverDataChange = true;
-      } else if (before.maxMembers != after.maxMembers) {
-        coverDataChange = true;
-      }
-      functions.logger.log(
-        "COVER DATA CHANGED?",
-        coverDataChange,
-        );
-      if (coverDataChange) {
-        functions.logger.log(
-          "Event Users Num =",
-          eventUsersSnapshot.size,
-          );
-        functions.logger.log(
-          "DoneAt =",
-          after.doneAt,   
-          );
-        // Update the Event Subcollection in Users
-        for (var i in eventUsersSnapshot.docs) {
-          const id = eventUsersSnapshot.docs[i].id;
-          await db
-          .collection("7777 Users")
-          .doc(id)
-          .collection("Events")
-          .doc(eventId)
-          .update({
-            "title": after.title,
-            "imageUrl": after.imageUrl,
-            "doneAt": after.doneAt,          
-            "year": after.year,
-            "month": after.month,
-            "day": after.day,
-            "hour": after.hour,
-            "minute": after.minute,
-            "duration": after.duration,
-            "maxMembers": after.maxMembers,
-          });
-          // Update Private Event
-          if (after.isPrivate == true) {
-           await db
-           .collection("7777 Users")
-           .doc(id)
-           .collection("Events")
-           .doc("Private Events")
-           .collection("Private Events")
-           .doc(eventId)
-           .update({
-            "title": after.title,
-            "imageUrl": after.imageUrl,
-            "doneAt": after.doneAt,
-            "year": after.year,
-            "month": after.month,
-            "day": after.day,
-            "hour": after.hour,
-            "minute": after.minute,
-            "duration": after.duration,
-            "maxMembers": after.maxMembers,            
-          });
-         }
-       }
-        // Update the Event Subcollection in Brands
-        const eventBrandsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
-        functions.logger.log(
-          "Event Brands Num =",
-          eventBrandsSnapshot.size,
-          );
-        for (var i in eventBrandsSnapshot.docs) {
-          const id = eventBrandsSnapshot.docs[i].id;
-          await db
-          .collection("7777 Brands")
-          .doc(id)
-          .collection("Events")
-          .doc(eventId)
-          .update({
-            "title": after.title,
-            "imageUrl": after.imageUrl,
-            "doneAt": after.doneAt,
-            "year": after.year,
-            "month": after.month,
-            "day": after.day,
-            "hour": after.hour,
-            "minute": after.minute,
-            "duration": after.duration,
-            "maxMembers": after.maxMembers,          
-          });
-          // Update Private Event
-          if (after.isPrivate == true) {
-           await db
-           .collection("7777 Brands")
-           .doc(id)
-           .collection("Events")
-           .doc("Private Events")
-           .collection("Private Events")
-           .doc(eventId)
-           .update({
-            "title": after.title,
-            "imageUrl": after.imageUrl,
-            "doneAt": after.doneAt,
-            "year": after.year,
-            "month": after.month,
-            "day": after.day,
-            "hour": after.hour,
-            "minute": after.minute,
-            "duration": after.duration,
-            "maxMembers": after.maxMembers,          
-          });
-         }
-       }
-        // Update the Event Subcollection in Locations
-        const eventLocationsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Locations").get();
-        functions.logger.log(
-          "Event Locations Num =",
-          eventLocationsSnapshot.size,
-          );
-        for (var i in eventLocationsSnapshot.docs) {
-          const id = eventLocationsSnapshot.docs[i].id;
-          await db
-          .collection("7777 Locations")
-          .doc(id)
-          .collection("Events")
-          .doc(eventId)
-          .update({
-            "title": after.title,
-            "imageUrl": after.imageUrl,
-            "doneAt": after.doneAt,
-            "year": after.year,
-            "month": after.month,
-            "day": after.day,
-            "hour": after.hour,
-            "minute": after.minute,
-            "duration": after.duration,
-            "maxMembers": after.maxMembers,            
-          });
-          // Update Private Event
-          if (after.isPrivate == true) {
-           await db
-           .collection("7777 Locations")
-           .doc(id)
-           .collection("Events")
-           .doc("Private Events")
-           .collection("Private Events")
-           .doc(eventId)
-           .update({
-            "title": after.title,
-            "imageUrl": after.imageUrl,
-            "doneAt": after.doneAt,
-            "year": after.year,
-            "month": after.month,
-            "day": after.day,
-            "hour": after.hour,
-            "minute": after.minute,
-            "duration": after.duration,
-            "maxMembers": after.maxMembers,          
-          });
-         }
-       }
-     }
-     return null;
-   });
-
-// Event Updates Data
-exports.zzzzLocationUpdatesCoverData = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Locations/{locationId}")
-.onUpdate( async (change, context) => {
-      // Get the value of the context triggers.
-      const locationId = context.params.locationId;
-      // Get Value of the Change
-      const before = change.before.data();
-      const after = change.after.data();
-      functions.logger.log(
-        "BEFORE:",
-        before,
-        );
-      functions.logger.log(
-        "AFTER:",
-        after,
-        );
-      // Check if Cover Data has changed:
-      // COVER DATA: title, year, month, day, hour, minute, duration
-      let coverDataChange = false;
-      if (before.description != after.description) {
-        coverDataChange = true;
-      } else if (before.latitude != after.latitude) {
-        coverDataChange = true;
-      } else if (before.longitude != after.longitude) {
-        coverDataChange = true;
-      }
-      else if (before.geoPosition != after.geoPosition) {
-              coverDataChange = true;
-      }
-      functions.logger.log(
-        "COVER DATA CHANGED?",
-        coverDataChange,
-        );
-      if (coverDataChange) {
-        // Update the Object Location in Brands
-        await db
-        .collection("7777 Brands")
-        .doc(after.brandID)
-        .collection("Locations")
-        .doc(locationId)
-        .update({
-          "description": after.description,
-          "latitude": after.latitude,
-          "longitude": after.longitude,
-          //TODO INTEGRATION VERSION .12
-          "geoPosition": after.geoPosition,
-        });
-        // Update All Events in this Location
-        const eventLocationsSnapshot = await db.collection("7777 Locations").doc(locationId).collection("Events").get();
-        functions.logger.log(
-          "Location Events Num =",
-          eventLocationsSnapshot.size,
-          );
-        for (var i in eventLocationsSnapshot.docs) {
-          const id = eventLocationsSnapshot.docs[i].id;
-          await db
-          .collection("7777 Events")
-          .doc(id)
-          .collection("Locations")
-          .doc(locationId)
-          .update({
-            "description": after.description,
-            "latitude": after.latitude,
-            "longitude": after.longitude,
-            //TODO INTEGRATION VERSION .12
-            "geoPosition": after.geoPosition,
-          });
-            //TODO INTEGRATION VERSION .12
-             await db
-            .collection("7777 Events")
-            .doc(id)
-            .update({
-              //TODO INTEGRATION VERSION .12
-              "geoPosition": after.geoPosition,
-            });
-        }
-      }
-      return null;
-    });
-
-// User Joins Brand
-exports.zzzzUserJoinsBrand = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Brands/{brandId}/Users/{userId}")
-.onCreate( async (snap, context) => {
-      // Get the value of the context triggers.
-      const brandId = context.params.brandId;
-      const userId = context.params.userId;
-      functions.logger.log(
-        "User with ID:",
-        userId,
-        "has joined Brand with ID:",
-        brandId
-      );
-      // Get the data from the created document
-      const data = snap.data();
-      let invitedDirectly = data.invitedDirectly;      
-      
-      // Get Data of the User
-      const userSnapshot = await db.collection("7777 Users").doc(userId).get();
-      const userDoc = userSnapshot.data();
-      functions.logger.log(
-        "User Cover Data:",
-        userDoc.name,
-        userDoc.nick,
-        userDoc.imageUrl,
-        userDoc.isTrainer,
-        userDoc.notificationToken,
-      );
-      if(userDoc.isTrainer == true) {
-          await db
-          .collection("7777 Users")
-          .doc(userId)
-          .collection("BlockedByUsers")
-          .doc("test")
-          .set({
-            "userId": "test",
-          });
-      }
-      // Get Data of the Brand
-      const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
-      const brandDoc = brandSnapshot.data();
-      functions.logger.log(
-        "Brand Cover Data:",
-        brandDoc,
-      );
-      // Get Data of the Brand Room
-      const roomSnapshot = await db.collection("7777 Rooms").doc(brandDoc.roomId).get();
-      const roomDoc = roomSnapshot.data();
-      var metadataMessage = {};
-      var metadataRoom = {};
-      functions.logger.log(
-       "UserIds",
-       roomDoc.userIds,
-       );
-      roomDoc.userIds.push(userId);
-      if (roomDoc.lastMessages != undefined) {
-        metadataMessage = roomDoc.lastMessages[0].metadata;
-        metadataMessage[userId] = "delivered";
-        // Updates all messages so that they are delivered for new user.
-        await db.doc("7777 Rooms" + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
-          metadata: metadataMessage,
-          status: "delivered",
-        })
-      }
-      // Creates metadata for new user and adds it.
-      metadataRoom = roomDoc.metadata;
-      metadataRoom["trainer" + userId] = userDoc.isTrainer;
-      metadataRoom["active" + userId] = false;
-      await db.doc("7777 Rooms" + "/" + brandDoc.roomId).update({
-        metadata: metadataRoom,
-        userIds: roomDoc.userIds,
-      })
-      // Add the Brand Cover Data to Users/Brands Collection
-      let date = new Date();
-      let day = date.getDate();
-      let month = date.getMonth() + 1;
-      if (month < 10) {
-        month = "0"+month;
-      }
-      let year = date.getFullYear().toString();
-      let result = year.slice(2, 4);
-      var formatted = day+"-"+month+"-"+result;
-      //JMF 05052023 POR SI VIENEN DE LA WEB
-      if (brandDoc.adminID == userId) {
-          // Update Date Joined Users/Brand
-          await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
-            "name": brandDoc.name,
-            "logoUrl": brandDoc.logoUrl,
-            "dateJoined": formatted,
-            "myMonthlySessions": 0,
-            "myTotalSessions": 0,
-          });
-      } else {
-          // Update Date Joined Users/Brand
-          await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
-            "name": brandDoc.name,
-            "logoUrl": brandDoc.logoUrl,
-            "dateJoined": formatted,
-            "myMonthlySessions": 0,
-            "myTotalSessions": 0,
-            //TODO INTEGRATION VERSION .12
-            "zipCode": brandDoc.zipCode,
-            "city": brandDoc.city,
-            "longitude": brandDoc.longitude,
-            "latitude": brandDoc.latitude,
-            "baseImage": brandDoc.baseImage,
-            "geoPosition": brandDoc.geoPosition,
-          });
-      }
-      // Update Date Joined Users/Brand
-      await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
-        "dateJoined": formatted,
-        "gender": userDoc.gender,
-        "dateOfBirth": userDoc.dateOfBirth, 
-      });
-      functions.logger.log(
-        "userId",
-        userId,
-      );
-      // Brand Was Just Created By Admin
-      if (brandDoc.adminID == userId) {
-        if (userDoc.idioma == "es") {
-          payload = {
-            notification: {
-              title: "Has creado tu marca "+brandDoc.name+" ✅",
-              body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
-            },
-            data: {
-              route: "BrandPage",
-            },
-          };
-        } else {
-          payload = {
-            notification: {
-              title: "Has creat la teva marca "+brandDoc.name+" ✅",
-              body: "Ara podràs usar totes les funcionalitats de calendarización, control i gestió que ofereix Mamba",
-            },
-            data: {
-              route: "BrandPage",
-            },
-          }
-        }
-        functions.logger.log(
-          "Payload",
-          payload
-          );
-        response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-        functions.logger.log(
-          "Response",
-          response
-          );
-      } else {
-        // Someone just joined the Brand 
-        // Send Notification To User Joining Brand
-        var payload = 0;
-        if (userDoc.idioma == "es") {
-          payload = {
-            notification: {
-              title: "Te has unido a "+brandDoc.name+" ✅",
-              body: "Consulta el calendario para participar en tu primera sesión",
-            },
-            data: {
-              route: "BrandPage",
-            },
-          };
-        } else {
-          payload = {
-            notification: {
-              title: "T'has unit a "+brandDoc.name+" ✅",
-              body: "Consulta el calendari per participar en la teva primera sessió",
-            },
-            data: {
-              route: "BrandPage",
-            },
-          };
-        }
-        
-        if (userDoc.notificationToken && userDoc.notificationToken !== "") {
-          functions.logger.log(
-            "Payload",
-            payload
-          );
-          var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);        
-          functions.logger.log(
-            "Response",
-            response
-          );
-        }
-        
-        // Send Notification To Brand Owner
-        const adminSnapshot = await db.collection("7777 Users").doc(brandDoc.adminID).get();
-        const adminDoc = adminSnapshot.data();
-        functions.logger.log(
-          "Owner Cover Data:",
-          adminDoc.name,
-          adminDoc.nick,
-          adminDoc.imageUrl,
-          adminDoc.isTrainer,
-          adminDoc.notificationToken,
-          );
-        // Count the number of Members
-        const brandUsersSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Users").get();
-        let numberMembers = brandUsersSnapshot.size;
-        functions.logger.log(
-          "Number Members",
-          numberMembers,
-        );
-        if (adminDoc.idioma == "es") {
-          payload = {
-            notification: {
-              title: "Nuevo miembro en "+brandDoc.name+" ➕1️⃣ ",
-              body: userDoc.name+" se ha unido. Ya sois un total de "+numberMembers.toString()+" miembros",
-            },
-            data: {
-              route: "Notifications",
-            },
-          };
-        } else {
-          payload = {
-            notification: {
-              title: "Nou membre a "+brandDoc.name+" ➕1️⃣ ",
-              body: userDoc.name+" s'ha unit. Ja sou un total de "+numberMembers.toString()+" membres",
-            },
-            data: {
-              route: "Notifications",
-            },
-          }
-        }
-        functions.logger.log(
-          "Payload",
-          payload
-        );
-        response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
-        functions.logger.log(
-          "Response",
-          response
-        );
-      }
-      // Count Brand Members
-      brandUsersSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Users").get();
-      let numClients = 0;
-      let numTrainers = 0;
-      for (var i in brandUsersSnapshot.docs) {
-        const brandUsersDoc = brandUsersSnapshot.docs[i].data();
-        if (brandUsersDoc.isTrainer) {
-          numTrainers += 1;
-        } else {
-          numClients += 1;
-        }
-      }
-      // Update Brand Members
-      await db
-      .collection("7777 Brands")
-      .doc(brandId)
-      .update({
-        "numClients": numClients,
-        "numTrainers": numTrainers,
-      }); 
-      
-      // Send Email if Needed      
-      if (invitedDirectly) {
-        // Get Email Template
-        const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
-        const templateDoc = templateSnapshot.data();          
-        // Determine the base email content      
-        let baseContent = templateDoc.joinBrandMessage; 
-        if (userDoc.isTrainer == true) {
-          baseContent = templateDoc.joinBrandMessagePro;
-        }          
-        // Replace macros with actual data
-        const emailTitleString = "👋 Te damos la bienvenida a "+brandDoc.name+" 👋";
-        const firstNameString = userDoc.firstName.charAt(0).toUpperCase() + userDoc.firstName.slice(1);
-        let content = baseContent.replace(/{{firstName}}/g, firstNameString);
-        content = content.replace(/{{email}}/g, userDoc.email);
-        content = content.replace(/{{brandName}}/g, brandDoc.name);
-        content = content.replace(/{{logoUrl}}/g, brandDoc.logoUrl);
-        content = content.replace(/{{imageUrl}}/g, brandDoc.baseImage);                  
-        const msg = {
-            to: userDoc.email,
-            from: 'Equipo de Mamba <info@mambaapp.app>',
-            subject: emailTitleString,
-            html: content,
-        };
-        // Send Email
-        try {
-            sgMail.send(msg);
-            console.log('Email sent to ', userDoc.email);
-        } catch (error) {
-            console.error('Error sending email to', userDoc.email);
-        }
-      }
-      return null;
-    });
-
-// User Leaves Brand
-exports.zzzzUserLeavesBrand = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Brands/{brandId}/Users/{userId}")
-.onDelete( async (snap, context) => {
-      // Get the value of the context triggers.
-      const brandId = context.params.brandId;
-      const userId = context.params.userId;
-      functions.logger.log(
-        "User with ID:",
-        userId,
-        "has left Brand with ID:",
-        brandId
-        );
-      // Get Data of Deleted User
-      const userDoc = snap.data();
-      // Get Data of the Brand
-      const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
-      const brandDoc = brandSnapshot.data();
-      functions.logger.log(
-        "Brand Cover Data:",
-        brandDoc,
-        );
-      // Delete Brand in User´s Brand Subcollection
-      await db.collection("7777 Users").doc(userId).collection("Brands").doc(brandId).delete();
-      // Get Data of the Room
-      const roomSnapshot = await db.collection("7777 Rooms").doc(brandDoc.roomId).get();
-      const roomDoc = roomSnapshot.data();
-      var filtered = roomDoc.userIds.filter(function(element) {
-        return element != userId;
-      });
-      await db.doc("7777 Rooms" + "/" + brandDoc.roomId).update({
-        userIds: filtered,
-      });
-      // Send Notification to Brand Owners
-      const brandOwnersSnapshot = await db.collection("7777 Brands")
-      .doc(brandId)
-      .collection("Users")
-      .where("role", "=", 1)
-      .get();
-      // Count the number of Members
-      const brandUsersSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Users").get();
-      let numberMembers = brandUsersSnapshot.size;
-      functions.logger.log(
-        "Number Members",
-        numberMembers,
-        );
-      for (var i in brandOwnersSnapshot.docs) {
-        const brandOwnersDoc = brandOwnersSnapshot.docs[i].data();
-        functions.logger.log(
-          "Brand Owners Data:",
-          brandOwnersDoc
-          );
-        if (brandOwnersDoc.idioma == "es") {
-          payload = {
-            notification: {
-              title: "Miembro ha abandonado "+brandDoc.name+" ➖1️⃣ ",
-              body: userDoc.firstName+" "+userDoc.lastName+" se ha ido, ahora sois un total de "+numberMembers.toString()+" miembros",
-            },
-            data: {
-              route: "Notifications",
-            },
-          };
-        } else {
-          payload = {
-            notification: {
-              title: "Membre ha abandonat "+brandDoc.name+" ➖1️⃣ ",
-              body: userDoc.firstName+" "+userDoc.lastName+" ha marxat, ara sou un total "+numberMembers.toString()+" membres",
-            },
-            data: {
-              route: "Notifications",
-            },
-          }
-        }
-        functions.logger.log(
-          "Payload",
-          payload
-          );
-        const notificationToken = brandOwnersDoc.notificationToken;
-        functions.logger.log(
-          "Notification Token",
-          notificationToken
-          );
-        const response = await admin.messaging().sendToDevice(notificationToken, payload);
-        functions.logger.log(
-          "Response",
-          response
-          );
-      }
-      // Count Brand Members
-      let numClients = 0;
-      let numTrainers = 0;
-      for (var i in brandUsersSnapshot.docs) {
-        const brandUsersDoc = brandUsersSnapshot.docs[i].data();
-        if (brandUsersDoc.isTrainer) {
-          numTrainers += 1;
-        } else {
-          numClients += 1;
-        }
-      }
-      functions.logger.log(
-        "numClients",
-        numClients,
-        "numTrainers",
-        numTrainers,
-        );
-      // Update Brand Members
-      await db
-      .collection("7777 Brands")
-      .doc(brandId)
-      .update({
-        "numClients": numClients,
-        "numTrainers": numTrainers,
-      });
-      return null;
-    });
-
-// User Adds Location
-exports.zzzzUserAddsLocation = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Locations/{locationId}")
-.onCreate( async (snap, context) => {
-      // Get the value of the context triggers.
-      const locationId = context.params.locationId;
-      // Get Data of the Location
-      const locationSnapshot = await db.collection("7777 Locations").doc(locationId).get();
-      const locationDoc = locationSnapshot.data();
-      functions.logger.log(
-        "Location Data:",
-        locationDoc
-        );
-      // Add Location to Brands Collection
-      await db.doc("/7777 Brands/"+locationDoc.brandID+"/Locations/"+locationId+"").set({
-       "isBaseLocation": locationDoc.isBaseLocation,
-       "description": locationDoc.description,
-       "latitude": locationDoc.latitude,
-       "longitude": locationDoc.longitude,
-       //TODO INTEGRATE .12
-       "geoPosition": locationDoc.geoPosition,
-     });
-      return null;
-    });
-
-// User Deletes Location
-exports.zzzzUserDeletesLocation = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Locations/{locationId}")
-.onDelete( async (snap, context) => {
-        // Get the value of the context triggers.
-        const locationId = context.params.locationId;
-        // Get Data of Deleted Location
-        const locationDoc = snap.data();
-        functions.logger.log(
-          "Deleting Location with ID:",
-          locationId,
-          "to Brand with ID",
-          locationDoc.brandID
-          );
-        // Delete Location to Brands Collection
-        await db
-        .collection("7777 Brands")
-        .doc(locationDoc.brandID)
-        .collection("Locations")
-        .doc(locationId)
-        .delete();
-        /*
-        // Check Location Has Future Events
-        let futureEvents = [];
-        let now = new Date();
-        const locationEventsSnapshot = await db.collection("7777 Locations").doc(locationId).collection("Events").get();
-        for (var i in locationEventsSnapshot.docs) {
-          const id = locationEventsSnapshot.docs[i].id;
-          const data = locationEventsSnapshot.docs[i].data();
-          let date = new Date(date.year, date.month-1, date.day, date.hour, date.minute);
-          if (now < date) {
-            futureEvents.push(id);
-          }
-        }
-        functions.logger.log(
-            "Events to be modified",
-            futureEvents,
-          );
-        if (futureEvents.length != 0) {
-
-           // Update Future Events To Base Location
-           for (var i in futureEvents.length) {
-             const eventId = futureEvents[i];
-
-           }
-           // Delete Previous Location
-           await _firestore
-               .collection("7777 Events")
-               .doc(eventId)
-               .collection("Locations")
-               .doc(previousLocation)
-               .delete();
-           // Add New Location
-           Location location = await this.getSingleLocation(locationId);
-           await _firestore
-               .collection("7777 Events")
-               .doc(eventId)
-               .collection("Locations")
-               .doc(locationId)
-               .set({
-                 "description": location.description,
-                 "longitude": location.longitude,
-                 "latitude": location.latitude,
-               });
-             } */
-             return null;
-           });
-
-// User Sends Request
-exports.zzzzUserSendsRequest = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Users/{userId}/Requests/{requestId}")
-.onCreate( async (snap, context) => {
-      // Get the value of the context triggers.
-      const requestId = context.params.requestId;
-      const userId = context.params.userId;
-      // Get Data of the Request
-      const requestSnapshot = await db.collection("7777 Users").doc(userId).collection("Requests").doc(requestId).get();
-      const requestDoc = requestSnapshot.data();
-      functions.logger.log(
-        "Request Cover Data:",
-        requestDoc.brandId,
-        requestDoc.name,
-        );
-      // Get Data of the Brand
-      const brandId = requestDoc.brandId;
-      const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
-      const brandDoc = brandSnapshot.data();
-      functions.logger.log(
-        "Brand Data:",
-        brandDoc,
-        );
-      // Add Request to Brands Request collection
-      await db
-      .collection("7777 Brands")
-      .doc(brandId)
-      .collection("Requests")
-      .doc(requestId).set({
-        "brandId": requestDoc.brandId,
-        "userId": requestDoc.userId,
-        "name": requestDoc.name,
-        "isTrainer": requestDoc.isTrainer,
-        "dateSent": requestDoc.dateSent,
-        "year": requestDoc.year,
-        "month": requestDoc.month,
-        "day": requestDoc.day,
-      });
-      // Send Notification to Brand Owners
-      const brandOwnersSnapshot = await db.collection("7777 Brands")
-      .doc(brandId)
-      .collection("Users")
-      .where("role", "=", 1)
-      .get();
-      for (var i in brandOwnersSnapshot.docs) {
-        const brandOwnersDoc = brandOwnersSnapshot.docs[i].data();
-        functions.logger.log(
-          "Brand Owners Data:",
-          brandOwnersDoc
-          );
-        if (brandOwnersDoc.idioma == "es") {
-          payload = {
-            notification: {
-              title: "Nueva solicitud de afiliación ⁉️",
-              body: requestDoc.name+" quiere formar parte de tu marca "+ brandDoc.name,
-            },
-            data: {
-              route: "MembershipRequests",
-            },
-          };
-        } else {
-          payload = {
-            notification: {
-              title: "Nova sol·licitud d'afiliació ⁉️",
-              body: requestDoc.name+" vol formar part de la teva marca "+ brandDoc.name,
-            },
-            data: {
-              route: "MembershipRequests",
-            },
-          }
-        }
-        functions.logger.log(
-          "Payload",
-          payload
-          );
-        const notificationToken = brandOwnersDoc.notificationToken;
-        functions.logger.log(
-          "Notification Token",
-          notificationToken
-          );
-        const response = await admin.messaging().sendToDevice(notificationToken, payload);
-        functions.logger.log(
-          "Response",
-          response
-          );
-      }
-      return null;
-    });
-
-// User Deletes Request
-exports.zzzzUserDeletesRequest = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Users/{userId}/Requests/{requestId}")
-.onDelete( async (snap, context) => {
-      // Get the value of the context triggers.
-      const requestId = context.params.requestId;
-      const userId = context.params.userId;
-      // Get Data of Deleted Request
-      const requestDoc = snap.data();
-      functions.logger.log(
-        "Deleting Request with ID:",
-        requestId,
-        "to Brand with ID",
-        requestDoc.brandId
-        );
-      // Delete the Request on Users Request collection
-      await db
-      .collection("7777 Brands")
-      .doc(requestDoc.brandId)
-      .collection("Requests")
-      .doc(requestId)
-      .delete();
-      return null;
-    });
-
-// User Adds Event
-exports.zzzzUserAddsEvent = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Events/{eventId}")
-.onCreate( async (snap, context) => {
-      // Get the value of the context triggers.
-      const eventId = context.params.eventId;
-      // Get Data of the Event
-      const eventSnapshot = await db.collection("7777 Events").doc(eventId).get();
-      const eventDoc = eventSnapshot.data();
-      // Get Data of the Event Brand
-      const eventBrandSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
-      // Get Data of the Event Users
-      const eventUsersSnapshot = await db.collection("7777 Events").doc(eventId).collection("Users").get();
-      // Get Data of the Event Location
-      const eventLocationsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Locations").get();
-      functions.logger.log(
-        "Event Cover Data with ID:",
-        eventId,
-        "with Name:",
-        eventDoc.title,
-        );
-      // Count the Number of Clients and Trainers
-      let numClients = 0;
-      let numTrainers = 0;
-      for (var i in eventUsersSnapshot.docs) {
-        const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-        if (eventUsersDoc.isTrainer) {
-          numTrainers += 1;
-        } else {
-          numClients += 1;
-        }
-      }
-      functions.logger.log(
-        "numClients",
-        numClients,
-        "numTrainers",
-        numTrainers,
-        );
-      let now = new Date();
-      /* Add Event to Brands Event Subcollection
-      for (var i in eventBrandSnapshot.docs) {
-        const id = eventBrandSnapshot.docs[i].id;
-        await db
-        .collection("7777 Brands")
-        .doc(id)
-        .collection("Events")
-        .doc(eventId).set({
-          "title": eventDoc.title,
-          "doneAt": eventDoc.doneAt,
-          "year": eventDoc.year,
-          "month": eventDoc.month,
-          "day": eventDoc.day,
-          "hour": eventDoc.hour,
-          "minute": eventDoc.minute,
-          "duration": eventDoc.duration,
-          "numTrainers": numTrainers,
-          "numClients": numClients,
-          "maxMembers": eventDoc.maxMembers,
-        });
-      }
-      */
-      // Add Event to Locations Event Subcollection
-      for (var i in eventLocationsSnapshot.docs) {
-        const id = eventLocationsSnapshot.docs[i].id;
-        await db
-        .collection("7777 Locations")
-        .doc(id)
-        .collection("Events")
-        .doc(eventId).set({
-          "isPrivate": eventDoc.isPrivate,
-          "title": eventDoc.title,
-          "imageUrl": eventDoc.imageUrl,
-          "doneAt": eventDoc.doneAt,
-          "year": eventDoc.year,
-          "month": eventDoc.month,
-          "day": eventDoc.day,
-          "hour": eventDoc.hour,
-          "minute": eventDoc.minute,
-          "duration": eventDoc.duration,
-          "numTrainers": numTrainers,
-          "numClients": numClients,
-          "maxMembers": eventDoc.maxMembers,
-          //TODO INTEGRATION .12
-          "brandID": eventDoc.brandID,
-        });
-        // If Event Private
-        // Add to Locations/Events/Private Events/PrivateEvents
-        if (eventDoc.isPrivate == true) {
-         await db
-         .collection("7777 Locations")
-         .doc(id)
-         .collection("Events")
-         .doc("Private Events")
-         .collection("Private Events")
-         .doc(eventId).set({
-          "isPrivate": eventDoc.isPrivate,
-          "title": eventDoc.title,
-          "imageUrl": eventDoc.imageUrl,
-          "doneAt": eventDoc.doneAt,
-          "year": eventDoc.year,
-          "month": eventDoc.month,
-          "day": eventDoc.day,
-          "hour": eventDoc.hour,
-          "minute": eventDoc.minute,
-          "duration": eventDoc.duration,
-          "numTrainers": numTrainers,
-          "numClients": numClients,
-          "maxMembers": eventDoc.maxMembers,
-          //TODO INTEGRATION .12
-          "brandID": eventDoc.brandID,
-        });
-       }
-     }
-     return null;
-   });
-
-// User Deletes Event
-exports.zzzzUserDeletesEvent = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Events/{eventId}")
-.onDelete( async (snap, context) => {
-      // Get the value of the context triggers.
-      const eventId = context.params.eventId;
-      // Get Data of Deleted Event
-      const eventDoc = snap.data();
-      functions.logger.log(
-        "Event Deleted with ID:",
-        eventId,
-        "and Name:",
-        eventDoc.title,
-        );
-      // Get Data of the Event Locations
-      const eventUsersSnapshot = await db.collection("7777 Events").doc(eventId).collection("Users").get();
-      functions.logger.log(
-        "eventUsersSnapshot size",
-        eventUsersSnapshot.size,
-        );
-      // Get Data of the Event Brand
-      const eventBrandSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
-      functions.logger.log(
-        "eventBrandSnapshot size",
-        eventBrandSnapshot.size,
-        );
-      // Get Data of the Event Locations
-      const eventLocationsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Locations").get();
-      functions.logger.log(
-        "eventLocationsSnapshot size",
-        eventLocationsSnapshot.size,
-        );
-      // Delete Users Subcollection in Event
-      for (var i in eventUsersSnapshot.docs) {
-        await db
-        .collection("7777 Events")
-        .doc(eventId)
-        .collection("Users")
-        .doc(eventUsersSnapshot.docs[i].id)
-        .delete();
-      }
-      /* Delete Event in Brands Subcollection
-      for (var i in eventBrandSnapshot.docs) {
-        await db
-        .collection("7777 Brands")
-        .doc(eventBrandSnapshot.docs[i].id)
-        .collection("Events")
-        .doc(eventId)
-        .delete();
-        // Delete Brands in Event
-        await db
-        .collection("7777 Events")
-        .doc(eventId)
-        .collection("Brands")
-        .doc(eventBrandSnapshot.docs[i].id)
-        .delete();
-      }
-      */
-      // Delete Event in Locations Subcollection
-      for (var i in eventLocationsSnapshot.docs) {
-        await db
-        .collection("7777 Locations")
-        .doc(eventLocationsSnapshot.docs[i].id)
-        .collection("Events")
-        .doc(eventId)
-        .delete();
-        // If Event Private
-        // Delete from Locations/Events/Private Events/PrivateEvents Subcollection
-        if (eventDoc.isPrivate == true) {
-         await db
-         .collection("7777 Locations")
-         .doc(eventLocationsSnapshot.docs[i].id)
-         .collection("Events")
-         .doc("Private Events")
-         .collection("Private Events")
-         .doc(eventId)
-         .delete();
-       }
-        // Delete Locations in Event
-        await db
-        .collection("7777 Events")
-        .doc(eventId)
-        .collection("Locations")
-        .doc(eventLocationsSnapshot.docs[i].id)
-        .delete();
-      }
-      return null;
-    });
-
-// User Joins Event
-exports.zzzzUserJoinsEvent = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Events/{eventId}/Users/{userId}")
-.onCreate( async (change, context) => {
-      // Get the value of the context triggers.
-      const eventId = context.params.eventId;
-      const userId = context.params.userId;
-      // Get Event Data
-      const eventSnapshot = await db.collection("7777 Events").doc(eventId).get();
-      const eventDoc = eventSnapshot.data();
-      functions.logger.log(
-        "eventDoc",
-        eventDoc,
-        );
-      // Get User Data
-      const userSnapshot = await db.collection("7777 Users").doc(userId).get();
-      const userDoc = userSnapshot.data();
-      // Get Event User Data
-      const eventUserSnapshot = await db.collection("7777 Events").doc(eventId).collection("Users").doc(userId).get();
-      const eventUserDoc = eventUserSnapshot.data();
-      // Get Event Brands Data
-      const eventBrandsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
-      // Get Data of the Event Locations
-      const eventLocationsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Locations").get();
-      // Count the Number of Clients and Trainers
-      const eventUsersSnapshot = await db.collection("7777 Events").doc(eventId).collection("Users").get();
-      let numClients = 0;
-      let numTrainers = 0;
-      for (var i in eventUsersSnapshot.docs) {
-        const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-        if (eventUsersDoc.isTrainer) {
-          numTrainers += 1;
-        } else {
-          numClients += 1;
-        }
-      }
-      // Update Event Assisting Members
-      await db
-      .collection("7777 Events")
-      .doc(eventId)
-      .update({
-        "numClients": numClients,
-        "numTrainers": numTrainers,
-      });
-      // Add Event To Users Event Subcollection
-      await db
-      .collection("7777 Users")
-      .doc(userId)
-      .collection("Events")
-      .doc(eventId).set({
-        "isPrivate": eventDoc.isPrivate,
-        "title": eventDoc.title,
-        "imageUrl": eventDoc.imageUrl,
-        "doneAt": eventDoc.doneAt,
-        "year": eventDoc.year,
-        "month": eventDoc.month,
-        "day": eventDoc.day,
-        "hour": eventDoc.hour,
-        "minute": eventDoc.minute,
-        "duration": eventDoc.duration,
-        "numTrainers": numTrainers,
-        "numClients": numClients,
-        "maxMembers": eventDoc.maxMembers,
-        //TODO INTEGRATION .12
-        "brandID": eventDoc.brandID,
-      });
-
-      // If Event Private
-      // Add to Users/Events/Private Events/PrivateEvents
-      if (eventDoc.isPrivate == true) {
-       await db
-       .collection("7777 Users")
-       .doc(userId)
-       .collection("Events")
-       .doc("Private Events")
-       .collection("Private Events")
-       .doc(eventId).set({
-        "isPrivate": eventDoc.isPrivate,
-        "title": eventDoc.title,
-        "imageUrl": eventDoc.imageUrl,
-        "doneAt": eventDoc.doneAt,
-        "year": eventDoc.year,
-        "month": eventDoc.month,
-        "day": eventDoc.day,
-        "hour": eventDoc.hour,
-        "minute": eventDoc.minute,
-        "duration": eventDoc.duration,
-        "numTrainers": numTrainers,
-        "numClients": numClients,
-        "maxMembers": eventDoc.maxMembers,
-        //TODO INTEGRATION .12
-        "brandID": eventDoc.brandID,
-      });
-     }
-      // Update Number of Client and Trainers on Each of Event Subcollection
-      // User´s Event First
-      for (var i in eventUsersSnapshot.docs) {
-        const id = eventUsersSnapshot.docs[i].id;
-        await db
-        .collection("7777 Users")
-        .doc(id)
-        .collection("Events")
-        .doc(eventId)
-        .update({
-          "numClients": numClients,
-          "numTrainers": numTrainers,
-        });
-        // If Event Private
-        // Update Cover Data Also
-        if (eventDoc.isPrivate == true) {
-          await db
-          .collection("7777 Users")
-          .doc(id)
-          .collection("Events")
-          .doc("Private Events")
-          .collection("Private Events")
-          .doc(eventId)
-          .update({
-            "numClients": numClients,
-            "numTrainers": numTrainers,
-          });
-        }
-      }
-      // Brand´s Event Second
-      for (var i in eventBrandsSnapshot.docs) {
-        const id = eventBrandsSnapshot.docs[i].id;
-        // Update Last Event At
-        await db
-        .collection("7777 Brands")
-        .doc(id)
-        .collection("Users")
-        .doc(userId)
-        .update({
-          "lastEventAt": eventDoc.doneAt,
-        });
-        // Update Cover Data
-        await db
-        .collection("7777 Brands")
-        .doc(id)
-        .collection("Events")
-        .doc(eventId)
-        .update({
-          "numClients": numClients,
-          "numTrainers": numTrainers,
-        });
-        // If Event Private
-        // Update Cover Data Also
-        if (eventDoc.isPrivate == true) {
-          await db
-          .collection("7777 Brands")
-          .doc(id)
-          .collection("Events")
-          .doc("Private Events")
-          .collection("Private Events")
-          .doc(eventId)
-          .update({
-            "numClients": numClients,
-            "numTrainers": numTrainers,
-          });
-        }
-      }
-      functions.logger.log(
-        "userDoc",
-        userDoc,
-        );
-      // Location´s Event Third
-      for (var i in eventLocationsSnapshot.docs) {
-        const id = eventLocationsSnapshot.docs[i].id;
-        await db
-        .collection("7777 Locations")
-        .doc(id)
-        .collection("Events")
-        .doc(eventId)
-        .update({
-          "numClients": numClients,
-          "numTrainers": numTrainers,
-        });
-          // If Event Private
-          // Update Cover Data Also
-          if (eventDoc.isPrivate == true) {
-            await db
-            .collection("7777 Locations")
-            .doc(id)
-            .collection("Events")
-            .doc("Private Events")
-            .collection("Private Events")
-            .doc(eventId)
-            .update({
-              "numClients": numClients,
-              "numTrainers": numTrainers,
-            });
-          }
-        }
-      
-      // Send Notifications
-      if (userDoc.isTrainer == false) {
-        // Don´t Send Full Notification When it is a Private Event
-        if (eventDoc.isPrivate != true) {
-          // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
-          if (eventDoc.maxMembers == numClients) {
-              // Event is full
-              functions.logger.log(
-                "NOTIFICATION IS FULL",
-                );
-              for (var i in eventUsersSnapshot.docs) {
-                const id = eventUsersSnapshot.docs[i].id;
-                const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-                if (eventUsersDoc.isTrainer) {
-                  const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
-                  const trainerDoc = trainerSnapshot.data();
-                  functions.logger.log(
-                    "trainerDoc",
-                    trainerDoc,
-                    );
-                  var payload = 0;
-                  let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
-                  if (trainerDoc.idioma == "es") {
-                    // Date To String
-                    let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
-                    // Hour and Minutes to String
-                    let eventTimeTime = eventDoc.hour+":";
-                    let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-                    eventTimeTime += minutes;
-                    // Send Payload
-                    payload = {
-                      notification: {
-                        title: "Evento totalmente reservado 💯",
-                        body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
-                      },
-                      data: {
-                        route: eventId,
-                      },
-                    };
-                  } else {
-                    // Date To String
-                    let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
-                    // Hour and Minutes to String
-                    let eventTimeTime = eventDoc.hour+":";
-                    let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-                    eventTimeTime += minutes;
-                    // Send Payload
-                    payload = {
-                      notification: {
-                        title: "Esdeveniment totalment reservat 💯",
-                        body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
-                      },
-                      data: {
-                        route: eventId,
-                      },
-                    };
-                  }
-                  functions.logger.log(
-                    "Payload",
-                    payload
-                    );
-                  response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-                  functions.logger.log(
-                    "Response",
-                    response
-                    );
-                }
-              }
-          } else {
-            // First one to go over 50%
-            if (numClients / eventDoc.maxMembers > 0.49 && (numClients - 1) / eventDoc.maxMembers < 0.50) {
-              // Send Over 50% Notification to All Event Trainers
-              functions.logger.log(
-                "NOTIFICATION OVER 50%",
-              );
-              for (var i in eventUsersSnapshot.docs) {
-                const id = eventUsersSnapshot.docs[i].id;
-                const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-                if (eventUsersDoc.isTrainer) {
-                  const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
-                  const trainerDoc = trainerSnapshot.data();
-                  functions.logger.log(
-                    "trainerDoc",
-                    trainerDoc,
-                    );
-                  var payload = 0;
-                  let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
-                  if (trainerDoc.idioma == "es") {
-                      // Date To String
-                      let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
-                      // Hour and Minutes to String
-                      let eventTimeTime = eventDoc.hour+":";
-                      let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-                      eventTimeTime += minutes;
-                      // Send Payload
-                      payload = {
-                        notification: {
-                          title: "Cada vez quedan menos plazas ⏱️",
-                          body: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
-                        },
-                        data: {
-                          route: eventId,
-                        },
-                      };
-                    } else {
-                      // Date To String
-                      let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
-                      // Hour and Minutes to String
-                      let eventTimeTime = eventDoc.hour+":";
-                      let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-                      eventTimeTime += minutes;
-                      // Send Payload
-                      payload = {
-                        notification: {
-                          title: "Cada cop queden menys places ⏱️",
-                          body: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
-                        },
-                        data: {
-                          route: eventId,
-                        },
-                      };
-                    }
-                    functions.logger.log(
-                      "Payload",
-                      payload
-                      );
-                    response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-                    functions.logger.log(
-                      "Response",
-                      response
-                      );
-                  }
-                }
-            }
-          }
-        } else {
-          // Event is full
-          functions.logger.log(
-            "NOTIFICATION PRIVATE EVENT",
-          );
-          for (var i in eventUsersSnapshot.docs) {
-            const id = eventUsersSnapshot.docs[i].id;
-            const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-            if (eventUsersDoc.isTrainer) {
-              const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
-              const trainerDoc = trainerSnapshot.data();
-              functions.logger.log(
-                "trainerDoc",
-                trainerDoc,
-                );
-              var payload = 0;
-              let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
-              if (trainerDoc.idioma == "es") {
-                // Date To String
-                let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
-                // Hour and Minutes to String
-                let eventTimeTime = eventDoc.hour+":";
-                let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-                eventTimeTime += minutes;
-                // Send Payload
-                payload = {
-                  notification: {
-                    title: userDoc.firstName+" ha confirmado su asistencia 🤝",
-                    body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
-                  },
-                  data: {
-                    route: eventId,
-                  },
-                };
-              } else {
-                // Date To String
-                let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
-                // Hour and Minutes to String
-                let eventTimeTime = eventDoc.hour+":";
-                let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-                eventTimeTime += minutes;
-                // Send Payload
-                payload = {
-                  notification: {
-                    title: userDoc.firstName+" ha confirmat la seva assistència 🤝",                  
-                    body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
-                  },
-                  data: {
-                    route: eventId,
-                  },
-                };
-              }
-              functions.logger.log(
-                "Payload",
-                payload
-                );
-              response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-              functions.logger.log(
-                "Response",
-                response
-                );
-            }
-          }
-        }
-      }
-      
-      // Send Notification to User if added directly
-      if (eventUserDoc.invitedDirectly == true) {
-            // Invited to Event
-            functions.logger.log(
-              "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
-              );
-            functions.logger.log(
-              "userDoc",
-              userDoc,
-              );
-            var payload = 0;
-            let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
-            if (userDoc.idioma == "es") {
-             // Date To String
-             let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
-             // Hour and Minutes to String
-             let eventTimeTime = eventDoc.hour+":";
-             let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-             eventTimeTime += minutes;
-             // Send Payload
-             payload = {
-               notification: {
-                 title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
-                 body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
-               },
-               data: {
-                 route: eventId,
-               },
-             };
-           } else {
-             // Date To String
-             let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
-             // Hour and Minutes to String
-             let eventTimeTime = eventDoc.hour+":";
-             let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-             eventTimeTime += minutes;
-             // Send Payload
-             payload = {
-               notification: {
-                 title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
-                 body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
-               },
-               data: {
-                 route: eventId,
-               },
-             };
-           }
-
-           functions.logger.log(
-            "Payload",
-            payload
-            );
-           response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-           functions.logger.log(
-            "Response",
-            response
-            );
-       }
-       return null;
-     });
-
-// User Leaves Event
-exports.zzzzUserLeavesEvent = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Events/{eventId}/Users/{userId}")
-.onDelete( async (change, context) => {
-      // Get the value of the context triggers.
-      const eventId = context.params.eventId;
-      const userId = context.params.userId;
-      // Get Event Data
-      const eventSnapshot = await db.collection("7777 Events").doc(eventId).get();
-      const eventDoc = eventSnapshot.data();
-      functions.logger.log(
-        "eventDoc",
-        eventDoc,
-        );
-      // Get Event Brands Data
-      const eventBrandsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
-      // Count the Number of Clients and Trainers
-      const eventUsersSnapshot = await db.collection("7777 Events").doc(eventId).collection("Users").get();
-      // Get Data of the Event Locations
-      const eventLocationsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Locations").get();
-      functions.logger.log(
-        "eventLocationsSnapshot size",
-        eventLocationsSnapshot.size,
-        );
-      let numClients = 0;
-      let numTrainers = 0;
-      for (var i in eventUsersSnapshot.docs) {
-        const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-        if (eventUsersDoc.isTrainer) {
-          numTrainers += 1;
-        } else {
-          numClients += 1;
-        }
-      }
-      // Delete Event To Users Event Subcollection
-      await db
-      .collection("7777 Users")
-      .doc(userId)
-      .collection("Events")
-      .doc(eventId)
-      .delete();
-      // If Event Private
-      // Delete to Users/Events/Private Events/PrivateEvents
-      if (eventDoc == undefined || eventDoc.isPrivate == true) {
-       await db
-       .collection("7777 Users")
-       .doc(userId)
-       .collection("Events")
-       .doc("Private Events")
-       .collection("Private Events")
-       .doc(eventId)
-       .delete();
-     }
-       //Update Event Assisting Members
-      await db
-      .collection("7777 Events")
-      .doc(eventId)
-      .update({
-        "numClients": numClients,
-        "numTrainers": numTrainers,
-      });
-      // Update Number of Client and Trainers on Each of Event Subcollection
-      // User´s Event First
-      for (var i in eventUsersSnapshot.docs) {
-        const id = eventUsersSnapshot.docs[i].id;
-        await db
-        .collection("7777 Users")
-        .doc(id)
-        .collection("Events")
-        .doc(eventId)
-        .update({
-          "numClients": numClients,
-          "numTrainers": numTrainers,
-        });
-          // If Event Private
-          // Update Cover Data Also
-          if (eventDoc == undefined || eventDoc.isPrivate == true) {
-            await db
-            .collection("7777 Users")
-            .doc(id)
-            .collection("Events")
-            .doc("Private Events")
-            .collection("Private Events")
-            .doc(eventId)
-            .update({
-              "numClients": numClients,
-              "numTrainers": numTrainers,
-            });
-          }
-        }
-      // Brand´s Event Second
-      for (var i in eventBrandsSnapshot.docs) {
-        const id = eventBrandsSnapshot.docs[i].id;
-        await db
-        .collection("7777 Brands")
-        .doc(id)
-        .collection("Events")
-        .doc(eventId)
-        .update({
-          "numClients": numClients,
-          "numTrainers": numTrainers,
-        });
-          // If Event Private
-          // Update Cover Data Also
-          if (eventDoc == undefined || eventDoc.isPrivate == true) {
-            await db
-            .collection("7777 Brands")
-            .doc(id)
-            .collection("Events")
-            .doc("Private Events")
-            .collection("Private Events")
-            .doc(eventId)
-            .update({
-              "numClients": numClients,
-              "numTrainers": numTrainers,
-            });
-          }
-        }
-      // Location´s Event Third
-      for (var i in eventLocationsSnapshot.docs) {
-        const id = eventLocationsSnapshot.docs[i].id;
-        await db
-        .collection("7777 Locations")
-        .doc(id)
-        .collection("Events")
-        .doc(eventId)
-        .update({
-          "numClients": numClients,
-          "numTrainers": numTrainers,
-        });
-        // If Event Private
-        // Update Cover Data Also
-        if (eventDoc == undefined || eventDoc.isPrivate == true) {
-          await db
-          .collection("7777 Locations")
-          .doc(id)
-          .collection("Events")
-          .doc("Private Events")
-          .collection("Private Events")
-          .doc(eventId)
-          .update({
-            "numClients": numClients,
-            "numTrainers": numTrainers,
-          });
-        }
-      }
-      return null;
-    });
-
-// Change Message Status
-exports.zzzzChangeMessageStatus = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Rooms/{roomId}/messages/{messageId}")
-.onWrite(async (change, context) => {
-    // Get context params
-    const roomId = context.params.roomId;
-    const messageId = context.params.messageId;
-    // Message after Data
-    const message = change.after.data();
-    const previousValue = change.before.data();
-    functions.logger.log(
-     "BEFORE",
-     previousValue
-     );
-    functions.logger.log(
-     "AFTER",
-     message
-     );
-    var payload = 0;
-    // Get Room Data
-    const roomSnapshot =  await db.collection("7777 Rooms").doc(roomId).get();
-    const roomDoc = roomSnapshot.data();
-    functions.logger.log(
-     "RoomDoc",
-     roomDoc
-     );
-    if (message && previousValue === undefined) {
-        //Get Data of the Room
-        var messageStatus = "seen";
-        var metadata = {};
-        var userSnapshot;
-        var userDoc;
-        functions.logger.log(
-         "MessageTest",
-         roomDoc.metadata,
-         );
-        for (let i = 0; i < roomDoc.userIds.length; ++i) {
-          functions.logger.log(
-            "Incremental",
-            roomDoc.userIds[i],
-            );
-          if (message.authorId != roomDoc.userIds[i] && roomDoc.metadata["active" + roomDoc.userIds[i]] == false) {
-           const authorUserSnapshot = await db.collection("7777 Users").doc(message.authorId).get();
-           const authorUserDoc = authorUserSnapshot.data();
-           functions.logger.log(
-             "Es activo",
-             roomDoc.userIds[i],
-             );
-           messageStatus = "delivered";
-           metadata[roomDoc.userIds[i]] = "delivered";
-           userSnapshot = await db.collection("7777 Users").doc(roomDoc.userIds[i]).get();
-           userDoc = userSnapshot.data();
-           functions.logger.log(
-            "User to Send Data",
-            userDoc,
-            );
-             // Send Notification To Users who received the message and not active
-             if (roomDoc.type == "group") {
-              payload = {
-                notification: {
-                  title: roomDoc.name,
-                  body: authorUserDoc.firstName + ' ' + authorUserDoc.lastName + ': ' + message.text,
-                },
-                data: {
-                  route: "Chat",
-                },
-              };
-            } else {
-              payload = {
-               notification: {
-                 title: authorUserDoc.firstName + ' ' + authorUserDoc.lastName + ':',
-                 body: message.text,
-               },
-               data: {
-                 route: "Chat",
-               },
-             };
-           }
-           var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-           functions.logger.log(
-             "Response",
-             response
-             );
-         } else {
-           metadata[roomDoc.userIds[i]] = "seen";
-         }
-       }
-       if (['delivered', 'seen', 'sent'].includes(message.status)) {
-        return null
-      } else {
-        change.after.ref.update({
-          status: messageStatus,
-          metadata: metadata,
-          remoteId: messageId,
-        });
-        message.status = messageStatus;
-        message.metadata = metadata;
-        message.remoteId = messageId;
-        return db.doc("7777 Rooms" + "/" + roomId).update({
-          lastMessages: [message],
-          updatedAt: message.updatedAt,
-        })
-      }
-    } else if (roomDoc.lastMessages[0].remoteId == message.remoteId) {
-      functions.logger.log(
-       "message ASQUI",
-       message.metadata,
-       );
-      return db.doc("7777 Rooms" + "/" + roomId).update({
-        lastMessages: [message],
-      })
-    } else {
-      return null
-    }
-  })
-
-
 //  User Sends Bono Request
 exports.UserSendsBonoRequest = functions
 .region("europe-west1")
@@ -5018,7 +3039,7 @@ exports.UserPurchasesBono = functions
 
   //Add purchases
 
-   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
+    var purchaseData = {
       "userId": purchaseDoc.userId,
       "brandId": brandId,
       "bonoId": bonoId,
@@ -5031,52 +3052,19 @@ exports.UserPurchasesBono = functions
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
       "directPurchase": purchaseDoc.directPurchase,
-   });
+    };
+    
+    if (purchaseDoc.purchaseGroupId != null) {
+      purchaseData["purchaseGroupId"] = purchaseDoc.purchaseGroupId;
+    }
 
-   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
-      "userId": purchaseDoc.userId,
-      "brandId": brandId,
-      "bonoId": bonoId,
-      "isActive": true,
-      "purchasedAt": purchaseDoc.purchasedAt,
-      "price": purchaseDoc.price,
-      "paymentMethod": purchaseDoc.paymentMethod,
-      "sessions": purchaseDoc.sessions,
-      "weeklySessions": purchaseDoc.weeklySessions,
-      "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime,
-      "directPurchase": purchaseDoc.directPurchase,
-  });
+   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set(purchaseData);
 
-   await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-      "userId": purchaseDoc.userId,
-      "brandId": brandId,
-      "bonoId": bonoId,
-      "isActive": true,
-      "purchasedAt": purchaseDoc.purchasedAt,
-      "price": purchaseDoc.price,
-      "paymentMethod": purchaseDoc.paymentMethod,
-      "sessions": purchaseDoc.sessions,
-      "weeklySessions": purchaseDoc.weeklySessions,
-      "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime,
-      "directPurchase": purchaseDoc.directPurchase,
-   });
+   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).set(purchaseData);
 
-   await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-    "userId": purchaseDoc.userId,
-    "brandId": brandId,
-    "bonoId": bonoId,
-    "isActive": true,
-    "purchasedAt": purchaseDoc.purchasedAt,
-    "price": purchaseDoc.price,
-    "paymentMethod": purchaseDoc.paymentMethod,
-    "sessions": purchaseDoc.sessions,
-    "weeklySessions": purchaseDoc.weeklySessions,
-    "cancelTime": purchaseDoc.cancelTime,
-    "expirationTime": purchaseDoc.expirationTime,
-    "directPurchase": purchaseDoc.directPurchase,
-   });
+   await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set(purchaseData);
+
+   await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set(purchaseData);
 
    await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
      "title": bonoDoc.title,
@@ -5354,434 +3342,6 @@ exports.UserCancelsPurchaseEvent = functions
   return null;
   });
 
-
-
-
-// ZZZZ User Sends Bono Request
-exports.zzzzUserSendsBonoRequest = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Brands/{brandId}/Bonos/Bonos Requests/Bonos Requests/{bonoRequestId}")
-.onCreate( async (snap, context) => {
-      // Get the value of the context triggers.
-      const brandId = context.params.brandId;
-      const bonoRequestId = context.params.bonoRequestId;
-
-      // Get Data of the Request
-      //const requestSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).get();
-      const requestDoc = snap.data();
-
-      // Get Data of Bono
-      const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(requestDoc.bonoId).get();
-      const bonoDoc = snap.data();
-
-       // Get Data of the Brand
-       const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
-       const brandDoc = brandSnapshot.data();
-
-       functions.logger.log(
-        "test",
-        brandDoc.adminID
-        );
-
-       const userSnapshot = await db.collection("7777 Users").doc(brandDoc.adminID).get();
-       const userDoc = userSnapshot.data();
-
-       if (userDoc.idioma == "es") {
-        payload = {
-          notification: {
-            title: "Nueva solicitud de compra 🤑📈",
-            body: "Tu bono "+bonoDoc.title.toUpperCase()+" tiene mucho éxito",
-          },
-          data: {
-            route: "BonosRequests",
-          },
-        };
-      } else {
-        payload = {
-          notification: {
-            title: "Nova sol·licitud de compra 🤑📈",
-            body: "El teu val "+bonoDoc.title.toUpperCase()+" té molt d'èxit",
-          },
-          data: {
-            route: "BonosRequests",
-          },
-        }
-      }
-      functions.logger.log(
-       "Payload",
-       payload
-       );
-      var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-
-
-      return null;
-    });
-
-// ZZZZ User Purchases Bono
-exports.zzzzUserPurchasesBono = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Purchases/{purchaseId}")
-.onCreate( async (snap, context) => {
-
-  const purchaseId = context.params.purchaseId;
-  const purchaseDoc = snap.data();
-
-  const userId = purchaseDoc.userId;
-  const bonoId = purchaseDoc.bonoId;
-  const brandId =  purchaseDoc.brandId;
-
-  // Get Data of the User
-  const userSnapshot = await db.collection("7777 Users").doc(userId).get();
-  const userDoc = userSnapshot.data();
-
-  //Get data of the bono
-  const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
-  const bonoDoc = bonoSnapshot.data();
-
-  //Add purchases
-
-   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({     
-     "userId": purchaseDoc.userId,
-     "brandId": brandId,
-     "bonoId": bonoId,
-     "isActive": true,
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "sessions": purchaseDoc.sessions,
-     "weeklySessions": purchaseDoc.weeklySessions,
-     "cancelTime": purchaseDoc.cancelTime,
-     "expirationTime": purchaseDoc.expirationTime,
-     "directPurchase": purchaseDoc.directPurchase,
-   });
-
-   await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-      "userId": purchaseDoc.userId,
-      "brandId": brandId,
-      "bonoId": bonoId,
-      "isActive": true,
-      "purchasedAt": purchaseDoc.purchasedAt,
-      "price": purchaseDoc.price,
-      "paymentMethod": purchaseDoc.paymentMethod,
-      "sessions": purchaseDoc.sessions,
-      "weeklySessions": purchaseDoc.weeklySessions,
-      "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime,
-      "directPurchase": purchaseDoc.directPurchase,
-   });
-
-   await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
-    "userId": purchaseDoc.userId,
-    "brandId": brandId,
-    "bonoId": bonoId,
-    "isActive": true,
-    "purchasedAt": purchaseDoc.purchasedAt,
-    "price": purchaseDoc.price,
-    "paymentMethod": purchaseDoc.paymentMethod,
-    "sessions": purchaseDoc.sessions,
-    "weeklySessions": purchaseDoc.weeklySessions,
-    "cancelTime": purchaseDoc.cancelTime,
-    "expirationTime": purchaseDoc.expirationTime,
-    "directPurchase": purchaseDoc.directPurchase,
-  });
-
-   await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-      "userId": purchaseDoc.userId,
-      "brandId": brandId,
-      "bonoId": bonoId,
-      "isActive": true,
-      "purchasedAt": purchaseDoc.purchasedAt,
-      "price": purchaseDoc.price,
-      "paymentMethod": purchaseDoc.paymentMethod,
-      "sessions": purchaseDoc.sessions,
-      "weeklySessions": purchaseDoc.weeklySessions,
-      "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime,
-      "directPurchase": purchaseDoc.directPurchase,
-   });
-
-   await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).set({
-     "title": bonoDoc.title,
-     "sessions": purchaseDoc.sessions,
-     "price": purchaseDoc.price,
-     "purchaseId": purchaseId,
-     "brandId": purchaseDoc.brandId,
-     "expirationTime": purchaseDoc.expirationTime,
-     "cancelTime": purchaseDoc.cancelTime,
-     "weeklySessions": purchaseDoc.weeklySessions,
-   });
-
-  let stringSessions = "";
-  if(purchaseDoc.sessions != 10000)
-  {
-      stringSessions = purchaseDoc.sessions + " ";
-  }
-  // Send Notification to User
-  if (userDoc.idioma == "es") {
-    payload = {
-      notification: {
-        title: "Bono "+bonoDoc.title.toUpperCase()+" otorgado 🤙",
-        body: "Ya puedes disfrutar de sus "+ stringSessions + "intensas sesiones",
-      },
-      data: {
-        route: "Notifications",
-      },
-    };
-  } else {
-    payload = {
-      notification: {
-        title: "Val "+bonoDoc.title.toUpperCase()+" otorgat 🤙",
-        body: "Ja pots gaudir de les seves "+ stringSessions+ "intenses sessions",
-      },
-      data: {
-        route: "Notifications",
-      },
-    }
-  }
-  functions.logger.log(
-   "Payload",
-   payload
-   );
-  var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-
-  return null;
-
-  });
-
-// ZZZZ Update User Bono
-exports.zzzzUpdateUserBono = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Users/{userId}/Bonos/{bonoId}")
-.onUpdate( async (change, context) => {
-
-  const userId = context.params.userId;
-  const bonoId = context.params.bonoId;
-  const before = change.before.data();
-  const bonoDoc = change.after.data();
-
-  if(bonoDoc.title != before.title || bonoDoc.sessions != before.sessions || bonoDoc.price != before.price || bonoDoc.expirationTime != before.expirationTime || bonoDoc.cancelTime != before.cancelTime || bonoDoc.weeklySessions != before.weeklySessions) {
-
-    await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).update({
-     "title": bonoDoc.title,
-     "sessions": bonoDoc.sessions,
-     "price": bonoDoc.price,
-     "expirationTime": bonoDoc.expirationTime,
-     "cancelTime": bonoDoc.cancelTime,
-     "weeklySessions": bonoDoc.weeklySessions,
-   });
-
-    await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).update({
-     "title": bonoDoc.title,
-     "sessions": bonoDoc.sessions,
-     "price": bonoDoc.price,
-     "expirationTime": bonoDoc.expirationTime,
-     "cancelTime": bonoDoc.cancelTime,
-     "weeklySessions": bonoDoc.weeklySessions,
-   });
-  }
-
-
-  return null;
-  });
-
-  // ZZZZ Create User Bono
-  exports.zzzzCreateUserBono = functions
-  .region("europe-west1")
-  .firestore
-  .document("/7777 Users/{userId}/Bonos/{bonoId}")
-  .onCreate( async (snap, context) => {
-
-    const userId = context.params.userId;
-    const bonoId = context.params.bonoId;
-    const bonoDoc = snap.data();
-
-    await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
-     "title": bonoDoc.title,
-     "sessions": bonoDoc.sessions,
-     "price": bonoDoc.price,
-     "purchaseId": bonoDoc.purchaseId,
-     "expirationTime": bonoDoc.expirationTime,
-     "cancelTime": bonoDoc.cancelTime,
-     "weeklySessions": bonoDoc.weeklySessions,
-   });
-
-    await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).set({
-     "title": bonoDoc.title,
-     "sessions": bonoDoc.sessions,
-     "price": bonoDoc.price,
-     "purchaseId": bonoDoc.purchaseId,
-     "expirationTime": bonoDoc.expirationTime,
-     "cancelTime": bonoDoc.cancelTime,
-     "weeklySessions": bonoDoc.weeklySessions,
-   });
-
-
-    return null;
-  });
-
-// ZZZZ Delete user bono
-exports.zzzzDeleteUserBono = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Users/{userId}/Bonos/{bonoId}")
-.onDelete( async (snap, context) => {
-
-   const userId = context.params.userId;
-   const bonoId = context.params.bonoId;
-   const bonoDoc = snap.data();
-
-  await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).delete();
-
-  await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).delete();
-
-
-  return null;
-  });
-
-// ZZZZ User Purchases Event
-exports.zzzzUserPurchasesEvent = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Purchases/{purchaseId}/Events/{eventId}")
-.onCreate( async (snap, context) => {
-
-  const purchaseId = context.params.purchaseId;
-  const eventId = context.params.eventId;
-
-  const eventDoc = snap.data();
-
-       //Get data of the purchase
-
-       const purchaseSnapShot = await db.collection("7777 Purchases").doc(purchaseId).get();
-       const purchaseDoc = purchaseSnapShot.data();
-
-       const userId = purchaseDoc.userId;
-       const bonoId = purchaseDoc.bonoId;
-       const brandId =  purchaseDoc.brandId;
-
-       //Get data of the bono
-
-       const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
-       const bonoDoc = bonoSnapshot.data();
-
-       //Get data of the bono user
-
-       const bonoSnapshotUser = await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).get();
-       const bonoDocUser = bonoSnapshotUser.data();
-
-       //Add events to purchases
-
-       await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
-          "isPrivate": eventDoc.isPrivate,
-          "title": eventDoc.title,
-          "imageUrl": eventDoc.imageUrl,
-          "doneAt": eventDoc.doneAt,
-          "year": eventDoc.year,
-          "month": eventDoc.month,
-          "day": eventDoc.day,
-          "hour": eventDoc.hour,
-          "minute": eventDoc.minute,
-          "duration": eventDoc.duration,
-          "numTrainers": eventDoc.numTrainers,
-          "numClients": eventDoc.numClients,
-          "maxMembers": eventDoc.maxMembers,
-       });
-
-       await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({        
-          "isPrivate": eventDoc.isPrivate,
-          "title": eventDoc.title,
-          "imageUrl": eventDoc.imageUrl,
-          "doneAt": eventDoc.doneAt,
-          "year": eventDoc.year,
-          "month": eventDoc.month,
-          "day": eventDoc.day,
-          "hour": eventDoc.hour,
-          "minute": eventDoc.minute,
-          "duration": eventDoc.duration,
-          "numTrainers": eventDoc.numTrainers,
-          "numClients": eventDoc.numClients,
-          "maxMembers": eventDoc.maxMembers,
-        });
-
-
-       await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({        
-          "isPrivate": eventDoc.isPrivate,
-          "title": eventDoc.title,
-          "imageUrl": eventDoc.imageUrl,
-          "doneAt": eventDoc.doneAt,
-          "year": eventDoc.year,
-          "month": eventDoc.month,
-          "day": eventDoc.day,
-          "hour": eventDoc.hour,
-          "minute": eventDoc.minute,
-          "duration": eventDoc.duration,
-          "numTrainers": eventDoc.numTrainers,
-          "numClients": eventDoc.numClients,
-          "maxMembers": eventDoc.maxMembers,
-      });
-
-       await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
-          "isPrivate": eventDoc.isPrivate,
-          "title": eventDoc.title,
-          "imageUrl": eventDoc.imageUrl,
-          "doneAt": eventDoc.doneAt,
-          "year": eventDoc.year,
-          "month": eventDoc.month,
-          "day": eventDoc.day,
-          "hour": eventDoc.hour,
-          "minute": eventDoc.minute,
-          "duration": eventDoc.duration,
-          "numTrainers": eventDoc.numTrainers,
-          "numClients": eventDoc.numClients,
-          "maxMembers": eventDoc.maxMembers,
-      });
-
-       functions.logger.log(
-        "Bono Session",
-        bonoDocUser.sessions
-        );
-
-       return null;
-
-
-
-     });
-
-// ZZZZ User Cancels Purchase Event
-exports.zzzzUserCancelsPurchaseEvent = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Purchases/{purchaseId}/Events/{eventId}")
-.onDelete( async (snap, context) => {
-
-   const purchaseId = context.params.purchaseId;
-   const eventId = context.params.eventId;
-
-   // Get data of the purchase
-
-   const purchaseSnapShot = await db.collection("7777 Purchases").doc(purchaseId).get();
-   const purchaseDoc = purchaseSnapShot.data();
-
-   const userId = purchaseDoc.userId;
-   const bonoId = purchaseDoc.bonoId;
-   const brandId =  purchaseDoc.brandId;
-
-   // Delete Event from Purchases
-
-   await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
-
-   await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
-
-   await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
-
-   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
-
-  return null;
-  });
-
 // Change user suscription
 exports.updateBrandSubscription = functions
 .region("europe-west1")
@@ -5894,93 +3454,712 @@ exports.updateBrandSubscription = functions
     return null
 })
 
-// User Deletes Purchase
-exports.zzzzUserDeletesPurchase = functions
-  .region("europe-west1")
-  .firestore
-  .document("/7777 Purchases/{purchaseId}")
-  .onDelete( async (snap, context) => {
-      // Get the value of the context triggers.
-       const purchaseId = context.params.purchaseId;
+// Recurrent Event Function
+exports.CreateRecurrentEvent = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
 
-       const purchaseDoc = snap.data();
-       //const purchaseDoc = purchaseSnapShot.data();
+    functions.logger.log("new data", data);
 
-         const userId = purchaseDoc.userId;
-         const bonoId = purchaseDoc.bonoId;
-         const brandId =  purchaseDoc.brandId;
+    const { event, doneAtString, geoPosition, bonos, trainers, notification, firesAt} = data;  
+    const eventsCollection = 'Events';
+    const brandsCollection = 'Brands';
+    const usersCollection = 'Users';
+    const eventID = event.id;
 
-         await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).delete();
+    const eventRef = admin.firestore().collection(eventsCollection).doc(eventID);
+    const userRef = admin.firestore().collection(usersCollection);
+    
+    functions.logger.log("EVENT", event);
+    functions.logger.log("EVENTID", eventID);
 
-         await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+    try {
 
-         await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+      const createdAt = admin.firestore.Timestamp.now();
+      const doneAt = admin.firestore.Timestamp.fromMillis(doneAtString);
+        // Add to "\Events"
+       
+        //await addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection);
+        addTrainers(trainers, eventRef, userRef, notification, firesAt);
+        addBonos(bonos, eventRef);
 
-         await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).delete();
+        return { success: true, eventId: eventID };
 
-      return null;
+    } catch (error) {
+        console.error("Error adding event:", error);
+        return { success: false };
+    }
+});
+
+
+exports.DeleteEventBono = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+    functions.logger.log("new data", data);
+
+    const { bonoId, brandId} = data;  
+    const eventsCollection = 'Events';
+    const brandsCollection = 'Brands';
+
+    const eventRef = admin.firestore().collection(eventsCollection);
+    const brandRef = admin.firestore().collection(brandsCollection).doc(brandId).collection('Events');
+    
+    functions.logger.log("brand", brandId);
+    functions.logger.log("bonoId", bonoId);
+
+    try {
+        deleteBonoEvents(brandRef, eventRef, bonoId);
+
+        return { success: true, bonoId: bonoId };
+
+    } catch (error) {
+        console.error("Error updating event:", error);
+        return { success: false };
+    }
+});
+
+async function deleteBonoEvents(brandRef, eventRef, bonoId) {
+  const brandEventSnapshot = await brandRef.get();
+
+  // Iterate over the documents in the snapshot
+  for (const eventDoc of brandEventSnapshot.docs) {
+    // Directly attempt to delete the bonoId document
+    try {
+      await eventRef.doc(eventDoc.id).collection('Bonos').doc(bonoId).delete();
+      functions.logger.log("Deleted bono", bonoId, "from event", eventDoc.id);
+    } catch (error) {
+      functions.logger.error("Error deleting bono", bonoId, "from event", eventDoc.id, error);
+    }
+  }
+}
+
+async function addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection) {
+    await admin.firestore().collection(eventsCollection).doc(eventID).set({
+      ...event,
+      createdAt,
+      doneAt,
+      ...geoPosition,
   });
 
-  //  User Cancels User Purchase Event
-      exports.zzzzUserCancelsUserPurchaseEvent = functions
-      .region("europe-west1")
-      .firestore
-      .document("/7777 Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}/Events/{eventId}")
-      .onDelete( async (snap, context) => {
+  functions.logger.log("STEP 1", event);
 
-         const purchaseId = context.params.purchaseId;
-         const eventId = context.params.eventId;
-         const userId = context.params.userId;
-         const brandId =  context.params.brandId;
+  // Add to Private Events if event is private
+  if (event.isPrivate) {
+      await admin.firestore()
+          .collection(eventsCollection)
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventID)
+          .set({
+              ...event,
+              createdAt,
+              doneAt,
+              ...geoPosition,
+          });
+  }
 
-         // Delete Event from Purchases
+  functions.logger.log("STEP 2", event);
 
-         await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+  // Add to "\Events\Brands"
+  await admin.firestore()
+      .collection(eventsCollection)
+      .doc(eventID)
+      .collection("Brands")
+      .doc(event.brandID)
+      .set({
+          name: event.brandName,
+          logoUrl: event.brandLogo,
+      });
+      functions.logger.log("STEP 3", event);
 
-         //await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+  // Add to "\Events\Location"
+  await admin.firestore()
+      .collection(eventsCollection)
+      .doc(eventID)
+      .collection("Locations")
+      .doc(event.locationId)
+      .set({
+          description: event.locationDescription,
+          longitude: geoPosition.geopoint.longitude,
+          latitude: geoPosition.geopoint.latitude,
+          ...geoPosition,
+      });
+      functions.logger.log("STEP 4", event);
+  // Add Event To Brands/Events Subcollection
+  await admin.firestore()
+      .collection(brandsCollection)
+      .doc(event.brandID)
+      .collection("Events")
+      .doc(eventID)
+      .set({
+          ...event,
+          createdAt,
+          doneAt,
+          ...geoPosition,
+      });
 
-         await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+      functions.logger.log("STEP 5", event);
 
-        return null;
-        });
+  // Add to Brands/Events/Private Events if event is private
+  if (event.isPrivate) {
+      await admin.firestore()
+          .collection(brandsCollection)
+          .doc(event.brandID)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventID)
+          .set({
+              ...event,
+              createdAt,
+              doneAt,
+              ...geoPosition,
+          });
+          
+  }
+  functions.logger.log("STEP 6", event);
+}
 
-    // 7777 User Updates Purchase Data
-    exports.zzzzpurchaseUpdatesCoverData = functions
-    .region("europe-west1")
-    .firestore
-    .document("/7777 Purchases/{purchaseId}")
-    .onUpdate( async (change, context) => {
-         const purchaseId = context.params.purchaseId;
-           const before = change.before.data();
-           const after = change.after.data();
+function addBonos(bonos, eventRef) {
 
-           const userId = after.userId;
-           const bonoId = after.bonoId;
-           const brandId =  after.brandId;
+  if (bonos && bonos.length > 0) {
 
-          let coverDataChange = false;
-          if (before.directPurchase != after.directPurchase) {
-            coverDataChange = true;
-          }
-          if (before.isActive != after.isActive) {
-                      coverDataChange = true;
-            }
+    const batch = admin.firestore().batch();
 
-            await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).update({
-               "directPurchase": after.directPurchase,
-               "isActive": after.isActive,
-            });
+    bonos.forEach(bonoId => {
+        const bonoRef = eventRef.collection("Bonos").doc(bonoId);
+        batch.set(bonoRef, { "bonoId": bonoId });
+    });
 
-            await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
-               "directPurchase": after.directPurchase,
-               "isActive": after.isActive,
-            });
+    batch.commit();
+  }
+}
 
-            await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).update({
-               "directPurchase": after.directPurchase,
-               "isActive": after.isActive,
-            });
-          return null;
-        });
+async function addTrainers(trainers, eventRef, userRef, notification, firesAt) {
+
+  if (trainers && trainers.length > 0) {
+    const joinedAt = admin.firestore.Timestamp.now();
+
+    for (const trainerId of trainers) {
+      const userSnapshot = await userRef.doc(trainerId).get();
+      const user = userSnapshot.data();
+      if (user) {
+        const trainerRef = eventRef.collection("Users").doc(trainerId);
+        const userData = {
+          name: user.name,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          nick: user.nick,
+          imageUrl: user.imageUrl,
+          noImageUrl: user.noImageUrl,
+          isTrainer: user.isTrainer,
+          isPrivate: user.isPrivate,
+          joinedAt: joinedAt,
+          notificationToken: user.notificationToken,
+        };
+        await trainerRef.set(userData); // Direct set for each trainer
+        addLocalNotification(userRef, trainerId, notification, firesAt);
+      }
+    }
+  }
+}
+
+async function addLocalNotification(userRef, userId, notification, firesAt) {
+
+  if (!userId || !notification) {
+      throw new Error('Invalid arguments. UserId and notification are required.');
+  }
+  try {
+      const now = admin.firestore.Timestamp.now();
+      const userRefComplete = userRef
+                        .doc(userId)
+                        .collection('Local Notifications') // Adjust the subcollection name as necessary
+                        .doc(notification.id.toString());
+
+      await userRefComplete.set({
+          eventId: notification.eventId,
+          bonoId: notification.bonoId,
+          purchaseId: notification.purchaseId,
+          payload: notification.payload,
+          createdAt: now,
+          firesAt: admin.firestore.Timestamp.fromMillis(firesAt),
+      });
+  } catch (error) {
+      console.error('Error adding local notification:', error);
+      throw error;
+  }
+}
+
+exports.scheduledCheckBonoFunctionOnCall = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+  var today = new Date();
+  const todayNew = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  functions.logger.log("Empezamos", todayNew);
+
+  // Ejecutar subfunciones
+  await processGracePeriodPurchases();
+  await processRegularPurchasesExpTime();
+  await processDirectAndRecurrentPurchases();
+
+  functions.logger.log("Función ejecutada correctamente", todayNew);
+  return { result: "Success", executionDate: today.toISOString() };
+
+});
+
+
+// Subfunción para procesar los grace period de las purchases
+async function processGracePeriodPurchases() {
+var today = new Date();
+const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+const purchasesRef = db.collection('Purchases');
+const snapshot = await purchasesRef
+  .where('isActive', '==', true)
+  .where('directPurchase', '==', true)
+  .get();
+
+for (const doc of snapshot.docs) {
+  const purchase = doc.data();
+  let { purchasedAt, isRecurrent } = purchase;
+
+  const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
+  const brandSelected = brandSnapshot.data();
+
+  let gracePeriod = brandSelected.gracePeriod ?? 0;
+
+  let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
+
+  // Convertir purchasedAt a una fecha y sumarle el gracePeriod
+  const gracePeriodEndDate = new Date(purchasedAtNormalized.getTime());
+  gracePeriodEndDate.setDate(gracePeriodEndDate.getDate() + gracePeriod);
+
+  if(gracePeriodEndDate >= todayNormalized) {
+    const updateData = {
+      isActive: false,
+      };
+      if (isRecurrent) {
+        updateData.isRecurrencyActive = false;
+      }
+      await doc.ref.update(updateData);
+  }
+}
+}
+
+// Subfunción para procesar las Purchases directas y recurrentes
+async function processDirectAndRecurrentPurchases() {
+var today = new Date();
+const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+const purchasesRef = db.collection('Purchases');
+const snapshot = await purchasesRef
+  .where('directPurchase', '==', false)
+  .where('isRecurrencyActive', '==', true)
+  .where('isRecurrent', '==', true)
+  .get();
+
+
+for (const doc of snapshot.docs) {
+  const purchase = doc.data();
+  const { expirationTime, purchasedAt, purchaseGroupId } = purchase;
+  let shouldCreateNewPurchase = false;
+
+  functions.logger.log("purchasedAt", 'purchasedAt');
+
+  if (expirationTime > 0) {
+
+    // Lógica para cuando expirationTime es mayor que 0
+    functions.logger.log("expirationTime", expirationTime);
+
+    let expirationDate;
+    expirationDate = new Date(purchasedAt.toDate().getTime() + expirationTime * 24 * 60 * 60 * 1000);
+
+    const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
+
+    functions.logger.log("ExpirationTime", expirationDateNormalized);
+    functions.logger.log("today", todayNormalized);
+
+    shouldCreateNewPurchase = todayNormalized >= expirationDateNormalized;
+
+  } 
+
+  if (shouldCreateNewPurchase) {
+  // Crear nuevo registro en la colección Purchases
+  // ... Aquí iría tu lógica para obtener las características de la colección Brand/brandId o Bonos/bonoId si es necesario
+ 
+
+  const bonoSnapshot = await db.collection("Brands").doc(purchase.brandId).collection("Bonos").doc(purchase.bonoId).get();
+  const bonoSelected = bonoSnapshot.data();
+
+  const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
+  const brandSelected = brandSnapshot.data();
+
+  let exirationDays = 0;
+
+  if (bonoSelected.expirationTime === 30) {
+    // Siguiente mes
+    const nextMonthDate = new Date(todayNormalized.getFullYear(), todayNormalized.getMonth() + 1, todayNormalized.getDate());
+    exirationDays = (nextMonthDate - todayNormalized) / (1000 * 60 * 60 * 24);
+  }
+  if (bonoSelected.expirationTime === 60) {
+    // Dos meses más adelante
+    const twoMonthsLater = new Date(todayNormalized.getFullYear(), todayNormalized.getMonth() + 2, todayNormalized.getDate());
+    exirationDays = (twoMonthsLater - todayNormalized) / (1000 * 60 * 60 * 24);
+  }
+  if (bonoSelected.expirationTime === 90) {
+    // Tres meses más adelante
+    const threeMonthsLater = new Date(todayNormalized.getFullYear(), todayNormalized.getMonth() + 3, todayNormalized.getDate());
+    exirationDays = (threeMonthsLater - todayNormalized) / (1000 * 60 * 60 * 24);
+  }
+
+  const newPurchaseData = {
+    purchasedAt: admin.firestore.Timestamp.fromDate(new Date()), // Fecha actual
+    userId: purchase.userId,
+    brandId: purchase.brandId,
+    bonoId: purchase.bonoId,
+    price: purchase.price, // o bonoSelected.price si necesitas el precio actualizado del bono
+    sessions: bonoSelected.sessions, // Asegúrate de tener el bonoSelected actualizado
+    weeklySessions: bonoSelected.weeklySessions,
+    cancelTime: bonoSelected.cancelTime,
+    expirationTime: exirationDays,
+    paymentMethod: purchase.paymentMethod,
+    directPurchase: true, // Asumiendo que el nuevo purchase no es una compra directa
+    isActive: true,
+    purchasedAt: admin.firestore.Timestamp.fromDate(new Date()), // La fecha actual
+    isRecurrent: true,
+    paymentTerms: brandSelected.paymentTerms ?? 2,
+    purchaseGroupId: purchase.purchaseGroupId, // El ID del grupo de compras, si es aplicable
+    isRecurrencyActive: true, // o true/false según la lógica de negocio
+  };
+
+  // Añadir la nueva Purchase a la base de datos
+  var purchaseId = uuidv4();
+  const newDocRef = await db
+         .collection("Purchases")
+         .doc(purchaseId)
+         .set(
+          newPurchaseData
+        );
+  
+
+  // Añadir el ID del nuevo documento al array groupPurchases en Purchases/purchaseGroupId
+  const groupRef = db.collection('Purchases').doc(purchaseGroupId);
+  const groupDoc = await groupRef.get();
+  if (groupDoc.exists) {
+      const groupData = groupDoc.data();
+      const groupPurchases = groupData.groupPurchases || [];
+      groupPurchases.push(purchaseId);
+      await groupRef.update({ groupPurchases });
+  }
+
+  // Desactivar la recurrencia en la Purchase original
+  await doc.ref.update({ isRecurrencyActive: false, isActive: false });
+  }
+}
+}
+
+// Subfunción para procesar las Purchases normales
+async function processRegularPurchasesExpTime() {
+
+  var today = new Date();
+  const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  const purchasesRef = db.collection('Purchases');
+  const snapshot = await purchasesRef
+    .where('isActive', '==', true)
+    .where('isRecurrent', '==', false)
+    .where('expirationTime', '!=', 0)
+    .get();
+    //.where('expirationTime', '>', 0)
+    
+  
+  for (const doc of snapshot.docs) {
+    const purchase = doc.data();
+    const {expirationTime, purchasedAt} = purchase;
+    let shouldSetInactivePurchase = false;
+
+    if (expirationTime > 0) {
+
+      // Lógica para cuando expirationTime es mayor que 0
+      functions.logger.log("expirationTime", expirationTime);
+      let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
+  
+      let expirationDate;
+
+      expirationDate = new Date(purchasedAtNormalized.getTime() + expirationTime * 24 * 60 * 60 * 1000);
+      const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
+  
+      functions.logger.log("ExpirationTime", expirationDateNormalized);
+      functions.logger.log("today", todayNormalized);
+  
+      shouldSetInactivePurchase = todayNormalized >= expirationDateNormalized;
+
+      if(shouldSetInactivePurchase) 
+      {
+        await doc.ref.update({isActive: false});
+      }
+    }
+  }
+  }
+
+  /* ---------------------- Create stripe connect account --------------------- */
+app.get('/createAccount', async (req, res) => {
+  if (req.query.userId === undefined || req.query.userName === undefined) {
+      res.send('Missing parameters');
+      return;
+  }
+  let result = await (0, stripe_connect_1.createAccount)(req.query.userId, req.query.userName, req.query.stripeAccountId);
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+
+  exports.onBonosCreateForStripeProd = functions.region("europe-west1").firestore.document('Brands/{brandId}/Bonos/{bonoId}').onCreate(async (snap, context) => {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _p, _q;
+    v2_1.logger.info('created a new bono');
+    try {
+        let brandData = await constants_1.brandCollection.doc(context.params.brandId).get();
+        if(brandData.data().stripeActivated === true && snap.data().isRecurrent === true) {
+        let productData = {
+            productId: snap.id,
+            brandId: context.params.brandId,
+            brandName: (_a = brandData.data()) === null || _a === void 0 ? void 0 : _a.brandName,
+            title: (_b = snap.data()) === null || _b === void 0 ? void 0 : _b.title,
+            description: (_c = snap.data()) === null || _c === void 0 ? void 0 : _c.description,
+            active: (_d = snap.data()) === null || _d === void 0 ? void 0 : _d.isActive,
+            priceId: (_f = (_e = snap.data()) === null || _e === void 0 ? void 0 : _e.priceId) !== null && _f !== void 0 ? _f : null,
+            price: ((_h = (_g = snap.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
+            expirationTime: snap.data().expirationTime,
+        };
+        (0, products_1.createProduct)(productData);
+      }
+    }
+    catch (e) {
+        v2_1.logger.error(e);
+    }
+});
+exports.onBonosUpdatedForStripeProd = functions.region("europe-west1").firestore.document('Brands/{brandId}/Bonos/{bonoId}').onUpdate(async (snap, context) => {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
+    try {
+        v2_1.logger.info('updated a bono');
+        let brandData = await constants_1.brandCollection.doc(context.params.brandId).get();
+        if(brandData.data().stripeActivated === true && snap.after.data().isRecurrent === true) {
+        let productData = {
+            productId: snap.after.id,
+            brandId: context.params.brandId,
+            brandName: (_a = brandData.data()) === null || _a === void 0 ? void 0 : _a.brandName,
+            title: (_b = snap.after.data()) === null || _b === void 0 ? void 0 : _b.title,
+            description: (_c = snap.after.data()) === null || _c === void 0 ? void 0 : _c.description,
+            active: (_d = snap.after.data()) === null || _d === void 0 ? void 0 : _d.isActive,
+            priceId: (_f = (_e = snap.after.data()) === null || _e === void 0 ? void 0 : _e.priceId) !== null && _f !== void 0 ? _f : null,
+            price: ((_h = (_g = snap.after.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
+            expirationTime:  snap.after.data().expirationTime,
+        };
+        (0, products_1.updateProduct)(productData);
+        if (
+          ((_j = snap.before.data()) === null || _j === void 0 ? void 0 : _j.price) !== ((_k = snap.after.data()) === null || _k === void 0 ? void 0 : _k.price) ||
+          ((_l = snap.before.data()) === null || _l === void 0 ? void 0 : _l.expirationTime) !== ((_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.expirationTime)
+        ) {
+            (0, products_1.updatePrice)((_l = snap.after.data()) === null || _l === void 0 ? void 0 : _l.priceId, ((_o = (_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.price) !== null && _o !== void 0 ? _o : 0) * 100, snap.after.id, snap.after.data().expirationTime);
+        }
+      }
+    }
+    catch (e) {
+        v2_1.logger.error(e);
+    }
+});
+
+exports.onBonosDeleteForStripeProd = functions
+.region("europe-west1")
+.firestore
+.document("/Brands/{brandId}/Bonos/{bonoId}")
+.onDelete( async (snap, context) => {
+  try {
+    v2_1.logger.info('deleted a bono');
+    (0, products_1.deleteProduct)(snap.id);
+}
+catch (e) {
+    v2_1.logger.error(e);
+}
+});
+
+/* --------------------------- Firebase Functions --------------------------- */
+exports.stripeApi = functions.region("europe-west1").https.onRequest(app);
+exports.webhookListenerAccount = functions.region("europe-west1").https.onRequest(async (request, res) => {
+    try {
+        let signingSecret = envConfig.webhookSecretForAccount;
+        let sig = request.headers['stripe-signature'];
+        let event = constants_1.stripe.webhooks.constructEvent(request.rawBody, sig, signingSecret);
+        let result = await (0, hook_1.webhookHandler)(event);
+        res.status(200).send(result);
+    }
+    catch (e) {
+        v2_1.logger.error(e.message);
+        res.status(400).send(e);
+    }
+});
+exports.webhookListenerConnect = functions.region("europe-west1").https.onRequest(async (request, res) => {
+    try {
+        let signingSecret = envConfig.webhookSecretForConnect;
+        let sig = request.headers['stripe-signature'];
+        let event = constants_1.stripe.webhooks.constructEvent(request.rawBody, sig, signingSecret);
+        let result = await (0, hook_1.webhookHandler)(event);
+        res.status(200).send(result);
+    }
+    catch (e) {
+        v2_1.logger.error(e);
+        res.status(400).send(e);
+    }
+});
+
+/* ---------------------- Create stripe connect account --------------------- */
+app.get('/createAccount', async (req, res) => {
+  if (req.query.userId === undefined || req.query.userName === undefined) {
+      res.send('Missing parameters');
+      return;
+  }
+  let result = await (0, stripe_connect_1.createAccount)(req.query.userId, req.query.userName, req.query.stripeAccountId);
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+
+/* ----------------------- create,delete or update a product ----------------------- */
+// This is for local testing otherwise this function triggered when a bono is created,deleted or updated
+app.post('/createUpdateProduct', async (req, res) => {
+  //convert to json
+  var _a, _b;
+  console.log(req.body);
+  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.brandName === undefined || req.body.title === undefined || req.body.description === undefined || req.body.active === undefined) {
+      res.send({
+          message: 'Missing parameters', required: ['productId', 'brandId', 'brandName', 'title', 'description', 'price', 'active'], optional: ['updateProduct:true/false(by default false)']
+      });
+      return;
+  }
+  let productData = {
+      productId: req.body.productId,
+      brandId: req.body.brandId,
+      brandName: req.body.brandName,
+      title: req.body.title,
+      description: req.body.description,
+      active: req.body.active,
+      priceId: (_a = req.body.priceId) !== null && _a !== void 0 ? _a : null,
+      price: (_b = req.body.price) !== null && _b !== void 0 ? _b : null,
+  };
+  let result;
+  if (req.body.updateProduct) {
+      result = await (0, products_1.updateProduct)(productData);
+  }
+  else {
+      result = await (0, products_1.createProduct)(productData);
+  }
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+app.delete('/deleteProduct', async (req, res) => {
+  if (req.query.productId === undefined) {
+      res.send('Missing parameters');
+      return;
+  }
+  let result = await (0, products_1.deleteProduct)(req.query.productId);
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+app.post('/updatePrice', async (req, res) => {
+  if (req.body.priceId === undefined || req.body.amount === undefined || req.body.productId === undefined) {
+      res.send({ message: 'Missing parameters', required: ['priceId', 'amount', 'productId'] });
+      return;
+  }
+  let result = await (0, products_1.updatePrice)(req.body.priceId, req.body.amount, req.body.productId);
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+/* --------------------------- create payment intent -------------------------- */
+app.get('/createPaymentIntent', async (req, res) => {
+  if (req.query.amount === undefined || req.query.customerId === undefined) {
+      res.send('Missing parameters');
+      return;
+  }
+  let result = await (0, one_time_payment_1.createPaymentIntent)(req.query.amount, req.query.customerId, req.query.brandId);
+  if (result) {
+      res.send(result).status(200);
+  }
+  else {
+      res.send('Error').status(400);
+  }
+});
+/* ------------------- get payment methods for a user ------------------- */
+app.get('/paymentMethod', async (req, res) => {
+  if (req.query.userId === undefined) {
+      res.send({
+          message: 'Missing parameters', required: ['userId']
+      });
+      return;
+  }
+  let result = await (0, subscription_1.getPaymentMethods)(req.query.userId);
+  res.send(result).status(200);
+});
+/* --------------------------- create subscription -------------------------- */
+app.post('/createSubscription', async (req, res) => {
+  console.log(req.body);
+  if (req.body.productId === undefined || req.body.brandId === undefined || req.body.customerId === undefined || req.body.priceId === undefined || req.body.paymentMethodId === undefined, req.body.purchaseId === undefined, req.body.expirationTime === undefined) {
+      res.status(400).send({
+          message: 'Missing parameters', required: ['productId', 'brandId', 'customerId', 'priceId', 'paymentMethodId', 'purchaseId', 'expirationTime']
+      });
+      return;
+  }
+  v2_1.logger.info('created new suscription');
+  let result = await (0, subscription_1.createSubscription)(req.body.customerId, req.body.priceId, req.body.brandId, req.body.productId, req.body.paymentMethodId, req.body.purchaseId, req.body.expirationTime);
+  if (result.error == null) {
+      res.send(result.data).status(200);
+  }
+  else {
+      res.send(result.error).status(400);
+  }
+});
+/* --------------------------- cancel subscription -------------------------- */
+app.post('/cancelSubscription', async (req, res) => {
+  console.log(req.body);
+  if (req.body.subscriptionId === undefined) {
+      res.status(400).send({
+          message: 'Missing parameters', required: ['subscriptionId']
+      });
+      return;
+  }
+  let result = await (0, subscription_1.cancelSubscription)(req.body.subscriptionId );
+  if (result.error == null) {
+      res.send(result.data).status(200);
+  }
+  else {
+      res.send(result.error).status(400);
+  }
+});
+/* ---------------------------- transfer funds ---------------------------- */
+app.get('/transferFunds', async (req, res) => {
+  await (0, transfer_funds_1.transferFunds)();
+  res.send('Function executed Successfully').status(200);
+});
 
 

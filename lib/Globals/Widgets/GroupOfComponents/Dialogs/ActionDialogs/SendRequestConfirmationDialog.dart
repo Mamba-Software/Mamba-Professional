@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -8,7 +7,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularIm
 class SendRequestConfirmationDialog extends StatelessWidget {
   final String text;
   final Brand brand;
-  const SendRequestConfirmationDialog({Key? key, required this.text, required this.brand}) : super(key: key);
+  const SendRequestConfirmationDialog({super.key, required this.text, required this.brand});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,7 @@ class SendRequestConfirmationDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Text(text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                        child: Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                       ),
                     ],
                   ),
@@ -58,7 +57,7 @@ class SendRequestConfirmationDialog extends StatelessWidget {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.send,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white),
                         ),
                         icon: Icon(Icons.send, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
@@ -79,7 +78,7 @@ class SendRequestConfirmationDialog extends StatelessWidget {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark,),
                         ),
                         icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                         onPressed: () {
@@ -106,7 +105,7 @@ class SendRequestConfirmationDialog extends StatelessWidget {
                     Expanded(
                       child: Text(
                         brand.name!,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.displayLarge?.copyWith(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left,
                       ),
                     ),

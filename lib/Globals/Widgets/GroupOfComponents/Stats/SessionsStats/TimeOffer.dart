@@ -1,15 +1,8 @@
 import 'dart:math';
 
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -21,8 +14,8 @@ class TimeOffer extends StatefulWidget {
 
   TimeOffer({
     required this.events,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   TimeOfferState createState() => TimeOfferState();
@@ -78,15 +71,19 @@ class TimeOfferState extends State<TimeOffer> {
       {
         minute = '00';
       }
-      else minute = filteredEvents[i].minute!;
+      else {
+        minute = filteredEvents[i].minute!;
+      }
 
       if(filteredEvents[i].hour!.length == 1)
       {
-        hour = '0' + filteredEvents[i].hour!;
+        hour = '0${filteredEvents[i].hour!}';
       }
-      else hour = filteredEvents[i].hour!;
+      else {
+        hour = filteredEvents[i].hour!;
+      }
 
-      hourMinute = hour + ':' + minute;
+      hourMinute = '$hour:$minute';
       if (!mapHours.containsKey(hourMinute)) {
         mapHours[hourMinute] = filteredEvents[i].numClients!;
       }
@@ -120,7 +117,7 @@ class TimeOfferState extends State<TimeOffer> {
               child: Image.asset(Constants.emptyCalendar)
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.005),
-          Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+          Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
           SizedBox(height: MediaQuery.of(context).size.height*0.02),
     ],
 
@@ -132,7 +129,7 @@ class TimeOfferState extends State<TimeOffer> {
             alignment: Alignment.topLeft,
             child:  Text(
               timeOffered,
-              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.mainColor, fontSize: 60),
             ),),
           ),
         ],

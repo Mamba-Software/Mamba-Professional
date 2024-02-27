@@ -8,13 +8,12 @@ import '../../../../../Globals/GlobalVars.dart';
 
 class CustomCalendarView extends StatefulWidget {
   const CustomCalendarView(
-      {Key? key,
+      {super.key,
         this.initialStartDate,
         this.initialEndDate,
         this.startEndDateChange,
         this.minimumDate,
-        this.maximumDate})
-      : super(key: key);
+        this.maximumDate});
 
   final DateTime? minimumDate;
   final DateTime? maximumDate;
@@ -108,7 +107,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                     currentUser.idioma == 'es'?
                         StringUtils().capitalizedAllWords(DateFormat.LLLL('es').format(currentMonthDate))
                      : StringUtils().capitalizedAllWords(DateFormat.LLLL('cat').format(currentMonthDate)),
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black, fontSize: 20),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.black, fontSize: 20),
                   ),
                 ),
               ),
@@ -169,7 +168,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
             child: Text(
               currentUser.idioma == 'es'?
               DateFormat.E('es').format(dateList[i]) : DateFormat.E('cat').format(dateList[i]),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.black),
             ),
           ),
         ),

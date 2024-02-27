@@ -3,15 +3,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/InformationDialogs/ErrorDialog.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 
 class QRScanner extends StatefulWidget {
-  const QRScanner({Key? key}) : super(key: key);
+  const QRScanner({super.key});
 
   @override
   State<StatefulWidget> createState() => _QRScannerState();
@@ -76,7 +74,7 @@ class _QRScannerState extends State<QRScanner> {
                 Flexible(
                   child: Text(
                       AppLocalizations.of(context)!.scanQRCode,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.w600),
                       textAlign: TextAlign.left
                   ),
                 ),

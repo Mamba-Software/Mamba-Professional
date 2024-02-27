@@ -1,10 +1,11 @@
 // ignore_for_file: avoid_print
-import 'dart:io';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba_castelldefels/Auth/CreateBrand/views/mobile/NoBrandScreen.dart';
+import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
+import 'package:mamba_castelldefels/BrandNavigation/views/BrandScreen.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Suscription/SuscriptionDataService.dart';
@@ -20,24 +21,20 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ho
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/NoBrandScreen.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:store_redirect/store_redirect.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
 class Mamba extends StatefulWidget {
-  const Mamba({Key? key}) : super(key: key);
+  const Mamba({super.key});
 
   @override
   _MambaState createState() => _MambaState();
 }
 
 class _MambaState extends State<Mamba> {
-
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;
@@ -56,7 +53,8 @@ class _MambaState extends State<Mamba> {
   // Boolean hasSeenStartUpDialog
   bool hasSeenStartUpDialog = false;
   // Notifications
-  LocalNotificationService localNotificationService = LocalNotificationService();
+  LocalNotificationService localNotificationService =
+      LocalNotificationService();
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   @override
@@ -79,7 +77,7 @@ class _MambaState extends State<Mamba> {
     FirebaseMessaging.onMessage.listen((message) {
       print("App in Foreground Notification Trigger HomePage");
       ReceivedNotification notif = ReceivedNotification(
-        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         title: message.notification!.title,
         body: message.notification!.body,
         payload: message.data["route"],
@@ -110,6 +108,8 @@ class _MambaState extends State<Mamba> {
 
   // On StartUp Dialogs
   Future<void> launchOnStartUpDialogs() async {
+    //Stripe
+    stripeActivatedGlobal = await _settingsDataService.getStripeActivated();
     // First check if minimum version
     print("Checking Minimum App Version...");
     checkMinimumAppVersion();
@@ -118,10 +118,13 @@ class _MambaState extends State<Mamba> {
     checkBrandInvite();
     // Check Notification Permissions
     print("Checking Notification Permissions...");
-    var notificationString = await PermisionsService().checkUserNotificationsPermision();
-    if (notificationString == "Provisional" || notificationString == "Unknown") {
+    var notificationString =
+        await PermisionsService().checkUserNotificationsPermision();
+    if (notificationString == "Provisional" ||
+        notificationString == "Unknown") {
       mixpanel!.track('notifications_permission_ask');
-      PermissionStatus permission = await PermisionsService().askUserNotificationsPermision();
+      PermissionStatus permission =
+          await PermisionsService().askUserNotificationsPermision();
       switch (permission) {
         case PermissionStatus.denied:
           mixpanel!.track('notifications_permission_denied');
@@ -146,10 +149,13 @@ class _MambaState extends State<Mamba> {
 
   // Init Device Sizes
   initDeviceSizes() {
-    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
+    safeAreaHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
+    print(
+        "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   // Check version and Update App Dialog
@@ -157,7 +163,8 @@ class _MambaState extends State<Mamba> {
     // Check version
     List<bool> result = await _settingsDataService.checkAppVersion();
     if (result[0] == true) {
-      mixpanel!.track('minimum_app_version_open', properties: {'isMandatory': result[1]});
+      mixpanel!.track('minimum_app_version_open',
+          properties: {'isMandatory': result[1]});
       if (result[1]) {
         Future.delayed(Duration.zero, () async {
           await showDialog(
@@ -183,7 +190,8 @@ class _MambaState extends State<Mamba> {
           },
         );
         if (returnDialog == null) {
-          mixpanel!.track('minimum_app_version_close', properties: {'isMandatory': false});
+          mixpanel!.track('minimum_app_version_close',
+              properties: {'isMandatory': false});
         }
       }
     }
@@ -210,32 +218,35 @@ class _MambaState extends State<Mamba> {
           );
         },
       );
-      mixpanel!.track('brand_invite_modal_close', properties: {'Brand': dynamicLinkBrandId});
+      mixpanel!.track('brand_invite_modal_close',
+          properties: {'Brand': dynamicLinkBrandId});
     }
   }
 
   // Gets the user info from firebase.
   void getUserAndBrand() async {
     // Get User Main Data
-    currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
+    currentUser.setBasicData =
+        await _userDataService.getUserDetails(currentUser.id!);
     // Get User Brand
-    List<Brand> brands = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
+    List<Brand> brands =
+        await _brandDataService.getAllBrandsFromUser(currentUser.id!);
     currentUser.setBrandList = brands;
     if (currentUser.brandsList.isNotEmpty) {
       // Setting the Brand to the User
       hasBrand = true;
       Brand brand = currentUser.brandsList[0];
       currentBrand.setBasicData =
-      await _brandDataService.getBrandDetails(brand.id!);
+          await _brandDataService.getBrandDetails(brand.id!);
       currentBrand.setUserList =
-      await _brandDataService.getBrandUsers(brand.id!);
+          await _brandDataService.getBrandUsers(brand.id!);
 
       // Get Role in Brand
-      int role = await _brandDataService.getUserBrandRole(
-          brand.id!, currentUser.id!);
+      int role =
+          await _brandDataService.getUserBrandRole(brand.id!, currentUser.id!);
       currentUser.setBrandRole = role;
-      if(currentUser.id == currentBrand.adminID) {
-          Purchases.logIn(currentBrand.id!);
+      if (currentUser.id == currentBrand.adminID) {
+        Purchases.logIn(currentBrand.id!);
       }
       mixpanel!.getPeople().set("Brands Roles", [role]);
       setBrandActive();
@@ -252,9 +263,8 @@ class _MambaState extends State<Mamba> {
     // Handle Local Notifications
     await localNotificationService.handleLocalNotifications(context);
     // Listen to the Notifications Stream
-    localNotificationService.onNotifications.stream.listen(
-            (payload) => localNotificationService.onClickedNotification(context, payload!)
-    );
+    localNotificationService.onNotifications.stream.listen((payload) =>
+        localNotificationService.onClickedNotification(context, payload!));
   }
 
   @override
@@ -265,21 +275,36 @@ class _MambaState extends State<Mamba> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ?
-      Scaffold(
-        backgroundColor: AppColors.black,
-        body: LoadingView(
-          hasLogo: false,
-          isSmall: true,
-          color: AppColors.white,
-        ),
-      )
-     :
-      hasBrand ? !brandIsActive? currentUser.id == currentBrand.adminID? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
+    return isLoading
+        ? Scaffold(
+            backgroundColor: AppColors.black,
+            body: LoadingView(
+              hasLogo: false,
+              isSmall: true,
+              color: AppColors.white,
+            ),
+          )
+        : BlocSelector<AuthCubit, AuthState, AuthState>(selector: (state) {
+            return state;
+          }, builder: (context, state) {
+            if (state is AuthUserBrand) {
+              return !brandIsActive
+                  ? currentUser.id == currentBrand.adminID
+                      ? PayWall(
+                          brandId: currentBrand.id!, comesFromInitPage: true)
+                      : const BrandScreen()
+                  : const BrandScreen();
+            } else if (state is AuthUserNoBrand) {
+              return const NoBrandScreen();
+            } else {
+              return Scaffold(
+                  backgroundColor: AppColors.black,
+                  body: LoadingView(
+                    hasLogo: false,
+                    isSmall: true,
+                    color: AppColors.white,
+                  ));
+            }
+          });
   }
-
-
-
-
 }
-

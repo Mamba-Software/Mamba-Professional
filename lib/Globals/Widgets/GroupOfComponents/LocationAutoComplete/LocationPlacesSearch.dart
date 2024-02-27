@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 
@@ -38,9 +39,7 @@ class Suggestion {
 
 class LocationPlacesSearch {
 
-  static final String androidKey = placesAPIAndroid;
-  static final String iosKey = placesAPIIOS;
-  final apiKey = Platform.isAndroid ? androidKey : iosKey;
+  final apiKey = Platform.isAndroid ? dotenv.env['PLACES_API_ANDROID']! : dotenv.env['PLACES_API_IOS']!;
   var sessionToken;
   var language;
   var radius = 10000;
@@ -89,7 +88,7 @@ class LocationPlacesSearch {
         result['result']['address_components'] as List<dynamic>;
         // build result
         final place = Place();
-        components.forEach((c) {
+        for (var c in components) {
           final List type = c['types'];
           if (type.contains('route')) {
             place.street = c['long_name'];
@@ -107,7 +106,7 @@ class LocationPlacesSearch {
             place.zipCode = c['long_name'];
             place.fullAddress = "${place.fullAddress} ${c['long_name']}";
           }
-        });
+        }
         return place;
       }
       throw Exception(result['error_message']);

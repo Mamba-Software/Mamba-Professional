@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -7,12 +6,11 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:provider/provider.dart';
 
 class SettingsTheme extends StatefulWidget {
-  const SettingsTheme({Key? key}) : super(key: key);
+  const SettingsTheme({super.key});
 
   @override
   _SettingsPrivacyState createState() => _SettingsPrivacyState();
@@ -21,7 +19,7 @@ class SettingsTheme extends StatefulWidget {
 class _SettingsPrivacyState extends State<SettingsTheme> {
 
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
+  final _userDataService = UserDataService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -113,12 +111,12 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 ListTile(
                   dense: true,
-                  contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                  contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                   title: Padding(
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
                       AppLocalizations.of(context)!.typeThemeLight,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   subtitle: Row(
@@ -126,7 +124,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.typeThemeLightDescription,
-                          style: Theme.of(context).textTheme.caption,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                     ],
@@ -152,7 +150,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                         height: MediaQuery.of(context).size.height*0.13,
                         child: Image.asset(Constants.themeLightImage)
                     ),
@@ -161,12 +159,12 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 ListTile(
                   dense: true,
-                  contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                  contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                   title: Padding(
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
                       AppLocalizations.of(context)!.typeThemeDark,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   subtitle: Row(
@@ -174,7 +172,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.typeThemeDarkDescription,
-                          style: Theme.of(context).textTheme.caption,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                     ],
@@ -200,7 +198,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                         height: MediaQuery.of(context).size.height*0.13,
                         child: Image.asset(Constants.themeDarkImage)
                     ),
@@ -209,12 +207,12 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 ListTile(
                   dense: true,
-                  contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                  contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                   title: Padding(
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
                       AppLocalizations.of(context)!.typeThemeSystem,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   subtitle: Row(
@@ -222,7 +220,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.typeThemeSystemDescription,
-                          style: Theme.of(context).textTheme.caption,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                     ],
@@ -253,7 +251,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                         height: MediaQuery.of(context).size.height*0.13,
                         child: Image.asset(Constants.themeSystemImage)
                     ),
@@ -267,6 +265,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
       floatingActionButton: isUpdated ? Padding(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
         child: FloatingActionButton.extended(
+                  shape: const StadiumBorder(),
           heroTag: "62",
           onPressed: () async {
             setState(() {
@@ -296,7 +295,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
           backgroundColor: Colors.green,
           icon: Icon(Icons.save_rounded, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
           label: Text(AppLocalizations.of(context)!.save,
-            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),),
         ),
       ) : Container(),
     );

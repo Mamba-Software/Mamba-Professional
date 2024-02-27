@@ -5,94 +5,116 @@ import 'package:mamba_castelldefels/Globals/Styles/WidgetStyles/Text/TextStyles.
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
 class AppThemes {
-
   ThemeData returnResponsiveLightTheme(double screenHeight) {
-    TextStyles _textStyles = TextStyles(screenHeight);
+    TextStyles textStyles = TextStyles(screenHeight);
     return ThemeData(
       // Primary Colors
       primaryColor: AppColors.black,
       primaryColorDark: AppColors.white,
       primaryColorLight: Colors.grey,
-      // Accent Color
-      colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.mainColor, brightness: Brightness.light),
-      // BackGround Colors
-      backgroundColor: AppColors.white,
       scaffoldBackgroundColor: AppColors.lightGrey,
+      dividerColor: Colors.grey,
       // Brightness
       brightness: Brightness.light,
       // Texts
       textTheme: TextTheme(
         // Headlines for Titles
-        headline1: _textStyles.blackHeadline1TextStyle(),
-        headline2: _textStyles.whiteHeadline1TextStyle(),
+        displayLarge: textStyles.blackHeadline1TextStyle(),
+        displayMedium: textStyles.whiteHeadline1TextStyle(),
         // Headline 2 For Subtitles
-        headline3: _textStyles.blackHeadline2TextStyle(),
+        displaySmall: textStyles.blackHeadline2TextStyle(),
         // Body Texts for Descriptions
-        bodyText1: _textStyles.blackBodyText1Style(),
-        bodyText2: _textStyles.blackBodyText2Style(),
-        caption: _textStyles.greyBodyTextStyle()
+        bodyLarge: textStyles.blackBodyText1Style(),
+        bodyMedium: textStyles.blackBodyText2Style(),
+        bodySmall: textStyles.greyBodyTextStyle(),
       ),
       appBarTheme: AppBarTheme(
         elevation: 4.0,
+        surfaceTintColor: AppColors.lightGrey,
         backgroundColor: AppColors.lightGrey,
-        iconTheme: const IconThemeData(
-            color: Colors.black
-        ),
+        iconTheme: const IconThemeData(color: Colors.black),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        titleTextStyle: _textStyles.blackHeadline2TextStyle(),
+        titleTextStyle: textStyles.blackHeadline2TextStyle(),
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        shape: StadiumBorder(), // Customize shape
+        backgroundColor: AppColors.mainColor, // Customize color
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         elevation: 40,
         type: BottomNavigationBarType.fixed,
-        backgroundColor:  AppColors.white,
+        backgroundColor: AppColors.white,
         showUnselectedLabels: false,
         showSelectedLabels: true,
+      ),    
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.lightGrey,
+        surfaceTintColor: AppColors.lightGrey,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),        
       ),
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+          secondary: AppColors.mainColor,
+          brightness: Brightness.light,
+          background: AppColors.white),
+      
     );
   }
 
   ThemeData returnResponsiveDarkTheme(double screenHeight) {
-    TextStyles _textStyles = TextStyles(screenHeight);
+    TextStyles textStyles = TextStyles(screenHeight);
     return ThemeData(
       // Primary Colors
       primaryColor: AppColors.white,
       primaryColorDark: AppColors.black,
-      // Accent Color
-      colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.mainColor, brightness: Brightness.dark),
-      // BackGround Colors
-      backgroundColor: AppColors.darkGrey,
       scaffoldBackgroundColor: AppColors.darkerGrey,
+      dividerColor: Colors.grey,
       // Brightness
       brightness: Brightness.dark,
       // Texts
       textTheme: TextTheme(
         // Headlines for Titles
-        headline1: _textStyles.whiteHeadline1TextStyle(),
-        headline2: _textStyles.blackHeadline1TextStyle(),
+        displayLarge: textStyles.whiteHeadline1TextStyle(),
+        displayMedium: textStyles.blackHeadline1TextStyle(),
         // Headline 2 For Subtitles
-        headline3: _textStyles.whiteHeadline2TextStyle(),
+        displaySmall: textStyles.whiteHeadline2TextStyle(),
         // Body Texts for Descriptions
-        bodyText1: _textStyles.whiteBodyText1Style(),
-        bodyText2: _textStyles.whiteBodyText2Style(),
-        caption: _textStyles.greyBodyTextStyle()
+        bodyLarge: textStyles.whiteBodyText1Style(),
+        bodyMedium: textStyles.whiteBodyText2Style(),
+        bodySmall: textStyles.greyBodyTextStyle(),
       ),
       appBarTheme: AppBarTheme(
         elevation: 4.0,
+        surfaceTintColor: AppColors.darkerGrey,
         backgroundColor: AppColors.darkerGrey,
         iconTheme: const IconThemeData(
-            color: AppColors.white,
+          color: AppColors.white,
         ),
-        titleTextStyle: _textStyles.whiteHeadline2TextStyle(),
+        titleTextStyle: textStyles.whiteHeadline2TextStyle(),
         systemOverlayStyle: SystemUiOverlayStyle.light,
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        shape: StadiumBorder(), // Customize shape
+        backgroundColor: AppColors.mainColor, // Customize color
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,
-        type: BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.fixed,        
         backgroundColor: AppColors.darkerGrey,
         showUnselectedLabels: false,
         showSelectedLabels: true,
       ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: AppColors.darkerGrey,
+        surfaceTintColor: AppColors.darkerGrey,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),        
+      ),
+      colorScheme: ColorScheme.fromSwatch()
+          .copyWith(secondary: AppColors.mainColor, brightness: Brightness.dark)
+          .copyWith(background: AppColors.darkGrey),
     );
   }
-
 }
