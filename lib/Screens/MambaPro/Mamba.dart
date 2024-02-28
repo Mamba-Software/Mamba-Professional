@@ -25,7 +25,7 @@ import 'package:notification_permissions/notification_permissions.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 
-// HomePage for the App. Here the user can change between the diferent pages.
+// HomePage for the App. Here the user can change between the diferent pages .
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
 class Mamba extends StatefulWidget {
   const Mamba({super.key});
