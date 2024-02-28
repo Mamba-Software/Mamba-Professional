@@ -19,27 +19,12 @@ class StripeConnectCubit extends Cubit<StripeConnectState> {
     emit(StripeConnectGettingLink());
     (String?, String?) result =
         await stripeConnectRepository.createAccount(brand);
-    if (result.$1 != null) {      
+    if (result.$1 != null) {
       print("Get Link");
       print(result.$1);
       emit(StripeConnectGetLinkSuccess(result.$1!));
     } else {
       emit(StripeConnectGetLinkError(result.$2!));
-    }
-  }
-
-  void createAccountApi(Brand trainerData) async {
-    try {
-      http.Response result =
-          await StripeConnectDataProvider.createStripeAccount(trainerData);
-
-      if (result.statusCode == 200) {
-        var bodyData = jsonDecode(result.body);
-        String? url = bodyData['url'];
-        if (url != null && url != '') {}
-      }
-    } catch (e) {
-      print('d');
     }
   }
 

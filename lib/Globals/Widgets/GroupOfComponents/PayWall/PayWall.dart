@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -221,7 +223,7 @@ class _PayWallState extends State<PayWall> {
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                  cancelSubscriptionText(),
+                  Platform.isAndroid ? cancelSubscriptionText() : Container(),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 ],
               ),
