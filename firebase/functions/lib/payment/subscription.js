@@ -3,10 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createSubscription = exports.getPaymentMethods = exports.cancelSubscription = void 0;
 const constants_1 = require("../utils/constants");
 const helper_functions_1 = require("../utils/helper_functions");
-async function getPaymentMethods(userId) {
+const v2_1 = require("firebase-functions/v2");
+async function getPaymentMethods(userId, brandId) {
+
+    let brandData = await constants_1.brandCollection.doc(brandId).get();
+    
     var _a, _b, _c, _d;
     try {
-        let customerData = await (0, helper_functions_1.getCustomerStripeData)(userId);
+        let customerData = await (0, helper_functions_1.getCustomerStripeData)(userId, brandId, brandData.data().stripeAccountId);
         if (!customerData) {
             return {
                 message: 'No customer found',
@@ -18,7 +22,7 @@ async function getPaymentMethods(userId) {
         }
         let paymentMethods = await constants_1.stripe.paymentMethods.list({
             customer: customerData.stripeCustomerId,
-        });
+        },  { stripeAccount: brandData.data().stripeAccountId});
         if (paymentMethods.data.length === 0) {
             //create customer and get ephemeral key
             let data = {
@@ -72,6 +76,7 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
     try {
         let brandData = await constants_1.brandCollection.doc(brandId).get();
         let brandPaymentTerms = brandData.data().paymentTerms;
+        let stripeAccountId =  brandData.data().stripeAccountId;
         let subscription = null;
         const now = new Date();
         let addMonth = 1;
@@ -119,6 +124,7 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
             ],
             default_payment_method: paymentMethodId,
             backdate_start_date: dayTouse,
+            application_fee_percent: 1,
             billing_cycle_anchor: billingCycleAnchor,
             proration_behavior: 'create_prorations',
             metadata: {
@@ -128,7 +134,7 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
                 'priceId': priceId,
                 'purchaseId': purchaseId,
             }
-        });
+        }, {stripeAccount: stripeAccountId});
         }
         else {
 
@@ -138,6 +144,7 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
                 { price: priceId },
             ],
             default_payment_method: paymentMethodId,
+            application_fee_percent: 1,
             proration_behavior: 'none',
             metadata: {
                 'brandId': brandId,
@@ -146,7 +153,7 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
                 'priceId': priceId,
                 'purchaseId': purchaseId,
             }
-        });
+        }, {stripeAccount: stripeAccountId});
     }
         return { data: subscription, error: null };
     }
@@ -157,9 +164,11 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
 }
 exports.createSubscription = createSubscription;
 
-async function cancelSubscription(subscriptionId) {
+async function cancelSubscription(subscriptionId, brandId) {
     try {
-        let subscription = await constants_1.stripe.subscriptions.cancel(subscriptionId);
+        let brandData = await constants_1.brandCollection.doc(brandId).get();
+        let stripeAccountId =  brandData.data().stripeAccountId;
+        let subscription = await constants_1.stripe.subscriptions.cancel(subscriptionId, {stripeAccount: stripeAccountId});
         return { data: subscription, error: null };
     }
     catch (e) {

@@ -4,15 +4,19 @@ exports.createPaymentIntent = void 0;
 const constants_1 = require("../utils/constants");
 const helper_functions_1 = require("../utils/helper_functions");
 async function createPaymentIntent(amount, customerId, brandId) {
+    
+    let brandData = await constants_1.brandCollection.doc(brandId).get();
     var _a, _b, _c, _d, _e, _f;
     let customerData = null;
     if (customerId) {
-        customerData = await (0, helper_functions_1.getCustomerStripeData)(customerId);
+        customerData = await (0, helper_functions_1.getCustomerStripeData)(customerId, brandId, brandData.data().stripeAccountId);
     }
+    //customerData.stripeCustomerId = 'cus_PeYbnXjmnCJ0QD';
     const paymentIntent = await constants_1.stripe.paymentIntents.create({
         amount: amount,
         customer: customerData === null || customerData === void 0 ? void 0 : customerData.stripeCustomerId,
         currency: 'eur',
+        application_fee_amount: Math.trunc(amount*0.01),
         automatic_payment_methods: {
             enabled: true,
         },
@@ -21,13 +25,14 @@ async function createPaymentIntent(amount, customerId, brandId) {
             brandId: brandId,
             amount: amount
         },
-    });
+    }, { stripeAccount: brandData.data().stripeAccountId});
     let setupIntent = await constants_1.stripe.setupIntents.create({
         customer: (_a = customerData === null || customerData === void 0 ? void 0 : customerData.stripeCustomerId) !== null && _a !== void 0 ? _a : '',
-    });
+    }, { stripeAccount: brandData.data().stripeAccountId});
     let ephemeralKeys = await constants_1.stripe.ephemeralKeys.create({
         customer: (_b = customerData === null || customerData === void 0 ? void 0 : customerData.stripeCustomerId) !== null && _b !== void 0 ? _b : '',
-    }, { apiVersion: '2023-10-16' });
+    }, { apiVersion: '2023-10-16', stripeAccount: brandData.data().stripeAccountId
+     });
     return {
         stripeCustomerId: (_c = customerData === null || customerData === void 0 ? void 0 : customerData.stripeCustomerId) !== null && _c !== void 0 ? _c : '',
         ephemeralKeysSecret: (_d = ephemeralKeys === null || ephemeralKeys === void 0 ? void 0 : ephemeralKeys.secret) !== null && _d !== void 0 ? _d : '',
