@@ -3964,12 +3964,12 @@ exports.onBonosUpdatedForStripeProd = functions.region("europe-west1").firestore
             price: ((_h = (_g = snap.after.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
             expirationTime:  snap.after.data().expirationTime,
         };
-        (0, products_1.updateProduct)(productData);
+        (0, products_1.updateProduct)(productData, brandData.data().stripeAccountId);
         if (
           ((_j = snap.before.data()) === null || _j === void 0 ? void 0 : _j.price) !== ((_k = snap.after.data()) === null || _k === void 0 ? void 0 : _k.price) ||
           ((_l = snap.before.data()) === null || _l === void 0 ? void 0 : _l.expirationTime) !== ((_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.expirationTime)
         ) {
-            (0, products_1.updatePrice)((_l = snap.after.data()) === null || _l === void 0 ? void 0 : _l.priceId, ((_o = (_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.price) !== null && _o !== void 0 ? _o : 0) * 100, snap.after.id, snap.after.data().expirationTime);
+            (0, products_1.updatePrice)((_l = snap.after.data()) === null || _l === void 0 ? void 0 : _l.priceId, ((_o = (_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.price) !== null && _o !== void 0 ? _o : 0) * 100, snap.after.id, snap.after.data().expirationTime,  brandData.data().stripeAccountId);
         }
       }
     }
@@ -3984,8 +3984,9 @@ exports.onBonosDeleteForStripeProd = functions
 .document("/Brands/{brandId}/Bonos/{bonoId}")
 .onDelete( async (snap, context) => {
   try {
+    let brandData = await constants_1.brandCollection.doc(context.params.brandId).get();
     v2_1.logger.info('deleted a bono');
-    (0, products_1.deleteProduct)(snap.id);
+    (0, products_1.deleteProduct)(snap.id, brandData.data().stripeAccountId);
 }
 catch (e) {
     v2_1.logger.error(e);
@@ -4114,13 +4115,13 @@ app.get('/createPaymentIntent', async (req, res) => {
 });
 /* ------------------- get payment methods for a user ------------------- */
 app.get('/paymentMethod', async (req, res) => {
-  if (req.query.userId === undefined) {
+  if (req.query.userId === undefined || req.query.brandId === undefined) {
       res.send({
           message: 'Missing parameters', required: ['userId']
       });
       return;
   }
-  let result = await (0, subscription_1.getPaymentMethods)(req.query.userId);
+  let result = await (0, subscription_1.getPaymentMethods)(req.query.userId, req.query.brandId);
   res.send(result).status(200);
 });
 /* --------------------------- create subscription -------------------------- */
@@ -4144,13 +4145,13 @@ app.post('/createSubscription', async (req, res) => {
 /* --------------------------- cancel subscription -------------------------- */
 app.post('/cancelSubscription', async (req, res) => {
   console.log(req.body);
-  if (req.body.subscriptionId === undefined) {
+  if (req.body.subscriptionId === undefined || req.body.brandId == undefined) {
       res.status(400).send({
           message: 'Missing parameters', required: ['subscriptionId']
       });
       return;
   }
-  let result = await (0, subscription_1.cancelSubscription)(req.body.subscriptionId );
+  let result = await (0, subscription_1.cancelSubscription)(req.body.subscriptionId, req.body.brandId );
   if (result.error == null) {
       res.send(result.data).status(200);
   }
