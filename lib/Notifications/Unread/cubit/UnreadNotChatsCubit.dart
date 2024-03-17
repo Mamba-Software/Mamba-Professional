@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 part 'UnreadNotChatsState.dart';
 
 class UnreadNotChatsCubit extends Cubit<List<int>> {

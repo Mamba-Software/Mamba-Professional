@@ -14,11 +14,11 @@ import 'package:mamba_castelldefels/Auth/widgets/mobile/AppleLogin.dart';
 import 'package:mamba_castelldefels/Auth/widgets/mobile/GoogleLogin.dart';
 import 'package:mamba_castelldefels/Auth/widgets/mobile/NormalLogin.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/app/style/Styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.
@@ -245,7 +245,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 if (!currentFocus.hasPrimaryFocus) {
                   currentFocus.unfocus();
                 }
-                if (!await launchUrl(Uri.parse(termsAndConditions))) throw 'Could not launch $termsAndConditions';
+                if (!await launchUrl(Uri.parse(termsAndConditions)))
+                  throw 'Could not launch $termsAndConditions';
               },
               child: RichText(
                 textAlign: TextAlign.center,
@@ -475,7 +476,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
               }
-              if (!await launchUrl(Uri.parse(termsAndConditions))) throw 'Could not launch $termsAndConditions';
+              if (!await launchUrl(Uri.parse(termsAndConditions)))
+                throw 'Could not launch $termsAndConditions';
             },
             child: RichText(
               textAlign: TextAlign.center,

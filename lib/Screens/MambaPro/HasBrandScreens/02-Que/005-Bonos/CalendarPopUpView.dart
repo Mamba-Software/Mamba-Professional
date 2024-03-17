@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CustomCalendarView.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarPopupView extends StatefulWidget {
   const CalendarPopupView(
       {super.key,
-        this.initialStartDate,
-        this.initialEndDate,
-        this.onApplyClick,
-        this.barrierDismissible = true,
-        this.minimumDate,
-        this.maximumDate});
+      this.initialStartDate,
+      this.initialEndDate,
+      this.onApplyClick,
+      this.barrierDismissible = true,
+      this.minimumDate,
+      this.maximumDate});
 
   final DateTime? minimumDate;
   final DateTime? maximumDate;
@@ -26,14 +26,16 @@ class CalendarPopupView extends StatefulWidget {
   _CalendarPopupViewState createState() => _CalendarPopupViewState();
 }
 
-class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProviderStateMixin {
+class _CalendarPopupViewState extends State<CalendarPopupView>
+    with TickerProviderStateMixin {
   AnimationController? animationController;
   DateTime? startDate;
   DateTime? endDate;
 
   @override
   void initState() {
-    animationController = AnimationController(duration: const Duration(milliseconds: 400), vsync: this);
+    animationController = AnimationController(
+        duration: const Duration(milliseconds: 400), vsync: this);
     if (widget.initialStartDate != null) {
       startDate = widget.initialStartDate;
     }
@@ -74,7 +76,9 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                   borderRadius: BorderRadius.all(Radius.circular(24.0)),
                 ),
                 child: InkWell(
-                  borderRadius: const BorderRadius.all(Radius.circular(24.0),),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(24.0),
+                  ),
                   onTap: () {},
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -85,8 +89,8 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                         decoration: const BoxDecoration(
                           color: AppColors.black,
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(24.0),
-                              topRight: Radius.circular(24.0),
+                            topLeft: Radius.circular(24.0),
+                            topRight: Radius.circular(24.0),
                           ),
                         ),
                         child: Row(
@@ -99,14 +103,26 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                                   Text(
                                     AppLocalizations.of(context)!.from,
                                     textAlign: TextAlign.left,
-                                    style: Theme.of(context).textTheme.bodySmall,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
                                   ),
                                   const SizedBox(
                                     height: 4,
                                   ),
                                   Text(
-                                    startDate != null ?  currentUser.idioma == 'es'? DateFormat.yMd('es').format(startDate!) :  DateFormat.yMd('cat').format(startDate!) : '--/-- ',
-                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: AppColors.white),
+                                    startDate != null
+                                        ? currentUser.idioma == 'es'
+                                            ? DateFormat.yMd('es')
+                                                .format(startDate!)
+                                            : DateFormat.yMd('cat')
+                                                .format(startDate!)
+                                        : '--/-- ',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.white),
                                   ),
                                 ],
                               ),
@@ -123,14 +139,26 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                                 children: <Widget>[
                                   Text(
                                     AppLocalizations.of(context)!.to,
-                                    style: Theme.of(context).textTheme.bodySmall,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
                                   ),
                                   const SizedBox(
                                     height: 4,
                                   ),
                                   Text(
-                                    endDate != null ? currentUser.idioma == 'es'? DateFormat.yMd('es').format(endDate!) : DateFormat.yMd('cat').format(endDate!) :  '--/-- ',
-                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: AppColors.white),
+                                    endDate != null
+                                        ? currentUser.idioma == 'es'
+                                            ? DateFormat.yMd('es')
+                                                .format(endDate!)
+                                            : DateFormat.yMd('cat')
+                                                .format(endDate!)
+                                        : '--/-- ',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.white),
                                   ),
                                 ],
                               ),
@@ -148,7 +176,8 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                         maximumDate: widget.maximumDate,
                         initialEndDate: widget.initialEndDate,
                         initialStartDate: widget.initialStartDate,
-                        startEndDateChange: (DateTime startDateData, DateTime endDateData) {
+                        startEndDateChange:
+                            (DateTime startDateData, DateTime endDateData) {
                           setState(() {
                             startDate = startDateData;
                             endDate = endDateData;
@@ -156,12 +185,14 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                         },
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 8),
+                        padding: const EdgeInsets.only(
+                            left: 16, right: 16, bottom: 16, top: 8),
                         child: Container(
                           height: 48,
                           decoration: BoxDecoration(
                             color: AppColors.black,
-                            borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(24.0)),
                             boxShadow: <BoxShadow>[
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.6),
@@ -179,7 +210,8 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                             ),
                             elevation: 4,
                             child: InkWell(
-                              borderRadius: const BorderRadius.all(Radius.circular(25.0)),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(25.0)),
                               highlightColor: Theme.of(context).primaryColor,
                               onTap: () {
                                 try {
@@ -187,10 +219,13 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                                   Navigator.pop(context);
                                 } catch (_) {}
                               },
-                              child:  Center(
+                              child: Center(
                                 child: Text(
                                   AppLocalizations.of(context)!.confirm,
-                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(color: AppColors.white),
                                 ),
                               ),
                             ),

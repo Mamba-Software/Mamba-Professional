@@ -3,9 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba_castelldefels/app/theme/ThemeProvider.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandBonoRequestsWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandCalendarMonthWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandRequestsWidget.dart';
@@ -18,7 +19,6 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import '../../../../Globals/Providers/ThemeProvider.dart';
 import 'HomeWidgets/BrandBestBonoWidget.dart';
 
 // Step 1: Define a Callback.

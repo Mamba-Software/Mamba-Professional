@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 
 
 import '../../../../../Globals/GlobalVars.dart';

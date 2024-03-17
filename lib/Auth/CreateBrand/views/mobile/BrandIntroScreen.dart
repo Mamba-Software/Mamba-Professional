@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/commons/constants/constants.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BrandIntroScreen extends StatefulWidget {
@@ -48,7 +48,8 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
             color: AppColors.black,
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.05),
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.05),
             child: PageView(
               physics: const ClampingScrollPhysics(),
               controller: _pageController,
@@ -70,7 +71,8 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                 Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.05),
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.height * 0.05),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -78,66 +80,95 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: () {
-                                mixpanel!.track('register_brand_onboarding_skip');
+                                mixpanel!
+                                    .track('register_brand_onboarding_skip');
                                 Navigator.pop(context, true);
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.skip,
-                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall
+                                    ?.copyWith(color: AppColors.white),
                               ),
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height*0.3,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.05),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.3,
                             width: MediaQuery.of(context).size.width,
                             child: Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
-                                      height: MediaQuery.of(context).size.height*0.2,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.2,
                                       decoration: BoxDecoration(
-                                          border: Border.all(
-                                            width: 1,
-                                            color: AppColors.white,
-                                            style: BorderStyle.solid,
-                                          ),
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                            fit: BoxFit.fitHeight,
-                                            image: AssetImage(Constants.portadaCreateBrandIntro),
-                                          ),
+                                        border: Border.all(
+                                          width: 1,
+                                          color: AppColors.white,
+                                          style: BorderStyle.solid,
+                                        ),
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          fit: BoxFit.fitHeight,
+                                          image: AssetImage(Constants
+                                              .portadaCreateBrandIntro),
+                                        ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: AppColors.black.withOpacity(0.5),
+                                            color: AppColors.black
+                                                .withOpacity(0.5),
                                             spreadRadius: 1,
                                             blurRadius: 1,
-                                            offset: const Offset(0, 3), // changes position of shadow
+                                            offset: const Offset(0,
+                                                3), // changes position of shadow
                                           ),
                                         ],
-                                      )
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                      )),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.02),
                                   Text(
                                     "La Era Fitness",
-                                    style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white, fontStyle: FontStyle.italic, fontSize: 28),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge
+                                        ?.copyWith(
+                                            color: AppColors.white,
+                                            fontStyle: FontStyle.italic,
+                                            fontSize: 28),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.04),
                           Text(
                             AppLocalizations.of(context)!.createBrandCover,
-                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(color: AppColors.white),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height*0.1,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
                             child: Text(
                               AppLocalizations.of(context)!.createBrandPortada,
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: AppColors.white),
                             ),
                           ),
                         ],
@@ -152,7 +183,8 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                 Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.05),
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.height * 0.05),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -160,37 +192,54 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: () {
-                                mixpanel!.track('register_brand_onboarding_skip');
+                                mixpanel!
+                                    .track('register_brand_onboarding_skip');
                                 Navigator.pop(context, true);
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.skip,
-                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall
+                                    ?.copyWith(color: AppColors.white),
                               ),
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height*0.3,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.05),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.3,
                             width: MediaQuery.of(context).size.width,
                             child: Center(
                               child: Image(
-                                image: AssetImage(Constants.informationCreateBrandIntro),
+                                image: AssetImage(
+                                    Constants.informationCreateBrandIntro),
                                 width: MediaQuery.of(context).size.width,
                               ),
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.05),
                           Text(
                             AppLocalizations.of(context)!.info,
-                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(color: AppColors.white),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height*0.1,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
                             child: Text(
                               AppLocalizations.of(context)!.createBrandInfo,
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: AppColors.white),
                             ),
                           ),
                         ],
@@ -205,7 +254,8 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                 Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.05),
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.height * 0.05),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -213,37 +263,56 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: () {
-                                mixpanel!.track('register_brand_onboarding_skip');
+                                mixpanel!
+                                    .track('register_brand_onboarding_skip');
                                 Navigator.pop(context, true);
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.skip,
-                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.white),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall
+                                    ?.copyWith(color: AppColors.white),
                               ),
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height*0.3,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.05),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.3,
                             width: MediaQuery.of(context).size.width,
                             child: Center(
                               child: Image(
-                                image: AssetImage(Constants.locationCreateBrandIntro),
-                                height: MediaQuery.of(context).size.height*0.3,
+                                image: AssetImage(
+                                    Constants.locationCreateBrandIntro),
+                                height:
+                                    MediaQuery.of(context).size.height * 0.3,
                               ),
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                          Text(
-                            AppLocalizations.of(context)!.createBrandBaseLocation,
-                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height*0.1,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.05),
+                          Text(
+                            AppLocalizations.of(context)!
+                                .createBrandBaseLocation,
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(color: AppColors.white),
+                          ),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
                             child: Text(
                               AppLocalizations.of(context)!.createBrandLocation,
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: AppColors.white),
                             ),
                           ),
                         ],
@@ -258,7 +327,8 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                 Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.05),
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.height * 0.05),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -268,32 +338,52 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                               onPressed: null,
                               child: Text(
                                 AppLocalizations.of(context)!.skip,
-                                style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.black,),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall
+                                    ?.copyWith(
+                                      color: AppColors.black,
+                                    ),
                               ),
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height*0.3,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.05),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.3,
                             width: MediaQuery.of(context).size.width,
                             child: Center(
                               child: Image(
-                                image: AssetImage(Constants.horarioCreateBrandIntro),
-                                height: MediaQuery.of(context).size.height*0.3,
+                                image: AssetImage(
+                                    Constants.horarioCreateBrandIntro),
+                                height:
+                                    MediaQuery.of(context).size.height * 0.3,
                               ),
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.05),
                           Text(
                             AppLocalizations.of(context)!.createBrandWorkshift,
-                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.white),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(color: AppColors.white),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height*0.1,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
                             child: Text(
-                              AppLocalizations.of(context)!.createBrandWorkshiftDescription,
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.white),
+                              AppLocalizations.of(context)!
+                                  .createBrandWorkshiftDescription,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: AppColors.white),
                             ),
                           ),
                         ],
@@ -312,22 +402,25 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
       ),
       bottomSheet: _currentPage == _numPages - 1
           ? GestureDetector(
-            onTap: () {
-              mixpanel!.track('register_brand_onboarding_go');
-              Navigator.pop(context, true);
-            },
-            child: Container(
-                height: MediaQuery.of(context).size.height*0.1,
+              onTap: () {
+                mixpanel!.track('register_brand_onboarding_go');
+                Navigator.pop(context, true);
+              },
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.1,
                 width: double.infinity,
                 color: Colors.white,
                 child: Center(
                   child: Text(
                     AppLocalizations.of(context)!.letsGo,
-                    style: Theme.of(context).textTheme.displayLarge?.copyWith(color: AppColors.black),
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayLarge
+                        ?.copyWith(color: AppColors.black),
                   ),
                 ),
               ),
-          )
+            )
           : const Text(''),
     );
   }

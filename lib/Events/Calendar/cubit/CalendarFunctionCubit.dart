@@ -10,7 +10,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 part 'CalendarFunctionState.dart';
 

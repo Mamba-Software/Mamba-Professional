@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 
@@ -116,7 +116,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
-                    AppLocalizations.of(context)!.stripeConnectionSuccessfull,                    
+                    AppLocalizations.of(context)!.stripeConnectionSuccessfull,
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                     maxLines: 5,
@@ -124,7 +124,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                   ),
                 ],
               ),
-            );          
+            );
           } else if (state is StripeConnectGetLinkError) {
             return Padding(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),

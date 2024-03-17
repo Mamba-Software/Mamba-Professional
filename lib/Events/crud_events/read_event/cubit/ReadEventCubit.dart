@@ -9,7 +9,7 @@ import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 part 'ReadEventState.dart';
 
 class ReadEventCubit extends Cubit<ReadEventLoaded> {

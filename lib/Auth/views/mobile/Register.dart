@@ -5,9 +5,9 @@ import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Auth/utils/enumAuth.dart';
 import 'package:mamba_castelldefels/Auth/widgets/mobile/NormalRegister.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/app/style/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Register Page that allows the User to create his profile. This is the same for Client and Trainer.

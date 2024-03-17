@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/commons/constants/constants.dart';
 
 class StripeConnectDataProvider {
   static Future createAccountApi(String parameters) async {

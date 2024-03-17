@@ -6,21 +6,21 @@ import 'package:mamba_castelldefels/Auth/views/mobile/Login.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/Notifications/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/app/theme/ThemeProvider.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/utils/SharePlus/SharePlusUtils.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
+import 'package:mamba_castelldefels/l10n/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsLanguage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
+import 'package:mamba_castelldefels/l10n/Idiomas.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -626,7 +626,6 @@ class _DeleteDialogState extends State<DeleteDialog> {
 
   @override
   Widget build(BuildContext context) {
-    
     if (firstBuild) {
       deleteTemp = "";
       firstBuild = false;
@@ -777,7 +776,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       FloatingActionButton.extended(
-                  shape: const StadiumBorder(),
+                        shape: const StadiumBorder(),
                         heroTag: "39",
                         label: !isLoading
                             ? Text(
@@ -806,7 +805,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                 size: MediaQuery.of(context).size.width * 0.06)
                             : Container(),
                         backgroundColor:
-                            canDelete ? Colors.red : Colors.red[200],                        
+                            canDelete ? Colors.red : Colors.red[200],
                         foregroundColor: AppColors.white,
                         onPressed: canDelete
                             ? () async {
@@ -877,10 +876,10 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                   );
                                 }
                               }
-                            : null,                        
+                            : null,
                       ),
                       FloatingActionButton.extended(
-                  shape: const StadiumBorder(),
+                        shape: const StadiumBorder(),
                         heroTag: "40",
                         icon: Icon(
                           Icons.cancel_outlined,
@@ -1020,6 +1019,6 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                   }),
         ),
       ),
-    );      
+    );
   }
 }

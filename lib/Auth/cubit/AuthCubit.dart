@@ -11,10 +11,10 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
-import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
-import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/l10n/Idiomas.dart';
+import 'package:mamba_castelldefels/l10n/LanguageProvider.dart';
+import 'package:mamba_castelldefels/app/theme/ThemeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 part 'AuthState.dart';

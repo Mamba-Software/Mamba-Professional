@@ -9,15 +9,15 @@ import 'package:mamba_castelldefels/Auth/CreateBrand/views/mobile/RegistrarMarca
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/commons/constants/constants.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/Notifications/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/commons/managers/PermisionsService.dart';
+import 'package:mamba_castelldefels/commons/utils/Date/DateTimeUtils.dart';
+import 'package:mamba_castelldefels/commons/utils/Images/ImageUtils.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'SplashScreen.dart';
 
@@ -170,7 +170,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     mixpanel!.getPeople().set("dateOfBirth", startDate.toString());
     mixpanel!.getPeople().set("language", currentUser.idioma!);
     mixpanel!.getPeople().set("isPrivate", true);
-    mixpanel!.getPeople().set("isTrainer", true);    
+    mixpanel!.getPeople().set("isTrainer", true);
   }
 
   int calculateAge(DateTime birthDate, DateTime currentDate) {
@@ -811,11 +811,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             0.02),
                                                     Flexible(
                                                       child: Text(
-                                                        "${AppLocalizations.of(
-                                                                    context)!
-                                                                .googleInfo
-                                                                .split(
-                                                                    "Google")[0]} Apple",
+                                                        "${AppLocalizations.of(context)!.googleInfo.split("Google")[0]} Apple",
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyMedium
@@ -880,20 +876,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     hintText: AppLocalizations
                                                             .of(context)!
                                                         .nameCompletoError,
-                                                    hintStyle:
-                                                        Theme
-                                                                .of(context)
-                                                            .textTheme
-                                                            .displaySmall
-                                                            ?.copyWith(
-                                                                color:
-                                                                    AppColors
-                                                                        .grey,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .normal),
-                                                    errorStyle: Theme
-                                                            .of(context)
+                                                    hintStyle: Theme.of(context)
+                                                        .textTheme
+                                                        .displaySmall
+                                                        ?.copyWith(
+                                                            color: AppColors
+                                                                .grey,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal),
+                                                    errorStyle: Theme.of(
+                                                            context)
                                                         .textTheme
                                                         .bodyMedium
                                                         ?.copyWith(
@@ -944,7 +937,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     ),
                                                     contentPadding:
                                                         const EdgeInsets
-                                                                .fromLTRB(
+                                                            .fromLTRB(
                                                             12, 8, 12, 8)),
                                               ),
                                             ),
@@ -997,20 +990,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     hintText: AppLocalizations
                                                             .of(context)!
                                                         .lastNameError,
-                                                    hintStyle:
-                                                        Theme
-                                                                .of(context)
-                                                            .textTheme
-                                                            .displaySmall
-                                                            ?.copyWith(
-                                                                color:
-                                                                    AppColors
-                                                                        .grey,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .normal),
-                                                    errorStyle: Theme
-                                                            .of(context)
+                                                    hintStyle: Theme.of(context)
+                                                        .textTheme
+                                                        .displaySmall
+                                                        ?.copyWith(
+                                                            color: AppColors
+                                                                .grey,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal),
+                                                    errorStyle: Theme.of(
+                                                            context)
                                                         .textTheme
                                                         .bodyMedium
                                                         ?.copyWith(
@@ -1061,7 +1051,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     ),
                                                     contentPadding:
                                                         const EdgeInsets
-                                                                .fromLTRB(
+                                                            .fromLTRB(
                                                             12, 8, 12, 8)),
                                               ),
                                             ),
@@ -1132,7 +1122,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 );
                                               },
                                         style: ElevatedButton.styleFrom(
-                                          elevation: 0, backgroundColor: canGoNextName
+                                          elevation: 0,
+                                          backgroundColor: canGoNextName
                                               ? AppColors.white
                                               : AppColors.black,
                                           shape: const CircleBorder(),
@@ -1171,11 +1162,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "${AppLocalizations.of(context)!
-                                                .uploadPhoto
-                                                .split(" ")[0]} ${AppLocalizations.of(context)!
-                                                .profilePhoto
-                                                .toLowerCase()}",
+                                        "${AppLocalizations.of(context)!.uploadPhoto.split(" ")[0]} ${AppLocalizations.of(context)!.profilePhoto.toLowerCase()}",
                                         style: Theme.of(context)
                                             .textTheme
                                             .displayLarge
@@ -1421,7 +1408,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           );
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          shape: const CircleBorder(), backgroundColor: AppColors.white,
+                                          shape: const CircleBorder(),
+                                          backgroundColor: AppColors.white,
                                           padding: const EdgeInsets.all(15),
                                         ),
                                         child: Icon(
@@ -1576,8 +1564,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         fillColor: AppColors
                                                             .white,
                                                         hintText: "DD",
-                                                        hintStyle: Theme.of(
-                                                                context)
+                                                        hintStyle: Theme
+                                                                .of(context)
                                                             .textTheme
                                                             .displaySmall
                                                             ?.copyWith(
@@ -1586,13 +1574,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .normal),
-                                                        errorStyle: Theme.of(
-                                                                context)
+                                                        errorStyle: Theme
+                                                                .of(context)
                                                             .textTheme
                                                             .bodyMedium
                                                             ?.copyWith(
-                                                                color: AppColors
-                                                                    .red),
+                                                                color:
+                                                                    AppColors
+                                                                        .red),
                                                         border:
                                                             OutlineInputBorder(
                                                           borderSide:
@@ -1643,7 +1632,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         ),
                                                         contentPadding:
                                                             const EdgeInsets
-                                                                    .fromLTRB(
+                                                                .fromLTRB(
                                                                 12, 8, 12, 8)),
                                                     textAlign: TextAlign.center,
                                                   ),
@@ -1747,8 +1736,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         fillColor: AppColors
                                                             .white,
                                                         hintText: "MM",
-                                                        hintStyle: Theme.of(
-                                                                context)
+                                                        hintStyle: Theme
+                                                                .of(context)
                                                             .textTheme
                                                             .displaySmall
                                                             ?.copyWith(
@@ -1757,13 +1746,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .normal),
-                                                        errorStyle: Theme.of(
-                                                                context)
+                                                        errorStyle: Theme
+                                                                .of(context)
                                                             .textTheme
                                                             .bodyMedium
                                                             ?.copyWith(
-                                                                color: AppColors
-                                                                    .red),
+                                                                color:
+                                                                    AppColors
+                                                                        .red),
                                                         border:
                                                             OutlineInputBorder(
                                                           borderSide:
@@ -1814,7 +1804,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         ),
                                                         contentPadding:
                                                             const EdgeInsets
-                                                                    .fromLTRB(
+                                                                .fromLTRB(
                                                                 12, 8, 12, 8)),
                                                     textAlign: TextAlign.center,
                                                   ),
@@ -1836,9 +1826,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "${AppLocalizations.of(
-                                                                context)!
-                                                            .year} (*)",
+                                                    "${AppLocalizations.of(context)!.year} (*)",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyLarge
@@ -1914,8 +1902,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         fillColor: AppColors
                                                             .white,
                                                         hintText: "YYYY",
-                                                        hintStyle: Theme.of(
-                                                                context)
+                                                        hintStyle: Theme
+                                                                .of(context)
                                                             .textTheme
                                                             .displaySmall
                                                             ?.copyWith(
@@ -1924,13 +1912,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .normal),
-                                                        errorStyle: Theme.of(
-                                                                context)
+                                                        errorStyle: Theme
+                                                                .of(context)
                                                             .textTheme
                                                             .bodyMedium
                                                             ?.copyWith(
-                                                                color: AppColors
-                                                                    .red),
+                                                                color:
+                                                                    AppColors
+                                                                        .red),
                                                         border:
                                                             OutlineInputBorder(
                                                           borderSide:
@@ -1981,7 +1970,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         ),
                                                         contentPadding:
                                                             const EdgeInsets
-                                                                    .fromLTRB(
+                                                                .fromLTRB(
                                                                 12, 8, 12, 8)),
                                                     textAlign: TextAlign.center,
                                                   ),
@@ -2042,9 +2031,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    "${AppLocalizations.of(
-                                                                context)!
-                                                            .dateOfBirth}: ",
+                                                    "${AppLocalizations.of(context)!.dateOfBirth}: ",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyLarge
@@ -2112,9 +2099,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    "${AppLocalizations.of(
-                                                                context)!
-                                                            .age}: ",
+                                                    "${AppLocalizations.of(context)!.age}: ",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyLarge
@@ -2223,8 +2208,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           4) {
                                                     // Full Date
                                                     String dateString =
-                                                        "${yearController.text}-${monthController
-                                                                .text}-${dayController.text}";
+                                                        "${yearController.text}-${monthController.text}-${dayController.text}";
                                                     date = convertToDate(
                                                         dateString,
                                                         "yyyy-MM-dd",
@@ -2272,7 +2256,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 }
                                               },
                                         style: ElevatedButton.styleFrom(
-                                          elevation: 0, backgroundColor: canGoNextDate
+                                          elevation: 0,
+                                          backgroundColor: canGoNextDate
                                               ? AppColors.white
                                               : AppColors.black,
                                           shape: const CircleBorder(),
@@ -2596,7 +2581,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 addUser();
                                               },
                                         style: ElevatedButton.styleFrom(
-                                          elevation: 0, backgroundColor: gender != null
+                                          elevation: 0,
+                                          backgroundColor: gender != null
                                               ? AppColors.white
                                               : AppColors.black,
                                           shape: const CircleBorder(),

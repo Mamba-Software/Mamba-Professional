@@ -18,7 +18,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Recurrent.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:uuid/uuid.dart';
 part 'CrudEventState.dart';
 

@@ -11,21 +11,21 @@ import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataSe
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/BetaBadge.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectHoursDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditStripeDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/Notifications/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/utils/Date/DateTimeUtils.dart';
+import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/Badges/BetaBadge.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/CupertinoSelect/SelectHoursDialog.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/EditStripeDialog.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
@@ -2592,7 +2592,7 @@ class _BrandInfoState extends State<BrandInfo>
                     value: isStripeActive,
                     onChanged: canEdit && currentBrand.adminID == currentUser.id
                         ? (bool newVal) async {
-                            if (newVal) {                              
+                            if (newVal) {
                               // Show Stripe Onboarding
                               await navigateToStripeOnboarding(false, false);
                               // Check If Sripe Is Activated
@@ -2603,7 +2603,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 isStripeActive = true;
                               }
                             } else {
-                              if (isStripeActive && !currentBrand.isVerified) {                                
+                              if (isStripeActive && !currentBrand.isVerified) {
                                 // Show Stripe Onboarding
                                 var result = await navigateToStripeOnboarding(
                                     true, false);
@@ -2629,7 +2629,7 @@ class _BrandInfoState extends State<BrandInfo>
                                   },
                                 );
                                 if (deactivateStripe == true) {
-                                  isStripeActive = newVal;                                  
+                                  isStripeActive = newVal;
                                 } else if (deactivateStripe == false) {
                                   await navigateToStripeOnboarding(true, true);
                                 }

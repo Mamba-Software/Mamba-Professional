@@ -1,0 +1,889 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+class UserCalendarWidget extends StatefulWidget {
+  String userId;
+  DateTime? dateTime;
+
+  UserCalendarWidget({super.key, required this.userId, this.dateTime});
+
+  @override
+  _UserCalendarWidgetState createState() => _UserCalendarWidgetState();
+}
+
+class _UserCalendarWidgetState extends State<UserCalendarWidget> {
+  // Acceso a Base de Datos
+  final _brandDataService = BrandDataService();
+  final _eventDataService = EventDataService();
+  // Screen Dimensions
+  var safeAreaHeight;
+  var safeAreaWidth;
+  // Boolean Loading
+  bool isLoading = true;
+  bool isFirstBuild = true;
+  // Boolean Loading
+  Brand _brand = Brand();
+  // Sesions Controller
+  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  final CalendarController _controller = CalendarController();
+  // Dies de la semana que el entrenador no treballa
+  List<int> nonWorkDays = [];
+  // Horari
+  double _startHour = 8;
+  double _endHour = 22;
+  DateTime dateJoined = DateFormat('dd-MM-yyyy')
+      .parse(currentUser.dateJoined!)
+      .subtract(const Duration(days: 365));
+  // Events From Brand
+  List<Event> eventsList = [];
+  List<Appointment> allAppointments = <Appointment>[];
+  // Selecte Date Time
+  DateTime displayDateTimeStart = DateTime.now();
+  DateTime displayDateTimeEnd = DateTime.now();
+  DateTime middleMonthDate = DateTime.now();
+
+  @override
+  void initState() {
+    isLoading = true;
+    initAppBarDateTitle();
+    getUserBrandDetails();
+    super.initState();
+  }
+
+  // Init Device Sizes
+  initDeviceSizes() {
+    safeAreaHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.bottom;
+    safeAreaWidth = MediaQuery.of(context).size.width;
+    print(
+        "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
+  }
+
+  // Init App Bar Title
+  initAppBarDateTitle() {
+    if (widget.dateTime == null) {
+      DateTime now = DateTime.now();
+      int currentDay = now.weekday;
+      displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
+      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
+    } else {
+      DateTime dateTime = widget.dateTime!;
+      int currentDay = dateTime.weekday;
+      displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
+      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
+    }
+  }
+
+  void getUserBrandDetails() async {
+    List<Brand> result =
+        await _brandDataService.getAllBrandsFromUser(widget.userId);
+    if (result.isNotEmpty) {
+      _brand = await _brandDataService.getBrandDetails(result[0].id!);
+    }
+    // TODO: Aixo ho fa per fer el init del Calendari. S'hauria de fer loop per totes les brands del user.
+    initCalendar();
+  }
+
+  void initCalendar() {
+    // Init App Bar Title
+    if (widget.dateTime == null) {
+      DateTime now = DateTime.now();
+      int currentDay = now.weekday;
+      displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
+      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 7));
+    } else {
+      DateTime dateTime = widget.dateTime!;
+      int currentDay = dateTime.weekday;
+      displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
+      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
+    }
+    if (_brand.id != null) {
+      dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
+      _startHour =
+          double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+      _endHour =
+          double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    }
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
+  Event getEvent(String eventId) {
+    for (var i = 0; i < eventsList.length; i++) {
+      Event temp = eventsList[i];
+      if (temp.id == eventId) return temp;
+    }
+    return Event();
+  }
+
+  durationToString(double duration) {
+    String temp = "";
+    temp = duration.toStringAsFixed(2);
+    var hour = temp.split(".")[0];
+    var min = temp.split(".")[1];
+    return "${hour}h ${min}m ";
+  }
+
+  Widget _buildTitleFromDate(
+      DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
+    return Text(
+      StringUtils().toCapitalized(DateFormat(
+        'MMMM yyyy',
+        Localizations.localeOf(context).languageCode,
+      ).format(middleMonthDate)),
+      style: Theme.of(context)
+          .textTheme
+          .bodyLarge
+          ?.copyWith(fontWeight: FontWeight.w600),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isFirstBuild) {
+      initDeviceSizes();
+      isFirstBuild = false;
+    }
+
+    return Scaffold(
+      key: _globalKey,
+      appBar: AppBar(
+        title: _buildTitleFromDate(
+            displayDateTimeStart, displayDateTimeEnd, middleMonthDate),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            size: MediaQuery.of(context).size.width * 0.06,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          SizedBox(
+            width: safeAreaWidth * 0.15,
+            child: TextButton(
+              onPressed: () {
+                setState(() {
+                  _controller.displayDate = DateTime.now();
+                });
+                if (_controller.view == CalendarView.month) {
+                  setState(() {
+                    _controller.selectedDate = DateTime.now();
+                  });
+                }
+              },
+              child: Text(AppLocalizations.of(context)!.todayString,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center),
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              if (_controller.view == CalendarView.month) {
+                setState(() {
+                  _controller.view = CalendarView.week;
+                });
+              } else {
+                setState(() {
+                  print(_controller.displayDate);
+                  _controller.view = CalendarView.month;
+                });
+              }
+            },
+            icon: _controller.view == CalendarView.month
+                ? SizedBox(
+                    width: safeAreaWidth * 0.15,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.calendar_view_week,
+                          color: Theme.of(context).primaryColor,
+                          size: safeAreaWidth * 0.05,
+                        ),
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(AppLocalizations.of(context)!.weekString,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              textAlign: TextAlign.center),
+                        ),
+                      ],
+                    ),
+                  )
+                : SizedBox(
+                    width: safeAreaWidth * 0.15,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.calendar_view_month,
+                          color: Theme.of(context).primaryColor,
+                          size: safeAreaWidth * 0.05,
+                        ),
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(AppLocalizations.of(context)!.monthString,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              textAlign: TextAlign.center),
+                        ),
+                      ],
+                    ),
+                  ),
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.03)
+        ],
+      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: !isLoading
+          ? StreamBuilder<QuerySnapshot>(
+              stream: _eventDataService.getUserEventsStream(widget.userId),
+              builder: (context, snapshot) {
+                if (snapshot.data == null) {
+                  return LoadingView();
+                } else {
+                  eventsList = documentsToEvents(snapshot.data!.docs);
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: safeAreaWidth * 0.05,
+                        vertical: safeAreaWidth * 0.08),
+                    child: SfCalendar(
+                      cellEndPadding: 0,
+                      view: CalendarView.week,
+                      controller: _controller,
+                      showDatePickerButton: true,
+                      dataSource: _getCalendarDataSource(),
+                      specialRegions: _getTimeRegions(),
+                      timeRegionBuilder: timeRegionBuilder,
+                      firstDayOfWeek: 1,
+                      todayHighlightColor:
+                          Theme.of(context).colorScheme.secondary,
+                      showCurrentTimeIndicator: true,
+                      initialDisplayDate: widget.dateTime,
+                      initialSelectedDate: widget.dateTime,
+                      selectionDecoration: _controller.view == CalendarView.week
+                          ? BoxDecoration(
+                              border: Border.all(
+                                  width: 0.1, color: Colors.transparent))
+                          : BoxDecoration(
+                              border: Border.all(
+                                  width: 0.5,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(10.0),
+                              ),
+                            ),
+                      headerHeight: 0,
+                      headerStyle: CalendarHeaderStyle(
+                        textAlign: TextAlign.center,
+                        backgroundColor: Colors.transparent,
+                        textStyle: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(color: Colors.transparent),
+                      ),
+                      viewHeaderHeight: 50,
+                      viewHeaderStyle: ViewHeaderStyle(
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        dateTextStyle: Theme.of(context).textTheme.bodyMedium,
+                        dayTextStyle: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontSize: 10),
+                      ),
+                      cellBorderColor: _controller.view == CalendarView.month
+                          ? Colors.transparent
+                          : AppColors.grey,
+                      timeSlotViewSettings: TimeSlotViewSettings(
+                        timelineAppointmentHeight: -1,
+                        timeIntervalHeight: -1,
+                        timeIntervalWidth: 55,
+                        startHour: _startHour - 1,
+                        endHour: _endHour + 1,
+                        timeFormat: 'HH',
+                        dayFormat: 'E',
+                        dateFormat: 'd',
+                        timeRulerSize: 25,
+                        nonWorkingDays: nonWorkDays,
+                        minimumAppointmentDuration: const Duration(minutes: 30),
+                        timeTextStyle: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      monthViewSettings: MonthViewSettings(
+                        appointmentDisplayCount: 5,
+                        numberOfWeeksInView: 6,
+                        showTrailingAndLeadingDates: false,
+                        appointmentDisplayMode:
+                            MonthAppointmentDisplayMode.indicator,
+                        showAgenda: _controller.selectedDate != null,
+                        agendaViewHeight: safeAreaHeight * 0.4,
+                        agendaItemHeight: safeAreaHeight * 0.08,
+                        agendaStyle: AgendaStyle(
+                          appointmentTextStyle:
+                              Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        monthCellStyle: MonthCellStyle(
+                          textStyle: Theme.of(context).textTheme.bodyLarge,
+                          trailingDatesTextStyle:
+                              Theme.of(context).textTheme.bodySmall,
+                          leadingDatesTextStyle:
+                              Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                      onViewChanged: (ViewChangedDetails viewChangedDetails) {
+                        Future.delayed(Duration.zero, () async {
+                          setState(() {
+                            middleMonthDate = viewChangedDetails.visibleDates[
+                                viewChangedDetails.visibleDates.length - 1];
+                            displayDateTimeStart =
+                                viewChangedDetails.visibleDates[0];
+                            displayDateTimeEnd =
+                                viewChangedDetails.visibleDates[
+                                    viewChangedDetails.visibleDates.length - 1];
+                          });
+                        });
+                      },
+                      onTap: onTapCalendar,
+                      appointmentTextStyle:
+                          Theme.of(context).textTheme.bodyMedium!,
+                      appointmentBuilder: (BuildContext context,
+                          CalendarAppointmentDetails details) {
+                        final Appointment appointment =
+                            details.appointments.first;
+                        final DateTime today = DateTime.now();
+                        bool isCompleted = appointment.endTime.isBefore(today);
+                        final Event event = getEvent(appointment.id.toString());
+                        if (_controller.view == CalendarView.month) {
+                          if (isCompleted) {
+                            return GestureDetector(
+                              onTap: () {
+                                navigateToEventScreen(
+                                    appointment.id.toString());
+                              },
+                              child: Center(
+                                child: Material(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5.0),
+                                    ),
+                                  ),
+                                  elevation: 2,
+                                  child: Container(
+                                    height: safeAreaHeight * 0.08,
+                                    width: details.bounds.width,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: details.bounds.width * 0.05,
+                                        vertical: safeAreaHeight * 0.01),
+                                    decoration: BoxDecoration(
+                                      color: event.isPrivate!
+                                          ? AppColors.black.withOpacity(0.2)
+                                          : appointment.color.withOpacity(0.2),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              event.isPrivate!
+                                                  ? Icons.person
+                                                  : Icons.groups,
+                                              color: AppColors.white,
+                                              size: details.bounds.width * 0.05,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  details.bounds.width * 0.02,
+                                            ),
+                                            Text(
+                                              event.title!,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge
+                                                  ?.copyWith(
+                                                      color: AppColors.white
+                                                          .withOpacity(1),
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime)} - ${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime)}",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                      color: AppColors.white
+                                                          .withOpacity(0.5)),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                            Text(
+                                              "(${appointment.subject})",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                      color: AppColors.white
+                                                          .withOpacity(0.5)),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return GestureDetector(
+                              onTap: () {
+                                navigateToEventScreen(
+                                    appointment.id.toString());
+                              },
+                              child: Center(
+                                child: Material(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5.0),
+                                    ),
+                                  ),
+                                  elevation: 2,
+                                  child: Container(
+                                    height: safeAreaHeight * 0.08,
+                                    width: details.bounds.width,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: details.bounds.width * 0.05,
+                                        vertical: safeAreaHeight * 0.01),
+                                    decoration: BoxDecoration(
+                                      color: event.isPrivate!
+                                          ? AppColors.black
+                                          : appointment.color,
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              event.isPrivate!
+                                                  ? Icons.person
+                                                  : Icons.groups,
+                                              color: AppColors.white,
+                                              size: details.bounds.width * 0.05,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  details.bounds.width * 0.02,
+                                            ),
+                                            Text(
+                                              event.title!,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge
+                                                  ?.copyWith(
+                                                      color: AppColors.white
+                                                          .withOpacity(1),
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime)} - ${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime)}",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                      color: AppColors.white),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                            Text(
+                                              "(${appointment.subject})",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                      color: AppColors.white),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        } else {
+                          if (isCompleted) {
+                            return GestureDetector(
+                              onTap: () {
+                                navigateToEventScreen(
+                                    appointment.id.toString());
+                              },
+                              child: Center(
+                                child: Material(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5.0),
+                                    ),
+                                  ),
+                                  elevation: 2,
+                                  child: Container(
+                                    width: details.bounds.width,
+                                    height: details.bounds.height,
+                                    padding: EdgeInsets.all(
+                                        details.bounds.width * 0.1),
+                                    decoration: BoxDecoration(
+                                      color: event.isPrivate!
+                                          ? AppColors.black.withOpacity(0.2)
+                                          : appointment.color.withOpacity(0.2),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        AutoSizeText(
+                                          event.title!,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge
+                                              ?.copyWith(
+                                                  color: AppColors.white),
+                                          textAlign: TextAlign.center,
+                                          wrapWords: false,
+                                          minFontSize: 1,
+                                          maxFontSize: 16,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              event.isPrivate!
+                                                  ? Icons.person
+                                                  : Icons.groups,
+                                              color: AppColors.white,
+                                              size: details.bounds.width * 0.2,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return GestureDetector(
+                              onTap: () {
+                                navigateToEventScreen(
+                                    appointment.id.toString());
+                              },
+                              child: Center(
+                                child: Material(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5.0),
+                                    ),
+                                  ),
+                                  elevation: 2,
+                                  child: Container(
+                                    width: details.bounds.width,
+                                    height: details.bounds.height,
+                                    padding: EdgeInsets.all(
+                                        details.bounds.width * 0.1),
+                                    decoration: BoxDecoration(
+                                      color: event.isPrivate!
+                                          ? AppColors.black
+                                          : appointment.color,
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        AutoSizeText(
+                                          event.title!,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge
+                                              ?.copyWith(
+                                                  color: AppColors.white),
+                                          textAlign: TextAlign.center,
+                                          wrapWords: false,
+                                          minFontSize: 1,
+                                          maxFontSize: 16,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              event.isPrivate!
+                                                  ? Icons.person
+                                                  : Icons.groups,
+                                              color: AppColors.white,
+                                              size: details.bounds.width * 0.2,
+                                            ),
+                                            SizedBox(
+                                              width: details.bounds.width * 0.4,
+                                              child: AutoSizeText(
+                                                appointment.subject,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge
+                                                    ?.copyWith(
+                                                        color: AppColors.white),
+                                                textAlign: TextAlign.center,
+                                                wrapWords: false,
+                                                minFontSize: 1,
+                                                maxFontSize: 8,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                  );
+                }
+              })
+          : LoadingView(), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  List<TimeRegion> _getTimeRegions() {
+    final List<TimeRegion> regions = <TimeRegion>[];
+    if (_brand.id != null) {
+      // Breaks
+      for (var i = 2; i < _brand.workShift.length; i += 2) {
+        var start = _brand.workShift[i];
+        var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
+        var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
+        var end = _brand.workShift[i + 1];
+        var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
+        var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
+        DateTime inActiveHoursStart = DateTime(dateJoined.year,
+            dateJoined.month, dateJoined.day - 7, startHour, startMin, 0);
+        DateTime inActiveHoursEnd = DateTime(dateJoined.year, dateJoined.month,
+            dateJoined.day - 7, endHour, endMin, 0);
+        regions.add(TimeRegion(
+          enablePointerInteraction: false,
+          startTime: inActiveHoursStart,
+          endTime: inActiveHoursEnd,
+          color: Colors.grey.withOpacity(0.3),
+          recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+        ));
+      }
+      // Hora Inactiva Matí
+      var startHourWS =
+          int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+      var startMinWS =
+          int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[1]);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: DateTime(dateJoined.year, dateJoined.month,
+            dateJoined.day - 7, startHourWS - 1, 0, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
+            startHourWS, startMinWS, 0),
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+      // Hora Inactiva Nit
+      var endHourWS =
+          int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+      var endMinWS =
+          int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[1]);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: DateTime(dateJoined.year, dateJoined.month,
+            dateJoined.day - 7, endHourWS, endMinWS, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
+            endHourWS + 1, 0, 0),
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+    } else {
+      // Hora Inactiva Matí
+      var startHourWS = int.parse(_startHour.toStringAsFixed(2).split(".")[0]);
+      var startMinWS = int.parse(_startHour.toStringAsFixed(2).split(".")[1]);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: DateTime(dateJoined.year, dateJoined.month,
+            dateJoined.day - 7, startHourWS - 1, 0, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
+            startHourWS, startMinWS, 0),
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+      // Hora Inactiva Nit
+      var endHourWS = int.parse(_endHour.toStringAsFixed(2).split(".")[0]);
+      var endMinWS = int.parse(_endHour.toStringAsFixed(2).split(".")[1]);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: DateTime(dateJoined.year, dateJoined.month,
+            dateJoined.day - 7, endHourWS, endMinWS, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
+            endHourWS + 1, 0, 0),
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+    }
+    return regions;
+  }
+
+  Widget timeRegionBuilder(
+      BuildContext context, TimeRegionDetails timeRegionDetails) {
+    return Container(
+      color: const Color(0x40B5B5B5),
+    );
+  }
+
+  AppointmentDataSource _getCalendarDataSource() {
+    List<Appointment> tempAllAppointments = [];
+    for (var i = 0; i < eventsList.length; i++) {
+      var event = eventsList[i];
+      // Date Time
+      var startDate = DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      var hour = event.duration.toString().split(".")[0];
+      var min = event.duration!.toStringAsFixed(2).split(".")[1];
+      var endDate = startDate
+          .add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+      // Subject
+      String subject;
+      Color color = Colors.black;
+      if (event.isPrivate!) {
+        subject = "${event.numClients}";
+        color = Colors.black;
+      } else {
+        subject = "${event.numClients}/${event.maxMembers}";
+        // Colors
+        double numClients = double.parse(event.numClients.toString());
+        double maxMembers = double.parse(event.maxMembers.toString());
+        double bookedCapacity = numClients / maxMembers;
+        if (bookedCapacity <= 0.20) {
+          color = Colors.green;
+        } else if (bookedCapacity > 0.20 && bookedCapacity <= 0.40)
+          color = const Color(0xFFA8C76C);
+        else if (bookedCapacity > 0.40 && bookedCapacity <= 0.60)
+          color = const Color(0xFFECE014);
+        else if (bookedCapacity > 0.60 && bookedCapacity <= 0.80)
+          color = Colors.orangeAccent;
+        else if (bookedCapacity > 0.80 && bookedCapacity < 1)
+          color = Colors.deepOrangeAccent;
+        else if (bookedCapacity >= 1) color = Colors.red;
+      }
+      // Afegir percentatges de members al Event.
+      tempAllAppointments.add(Appointment(
+        id: event.id,
+        startTime: startDate,
+        endTime: endDate,
+        subject: subject,
+        color: color,
+        startTimeZone: '',
+        endTimeZone: '',
+      ));
+    }
+    allAppointments = tempAllAppointments;
+    return AppointmentDataSource(allAppointments);
+  }
+
+  List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
+    List<Event> events = [];
+    for (int i = 0; i < documents.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(documents[i].id, documents[i]));
+    }
+    return events;
+  }
+
+  void navigateToEventScreen(String eventId) {
+    // Navigate to Event Screen
+    Navigator.push(
+        context,
+        CupertinoPageRoute<Null>(
+          builder: (context) => EventPage(
+            eventId: eventId,
+          ),
+        ));
+  }
+
+  void onTapCalendar(CalendarTapDetails details) {
+    if (_controller.view == CalendarView.week) {
+    } else {
+      setState(() {
+        _controller.selectedDate = details.date;
+      });
+    }
+  }
+}
+
+class AppointmentDataSource extends CalendarDataSource {
+  AppointmentDataSource(List<Appointment> source) {
+    appointments = source;
+  }
+}

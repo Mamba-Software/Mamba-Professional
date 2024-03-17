@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/utils/Date/DateTimeUtils.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-typedef DateCallBack = void Function(int pageIndex, DateTime? dateTime, CalendarView? calendarView);
+typedef DateCallBack = void Function(
+    int pageIndex, DateTime? dateTime, CalendarView? calendarView);
 
 class BrandCalendarMonthWidget extends StatefulWidget {
   String brandId;
@@ -17,14 +18,19 @@ class BrandCalendarMonthWidget extends StatefulWidget {
   double width = 0;
   final DateCallBack navigateToPage;
 
-  BrandCalendarMonthWidget({super.key, required this.brandId, required this.height, required this.width, required this.navigateToPage});
+  BrandCalendarMonthWidget(
+      {super.key,
+      required this.brandId,
+      required this.height,
+      required this.width,
+      required this.navigateToPage});
 
   @override
-  _BrandCalendarMonthWidgetState createState() => _BrandCalendarMonthWidgetState();
+  _BrandCalendarMonthWidgetState createState() =>
+      _BrandCalendarMonthWidgetState();
 }
 
 class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
-
   // Boolean Loading
   bool isLoading = true;
   // Acceso a Base de Datos
@@ -39,7 +45,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
 
   List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
     List<Event> events = [];
-    for(int i = 0; i < documents.length; i++) {
+    for (int i = 0; i < documents.length; i++) {
       events.add(Event.fromObjectOnlyCoverData(documents[i].id, documents[i]));
     }
     return events;
@@ -48,10 +54,10 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
   // Build the Calendar Widget
   AppointmentDataSource _getCalendarDataSource() {
     List<Appointment> tempAllAppointments = [];
-    for (var i=0; i < eventsList.length; i++) {
+    for (var i = 0; i < eventsList.length; i++) {
       var event = eventsList[i];
       // Date Time
-      var startDate =  DateTime(
+      var startDate = DateTime(
         int.parse(event.year!),
         int.parse(event.month!),
         int.parse(event.day!),
@@ -60,7 +66,8 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
       );
       var hour = event.duration.toString().split(".")[0];
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
-      var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+      var endDate = startDate
+          .add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
       String subject;
       Color color = Colors.black;
@@ -72,18 +79,18 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
         // Colors
         double numClients = double.parse(event.numClients.toString());
         double maxMembers = double.parse(event.maxMembers.toString());
-        double bookedCapacity = numClients/maxMembers;
-        if(bookedCapacity <= 0.20) {
+        double bookedCapacity = numClients / maxMembers;
+        if (bookedCapacity <= 0.20) {
           color = Colors.green;
-        } else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
+        } else if (bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
           color = const Color(0xFFA8C76C);
-        } else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
+        } else if (bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
           color = const Color(0xFFECE014);
-        } else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
+        } else if (bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
           color = Colors.orangeAccent;
-        } else if(bookedCapacity > 0.80 && bookedCapacity < 1) {
+        } else if (bookedCapacity > 0.80 && bookedCapacity < 1) {
           color = Colors.deepOrangeAccent;
-        } else if(bookedCapacity >= 1) {
+        } else if (bookedCapacity >= 1) {
           color = Colors.red;
         }
       }
@@ -122,17 +129,20 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
           width: widget.width,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.background,
-            borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
-          ),// BoxDecoration
+            borderRadius:
+                const BorderRadius.all(Radius.circular(15.0)), // BorderRadius
+          ), // BoxDecoration
           child: Container(
-            margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
+            margin: const EdgeInsetsDirectional.only(
+                start: 1, end: 1, bottom: 1, top: 1),
             height: widget.height,
             width: widget.width,
-            padding: EdgeInsets.all(widget.width*0.05),
+            padding: EdgeInsets.all(widget.width * 0.05),
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
-            ),// BoxDecoration
+              borderRadius:
+                  const BorderRadius.all(Radius.circular(15.0)), // BorderRadius
+            ), // BoxDecoration
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -140,38 +150,46 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                 FittedBox(
                   fit: BoxFit.fitHeight,
                   child: SizedBox(
-                    height: widget.height*0.10,
+                    height: widget.height * 0.10,
                     width: widget.width,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
                           onPressed: () {
-                            if(brandIsActive) {
+                            if (brandIsActive) {
                               mixpanel!.track('brand_homepage_calendar_title');
-                              widget.navigateToPage(10, DateTime.now(), CalendarView.day);
+                              widget.navigateToPage(
+                                  10, DateTime.now(), CalendarView.day);
                             }
                           },
                           child: Row(
                             children: [
-                              Icon(Icons.calendar_month_outlined, size: widget.width*0.06, color: AppColors.grey,),
-                              SizedBox(width: widget.width*0.02),
-                              Text(
-                                  AppLocalizations.of(context)!.sessions,
-                                  style: Theme.of(context).textTheme.displaySmall?.copyWith(color: AppColors.grey),
-                                  textAlign: TextAlign.center
+                              Icon(
+                                Icons.calendar_month_outlined,
+                                size: widget.width * 0.06,
+                                color: AppColors.grey,
                               ),
+                              SizedBox(width: widget.width * 0.02),
+                              Text(AppLocalizations.of(context)!.sessions,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall
+                                      ?.copyWith(color: AppColors.grey),
+                                  textAlign: TextAlign.center),
                             ],
                           ),
                         ),
                         Row(
                           children: [
                             Text(
-                                DateTimeUtils().formatDateTimeToStringMM(_calendarController.displayDate!, Localizations.localeOf(context).languageCode),
+                                DateTimeUtils().formatDateTimeToStringMM(
+                                    _calendarController.displayDate!,
+                                    Localizations.localeOf(context)
+                                        .languageCode),
                                 style: Theme.of(context).textTheme.bodySmall,
-                                textAlign: TextAlign.center
-                            ),
-                            SizedBox(width: widget.width*0.04),
+                                textAlign: TextAlign.center),
+                            SizedBox(width: widget.width * 0.04),
                           ],
                         ),
                       ],
@@ -181,10 +199,11 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                 FittedBox(
                   fit: BoxFit.fitHeight,
                   child: SizedBox(
-                    height: widget.height*0.85,
+                    height: widget.height * 0.85,
                     width: widget.width,
                     child: StreamBuilder<QuerySnapshot>(
-                        stream: _eventDataService.getBrandEventsStream(widget.brandId),
+                        stream: _eventDataService
+                            .getBrandEventsStream(widget.brandId),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return LoadingView(
@@ -201,51 +220,66 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                               showDatePickerButton: false,
                               showCurrentTimeIndicator: false,
                               showNavigationArrow: true,
-                              todayHighlightColor: Theme.of(context).colorScheme.secondary,
+                              todayHighlightColor:
+                                  Theme.of(context).colorScheme.secondary,
                               viewHeaderStyle: ViewHeaderStyle(
-                                dayTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 10),
+                                dayTextStyle: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(fontSize: 10),
                               ),
                               headerHeight: 0,
                               headerDateFormat: "MMMM yyyy",
                               headerStyle: CalendarHeaderStyle(
                                 textAlign: TextAlign.center,
                                 backgroundColor: Colors.transparent,
-                                textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.transparent),
+                                textStyle: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: Colors.transparent),
                               ),
                               cellBorderColor: Colors.transparent,
                               monthViewSettings: MonthViewSettings(
                                 appointmentDisplayCount: 4,
-                                appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
+                                appointmentDisplayMode:
+                                    MonthAppointmentDisplayMode.indicator,
                                 showAgenda: false,
-                                navigationDirection: MonthNavigationDirection.horizontal,
+                                navigationDirection:
+                                    MonthNavigationDirection.horizontal,
                                 monthCellStyle: MonthCellStyle(
-                                  textStyle: Theme.of(context).textTheme.bodyLarge,
-                                  trailingDatesTextStyle: Theme.of(context).textTheme.bodySmall,
-                                  leadingDatesTextStyle: Theme.of(context).textTheme.bodySmall,
+                                  textStyle:
+                                      Theme.of(context).textTheme.bodyLarge,
+                                  trailingDatesTextStyle:
+                                      Theme.of(context).textTheme.bodySmall,
+                                  leadingDatesTextStyle:
+                                      Theme.of(context).textTheme.bodySmall,
                                 ),
                                 numberOfWeeksInView: 6,
                                 showTrailingAndLeadingDates: true,
                               ),
                               selectionDecoration: BoxDecoration(
-                                  border: Border.all(width: 0.1, color: Colors.transparent)
-                              ),
-                              onViewChanged: (ViewChangedDetails viewChangedDetails) {
+                                  border: Border.all(
+                                      width: 0.1, color: Colors.transparent)),
+                              onViewChanged:
+                                  (ViewChangedDetails viewChangedDetails) {
                                 Future.delayed(Duration.zero, () async {
                                   setState(() {
-                                    middleMonthDate = viewChangedDetails.visibleDates[14];
+                                    middleMonthDate =
+                                        viewChangedDetails.visibleDates[14];
                                   });
                                 });
                               },
                               onTap: (CalendarTapDetails details) {
-                                if(brandIsActive) {
-                                  mixpanel!.track('brand_homepage_calendar_date');
-                                  widget.navigateToPage(10, details.date, CalendarView.month);
+                                if (brandIsActive) {
+                                  mixpanel!
+                                      .track('brand_homepage_calendar_date');
+                                  widget.navigateToPage(
+                                      10, details.date, CalendarView.month);
                                 }
                               },
                             );
                           }
-                        }
-                    ),
+                        }),
                   ),
                 ),
               ],

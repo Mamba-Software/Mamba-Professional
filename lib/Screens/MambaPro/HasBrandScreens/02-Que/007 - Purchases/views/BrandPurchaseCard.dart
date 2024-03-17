@@ -6,13 +6,13 @@ import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/commons/utils/Bonos/BonosUtils.dart';
+import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import '../../../../../../../Data/Models/Purchase.dart';
-import '../../../../../../../Globals/Styles/AppColors/AppColors.dart';
 import '../../../../../../../Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 
 class BrandPurchaseCard extends StatelessWidget {
@@ -233,7 +233,7 @@ class BrandPurchaseCard extends StatelessWidget {
       priceStyle = priceStyle?.copyWith(decoration: TextDecoration.lineThrough);
     } else {
       paymentIcon = Icons.payment_outlined;
-      paymentText = AppLocalizations.of(context)!.cardPaymentMethod;      
+      paymentText = AppLocalizations.of(context)!.cardPaymentMethod;
     }
 
     return Row(

@@ -7,20 +7,20 @@ import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/app/theme/ThemeProvider.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/TopSnackBar/TopSnackBar.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Utils/MediaQuery/MediaQuery.dart';
+import 'package:mamba_castelldefels/commons/utils/MediaQuery/MediaQuery.dart';
 import 'package:provider/provider.dart';
 import '../../../../../Data/LibraryModels/lDegradate.dart';
-import '../../../../../Globals/Utils/Bonos/BonosUtils.dart';
+import '../../../../../commons/utils/Bonos/BonosUtils.dart';
 import '../../../../../Globals/Widgets/Components/Images/RectangularImage.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBonoDialog.dart';
 import '../../03-Com/007-Contenido/SelectBrandImages.dart';
@@ -458,7 +458,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           child: SizedBox(
                             height: 50,
                             child: FloatingActionButton.extended(
-                  shape: const StadiumBorder(),
+                              shape: const StadiumBorder(),
                               heroTag: "4",
                               onPressed: () {
                                 if (_selectedIndex == 1) {
@@ -539,7 +539,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     child: SizedBox(
                       height: 50,
                       child: FloatingActionButton.extended(
-                  shape: const StadiumBorder(),
+                        shape: const StadiumBorder(),
                         heroTag: "5",
                         onPressed: () {
                           if (_selectedIndex == 0) {
