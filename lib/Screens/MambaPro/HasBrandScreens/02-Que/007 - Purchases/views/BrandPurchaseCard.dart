@@ -10,10 +10,10 @@ import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import '../../../../../../../Data/Models/Purchase.dart';
-import '../../../../../../../Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 
 class BrandPurchaseCard extends StatelessWidget {
   final Usuario user;

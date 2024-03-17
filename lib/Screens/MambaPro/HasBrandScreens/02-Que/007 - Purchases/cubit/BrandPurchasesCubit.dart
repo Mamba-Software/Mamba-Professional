@@ -8,11 +8,11 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/models/PurchaseHistoryModel.dart';
 import '../../../../../../../Data/DataService/Brand/BrandDataService.dart';
 import '../../../../../../../Data/Models/Purchase.dart';
-import '../../../../../../../Globals/GlobalVars.dart';
 part 'BrandPurchasesState.dart';
 
 class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {

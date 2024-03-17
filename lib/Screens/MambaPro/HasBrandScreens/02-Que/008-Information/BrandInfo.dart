@@ -19,6 +19,7 @@ import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Badges/BetaBadge.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/CupertinoSelect/SelectHoursDialog.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/CupertinoSelect/SelectOtherDialog.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
@@ -32,14 +33,8 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_repository.dart';
-import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
 import 'package:mamba_castelldefels/Stripe/views/StripeOnboarding.dart';
-import 'package:mamba_castelldefels/Stripe/views/StripeWebView.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-
-import '../../../../../Globals/Widgets/Components/CupertinoSelect/SelectOtherDialog.dart';
 
 // Tus Datos Widget.
 class BrandInfo extends StatefulWidget {
@@ -59,8 +54,7 @@ class BrandInfo extends StatefulWidget {
 }
 
 class _BrandInfoState extends State<BrandInfo>
-    with SingleTickerProviderStateMixin {
-  DateFormat formatter = DateFormat('dd/MM/yy');
+    with SingleTickerProviderStateMixin {  DateFormat formatter = DateFormat('dd/MM/yy');
   // DataBase Access
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();

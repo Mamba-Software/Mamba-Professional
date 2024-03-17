@@ -11,8 +11,10 @@ import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/theme/ThemeProvider.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
+import 'package:mamba_castelldefels/commons/widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBonoDialog.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +23,6 @@ import 'package:mamba_castelldefels/commons/utils/MediaQuery/MediaQuery.dart';
 import 'package:provider/provider.dart';
 import '../../../../../Data/LibraryModels/lDegradate.dart';
 import '../../../../../commons/utils/Bonos/BonosUtils.dart';
-import '../../../../../Globals/Widgets/Components/Images/RectangularImage.dart';
-import '../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBonoDialog.dart';
 import '../../03-Com/007-Contenido/SelectBrandImages.dart';
 
 class AddEditBono extends StatefulWidget {

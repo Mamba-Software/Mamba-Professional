@@ -6,10 +6,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
-
-import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
-import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 class EndDateSubscription extends StatefulWidget {
 

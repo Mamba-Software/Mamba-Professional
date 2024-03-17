@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Calendars/UserCalendarWidget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
