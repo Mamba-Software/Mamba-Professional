@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/data/LibraryModels/lColor.dart';
+import 'package:mamba_castelldefels/data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/data/Models/Bono.dart';
 import 'package:mamba_castelldefels/data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/data/Models/Brand.dart';
@@ -12,9 +14,7 @@ import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
-import '../../../../Data/LibraryModels/lColor.dart';
-import '../../../../Data/LibraryModels/lDegradate.dart';
-import '../../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 
 class BonoCard extends StatefulWidget {
   // Variables per omplir Bono i Size

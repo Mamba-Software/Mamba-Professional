@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/data/LibraryModels/lColor.dart';
+import 'package:mamba_castelldefels/data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/data/Models/Bono.dart';
 import 'package:mamba_castelldefels/data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/data/Models/Brand.dart';
@@ -15,8 +17,6 @@ import 'package:mamba_castelldefels/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
-import '../../../../Data/LibraryModels/lColor.dart';
-import '../../../../Data/LibraryModels/lDegradate.dart';
 
 class ClientBonoCard extends StatefulWidget {
   // Variables per omplir Bono i Size
