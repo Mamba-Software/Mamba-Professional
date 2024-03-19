@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba_castelldefels/events/crud_events/utils/enumAddEditEvent.dart';
 
 TextEditingController membersController = TextEditingController();
 

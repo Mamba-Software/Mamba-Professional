@@ -5,28 +5,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/Data/Models/Promotion.dart';
-import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
+import 'package:mamba_castelldefels/data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba_castelldefels/data/Models/Bono.dart';
+import 'package:mamba_castelldefels/data/Models/Condition.dart';
+import 'package:mamba_castelldefels/data/Models/ImageObject.dart';
+import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/data/Models/Promotion.dart';
+import 'package:mamba_castelldefels/data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/Notifications/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
-import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/notifications/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Deprecated/Conversation.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/data/Models/Deprecated/GroupOfQuestions.dart';
+import 'package:mamba_castelldefels/data/Models/Location.dart';
+import 'package:mamba_castelldefels/data/Models/Notifications/NotificationEvent.dart';
+import 'package:mamba_castelldefels/data/Models/Deprecated/Question.dart';
+import 'package:mamba_castelldefels/data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/commons/utils/GeoFlutterFire/GeoFlutterUtils.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:uuid/uuid.dart';
-
-import '../Models/Bono.dart';
-import '../Models/Condition.dart';
 
 // Firebase Service Class. All calls to Firebase are in this class.
 class FirebaseDatabaseService {

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 
 class DeleteFromBrandConfirmationDialog extends StatefulWidget {
   final String text;

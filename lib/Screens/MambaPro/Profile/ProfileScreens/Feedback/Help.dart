@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/FeedBack/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
+import 'package:mamba_castelldefels/data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'ReportBug.dart';
 
@@ -48,8 +48,8 @@ class _FeedBackState extends State<FeedBack> {
     mixpanel!.track('user_help_email');
     String url = 'mailto:$contactEmail';
     if (await canLaunchUrlString(url)) {
-      await launchUrlString(url);      
-    }    
+      await launchUrlString(url);
+    }
   }
 
   Future<void> launchWhatsApp() async {
@@ -88,7 +88,7 @@ class _FeedBackState extends State<FeedBack> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: [              
+            children: [
               ListTile(
                 onTap: () async {
                   mixpanel!.track('user_help_email');
@@ -137,7 +137,7 @@ class _FeedBackState extends State<FeedBack> {
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
-              */              
+              */
               const Divider(color: AppColors.grey, height: 1),
               ListTile(
                 onTap: launchWhatsApp,

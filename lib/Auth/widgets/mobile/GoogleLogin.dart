@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
-import 'package:mamba_castelldefels/Auth/utils/enumAuth.dart';
+import 'package:mamba_castelldefels/auth/cubit/AuthCubit.dart';
+import 'package:mamba_castelldefels/auth/utils/enumAuth.dart';
 import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget googleLogin(BuildContext context, AuthState state) {
-
   return GestureDetector(
     onTap: () {
       context.read<AuthCubit>().generalSignIn(AuthProviderEnum.google, context);
@@ -65,8 +64,7 @@ Widget googleLogin(BuildContext context, AuthState state) {
   );
 }
 
-checkIfProvider(AuthState state, AuthProviderEnum provider)
-{
-  if(state is AuthLoading && state.provider == provider) return false;
+checkIfProvider(AuthState state, AuthProviderEnum provider) {
+  if (state is AuthLoading && state.provider == provider) return false;
   return true;
 }

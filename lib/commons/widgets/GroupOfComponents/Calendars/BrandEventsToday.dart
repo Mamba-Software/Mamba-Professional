@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
+import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 

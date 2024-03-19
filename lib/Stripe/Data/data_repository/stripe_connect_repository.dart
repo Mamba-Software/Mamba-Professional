@@ -1,14 +1,13 @@
 import 'dart:convert';
 
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_data_provider.dart';
 import 'package:http/http.dart' as http;
 
 class StripeConnectRepository {
   Future<(String?, String?)> createAccount(Brand brandModel) async {
     try {
-      String parameters =
-          "userId=${brandModel.id}&userName=${brandModel.name}";
+      String parameters = "userId=${brandModel.id}&userName=${brandModel.name}";
       if (brandModel.stripeAccountId != null &&
           brandModel.stripeAccountId != '') {
         parameters += '&stripeAccountId=${brandModel.stripeAccountId}';

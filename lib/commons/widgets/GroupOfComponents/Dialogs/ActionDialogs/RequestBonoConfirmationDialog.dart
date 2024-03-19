@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
+import 'package:mamba_castelldefels/data/Models/Bono.dart';
+import 'package:mamba_castelldefels/data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-
-import '../../../../../Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 
 class RequestBonoConfirmationDialog extends StatefulWidget {
   Bono bono;

@@ -1,13 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
+import 'package:mamba_castelldefels/data/Models/ImageObject.dart';
 
 class FullscreenSliderDemo extends StatefulWidget {
-
   int initialImage;
   List<ImageObject>? images;
 
-  FullscreenSliderDemo({super.key, required this.images, required this.initialImage});
+  FullscreenSliderDemo(
+      {super.key, required this.images, required this.initialImage});
 
   @override
   _FullscreenSliderDemoState createState() => _FullscreenSliderDemoState();
@@ -22,7 +22,7 @@ class _FullscreenSliderDemoState extends State<FullscreenSliderDemo> {
         children: [
           Center(
             child: SizedBox(
-              height: MediaQuery.of(context).size.height*0.7,
+              height: MediaQuery.of(context).size.height * 0.7,
               child: Builder(
                 builder: (context) {
                   final double height = MediaQuery.of(context).size.height;
@@ -36,10 +36,9 @@ class _FullscreenSliderDemoState extends State<FullscreenSliderDemo> {
                       enlargeCenterPage: false,
                       // autoPlay: false,
                     ),
-                    items: widget.images?.map((item) =>
-                        Container(
-                          child: Stack(
-                              children: [
+                    items: widget.images
+                        ?.map((item) => Container(
+                              child: Stack(children: [
                                 AnimatedPositioned(
                                   duration: const Duration(milliseconds: 333),
                                   curve: Curves.fastOutSlowIn,
@@ -58,10 +57,9 @@ class _FullscreenSliderDemoState extends State<FullscreenSliderDemo> {
                                     ),
                                   ),
                                 ),
-                              ]
-                          ),
-                        )
-                    ).toList(),
+                              ]),
+                            ))
+                        .toList(),
                   );
                 },
               ),
@@ -95,7 +93,7 @@ class _FullscreenSliderDemoState extends State<FullscreenSliderDemo> {
         ],
       ),
     );
-    
+
     return Scaffold(
       appBar: null,
       body: Builder(
@@ -111,17 +109,15 @@ class _FullscreenSliderDemoState extends State<FullscreenSliderDemo> {
               // autoPlay: false,
             ),
             items: widget.images
-              ?.map((item) => Container(
-                child: Center(
-                  child: Image.network(
-                    item.url!,
-                    fit: BoxFit.cover,
-                    height: height,
-                  )
-                ),
-              )
-            )
-            .toList(),
+                ?.map((item) => Container(
+                      child: Center(
+                          child: Image.network(
+                        item.url!,
+                        fit: BoxFit.cover,
+                        height: height,
+                      )),
+                    ))
+                .toList(),
           );
         },
       ),

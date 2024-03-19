@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/AdminService/ScriptsService.dart';
+import 'package:mamba_castelldefels/data/AdminService/ScriptsService.dart';
 import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/app/style/Styles.dart';
 import 'package:mamba_castelldefels/admin/AdminTool.dart';

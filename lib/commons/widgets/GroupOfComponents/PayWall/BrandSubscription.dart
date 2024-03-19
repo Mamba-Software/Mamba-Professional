@@ -9,10 +9,10 @@ import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/profileImage.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 // Tus Datos Widget.

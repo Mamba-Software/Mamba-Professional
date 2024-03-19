@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import '../FirebaseDatabaseService.dart';
+import 'package:mamba_castelldefels/data/DataService/FirebaseDatabaseService.dart';
+import 'package:mamba_castelldefels/data/Models/Bono.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/data/Models/Location.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class EventDataService {
@@ -83,8 +83,7 @@ class EventDataService {
       _firebase.addEventBonosObject(eventId, bonos);
   Future<int> addEventRecurrent(Event event, List<String> bonos,
           List<String> trainers, ReceivedNotification receivedNotification) =>
-      _firebase.addEventRecurrent(
-          event, bonos, trainers, receivedNotification);
+      _firebase.addEventRecurrent(event, bonos, trainers, receivedNotification);
 
   // Update Data
   Future<void> updateEvent(Event event) => _firebase.updateEvent(event);

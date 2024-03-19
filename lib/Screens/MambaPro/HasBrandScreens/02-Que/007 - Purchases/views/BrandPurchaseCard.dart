@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Bono.dart';
+import 'package:mamba_castelldefels/data/Models/BonoRequest.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
@@ -13,7 +14,6 @@ import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularIm
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import '../../../../../../../Data/Models/Purchase.dart';
 
 class BrandPurchaseCard extends StatelessWidget {
   final Usuario user;

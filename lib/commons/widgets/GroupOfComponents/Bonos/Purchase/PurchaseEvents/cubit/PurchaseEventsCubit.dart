@@ -1,8 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba_castelldefels/data/Models/Purchase.dart';
 import 'package:equatable/equatable.dart';
-
 
 part 'PurchaseEventsState.dart';
 
@@ -15,11 +14,12 @@ class PurchaseEventsCubit extends Cubit<PurchaseEventsState> {
   }
 
   void loadList(Purchase purchase) async {
-    if(purchase.id != null) {
+    if (purchase.id != null) {
       print("purchase.events");
       print(purchase.events.length);
       emit(const PurchaseEventsLoading());
-      Purchase purchaseNew = await _purchaseDataService.getPurchaseEvents(purchase);
+      Purchase purchaseNew =
+          await _purchaseDataService.getPurchaseEvents(purchase);
       purchaseNew.setInitialEventsData = purchaseNew.events;
       await Future.delayed(const Duration(milliseconds: 500));
       emit(PurchaseEventsLoaded(purchaseNew));
@@ -27,13 +27,10 @@ class PurchaseEventsCubit extends Cubit<PurchaseEventsState> {
   }
 
   void updateEvents(Purchase purchase) async {
-    if(purchase.id != null) {
+    if (purchase.id != null) {
       emit(const PurchaseEventsLoading());
       print(purchase.events.length);
       emit(PurchaseEventsLoaded(purchase));
     }
   }
-
-
-
 }

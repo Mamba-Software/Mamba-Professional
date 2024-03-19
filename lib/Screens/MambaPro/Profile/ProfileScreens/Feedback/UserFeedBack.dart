@@ -3,15 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/FeedBack/FeedbackDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:survey_kit/survey_kit.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/app/style/Styles.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
+import 'package:mamba_castelldefels/data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 

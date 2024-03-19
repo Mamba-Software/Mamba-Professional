@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/addEvents.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/notificationsEvents.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/data/Models/Bono.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/events/crud_events/cubit/functions/addEvents.dart';
+import 'package:mamba_castelldefels/events/crud_events/cubit/functions/notificationsEvents.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
 
 class RecurrentEvents {
   final _brandDataService = BrandDataService();

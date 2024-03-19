@@ -1,11 +1,10 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateEvent/DateEventWidget.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateEvent/TimeEventWidget.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DurationEvent/DurationEventSelector.dart';
+import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/DateTime/DateEvent/DateEventWidget.dart';
+import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/DateTime/DateEvent/TimeEventWidget.dart';
+import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/DateTime/DurationEvent/DurationEventSelector.dart';
 
 class DateEventSelector extends StatelessWidget {
   final Locale locale;

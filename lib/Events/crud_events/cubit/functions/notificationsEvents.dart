@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Notifications/NotificationService/LocalNotificationService.dart';
+import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 
 class NotificationsEvent {

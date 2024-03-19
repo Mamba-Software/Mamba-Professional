@@ -6,15 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/data/Models/Bono.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Stats/ClientsStats/AgeRange.dart';
@@ -27,11 +26,11 @@ import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Stats/Sess
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Stats/SessionsStats/SessionsMade.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Stats/SessionsStats/TimeOffer.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
-import '../../../../../Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/profileImage.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Stats extends StatefulWidget {

@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/auth/cubit/AuthCubit.dart';
+import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 part 'UnreadNotChatsState.dart';
 
 class UnreadNotChatsCubit extends Cubit<List<int>> {
-
   final _userDataService = UserDataService();
   int unreadNot = 0;
   int unreadChat = 0;
@@ -21,29 +20,32 @@ class UnreadNotChatsCubit extends Cubit<List<int>> {
     Stream<List<int>> getCombinedUnreadStreams(String brandId) {
       return _userDataService.getCombinedUnreadStreams(currentUser.id!);
     }
+
     try {
       cubitAuth.stream.distinct().listen((state) {
         // Handle the state change
-        if (!isExecuted && state is AuthUserBrand || state is AuthUserNoBrand || state is AuthNewUser) {
+        if (!isExecuted && state is AuthUserBrand ||
+            state is AuthUserNoBrand ||
+            state is AuthNewUser) {
           isExecuted = true;
-          _combinedStreamSubscription = getCombinedUnreadStreams(currentUser.id!).listen((querySnapshot) async {
+          _combinedStreamSubscription =
+              getCombinedUnreadStreams(currentUser.id!)
+                  .listen((querySnapshot) async {
             unreadNot = querySnapshot[0];
             unreadChat = querySnapshot[1];
 
-            unreadList = [unreadNot, unreadChat]; // creating a new list instance
+            unreadList = [
+              unreadNot,
+              unreadChat
+            ]; // creating a new list instance
             emit(unreadList);
-
           });
-
-        }
-        else if(isExecuted) {
+        } else if (isExecuted) {
           _combinedStreamSubscription.cancel();
           isExecuted = false;
         }
       });
-    }
-    catch(e)
-    {
+    } catch (e) {
       emit(unreadList);
     }
   }

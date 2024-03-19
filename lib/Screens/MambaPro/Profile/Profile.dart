@@ -7,9 +7,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/utils/Date/DateTimeUtils.dart';
@@ -19,9 +19,9 @@ import 'package:mamba_castelldefels/commons/widgets/Components/Text/TitleHeadlin
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Stats/SessionsMade.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsYourData.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/Profile/ProfileScreens/Settings/SettingsYourData.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -67,7 +67,11 @@ class _ProfileState extends State<Profile> {
   initProfileHome() async {
     getUser();
     await getUserEventsFinished();
-    buildProfileCarousel = [buildShareAppContainer(), buildAnswerFeedbackContainer(), buildContactUsContainer()];
+    buildProfileCarousel = [
+      buildShareAppContainer(),
+      buildAnswerFeedbackContainer(),
+      buildContactUsContainer()
+    ];
     if (mounted) {
       Future.delayed(const Duration(milliseconds: 500), () {
         setState(() {
@@ -79,7 +83,8 @@ class _ProfileState extends State<Profile> {
 
   // Gets the user info from firebase.
   void getUser() async {
-    currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
+    currentUser.setBasicData =
+        await _userDataService.getUserDetails(currentUser.id!);
     dateJoined = DateFormat('dd-MM-yyyy').parse(currentUser.dateJoined!);
   }
 
@@ -88,9 +93,8 @@ class _ProfileState extends State<Profile> {
     List res = await _eventDataService.getUserEventsStats(currentUser.id!);
     totalEvents = res[0];
     totalTime = res[1];
-    averageTime = res[2]*60;
+    averageTime = res[2] * 60;
   }
-
 
   // Navigate to Feedback Screen
   void navigateToFeedbackScreen() {
@@ -99,8 +103,7 @@ class _ProfileState extends State<Profile> {
         PageTransition(
           type: PageTransitionType.bottomToTop,
           child: const FeedBack(),
-        )
-    ).whenComplete(() {
+        )).whenComplete(() {
       setState(() {
         isLoading = true;
         initProfileHome();
@@ -114,8 +117,7 @@ class _ProfileState extends State<Profile> {
         context,
         CupertinoPageRoute<double?>(
           builder: (context) => const Settings(),
-        )
-    ).whenComplete(() {
+        )).whenComplete(() {
       setState(() {
         initProfileHome();
       });
@@ -128,8 +130,7 @@ class _ProfileState extends State<Profile> {
         context,
         CupertinoPageRoute<String>(
           builder: (context) => const SettingsYourData(),
-        )
-    ).whenComplete(() {
+        )).whenComplete(() {
       setState(() {
         initProfileHome();
       });
@@ -140,28 +141,27 @@ class _ProfileState extends State<Profile> {
   void navigateToFullScreenImage() {
     mixpanel!.timeEvent('user_profile_picture_click');
     Navigator.push(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => FullScreenPage(
-          dark: false,
-          child:  Image.network(
-            currentUser.imageUrl!,
-            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.secondary,
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                      loadingProgress.expectedTotalBytes!
-                      : null,
-                ),
-              );
-            },
-          ),
-        )
-      )
-    );
+        context,
+        CupertinoPageRoute<void>(
+            builder: (context) => FullScreenPage(
+                  dark: false,
+                  child: Image.network(
+                    currentUser.imageUrl!,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.secondary,
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      );
+                    },
+                  ),
+                )));
     mixpanel!.track('user_profile_picture_click');
   }
 
@@ -174,7 +174,7 @@ class _ProfileState extends State<Profile> {
           child: Material(
             child: Container(
               color: AppColors.lightGrey,
-              height: MediaQuery.of(context).size.height*0.13,
+              height: MediaQuery.of(context).size.height * 0.13,
             ),
           ),
         ),
@@ -183,7 +183,7 @@ class _ProfileState extends State<Profile> {
           child: Material(
             child: Container(
               color: AppColors.black.withOpacity(0.5),
-              height: MediaQuery.of(context).size.height*0.04,
+              height: MediaQuery.of(context).size.height * 0.04,
             ),
           ),
         ),
@@ -191,21 +191,21 @@ class _ProfileState extends State<Profile> {
           clipper: CurveClipper(),
           child: Container(
             color: AppColors.black.withOpacity(0.4),
-            height: MediaQuery.of(context).size.height*0.07,
+            height: MediaQuery.of(context).size.height * 0.07,
           ),
         ),
         ClipPath(
           clipper: CurveClipper(),
           child: Container(
             color: AppColors.black.withOpacity(0.5),
-            height: MediaQuery.of(context).size.height*0.10,
+            height: MediaQuery.of(context).size.height * 0.10,
           ),
         ),
         ClipPath(
           clipper: CurveClipper(),
           child: Container(
             color: AppColors.black.withOpacity(0.7),
-            height: MediaQuery.of(context).size.height*0.13+0.2,
+            height: MediaQuery.of(context).size.height * 0.13 + 0.2,
           ),
         ),
       ],
@@ -214,346 +214,367 @@ class _ProfileState extends State<Profile> {
 
   // Build the Widget of the User Name
   Widget buildUserTitle() {
-    return !isLoading ? Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-            currentUser.name!,
-            style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 25),
-            textAlign: TextAlign.center
-        ),
-        const SizedBox(height: 6),
-        Text(
-            AppLocalizations.of(context)!.joinedIn(DateTimeUtils().formatDateTimeToStringMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)),
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center
-        )
-      ],
-    ) : Shimmer.fromColors(
-        baseColor: AppColors.grey.withOpacity(0.8),
-        highlightColor: AppColors.grey.withOpacity(0.5),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height*0.04,
-              width: MediaQuery.of(context).size.width*0.5,
-              decoration: BoxDecoration(
-                  color: AppColors.grey,
-                  borderRadius: BorderRadius.circular(10)
-              ),
-            ),
-            const SizedBox(height: 6),
-            Container(
-              height: MediaQuery.of(context).size.width*0.04,
-              width: MediaQuery.of(context).size.width*0.15,
-              decoration: BoxDecoration(
-                  color: AppColors.lightGrey,
-                  borderRadius: BorderRadius.circular(5)
-              ),
-            ),
-          ],
-        )
-    );
+    return !isLoading
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(currentUser.name!,
+                  style: Theme.of(context)
+                      .textTheme
+                      .displayLarge
+                      ?.copyWith(fontSize: 25),
+                  textAlign: TextAlign.center),
+              const SizedBox(height: 6),
+              Text(
+                  AppLocalizations.of(context)!.joinedIn(DateTimeUtils()
+                      .formatDateTimeToStringMMYYYY(dateJoined,
+                          Localizations.localeOf(context).languageCode)),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center)
+            ],
+          )
+        : Shimmer.fromColors(
+            baseColor: AppColors.grey.withOpacity(0.8),
+            highlightColor: AppColors.grey.withOpacity(0.5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.04,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  decoration: BoxDecoration(
+                      color: AppColors.grey,
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  height: MediaQuery.of(context).size.width * 0.04,
+                  width: MediaQuery.of(context).size.width * 0.15,
+                  decoration: BoxDecoration(
+                      color: AppColors.lightGrey,
+                      borderRadius: BorderRadius.circular(5)),
+                ),
+              ],
+            ));
   }
 
   // Build the Widget of the Image
   Widget buildUserPicture() {
-    return !isLoading ? Center(
-      child: GestureDetector(
-        onTap: navigateToFullScreenImage,
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.13,
-          child: CircularImage(size: MediaQuery.of(context).size.height * 0.13, image: currentUser.imageUrl, color: AppColors.lightGrey, borderWidth: 1,),
-        ),
-      ),
-    ) : Center(
-      child: Shimmer.fromColors(
-        baseColor: AppColors.grey.withOpacity(0.8),
-        highlightColor: AppColors.grey.withOpacity(0.5),
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.13,
-          decoration: const BoxDecoration(
-            color: AppColors.grey,
-            shape: BoxShape.circle,
-          ),
-        ),
-      ),
-    );
+    return !isLoading
+        ? Center(
+            child: GestureDetector(
+              onTap: navigateToFullScreenImage,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.13,
+                child: CircularImage(
+                  size: MediaQuery.of(context).size.height * 0.13,
+                  image: currentUser.imageUrl,
+                  color: AppColors.lightGrey,
+                  borderWidth: 1,
+                ),
+              ),
+            ),
+          )
+        : Center(
+            child: Shimmer.fromColors(
+              baseColor: AppColors.grey.withOpacity(0.8),
+              highlightColor: AppColors.grey.withOpacity(0.5),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.13,
+                decoration: const BoxDecoration(
+                  color: AppColors.grey,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          );
   }
 
   // Build the Widget of the Image
   Widget buildUserStatsEvent() {
-    return !isLoading ? Padding(
-      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            AppLocalizations.of(context)!.stats,
-            style: Theme.of(context).textTheme.displaySmall,
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height*0.01),
-          SizedBox(
-            height: MediaQuery.of(context).size.height*0.065,
-            child: Row(
+    return !isLoading
+        ? Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                    FontAwesomeIcons.hourglassHalf,
-                    size: MediaQuery.of(context).size.width*0.09,
-                    color: Colors.blue
+                Text(
+                  AppLocalizations.of(context)!.stats,
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
-                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 SizedBox(
-                  height: MediaQuery.of(context).size.width*0.15,
-                  width: MediaQuery.of(context).size.width*0.7,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  height: MediaQuery.of(context).size.height * 0.065,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      averageTime < 90 ? Text(
-                        "${averageTime.toStringAsFixed(0)} ${AppLocalizations.of(context)!.minutesString.toLowerCase()}/${AppLocalizations.of(context)!.week.toLowerCase()}",
-                        style: Theme.of(context).textTheme.displaySmall,
-                      ) : Text(
-                        "${(averageTime/60).toStringAsFixed(1)} ${AppLocalizations.of(context)!.hoursString.toLowerCase()}/${AppLocalizations.of(context)!.week.toLowerCase()}",
-                        style: Theme.of(context).textTheme.displaySmall,
+                      Icon(FontAwesomeIcons.hourglassHalf,
+                          size: MediaQuery.of(context).size.width * 0.09,
+                          color: Colors.blue),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            averageTime < 90
+                                ? Text(
+                                    "${averageTime.toStringAsFixed(0)} ${AppLocalizations.of(context)!.minutesString.toLowerCase()}/${AppLocalizations.of(context)!.week.toLowerCase()}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall,
+                                  )
+                                : Text(
+                                    "${(averageTime / 60).toStringAsFixed(1)} ${AppLocalizations.of(context)!.hoursString.toLowerCase()}/${AppLocalizations.of(context)!.week.toLowerCase()}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall,
+                                  ),
+                            const SizedBox(height: 4),
+                            Text(
+                              currentUser.isTrainer!
+                                  ? AppLocalizations.of(context)!
+                                      .averageTimeWorked
+                                  : AppLocalizations.of(context)!
+                                      .averageTimeTrained,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        currentUser.isTrainer! ? AppLocalizations.of(context)!.averageTimeWorked : AppLocalizations.of(context)!.averageTimeTrained,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.065,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.timer_outlined,
+                          size: MediaQuery.of(context).size.width * 0.09,
+                          color: AppColors.red),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${totalTime.toStringAsFixed(0)} ${AppLocalizations.of(context)!.hoursString.toLowerCase()}",
+                              style: Theme.of(context).textTheme.displaySmall,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              currentUser.isTrainer!
+                                  ? AppLocalizations.of(context)!
+                                      .totalTimeWorked
+                                  : AppLocalizations.of(context)!
+                                      .totalTimeTrained,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.065,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(FontAwesomeIcons.squareCheck,
+                          size: MediaQuery.of(context).size.width * 0.09,
+                          color: Colors.green),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${totalEvents.length} ${AppLocalizations.of(context)!.sessions.toLowerCase()}",
+                              style: Theme.of(context).textTheme.displaySmall,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              AppLocalizations.of(context)!.sesionsCompleted,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height*0.065,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                    Icons.timer_outlined,
-                    size: MediaQuery.of(context).size.width*0.09,
-                    color: AppColors.red
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                SizedBox(
-                  height: MediaQuery.of(context).size.width*0.15,
-                  width: MediaQuery.of(context).size.width*0.7,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${totalTime.toStringAsFixed(0)} ${AppLocalizations.of(context)!.hoursString.toLowerCase()}",
-                        style: Theme.of(context).textTheme.displaySmall,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        currentUser.isTrainer! ? AppLocalizations.of(context)!.totalTimeWorked : AppLocalizations.of(context)!.totalTimeTrained,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
+          )
+        : Shimmer.fromColors(
+            baseColor: AppColors.grey.withOpacity(0.8),
+            highlightColor: AppColors.grey.withOpacity(0.5),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.stats,
+                    style: Theme.of(context).textTheme.displaySmall,
                   ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height*0.065,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                    FontAwesomeIcons.squareCheck,
-                    size: MediaQuery.of(context).size.width*0.09,
-                    color: Colors.green
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                SizedBox(
-                  height: MediaQuery.of(context).size.width*0.15,
-                  width: MediaQuery.of(context).size.width*0.7,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${totalEvents.length} ${AppLocalizations.of(context)!.sessions.toLowerCase()}",
-                        style: Theme.of(context).textTheme.displaySmall,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        AppLocalizations.of(context)!.sesionsCompleted,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.065,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(FontAwesomeIcons.hourglassHalf,
+                            size: MediaQuery.of(context).size.width * 0.09,
+                            color: Colors.blue),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.02),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.15,
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.width * 0.04,
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                decoration: BoxDecoration(
+                                    color: AppColors.lightGrey,
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .averageTimeTrained,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ) : Shimmer.fromColors(
-        baseColor: AppColors.grey.withOpacity(0.8),
-        highlightColor: AppColors.grey.withOpacity(0.5),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.stats,
-                style: Theme.of(context).textTheme.displaySmall,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.065,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.timer_outlined,
+                            size: MediaQuery.of(context).size.width * 0.09,
+                            color: AppColors.red),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.02),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.15,
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.width * 0.04,
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                decoration: BoxDecoration(
+                                    color: AppColors.lightGrey,
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                AppLocalizations.of(context)!.totalTimeTrained,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.065,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(FontAwesomeIcons.squareCheck,
+                            size: MediaQuery.of(context).size.width * 0.09,
+                            color: Colors.green),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.02),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.15,
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.width * 0.04,
+                                width: MediaQuery.of(context).size.width * 0.22,
+                                decoration: BoxDecoration(
+                                    color: AppColors.lightGrey,
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                AppLocalizations.of(context)!.sesionsCompleted,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              SizedBox(
-                height: MediaQuery.of(context).size.height*0.065,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                        FontAwesomeIcons.hourglassHalf,
-                        size: MediaQuery.of(context).size.width*0.09,
-                        color: Colors.blue
-                    ),
-                    SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width*0.15,
-                      width: MediaQuery.of(context).size.width*0.7,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.width*0.04,
-                            width: MediaQuery.of(context).size.width*0.25,
-                            decoration: BoxDecoration(
-                                color: AppColors.lightGrey,
-                                borderRadius: BorderRadius.circular(5)
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            AppLocalizations.of(context)!.averageTimeTrained,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height*0.065,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                        Icons.timer_outlined,
-                        size: MediaQuery.of(context).size.width*0.09,
-                        color: AppColors.red
-                    ),
-                    SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width*0.15,
-                      width: MediaQuery.of(context).size.width*0.7,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.width*0.04,
-                            width: MediaQuery.of(context).size.width*0.2,
-                            decoration: BoxDecoration(
-                                color: AppColors.lightGrey,
-                                borderRadius: BorderRadius.circular(5)
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            AppLocalizations.of(context)!.totalTimeTrained,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height*0.065,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                        FontAwesomeIcons.squareCheck,
-                        size: MediaQuery.of(context).size.width*0.09,
-                        color: Colors.green
-                    ),
-                    SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width*0.15,
-                      width: MediaQuery.of(context).size.width*0.7,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.width*0.04,
-                            width: MediaQuery.of(context).size.width*0.22,
-                            decoration: BoxDecoration(
-                                color: AppColors.lightGrey,
-                                borderRadius: BorderRadius.circular(5)
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            AppLocalizations.of(context)!.sesionsCompleted,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        )
-    );
+            ));
   }
 
   // Build the Widget of the Image
   Widget buildUserProgressWidget() {
     if (!isLoading) {
       return Padding(
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              currentUser.isTrainer! ? AppLocalizations.of(context)!.sesionsCompleted : StringUtils().toCapitalized(AppLocalizations.of(context)!.myProgress.split(" ")[1]),
+              currentUser.isTrainer!
+                  ? AppLocalizations.of(context)!.sesionsCompleted
+                  : StringUtils().toCapitalized(
+                      AppLocalizations.of(context)!.myProgress.split(" ")[1]),
               style: Theme.of(context).textTheme.displaySmall,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             SizedBox(
-                height: MediaQuery.of(context).size.height*0.05,
+                height: MediaQuery.of(context).size.height * 0.05,
                 width: MediaQuery.of(context).size.width,
                 child: Row(
                   children: [
@@ -565,30 +586,40 @@ class _ProfileState extends State<Profile> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
-                          surfaceTintColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
+                          surfaceTintColor: MaterialStateProperty.all(
+                              Theme.of(context).colorScheme.background),
+                          backgroundColor: MaterialStateProperty.all(
+                              Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
-                          overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              )
-                          )
-                      ),
+                          overlayColor: MaterialStateProperty.all(
+                              Theme.of(context).primaryColor.withOpacity(0.1)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ))),
                       child: Row(
                         children: [
                           Container(
                             height: 10.0,
                             width: 10.0,
                             decoration: BoxDecoration(
-                                color: isYearly ? Theme.of(context).primaryColor.withOpacity(0.2) : Theme.of(context).primaryColor,
-                                shape: BoxShape.circle
-                            ),
+                                color: isYearly
+                                    ? Theme.of(context)
+                                        .primaryColor
+                                        .withOpacity(0.2)
+                                    : Theme.of(context).primaryColor,
+                                shape: BoxShape.circle),
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            AppLocalizations.of(context)!.lastNMonths(6.toString()),
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColor),
+                            AppLocalizations.of(context)!
+                                .lastNMonths(6.toString()),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    color: Theme.of(context).primaryColor),
                           ),
                         ],
                       ),
@@ -602,38 +633,46 @@ class _ProfileState extends State<Profile> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
-                          surfaceTintColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background),
+                          surfaceTintColor: MaterialStateProperty.all(
+                              Theme.of(context).colorScheme.background),
+                          backgroundColor: MaterialStateProperty.all(
+                              Theme.of(context).colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
-                          overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              )
-                          )
-                      ),
+                          overlayColor: MaterialStateProperty.all(
+                              Theme.of(context).primaryColor.withOpacity(0.1)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ))),
                       child: Row(
                         children: [
                           Container(
                             height: 10.0,
                             width: 10.0,
                             decoration: BoxDecoration(
-                                color: isYearly == false ? Theme.of(context).primaryColor.withOpacity(0.2) : Theme.of(context).primaryColor,
-                                shape: BoxShape.circle
-                            ),
+                                color: isYearly == false
+                                    ? Theme.of(context)
+                                        .primaryColor
+                                        .withOpacity(0.2)
+                                    : Theme.of(context).primaryColor,
+                                shape: BoxShape.circle),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             AppLocalizations.of(context)!.lastYear,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColor),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    color: Theme.of(context).primaryColor),
                           ),
                         ],
                       ),
                     ),
                   ],
-                )
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                )),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             SessionsMade(
               events: totalEvents.length > 5 ? totalEvents : [],
               backEvents: totalEvents,
@@ -647,7 +686,8 @@ class _ProfileState extends State<Profile> {
         baseColor: AppColors.grey.withOpacity(0.8),
         highlightColor: AppColors.grey.withOpacity(0.5),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -656,9 +696,9 @@ class _ProfileState extends State<Profile> {
                 AppLocalizations.of(context)!.myProgress,
                 style: Theme.of(context).textTheme.displaySmall,
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               SizedBox(
-                  height: MediaQuery.of(context).size.height*0.05,
+                  height: MediaQuery.of(context).size.height * 0.05,
                   width: MediaQuery.of(context).size.width,
                   child: Row(
                     children: [
@@ -670,30 +710,44 @@ class _ProfileState extends State<Profile> {
                         },
                         style: ButtonStyle(
                             elevation: MaterialStateProperty.all(4),
-                            surfaceTintColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                            backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                            animationDuration: const Duration(milliseconds: 100),
-                            overlayColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background.withOpacity(0.2)),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                )
-                            )
-                        ),
+                            surfaceTintColor: MaterialStateProperty.all(
+                                Theme.of(context).primaryColor),
+                            backgroundColor: MaterialStateProperty.all(
+                                Theme.of(context).primaryColor),
+                            animationDuration:
+                                const Duration(milliseconds: 100),
+                            overlayColor: MaterialStateProperty.all(
+                                Theme.of(context)
+                                    .colorScheme
+                                    .background
+                                    .withOpacity(0.2)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ))),
                         child: Row(
                           children: [
                             Container(
                               height: 10.0,
                               width: 10.0,
                               decoration: BoxDecoration(
-                                  color: isYearly ? Theme.of(context).primaryColorDark.withOpacity(0.2) : Theme.of(context).primaryColorDark,
-                                  shape: BoxShape.circle
-                              ),
+                                  color: isYearly
+                                      ? Theme.of(context)
+                                          .primaryColorDark
+                                          .withOpacity(0.2)
+                                      : Theme.of(context).primaryColorDark,
+                                  shape: BoxShape.circle),
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              AppLocalizations.of(context)!.lastNMonths(6.toString()),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark),
+                              AppLocalizations.of(context)!
+                                  .lastNMonths(6.toString()),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                      color:
+                                          Theme.of(context).primaryColorDark),
                             ),
                           ],
                         ),
@@ -707,48 +761,59 @@ class _ProfileState extends State<Profile> {
                         },
                         style: ButtonStyle(
                             elevation: MaterialStateProperty.all(4),
-                            surfaceTintColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                            backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                            animationDuration: const Duration(milliseconds: 100),
-                            overlayColor: MaterialStateProperty.all(Theme.of(context).colorScheme.background.withOpacity(0.2)),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                )
-                            )
-                        ),
+                            surfaceTintColor: MaterialStateProperty.all(
+                                Theme.of(context).primaryColor),
+                            backgroundColor: MaterialStateProperty.all(
+                                Theme.of(context).primaryColor),
+                            animationDuration:
+                                const Duration(milliseconds: 100),
+                            overlayColor: MaterialStateProperty.all(
+                                Theme.of(context)
+                                    .colorScheme
+                                    .background
+                                    .withOpacity(0.2)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ))),
                         child: Row(
                           children: [
                             Container(
                               height: 10.0,
                               width: 10.0,
                               decoration: BoxDecoration(
-                                  color: isYearly == false ? Theme.of(context).primaryColorDark.withOpacity(0.2) : Theme.of(context).primaryColorDark,
-                                  shape: BoxShape.circle
-                              ),
+                                  color: isYearly == false
+                                      ? Theme.of(context)
+                                          .primaryColorDark
+                                          .withOpacity(0.2)
+                                      : Theme.of(context).primaryColorDark,
+                                  shape: BoxShape.circle),
                             ),
                             const SizedBox(width: 8),
                             Text(
                               AppLocalizations.of(context)!.lastYear,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColorDark),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                      color:
+                                          Theme.of(context).primaryColorDark),
                             ),
                           ],
                         ),
                       ),
                     ],
-                  )
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                  )),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.03),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height*0.25,
-                    width: MediaQuery.of(context).size.width*0.85,
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    width: MediaQuery.of(context).size.width * 0.85,
                     decoration: BoxDecoration(
                         color: AppColors.grey,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
+                        borderRadius: BorderRadius.circular(10)),
                   ),
                 ],
               ),
@@ -774,23 +839,21 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             child: Container(
-              height: MediaQuery.of(context).size.height*0.07,
-              width: MediaQuery.of(context).size.width*0.9,
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+              height: MediaQuery.of(context).size.height * 0.07,
+              width: MediaQuery.of(context).size.width * 0.9,
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05),
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.background,
-                  borderRadius: BorderRadius.circular(30)
-              ),
+                  borderRadius: BorderRadius.circular(30)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(
-                      FontAwesomeIcons.person,
-                      size: MediaQuery.of(context).size.width*0.06,
-                      color: Theme.of(context).primaryColor
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                  Icon(FontAwesomeIcons.person,
+                      size: MediaQuery.of(context).size.width * 0.06,
+                      color: Theme.of(context).primaryColor),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                   Text(
                     AppLocalizations.of(context)!.myData,
                     style: Theme.of(context).textTheme.displaySmall,
@@ -810,10 +873,10 @@ class _ProfileState extends State<Profile> {
       left: false,
       right: false,
       child: Container(
-        height: MediaQuery.of(context).size.height*0.06,
+        height: MediaQuery.of(context).size.height * 0.06,
         width: double.infinity,
         decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
+          color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -821,18 +884,20 @@ class _ProfileState extends State<Profile> {
             TitleHeadline1(
               text: AppLocalizations.of(context)!.shareAppTitle,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.015),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
-              child: Text(
-                  AppLocalizations.of(context)!.shareAppText,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor),
-                  textAlign: TextAlign.center
-              ),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.0),
+              child: Text(AppLocalizations.of(context)!.shareAppText,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: Theme.of(context).primaryColor),
+                  textAlign: TextAlign.center),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.015),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             SizedBox(
-              width: MediaQuery.of(context).size.width*0.4,
+              width: MediaQuery.of(context).size.width * 0.4,
               child: ElevatedButton(
                 onPressed: () {
                   mixpanel!.track('user_profile_share_app');
@@ -857,13 +922,15 @@ class _ProfileState extends State<Profile> {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.shareApp,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
           ],
-
         ),
       ),
     );
@@ -875,29 +942,30 @@ class _ProfileState extends State<Profile> {
       left: false,
       right: false,
       child: Container(
-        height: MediaQuery.of(context).size.height*0.06,
+        height: MediaQuery.of(context).size.height * 0.06,
         width: double.infinity,
-        decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor
-        ),
+        decoration:
+            BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TitleHeadline1(
               text: AppLocalizations.of(context)!.giveFeedbackTitle,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.015),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
-              child: Text(
-                  AppLocalizations.of(context)!.giveFeedbackText,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor),
-                  textAlign: TextAlign.center
-              ),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.0),
+              child: Text(AppLocalizations.of(context)!.giveFeedbackText,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: Theme.of(context).primaryColor),
+                  textAlign: TextAlign.center),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.015),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             SizedBox(
-              width: MediaQuery.of(context).size.width*0.4,
+              width: MediaQuery.of(context).size.width * 0.4,
               child: ElevatedButton(
                 onPressed: () {
                   mixpanel!.track('user_profile_feedback_open');
@@ -922,13 +990,15 @@ class _ProfileState extends State<Profile> {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.giveFeedback,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
           ],
-
         ),
       ),
     );
@@ -940,29 +1010,30 @@ class _ProfileState extends State<Profile> {
       left: false,
       right: false,
       child: Container(
-        height: MediaQuery.of(context).size.height*0.06,
+        height: MediaQuery.of(context).size.height * 0.06,
         width: double.infinity,
-        decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor
-        ),
+        decoration:
+            BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TitleHeadline1(
               text: AppLocalizations.of(context)!.getInTouchTitle,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.015),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
-              child: Text(
-                  AppLocalizations.of(context)!.getInTouchTextDesc,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor),
-                  textAlign: TextAlign.center
-              ),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.0),
+              child: Text(AppLocalizations.of(context)!.getInTouchTextDesc,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: Theme.of(context).primaryColor),
+                  textAlign: TextAlign.center),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.015),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             SizedBox(
-              width: MediaQuery.of(context).size.width*0.4,
+              width: MediaQuery.of(context).size.width * 0.4,
               child: ElevatedButton(
                 onPressed: () => launchEmail(),
                 style: ElevatedButton.styleFrom(
@@ -984,13 +1055,15 @@ class _ProfileState extends State<Profile> {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.getInTouch,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
           ],
-
         ),
       ),
     );
@@ -1006,7 +1079,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold (
+    return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
         elevation: 0,
@@ -1022,16 +1095,17 @@ class _ProfileState extends State<Profile> {
               children: [
                 buildTopCurvedContainer(),
                 Container(
-                  height: MediaQuery.of(context).size.height*0.08,
+                  height: MediaQuery.of(context).size.height * 0.08,
                   width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.width*0.12,
-                        width: MediaQuery.of(context).size.width*0.12,
+                        height: MediaQuery.of(context).size.width * 0.12,
+                        width: MediaQuery.of(context).size.width * 0.12,
                         child: MaterialButton(
                           onPressed: () {
                             Navigator.pop(context);
@@ -1041,12 +1115,16 @@ class _ProfileState extends State<Profile> {
                           textColor: AppColors.black,
                           padding: EdgeInsets.zero,
                           shape: const CircleBorder(),
-                          child: Icon(Icons.arrow_back, color: AppColors.black, size: MediaQuery.of(context).size.height*0.035,),
+                          child: Icon(
+                            Icons.arrow_back,
+                            color: AppColors.black,
+                            size: MediaQuery.of(context).size.height * 0.035,
+                          ),
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.width*0.12,
-                        width: MediaQuery.of(context).size.width*0.12,
+                        height: MediaQuery.of(context).size.width * 0.12,
+                        width: MediaQuery.of(context).size.width * 0.12,
                         child: MaterialButton(
                           onPressed: navigateToSettingsScreen,
                           elevation: 4,
@@ -1054,25 +1132,29 @@ class _ProfileState extends State<Profile> {
                           textColor: AppColors.black,
                           padding: EdgeInsets.zero,
                           shape: const CircleBorder(),
-                          child: Icon(Icons.settings_outlined, color: AppColors.black, size: MediaQuery.of(context).size.height*0.035,),
+                          child: Icon(
+                            Icons.settings_outlined,
+                            color: AppColors.black,
+                            size: MediaQuery.of(context).size.height * 0.035,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height*0.26,
+                  height: MediaQuery.of(context).size.height * 0.26,
                   width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Material(
-                        elevation: 4,
-                        shape: const CircleBorder(),
-                        child: buildUserPicture()
-                      ),
+                          elevation: 4,
+                          shape: const CircleBorder(),
+                          child: buildUserPicture()),
                       const SizedBox(height: 12),
                       buildUserTitle(),
                     ],
@@ -1080,13 +1162,13 @@ class _ProfileState extends State<Profile> {
                 ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
             buildUserStatsEvent(),
-            SizedBox(height: MediaQuery.of(context).size.height*0.03),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             buildUserProgressWidget(),
-            SizedBox(height: MediaQuery.of(context).size.height*0.05),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             buildContainersWidget(),
-            SizedBox(height: MediaQuery.of(context).size.height*0.008),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.008),
             Stack(
               alignment: Alignment.bottomCenter,
               children: [
@@ -1094,7 +1176,7 @@ class _ProfileState extends State<Profile> {
                   items: buildProfileCarousel,
                   carouselController: _controller,
                   options: CarouselOptions(
-                    height: MediaQuery.of(context).size.height*0.3,
+                    height: MediaQuery.of(context).size.height * 0.3,
                     autoPlay: false,
                     initialPage: _current,
                     viewportFraction: 1,
@@ -1107,7 +1189,9 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Positioned(
-                  bottom: Platform.isAndroid ? MediaQuery.of(context).size.height*0.03 : MediaQuery.of(context).size.height*0.06,
+                  bottom: Platform.isAndroid
+                      ? MediaQuery.of(context).size.height * 0.03
+                      : MediaQuery.of(context).size.height * 0.06,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: buildProfileCarousel.asMap().entries.map((entry) {
@@ -1116,11 +1200,16 @@ class _ProfileState extends State<Profile> {
                         child: Container(
                           width: 8.0,
                           height: 8.0,
-                          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 4.0),
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == entry.key ? 0.9 : 0.4)
-                          ),
+                              color: (Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black)
+                                  .withOpacity(
+                                      _current == entry.key ? 0.9 : 0.4)),
                         ),
                       );
                     }).toList(),
@@ -1128,7 +1217,7 @@ class _ProfileState extends State<Profile> {
                 ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
           ],
         ),
       ),
@@ -1139,9 +1228,7 @@ class _ProfileState extends State<Profile> {
   void dispose() {
     super.dispose();
   }
-
 }
-
 
 class CurveClipper extends CustomClipper<Path> {
   @override
@@ -1152,7 +1239,8 @@ class CurveClipper extends CustomClipper<Path> {
 
     Path path = Path()
       ..lineTo(0, size.height - curveHeight)
-      ..quadraticBezierTo(controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy)
+      ..quadraticBezierTo(
+          controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy)
       ..lineTo(size.width, 0)
       ..close();
 
@@ -1162,4 +1250,3 @@ class CurveClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
-

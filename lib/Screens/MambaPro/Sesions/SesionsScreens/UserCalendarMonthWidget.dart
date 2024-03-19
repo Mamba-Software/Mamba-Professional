@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Calendars/UserCalendarWidget.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import '../../../../Events/crud_events/models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserCalendarMonthWidget extends StatefulWidget {

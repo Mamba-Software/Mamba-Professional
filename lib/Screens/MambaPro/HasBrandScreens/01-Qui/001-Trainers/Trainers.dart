@@ -1,14 +1,13 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Room/RoomDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/user/chat/Chat.dart';
 import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
@@ -17,17 +16,17 @@ import 'package:mamba_castelldefels/commons/widgets/Components/Badges/BetaBadge.
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/profileImage.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadNotifications.dart';
 
 class Trainers extends StatefulWidget {
   String brandId;

@@ -1,8 +1,8 @@
 // Model for a Brand in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/data/Models/Location.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 
 import 'ImageObject.dart';
 import 'RequestToBrand.dart';
@@ -119,8 +119,7 @@ class Brand {
         .containsKey('baseLocation')) {
       baseLocation = documentSnapshot.get("baseLocation").toString();
     }
-    if ((documentSnapshot.data() as Map<String, dynamic>)
-        .containsKey('city')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('city')) {
       city = documentSnapshot.get("city").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)

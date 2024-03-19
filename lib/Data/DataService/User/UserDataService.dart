@@ -1,15 +1,15 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserFirebaseCalls.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/data/DataService/User/UserFirebaseCalls.dart';
+import 'package:mamba_castelldefels/data/Models/Bono.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/data/Models/Notifications/NotificationEvent.dart';
+import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 
 // This class gives access to all of the Firebase Backend of the User Object.
 class UserDataService {
@@ -156,7 +156,8 @@ class UserDataService {
   Future<void> updateUserZoomScale(
           String userId, String brandId, double zoomScale) =>
       _firebase.updateUserZoomScale(brandId, userId, zoomScale);
-  Future<void> activateUserBono(String userId, String brandId, String bonoId, String purchaseId) =>
+  Future<void> activateUserBono(
+          String userId, String brandId, String bonoId, String purchaseId) =>
       _firebase.activateUserBono(userId, brandId, bonoId, purchaseId);
 
   // Delete Data
@@ -167,7 +168,8 @@ class UserDataService {
   Future<void> deleteUserBonoRequest(
           String userId, String brandId, String bonoId) =>
       _firebase.deleteUserBonoRequest(userId, brandId, bonoId);
-  Future<void> deleteUserBono(String userId, String brandId, String bonoId, String purchaseId) =>
+  Future<void> deleteUserBono(
+          String userId, String brandId, String bonoId, String purchaseId) =>
       _firebase.deleteUserBono(userId, brandId, bonoId, purchaseId);
   Future<void> deleteLocalNotification(String userId, String notificationId) =>
       _firebase.deleteLocalNotification(userId, notificationId);

@@ -1,8 +1,14 @@
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 
 class OrderFilter {
-
-  List<Usuario> orderFilter(List<Usuario> filteredUsers, List<Usuario> allUsers, List<Usuario> activeUsersVar, List<Usuario> inactiveUsersVar, int filterSelection, int orderByClientsNumber, int alphabeticOrder) {
+  List<Usuario> orderFilter(
+      List<Usuario> filteredUsers,
+      List<Usuario> allUsers,
+      List<Usuario> activeUsersVar,
+      List<Usuario> inactiveUsersVar,
+      int filterSelection,
+      int orderByClientsNumber,
+      int alphabeticOrder) {
     List<Usuario> users = [];
     List<Usuario> usersToReturn = [];
     List<Usuario> activeUsers = activeUsersVar;
@@ -41,29 +47,35 @@ class OrderFilter {
 
     print('n');
 
-
-
-
-
-
     if (alphabeticOrder == 1) {
       activeUsers.sort((a, b) {
-        return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+        return a.name
+            .toString()
+            .toLowerCase()
+            .compareTo(b.name.toString().toLowerCase());
       });
 
       inactiveUsers.sort((a, b) {
-        return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+        return a.name
+            .toString()
+            .toLowerCase()
+            .compareTo(b.name.toString().toLowerCase());
       });
-     // activeUsers = List.from(activeUsers.reversed);
-     // inactiveUsers = List.from(inactiveUsers.reversed);
-    }
-    else {
+      // activeUsers = List.from(activeUsers.reversed);
+      // inactiveUsers = List.from(inactiveUsers.reversed);
+    } else {
       activeUsers.sort((a, b) {
-        return b.name.toString().toLowerCase().compareTo(a.name.toString().toLowerCase());
+        return b.name
+            .toString()
+            .toLowerCase()
+            .compareTo(a.name.toString().toLowerCase());
       });
 
       inactiveUsers.sort((a, b) {
-        return b.name.toString().toLowerCase().compareTo(a.name.toString().toLowerCase());
+        return b.name
+            .toString()
+            .toLowerCase()
+            .compareTo(a.name.toString().toLowerCase());
       });
     }
     // Filter By
@@ -76,10 +88,10 @@ class OrderFilter {
         users.addAll(inactiveUsers);
         users.addAll(activeUsers);
       }
-    } else if(filterSelection == 1) {
+    } else if (filterSelection == 1) {
       // Active Selected
       users.addAll(activeUsers);
-    } else if(filterSelection == 2) {
+    } else if (filterSelection == 2) {
       // Inactive Selected
       users.addAll(inactiveUsers);
     } else {
@@ -104,5 +116,4 @@ class OrderFilter {
     // Return List of Bonos
     return users;
   }
-
 }

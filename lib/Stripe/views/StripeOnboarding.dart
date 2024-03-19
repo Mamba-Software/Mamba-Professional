@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
+import 'package:mamba_castelldefels/data/DataService/Location/LocationDataService.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Location.dart';
 import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
@@ -3057,7 +3057,6 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               result = value;
                                               print(
                                                   "Stripe Connexion Result: $result");
-                                              
                                             }).whenComplete(() {
                                               if (result != null &&
                                                   result is Brand) {

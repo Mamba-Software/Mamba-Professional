@@ -7,20 +7,20 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
+import 'package:mamba_castelldefels/data/Models/Location.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Location/LocationImageTile.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/profileImage.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:uuid/uuid.dart';
 
 class Locations extends StatefulWidget {

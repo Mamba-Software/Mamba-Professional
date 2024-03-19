@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Clients/ClientEventSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/MaxClients/MaxClientsEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Staff/StaffEventSelector.dart';
+import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/Clients/ClientEventSelector.dart';
+import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/MaxClients/MaxClientsEvent.dart';
+import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/Staff/StaffEventSelector.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class MembersPage extends StatelessWidget {

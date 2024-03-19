@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/FeedBack/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/app/style/Styles.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/data/Models/Deprecated/Question.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class AdminFeedBack extends StatefulWidget {

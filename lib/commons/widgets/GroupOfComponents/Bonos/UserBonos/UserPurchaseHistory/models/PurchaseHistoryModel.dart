@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-
+import 'package:mamba_castelldefels/data/Models/Bono.dart';
+import 'package:mamba_castelldefels/data/Models/BonoRequest.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 
 enum PurchaseStatus {
   CONFIRMED,
@@ -13,7 +12,6 @@ enum PurchaseStatus {
 }
 
 class PurchaseHistoryModel {
-
   Usuario user;
   Brand brand;
   Bono bono;
@@ -31,5 +29,4 @@ class PurchaseHistoryModel {
     required this.purchaseStatus,
     required this.purchasedAt,
   });
-
 }

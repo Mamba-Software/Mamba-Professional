@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CustomCalendarView.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CustomCalendarView.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarPopupView extends StatefulWidget {

@@ -1,7 +1,6 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
+import 'package:mamba_castelldefels/data/Models/Subscription.dart';
 
 // Brand Firebase Service Class. All calls to Firebase are in this class.
 class SuscriptionFirebaseCalls {
@@ -23,11 +22,10 @@ class SuscriptionFirebaseCalls {
     print('subscription');
     try {
       Subscription subscription = Subscription();
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await _firestore
-              .collection(subscriptionsRevenueCat)
-              .doc(adminAppUserId)
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
+          .collection(subscriptionsRevenueCat)
+          .doc(adminAppUserId)
+          .get();
       if (documentSnapshot.exists) {
         final data = documentSnapshot.data()!;
         if (data.containsKey('entitlements')) {

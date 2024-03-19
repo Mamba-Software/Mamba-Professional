@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Recurrent.dart';
+import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Recurrent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba_castelldefels/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Badges/BetaBadge.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';

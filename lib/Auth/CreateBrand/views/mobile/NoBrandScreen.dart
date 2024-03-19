@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Auth/CreateBrand/widgets/buildWidgetsNoBrandScreen.dart';
+import 'package:mamba_castelldefels/auth/CreateBrand/widgets/buildWidgetsNoBrandScreen.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/Notifications/NotificationService/LocalNotificationService.dart';
+import 'package:mamba_castelldefels/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -16,7 +16,6 @@ class NoBrandScreen extends StatefulWidget {
 }
 
 class _NoBrandScreenState extends State<NoBrandScreen> {
-
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;
@@ -31,9 +30,12 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
 
   // Init Device Sizes
   initDeviceSizes() {
-    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
+    safeAreaHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
+    print(
+        "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
     print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
@@ -52,7 +54,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
       isFirstBuild = false;
     }
 
-    return Scaffold (
+    return Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
           elevation: 0,
@@ -65,42 +67,61 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: safeAreaHeight*0.06,),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
-                  child: buildGreetingWidget(context, safeAreaWidth, safeAreaHeight),
+                SizedBox(
+                  height: safeAreaHeight * 0.06,
                 ),
-                SizedBox(height: safeAreaHeight*0.1,),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
-                  child: buildCreateBrandWidget(context, safeAreaHeight*0.20, safeAreaWidth),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: safeAreaWidth * 0.08),
+                  child: buildGreetingWidget(
+                      context, safeAreaWidth, safeAreaHeight),
                 ),
-                SizedBox(height: safeAreaHeight*0.06,),
-                Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: Divider(color: Theme.of(context).primaryColor, height: 1, indent: safeAreaWidth*0.10, endIndent: safeAreaWidth*0.05),
-                      ),
-                      Text(
-                          "o",
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.grey),
-                          textAlign: TextAlign.center
-                      ),
-                      Expanded(
-                        child: Divider(color: Theme.of(context).primaryColor, height: 1, indent: safeAreaWidth*0.05, endIndent: safeAreaWidth*0.10),
-                      ),
-                    ]
+                SizedBox(
+                  height: safeAreaHeight * 0.1,
                 ),
-                SizedBox(height: safeAreaHeight*0.06,),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
-                  child: buildJoinBrandWidget(context,safeAreaHeight*0.20, safeAreaWidth),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: safeAreaWidth * 0.08),
+                  child: buildCreateBrandWidget(
+                      context, safeAreaHeight * 0.20, safeAreaWidth),
+                ),
+                SizedBox(
+                  height: safeAreaHeight * 0.06,
+                ),
+                Row(children: <Widget>[
+                  Expanded(
+                    child: Divider(
+                        color: Theme.of(context).primaryColor,
+                        height: 1,
+                        indent: safeAreaWidth * 0.10,
+                        endIndent: safeAreaWidth * 0.05),
+                  ),
+                  Text("o",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(color: AppColors.grey),
+                      textAlign: TextAlign.center),
+                  Expanded(
+                    child: Divider(
+                        color: Theme.of(context).primaryColor,
+                        height: 1,
+                        indent: safeAreaWidth * 0.05,
+                        endIndent: safeAreaWidth * 0.10),
+                  ),
+                ]),
+                SizedBox(
+                  height: safeAreaHeight * 0.06,
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: safeAreaWidth * 0.08),
+                  child: buildJoinBrandWidget(
+                      context, safeAreaHeight * 0.20, safeAreaWidth),
                 ),
               ],
             ),
           ),
-        )
-    );
+        ));
   }
 }
-

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
+import 'package:mamba_castelldefels/data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
@@ -15,10 +15,10 @@ import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/FavouriteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/profileImage.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BrandImages extends StatefulWidget {

@@ -1,11 +1,10 @@
-import 'package:mamba_castelldefels/Data/DataService/Library/LibraryFirebaseCalls.dart';
-import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
-import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
-import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
+import 'package:mamba_castelldefels/data/DataService/Library/LibraryFirebaseCalls.dart';
+import 'package:mamba_castelldefels/data/LibraryModels/lColor.dart';
+import 'package:mamba_castelldefels/data/LibraryModels/lDegradate.dart';
+import 'package:mamba_castelldefels/data/LibraryModels/lPaymentMethod.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class LibraryDataService {
-
   final _firebase = LibraryFirebaseCalls();
 
   // Colors Data
@@ -13,13 +12,15 @@ class LibraryDataService {
   Future<List<lDegradate>> getDegradates() => _firebase.getDegradates();
 
   // Payment Methods Data
-  Future<List<lPaymentMethod>> getPaymentMethods() => _firebase.getPaymentMethods();
+  Future<List<lPaymentMethod>> getPaymentMethods() =>
+      _firebase.getPaymentMethods();
 
   // Event Photos
   Future<String> getRandomEventPhoto() => _firebase.getRandomEventPhoto();
 
   // Add Data
   // Email template
-  Future<void> sendEmailToUser(String templateId, String userId, [String? brandId]) => _firebase.sendEmailToUser(templateId, userId, brandId);
-
+  Future<void> sendEmailToUser(String templateId, String userId,
+          [String? brandId]) =>
+      _firebase.sendEmailToUser(templateId, userId, brandId);
 }

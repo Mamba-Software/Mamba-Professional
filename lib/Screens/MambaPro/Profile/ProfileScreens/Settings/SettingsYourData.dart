@@ -2,15 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsEditPhotoPage.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/Profile/ProfileScreens/Settings/SettingsEditPhotoPage.dart';
 
 // Tus Datos Widget.
 class SettingsYourData extends StatefulWidget {
@@ -21,7 +21,6 @@ class SettingsYourData extends StatefulWidget {
 }
 
 class _SettingsYourDataState extends State<SettingsYourData> {
-
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   // Boolean Loading
@@ -58,8 +57,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
         context,
         CupertinoPageRoute<String>(
           builder: (context) => const SettingsEditPhotoPage(),
-        )
-    ).whenComplete(() {
+        )).whenComplete(() {
       setState(() {
         isLoading = false;
       });
@@ -78,8 +76,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
       isGoogle = false;
       isApple = false;
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   Future<void> selectSlot(ctx, type) {
@@ -91,13 +88,13 @@ class _SettingsYourDataState extends State<SettingsYourData> {
     Widget dateTimePicker = CupertinoTheme(
       data: CupertinoThemeData(
           textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyLarge,
-          )
-      ),
+        dateTimePickerTextStyle: Theme.of(context).textTheme.bodyLarge,
+      )),
       child: CupertinoDatePicker(
           mode: CupertinoDatePickerMode.date,
-          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-          minimumDate: startDate.subtract(const Duration(days: 365*80)),
+          initialDateTime:
+              DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+          minimumDate: startDate.subtract(const Duration(days: 365 * 80)),
           maximumDate: DateTime(startDate.year, startDate.month, 31, 0, 0),
           minimumYear: 1941,
           maximumYear: startDate.year,
@@ -105,10 +102,11 @@ class _SettingsYourDataState extends State<SettingsYourData> {
           onDateTimeChanged: (val) {
             setState(() {
               startDateLocal = val;
-              startDateController.text = DateTimeUtils().formatDateTimeToStringDDMMMMYYYY(val, Localizations.localeOf(context).languageCode);
+              startDateController.text = DateTimeUtils()
+                  .formatDateTimeToStringDDMMMMYYYY(
+                      val, Localizations.localeOf(context).languageCode);
             });
-          }
-      ),
+          }),
     );
     if (type == 0) {
       title = AppLocalizations.of(context)!.selectDateOfBirth;
@@ -117,61 +115,68 @@ class _SettingsYourDataState extends State<SettingsYourData> {
     showCupertinoModalPopup(
         context: ctx,
         builder: (_) => Material(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-          ),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height*0.40,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
+              shape: const RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(25.0))),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.40,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                        child: Text(title,
-                          style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,)
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                            child: Text(
+                          title,
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        )),
+                      ],
                     ),
-                  ],
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
-                    child: widgetPicker,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    FloatingActionButton.extended(
-                  shape: const StadiumBorder(),
-                      heroTag: "43",
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                      },
-                      backgroundColor: Theme.of(context).primaryColor,
-                      icon: Container(),
-                      label: Text(
-                          AppLocalizations.of(context)!.confirm,
-                          style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Theme.of(context).primaryColorDark)
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(
+                            MediaQuery.of(context).size.width * 0.01),
+                        child: widgetPicker,
                       ),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        FloatingActionButton.extended(
+                          shape: const StadiumBorder(),
+                          heroTag: "43",
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                          backgroundColor: Theme.of(context).primaryColor,
+                          icon: Container(),
+                          label: Text(AppLocalizations.of(context)!.confirm,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall
+                                  ?.copyWith(
+                                      color:
+                                          Theme.of(context).primaryColorDark)),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              ],
-            ),
-          ),
-        )
-    );
+              ),
+            ));
     return Future.value("");
   }
 
@@ -181,15 +186,18 @@ class _SettingsYourDataState extends State<SettingsYourData> {
     if (firstBuild) {
       firstNameController = TextEditingController(text: currentUser.firstName);
       lastNameController = TextEditingController(text: currentUser.lastName);
-      startDateController = TextEditingController(text: currentUser.dateOfBirth);
+      startDateController =
+          TextEditingController(text: currentUser.dateOfBirth);
       firstBuild = false;
     }
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
-      if (firstNameController.text.trim() != currentUser.lastName! && firstNameControllerTemp != "") {
+      if (firstNameController.text.trim() != currentUser.lastName! &&
+          firstNameControllerTemp != "") {
         isUpdated = true;
         mixpanel!.track('user_profile_settings_edit_info_name_change');
-      } else if (lastNameController.text.trim() != currentUser.firstName! && lastNameControllerTemp != "") {
+      } else if (lastNameController.text.trim() != currentUser.firstName! &&
+          lastNameControllerTemp != "") {
         isUpdated = true;
         mixpanel!.track('user_profile_settings_edit_info_surname_change');
       } else if (genderTemp != currentUser.gender! && genderTemp != null) {
@@ -204,218 +212,409 @@ class _SettingsYourDataState extends State<SettingsYourData> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.myData, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        title: Text(
+          AppLocalizations.of(context)!.myData,
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+        ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+          icon: Icon(
+            Icons.arrow_back,
+            size: MediaQuery.of(context).size.width * 0.06,
+          ),
           onPressed: () async {
             Navigator.pop(context);
           },
         ),
       ),
       resizeToAvoidBottomInset: true,
-      body: isLoading ?
-        LoadingView()
-          :
-        SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.5,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+      body: isLoading
+          ? LoadingView()
+          : SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05,
+                    vertical: MediaQuery.of(context).size.width * 0.07),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      child: Column(
                                         children: [
-                                          Text(
-                                            AppLocalizations.of(context)!.firstName,
-                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                                            textAlign: TextAlign.left,
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                AppLocalizations.of(context)!
+                                                    .firstName,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge
+                                                    ?.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.5,
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Material(
-                                                elevation: 4,
-                                                borderRadius: BorderRadius.circular(15.0),
-                                                child: TextFormField(
-                                                  controller: firstNameController,
-                                                  keyboardType: TextInputType.name,
-                                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
-                                                  style: Theme.of(context).textTheme.bodyMedium,
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      firstNameControllerTemp = value;
-                                                    });
-                                                  },
-                                                  textCapitalization: TextCapitalization.words,
-                                                  decoration: InputDecoration(
-                                                      hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                                      hintStyle: Theme.of(context).textTheme.bodySmall,
-                                                      errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
-                                                      border: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      enabledBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      focusedBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      errorBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
+                                          SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.01),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.5,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Material(
+                                                    elevation: 4,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
+                                                    child: TextFormField(
+                                                      controller:
+                                                          firstNameController,
+                                                      keyboardType:
+                                                          TextInputType.name,
+                                                      validator: (val) => val!
+                                                              .isEmpty
+                                                          ? AppLocalizations.of(
+                                                                  context)!
+                                                              .nameCompletoError
+                                                          : null,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium,
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          firstNameControllerTemp =
+                                                              value;
+                                                        });
+                                                      },
+                                                      textCapitalization:
+                                                          TextCapitalization
+                                                              .words,
+                                                      decoration:
+                                                          InputDecoration(
+                                                              hintText: AppLocalizations.of(
+                                                                      context)!
+                                                                  .nameCompletoError,
+                                                              hintStyle: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodySmall,
+                                                              errorStyle: Theme
+                                                                      .of(
+                                                                          context)
+                                                                  .textTheme
+                                                                  .bodyMedium
+                                                                  ?.copyWith(
+                                                                      color: AppColors
+                                                                          .red),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderSide: const BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.5),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                              ),
+                                                              enabledBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: const BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.5),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                              ),
+                                                              focusedBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: const BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.5),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                              ),
+                                                              errorBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: const BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.5),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                              ),
+                                                              contentPadding:
+                                                                  const EdgeInsets
+                                                                      .fromLTRB(
+                                                                      12,
+                                                                      8,
+                                                                      12,
+                                                                      8)),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.6,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(context)!.lastName,
-                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                                            textAlign: TextAlign.left,
                                           ),
+                                          SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.04),
                                         ],
                                       ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.85,
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Material(
-                                                elevation: 4,
-                                                borderRadius: BorderRadius.circular(15.0),
-                                                child: TextFormField(
-                                                  controller: lastNameController,
-                                                  keyboardType: TextInputType.name,
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      lastNameControllerTemp = value;
-                                                    });
-                                                  },
-                                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
-                                                  style: Theme.of(context).textTheme.bodyMedium,
-                                                  textCapitalization: TextCapitalization.words,
-                                                  decoration: InputDecoration(
-                                                      hintText: AppLocalizations.of(context)!.lastNameError,
-                                                      hintStyle: Theme.of(context).textTheme.bodySmall,
-                                                      errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
-                                                      border: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      enabledBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      focusedBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      errorBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.6,
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                AppLocalizations.of(context)!
+                                                    .lastName,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge
+                                                    ?.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.01),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.85,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Material(
+                                                    elevation: 4,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
+                                                    child: TextFormField(
+                                                      controller:
+                                                          lastNameController,
+                                                      keyboardType:
+                                                          TextInputType.name,
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          lastNameControllerTemp =
+                                                              value;
+                                                        });
+                                                      },
+                                                      validator: (val) => val!
+                                                              .isEmpty
+                                                          ? AppLocalizations.of(
+                                                                  context)!
+                                                              .lastNameError
+                                                          : null,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium,
+                                                      textCapitalization:
+                                                          TextCapitalization
+                                                              .words,
+                                                      decoration:
+                                                          InputDecoration(
+                                                              hintText: AppLocalizations.of(
+                                                                      context)!
+                                                                  .lastNameError,
+                                                              hintStyle: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodySmall,
+                                                              errorStyle: Theme
+                                                                      .of(
+                                                                          context)
+                                                                  .textTheme
+                                                                  .bodyMedium
+                                                                  ?.copyWith(
+                                                                      color: AppColors
+                                                                          .red),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderSide: const BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.5),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                              ),
+                                                              enabledBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: const BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.5),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                              ),
+                                                              focusedBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: const BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.5),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                              ),
+                                                              errorBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: const BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.5),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                              ),
+                                                              contentPadding:
+                                                                  const EdgeInsets
+                                                                      .fromLTRB(
+                                                                      12,
+                                                                      8,
+                                                                      12,
+                                                                      8)),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                          SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.04),
+                                        ],
                                       ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            child: Center(
-                                child: GestureDetector(
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.3,
+                                child: Center(
+                                    child: GestureDetector(
                                   onTap: navigateToEditPhotoPageScreen,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Material(
                                         elevation: 4,
                                         shape: const CircleBorder(),
                                         child: CircularImage(
-                                          size: MediaQuery.of(context).size.width * 0.3,
+                                          size: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.3,
                                           image: currentUser.imageUrl,
                                           borderWidth: 1,
                                           color: AppColors.grey,
                                         ),
                                       ),
-                                      SizedBox(height: MediaQuery.of(context).size.width*0.02),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.02),
                                       FittedBox(
                                         fit: BoxFit.fitWidth,
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           children: [
                                             Text(
-                                              AppLocalizations.of(context)!.editYourPhoto,
-                                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor),
+                                              AppLocalizations.of(context)!
+                                                  .editYourPhoto,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall
+                                                  ?.copyWith(
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
                                               textAlign: TextAlign.center,
                                             ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.005),
-                                            Icon(Icons.edit, size: MediaQuery.of(context).size.width*0.04, color: Theme.of(context).primaryColor,),
+                                            SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.005),
+                                            Icon(
+                                              Icons.edit,
+                                              size: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.04,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            ),
                                           ],
                                         ),
                                       ),
                                     ],
                                   ),
-                                )
-                            ),
+                                )),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      /*
+                          /*
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.18,
                         width: MediaQuery.of(context).size.width,
@@ -575,220 +774,368 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                         ],
                       ),
                        */
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            AppLocalizations.of(context)!.email,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Flexible(
-                                child: Material(
-                                  elevation: 4,
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  child: TextFormField(
-                                    initialValue: currentUser.email,
-                                    readOnly: true,
-                                    enabled: false,
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                    textAlign: TextAlign.start,
-                                    decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Theme.of(context).scaffoldBackgroundColor,
-                                        hintText: AppLocalizations.of(context)!.lastNameError,
-                                        hintStyle: Theme.of(context).textTheme.bodySmall,
-                                        errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
-                                        suffixIcon: FittedBox(
-                                          fit: BoxFit.contain,
-                                          child: SizedBox(
-                                            height: MediaQuery.of(context).size.width*0.05,
-                                            width: isGoogle || isApple ? MediaQuery.of(context).size.width*0.07 : MediaQuery.of(context).size.width*0.05,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Icon(
-                                                  Icons.lock_outlined,
-                                                  color: AppColors.grey,
-                                                  size: MediaQuery.of(context).size.width*0.025,
+                              Text(
+                                AppLocalizations.of(context)!.email,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Flexible(
+                                    child: Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child: TextFormField(
+                                        initialValue: currentUser.email,
+                                        readOnly: true,
+                                        enabled: false,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
+                                        textAlign: TextAlign.start,
+                                        decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            hintText:
+                                                AppLocalizations.of(context)!
+                                                    .lastNameError,
+                                            hintStyle: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall,
+                                            errorStyle: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                    color: AppColors.red),
+                                            suffixIcon: FittedBox(
+                                              fit: BoxFit.contain,
+                                              child: SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.05,
+                                                width: isGoogle || isApple
+                                                    ? MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.07
+                                                    : MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.05,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.lock_outlined,
+                                                      color: AppColors.grey,
+                                                      size:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.025,
+                                                    ),
+                                                    isGoogle || isApple
+                                                        ? SizedBox(
+                                                            width: isGoogle
+                                                                ? MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.023
+                                                                : MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.018,
+                                                            child: Image(
+                                                                image: isGoogle
+                                                                    ? AssetImage(
+                                                                        Constants
+                                                                            .google)
+                                                                    : AssetImage(
+                                                                        Constants
+                                                                            .apple)),
+                                                          )
+                                                        : Container(),
+                                                  ],
                                                 ),
-                                                isGoogle || isApple ? SizedBox(
-                                                  width: isGoogle ? MediaQuery.of(context).size.width*0.023 : MediaQuery.of(context).size.width*0.018,
-                                                  child: Image(
-                                                      image: isGoogle ? AssetImage(Constants.google) : AssetImage(Constants.apple)
+                                              ),
+                                            ),
+                                            border: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                  color: Colors.transparent,
+                                                  width: 1.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                  color: Colors.transparent,
+                                                  width: 1.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            disabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                  color: Colors.transparent,
+                                                  width: 1.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                  color: Colors.transparent,
+                                                  width: 1.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                  color: Colors.transparent,
+                                                  width: 1.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            contentPadding:
+                                                const EdgeInsets.fromLTRB(
+                                                    12, 8, 12, 8)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.04),
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                AppLocalizations.of(context)!.dateOfBirth,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: GestureDetector(
+                                    onTap: () {
+                                      selectSlot(context, 0);
+                                      FocusScopeNode currentFocus =
+                                          FocusScope.of(context);
+                                      if (!currentFocus.hasPrimaryFocus) {
+                                        currentFocus.unfocus();
+                                      }
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        Flexible(
+                                          child: Material(
+                                            elevation: 4,
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                            child: TextFormField(
+                                              controller: startDateController,
+                                              readOnly: true,
+                                              enabled: false,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium,
+                                              decoration: InputDecoration(
+                                                  hintText: AppLocalizations
+                                                          .of(context)!
+                                                      .lastNameError,
+                                                  hintStyle: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall,
+                                                  errorStyle: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                          color: AppColors.red),
+                                                  border: OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors
+                                                                .transparent,
+                                                            width: 1.5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
                                                   ),
-                                                ) : Container(),
-                                              ],
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors
+                                                                .transparent,
+                                                            width: 1.5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
+                                                  ),
+                                                  disabledBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors
+                                                                .transparent,
+                                                            width: 1.5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
+                                                  ),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors
+                                                                .transparent,
+                                                            width: 1.5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
+                                                  ),
+                                                  errorBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors
+                                                                .transparent,
+                                                            width: 1.5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
+                                                  ),
+                                                  contentPadding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          12, 8, 12, 8)),
+                                              textAlign: TextAlign.start,
                                             ),
                                           ),
                                         ),
-                                        border: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                          borderRadius: BorderRadius.circular(15.0),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                          borderRadius: BorderRadius.circular(15.0),
-                                        ),
-                                        disabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                          borderRadius: BorderRadius.circular(15.0),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                          borderRadius: BorderRadius.circular(15.0),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                          borderRadius: BorderRadius.circular(15.0),
-                                        ),
-                                        contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
-                                    ),
-                                  ),
-                                ),
+                                      ],
+                                    )),
                               ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.04),
                             ],
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            AppLocalizations.of(context)!.dateOfBirth,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: GestureDetector(
-                                onTap: () {
-                                  selectSlot(context, 0);
-                                  FocusScopeNode currentFocus = FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                  }
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                AppLocalizations.of(context)!.gender,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.01),
+                              GenderWidget(
+                                key: _genderKey,
+                                user: currentUser,
+                                selectedGenderChanged: (gender) {
+                                  setState(() {
+                                    genderTemp = gender;
+                                  });
                                 },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Material(
-                                        elevation: 4,
-                                        borderRadius: BorderRadius.circular(15.0),
-                                        child: TextFormField(
-                                          controller: startDateController,
-                                          readOnly: true,
-                                          enabled: false,
-                                          style: Theme.of(context).textTheme.bodyMedium,
-                                          decoration: InputDecoration(
-                                              hintText: AppLocalizations.of(context)!.lastNameError,
-                                              hintStyle: Theme.of(context).textTheme.bodySmall,
-                                              errorStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.red),
-                                              border: OutlineInputBorder(
-                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                borderRadius: BorderRadius.circular(15.0),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                borderRadius: BorderRadius.circular(15.0),
-                                              ),
-                                              disabledBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                borderRadius: BorderRadius.circular(15.0),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                borderRadius: BorderRadius.circular(15.0),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                borderRadius: BorderRadius.circular(15.0),
-                                              ),
-                                              contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
-                                          ),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                            ),
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.04),
+                            ],
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
                         ],
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            AppLocalizations.of(context)!.gender,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          GenderWidget(
-                            key: _genderKey,
-                            user: currentUser,
-                            selectedGenderChanged: (gender) {
-                              setState(() {
-                                genderTemp = gender;
-                              });
-                            },
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                        ],
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      floatingActionButton: isUpdated ? Padding(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-        child: FloatingActionButton.extended(
-                  shape: const StadiumBorder(),
-          heroTag: "61",
-          onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              if (isUpdated) {
-                if (firstNameController.text.isNotEmpty) {
-                  currentUser.firstName = firstNameController.text;
-                }
-                if (lastNameController.text.isNotEmpty) {
-                  currentUser.lastName = lastNameController.text;
-                }
-                if (!(genderTemp == null)) {
-                  currentUser.gender = genderTemp;
-                }
-                if (startDateController.text != currentUser.dateOfBirth) {
-                  startDateController.text = DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDateLocal, Localizations.localeOf(context).languageCode);
-                  currentUser.dateOfBirth = startDateController.text;
-                }
-                currentUser.name = "${currentUser.firstName!} ${currentUser.lastName!}";
-                await _userDataService.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
-                mixpanel!.track('user_profile_settings_edit_info_completed');
-              }
-              Navigator.pop(context);
-            }
-          },
-          backgroundColor: Colors.green,
-          icon: Icon(Icons.save_rounded, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
-          label: Text(AppLocalizations.of(context)!.save,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),),
-        ),
-      ) : Container(),
+      floatingActionButton: isUpdated
+          ? Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+              child: FloatingActionButton.extended(
+                shape: const StadiumBorder(),
+                heroTag: "61",
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    if (isUpdated) {
+                      if (firstNameController.text.isNotEmpty) {
+                        currentUser.firstName = firstNameController.text;
+                      }
+                      if (lastNameController.text.isNotEmpty) {
+                        currentUser.lastName = lastNameController.text;
+                      }
+                      if (!(genderTemp == null)) {
+                        currentUser.gender = genderTemp;
+                      }
+                      if (startDateController.text != currentUser.dateOfBirth) {
+                        startDateController.text = DateTimeUtils()
+                            .formatDateTimeToStringDDMMYYYY(startDateLocal,
+                                Localizations.localeOf(context).languageCode);
+                        currentUser.dateOfBirth = startDateController.text;
+                      }
+                      currentUser.name =
+                          "${currentUser.firstName!} ${currentUser.lastName!}";
+                      await _userDataService.updateCurrentUserDatosPerifl(
+                          currentUser.name!,
+                          currentUser.firstName!,
+                          currentUser.lastName!,
+                          currentUser.gender!,
+                          currentUser.dateOfBirth!);
+                      mixpanel!
+                          .track('user_profile_settings_edit_info_completed');
+                    }
+                    Navigator.pop(context);
+                  }
+                },
+                backgroundColor: Colors.green,
+                icon: Icon(
+                  Icons.save_rounded,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.width * 0.05,
+                ),
+                label: Text(
+                  AppLocalizations.of(context)!.save,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Colors.white),
+                ),
+              ),
+            )
+          : Container(),
     );
   }
 }
@@ -796,7 +1143,11 @@ class _SettingsYourDataState extends State<SettingsYourData> {
 class GenderWidget extends StatefulWidget {
   final ValueChanged<int> selectedGenderChanged;
   final Usuario? user;
-  const GenderWidget({required Key key, required this.selectedGenderChanged, required this.user}) : super(key: key);
+  const GenderWidget(
+      {required Key key,
+      required this.selectedGenderChanged,
+      required this.user})
+      : super(key: key);
 
   @override
   _GenderWidgetState createState() => _GenderWidgetState();
@@ -818,53 +1169,68 @@ class _GenderWidgetState extends State<GenderWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _icon(0, text: AppLocalizations.of(context)!.male, icon: Icons.male_outlined),
-        _icon(1, text: AppLocalizations.of(context)!.female, icon: Icons.female_outlined),
-        _icon(2, text: AppLocalizations.of(context)!.transgender, icon: Icons.transgender_outlined),
+        _icon(0,
+            text: AppLocalizations.of(context)!.male,
+            icon: Icons.male_outlined),
+        _icon(1,
+            text: AppLocalizations.of(context)!.female,
+            icon: Icons.female_outlined),
+        _icon(2,
+            text: AppLocalizations.of(context)!.transgender,
+            icon: Icons.transgender_outlined),
       ],
     );
   }
+
   Widget _icon(int index, {required String text, required IconData icon}) {
     return Material(
       elevation: 4,
       shape: const CircleBorder(),
-      shadowColor: gender == index ? Theme.of(context).colorScheme.secondary.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor,
+      shadowColor: gender == index
+          ? Theme.of(context).colorScheme.secondary.withOpacity(0.5)
+          : Theme.of(context).scaffoldBackgroundColor,
       child: SizedBox.fromSize(
-          size: Size(MediaQuery.of(context).size.width*0.25, MediaQuery.of(context).size.width*0.25), // button width and height
-          child: ClipOval(
-            child: Material(
-              color: gender == index ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
-              child: InkWell(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        icon,
-                        size: 30,
-                        color: gender == index ? AppColors.white : Theme.of(context).primaryColor,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                            text,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: gender == index ? AppColors.white : Theme.of(context).primaryColor)
-                        ),
-                      ),
-                    ],
+        size: Size(
+            MediaQuery.of(context).size.width * 0.25,
+            MediaQuery.of(context).size.width *
+                0.25), // button width and height
+        child: ClipOval(
+          child: Material(
+            color: gender == index
+                ? Theme.of(context).colorScheme.secondary
+                : Theme.of(context).scaffoldBackgroundColor,
+            child: InkWell(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    icon,
+                    size: 30,
+                    color: gender == index
+                        ? AppColors.white
+                        : Theme.of(context).primaryColor,
                   ),
-                  onTap: () => {
-                    setState(() {
-                      gender = index;
-                      widget.selectedGenderChanged(gender);
-                    }),
-                  },
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(text,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: gender == index
+                                ? AppColors.white
+                                : Theme.of(context).primaryColor)),
+                  ),
+                ],
               ),
+              onTap: () => {
+                setState(() {
+                  gender = index;
+                  widget.selectedGenderChanged(gender);
+                }),
+              },
             ),
           ),
         ),
+      ),
     );
   }
-
 }
-
-

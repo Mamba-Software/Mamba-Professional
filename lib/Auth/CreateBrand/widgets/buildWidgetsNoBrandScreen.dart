@@ -1,17 +1,17 @@
 // Build the Widget of the Image
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Auth/CreateBrand/views/mobile/RegistrarMarca.dart';
+import 'package:mamba_castelldefels/auth/CreateBrand/views/mobile/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/QRCode/QRScanner.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/Profile/Profile.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget buildUserPicture(

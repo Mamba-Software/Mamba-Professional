@@ -1,13 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // This class represents the Object <Event> that will be showed in the Sesions Widget.
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Recurrent.dart';
-
-import '../../../Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/data/Models/Bono.dart';
+import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba_castelldefels/data/Models/Location.dart';
+import 'package:mamba_castelldefels/data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Recurrent.dart';
 
 class Event {
   String? id;

@@ -4,18 +4,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/read_event/cubit/ReadEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/views/mobile/AddorEdtiEvent.dart';
+import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba_castelldefels/events/crud_events/read_event/cubit/ReadEventCubit.dart';
+import 'package:mamba_castelldefels/events/crud_events/views/mobile/AddorEdtiEvent.dart';
 import 'package:mamba_castelldefels/app/theme/ThemeProvider.dart';
 import 'package:mamba_castelldefels/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:maps_launcher/maps_launcher.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
@@ -25,8 +25,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
+import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/data/Models/Location.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
@@ -317,15 +317,15 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                   ],
                 )
               : Container(
-                margin: const EdgeInsets.all( 4),
-                child: Center(
+                  margin: const EdgeInsets.all(4),
+                  child: Center(
                     child: Icon(
                       Icons.lock_outlined,
                       size: MediaQuery.of(context).size.width * 0.04,
                       color: AppColors.red,
                     ),
                   ),
-              ),
+                ),
         ));
   }
 

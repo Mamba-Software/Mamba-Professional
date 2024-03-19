@@ -1,12 +1,11 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationLoading.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationWidget.dart';
+import 'package:mamba_castelldefels/data/Models/Location.dart';
+import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
+import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/Location/LocationLoading.dart';
+import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/Location/LocationWidget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LocationBlocSelector extends StatelessWidget {
