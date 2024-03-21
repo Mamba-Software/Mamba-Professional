@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
+import 'package:mamba_castelldefels/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 
 class StripeWebView extends StatefulWidget {
   const StripeWebView({super.key});

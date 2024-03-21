@@ -4,8 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_data_provider.dart';
-import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_repository.dart';
+import 'package:mamba_castelldefels/stripe/Data/data_repository/stripe_connect_data_provider.dart';
+import 'package:mamba_castelldefels/stripe/Data/data_repository/stripe_connect_repository.dart';
 part 'stripe_connect_state.dart';
 
 class StripeConnectCubit extends Cubit<StripeConnectState> {

@@ -32,9 +32,9 @@ import 'package:mamba_castelldefels/notifications/Unread/widgets/profileImage.da
 import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadNotifications.dart';
-import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_repository.dart';
-import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
-import 'package:mamba_castelldefels/Stripe/views/StripeOnboarding.dart';
+import 'package:mamba_castelldefels/stripe/Data/data_repository/stripe_connect_repository.dart';
+import 'package:mamba_castelldefels/stripe/models/user_stripe_model.dart';
+import 'package:mamba_castelldefels/stripe/views/StripeOnboarding.dart';
 
 // Tus Datos Widget.
 class BrandInfo extends StatefulWidget {

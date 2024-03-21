@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_data_provider.dart';
+import 'package:mamba_castelldefels/stripe/Data/data_repository/stripe_connect_data_provider.dart';
 
 class PaymentRepository {
   Future<bool> cancelSubscription({required String subscriptionId}) async {

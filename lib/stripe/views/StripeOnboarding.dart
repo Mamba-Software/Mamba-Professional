@@ -11,8 +11,8 @@ import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
-import 'package:mamba_castelldefels/Stripe/views/StripeWebView.dart';
+import 'package:mamba_castelldefels/stripe/models/user_stripe_model.dart';
+import 'package:mamba_castelldefels/stripe/views/StripeWebView.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class StripeOnboarding extends StatefulWidget {
