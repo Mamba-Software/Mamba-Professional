@@ -3,7 +3,34 @@ import 'package:mamba_castelldefels/initial_popups/models/initial_popup_actions.
 import 'initial_popups_state.dart';
 
 class InitialPopupsCubit extends Cubit<InitialPopupState> {
-  InitialPopupsCubit() : super(const InitialPopupInitial());
+  
+  InitialPopupsCubit() : super(const InitialPopupInitial()) {
+    _checkForInitialPopups();
+  }
+
+  void _checkForInitialPopups() {
+    // You might want to run these checks asynchronously
+    Future.microtask(() async {
+      // Sequentially check for different popups. This is a simple way to handle it,
+      // but you might implement a more sophisticated logic depending on your needs.
+
+      // Check "What's New" first
+      if (await _shouldShowWhatsNew()) {
+        checkWhatsNew(); // This method will emit the appropriate state
+        return; // Stop checking further if "What's New" is shown
+      }
+
+      // Add other checks here. If "What's New" wasn't shown, maybe you want to check
+      // for "Rate the App", "Give Feedback", etc.
+    });
+  }
+
+  Future<bool> _shouldShowWhatsNew() async {
+    // Implement your logic here to determine if "What's New" should be shown
+    // This could involve checking the app version, user preferences, etc.
+    // Returning true for demonstration purposes
+    return true;
+  }
 
   // Method to check for and trigger the "What's New" popup
   void checkWhatsNew() {

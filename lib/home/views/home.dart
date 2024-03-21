@@ -5,20 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/auth/CreateBrand/views/mobile/NoBrandScreen.dart';
 import 'package:mamba_castelldefels/auth/cubit/AuthCubit.dart';
-import 'package:mamba_castelldefels/commons/Utils/MambaProSelector/MambaProUtils.dart';
+import 'package:mamba_castelldefels/home/views/brand_screen.dart';
 import 'package:mamba_castelldefels/data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/Suscription/SuscriptionDataService.dart';
 import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/home/views/brand_screen.dart';
 import 'package:mamba_castelldefels/initial_popups/cubit/initial_popups_cubit.dart';
+import 'package:mamba_castelldefels/initial_popups/cubit/initial_popups_state.dart';
 import 'package:mamba_castelldefels/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/data/Models/Brand.dart';
 import 'package:mamba_castelldefels/commons/managers/PermisionsService.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -26,15 +24,15 @@ import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/Pa
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-class HomePageProvider extends StatelessWidget {
+class HomePage extends StatelessWidget {
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<InitialPopupsCubit>(
           create: (context) => InitialPopupsCubit(),
         ),
-        // Add more BlocProviders here as needed
+        // Add more BlocProviders here when needed
       ],
       child: const HomePageBody(),
     );
@@ -58,10 +56,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
-  final _suscriptionDataService = SuscriptionDataService();
   final _settingsDataService = SettingsDataService();
-  final _mambaProUtils = MambaProUtils();
-  final SharePlusUtils _sharePlusUtils = SharePlusUtils();
   // Boolean Loading
   bool isLoading = false;
   bool hasBrand = false;
@@ -161,17 +156,6 @@ class _HomePageBodyState extends State<HomePageBody> {
     // Check Location Permissions
     print("Checking Location Permissions...");
     await PermisionsService().getUserLocation();
-  }
-
-  // Init Device Sizes
-  initDeviceSizes() {
-    safeAreaHeight = MediaQuery.of(context).size.height -
-        AppBar().preferredSize.height -
-        MediaQuery.of(context).padding.bottom;
-    safeAreaWidth = MediaQuery.of(context).size.width;
-    print(
-        "Device H and W: ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size.width}");
-    print("SafeArea H and W: $safeAreaHeight $safeAreaWidth");
   }
 
   // Check version and Update App Dialog
@@ -291,36 +275,50 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? Scaffold(
-            backgroundColor: AppColors.black,
-            body: LoadingView(
-              hasLogo: false,
-              isSmall: true,
-              color: AppColors.white,
-            ),
-          )
-        : BlocSelector<AuthCubit, AuthState, AuthState>(selector: (state) {
-            return state;
-          }, builder: (context, state) {
-            if (state is AuthUserBrand) {
-              return !brandIsActive
-                  ? currentUser.id == currentBrand.adminID
-                      ? PayWall(
-                          brandId: currentBrand.id!, comesFromInitPage: true)
-                      : const BrandScreen()
-                  : const BrandScreen();
-            } else if (state is AuthUserNoBrand) {
-              return const NoBrandScreen();
-            } else {
-              return Scaffold(
-                  backgroundColor: AppColors.black,
-                  body: LoadingView(
-                    hasLogo: false,
-                    isSmall: true,
-                    color: AppColors.white,
-                  ));
-            }
-          });
+    return BlocListener<InitialPopupsCubit, InitialPopupState>(
+      listener: (context, popupState) {
+        if (popupState is WhatsNewPopupLoaded) {
+          // Show the dialog based on WhatsNewPopupLoaded state
+          print("test");
+        }
+        // Add more conditions for other pop-up types
+      },
+      child: isLoading
+          ? Scaffold(
+              backgroundColor: AppColors.black,
+              body: LoadingView(
+                hasLogo: false,
+                isSmall: true,
+                color: AppColors.white,
+              ),
+            )
+          : BlocSelector<AuthCubit, AuthState, AuthState>(
+              selector: (state) {
+                return state;
+              },
+              builder: (context, state) {
+                if (state is AuthUserBrand) {
+                  return !brandIsActive
+                      ? currentUser.id == currentBrand.adminID
+                          ? PayWall(
+                              brandId: currentBrand.id!,
+                              comesFromInitPage: true)
+                          : const BrandScreen()
+                      : const BrandScreen();
+                } else if (state is AuthUserNoBrand) {
+                  return const NoBrandScreen();
+                } else {
+                  return Scaffold(
+                    backgroundColor: AppColors.black,
+                    body: LoadingView(
+                      hasLogo: false,
+                      isSmall: true,
+                      color: AppColors.white,
+                    ),
+                  );
+                }
+              },
+            ), // The method to build widget based on AuthState
+    );
   }
 }

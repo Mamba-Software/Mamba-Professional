@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/app/theme/ThemeProvider.dart';
+import 'package:mamba_castelldefels/home/views/brand_screen.dart';
 import 'package:mamba_castelldefels/data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/data/DataService/Promotions/PromotionsDataService.dart';
@@ -21,7 +22,6 @@ import 'package:mamba_castelldefels/commons/widgets/Components/Text/TitleHeadlin
 import 'package:mamba_castelldefels/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/data/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/home/views/brand_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
