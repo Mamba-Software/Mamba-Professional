@@ -11,13 +11,15 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/home/views/no_brand_screen.dart';
-import 'package:mamba/initial_popups/cubit/initial_popups_cubit.dart';
-import 'package:mamba/initial_popups/cubit/initial_popups_state.dart';
+import 'package:mamba/popups/cubit/initial_popups_cubit.dart';
+import 'package:mamba/popups/cubit/initial_popups_state.dart';
+import 'package:mamba/popups/views/dialogs/info_popup.dart';
+import 'package:mamba/l10n/l10n.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
+import 'package:mamba/popups/views/initial_popups/force_update.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
@@ -277,9 +279,13 @@ class _HomePageBodyState extends State<HomePageBody> {
   Widget build(BuildContext context) {
     return BlocListener<InitialPopupsCubit, InitialPopupState>(
       listener: (context, popupState) {
-        if (popupState is WhatsNewPopupLoaded) {
+        if (popupState is InitialPopupLoaded) {
           // Show the dialog based on WhatsNewPopupLoaded state
-          print("test");
+          InfoPopUp.showInfoPopUp(
+            context: context,
+            message: popupState.message,
+            onTap: () => (Navigator.pop(context)),
+          );
         }
         // Add more conditions for other pop-up types
       },

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mamba/l10n/l10n.dart';
 
 class InfoPopUp {
   static void showInfoPopUp({required BuildContext context, required String message, required Function() onTap}) {
