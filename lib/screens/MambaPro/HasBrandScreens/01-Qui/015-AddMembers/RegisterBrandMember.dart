@@ -2,14 +2,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/notifications/NotificationService/NotificationService.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class RegisterBrandMember extends StatefulWidget {
   final bool isTrainer;

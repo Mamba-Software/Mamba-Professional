@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 
 part 'ClientsSessionsState.dart';
 

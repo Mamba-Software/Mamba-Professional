@@ -1,9 +1,8 @@
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 
 // This class contains all the Utils used for Date recollection and treatment.
 class DateTimeUtils {
-
   String formatDateTimeToStringDDMMYYYY(DateTime date, String languageCode) {
     return DateFormat("dd-MM-yyyy", languageCode).format(date);
   }
@@ -17,11 +16,13 @@ class DateTimeUtils {
   }
 
   String formatDateTimeToStringMM(DateTime date, String languageCode) {
-    return StringUtils().toCapitalized(DateFormat("MMMM", languageCode).format(date));
+    return StringUtils()
+        .toCapitalized(DateFormat("MMMM", languageCode).format(date));
   }
 
   String formatDateTimeToStringMMMYYYY(DateTime date, String languageCode) {
-    return StringUtils().toCapitalized(DateFormat("MMM yyyy", languageCode).format(date));
+    return StringUtils()
+        .toCapitalized(DateFormat("MMM yyyy", languageCode).format(date));
   }
 
   String formatDateTimeToStringDDMMMMYYYY(DateTime date, String languageCode) {
@@ -36,5 +37,4 @@ class DateTimeUtils {
   String formatDateTimeToStringDDMMYY(DateTime date) {
     return StringUtils().toCapitalized(DateFormat("dd-MM-yy").format(date));
   }
-
 }

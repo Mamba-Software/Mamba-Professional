@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/bootstrap.dart';
-import 'package:mamba_castelldefels/app/firebase/firebase_options_development.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/bootstrap.dart';
+import 'package:mamba/app/firebase/firebase_options_development.dart';
 
 Future<void> main() async {
   // Initialize App

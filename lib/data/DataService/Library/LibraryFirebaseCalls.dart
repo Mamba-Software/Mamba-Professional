@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/data/LibraryModels/lColor.dart';
-import 'package:mamba_castelldefels/data/LibraryModels/lDegradate.dart';
-import 'package:mamba_castelldefels/data/LibraryModels/lImage.dart';
-import 'package:mamba_castelldefels/data/LibraryModels/lPaymentMethod.dart';
+import 'package:mamba/data/LibraryModels/lColor.dart';
+import 'package:mamba/data/LibraryModels/lDegradate.dart';
+import 'package:mamba/data/LibraryModels/lImage.dart';
+import 'package:mamba/data/LibraryModels/lPaymentMethod.dart';
 
 // Firebase Library Service Class. All calls to Firebase are in this class.
 class LibraryFirebaseCalls {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/auth/cubit/AuthCubit.dart';
-import 'package:mamba_castelldefels/auth/utils/enumAuth.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba/auth/cubit/AuthCubit.dart';
+import 'package:mamba/auth/utils/enumAuth.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget normalRegister(BuildContext context, AuthState state, final formKey,

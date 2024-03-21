@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/commons/constants/constants.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Events/EventListTile.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventListTile.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

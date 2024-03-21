@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba/app/style/AppColors.dart';
 
 /*
 Widget dividerAddEditEvent(

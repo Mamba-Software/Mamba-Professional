@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/commons/constants/constants.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Purchase.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PurchaseListTile extends StatefulWidget {

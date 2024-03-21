@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Events/EventListTile.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
 
 class UserBonoEventHistoryPage extends StatefulWidget {
   String userId;

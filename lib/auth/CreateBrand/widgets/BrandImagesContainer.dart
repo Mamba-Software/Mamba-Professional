@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/ImageObject.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/ImageObject.dart';
+import 'package:mamba/commons/widgets/Components/Images/RectangularImage.dart';
 
 class BrandImagesContainer extends StatefulWidget {
   double? height;

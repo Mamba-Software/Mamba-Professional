@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mamba/l10n/l10n.dart';
 
 // Idiomas Class, encapsulates all Locales / Languages that we work with in Mamba.
 class Idiomas {
@@ -14,4 +15,8 @@ class Idiomas {
     }
     return all[0];
   }
+}
+
+extension AppLocalizationsX on BuildContext {
+  AppLocalizations get l10n => AppLocalizations.of(this)!;
 }

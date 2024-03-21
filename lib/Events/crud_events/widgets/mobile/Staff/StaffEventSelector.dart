@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
-import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/Staff/staffEventWidget.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/Staff/staffEventWidget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StaffEventSelector extends StatelessWidget {

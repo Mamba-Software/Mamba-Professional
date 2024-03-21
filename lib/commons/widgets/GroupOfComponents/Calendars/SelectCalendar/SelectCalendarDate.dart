@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class SelectCalendarDate extends StatefulWidget {

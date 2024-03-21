@@ -1,10 +1,10 @@
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/RequestToBrand.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 
 class NotificationService {
   // Acceso a Base de Datos

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba/app/style/AppColors.dart';
 
 class DeleteBonoDialog extends StatelessWidget {
   final bool hasPurchases;

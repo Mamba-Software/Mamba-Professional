@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/constants/constants.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/constants/constants.dart';
 
 // Loading View Widget which displays a Circular Progress indicator with the Mamba "M" inside.
 class LoadingViewWhite extends StatelessWidget {
@@ -27,11 +27,9 @@ class LoadingViewWhite extends StatelessWidget {
             width: 25,
             //height: MediaQuery.of(context).size.height * 0.07,
             height: 25,
-            child: Image(
-                  image: AssetImage(Constants.logoSimple)
-              ),
-            ),
+            child: Image(image: AssetImage(Constants.logoSimple)),
           ),
+        ),
       ],
     );
   }

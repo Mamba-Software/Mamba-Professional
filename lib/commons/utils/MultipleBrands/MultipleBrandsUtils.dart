@@ -1,4 +1,4 @@
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Brand.dart';
 
 //BonosUtils Class is used to administrate all the bonos
 class MultipleBrandsUtils {

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Events/EventPage/EventPageClient.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventPage/EventPageClient.dart';
 
 import 'EventPageTrainer.dart';
 

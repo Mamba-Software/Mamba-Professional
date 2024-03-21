@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/app/style/Styles.dart';
+import 'package:mamba/app/style/Styles.dart';
 
 class CircularImage extends StatefulWidget {
   final double? size;

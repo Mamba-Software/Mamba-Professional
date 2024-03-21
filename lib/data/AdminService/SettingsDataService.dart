@@ -1,4 +1,4 @@
-import 'package:mamba_castelldefels/data/DataService/FirebaseDatabaseService.dart';
+import 'package:mamba/data/DataService/FirebaseDatabaseService.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class SettingsDataService {

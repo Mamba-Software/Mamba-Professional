@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/commons/constants/constants.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/commons/constants/constants.dart';
 
 class StripeConnectDataProvider {
   static Future createAccountApi(String parameters) async {

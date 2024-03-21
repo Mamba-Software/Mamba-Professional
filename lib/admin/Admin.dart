@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/data/AdminService/ScriptsService.dart';
-import 'package:mamba_castelldefels/commons/constants/constants.dart';
-import 'package:mamba_castelldefels/app/style/Styles.dart';
-import 'package:mamba_castelldefels/admin/AdminTool.dart';
-import 'package:mamba_castelldefels/admin/AdminFeedBack.dart';
+import 'package:mamba/data/AdminService/ScriptsService.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/admin/AdminTool.dart';
+import 'package:mamba/admin/AdminFeedBack.dart';
 
 class Admin extends StatefulWidget {
   const Admin({super.key});

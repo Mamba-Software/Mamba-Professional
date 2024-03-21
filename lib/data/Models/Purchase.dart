@@ -1,9 +1,9 @@
 // This class represents the Object <Bono Rquest>
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/Condition.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Condition.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
 
 class Purchase {
   String? id;

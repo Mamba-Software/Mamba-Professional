@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/app/style/Styles.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class AdminTool extends StatefulWidget {
   final String title;

@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/Models/Subscription.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/Models/Subscription.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 
 class CountDownSubscription extends StatefulWidget {
 

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 
 class UsersHorizontalScroll extends StatefulWidget {
   final List<Usuario> usuarios;

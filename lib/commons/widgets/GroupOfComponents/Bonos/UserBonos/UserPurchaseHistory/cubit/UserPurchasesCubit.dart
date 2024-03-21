@@ -2,17 +2,17 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/Purchase/PurchaseDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/BonoRequest.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/commons/utils/Bonos/BonosUtils.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/models/PurchaseHistoryModel.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/BonoRequest.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Purchase.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/models/PurchaseHistoryModel.dart';
 part 'UserPurchasesState.dart';
 
 class UserPurchasesCubit extends Cubit<UserPurchasesState> {

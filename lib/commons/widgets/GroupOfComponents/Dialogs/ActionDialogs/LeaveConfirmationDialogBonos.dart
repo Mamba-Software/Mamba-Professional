@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/Purchase/PurchaseDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/Condition.dart';
-import 'package:mamba_castelldefels/data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/notifications/NotificationService/LocalNotificationService.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Condition.dart';
+import 'package:mamba/data/Models/Purchase.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class LeaveConfirmationDialogBonos extends StatefulWidget {
   final String text;

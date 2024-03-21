@@ -1,13 +1,13 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/data/Models/ImageObject.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/utils/Images/ImageUtils.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/Images/RectangularImage.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/data/Models/ImageObject.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Images/ImageUtils.dart';
+import 'package:mamba/commons/widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class SelectBrandImages extends StatefulWidget {
   String brandId;

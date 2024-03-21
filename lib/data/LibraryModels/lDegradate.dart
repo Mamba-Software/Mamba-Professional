@@ -1,6 +1,6 @@
 // This class represents the Object <Event> that will be showed in the Calendar Widget.
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 
 class lDegradate {
   String? id;

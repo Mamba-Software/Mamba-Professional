@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/app/style/Styles.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/style/Styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/app/style/TextStyles.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/style/TextStyles.dart';
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
 class AppThemes {
@@ -46,19 +46,18 @@ class AppThemes {
         backgroundColor: AppColors.white,
         showUnselectedLabels: false,
         showSelectedLabels: true,
-      ),    
+      ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.lightGrey,
         surfaceTintColor: AppColors.lightGrey,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),        
+        ),
       ),
       colorScheme: ColorScheme.fromSwatch().copyWith(
           secondary: AppColors.mainColor,
           brightness: Brightness.light,
           background: AppColors.white),
-      
     );
   }
 
@@ -100,7 +99,7 @@ class AppThemes {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,
-        type: BottomNavigationBarType.fixed,        
+        type: BottomNavigationBarType.fixed,
         backgroundColor: AppColors.darkerGrey,
         showUnselectedLabels: false,
         showSelectedLabels: true,
@@ -110,7 +109,7 @@ class AppThemes {
         surfaceTintColor: AppColors.darkerGrey,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),        
+        ),
       ),
       colorScheme: ColorScheme.fromSwatch()
           .copyWith(secondary: AppColors.mainColor, brightness: Brightness.dark)

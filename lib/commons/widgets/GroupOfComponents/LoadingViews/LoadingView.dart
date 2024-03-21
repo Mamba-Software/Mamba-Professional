@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/constants.dart';
 
 class LoadingView extends StatefulWidget {
   bool? hasLogo;
@@ -13,7 +13,6 @@ class LoadingView extends StatefulWidget {
 }
 
 class _LoadingViewState extends State<LoadingView> {
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -24,29 +23,35 @@ class _LoadingViewState extends State<LoadingView> {
             width: widget.isSmall != null && widget.isSmall == true ? 25 : 50,
             height: widget.isSmall != null && widget.isSmall == true ? 25 : 50,
             child: CircularProgressIndicator(
-              strokeWidth: widget.isSmall != null && widget.isSmall == true ? 2.5 : 4,
-              color:  widget.color ?? Theme.of(context).colorScheme.secondary,
+              strokeWidth:
+                  widget.isSmall != null && widget.isSmall == true ? 2.5 : 4,
+              color: widget.color ?? Theme.of(context).colorScheme.secondary,
             ),
           ),
         ),
-        widget.hasLogo != null && widget.hasLogo == false ? Container() : Center(
-          child: SizedBox(
-            width: widget.isSmall != null && widget.isSmall == true ? 12 : 25,
-            height: widget.isSmall != null && widget.isSmall == true ? 12 : 25,
-            child: Image(
-                image: AssetImage(Constants.logoSimpleYellow)
-            ),
-          ),
-        ),
-        widget.text != null ? Padding(
-          padding: const EdgeInsets.only(top: 100),
-          child: Text(
-            widget.text!,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ) : Container(),
+        widget.hasLogo != null && widget.hasLogo == false
+            ? Container()
+            : Center(
+                child: SizedBox(
+                  width: widget.isSmall != null && widget.isSmall == true
+                      ? 12
+                      : 25,
+                  height: widget.isSmall != null && widget.isSmall == true
+                      ? 12
+                      : 25,
+                  child: Image(image: AssetImage(Constants.logoSimpleYellow)),
+                ),
+              ),
+        widget.text != null
+            ? Padding(
+                padding: const EdgeInsets.only(top: 100),
+                child: Text(
+                  widget.text!,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              )
+            : Container(),
       ],
     );
-
   }
 }

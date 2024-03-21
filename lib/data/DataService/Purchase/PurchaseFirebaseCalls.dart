@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/Condition.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/commons/utils/Bonos/BonosUtils.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Condition.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/data/Models/Purchase.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:uuid/uuid.dart';
 
 // Firebase Purchase Service Class. All calls to Firebase are in this class.

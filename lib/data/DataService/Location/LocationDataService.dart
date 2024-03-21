@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/data/DataService/FirebaseDatabaseService.dart';
-import 'package:mamba_castelldefels/data/Models/Location.dart';
+import 'package:mamba/data/DataService/FirebaseDatabaseService.dart';
+import 'package:mamba/data/Models/Location.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class LocationDataService {

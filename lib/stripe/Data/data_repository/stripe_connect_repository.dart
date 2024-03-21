@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/stripe/Data/data_repository/stripe_connect_data_provider.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/stripe/Data/data_repository/stripe_connect_data_provider.dart';
 import 'package:http/http.dart' as http;
 
 class StripeConnectRepository {

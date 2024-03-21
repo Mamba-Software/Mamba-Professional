@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/initial_popups/models/initial_popup_actions.dart';
+import 'package:mamba/initial_popups/models/initial_popup_actions.dart';
 
 abstract class InitialPopupState extends Equatable {
   const InitialPopupState();
@@ -24,7 +24,8 @@ class InitialPopupLoading extends InitialPopupState {
 class InitialPopupLoaded extends InitialPopupState {
   final String title;
   final String message;
-  final List<PopupAction> actions; // Assuming PopupAction is a class or enum you define for possible actions in a popup
+  final List<PopupAction>
+      actions; // Assuming PopupAction is a class or enum you define for possible actions in a popup
 
   const InitialPopupLoaded({
     required this.title,

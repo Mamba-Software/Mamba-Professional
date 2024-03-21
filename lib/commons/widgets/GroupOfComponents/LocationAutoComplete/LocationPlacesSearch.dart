@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 
 class Place {
   String? streetNumber;

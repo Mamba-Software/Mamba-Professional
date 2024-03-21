@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Calendars/UserCalendarWidget.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Calendars/UserCalendarWidget.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

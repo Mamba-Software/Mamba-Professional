@@ -1,7 +1,7 @@
 // Utils for page selections in Mamba Pro
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 
 class MambaProUtils {
   // Date in the Middle of the Month

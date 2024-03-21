@@ -1,4 +1,4 @@
-import 'package:mamba_castelldefels/data/DataService/Room/RoomFirebaseCalls.dart';
+import 'package:mamba/data/DataService/Room/RoomFirebaseCalls.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class RoomDataService {

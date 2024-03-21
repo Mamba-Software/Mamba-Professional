@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 part 'BrandEventsState.dart';
 
 class BrandEventsCubit extends Cubit<BrandEventsState> {

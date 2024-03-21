@@ -1,6 +1,6 @@
 //MambaCoin class used to have a widget of mamba coin
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/app/style/Styles.dart';
+import 'package:mamba/app/style/Styles.dart';
 
 class MambaCoin {
   //Mmaba coin with value and or animation

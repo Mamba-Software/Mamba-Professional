@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
+import 'package:mamba/app/style/AppColors.dart';
 
 class TitleDescriptionWidget extends StatefulWidget {
   const TitleDescriptionWidget({super.key});

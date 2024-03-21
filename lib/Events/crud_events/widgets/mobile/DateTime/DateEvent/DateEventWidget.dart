@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/CupertinoSelect/SelectDateDialog.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/commons/widgets/Components/CupertinoSelect/SelectDateDialog.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 TextEditingController startDateController = TextEditingController();

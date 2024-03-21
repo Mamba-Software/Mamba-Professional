@@ -3,12 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/commons/constants/constants.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Events/EventFeedback.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventFeedback.dart';
 
 class UserEventCard extends StatefulWidget {
   Event event;

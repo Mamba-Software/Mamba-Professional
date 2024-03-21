@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba_castelldefels/commons/constants/constants.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BrandIntroScreen extends StatefulWidget {

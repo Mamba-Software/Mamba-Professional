@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/data/DataService/Purchase/PurchaseDataService.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/data/Models/Purchase.dart';
+import 'package:mamba/data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/data/Models/Purchase.dart';
 import 'package:equatable/equatable.dart';
 
 part 'BonoEventsState.dart';

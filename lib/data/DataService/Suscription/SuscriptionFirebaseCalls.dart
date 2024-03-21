@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:mamba_castelldefels/data/Models/Subscription.dart';
+import 'package:mamba/data/Models/Subscription.dart';
 
 // Brand Firebase Service Class. All calls to Firebase are in this class.
 class SuscriptionFirebaseCalls {

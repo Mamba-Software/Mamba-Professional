@@ -1,4 +1,4 @@
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 
 class OrderFilter {
   List<Usuario> orderFilter(

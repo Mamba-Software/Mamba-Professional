@@ -8,16 +8,16 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mamba_castelldefels/data/DataService/Room/RoomDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
+import 'package:mamba/data/DataService/Room/RoomDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mime/mime.dart';
-import 'package:mamba_castelldefels/app/style/Styles.dart';
+import 'package:mamba/app/style/Styles.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
+import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatPage extends StatefulWidget {

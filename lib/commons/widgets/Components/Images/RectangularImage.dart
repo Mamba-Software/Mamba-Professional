@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/app/style/Styles.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/style/Styles.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RectangularImage extends StatefulWidget {

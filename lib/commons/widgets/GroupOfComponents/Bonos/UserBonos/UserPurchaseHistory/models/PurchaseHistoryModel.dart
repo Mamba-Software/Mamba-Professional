@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/BonoRequest.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/BonoRequest.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Purchase.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 
 enum PurchaseStatus {
   CONFIRMED,

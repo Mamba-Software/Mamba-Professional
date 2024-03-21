@@ -1,12 +1,12 @@
 //YourBrand class used to have a list of your brands
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/auth/views/mobile/SplashScreen.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/auth/views/mobile/SplashScreen.dart';
+import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/data/Models/Brand.dart';
 
 class YourBrandsListTile extends StatefulWidget {
   List<Brand> brands;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 
 class Categories extends StatefulWidget {
   String brandId;

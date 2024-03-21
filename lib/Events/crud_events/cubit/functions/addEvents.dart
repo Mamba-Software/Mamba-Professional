@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/Purchase/PurchaseDataService.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/events/crud_events/cubit/functions/notificationsEvents.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/notifications/NotificationService/NotificationService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/events/crud_events/cubit/functions/notificationsEvents.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 
 class AddEventFunctions {
   final _eventDataService = EventDataService();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/l10n/Idiomas.dart';
+import 'package:mamba/l10n/Idiomas.dart';
 
 // Provider for Language Change in our App.
 class LanguageProvider extends ChangeNotifier {
@@ -13,6 +13,7 @@ class LanguageProvider extends ChangeNotifier {
     _idioma = idioma;
     notifyListeners();
   }
+
   // Clears the App´s Language. The default one will be used.
   void clearLocale() {
     _idioma = null;

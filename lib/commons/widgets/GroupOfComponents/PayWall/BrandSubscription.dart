@@ -4,16 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/commons/constants/constants.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/notifications/Unread/widgets/askSupport.dart';
-import 'package:mamba_castelldefels/notifications/Unread/widgets/profileImage.dart';
-import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadChats.dart';
-import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadNotifications.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
+import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 // Tus Datos Widget.
 class BrandSubscription extends StatefulWidget {

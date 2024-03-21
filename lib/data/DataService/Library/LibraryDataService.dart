@@ -1,7 +1,7 @@
-import 'package:mamba_castelldefels/data/DataService/Library/LibraryFirebaseCalls.dart';
-import 'package:mamba_castelldefels/data/LibraryModels/lColor.dart';
-import 'package:mamba_castelldefels/data/LibraryModels/lDegradate.dart';
-import 'package:mamba_castelldefels/data/LibraryModels/lPaymentMethod.dart';
+import 'package:mamba/data/DataService/Library/LibraryFirebaseCalls.dart';
+import 'package:mamba/data/LibraryModels/lColor.dart';
+import 'package:mamba/data/LibraryModels/lDegradate.dart';
+import 'package:mamba/data/LibraryModels/lPaymentMethod.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class LibraryDataService {

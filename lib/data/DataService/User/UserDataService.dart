@@ -1,15 +1,15 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mamba_castelldefels/data/DataService/User/UserFirebaseCalls.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/data/Models/Notifications/NotificationEvent.dart';
-import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/data/Models/Purchase.dart';
-import 'package:mamba_castelldefels/data/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
+import 'package:mamba/data/DataService/User/UserFirebaseCalls.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/data/Models/Notifications/NotificationEvent.dart';
+import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba/data/Models/Purchase.dart';
+import 'package:mamba/data/Models/RequestToBrand.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 
 // This class gives access to all of the Firebase Backend of the User Object.
 class UserDataService {

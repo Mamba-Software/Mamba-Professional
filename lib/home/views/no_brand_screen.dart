@@ -1,10 +1,10 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/auth/CreateBrand/widgets/buildWidgetsNoBrandScreen.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/notifications/NotificationService/LocalNotificationService.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba/auth/CreateBrand/widgets/buildWidgetsNoBrandScreen.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
+import 'package:mamba/app/style/AppColors.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget eventBonosWidget(BuildContext context, Map<Bono, bool> eventBonosMap) {

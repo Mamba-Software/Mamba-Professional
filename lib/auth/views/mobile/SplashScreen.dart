@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/auth/cubit/AuthCubit.dart';
-import 'package:mamba_castelldefels/auth/views/mobile/Login.dart';
-import 'package:mamba_castelldefels/auth/views/mobile/OnboardingScreen.dart';
-import 'package:mamba_castelldefels/data/DataService/Library/LibraryDataService.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
-import 'package:mamba_castelldefels/admin/Admin.dart';
-import 'package:mamba_castelldefels/home/views/home.dart';
+import 'package:mamba/auth/cubit/AuthCubit.dart';
+import 'package:mamba/auth/views/mobile/Login.dart';
+import 'package:mamba/auth/views/mobile/OnboardingScreen.dart';
+import 'package:mamba/data/DataService/Library/LibraryDataService.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
+import 'package:mamba/admin/Admin.dart';
+import 'package:mamba/home/views/home.dart';
 
 
 class SplashScreen extends StatefulWidget {

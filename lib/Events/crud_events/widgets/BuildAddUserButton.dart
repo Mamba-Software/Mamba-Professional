@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/SelectEventUsers/SelectClientsEvent.dart';
-import 'package:mamba_castelldefels/events/crud_events/widgets/mobile/SelectEventUsers/SelectTrainersEvent.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/SelectEventUsers/SelectClientsEvent.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/SelectEventUsers/SelectTrainersEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget buildAddUserButton(

@@ -3,39 +3,35 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/Room/RoomDataService.dart';
-import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/events/Calendar/views/BrandCalendarWidget.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/notifications/NotificationService/LocalNotificationService.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/commons/utils/MambaProSelector/MambaProUtils.dart';
-import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/BrandSubscription.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/DataService/Room/RoomDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/events/Calendar/views/BrandCalendarWidget.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
+import 'package:mamba/commons/utils/MambaProSelector/MambaProUtils.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/BrandSubscription.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/Bonos.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/009%20-%20Stats/Stats.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/Bonos.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/009%20-%20Stats/Stats.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
+import 'package:mamba/screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
-
-
-
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
@@ -919,7 +915,7 @@ class _BrandScreenState extends State<BrandScreen> {
           currentBrand.id!, currentUser.id!, favourites);
     });
   }
- /*
+  /*
   Row(
                       children: [
                         CounterBadgeIcon(

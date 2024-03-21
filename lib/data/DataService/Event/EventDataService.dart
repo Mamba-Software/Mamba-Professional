@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/data/DataService/FirebaseDatabaseService.dart';
-import 'package:mamba_castelldefels/data/Models/Bono.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/data/Models/Location.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
+import 'package:mamba/data/DataService/FirebaseDatabaseService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/data/Models/Location.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class EventDataService {

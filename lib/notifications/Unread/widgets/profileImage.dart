@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 
 Widget profileImage(BuildContext context) {
   return GestureDetector(

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:mamba_castelldefels/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
+import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 
 class StripeWebView extends StatefulWidget {
   const StripeWebView({super.key});

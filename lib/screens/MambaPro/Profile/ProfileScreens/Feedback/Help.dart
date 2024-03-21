@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/data/DataService/FeedBack/FeedbackDataService.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import 'package:mamba_castelldefels/data/Models/Deprecated/GroupOfQuestions.dart';
+import 'package:mamba/data/DataService/FeedBack/FeedbackDataService.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'ReportBug.dart';
 

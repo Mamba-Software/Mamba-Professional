@@ -2,17 +2,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mamba_castelldefels/data/LibraryModels/lColor.dart';
-import 'package:mamba_castelldefels/data/LibraryModels/lDegradate.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/user/chat/ChatCore.dart';
-import 'package:mamba_castelldefels/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
-import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
+import 'package:mamba/data/LibraryModels/lColor.dart';
+import 'package:mamba/data/LibraryModels/lDegradate.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/user/chat/ChatCore.dart';
+import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/notifications/NotificationService/Notifications.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/Profile/Profile.dart';
-import 'package:mamba_castelldefels/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
+import 'package:mamba/notifications/NotificationService/Notifications.dart';
+import 'package:mamba/screens/MambaPro/Profile/Profile.dart';
+import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 // Flavor Setup

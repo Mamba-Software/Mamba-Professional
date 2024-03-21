@@ -1,5 +1,5 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 
 class PermisionsService {

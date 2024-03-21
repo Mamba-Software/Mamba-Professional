@@ -3,16 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mamba_castelldefels/data/DataService/Location/LocationDataService.dart';
-import 'package:mamba_castelldefels/data/Models/Brand.dart';
-import 'package:mamba_castelldefels/data/Models/Location.dart';
-import 'package:mamba_castelldefels/commons/constants/constants.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba/data/DataService/Location/LocationDataService.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Location.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/stripe/models/user_stripe_model.dart';
-import 'package:mamba_castelldefels/stripe/views/StripeWebView.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/stripe/models/user_stripe_model.dart';
+import 'package:mamba/stripe/views/StripeWebView.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class StripeOnboarding extends StatefulWidget {

@@ -1,12 +1,10 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
-
+import 'package:mamba/commons/constants/GlobalVars.dart';
 
 //DynamicLinksUtils Class is used to administrate all the dynamic links, creations and gets
 class DynamicLinkUtils {
-
-  Future<Uri> createDynamicLinkWithIdClient(String id, String urlImage, String brandName) async {
-
+  Future<Uri> createDynamicLinkWithIdClient(
+      String id, String urlImage, String brandName) async {
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
 
     final DynamicLinkParameters parameters = DynamicLinkParameters(
@@ -34,8 +32,8 @@ class DynamicLinkUtils {
     return (await dynamicLinks.buildShortLink(parameters)).shortUrl;
   }
 
-  Future<Uri> createDynamicLinkWithIdTrainer(String id, String urlImage, String brandName) async {
-
+  Future<Uri> createDynamicLinkWithIdTrainer(
+      String id, String urlImage, String brandName) async {
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
 
     final DynamicLinkParameters parameters = DynamicLinkParameters(
@@ -63,14 +61,21 @@ class DynamicLinkUtils {
     return (await dynamicLinks.buildShortLink(parameters)).shortUrl;
   }
 
-  Future<Uri> createDynamicLinkEventId(String eventId, bool isPrivate, String eventImageUrl, String eventName, String brandName, String userName) async {
-
+  Future<Uri> createDynamicLinkEventId(
+      String eventId,
+      bool isPrivate,
+      String eventImageUrl,
+      String eventName,
+      String brandName,
+      String userName) async {
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
     String title = "";
     if (isPrivate) {
-      title = '$userName de $brandName te está invitando a un evento privado titulado $eventName';
+      title =
+          '$userName de $brandName te está invitando a un evento privado titulado $eventName';
     } else {
-      title = '$userName de $brandName te está invitando a un evento grupal titulado $eventName';
+      title =
+          '$userName de $brandName te está invitando a un evento grupal titulado $eventName';
     }
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       // The Dynamic Link URI domain. You can view created URIs on your Firebase console
@@ -99,7 +104,8 @@ class DynamicLinkUtils {
 
   Future<void> retrieveDynamicLink() async {
     try {
-      final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
+      final PendingDynamicLinkData? data =
+          await FirebaseDynamicLinks.instance.getInitialLink();
       final Uri? deepLink = data?.link;
 
       if (deepLink != null) {
@@ -109,10 +115,8 @@ class DynamicLinkUtils {
           print(dynamicLinkBrandId);
         }
       }
-
     } catch (e) {
       print(e.toString());
     }
   }
-
 }
