@@ -1,11 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/data/Models/Brand.dart';
 import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
-import '../../../../../commons/constants/constants.dart';
 
 class TimeOffer extends StatefulWidget {
   List<Event> events;

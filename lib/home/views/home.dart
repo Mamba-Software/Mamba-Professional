@@ -6,13 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/auth/CreateBrand/views/mobile/NoBrandScreen.dart';
 import 'package:mamba_castelldefels/auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/commons/Utils/MambaProSelector/MambaProUtils.dart';
-import 'package:mamba_castelldefels/home/views/BrandScreen.dart';
 import 'package:mamba_castelldefels/data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/data/DataService/Suscription/SuscriptionDataService.dart';
 import 'package:mamba_castelldefels/data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
+import 'package:mamba_castelldefels/home/views/brand_screen.dart';
+import 'package:mamba_castelldefels/initial_popups/cubit/initial_popups_cubit.dart';
 import 'package:mamba_castelldefels/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/data/Models/Brand.dart';
 import 'package:mamba_castelldefels/commons/managers/PermisionsService.dart';
@@ -25,16 +26,31 @@ import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/PayWall/Pa
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-// HomePage for the App. Here the user can change between the diferent pages .
-// In this class we can only see the declaration of those pages and the swiping/changing between screens.
-class Mamba extends StatefulWidget {
-  const Mamba({super.key});
-
+class HomePageProvider extends StatelessWidget {
   @override
-  _MambaState createState() => _MambaState();
+Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<InitialPopupsCubit>(
+          create: (context) => InitialPopupsCubit(),
+        ),
+        // Add more BlocProviders here as needed
+      ],
+      child: const HomePageBody(),
+    );
+  }
 }
 
-class _MambaState extends State<Mamba> {
+// HomePage for the App. Here the user can change between the diferent pages .
+// In this class we can only see the declaration of those pages and the swiping/changing between screens.
+class HomePageBody extends StatefulWidget {
+  const HomePageBody({super.key});
+
+  @override
+  _HomePageBodyState createState() => _HomePageBodyState();
+}
+
+class _HomePageBodyState extends State<HomePageBody> {
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;

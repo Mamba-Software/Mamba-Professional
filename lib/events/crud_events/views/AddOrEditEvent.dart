@@ -40,7 +40,6 @@ import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../../../Data/Models/Bono.dart';
 
 class AddOrEditEvent extends StatefulWidget {
   Locale locale;

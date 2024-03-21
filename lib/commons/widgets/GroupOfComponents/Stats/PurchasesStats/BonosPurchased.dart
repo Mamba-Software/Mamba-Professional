@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/data/Models/Bono.dart';
 import 'package:mamba_castelldefels/data/Models/Brand.dart';
@@ -13,7 +14,7 @@ import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/Bono
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../../../commons/constants/constants.dart';
+
 
 class BonosPurchased extends StatefulWidget {
   List<Purchase> purchases;

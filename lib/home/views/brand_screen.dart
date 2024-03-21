@@ -33,6 +33,10 @@ import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/03-Com/007-
 import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+
+
+
+
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
 class BrandScreen extends StatefulWidget {
@@ -915,9 +919,7 @@ class _BrandScreenState extends State<BrandScreen> {
           currentBrand.id!, currentUser.id!, favourites);
     });
   }
-
-  // ICON Notifications Chat
-  /*
+ /*
   Row(
                       children: [
                         CounterBadgeIcon(

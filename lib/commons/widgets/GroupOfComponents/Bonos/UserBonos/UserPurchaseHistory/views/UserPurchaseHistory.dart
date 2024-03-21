@@ -7,11 +7,11 @@ import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/UserBonos/UserPurchaseHistory/cubit/UserPurchasesCubit.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Bonos/UserBonos/UserPurchaseHistory/views/UserPurchaseCard.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/models/PurchaseHistoryModel.dart';
 import 'package:shimmer/shimmer.dart';
-import '../cubit/UserPurchasesCubit.dart';
 
 class UserPurchaseHistory extends StatelessWidget {
   final String userId;

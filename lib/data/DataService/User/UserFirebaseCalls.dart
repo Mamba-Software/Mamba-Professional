@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/data/Models/Bono.dart';
 import 'package:mamba_castelldefels/data/Models/Brand.dart';
 import 'package:mamba_castelldefels/data/Models/Condition.dart';
 import 'package:mamba_castelldefels/data/Models/Deprecated/Conversation.dart';
+import 'package:mamba_castelldefels/data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
@@ -16,8 +17,6 @@ import 'package:mamba_castelldefels/data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../Models/Purchase.dart';
 
 // Firebase User Service Class. All calls to Firebase are in this class.
 class UserFirebaseCalls {

@@ -22,8 +22,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/commons/utils/MediaQuery/MediaQuery.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/SelectBrandImages.dart';
 import 'package:provider/provider.dart';
-import '../../03-Com/007-Contenido/SelectBrandImages.dart';
 
 class AddEditBono extends StatefulWidget {
   Brand brand;

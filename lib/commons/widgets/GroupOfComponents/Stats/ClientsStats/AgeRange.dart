@@ -1,3 +1,4 @@
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/app/style/Styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,8 +8,6 @@ import 'package:mamba_castelldefels/data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/data/Models/Brand.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-
-import '../../../../../app/style/AppColors.dart';
 
 class AgeRange extends StatefulWidget {
   List<Usuario> users;

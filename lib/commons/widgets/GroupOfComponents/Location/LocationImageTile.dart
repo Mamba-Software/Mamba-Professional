@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
+import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba_castelldefels/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/data/Models/Location.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
@@ -14,8 +15,6 @@ import 'package:maps_launcher/maps_launcher.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:uuid/uuid.dart';
-
-import '../LocationAutoComplete/LocationPlacesSearch.dart';
 
 class LocationImageTile extends StatefulWidget {
   String locationId;

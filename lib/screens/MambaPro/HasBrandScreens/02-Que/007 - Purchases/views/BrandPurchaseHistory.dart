@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/commons/constants/GlobalVars.dart';
 import 'package:mamba_castelldefels/app/style/AppColors.dart';
+import 'package:mamba_castelldefels/commons/constants/constants.dart';
 import 'package:mamba_castelldefels/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
@@ -14,11 +15,10 @@ import 'package:mamba_castelldefels/notifications/Unread/widgets/askSupport.dart
 import 'package:mamba_castelldefels/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/cubit/BrandPurchasesCubit.dart';
 import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/models/PurchaseHistoryModel.dart';
 import 'package:mamba_castelldefels/screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseCard.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../../../../commons/constants/constants.dart';
-import '../cubit/BrandPurchasesCubit.dart';
 
 class BrandPurchaseHistory extends StatelessWidget {
   final String brandId;

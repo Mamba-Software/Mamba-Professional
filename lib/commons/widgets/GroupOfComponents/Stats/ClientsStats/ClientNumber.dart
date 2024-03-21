@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/app/style/AppColors.dart';
 import 'package:mamba_castelldefels/data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../../../app/style/AppColors.dart';
 
 class ClientNumber extends StatefulWidget {
   List<Usuario> users;
