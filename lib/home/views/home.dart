@@ -164,6 +164,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   void checkMinimumAppVersion() async {
     // Check version
     List<bool> result = await _settingsDataService.checkAppVersion();
+    /*
     if (result[0] == true) {
       mixpanel!.track('minimum_app_version_open',
           properties: {'isMandatory': result[1]});
@@ -175,7 +176,7 @@ class _HomePageBodyState extends State<HomePageBody> {
             builder: (BuildContext context) {
               return WillPopScope(
                 onWillPop: () async => false,
-                child: AppUpdateDialog(
+                child: ForceAppUpdatePopUp(
                   isMandatory: true,
                 ),
               );
@@ -197,6 +198,8 @@ class _HomePageBodyState extends State<HomePageBody> {
         }
       }
     }
+    */
+
   }
 
   // Check invited by Brand
