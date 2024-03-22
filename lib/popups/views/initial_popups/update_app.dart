@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/commons/constants/constants.dart';
-import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:store_redirect/store_redirect.dart';
 
-class ForceAppUpdatePopUp {
-  static void showInfoPopUp(
+class AppUpdatePopUp {
+  static void showPopUp(
       {required BuildContext context,
-      required String message,
       required bool isMandatory,
       required Function() onTap}) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return PopScope(
-            onPopInvoked: (bool shouldPop) {
-              print("Should pop: $shouldPop");
-              return;
+        return WillPopScope(
+            onWillPop: () async {
+              if (isMandatory) {                                   
+                return false; // Prevent pop
+              }
+              return true; // Allow pop
             },
             child: Dialog(
               backgroundColor: Colors.transparent,
@@ -137,6 +136,9 @@ class ForceAppUpdatePopUp {
                                 ),
                               ),
                             ),
+                            onPressed: () {
+                              onTap();
+                            },
                             child: Text(
                               AppLocalizations.of(context)!.update,
                               style: Theme.of(context)
@@ -146,19 +148,6 @@ class ForceAppUpdatePopUp {
                                     color: AppColors.white,
                                   ),
                             ),
-                            onPressed: () async {
-                              mixpanel!.track('minimum_app_version_update',
-                                  properties: {'isMandatory': isMandatory});
-                              await StoreRedirect.redirect(
-                                androidAppId: "com.mamba.mambaprofessionalapp",
-                                iOSAppId: "1642701679",
-                              );
-                              if (isMandatory == false) {
-                                await Future.delayed(
-                                    const Duration(seconds: 3));
-                                Navigator.pop(context, true);
-                              }
-                            },
                           ),
                         ],
                       ),

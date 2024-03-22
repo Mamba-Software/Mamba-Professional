@@ -26,6 +26,7 @@ import 'package:mamba/app/theme/AppThemes.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
+import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:mamba/settings/data/firebase_settings_repository.dart';
 import 'package:mamba/settings/data/hive_settings_repository.dart';
@@ -188,9 +189,14 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<SettingsRepository>(create: (context) => SettingsRepositoryManager(FirebaseSettingsRepository(), HiveSettingsRepository() )),
+        RepositoryProvider<SettingsRepository>(
+          create: (context) => SettingsRepositoryManager(
+            FirebaseSettingsRepository(),
+            HiveSettingsRepository(),
+          ),
+        ),
       ],
-      child:  MultiBlocProvider(
+      child: MultiBlocProvider(
         providers: [
           BlocProvider<ClientSessionsCubit>(
             create: (_) => ClientSessionsCubit([]),
@@ -213,19 +219,26 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
             lazy: false,
           ),
           BlocProvider<BrandSuscriptionCubit>(
-            create: (context) => BrandSuscriptionCubit(context.read<AuthCubit>()),
+            create: (context) =>
+                BrandSuscriptionCubit(context.read<AuthCubit>()),
             lazy: false,
           ),
           BlocProvider(
             create: (_) => StripeConnectCubit(),
           ),
+          BlocProvider<PopupsCubit>(
+            create: (context) => PopupsCubit(
+              settingsRepository: context.read<SettingsRepository>(),
+            ),
+          ),
         ],
-        child:
-            Consumer3<LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider>(
-                builder: (context, LanguageProvider language, ThemeProvider theme,
-                    FirebaseAnalyticsProvider analytics, _) {
+        child: Consumer3<LanguageProvider, ThemeProvider,
+                FirebaseAnalyticsProvider>(
+            builder: (context, LanguageProvider language, ThemeProvider theme,
+                FirebaseAnalyticsProvider analytics, _) {
           AppThemes appThemes = AppThemes();
-          final brightness = SchedulerBinding.instance.window.platformBrightness;
+          final brightness =
+              SchedulerBinding.instance.window.platformBrightness;
           if (brightness == Brightness.dark) {
             print("Dark Mode");
             theme.darkModeStatusAndNavigationBar();
@@ -296,7 +309,8 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                         builder: (_) => MembershipRequestsPro(
                           brandId: brandId,
                         ),
-                        settings: const RouteSettings(name: 'MembershipRequests'),
+                        settings:
+                            const RouteSettings(name: 'MembershipRequests'),
                       );
                   }
                   return null;

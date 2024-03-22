@@ -11,15 +11,10 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/home/views/no_brand_screen.dart';
-import 'package:mamba/popups/cubit/initial_popups_cubit.dart';
-import 'package:mamba/popups/cubit/initial_popups_state.dart';
-import 'package:mamba/popups/views/dialogs/info_popup.dart';
-import 'package:mamba/l10n/l10n.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/popups/views/initial_popups/force_update.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
@@ -29,15 +24,16 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return const HomePageBody();
+    /*
     return MultiBlocProvider(
-      providers: [
-        BlocProvider<InitialPopupsCubit>(
-          create: (context) => InitialPopupsCubit(),
-        ),
-        // Add more BlocProviders here when needed
+      providers: const [        
+        // Add BlocProviders here when needed
+
       ],
       child: const HomePageBody(),
     );
+    */
   }
 }
 
@@ -122,10 +118,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   // On StartUp Dialogs
   Future<void> launchOnStartUpDialogs() async {
     //Stripe
-    stripeActivatedGlobal = await _settingsDataService.getStripeActivated();
-    // First check if minimum version
-    print("Checking Minimum App Version...");
-    checkMinimumAppVersion();
+    stripeActivatedGlobal = await _settingsDataService.getStripeActivated();    
     // Check if invited into Brand
     print("Checking if invited into Brand...");
     checkBrandInvite();
@@ -160,47 +153,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     await PermisionsService().getUserLocation();
   }
 
-  // Check version and Update App Dialog
-  void checkMinimumAppVersion() async {
-    // Check version
-    List<bool> result = await _settingsDataService.checkAppVersion();
-    /*
-    if (result[0] == true) {
-      mixpanel!.track('minimum_app_version_open',
-          properties: {'isMandatory': result[1]});
-      if (result[1]) {
-        Future.delayed(Duration.zero, () async {
-          await showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return WillPopScope(
-                onWillPop: () async => false,
-                child: ForceAppUpdatePopUp(
-                  isMandatory: true,
-                ),
-              );
-            },
-          );
-        });
-      } else {
-        var returnDialog = await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AppUpdateDialog(
-              isMandatory: false,
-            );
-          },
-        );
-        if (returnDialog == null) {
-          mixpanel!.track('minimum_app_version_close',
-              properties: {'isMandatory': false});
-        }
-      }
-    }
-    */
-
-  }
+  
 
   // Check invited by Brand
   void checkBrandInvite() async {
@@ -280,54 +233,40 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<InitialPopupsCubit, InitialPopupState>(
-      listener: (context, popupState) {
-        if (popupState is InitialPopupLoaded) {
-          // Show the dialog based on WhatsNewPopupLoaded state
-          InfoPopUp.showInfoPopUp(
-            context: context,
-            message: popupState.message,
-            onTap: () => (Navigator.pop(context)),
-          );
-        }
-        // Add more conditions for other pop-up types
-      },
-      child: isLoading
-          ? Scaffold(
-              backgroundColor: AppColors.black,
-              body: LoadingView(
-                hasLogo: false,
-                isSmall: true,
-                color: AppColors.white,
-              ),
-            )
-          : BlocSelector<AuthCubit, AuthState, AuthState>(
-              selector: (state) {
-                return state;
-              },
-              builder: (context, state) {
-                if (state is AuthUserBrand) {
-                  return !brandIsActive
-                      ? currentUser.id == currentBrand.adminID
-                          ? PayWall(
-                              brandId: currentBrand.id!,
-                              comesFromInitPage: true)
-                          : const BrandScreen()
-                      : const BrandScreen();
-                } else if (state is AuthUserNoBrand) {
-                  return const NoBrandScreen();
-                } else {
-                  return Scaffold(
-                    backgroundColor: AppColors.black,
-                    body: LoadingView(
-                      hasLogo: false,
-                      isSmall: true,
-                      color: AppColors.white,
-                    ),
-                  );
-                }
-              },
-            ), // The method to build widget based on AuthState
-    );
+    return isLoading
+        ? Scaffold(
+            backgroundColor: AppColors.black,
+            body: LoadingView(
+              hasLogo: false,
+              isSmall: true,
+              color: AppColors.white,
+            ),
+          )
+        : BlocSelector<AuthCubit, AuthState, AuthState>(
+            selector: (state) {
+              return state;
+            },
+            builder: (context, state) {
+              if (state is AuthUserBrand) {
+                return !brandIsActive
+                    ? currentUser.id == currentBrand.adminID
+                        ? PayWall(
+                            brandId: currentBrand.id!, comesFromInitPage: true)
+                        : const BrandScreen()
+                    : const BrandScreen();
+              } else if (state is AuthUserNoBrand) {
+                return const NoBrandScreen();
+              } else {
+                return Scaffold(
+                  backgroundColor: AppColors.black,
+                  body: LoadingView(
+                    hasLogo: false,
+                    isSmall: true,
+                    color: AppColors.white,
+                  ),
+                );
+              }
+            },
+          ); // The method to build widget based on AuthState
   }
 }
