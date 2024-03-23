@@ -9,12 +9,11 @@ class PopupsCubit extends Cubit<PopupState> {
   PopupsCubit({required this.settingsRepository})
       : super(const PopupsInitial());
 
-  Future<void> checkForForceAppUpdate() async {
-    // Check App Version
+  Future<void> checkForForceAppUpdate() async {    
     List<bool> result = await settingsRepository.checkAppVersion();
-    // If result[0] == true, it needs to Update Dialog.
-    // If result[1] == true, it needs to Force the Update.
+    print("Check App Update Result: $result"); // Debugging
     if (result[0]) {
+      print("Emitting Update Required State"); // Debugging
       emit(
         InitialPopupLoaded(
           type: InitalPopupType.app_update,
@@ -22,15 +21,17 @@ class PopupsCubit extends Cubit<PopupState> {
         ),
       );
     } else {
-      bool whatsNew = settingsRepository.getWhatsNewBoolean();
-      emit(
-        InitialPopupLoaded(
-          type: InitalPopupType.whats_new,
-          forceAppUpdate: result[1],
-        ),
-      );
+      bool whatsNew = settingsRepository.getWhatsNewBoolean();      
+      if (!whatsNew) {
+        String emailHTML = await settingsRepository.getProductUpdatesHTML();
+        print("Emitting Whats New State with HTML"); // Debugging
+        emit(
+          InitialPopupLoaded(
+            type: InitalPopupType.whats_new,
+            html: emailHTML,
+          ),
+        );
+      }
     }
   }
-
-  // You can add similar methods for other pop-ups like rate app, give feedback, etc.
 }

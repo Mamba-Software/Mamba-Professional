@@ -13,7 +13,8 @@ import 'package:mamba/home/views/home.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/cubit/popups_state.dart';
 import 'package:mamba/popups/models/inital_popup_type.dart';
-import 'package:mamba/popups/views/initial_popups/update_app.dart';
+import 'package:mamba/popups/views/initial_popups/html_popup.dart';
+import 'package:mamba/popups/views/initial_popups/update_app_popup.dart';
 import 'package:store_redirect/store_redirect.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -51,14 +52,14 @@ class _SplashScreenState extends State<SplashScreen> {
     context.read<AuthCubit>().checkAndGetUserDetails(context);
     return BlocListener<PopupsCubit, PopupState>(
       listener: (context, popupState) {
+        print("PopupState received: $popupState"); // Debugging
         if (popupState is InitialPopupLoaded) {
           switch (popupState.type) {
-            case InitalPopupType.app_update:
-              AppUpdatePopUp.showPopUp(
+            case InitalPopupType.app_update:              
+              UpdateAppPopup.show(
                 context: context,
                 isMandatory: popupState.forceAppUpdate!,
                 onTap: () {
-                  HapticFeedback.lightImpact();
                   return StoreRedirect.redirect(
                     androidAppId: "com.mamba.mambaprofessionalapp",
                     iOSAppId: "1642701679",
@@ -67,7 +68,10 @@ class _SplashScreenState extends State<SplashScreen> {
               );
               break;
             case InitalPopupType.whats_new:
-              // To Do
+              HTMLPopup.show(
+                context: context,
+                html: popupState.html!,
+              );
               break;
             default:
               break;

@@ -113,7 +113,8 @@ class _HomePageBodyState extends State<HomePageBody> {
     // Getting User Information
     getUserAndBrand();
     // Check If App Update
-    context.read<PopupsCubit>().checkForForceAppUpdate();
+    print("Checking if App Update..");
+    context.read<PopupsCubit>().checkForForceAppUpdate();    
     // On StartUp Dialogs
     launchOnStartUpDialogs();
   }
@@ -121,7 +122,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   // On StartUp Dialogs
   Future<void> launchOnStartUpDialogs() async {
     //Stripe
-    stripeActivatedGlobal = await _settingsDataService.getStripeActivated();        
+    stripeActivatedGlobal = await _settingsDataService.getStripeActivated();
     // Check if invited into Brand    
     print("Checking if invited into Brand...");
     checkBrandInvite();

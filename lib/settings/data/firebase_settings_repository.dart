@@ -37,6 +37,14 @@ class FirebaseSettingsRepository implements SettingsRepository {
       return result;
     }
   }
+
+  @override
+  Future<String> getProductUpdatesHTML() async {
+    // Get Product Updates HTML
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _settingsCollection.doc("ProductUpdates").get();
+    String emailHTML = documentSnapshot.get("emailContentPro");    
+    return emailHTML;
+  }
   
   @override
   bool getWhatsNewBoolean() {

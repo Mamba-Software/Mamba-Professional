@@ -14,18 +14,27 @@ class HiveSettingsRepository implements SettingsRepository {
   void setWhatsNewBoolean(bool whatsNew) async {
     var box = Hive.box(_settingsBoxName);
     box.put('whatsNew', whatsNew);
-    
   }
 
   @override
   bool getWhatsNewBoolean() {
-    var box = Hive.box(_settingsBoxName);
-    return box.get('whatsNew');    
+    try {
+      var box = Hive.box(_settingsBoxName);
+      return box.get('whatsNew') ?? false;
+    } catch (e) {
+      return false;
+    }
   }
-  
+
   @override
   Future<List<bool>> checkAppVersion() {
     // TODO: implement checkAppVersion
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<String> getProductUpdatesHTML() {
+    // TODO: implement getProductUpdatesHTML
     throw UnimplementedError();
   }
 }

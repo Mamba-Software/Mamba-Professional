@@ -7,7 +7,6 @@ class SettingsDataService {
   // Check Data
   Future<List<bool>> checkIfMinimumAppVersion(String clientAppVersion) =>
       _firebase.checkIfMinimumAppVersion(clientAppVersion);
-  Future<List<bool>> checkAppVersion() => _firebase.checkAppVersion();
   Future<bool> checkIfIsMaintenance() => _firebase.checkIfIsMaintenance();
   Future<String> checkMonthOffer() => _firebase.checkMonthOffer();
   Future<bool> getStripeActivated() => _firebase.getStripeActivated();
