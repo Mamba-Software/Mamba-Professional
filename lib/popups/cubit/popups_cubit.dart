@@ -9,7 +9,7 @@ class PopupsCubit extends Cubit<PopupState> {
   PopupsCubit({required this.settingsRepository})
       : super(const PopupsInitial());
 
-  Future<void> checkForForceAppUpdate() async {    
+  Future<void> checkForForceAppUpdate() async {
     List<bool> result = await settingsRepository.checkAppVersion();
     print("Check App Update Result: $result"); // Debugging
     if (result[0]) {
@@ -21,10 +21,10 @@ class PopupsCubit extends Cubit<PopupState> {
         ),
       );
     } else {
-      bool whatsNew = settingsRepository.getWhatsNewBoolean();      
+      await Future.delayed(Duration(seconds: 5));
+      bool whatsNew = settingsRepository.getWhatsNewBoolean();
       if (!whatsNew) {
         String emailHTML = await settingsRepository.getProductUpdatesHTML();
-        print("Emitting Whats New State with HTML"); // Debugging
         emit(
           InitialPopupLoaded(
             type: InitalPopupType.whats_new,

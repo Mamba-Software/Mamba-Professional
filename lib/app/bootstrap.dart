@@ -12,7 +12,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
@@ -22,13 +21,13 @@ import 'package:mamba/auth/views/mobile/SplashScreen.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/cubit/BrandEventsCubit.dart';
 import 'package:mamba/notifications/NotificationService/Notifications.dart';
-import 'package:mamba/analytics/FirebaseAnalyticsProvider.dart';
 import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/app/theme/AppThemes.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
+import 'package:mamba/popups/views/popup_manager.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:mamba/settings/data/firebase_settings_repository.dart';
 import 'package:mamba/settings/data/hive_settings_repository.dart';
@@ -88,7 +87,7 @@ class Bootstrap {
       } else {
         // Mobile = Firebase .json or .plist
         await Firebase.initializeApp();
-      }      
+      }
       // Initialize Hive
       await Hive.initFlutter();
       // Initialise TimeZone
@@ -126,8 +125,6 @@ class Bootstrap {
           ChangeNotifierProvider<LanguageProvider>(
               create: (_) => LanguageProvider()),
           ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
-          ChangeNotifierProvider<FirebaseAnalyticsProvider>(
-              create: (_) => FirebaseAnalyticsProvider()),
         ],
         child: const Mamba(),
       ));
@@ -158,7 +155,8 @@ class Mamba extends StatefulWidget {
   _MambaState createState() => _MambaState();
 }
 
-class _MambaState extends State<Mamba> with WidgetsBindingObserver {
+class _MambaState extends State<Mamba> with WidgetsBindingObserver {  
+  final navigatorKey = GlobalKey<NavigatorState>();
   final _dynamicLinkUtils = DynamicLinkUtils();
   Timer? _timerLink;
 
@@ -236,10 +234,8 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
             ),
           ),
         ],
-        child: Consumer3<LanguageProvider, ThemeProvider,
-                FirebaseAnalyticsProvider>(
-            builder: (context, LanguageProvider language, ThemeProvider theme,
-                FirebaseAnalyticsProvider analytics, _) {
+        child: Consumer2<LanguageProvider, ThemeProvider>(builder:
+            (context, LanguageProvider language, ThemeProvider theme, _) {
           AppThemes appThemes = AppThemes();
           final brightness =
               SchedulerBinding.instance.window.platformBrightness;
@@ -254,6 +250,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
             allowtextScaling: true,
             builder: () {
               return MaterialApp(
+                navigatorKey: navigatorKey,
                 debugShowCheckedModeBanner: currentFlavor == Flavor.development,
                 title: Constants.appName,
                 themeMode: theme.themeMode,
@@ -268,6 +265,13 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 home: const SplashScreen(),
+                builder: (context, child) {
+                  // Wrap every screen with PopupManager using MaterialApp.builder
+                  return PopupManager(
+                    navigatorKey: navigatorKey,
+                    child: child!,
+                  );
+                },
                 onGenerateRoute: (RouteSettings settings) {
                   final args = settings.arguments;
                   print('ARGUMENTS');

@@ -13,8 +13,8 @@ import 'package:mamba/home/views/home.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/cubit/popups_state.dart';
 import 'package:mamba/popups/models/inital_popup_type.dart';
-import 'package:mamba/popups/views/initial_popups/html_popup.dart';
-import 'package:mamba/popups/views/initial_popups/update_app_popup.dart';
+import 'package:mamba/popups/widgets/initial_popups/html_popup.dart';
+import 'package:mamba/popups/widgets/initial_popups/update_app_popup.dart';
 import 'package:store_redirect/store_redirect.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -50,37 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     context.read<AuthCubit>().checkAndGetUserDetails(context);
-    return BlocListener<PopupsCubit, PopupState>(
-      listener: (context, popupState) {
-        print("PopupState received: $popupState"); // Debugging
-        if (popupState is InitialPopupLoaded) {
-          switch (popupState.type) {
-            case InitalPopupType.app_update:              
-              UpdateAppPopup.show(
-                context: context,
-                isMandatory: popupState.forceAppUpdate!,
-                onTap: () {
-                  return StoreRedirect.redirect(
-                    androidAppId: "com.mamba.mambaprofessionalapp",
-                    iOSAppId: "1642701679",
-                  );
-                },
-              );
-              break;
-            case InitalPopupType.whats_new:
-              HTMLPopup.show(
-                context: context,
-                html: popupState.html!,
-              );
-              break;
-            default:
-              break;
-          }
-          // Show the dialog based on WhatsNewPopupLoaded state
-        }
-        // Add more conditions for other pop-up types
-      },
-      child: BlocConsumer<AuthCubit, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthNotLoged) {
             Navigator.pushAndRemoveUntil(
@@ -124,7 +94,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 isMaintenance: state is AuthMaintenance ? true : false,
               ));
         },
-      ),
-    );
+      );
   }
 }

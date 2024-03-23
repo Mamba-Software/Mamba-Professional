@@ -18,16 +18,10 @@ class HTMLPopup {
               color: Colors.red, // Background color for the container
               borderRadius: BorderRadius.circular(15),
             ),
-            child: const SingleChildScrollView(
+            child: SingleChildScrollView(
               // Enables scrolling for long HTML content
               child: HtmlWidget(
-                '''
-  <h3>Heading</h3>
-  <p>
-    A paragraph with <strong>strong</strong>, <em>emphasized</em>
-    and <span style="color: red">colored</span> text.
-  </p>
-  ''',
+                html,
               ),
             ),
           ),
