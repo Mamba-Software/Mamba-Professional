@@ -99,6 +99,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                     child: LoadingView(
                       hasLogo: false,
                       isSmall: true,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 );

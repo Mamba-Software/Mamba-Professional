@@ -32,7 +32,7 @@ class PopupManager extends StatelessWidget {
                       iOSAppId: "1642701679",
                     );
                   },
-                );
+                );                
                 break;
               case InitalPopupType.whats_new:
                 HTMLPopup.show(
