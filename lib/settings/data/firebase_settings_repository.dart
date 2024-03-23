@@ -37,6 +37,17 @@ class FirebaseSettingsRepository implements SettingsRepository {
       return result;
     }
   }
+  
+  @override
+  bool getWhatsNewBoolean() {
+    // TODO: implement getWhatsNewBoolean
+    throw UnimplementedError();
+  }
+  
+  @override
+  void setWhatsNewBoolean(bool whatsNew) {
+    // TODO: implement setWhatsNewBoolean
+  }
 
   
 }

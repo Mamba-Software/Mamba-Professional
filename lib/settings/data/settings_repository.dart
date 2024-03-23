@@ -3,11 +3,14 @@ import 'package:mamba/settings/data/hive_settings_repository.dart';
 
 abstract class SettingsRepository {  
   Future<List<bool>> checkAppVersion();  
+  void setWhatsNewBoolean(bool whatsNew);  
+  bool getWhatsNewBoolean();    
 }
 
 class SettingsRepositoryManager implements SettingsRepository {
   final FirebaseSettingsRepository _firebaseRepo;
   final HiveSettingsRepository _hiveRepo;
+  
   SettingsRepositoryManager(this._firebaseRepo, this._hiveRepo);
 
   @override
@@ -15,21 +18,13 @@ class SettingsRepositoryManager implements SettingsRepository {
     return _firebaseRepo.checkAppVersion();
   }
 
-  /* 
-  // Example method that uses Hive
-  Future<dynamic> getSettingsFromCache() {
-    return _hiveRepo.checkAppVersion();
+  @override
+   void setWhatsNewBoolean(bool whatsNew) {  
+    return _hiveRepo.setWhatsNewBoolean(whatsNew);
   }
 
-  // Method that might use both
-  Future<dynamic> getSettings() async {
-    try {
-      // First, try to get settings from Firebase
-      return await _firebaseRepo.checkAppVersion();
-    } catch (e) {
-      // If it fails, fall back to Hive
-      return _hiveRepo.checkAppVersion();
-    }
-  }  
-  */
+  @override
+  bool getWhatsNewBoolean() {
+    return _hiveRepo.getWhatsNewBoolean();
+  }
 }

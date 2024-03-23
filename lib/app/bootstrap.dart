@@ -12,6 +12,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
@@ -86,7 +88,9 @@ class Bootstrap {
       } else {
         // Mobile = Firebase .json or .plist
         await Firebase.initializeApp();
-      }
+      }      
+      // Initialize Hive
+      await Hive.initFlutter();
       // Initialise TimeZone
       timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
       // Firebase Messaging Back Ground Message Handler
