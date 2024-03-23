@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/auth/CreateBrand/views/mobile/RegistrarMarca.dart';
@@ -18,6 +19,7 @@ import 'package:mamba/commons/managers/PermisionsService.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'SplashScreen.dart';
 
@@ -194,6 +196,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void initState() {
     mixpanel!.track('onboarding_find_trainers');
     initGoogleLogIn();
+    // Check If App Update
+    context.read<PopupsCubit>().checkForForceAppUpdate();
     super.initState();
   }
 

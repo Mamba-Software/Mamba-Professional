@@ -19,6 +19,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.
@@ -56,6 +57,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   @override
   initState() {
     mixpanel!.track('mamba_login_view');
+    // Check If App Update
+    context.read<PopupsCubit>().checkForForceAppUpdate();
     super.initState();
   }
 

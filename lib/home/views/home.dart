@@ -18,6 +18,7 @@ import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
+import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
@@ -111,6 +112,8 @@ class _HomePageBodyState extends State<HomePageBody> {
     pageIndex = 10;
     // Getting User Information
     getUserAndBrand();
+    // Check If App Update
+    context.read<PopupsCubit>().checkForForceAppUpdate();
     // On StartUp Dialogs
     launchOnStartUpDialogs();
   }
@@ -118,8 +121,8 @@ class _HomePageBodyState extends State<HomePageBody> {
   // On StartUp Dialogs
   Future<void> launchOnStartUpDialogs() async {
     //Stripe
-    stripeActivatedGlobal = await _settingsDataService.getStripeActivated();    
-    // Check if invited into Brand
+    stripeActivatedGlobal = await _settingsDataService.getStripeActivated();        
+    // Check if invited into Brand    
     print("Checking if invited into Brand...");
     checkBrandInvite();
     // Check Notification Permissions

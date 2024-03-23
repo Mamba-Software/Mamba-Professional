@@ -7,11 +7,10 @@ class PopupsCubit extends Cubit<PopupState> {
   final SettingsRepository settingsRepository;
 
   PopupsCubit({required this.settingsRepository})
-      : super(const PopupsInitial()) {
-    _checkForForceAppUpdate();
-  }
+      : super(const PopupsInitial());
 
-  Future<void> _checkForForceAppUpdate() async {
+  Future<void> checkForForceAppUpdate() async {
+    print(1);
     // Check App Version
     List<bool> result = await settingsRepository.checkAppVersion();
     // If result[0] == true, it needs to Update Dialog.

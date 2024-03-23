@@ -13,7 +13,6 @@ import 'package:mamba/home/views/home.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/cubit/popups_state.dart';
 import 'package:mamba/popups/models/inital_popup_type.dart';
-import 'package:mamba/popups/views/dialogs/info_popup.dart';
 import 'package:mamba/popups/views/initial_popups/update_app.dart';
 import 'package:store_redirect/store_redirect.dart';
 
