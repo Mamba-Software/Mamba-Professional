@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 },
               );
               break;
-            case InitalPopupType.app_update:
+            case InitalPopupType.whats_new:
               // To Do
               break;
             default:

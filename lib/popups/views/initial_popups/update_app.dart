@@ -10,15 +10,10 @@ class AppUpdatePopUp {
       required Function() onTap}) {
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: !isMandatory,
       builder: (BuildContext context) {
-        return WillPopScope(
-            onWillPop: () async {
-              if (isMandatory) {                                   
-                return false; // Prevent pop
-              }
-              return true; // Allow pop
-            },
+        return PopScope(
+            canPop: !isMandatory,
             child: Dialog(
               backgroundColor: Colors.transparent,
               insetPadding: const EdgeInsets.all(20),
