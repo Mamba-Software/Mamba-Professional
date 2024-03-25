@@ -4,10 +4,11 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class UpdateAppPopup {
-  static void show(
-      {required BuildContext context,
-      required bool isMandatory,
-      required Function() onTap}) {
+  static void show({
+    required BuildContext context,
+    required bool isMandatory,
+    required Function() onAcceptFunction,
+  }) {
     showDialog(
       context: context,
       barrierDismissible: !isMandatory,
@@ -132,7 +133,8 @@ class UpdateAppPopup {
                               ),
                             ),
                             onPressed: () {
-                              onTap();
+                              Navigator.pop(context);
+                              onAcceptFunction();
                             },
                             child: Text(
                               AppLocalizations.of(context)!.update,

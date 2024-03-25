@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/cubit/popups_state.dart';
-import 'package:mamba/popups/models/inital_popup_type.dart';
-import 'package:mamba/popups/widgets/initial_popups/html_popup.dart';
-import 'package:mamba/popups/widgets/initial_popups/update_app_popup.dart';
+import 'package:mamba/popups/models/popup_type.dart';
+import 'package:mamba/popups/widgets/html_popup.dart';
+import 'package:mamba/popups/widgets/update_app_popup.dart';
 import 'package:store_redirect/store_redirect.dart';
 
-class PopupManager extends StatelessWidget {  
+class PopupManager extends StatelessWidget {
   final Widget child;
   final GlobalKey<NavigatorState> navigatorKey;
-  
-  const PopupManager({super.key, required this.child, required this.navigatorKey});
+
+  const PopupManager(
+      {super.key, required this.child, required this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
@@ -19,28 +20,34 @@ class PopupManager extends StatelessWidget {
       listener: (context, popupState) {
         if (navigatorKey.currentState?.overlay?.context != null) {
           context = navigatorKey.currentState!.overlay!.context;
-          print("PopupState received: $popupState"); // Debugging
-          if (popupState is InitialPopupLoaded) {
-            switch (popupState.type) {
-              case InitalPopupType.app_update:
+          if (popupState is PopupQueueFull && popupState.queue.isNotEmpty) {
+            final popup = popupState.queue.first;
+            switch (popup.type) {
+              case PopupType.app_update:
                 UpdateAppPopup.show(
                   context: context,
-                  isMandatory: popupState.forceAppUpdate!,
-                  onTap: () {
+                  isMandatory: popup.forceAppUpdate!,
+                  onAcceptFunction: () {
                     StoreRedirect.redirect(
                       androidAppId: "com.mamba.mambaprofessionalapp",
                       iOSAppId: "1642701679",
                     );
+                    context.read<PopupsCubit>().processNextPopup();
                   },
-                );                
-                break;
-              case InitalPopupType.whats_new:
-                HTMLPopup.show(
-                  context: context,
-                  html: popupState.html!,
                 );
                 break;
-              default:
+              case PopupType.whats_new:
+                HTMLPopup.show(
+                  context: context,
+                  html: popup.htmlContent!,
+                  onAcceptFunction: () {                    
+                    context.read<PopupsCubit>().closeWhatsNew();
+                    context.read<PopupsCubit>().processNextPopup();
+                  },
+                );
+                context.read<PopupsCubit>().processNextPopup();
+                break;
+              case PopupType.rate_app:
                 break;
             }
           }

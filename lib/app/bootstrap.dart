@@ -155,7 +155,7 @@ class Mamba extends StatefulWidget {
   _MambaState createState() => _MambaState();
 }
 
-class _MambaState extends State<Mamba> with WidgetsBindingObserver {  
+class _MambaState extends State<Mamba> with WidgetsBindingObserver {
   final navigatorKey = GlobalKey<NavigatorState>();
   final _dynamicLinkUtils = DynamicLinkUtils();
   Timer? _timerLink;
@@ -192,7 +192,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<SettingsRepository>(
-          create: (context) => SettingsRepositoryManager(
+          create: (context) => SettingsRepository(
             FirebaseSettingsRepository(),
             HiveSettingsRepository(),
           ),

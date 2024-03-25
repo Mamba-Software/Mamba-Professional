@@ -1,36 +1,29 @@
 import 'package:mamba/settings/data/firebase_settings_repository.dart';
 import 'package:mamba/settings/data/hive_settings_repository.dart';
 
-abstract class SettingsRepository {  
-  Future<List<bool>> checkAppVersion(); 
-  Future<String> getProductUpdatesHTML();
-  void setWhatsNewBoolean(bool whatsNew);  
-  bool getWhatsNewBoolean();    
-}
+class SettingsRepository {
 
-class SettingsRepositoryManager implements SettingsRepository {
   final FirebaseSettingsRepository _firebaseRepo;
   final HiveSettingsRepository _hiveRepo;
-  
-  SettingsRepositoryManager(this._firebaseRepo, this._hiveRepo);
 
-  @override
+  SettingsRepository(this._firebaseRepo, this._hiveRepo);
+
+  // Check App Version
   Future<List<bool>> checkAppVersion() async {
     return _firebaseRepo.checkAppVersion();
   }
 
-  @override
-   void setWhatsNewBoolean(bool whatsNew) {  
-    return _hiveRepo.setWhatsNewBoolean(whatsNew);
+  // Setter/Getter Whats New Boolean
+  Future<void> setWhatsNewBool(bool whatsNew) async {
+    return await _hiveRepo.setWhatsNewBoolean(whatsNew);
+  }
+  Future<bool> getWhatsNewBool() async {
+    return await _hiveRepo.getWhatsNewBoolean();
   }
 
-  @override
-  bool getWhatsNewBoolean() {
-    return _hiveRepo.getWhatsNewBoolean();
-  }
-
-  @override
+  // Get Product Update HTML
   Future<String> getProductUpdatesHTML() async {
     return _firebaseRepo.getProductUpdatesHTML();
   }
+  
 }

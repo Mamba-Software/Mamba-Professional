@@ -1,48 +1,24 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:mamba/popups/models/inital_popup_type.dart';
+import 'package:mamba/popups/models/popup.dart';
 
 abstract class PopupState extends Equatable {
   const PopupState();
-
+  
   @override
   List<Object?> get props => [];
 }
 
-class PopupsInitial extends PopupState {
-  const PopupsInitial();
+// State indicating no popups are currently active or queued
+class PopupInitial extends PopupState {
+  const PopupInitial();
 }
 
-class PopupLoaded extends PopupState {
-  final String title;
-  final String message;
-  final Widget? widget;
+// State for managing a queue of PopupActions
+class PopupQueueFull extends PopupState {
+  final List<Popup> queue;
 
-  const PopupLoaded({
-    required this.title,
-    required this.message,
-    this.widget,
-  });
+  const PopupQueueFull(this.queue);
 
   @override
-  List<Object?> get props => [title, message, widget];
-}
-
-class InitialPopupLoaded extends PopupState {
-  final InitalPopupType type;
-  final bool? forceAppUpdate;
-  final String? html;
-
-  const InitialPopupLoaded({
-    required this.type,
-    this.forceAppUpdate,
-    this.html,
-  });
-
-  @override
-  List<Object?> get props => [type, forceAppUpdate, html];
-}
-
-class RateAppPopupLoaded extends PopupState {
-  const RateAppPopupLoaded();
+  List<Object?> get props => [queue];
 }

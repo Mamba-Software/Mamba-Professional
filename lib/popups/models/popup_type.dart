@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
-
-enum InitalPopupType {
+enum PopupType {
   app_update,
-  whats_new,    
+  whats_new,
+  rate_app,    
 }

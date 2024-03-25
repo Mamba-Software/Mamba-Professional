@@ -12,9 +12,9 @@ import 'package:mamba/admin/Admin.dart';
 import 'package:mamba/home/views/home.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/cubit/popups_state.dart';
-import 'package:mamba/popups/models/inital_popup_type.dart';
-import 'package:mamba/popups/widgets/initial_popups/html_popup.dart';
-import 'package:mamba/popups/widgets/initial_popups/update_app_popup.dart';
+import 'package:mamba/popups/models/popup_type.dart';
+import 'package:mamba/popups/widgets/html_popup.dart';
+import 'package:mamba/popups/widgets/update_app_popup.dart';
 import 'package:store_redirect/store_redirect.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -51,49 +51,49 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     context.read<AuthCubit>().checkAndGetUserDetails(context);
     return BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state is AuthNotLoged) {
-            Navigator.pushAndRemoveUntil(
+      listener: (context, state) {
+        if (state is AuthNotLoged) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            CupertinoPageRoute<void>(
+              builder: (context) => const Login(),
+              settings: const RouteSettings(name: 'Login'),
+            ),
+            (_) => false,
+          );
+        }
+        if (state is AuthAdmin) {
+          Navigator.pushReplacement(
               context,
               CupertinoPageRoute<void>(
-                builder: (context) => const Login(),
-                settings: const RouteSettings(name: 'Login'),
-              ),
-              (_) => false,
-            );
-          }
-          if (state is AuthAdmin) {
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute<void>(
-                  builder: (context) => const Admin(),
-                  settings: const RouteSettings(name: 'Admin'),
-                ));
-          }
-          if (state is AuthUserBrand || state is AuthUserNoBrand) {
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute<void>(
-                  builder: (context) => HomePage(),
-                  settings: const RouteSettings(name: 'Mamba'),
-                ));
-          }
-          if (state is AuthNewUser) {
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute<void>(
-                  builder: (context) => const OnboardingScreen(),
-                  settings: const RouteSettings(name: 'OnboardingScreen'),
-                ));
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-              appBar: null,
-              body: SplashScreenView(
-                isMaintenance: state is AuthMaintenance ? true : false,
+                builder: (context) => const Admin(),
+                settings: const RouteSettings(name: 'Admin'),
               ));
-        },
-      );
+        }
+        if (state is AuthUserBrand || state is AuthUserNoBrand) {
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<void>(
+                builder: (context) => HomePage(),
+                settings: const RouteSettings(name: 'Mamba'),
+              ));
+        }
+        if (state is AuthNewUser) {
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<void>(
+                builder: (context) => const OnboardingScreen(),
+                settings: const RouteSettings(name: 'OnboardingScreen'),
+              ));
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+            appBar: null,
+            body: SplashScreenView(
+              isMaintenance: state is AuthMaintenance ? true : false,
+            ));
+      },
+    );
   }
 }

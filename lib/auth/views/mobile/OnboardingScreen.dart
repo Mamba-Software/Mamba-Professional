@@ -194,11 +194,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   void initState() {
+    super.initState();
     mixpanel!.track('onboarding_find_trainers');
     initGoogleLogIn();
-    // Check If App Update
-    context.read<PopupsCubit>().checkForForceAppUpdate();
-    super.initState();
+    context.read<PopupsCubit>().checkIfAppUpdate(false);
   }
 
   Future<void> initGoogleLogIn() async {

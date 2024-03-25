@@ -6,7 +6,6 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/analytics/FirebaseAnalyticsProvider.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
@@ -215,9 +214,6 @@ class _EventFeedbackState extends State<EventFeedback> {
   Future<void> userHasAnsweredFeedback(double value) async {
     // Database
     await _eventDataService.addEventFeedback(event.id!, currentUser.id!, value);
-    // Send Analytics
-    Provider.of<FirebaseAnalyticsProvider>(context, listen: false)
-        .sendAnalyticsUserAnswerEventFeedbackTestA();
     // Pop passing the Value;
     Navigator.pop(context, value);
   }

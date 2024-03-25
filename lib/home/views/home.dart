@@ -112,9 +112,8 @@ class _HomePageBodyState extends State<HomePageBody> {
     pageIndex = 10;
     // Getting User Information
     getUserAndBrand();
-    // Check If App Update
-    print("Checking if App Update..");
-    context.read<PopupsCubit>().checkForForceAppUpdate();    
+    // Check If App Update    
+    context.read<PopupsCubit>().checkIfAppUpdate();
     // On StartUp Dialogs
     launchOnStartUpDialogs();
   }
@@ -123,7 +122,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   Future<void> launchOnStartUpDialogs() async {
     //Stripe
     stripeActivatedGlobal = await _settingsDataService.getStripeActivated();
-    // Check if invited into Brand    
+    // Check if invited into Brand
     print("Checking if invited into Brand...");
     checkBrandInvite();
     // Check Notification Permissions
@@ -156,8 +155,6 @@ class _HomePageBodyState extends State<HomePageBody> {
     print("Checking Location Permissions...");
     await PermisionsService().getUserLocation();
   }
-
-  
 
   // Check invited by Brand
   void checkBrandInvite() async {

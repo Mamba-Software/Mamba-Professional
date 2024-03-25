@@ -56,10 +56,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   @override
   initState() {
-    mixpanel!.track('mamba_login_view');
-    // Check If App Update
-    context.read<PopupsCubit>().checkForForceAppUpdate();
     super.initState();
+    mixpanel!.track('mamba_login_view');        
+    context.read<PopupsCubit>().checkIfAppUpdate(false);    
   }
 
   Widget _renderWidget() {

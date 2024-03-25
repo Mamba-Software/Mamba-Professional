@@ -5,7 +5,6 @@ import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/constants/Constants.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/analytics/FirebaseAnalyticsProvider.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
@@ -211,31 +210,6 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
     var limitDateToAnswer = eventDate.add(const Duration(days: 7));
     print(widget.event.id!);
     if (DateTime.now().isBefore(limitDateToAnswer)) {
-      // Database
-      //_eventDataService.updateEventFeedback(widget.event.id!, currentUser.id!, value);
-      print(widget.event.id!);
-      // Send Analytics
-      if (currentUser.testGroup == "A") {
-        // Edit Event?
-        if (widget.feedbackScore != null) {
-          Provider.of<FirebaseAnalyticsProvider>(context, listen: false)
-              .sendAnalyticsUserEditEventFeedbackTestA();
-        } else {
-          // First Answer
-          Provider.of<FirebaseAnalyticsProvider>(context, listen: false)
-              .sendAnalyticsUserAnswerEventFeedbackTestA();
-        }
-      } else {
-        // Edit Event?
-        if (widget.feedbackScore != null) {
-          Provider.of<FirebaseAnalyticsProvider>(context, listen: false)
-              .sendAnalyticsUserEditEventFeedbackTestB();
-        } else {
-          // First Answer
-          Provider.of<FirebaseAnalyticsProvider>(context, listen: false)
-              .sendAnalyticsUserAnswerEventFeedbackTestB();
-        }
-      }
       // Pop passing the Value;
       Navigator.pop(context, value);
     }
