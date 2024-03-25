@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/l10n/l10n.dart';
 
 class HTMLPopup {
@@ -25,10 +26,9 @@ class HTMLPopup {
               children: [
                 Container(
                   height: MediaQuery.of(context).size.height * 0.65,
-                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .primaryColorDark, // Or any background color for the dialog
+                    color: AppColors.white, // Or any background color for the dialog
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: SingleChildScrollView(
@@ -36,7 +36,6 @@ class HTMLPopup {
                       child: HtmlWidget(
                         html,
                         buildAsync: false,
-                        renderMode: RenderMode.listView,
                       ),
                     ),
                   ),
@@ -53,7 +52,7 @@ class HTMLPopup {
                   child: Text(
                     AppLocalizations.of(context)!.entendido,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).primaryColorDark,
+                          color: AppColors.white,
                           fontWeight: FontWeight.w600,
                         ),
                   ),

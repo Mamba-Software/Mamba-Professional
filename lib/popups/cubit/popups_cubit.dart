@@ -55,8 +55,7 @@ class PopupsCubit extends Cubit<PopupState> {
   // Popup WhatsNew
   Future<void> checkIfWhatsNew() async {
     bool whatsNew = await settingsRepository.getWhatsNewBool();
-    //if (whatsNew == false) {
-    if (true) {
+    if (whatsNew == false) {    
       String emailHTML = await settingsRepository.getProductUpdatesHTML();
       enqueuePopupAction(
         Popup(
