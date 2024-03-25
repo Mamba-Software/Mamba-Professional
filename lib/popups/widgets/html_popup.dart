@@ -3,7 +3,7 @@ import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/l10n/l10n.dart';
 
-class HTMLPopup {
+class WhatsNewPopup {
   static void show({
     required BuildContext context,
     required String html,

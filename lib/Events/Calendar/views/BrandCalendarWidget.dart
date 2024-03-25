@@ -32,7 +32,6 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
-
 class BrandCalendarWidget extends StatefulWidget {
   String brandId;
   DateTime? dateTime;

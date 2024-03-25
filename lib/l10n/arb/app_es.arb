@@ -2067,6 +2067,18 @@
   "@findBrandTrainerText": {
     "description": "membersOfBrand message"
   },
+  "rateAppTitle": "Tu opinión nos importa!",
+  "@rateAppTitle": {
+    "description": "membersOfBrand message"
+  },
+  "rateAppText": "Trabajamos muy duro para mejorar Mamba. Nos encantaría saber qué opinas y cómo podemos mejorar...",
+  "@rateAppText": {
+    "description": "beforeEventBodyNotification message"    
+  },
+  "mambaWithLove": "Con amor, el equipo de Mamba.",
+  "@mambaWithLove": {
+    "description": "beforeEventBodyNotification message"    
+  },  
   "updateAppTitle": "!Nueva versión disponible!",
   "@updateAppTitle": {
     "description": "membersOfBrand message"

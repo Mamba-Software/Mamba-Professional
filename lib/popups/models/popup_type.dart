@@ -2,5 +2,5 @@
 enum PopupType {
   app_update,
   whats_new,
-  rate_app,    
+  rate_app_dialog,    
 }

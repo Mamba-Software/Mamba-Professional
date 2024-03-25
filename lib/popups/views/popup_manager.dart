@@ -4,6 +4,7 @@ import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/cubit/popups_state.dart';
 import 'package:mamba/popups/models/popup_type.dart';
 import 'package:mamba/popups/widgets/html_popup.dart';
+import 'package:mamba/popups/widgets/rate_app_popup.dart';
 import 'package:mamba/popups/widgets/update_app_popup.dart';
 import 'package:store_redirect/store_redirect.dart';
 
@@ -37,7 +38,7 @@ class PopupManager extends StatelessWidget {
                 );
                 break;
               case PopupType.whats_new:
-                HTMLPopup.show(
+                WhatsNewPopup.show(
                   context: context,
                   html: popup.htmlContent!,
                   onAcceptFunction: () {                    
@@ -47,7 +48,18 @@ class PopupManager extends StatelessWidget {
                 );
                 context.read<PopupsCubit>().processNextPopup();
                 break;
-              case PopupType.rate_app:
+              case PopupType.rate_app_dialog:
+                RateAppPopup.show(
+                  context: context,                  
+                  onAcceptFunction: () {                    
+                    context.read<PopupsCubit>().openStoreListing();
+                    context.read<PopupsCubit>().processNextPopup();                    
+                  },
+                  onDeclineFunction: () {                    
+                    context.read<PopupsCubit>().inAppReviewDeclined();
+                    context.read<PopupsCubit>().processNextPopup();                    
+                  },
+                );
                 break;
             }
           }
