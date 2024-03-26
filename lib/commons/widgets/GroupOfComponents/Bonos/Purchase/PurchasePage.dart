@@ -14,7 +14,7 @@ import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
@@ -1856,7 +1856,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                         height:
                                             MediaQuery.of(context).size.width *
                                                 0.12,
-                                        image: AssetImage(Constants.imageCash),
+                                        image: AssetImage(Assets.imageCash),
                                         opacity: AlwaysStoppedAnimation(
                                             paymentMethod == 0 ? 1 : 0.5),
                                       ),
@@ -1934,8 +1934,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                         height:
                                             MediaQuery.of(context).size.width *
                                                 0.12,
-                                        image:
-                                            AssetImage(Constants.imageTransfer),
+                                        image: AssetImage(Assets.imageTransfer),
                                         opacity: AlwaysStoppedAnimation(
                                             paymentMethod == 1 ? 1 : 0.5),
                                       ),
@@ -2013,7 +2012,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                         height:
                                             MediaQuery.of(context).size.width *
                                                 0.12,
-                                        image: AssetImage(Constants.imageGift),
+                                        image: AssetImage(Assets.imageGift),
                                         opacity: AlwaysStoppedAnimation(
                                             paymentMethod == 2 ? 1 : 0.5),
                                       ),
@@ -2088,7 +2087,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                           width: paymentMethod == 3 ? 2 : 1),
                                     ),
                                     child: Image(
-                                      image: AssetImage(Constants.imageCard),
+                                      image: AssetImage(Assets.imageCard),
                                       opacity: AlwaysStoppedAnimation(
                                           paymentMethod == 3 ? 1 : 0.5),
                                     ),
@@ -2169,7 +2168,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                               0.02),
                                       child: Image(
                                         color: AppColors.black,
-                                        image: AssetImage(Constants.apple),
+                                        image: AssetImage(Assets.apple),
                                         opacity: AlwaysStoppedAnimation(
                                             paymentMethod == 4 ? 1 : 0.5),
                                       ),
@@ -2250,7 +2249,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                           MediaQuery.of(context).size.width *
                                               0.02),
                                       child: Image(
-                                        image: AssetImage(Constants.google),
+                                        image: AssetImage(Assets.google),
                                         //color: paymentMethod == 4 ? AppColors.black : AppColors.white,
                                         opacity: AlwaysStoppedAnimation(
                                             paymentMethod != 5 ? 0.5 : 1),

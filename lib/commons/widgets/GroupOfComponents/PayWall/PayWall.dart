@@ -15,7 +15,7 @@ import 'package:mamba/data/DataService/Promotions/PromotionsDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Subscription.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Text/TitleHeadline1.dart';
@@ -320,11 +320,11 @@ class _PayWallState extends State<PayWall> {
                     child: Provider.of<ThemeProvider>(context, listen: false)
                             .isDarkMode
                         ? Image.asset(
-                            Constants.mobileProDark,
+                            Assets.mobileProDark,
                             fit: BoxFit.contain,
                           )
                         : Image.asset(
-                            Constants.mobileProLight,
+                            Assets.mobileProLight,
                             fit: BoxFit.contain,
                           )),
               ),
@@ -382,7 +382,7 @@ class _PayWallState extends State<PayWall> {
                     child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.asset(
-                    Constants.subscriptionImage,
+                    Assets.subscriptionImage,
                     width: MediaQuery.of(context).size.width * 0.3,
                     height: MediaQuery.of(context).size.width * 0.3,
                     fit: BoxFit.fill,
@@ -670,7 +670,7 @@ class _PayWallState extends State<PayWall> {
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.asset(
-                        Constants.subscriptionImage,
+                        Assets.subscriptionImage,
                       ),
                     ),
                     title: Text(sub.title!,

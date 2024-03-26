@@ -1,11 +1,9 @@
-import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/constants/constants.dart';
 
 class StripeConnectDataProvider {
+  
   static Future createAccountApi(String parameters) async {
     http.Response result = await http
         .get(Uri.parse("${Constants.baseUrl}/createAccount?$parameters"));
@@ -16,7 +14,7 @@ class StripeConnectDataProvider {
     //TODO CANCEL SUB DESDE PRO
     /*
     http.Response result =
-        await http.post(Uri.parse("${AppConstants.baseUrl}/cancelSubscription"),
+        await http.post(Uri.parse("${AppAssets.baseUrl}/cancelSubscription"),
             headers: {"Content-Type": "application/json"},
             body: json.encode({
               "subscriptionId": subscriptionId,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -35,7 +35,7 @@ Widget appleLogin(BuildContext context, AuthState state) {
               decoration: BoxDecoration(
                   color: AppColors.black,
                   borderRadius: BorderRadius.circular(30)),
-              child: Image(image: AssetImage(Constants.apple)),
+              child: Image(image: AssetImage(Assets.apple)),
             ),
             Expanded(
               child: checkIfProvider(state, AuthProviderEnum.apple)

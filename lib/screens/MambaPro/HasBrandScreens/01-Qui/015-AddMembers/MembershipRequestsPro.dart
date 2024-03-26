@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/RequestConfirmationDialog.dart';
@@ -220,7 +220,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                         children: [
                           SizedBox(
                               width: MediaQuery.of(context).size.width * 0.30,
-                              child: Image.asset(Constants.emptyCalendar)),
+                              child: Image.asset(Assets.emptyCalendar)),
                           SizedBox(
                               height:
                                   MediaQuery.of(context).size.height * 0.005),

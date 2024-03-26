@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Location.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -97,7 +97,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                         top: MediaQuery.of(context).size.height * 0.04),
                     height: MediaQuery.of(context).size.height * 0.23,
                     child: Lottie.asset(
-                      Constants.stripeOnboardingOne,
+                      Assets.stripeOnboardingOne,
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -314,7 +314,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.25,
                     child: Lottie.asset(
-                      Constants.stripeOnboardingTwo,
+                      Assets.stripeOnboardingTwo,
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -386,7 +386,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                     child: Container(
                                       margin: const EdgeInsets.all(5),
                                       child: Image(
-                                        image: AssetImage(Constants.imageCard),
+                                        image: AssetImage(Assets.imageCard),
                                       ),
                                     ),
                                   ),
@@ -421,7 +421,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                     child: Container(
                                       margin: const EdgeInsets.all(10),
                                       child: Image(
-                                        image: AssetImage(Constants.google),
+                                        image: AssetImage(Assets.google),
                                       ),
                                     ),
                                   ),
@@ -457,7 +457,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                       margin: const EdgeInsets.all(10),
                                       child: Image(
                                         color: Theme.of(context).primaryColor,
-                                        image: AssetImage(Constants.apple),
+                                        image: AssetImage(Assets.apple),
                                       ),
                                     ),
                                   ),
@@ -567,7 +567,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: Lottie.asset(
-                      Constants.stripeOnboardingThree,
+                      Assets.stripeOnboardingThree,
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -802,7 +802,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.25,
                         child: Lottie.asset(
-                          Constants.stripeOnboardingFour,
+                          Assets.stripeOnboardingFour,
                           fit: BoxFit.fill,
                         ),
                       ),
@@ -1116,7 +1116,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.25,
                     child: Lottie.asset(
-                      Constants.stripeOnboardingFive,
+                      Assets.stripeOnboardingFive,
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -1411,7 +1411,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.15,
                     child: Lottie.asset(
-                      Constants.stripeOnboardingSix,
+                      Assets.stripeOnboardingSix,
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -2000,7 +2000,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                       const EdgeInsets.all(5),
                                                   child: Image(
                                                     image: AssetImage(
-                                                        Constants.imageCard),
+                                                        Assets.imageCard),
                                                   ),
                                                 ),
                                               ),
@@ -2047,7 +2047,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                       const EdgeInsets.all(10),
                                                   child: Image(
                                                     image: AssetImage(
-                                                        Constants.google),
+                                                        Assets.google),
                                                   ),
                                                 ),
                                               ),
@@ -2096,7 +2096,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                     color: Theme.of(context)
                                                         .primaryColor,
                                                     image: AssetImage(
-                                                        Constants.apple),
+                                                        Assets.apple),
                                                   ),
                                                 ),
                                               ),

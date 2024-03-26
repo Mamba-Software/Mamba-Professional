@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -15,6 +16,16 @@ import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+
+// Top Level -- Local BackGroundNotificationHandler
+  Future<void> backgroundMessageHandler(RemoteMessage message) async {
+    LocalNotificationService localNotificationService =
+        LocalNotificationService();
+    if (message.data.containsKey('route')) {
+      String route = message.data['route'];
+      localNotificationService.onNotifications.add(route);
+    }
+  }
 
 // Top Level -- Local BackGroundNotificationHandler
 Future<void> backgroundLocalMessageHandler(

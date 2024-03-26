@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class UpdateAppPopup {
@@ -113,7 +113,7 @@ class UpdateAppPopup {
                             child: SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.15,
-                                child: Image.asset(Constants.appUpdateImage)),
+                                child: Image.asset(Assets.appUpdateImage)),
                           ),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.01,

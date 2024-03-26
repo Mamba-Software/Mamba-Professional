@@ -6,7 +6,7 @@ import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/app/style/Styles.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -186,7 +186,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                                     MediaQuery.of(context).size.height * 0.07),
                             SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.15,
-                                child: Image.asset(Constants.emptyCalendar)),
+                                child: Image.asset(Assets.emptyCalendar)),
                             SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.005),

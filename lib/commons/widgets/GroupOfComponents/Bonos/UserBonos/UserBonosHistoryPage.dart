@@ -9,7 +9,7 @@ import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
@@ -472,7 +472,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                       .width *
                                                   0.25,
                                               child: Image.asset(
-                                                  Constants.emptyCalendar)),
+                                                  Assets.emptyCalendar)),
                                           SizedBox(
                                               height: MediaQuery.of(context)
                                                       .size

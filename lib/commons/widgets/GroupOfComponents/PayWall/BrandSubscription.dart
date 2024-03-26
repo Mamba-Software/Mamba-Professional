@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
@@ -393,7 +393,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                       leading: ClipRRect(
                                         borderRadius: BorderRadius.circular(15),
                                         child: Image.asset(
-                                          Constants.subscriptionImage,
+                                          Assets.subscriptionImage,
                                         ),
                                       ),
                                       title: Text(

@@ -8,7 +8,7 @@ import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
@@ -520,7 +520,7 @@ class _NotificationsState extends State<Notifications> {
               child: Center(
                 child: Image(
                     width: MediaQuery.of(context).size.width * 0.10,
-                    image: AssetImage(Constants.logoSimpleYellow)),
+                    image: AssetImage(Assets.logoSimpleYellow)),
               ),
             ),
             title: Text(
@@ -842,7 +842,7 @@ class _NotificationsState extends State<Notifications> {
                 child: Center(
                   child: Image(
                       width: MediaQuery.of(context).size.width * 0.10,
-                      image: AssetImage(Constants.emptyCalendar)),
+                      image: AssetImage(Assets.emptyCalendar)),
                 ),
               ),
               title: Text(
@@ -924,7 +924,7 @@ class _NotificationsState extends State<Notifications> {
                 child: Center(
                   child: Image(
                       width: MediaQuery.of(context).size.width * 0.10,
-                      image: AssetImage(Constants.emptyCalendar)),
+                      image: AssetImage(Assets.emptyCalendar)),
                 ),
               ),
               title: Text(

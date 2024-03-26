@@ -3,7 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -169,7 +169,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                     children: [
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.13,
-                          child: Image.asset(Constants.themeLightImage)),
+                          child: Image.asset(Assets.themeLightImage)),
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -225,7 +225,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                     children: [
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.13,
-                          child: Image.asset(Constants.themeDarkImage)),
+                          child: Image.asset(Assets.themeDarkImage)),
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -287,7 +287,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                     children: [
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.13,
-                          child: Image.asset(Constants.themeSystemImage)),
+                          child: Image.asset(Assets.themeSystemImage)),
                     ],
                   ),
                   SizedBox(

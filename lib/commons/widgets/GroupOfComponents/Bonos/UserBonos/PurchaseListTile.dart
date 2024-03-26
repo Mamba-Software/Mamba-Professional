@@ -5,7 +5,7 @@ import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Purchase.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
@@ -379,7 +379,7 @@ class _BonoListTileState extends State<PurchaseListTile>
                                     child: SizedBox(
                                       width: widget.width * 0.12,
                                       child: Image(
-                                        image: AssetImage(Constants.imageGift),
+                                        image: AssetImage(Assets.imageGift),
                                       ),
                                     ),
                                   ),

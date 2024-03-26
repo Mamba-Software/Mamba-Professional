@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
@@ -865,10 +865,10 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                             child: Image(
                                                                 image: isGoogle
                                                                     ? AssetImage(
-                                                                        Constants
+                                                                        Assets
                                                                             .google)
                                                                     : AssetImage(
-                                                                        Constants
+                                                                        Assets
                                                                             .apple)),
                                                           )
                                                         : Container(),

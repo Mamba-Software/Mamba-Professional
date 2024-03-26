@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/MyLocationsSelect.dart';
 
@@ -78,7 +78,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
                         image: DecorationImage(
-                          image: AssetImage(Constants.mapsImg),
+                          image: AssetImage(Assets.mapsImg),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -90,7 +90,7 @@ class _LocationWidgetState extends State<LocationWidget> {
                             alignment: Alignment
                                 .center, // Center the image within the container
                             child: Image.asset(
-                              Constants.fitnessMapIcon,
+                              Assets.fitnessMapIcon,
                               height: MediaQuery.of(context).size.height *
                                   0.06, // 50% of the container's height
                             ),

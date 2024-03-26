@@ -8,7 +8,7 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
@@ -682,7 +682,7 @@ class _ChatCoreState extends State<ChatCore> {
                   Center(
                     child: SizedBox(
                         height: MediaQuery.of(context).size.width * 0.3,
-                        child: Image.asset(Constants.chatImage)),
+                        child: Image.asset(Assets.chatImage)),
                   ),
                   Center(
                     child: Padding(

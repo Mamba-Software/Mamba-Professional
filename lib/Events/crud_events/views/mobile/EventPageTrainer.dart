@@ -198,7 +198,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.05,
-              child: Image.asset(Constants.fireEmojiImage),
+              child: Image.asset(Assets.fireEmojiImage),
             ),
             Text(eventFeedbackValue.toString(),
                 style: Theme.of(context).textTheme.bodyText1,
@@ -287,7 +287,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.03,
-                      child: Image.asset(Constants.fireEmojiImage),
+                      child: Image.asset(Assets.fireEmojiImage),
                     ),
                   ],
                 ),
@@ -320,7 +320,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.03,
-                      child: Image.asset(Constants.fireEmojiImage),
+                      child: Image.asset(Assets.fireEmojiImage),
                     ),
                   ],
                 ),
@@ -1646,7 +1646,7 @@ surfaceTintColor: AppColors.darkGrey,
                                                                             ),
                                                                             SizedBox(
                                                                               width: MediaQuery.of(context).size.width * 0.04,
-                                                                              child: Image.asset(Constants.fireEmojiImage),
+                                                                              child: Image.asset(Assets.fireEmojiImage),
                                                                             ),
                                                                           ],
                                                                         ),

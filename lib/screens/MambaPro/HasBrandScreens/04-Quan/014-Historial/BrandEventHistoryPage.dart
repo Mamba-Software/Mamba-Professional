@@ -5,7 +5,7 @@ import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventListTile.dart';
@@ -468,7 +468,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                         children: [
                           SizedBox(
                               width: MediaQuery.of(context).size.width * 0.25,
-                              child: Image.asset(Constants.emptyCalendar)),
+                              child: Image.asset(Assets.emptyCalendar)),
                           SizedBox(
                               height:
                                   MediaQuery.of(context).size.height * 0.005),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class RateAppPopup {
@@ -175,7 +175,7 @@ class RateAppPopup {
                                   color:
                                       Theme.of(context).colorScheme.secondary,
                                   child: Lottie.asset(
-                                    Constants.rateOurApp,
+                                    Assets.rateOurApp,
                                     fit: BoxFit.cover,
                                   ),
                                 ),

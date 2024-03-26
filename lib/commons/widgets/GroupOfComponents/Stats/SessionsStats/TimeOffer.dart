@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -107,7 +107,7 @@ class TimeOfferState extends State<TimeOffer> {
                             height: MediaQuery.of(context).size.height * 0.02),
                         SizedBox(
                             width: MediaQuery.of(context).size.width * 0.15,
-                            child: Image.asset(Constants.emptyCalendar)),
+                            child: Image.asset(Assets.emptyCalendar)),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.005),
                         Text(

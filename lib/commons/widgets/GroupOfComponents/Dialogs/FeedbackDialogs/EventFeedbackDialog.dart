@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
-import 'package:mamba/commons/constants/Constants.dart';
+import 'package:mamba/commons/constants/Assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
@@ -136,7 +136,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
               ),
               child: Column(
                 children: [
-                  Image.asset(Constants.relaxedEmojiImage),
+                  Image.asset(Assets.relaxedEmojiImage),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Text(
                     AppLocalizations.of(context)!.relaxedFeedbackLabel,
@@ -164,7 +164,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
               ),
               child: Column(
                 children: [
-                  Image.asset(Constants.tiredEmojiImage),
+                  Image.asset(Assets.tiredEmojiImage),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Text(
                     AppLocalizations.of(context)!.tiredFeedbackLabel,
@@ -192,7 +192,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
               ),
               child: Column(
                 children: [
-                  Image.asset(Constants.sweatingEmojiImage),
+                  Image.asset(Assets.sweatingEmojiImage),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Text(
                     AppLocalizations.of(context)!.exhaustedFeedbackLabel,

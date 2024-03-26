@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
@@ -90,7 +90,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                     itemCount: 10,
                     itemSize: MediaQuery.of(context).size.height * 0.04,
                     itemBuilder: (context, index) => Container(
-                          child: Image.asset(Constants.fireEmojiImage),
+                          child: Image.asset(Assets.fireEmojiImage),
                         ),
                     onRatingUpdate: (rating) {
                       setState(() {
@@ -137,7 +137,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                 style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center,
               ),
-              Image.asset(Constants.relaxedEmojiImage),
+              Image.asset(Assets.relaxedEmojiImage),
               Text(
                 AppLocalizations.of(context)!.relaxedFeedbackLabel,
                 style: Theme.of(context).textTheme.displaySmall,
@@ -157,7 +157,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                 style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center,
               ),
-              Image.asset(Constants.tiredEmojiImage),
+              Image.asset(Assets.tiredEmojiImage),
               Text(
                 AppLocalizations.of(context)!.tiredFeedbackLabel,
                 style: Theme.of(context).textTheme.displaySmall,
@@ -177,7 +177,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                 style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center,
               ),
-              Image.asset(Constants.exhalingEmojiImage),
+              Image.asset(Assets.exhalingEmojiImage),
               Text(
                 AppLocalizations.of(context)!.veryTiredFeedbackLabel,
                 style: Theme.of(context).textTheme.displaySmall,
@@ -197,7 +197,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                 style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center,
               ),
-              Image.asset(Constants.sweatingEmojiImage),
+              Image.asset(Assets.sweatingEmojiImage),
               Text(
                 AppLocalizations.of(context)!.exhaustedFeedbackLabel,
                 style: Theme.of(context).textTheme.displaySmall,

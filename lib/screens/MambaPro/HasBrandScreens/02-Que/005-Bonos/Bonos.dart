@@ -11,7 +11,7 @@ import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
@@ -979,7 +979,7 @@ class _BonosProState extends State<BonosPro> {
                         children: [
                           SizedBox(
                               width: MediaQuery.of(context).size.width * 0.30,
-                              child: Image.asset(Constants.emptyCalendar)),
+                              child: Image.asset(Assets.emptyCalendar)),
                           SizedBox(
                               height:
                                   MediaQuery.of(context).size.height * 0.005),

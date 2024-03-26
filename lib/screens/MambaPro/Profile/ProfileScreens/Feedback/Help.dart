@@ -237,7 +237,7 @@ class _FeedBackState extends State<FeedBack> {
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.20,
-                          child: Image.asset(Constants.doneFeedbackImage)),
+                          child: Image.asset(Assets.doneFeedbackImage)),
                     ],
                   )
                 : Column(
@@ -328,7 +328,7 @@ class _FeedBackState extends State<FeedBack> {
                                     image: DecorationImage(
                                       fit: BoxFit.fitHeight,
                                       image: Image.asset(
-                                              Constants.giveFeedbackImage)
+                                              Assets.giveFeedbackImage)
                                           .image,
                                     ),
                                   )),

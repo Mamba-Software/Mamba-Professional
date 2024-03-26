@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/data/AdminService/ScriptsService.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/Styles.dart';
 import 'package:mamba/admin/AdminTool.dart';
 import 'package:mamba/admin/AdminFeedBack.dart';
@@ -31,7 +31,7 @@ class _AdminState extends State<Admin> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              Constants.logoExtended,
+              Assets.logoExtended,
               fit: BoxFit.contain,
               height: 32,
             ),

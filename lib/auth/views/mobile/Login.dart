@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +11,9 @@ import 'package:mamba/auth/views/mobile/SplashScreen.dart';
 import 'package:mamba/auth/widgets/mobile/AppleLogin.dart';
 import 'package:mamba/auth/widgets/mobile/GoogleLogin.dart';
 import 'package:mamba/auth/widgets/mobile/NormalLogin.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -30,7 +29,8 @@ class Login extends StatefulWidget {
   _LoginState createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> with TickerProviderStateMixin {
+class _LoginState extends State<Login>
+    with TickerProviderStateMixin, PlatformMixin {
   // Access to DatabaseService
   final _userDataService = UserDataService();
 
@@ -57,8 +57,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   @override
   initState() {
     super.initState();
-    mixpanel!.track('mamba_login_view');        
-    context.read<PopupsCubit>().checkIfAppUpdate(false);    
+    mixpanel!.track('mamba_login_view');
+    context.read<PopupsCubit>().checkIfAppUpdate(false);
   }
 
   Widget _renderWidget() {
@@ -145,9 +145,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Platform.isAndroid == false
-                ? appleLogin(context, state)
-                : Container(),
+            isIOS ? appleLogin(context, state) : Container(),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             googleLogin(context, state),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -528,7 +526,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     ? SizedBox(
                         height: MediaQuery.of(context).size.height * 0.2,
                         width: MediaQuery.of(context).size.width * 0.3,
-                        child: Image.asset(Constants.logoExtended))
+                        child: Image.asset(Assets.logoExtended))
                     : Container(),
                 leadingWidth: MediaQuery.of(context).size.width * 0.12,
                 automaticallyImplyLeading: false,
@@ -575,7 +573,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                   MediaQuery.of(context).size.width * 0.05),
                           height: MediaQuery.of(context).size.height * 0.3,
                           width: MediaQuery.of(context).size.width * 0.6,
-                          child: Image.asset(Constants.logoExtended))
+                          child: Image.asset(Assets.logoExtended))
                       : Container(
                           key: const ValueKey<int>(1),
                         ),

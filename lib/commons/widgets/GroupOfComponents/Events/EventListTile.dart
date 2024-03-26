@@ -8,7 +8,7 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -227,7 +227,7 @@ class _EventListTileState extends State<EventListTile>
               children: [
                 SizedBox(
                   width: widget.width * 0.04,
-                  child: Image.asset(Constants.fireEmojiImage),
+                  child: Image.asset(Assets.fireEmojiImage),
                 ),
                 Text(eventFeedbackValue.toString(),
                     style: Theme.of(context).textTheme.bodyLarge,

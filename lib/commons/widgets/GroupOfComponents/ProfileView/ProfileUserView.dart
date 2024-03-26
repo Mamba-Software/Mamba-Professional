@@ -7,7 +7,7 @@ import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
@@ -548,7 +548,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                           children: [
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.1,
-                              child: Image.asset(Constants.fireEmojiImage),
+                              child: Image.asset(Assets.fireEmojiImage),
                             ),
                             SizedBox(
                                 width:
@@ -594,7 +594,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                           children: [
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.1,
-                              child: Image.asset(Constants.fireEmojiImage),
+                              child: Image.asset(Assets.fireEmojiImage),
                             ),
                             SizedBox(
                               height: MediaQuery.of(context).size.width * 0.15,
@@ -643,7 +643,7 @@ class _ProfileViewUserState extends State<ProfileViewUser>
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.1,
-                          child: Image.asset(Constants.fireEmojiImage),
+                          child: Image.asset(Assets.fireEmojiImage),
                         ),
                         SizedBox(
                             width: MediaQuery.of(context).size.width * 0.02),

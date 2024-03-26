@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -73,7 +73,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                       alignment: _alignment,
                       duration: const Duration(seconds: 3),
                       child: Image.asset(
-                        Constants.runningFemale,
+                        Assets.runningFemale,
                         width: MediaQuery.of(context).size.width * 0.18,
                         fit: BoxFit.contain,
                       ),
@@ -114,7 +114,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
               Center(
                 child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.50,
-                    child: Image.asset(Constants.logoExtended)),
+                    child: Image.asset(Assets.logoExtended)),
               ),
               AnimatedOpacity(
                 opacity: widget.isMaintenance == false ? 1.0 : 0.0,

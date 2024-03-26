@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 
 class LoadingView extends StatefulWidget {
   bool? hasLogo;
@@ -39,7 +39,7 @@ class _LoadingViewState extends State<LoadingView> {
                   height: widget.isSmall != null && widget.isSmall == true
                       ? 12
                       : 25,
-                  child: Image(image: AssetImage(Constants.logoSimpleYellow)),
+                  child: Image(image: AssetImage(Assets.logoSimpleYellow)),
                 ),
               ),
         widget.text != null

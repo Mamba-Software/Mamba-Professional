@@ -1,10 +1,7 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:mamba/stripe/Data/data_repository/stripe_connect_data_provider.dart';
 import 'package:mamba/stripe/Data/data_repository/stripe_connect_repository.dart';
 part 'stripe_connect_state.dart';
 

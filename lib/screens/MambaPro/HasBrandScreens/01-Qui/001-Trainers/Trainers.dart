@@ -9,7 +9,7 @@ import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/user/chat/Chat.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Badges/BetaBadge.dart';
@@ -1198,7 +1198,7 @@ class _Trainers extends State<Trainers> {
                         children: [
                           SizedBox(
                               width: MediaQuery.of(context).size.width * 0.30,
-                              child: Image.asset(Constants.emptyCalendar)),
+                              child: Image.asset(Assets.emptyCalendar)),
                           SizedBox(
                               height:
                                   MediaQuery.of(context).size.height * 0.005),

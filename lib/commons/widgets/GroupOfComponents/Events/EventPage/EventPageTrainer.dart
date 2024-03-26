@@ -14,7 +14,7 @@ import 'package:maps_launcher/maps_launcher.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
@@ -331,7 +331,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.05,
-              child: Image.asset(Constants.fireEmojiImage),
+              child: Image.asset(Assets.fireEmojiImage),
             ),
             Text(eventFeedbackValue.toString(),
                 style: Theme.of(context).textTheme.bodyLarge,
@@ -420,7 +420,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.03,
-                      child: Image.asset(Constants.fireEmojiImage),
+                      child: Image.asset(Assets.fireEmojiImage),
                     ),
                   ],
                 ),
@@ -452,7 +452,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.03,
-                      child: Image.asset(Constants.fireEmojiImage),
+                      child: Image.asset(Assets.fireEmojiImage),
                     ),
                   ],
                 ),
@@ -2073,7 +2073,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                       SizedBox(
                                                           height: 100,
                                                           child: Image.asset(
-                                                              Constants
+                                                              Assets
                                                                   .emptyPeople)),
                                                       Text(
                                                         AppLocalizations.of(
@@ -2231,7 +2231,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                             width:
                                                                                 MediaQuery.of(context).size.width * 0.04,
                                                                             child:
-                                                                                Image.asset(Constants.fireEmojiImage),
+                                                                                Image.asset(Assets.fireEmojiImage),
                                                                           ),
                                                                         ],
                                                                       ),

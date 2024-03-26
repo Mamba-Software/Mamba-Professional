@@ -352,7 +352,7 @@ class PurchaseEventsBody extends StatelessWidget {
                               /*
                           SizedBox(
                               width: MediaQuery.of(context).size.width * 0.2,
-                              child: Image.asset(Constants.emptyCalendar)),
+                              child: Image.asset(Assets.emptyCalendar)),
                           SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                           */
                               Padding(

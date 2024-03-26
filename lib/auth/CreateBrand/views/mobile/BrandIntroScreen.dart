@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -116,7 +116,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                           fit: BoxFit.fitHeight,
-                                          image: AssetImage(Constants
+                                          image: AssetImage(Assets
                                               .portadaCreateBrandIntro),
                                         ),
                                         boxShadow: [
@@ -214,7 +214,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             child: Center(
                               child: Image(
                                 image: AssetImage(
-                                    Constants.informationCreateBrandIntro),
+                                    Assets.informationCreateBrandIntro),
                                 width: MediaQuery.of(context).size.width,
                               ),
                             ),
@@ -284,8 +284,8 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             width: MediaQuery.of(context).size.width,
                             child: Center(
                               child: Image(
-                                image: AssetImage(
-                                    Constants.locationCreateBrandIntro),
+                                image:
+                                    AssetImage(Assets.locationCreateBrandIntro),
                                 height:
                                     MediaQuery.of(context).size.height * 0.3,
                               ),
@@ -355,8 +355,8 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             width: MediaQuery.of(context).size.width,
                             child: Center(
                               child: Image(
-                                image: AssetImage(
-                                    Constants.horarioCreateBrandIntro),
+                                image:
+                                    AssetImage(Assets.horarioCreateBrandIntro),
                                 height:
                                     MediaQuery.of(context).size.height * 0.3,
                               ),

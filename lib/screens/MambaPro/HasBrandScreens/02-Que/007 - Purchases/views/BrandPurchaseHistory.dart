@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
@@ -847,7 +847,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                               SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.3,
-                                  child: Image.asset(Constants.emptyCalendar)),
+                                  child: Image.asset(Assets.emptyCalendar)),
                               SizedBox(
                                   height: MediaQuery.of(context).size.height *
                                       0.005),

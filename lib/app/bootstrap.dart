@@ -11,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
@@ -36,7 +37,7 @@ import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/l10n/Idiomas.dart';
 import 'package:mamba/l10n/LanguageProvider.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -74,9 +75,10 @@ class Bootstrap with PlatformMixin {
       // Initialise TimeZone
       timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
       // Firebase Messaging Back Ground Message Handler
-      FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
+      FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
       // Firebase Dynamic Links
       if (isWeb == false) DynamicLinkUtils().retrieveDynamicLink();
+
       /// Production and Staging Only
       if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Global Uncaught Errors
@@ -115,16 +117,6 @@ class Bootstrap with PlatformMixin {
         FirebaseCrashlytics.instance.recordError(error, stackTrace);
       }
     });
-  }
-
-  // BackGroundNotificationHandler
-  Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-    LocalNotificationService localNotificationService =
-        LocalNotificationService();
-    if (message.data.containsKey('route')) {
-      String route = message.data['route'];
-      localNotificationService.onNotifications.add(route);
-    }
   }
 }
 

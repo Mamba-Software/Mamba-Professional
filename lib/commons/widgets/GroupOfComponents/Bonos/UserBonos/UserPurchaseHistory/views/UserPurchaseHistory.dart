@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/UserBonos/UserPurchaseHistory/cubit/UserPurchasesCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/UserBonos/UserPurchaseHistory/views/UserPurchaseCard.dart';
@@ -861,7 +861,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                           children: [
                             SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.30,
-                                child: Image.asset(Constants.emptyCalendar)),
+                                child: Image.asset(Assets.emptyCalendar)),
                             SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.015),

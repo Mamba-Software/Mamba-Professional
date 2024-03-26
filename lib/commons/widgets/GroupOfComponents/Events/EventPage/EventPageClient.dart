@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
@@ -363,7 +363,7 @@ class _EventPageClientState extends State<EventPageClient>
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.05,
-              child: Image.asset(Constants.fireEmojiImage),
+              child: Image.asset(Assets.fireEmojiImage),
             ),
             Text(eventFeedbackValue.toString(),
                 style: Theme.of(context).textTheme.bodyLarge,
@@ -1508,7 +1508,7 @@ class _EventPageClientState extends State<EventPageClient>
                                                   SizedBox(
                                                       height: 100,
                                                       child: Image.asset(
-                                                          Constants
+                                                          Assets
                                                               .emptyPeople)),
                                                   Text(
                                                     AppLocalizations.of(
@@ -2473,7 +2473,7 @@ class _EventPageClientState extends State<EventPageClient>
                                                 SizedBox(
                                                     height: 100,
                                                     child: Image.asset(
-                                                        Constants.emptyPeople)),
+                                                        Assets.emptyPeople)),
                                                 Text(
                                                   AppLocalizations.of(context)!
                                                       .noClientJoining,

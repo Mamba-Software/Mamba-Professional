@@ -25,7 +25,7 @@ class LibraryFirebaseCalls {
       await _firestore
           .collection(library)
           .doc('Colors')
-          .collection("Colors")
+          .collection('Colors')
           .get()
           .then((snapshot) {
         for (DocumentSnapshot doc in snapshot.docs) {

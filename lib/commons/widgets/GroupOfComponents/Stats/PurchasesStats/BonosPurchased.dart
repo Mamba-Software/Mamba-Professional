@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
@@ -430,7 +430,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                     .width *
                                                 0.15,
                                             child: Image.asset(
-                                                Constants.emptyCalendar)),
+                                                Assets.emptyCalendar)),
                                         SizedBox(
                                             height: MediaQuery.of(context)
                                                     .size
@@ -524,7 +524,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                     children: [
                       SizedBox(
                           width: MediaQuery.of(context).size.width * 0.30,
-                          child: Image.asset(Constants.emptyCalendar)),
+                          child: Image.asset(Assets.emptyCalendar)),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.005),
                       Text(

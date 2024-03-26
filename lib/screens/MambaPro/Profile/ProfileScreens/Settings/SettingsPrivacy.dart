@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
@@ -123,7 +123,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                     children: [
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.20,
-                          child: Image.asset(Constants.publicProfileImage)),
+                          child: Image.asset(Assets.publicProfileImage)),
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
@@ -178,7 +178,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                     children: [
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.20,
-                          child: Image.asset(Constants.privateProfileImage)),
+                          child: Image.asset(Assets.privateProfileImage)),
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),

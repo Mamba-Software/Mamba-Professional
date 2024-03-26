@@ -10,7 +10,7 @@ import 'package:mamba/auth/CreateBrand/views/mobile/RegistrarMarca.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -745,7 +745,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   children: [
                                                     Image(
                                                         image: AssetImage(
-                                                            Constants.google)),
+                                                            Assets.google)),
                                                     SizedBox(
                                                         width: MediaQuery.of(
                                                                     context)
@@ -804,7 +804,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                               0.04,
                                                       child: Image(
                                                           image: AssetImage(
-                                                              Constants.apple)),
+                                                              Assets.apple)),
                                                     ),
                                                     SizedBox(
                                                         width: MediaQuery.of(
@@ -1214,7 +1214,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   children: [
                                                     Image(
                                                         image: AssetImage(
-                                                            Constants.google)),
+                                                            Assets.google)),
                                                     SizedBox(
                                                         width: MediaQuery.of(
                                                                     context)
