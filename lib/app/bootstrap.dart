@@ -46,23 +46,6 @@ import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'dart:io' show Platform;
 
-// Top Level -- Local BackGroundNotificationHandler
-Future<void> backgroundLocalMessageHandler(
-    NotificationResponse notificationResponse) async {
-  LocalNotificationService localNotificationService =
-      LocalNotificationService();
-  switch (notificationResponse.notificationResponseType) {
-    case NotificationResponseType.selectedNotification:
-      localNotificationService.onNotifications
-          .add(notificationResponse.payload);
-      break;
-    case NotificationResponseType.selectedNotificationAction:
-      localNotificationService.onNotifications
-          .add(notificationResponse.payload);
-      break;
-  }
-}
-
 // Bootstrap
 class Bootstrap {
   // Vars
