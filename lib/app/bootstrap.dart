@@ -58,7 +58,7 @@ class Bootstrap with PlatformMixin {
     runZonedGuarded(() async {
       // Load Env Variables
       print("Loading Environment Variables...");
-      String envFileName = ".env.${currentFlavor.name}";
+      String envFileName = ".env.${flavor.name}";
       await dotenv.load(fileName: envFileName);
       // Initialize Firebase
       if (isWeb) {
@@ -80,7 +80,7 @@ class Bootstrap with PlatformMixin {
       if (isWeb == false) DynamicLinkUtils().retrieveDynamicLink();
 
       /// Production and Staging Only
-      if (currentFlavor != Flavor.development) {
+      if (flavor != Flavor.development) {
         // Firebase Crashlytics on Global Uncaught Errors
         FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
         // Set Log Level
@@ -112,7 +112,7 @@ class Bootstrap with PlatformMixin {
       ));
     }, (error, stackTrace) {
       print(error.toString());
-      if (currentFlavor != Flavor.development) {
+      if (flavor != Flavor.development) {
         // Firebase Crashlytics on Explicitly Caught Exceptions
         FirebaseCrashlytics.instance.recordError(error, stackTrace);
       }
@@ -223,8 +223,8 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
             builder: () {
               return MaterialApp(
                 navigatorKey: navigatorKey,
-                debugShowCheckedModeBanner: currentFlavor == Flavor.development,
-                title: Constants.appName,
+                debugShowCheckedModeBanner: flavor == Flavor.development,
+                title: appName,
                 themeMode: theme.themeMode,
                 theme: appThemes.returnResponsiveLightTheme(100.vh),
                 darkTheme: appThemes.returnResponsiveDarkTheme(100.vh),

@@ -4,6 +4,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Condition.dart';
@@ -68,7 +69,7 @@ class UserFirebaseCalls {
       return -1;
     }
     if (authResult.user != null) {
-      if (currentFlavor != Flavor.development &&
+      if (flavor != Flavor.development &&
           authResult.user!.emailVerified == false) {
         return -2;
       } else {

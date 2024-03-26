@@ -11,6 +11,7 @@ import 'package:mamba/auth/views/mobile/SplashScreen.dart';
 import 'package:mamba/auth/widgets/mobile/AppleLogin.dart';
 import 'package:mamba/auth/widgets/mobile/GoogleLogin.dart';
 import 'package:mamba/auth/widgets/mobile/NormalLogin.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';

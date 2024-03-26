@@ -15,42 +15,9 @@ import 'package:mamba/screens/MambaPro/Profile/Profile.dart';
 import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
-// Flavor Setup
-enum Flavor {
-  production,
-  staging,
-  development,
-}
-
-Flavor currentFlavor = Flavor.development;
-
 List<lColor> currentColors = [];
 List<lDegradate> currentDegradates =
     []; //0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
-
-// App
-var androidGooglePlayUrl =
-    "https://play.google.com/store/apps/details?id=com.mamba.mambaprofessionalapp";
-var iosAppStoreUrl =
-    "https://apps.apple.com/es/app/mamba-professional/id1642701679";
-
-// Contact
-var contactEmail = "contacto@mambafitness.es";
-var contactNumber = "+34677909194"; // Your platform's contact number
-var contactNumberMessage =
-    "¡Hola! Estoy interesad@ en saber más sobre sus servicios. ¿Podrían proporcionarme más información?";
-var whatsappUrl =
-    "whatsapp://send?phone=$contactNumber&text=${Uri.encodeComponent(contactNumberMessage)}";
-
-// Website
-var website = "https://mambafitness.es/";
-var termsAndConditions = "https://mambafitness.es/terminos-y-condiciones/";
-var privacy = "https://mambafitness.es/privacidad/";
-var functionalities = "https://mambafitness.es/profesionales/";
-
-// Stripe
-var stripeConnect = "https://stripe.com/es/privacy";
-var stripeTermsAndConditions = "https://stripe.com/es/connect";
 
 // User & Brand Global Variables
 var currentUser = Usuario();

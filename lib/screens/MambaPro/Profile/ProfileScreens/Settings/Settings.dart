@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba/auth/views/mobile/Login.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -25,7 +26,6 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
 import 'SettingsPrivacy.dart';
 import 'SettingsTheme.dart';
 import 'SettingsYourData.dart';

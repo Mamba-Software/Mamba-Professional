@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -249,9 +250,11 @@ class AuthCubit extends Cubit<AuthState> {
         await Future.delayed(const Duration(milliseconds: 1500));
         emit(const AuthMaintenance());
       } else {
-        // 2.1 User is logged in.        
+        // 2.1 User is logged in.
         // 3. We are in PROD or STG. We checked if email has been verified.
-        if (currentFlavor == Flavor.development || (currentFlavor != Flavor.development && firebaseUser.emailVerified)) {                  
+        if (flavor == Flavor.development ||
+            (flavor != Flavor.development &&
+                firebaseUser.emailVerified)) {
           // 4. Define Prod Config for FirebaseChatCore
           FirebaseChatCore.instance.setConfig(const FirebaseChatCoreConfig(
             null,
@@ -289,7 +292,7 @@ class AuthCubit extends Cubit<AuthState> {
         } else {
           // 3.1.2 Email has NOT been verified. Go back to Login.
           emit(const AuthNotLoged());
-        }        
+        }
       }
     } else {
       // 2.2 User is logged NOT in. We travel to the Login
@@ -347,7 +350,7 @@ class AuthCubit extends Cubit<AuthState> {
     if (currentUser.gender == 1) genderString = "Female";
     if (currentUser.gender == 2) genderString = "Other";
     mixpanel!.getPeople().set("gender", genderString);
-    mixpanel!.getPeople().set("language", currentUser.idioma!);    
+    mixpanel!.getPeople().set("language", currentUser.idioma!);
     var dateOfBirthSplit = currentUser.dateOfBirth!.split("-");
     DateTime dateOfBirth = DateTime(int.parse(dateOfBirthSplit[2]),
         int.parse(dateOfBirthSplit[1]), int.parse(dateOfBirthSplit[0]), 0, 0);
