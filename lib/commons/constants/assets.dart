@@ -19,18 +19,13 @@ class Assets {
   static String onboardingApp = "assets/images/OnboardingApp.png";
   static String onboardingFindBrand = "assets/images/OnboardingFindBrand.png";
   static String onboardingExercise = "assets/images/OnboardingExercise.png";
-  static String clientOnboardingImage =
-      "assets/images/clientOnboardingImage.png";
+  static String clientOnboardingImage = "assets/images/clientOnboardingImage.png";
 
   // Create Brand Infro
-  static String portadaCreateBrandIntro =
-      "assets/images/PortadaCreateBrandInfo.png";
-  static String informationCreateBrandIntro =
-      "assets/images/InformationCreateBrandIntro.png";
-  static String locationCreateBrandIntro =
-      "assets/images/LocationCreateBrandIntro.png";
-  static String horarioCreateBrandIntro =
-      "assets/images/HorarioCreateBrandIntro.png";
+  static String portadaCreateBrandIntro = "assets/images/PortadaCreateBrandInfo.png";
+  static String informationCreateBrandIntro = "assets/images/InformationCreateBrandIntro.png";
+  static String locationCreateBrandIntro = "assets/images/LocationCreateBrandIntro.png";
+  static String horarioCreateBrandIntro = "assets/images/HorarioCreateBrandIntro.png";
 
   static String imageCash = "assets/images/imageCash.png";
   static String imageTransfer = "assets/images/imageTransfer.png";

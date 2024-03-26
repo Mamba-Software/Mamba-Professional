@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/stripe/Data/data_repository/stripe_connect_repository.dart';
 part 'stripe_connect_state.dart';
 
 class StripeConnectCubit extends Cubit<StripeConnectState> {
-  StripeConnectCubit() : super(StripeConnectInitial());
   Brand brand = Brand();
   StripeConnectRepository stripeConnectRepository = StripeConnectRepository();
   final BrandDataService _brandDataService = BrandDataService();
+
+  StripeConnectCubit() : super(StripeConnectInitial()) {
+    initialize();
+  }
+
+  void initialize() {
+    // Init Stripe
+    Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+  }
 
   void getLink(Brand trainerData) async {
     brand = trainerData;

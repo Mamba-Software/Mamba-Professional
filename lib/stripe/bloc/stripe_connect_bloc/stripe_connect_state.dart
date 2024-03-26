@@ -3,7 +3,9 @@ part of 'stripe_connect_cubit.dart';
 @immutable
 sealed class StripeConnectState {}
 
-final class StripeConnectInitial extends StripeConnectState {}
+final class StripeConnectInitial extends StripeConnectState {
+  StripeConnectInitial();
+}
 
 final class Loading extends StripeConnectState {}
 

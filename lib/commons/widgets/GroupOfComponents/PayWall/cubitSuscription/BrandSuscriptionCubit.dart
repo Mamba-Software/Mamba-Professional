@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Suscription/SuscriptionDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
@@ -12,26 +15,22 @@ import 'package:equatable/equatable.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 part 'BrandSuscriptionState.dart';
 
-class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
-  late StreamSubscription<DocumentSnapshot> _streamBrandSuscription;
-
+class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState>
+    with PlatformMixin {
   BrandSuscriptionCubit(final cubitAuth)
       : super(const BrandSuscriptionInitial()) {
-    Stream<DocumentSnapshot<Object?>> getBrandSubscriptionStream(
-        String userId) {
-      final brandDataService = BrandDataService();
-      return brandDataService.getBrandSubscriptionStream(currentBrand.id!);
-    }
-
     try {
+      initialize();
       cubitAuth.stream.distinct().listen((state) {
         // Handle the state change
         if (state is AuthUserBrand) {
-          _streamBrandSuscription = getBrandSubscriptionStream(currentBrand.id!)
-              .listen((querySnapshot) async {
-            DocumentSnapshot document = querySnapshot;
-            getBrandSuscription(document);
-          });
+          // Listen to Subscription Change
+          getBrandSubscriptionStream(currentBrand.id!).listen(
+            (querySnapshot) async {
+              DocumentSnapshot document = querySnapshot;
+              getBrandSuscription(document);
+            },
+          );
         } else {
           //_streamBrandSuscription.cancel();
         }
@@ -39,6 +38,30 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
     } catch (e) {
       emit(const BrandSuscriptionLoadedFalse());
     }
+  }
+
+  Future<void> initialize() async {
+    // Init Revenue Cat
+    if (isAndroid) {
+      PurchasesConfiguration configuration = PurchasesConfiguration(
+        dotenv.env['REVCAT_GOOGLE_API_KEY']!,
+      );
+      await Purchases.configure(configuration);
+    } else if (isIOS) {
+      PurchasesConfiguration configuration = PurchasesConfiguration(
+        dotenv.env['REVCAT_APPLE_API_KEY']!,
+      );
+      await Purchases.configure(configuration);
+    }
+    // Set Log Level
+    if (flavor != Flavor.development) {
+      await Purchases.setLogLevel(LogLevel.info);
+    }
+  }
+
+  Stream<DocumentSnapshot<Object?>> getBrandSubscriptionStream(String userId) {
+    final brandDataService = BrandDataService();
+    return brandDataService.getBrandSubscriptionStream(currentBrand.id!);
   }
 
   Future<void> getBrandSuscription(DocumentSnapshot document) async {
