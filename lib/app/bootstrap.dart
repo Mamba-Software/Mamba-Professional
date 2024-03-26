@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
@@ -44,10 +43,9 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'dart:io' show Platform;
 
 // Bootstrap
-class Bootstrap {
+class Bootstrap with PlatformMixin {
   // Vars
   final FirebaseOptions? firebaseOptions;
   // Init
@@ -62,7 +60,7 @@ class Bootstrap {
       String envFileName = ".env.${currentFlavor.name}";
       await dotenv.load(fileName: envFileName);
       // Initialize Firebase
-      if (kIsWeb) {
+      if (isWeb) {
         // Web = Firebase Options
         await Firebase.initializeApp(
           options: firebaseOptions,
@@ -78,8 +76,7 @@ class Bootstrap {
       // Firebase Messaging Back Ground Message Handler
       FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
       // Firebase Dynamic Links
-      DynamicLinkUtils().retrieveDynamicLink();
-
+      if (isWeb == false) DynamicLinkUtils().retrieveDynamicLink();
       /// Production and Staging Only
       if (currentFlavor != Flavor.development) {
         // Firebase Crashlytics on Global Uncaught Errors
@@ -91,11 +88,11 @@ class Bootstrap {
       mixpanel = await Mixpanel.init(dotenv.env['MIXPANEL_KEY']!,
           trackAutomaticEvents: true, optOutTrackingDefault: false);
       // Init Revenue Cat
-      if (Platform.isAndroid) {
+      if (isAndroid) {
         PurchasesConfiguration configuration =
             PurchasesConfiguration(dotenv.env['REVCAT_GOOGLE_API_KEY']!);
         await Purchases.configure(configuration);
-      } else if (Platform.isIOS) {
+      } else if (isIOS) {
         PurchasesConfiguration configuration =
             PurchasesConfiguration(dotenv.env['REVCAT_APPLE_API_KEY']!);
         await Purchases.configure(configuration);
