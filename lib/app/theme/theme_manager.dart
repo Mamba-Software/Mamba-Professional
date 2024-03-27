@@ -20,28 +20,26 @@ class ThemeState extends Equatable {
 }
 
 class ThemeManager extends Cubit<ThemeState> {
+  
   final AppThemes appThemes = AppThemes();
-  final double screenHeight;
-
-  ThemeManager({required this.screenHeight})
-      : super(ThemeState(
-          themeData: ThemeData.light(), // Temporary placeholder
-          overlayStyle: SystemUiOverlayStyle.dark
-              .copyWith(statusBarColor: Colors.transparent),
-          isDarkMode: false,
-        )) {
-    _setInitialState(screenHeight);
-  }
+  
+  ThemeManager() : super(initialTheme());
 
   bool get isDarkMode => state.isDarkMode;
 
-  void _setInitialState(double screenHeight) {
-    bool isDarkMode =
-        false; // You might want to adjust this based on actual conditions
-    final themeData = appThemes.returnResponsiveLightTheme(screenHeight);
-    final overlayStyle =
-        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent);
-
+  static ThemeState initialTheme() {
+    return ThemeState(
+      themeData: ThemeData.light(), // Temporary placeholder
+          overlayStyle: SystemUiOverlayStyle.dark
+              .copyWith(statusBarColor: Colors.transparent),
+          isDarkMode: false,
+    );
+  }
+  
+  void setInitialState() {
+    bool isDarkMode = false; 
+    final themeData = appThemes.returnResponsiveLightTheme();
+    final overlayStyle = SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent);
     emit(ThemeState(
       themeData: themeData,
       overlayStyle: overlayStyle,
@@ -51,8 +49,8 @@ class ThemeManager extends Cubit<ThemeState> {
 
   void toggleTheme(bool isDark) {
     final themeData = isDark
-        ? appThemes.returnResponsiveDarkTheme(screenHeight)
-        : appThemes.returnResponsiveLightTheme(screenHeight);
+        ? appThemes.returnResponsiveDarkTheme()
+        : appThemes.returnResponsiveLightTheme();
     final overlayStyle = isDark
         ? SystemUiOverlayStyle.light
             .copyWith(statusBarColor: Colors.transparent)

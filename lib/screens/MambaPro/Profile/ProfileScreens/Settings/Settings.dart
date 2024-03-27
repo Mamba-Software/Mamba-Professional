@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mamba/app/theme/theme_manager.dart';
 import 'package:mamba/auth/views/mobile/Login.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -10,7 +11,6 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
-import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
@@ -20,7 +20,6 @@ import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart
 import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Settings/SettingsLanguage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:mamba/l10n/language_manager.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -135,7 +134,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
-      themeProvider = Provider.of<ThemeProvider>(context);
+      themeProvider = context.read<ThemeManager>().isDarkMode;
       if (_isPrivate != currentUser.isPrivate! && _isPrivate != null) {
         isUpdated = true;
       } else {

@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/services.dart';
+import 'package:mamba/app/theme/theme_manager.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
-import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent_old.dart';
@@ -475,8 +475,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
     if (Platform.isAndroid) {
       return SystemUiOverlayStyle.light;
     } else {
-      bool isDark =
-          Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+      bool isDark = context.read<ThemeManager>().isDarkMode;
       if (isDark) {
         return SystemUiOverlayStyle.light;
       } else {

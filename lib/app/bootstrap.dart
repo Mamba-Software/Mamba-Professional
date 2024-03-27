@@ -21,8 +21,6 @@ import 'package:mamba/auth/views/mobile/SplashScreen.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/cubit/BrandEventsCubit.dart';
 import 'package:mamba/notifications/NotificationService/Notifications.dart';
-import 'package:mamba/app/theme/ThemeProvider.dart';
-import 'package:mamba/app/theme/AppThemes.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
@@ -38,7 +36,6 @@ import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart'
 import 'package:mamba/user/data/firebase_user_repository.dart';
 import 'package:mamba/user/data/user_repository.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
@@ -135,9 +132,7 @@ class App extends StatelessWidget {
             lazy: false,
           ),
           BlocProvider<ThemeManager>(
-            create: (context) => ThemeManager(
-              settingsRepository: context.read<SettingsRepository>(),
-            ),
+            create: (context) => ThemeManager(),
           ),
           BlocProvider<LanguageManager>(
             create: (context) => LanguageManager(
@@ -159,8 +154,7 @@ class App extends StatelessWidget {
             create: (context) => CrudEventCubit(),
           ),
           BlocProvider<UnreadNotChatsCubit>(
-            create: (context) =>
-                UnreadNotChatsCubit(context.read<AuthCubit>()),
+            create: (context) => UnreadNotChatsCubit(context.read<AuthCubit>()),
             lazy: false,
           ),
           BlocProvider<BrandEventsCubit>(
@@ -225,17 +219,15 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(builder: (context, ThemeProvider theme, _) {
-      return BlocBuilder<LanguageManager, Language>(
-        builder: (context, state) {
+    return BlocBuilder<ThemeManager, ThemeState>(builder: (context, theme) {
+      return BlocBuilder<LanguageManager, LanguageState>(
+        builder: (context, language) {
           return MaterialApp(
+            title: appName,
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: flavor == Flavor.development,
-            title: appName,
-            themeMode: theme.themeMode,
-            theme: appThemes.returnResponsiveLightTheme(100.vh),
-            darkTheme: appThemes.returnResponsiveDarkTheme(100.vh),
-            locale: state.locale,
+            theme: theme.themeData,
+            locale: language.locale,
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: const [
               AppLocalizations.delegate,
@@ -245,7 +237,6 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
             ],
             home: const SplashScreen(),
             builder: (context, child) {
-              // Wrap every screen with PopupManager using MaterialApp.builder
               return PopupManager(
                 navigatorKey: navigatorKey,
                 child: child!,

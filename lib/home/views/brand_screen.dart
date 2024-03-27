@@ -21,7 +21,6 @@ import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/Sha
 import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba/screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
@@ -623,27 +622,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   Widget buildBodyNavigation() {
     print(pageIndex);
-    switch (pageIndex) {
-      case 0:
-        mixpanel!.track('brand_homepage_view');
-        return HomePro(
-          brandId: currentBrand.id!,
-          numTrainers: currentBrand.numTrainers!,
-          numClients: currentBrand.numClients!,
-          navigateToPage: (int page,
-              [DateTime? dateTime, CalendarView? calendarView]) async {
-            setState(() {
-              calendarDateTime = dateTime;
-              this.calendarView = calendarView;
-              pageIndex = page;
-            });
-            await Future.delayed(const Duration(seconds: 2));
-            setState(() {
-              calendarDateTime = null;
-              this.calendarView = null;
-            });
-          },
-        );
+    switch (pageIndex) {      
       case 9:
         mixpanel!.track('brand_stats_view');
         return Stats(

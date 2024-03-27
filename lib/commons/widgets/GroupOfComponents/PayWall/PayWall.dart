@@ -1,13 +1,12 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mamba/app/theme/theme_manager.dart';
 import 'package:mamba/l10n/language_manager.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
@@ -69,7 +68,7 @@ class _PayWallState extends State<PayWall> {
   initState() {
     super.initState();
     _scrollController = ScrollController();
-    isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+    isDark = context.read<ThemeManager>().isDarkMode;    
   }
 
   Future<void> getSubscriptions() async {
@@ -317,8 +316,7 @@ class _PayWallState extends State<PayWall> {
                 child: AnimatedAlign(
                     alignment: Alignment.center,
                     duration: const Duration(seconds: 10),
-                    child: Provider.of<ThemeProvider>(context, listen: false)
-                            .isDarkMode
+                    child: context.read<ThemeManager>().isDarkMode
                         ? Image.asset(
                             Assets.mobileProDark,
                             fit: BoxFit.contain,

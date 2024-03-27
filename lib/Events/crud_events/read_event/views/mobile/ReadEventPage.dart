@@ -4,11 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba/app/theme/theme_manager.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/read_event/cubit/ReadEventCubit.dart';
 import 'package:mamba/events/crud_events/views/mobile/AddorEdtiEvent.dart';
-import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
@@ -403,8 +403,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
     if (Platform.isAndroid) {
       return SystemUiOverlayStyle.light;
     } else {
-      bool isDark =
-          Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+      bool isDark = context.read<ThemeManager>().isDarkMode;
       if (isDark) {
         return SystemUiOverlayStyle.light;
       } else {

@@ -5,8 +5,8 @@ import 'package:mamba/app/style/TextStyles.dart';
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
 class AppThemes {
-  ThemeData returnResponsiveLightTheme(double screenHeight) {
-    TextStyles textStyles = TextStyles(screenHeight);
+  ThemeData returnResponsiveLightTheme() {
+    TextStyles textStyles = TextStyles();
     return ThemeData(
       // Primary Colors
       primaryColor: AppColors.black,
@@ -61,8 +61,8 @@ class AppThemes {
     );
   }
 
-  ThemeData returnResponsiveDarkTheme(double screenHeight) {
-    TextStyles textStyles = TextStyles(screenHeight);
+  ThemeData returnResponsiveDarkTheme() {
+    TextStyles textStyles = TextStyles();
     return ThemeData(
       // Primary Colors
       primaryColor: AppColors.white,

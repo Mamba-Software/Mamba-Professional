@@ -9,14 +9,14 @@ extension AppLocalizationsX on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this)!;
 }
 
-class Language extends Equatable {
+class LanguageState extends Equatable {
   final Locale locale;
-  const Language(this.locale);
+  const LanguageState(this.locale);
   @override
   List<Object?> get props => [locale];
 }
 
-class LanguageManager extends Cubit<Language> {
+class LanguageManager extends Cubit<LanguageState> {
   final SettingsRepository settingsRepository;
 
   LanguageManager({required this.settingsRepository}) : super(initialLocale());
@@ -24,8 +24,8 @@ class LanguageManager extends Cubit<Language> {
   Locale get currentLocale => state.locale;
   String get currentLocaleTag => state.locale.toLanguageTag();
 
-  static Language initialLocale() {
-    return Language(
+  static LanguageState initialLocale() {
+    return LanguageState(
       AppLocalizations.supportedLocales.firstWhere(
         (element) => element.toLanguageTag() == standardLanguage,
       ),
@@ -34,7 +34,7 @@ class LanguageManager extends Cubit<Language> {
 
   void setLocale(Locale locale) {
     if (AppLocalizations.supportedLocales.contains(locale)) {
-      emit(Language(locale));
+      emit(LanguageState(locale));
     }
   }
 }

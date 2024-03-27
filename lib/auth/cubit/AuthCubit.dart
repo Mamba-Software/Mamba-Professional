@@ -13,8 +13,6 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/theme/ThemeProvider.dart';
-import 'package:mamba/l10n/language_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 part 'AuthState.dart';
@@ -308,16 +306,11 @@ class AuthCubit extends Cubit<AuthState> {
       await Future.delayed(const Duration(seconds: 1));
       emit(const AuthNotLoged());
     }
-    // Set App Locale To User Preferred Language- TO Do once user cubit is implemented    
+    // Set App Locale To User Preferred Language - TO Do once user cubit is implemented    
     // context.read<LanguageManager>().setLocale();
-    
-    // Set App Theme To User Preferred Theme Settings
-    if (currentUser.isDark != null) {
-      print("This user has a Dark Mode: ${currentUser.isDark!}");
-      Provider.of<ThemeProvider>(context, listen: false)
-          .toggleTheme(currentUser.isDark!);
-    }
-    print("This user has the System Theme On");
+
+    // Set App Theme To User Preferred Theme Settings - TO Do once user cubit is implemented    
+    // context.read<ThemeManager>().setInitialState();
 
     // Get Current User Brand, if any.
     // WAIT TO AVOID PROBLEMS DUE TO CLOUD FUNCTIONS NOT BEING INSTANTANEOUS.

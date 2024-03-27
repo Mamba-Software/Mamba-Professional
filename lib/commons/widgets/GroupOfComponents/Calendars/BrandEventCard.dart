@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mamba/app/theme/theme_manager.dart';
 import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:provider/provider.dart';
@@ -37,9 +37,9 @@ class _BrandEventCardState extends State<BrandEventCard> {
 
   @override
   void initState() {
-    initEventCard();
-    isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
     super.initState();
+    initEventCard();
+    isDark = context.read<ThemeManager>().isDarkMode;        
   }
 
   @override
@@ -131,7 +131,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return Center(
       child: Material(
         elevation: 4,

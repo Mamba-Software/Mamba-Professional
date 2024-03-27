@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/services.dart';
+import 'package:mamba/app/theme/theme_manager.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/LibraryModels/lColor.dart';
@@ -10,7 +11,6 @@ import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Condition.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
 import 'package:mamba/commons/widgets/Components/Images/RectangularImage.dart';
@@ -216,7 +216,7 @@ class _AddEditBonoState extends State<AddEditBono>
     } else {
       colorSelected = colors[int.parse(bono.color!)].value;
     }
-    isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+    isDark = context.read<ThemeManager>().isDarkMode;
   }
 
   void getCondition() async {

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mamba/l10n/language_manager.dart';
-
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +41,6 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
 
   @override
   void initState() {
-    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     if (currentUser.isDark != null) {
       if (currentUser.isDark!) {
         _startValue = 2;
