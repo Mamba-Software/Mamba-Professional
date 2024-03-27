@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class UpdateAppPopup {
   static void show({
@@ -75,7 +75,7 @@ class UpdateAppPopup {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(5),
-                                          color: AppColors.ligthRed
+                                          color: AppColors.ligtherRed
                                               .withOpacity(0.8),
                                         ),
                                         child: Row(

@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/AdminService/ScriptsService.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/admin/AdminTool.dart';
 import 'package:mamba/admin/AdminFeedBack.dart';
 
@@ -39,8 +40,7 @@ class _AdminState extends State<Admin> {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: Text("ADMIN",
-                  style: Styles.whiteTextStyle
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+                  style: context.textTheme.bodyMedium),
             ),
           ],
         ),
@@ -73,7 +73,7 @@ class EachList extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           radius: 25.0,
-          backgroundColor: Styles.mainColorTrans,
+          backgroundColor: AppColors.mainColor,
           child: Text(name[0]),
         ),
         trailing: const Icon(Icons.east),

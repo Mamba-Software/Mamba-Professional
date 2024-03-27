@@ -28,7 +28,7 @@ import 'package:mamba/data/Models/Usuario.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EventPageTrainer extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class AddOrEditEvent extends StatelessWidget {
   Locale locale;

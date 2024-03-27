@@ -7,8 +7,8 @@ import 'package:mamba/auth/widgets/mobile/NormalRegister.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/app/style/Styles.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 // Register Page that allows the User to create his profile. This is the same for Client and Trainer.
 // After registering the page pop´s after 5 seconds and the user is sent to the Login page. Before Login in
@@ -122,7 +122,7 @@ class _RegisterState extends State<Register> {
                           .textTheme
                           .bodyMedium
                           ?.copyWith(color: AppColors.white),
-                      decoration: Styles.textFromInputDecoration.copyWith(
+                      decoration: InputDecoration(
                           labelText: context.l10n.email,
                           labelStyle: Theme.of(context)
                               .textTheme
@@ -171,7 +171,7 @@ class _RegisterState extends State<Register> {
                           .textTheme
                           .bodyMedium
                           ?.copyWith(color: AppColors.white),
-                      decoration: Styles.textFromInputDecoration.copyWith(
+                      decoration: InputDecoration(
                           labelText: context.l10n.password,
                           labelStyle: Theme.of(context)
                               .textTheme
@@ -217,7 +217,7 @@ class _RegisterState extends State<Register> {
                           .textTheme
                           .bodyMedium
                           ?.copyWith(color: AppColors.white),
-                      decoration: Styles.textFromInputDecoration.copyWith(
+                      decoration: InputDecoration(
                           labelText: context.l10n.passworRepeat,
                           labelStyle: Theme.of(context)
                               .textTheme

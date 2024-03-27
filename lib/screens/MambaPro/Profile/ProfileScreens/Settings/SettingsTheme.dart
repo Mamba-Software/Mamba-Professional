@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/theme_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -24,8 +25,6 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
   // Type of Users
   int _startValue = 0;
   int _value = 0;
-  // Theme Provider
-  var themeProvider;
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -84,16 +83,16 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                 isLoading = true;
               });
               if (_startValue == 1) {
-                themeProvider.toggleTheme(false);
+                context.read<ThemeManager>().toggleTheme(false);
               } else if (_startValue == 2) {
-                themeProvider.toggleTheme(true);
+                context.read<ThemeManager>().toggleTheme(true);
               } else if (_startValue == 3) {
                 final brightness =
                     SchedulerBinding.instance.window.platformBrightness;
                 if (brightness == Brightness.dark) {
-                  themeProvider.toggleTheme(true);
+                  context.read<ThemeManager>().toggleTheme(true);
                 } else {
-                  themeProvider.toggleTheme(false);
+                  context.read<ThemeManager>().toggleTheme(false);
                 }
               }
               Future.delayed(const Duration(milliseconds: 500), () {
@@ -149,7 +148,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                         setState(() {
                           _value = int.parse(value.toString());
                         });
-                        themeProvider.toggleTheme(false);
+                        context.read<ThemeManager>().toggleTheme(false);
                       },
                     ),
                     trailing: Icon(
@@ -204,7 +203,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                         setState(() {
                           _value = int.parse(value.toString());
                         });
-                        themeProvider.toggleTheme(true);
+                        context.read<ThemeManager>().toggleTheme(true);
                       },
                     ),
                     trailing: Icon(
@@ -262,9 +261,9 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                         final brightness =
                             SchedulerBinding.instance.window.platformBrightness;
                         if (brightness == Brightness.dark) {
-                          themeProvider.toggleTheme(true);
+                          context.read<ThemeManager>().toggleTheme(true);
                         } else {
-                          themeProvider.toggleTheme(false);
+                          context.read<ThemeManager>().toggleTheme(false);
                         }
                       },
                     ),

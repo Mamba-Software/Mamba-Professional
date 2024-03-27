@@ -29,7 +29,7 @@ import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
 class BrandCalendarWidget extends StatefulWidget {

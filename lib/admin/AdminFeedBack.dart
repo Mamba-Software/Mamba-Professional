@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/FeedBack/FeedbackDataService.dart';
-import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/data/Models/Deprecated/Question.dart';
 import 'package:mamba/data/Models/Usuario.dart';
@@ -53,8 +54,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title,
-            style: Styles.whiteTextStyle
-                .copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+            style: context.textTheme.bodyMedium),
         centerTitle: true,
         elevation: 10,
         iconTheme: const IconThemeData(
@@ -97,8 +97,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                                 ),
                                 Text(
                                   "Questions",
-                                  style: Styles.purpleTextStyle
-                                      .copyWith(fontWeight: FontWeight.bold),
+                                  style: context.textTheme.bodyMedium,
                                 ),
                               ],
                             ),
@@ -115,8 +114,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                                 ),
                                 Text(
                                   "Group Of Questions",
-                                  style: Styles.purpleTextStyle
-                                      .copyWith(fontWeight: FontWeight.bold),
+                                  style: context.textTheme.bodyMedium,
                                 ),
                               ],
                             ),

@@ -15,11 +15,11 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/app/style/Styles.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -303,7 +303,7 @@ class _LoginState extends State<Login>
                 .textTheme
                 .bodyMedium
                 ?.copyWith(color: AppColors.white),
-            decoration: Styles.textFromInputDecoration.copyWith(
+            decoration: InputDecoration(
                 labelText: context.l10n.email,
                 labelStyle: Theme.of(context)
                     .textTheme
@@ -338,7 +338,7 @@ class _LoginState extends State<Login>
                   .bodyMedium
                   ?.copyWith(color: AppColors.white),
               obscureText: !_passwordVisible,
-              decoration: Styles.textFromInputDecoration.copyWith(
+              decoration: InputDecoration(
                   labelText: context.l10n.password,
                   labelStyle: Theme.of(context)
                       .textTheme

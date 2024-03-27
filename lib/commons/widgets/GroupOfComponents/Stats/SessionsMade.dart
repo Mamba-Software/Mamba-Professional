@@ -4,10 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class SessionsMade extends StatefulWidget {
   List<Event> events;
@@ -197,7 +197,7 @@ class SessionsMadeState extends State<SessionsMade> {
                 // Renders line chart
                 SplineAreaSeries<TotalEvents, String>(
                   animationDuration: 0,
-                  borderColor: Styles.mainColor,
+                  borderColor: AppColors.mainColor,
                   borderWidth: 5,
                   emptyPointSettings: EmptyPointSettings(
                       mode: EmptyPointMode.gap,
@@ -208,7 +208,7 @@ class SessionsMadeState extends State<SessionsMade> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Styles.mainColor,
+                      AppColors.mainColor,
                       AppColors.mainColor.withOpacity(0.2),
                     ],
                   ),

@@ -27,7 +27,7 @@ import 'package:mamba/data/Models/RequestToBrand.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class EventPageClient extends StatefulWidget {
   String eventId;

@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/data/Models/Purchase.dart';
-import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -238,7 +238,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                           series: <ChartSeries>[
                             // Renders line chart
                             SplineAreaSeries<TotalBenefit, String>(
-                              borderColor: Styles.mainColor,
+                              borderColor: AppColors.mainColor,
                               borderWidth: 2,
                               markerSettings: MarkerSettings(
                                   borderColor: AppColors.mainColor,
@@ -252,7 +252,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  Styles.mainColor,
+                                  AppColors.mainColor,
                                   AppColors.mainColor.withOpacity(0.2),
                                 ],
                               ),

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/BonoRequest.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';

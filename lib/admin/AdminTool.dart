@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba/l10n/language_manager.dart';
-import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/commons/extensions/context.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class AdminTool extends StatefulWidget {
   final String title;
@@ -65,8 +66,7 @@ class _AdminToolState extends State<AdminTool> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title,
-            style: Styles.whiteTextStyle
-                .copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+            style: context.textTheme.bodyMedium,),
         centerTitle: true,
         elevation: 10,
         iconTheme: const IconThemeData(
@@ -121,15 +121,14 @@ class _AdminToolState extends State<AdminTool> {
                               children: [
                                 const Icon(
                                   Icons.record_voice_over,
-                                  color: Styles.accent,
+                                  color: Colors.red,
                                 ),
                                 const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
                                   context.l10n.trainer,
-                                  style: Styles.purpleTextStyle
-                                      .copyWith(fontWeight: FontWeight.bold),
+                                  style: context.textTheme.bodyMedium,
                                 ),
                               ],
                             ),
@@ -143,15 +142,13 @@ class _AdminToolState extends State<AdminTool> {
                               children: [
                                 const Icon(
                                   Icons.directions_run,
-                                  color: Styles.accent,
                                 ),
                                 const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
                                   context.l10n.client,
-                                  style: Styles.purpleTextStyle
-                                      .copyWith(fontWeight: FontWeight.bold),
+                                  style: context.textTheme.bodyLarge,
                                 ),
                               ],
                             ),
@@ -225,7 +222,7 @@ class _AdminToolState extends State<AdminTool> {
                         Icon(
                           Icons.directions_run,
                           size: 45,
-                          color: Styles.accent,
+                          color: AppColors.accent,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 0.0),
@@ -234,7 +231,7 @@ class _AdminToolState extends State<AdminTool> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 22,
-                                  color: Styles.accent
+                                  color: AppColors.accent
                               )
                           ),
                         ),
@@ -256,7 +253,7 @@ class _AdminToolState extends State<AdminTool> {
                         Icon(
                           Icons.record_voice_over,
                           size: 45,
-                          color: Styles.accent,
+                          color: AppColors.accent,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 0.0),
@@ -265,7 +262,7 @@ class _AdminToolState extends State<AdminTool> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 22,
-                                  color: Styles.accent
+                                  color: AppColors.accent
                               )
                           ),
                         ),

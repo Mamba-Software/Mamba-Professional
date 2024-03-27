@@ -9,7 +9,7 @@ import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class UserEventHistoryWidget extends StatefulWidget {
   String userId;

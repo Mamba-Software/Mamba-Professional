@@ -1,6 +1,6 @@
 //MambaCoin class used to have a widget of mamba coin
 import 'package:flutter/material.dart';
-import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/app/style/AppColors.dart';
 
 class MambaCoin {
   //Mmaba coin with value and or animation
@@ -18,7 +18,7 @@ class MambaCoin {
           height: 30,
           width: 30,
           decoration: BoxDecoration(
-            color: Styles.mainColorTrans,
+            color: AppColors.mainColorTrans,
             borderRadius: BorderRadius.circular(100),
             image: DecorationImage(
               image: NetworkImage(image),
@@ -47,7 +47,7 @@ class MambaCoin {
         height: 30,
         width: 30,
         decoration: BoxDecoration(
-          color: Styles.mainColorTrans,
+          color: AppColors.mainColorTrans,
           borderRadius: BorderRadius.circular(100),
           image: DecorationImage(
             image: NetworkImage(image),
@@ -97,7 +97,7 @@ class MambaCoin {
         shape: CircleBorder(
           side: BorderSide(
               width: MediaQuery.of(context).size.width * 0.005,
-              color:  Styles.mainColor),
+              color:  AppColors.mainColor),
         );
 
 
@@ -113,7 +113,7 @@ class MambaCoin {
       height: 30,
       width: 30,
       decoration: BoxDecoration(
-        color: Styles.mainColorTrans,
+        color: AppColors.mainColorTrans,
         borderRadius: BorderRadius.circular(100),
         image: DecorationImage(
           image: NetworkImage(image),
@@ -162,7 +162,7 @@ class MambaCoin {
         shape: CircleBorder(
           side: BorderSide(
               width: MediaQuery.of(context).size.width * 0.005,
-              color:  Styles.mainColor),
+              color:  AppColors.mainColor),
         );
 
 
@@ -177,7 +177,7 @@ class MambaCoin {
       height: 30,
       width: 30,
       decoration: BoxDecoration(
-        color: Styles.mainColorTrans,
+        color: AppColors.mainColorTrans,
         borderRadius: BorderRadius.circular(100),
         image: DecorationImage(
           image: NetworkImage(image),
@@ -213,7 +213,7 @@ class MambaCoin {
         shape: CircleBorder(
           side: BorderSide(
               width: MediaQuery.of(context).size.width * 0.005,
-              color:  Styles.mainColor),
+              color:  AppColors.mainColor),
         );
 
 

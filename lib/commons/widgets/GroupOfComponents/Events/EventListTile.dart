@@ -9,7 +9,7 @@ import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';

@@ -1,7 +1,7 @@
 // Utils for page selections in Mamba Pro
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class MambaProUtils {
   // Date in the Middle of the Month
@@ -67,7 +67,7 @@ class MambaProUtils {
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
-    if (pageIndex == 10) {      
+    if (pageIndex == 10) {
       return Text(context.l10n.bookings,
           style: Theme.of(context)
               .textTheme

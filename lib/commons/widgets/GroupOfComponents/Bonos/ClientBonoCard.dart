@@ -7,7 +7,7 @@ import 'package:mamba/data/LibraryModels/lDegradate.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/BonoRequest.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/Models/Condition.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Purchase.dart';

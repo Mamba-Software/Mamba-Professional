@@ -15,7 +15,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/De
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class AddOrEditEvent extends StatefulWidget {
   Locale locale;

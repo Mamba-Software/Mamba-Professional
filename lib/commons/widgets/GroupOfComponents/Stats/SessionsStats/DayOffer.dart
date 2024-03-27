@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -206,7 +206,7 @@ class DayOfferState extends State<DayOffer> {
                                 width: 0.3,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(30)),
-                                borderColor: Styles.mainColor,
+                                borderColor: AppColors.mainColor,
                                 borderWidth: 0,
                                 /*
                               markerSettings: MarkerSettings(
@@ -214,7 +214,7 @@ class DayOfferState extends State<DayOffer> {
                                   height:  5,
                                   width:  5,
                                   shape: DataMarkerType.circle,
-                                  color: Styles.mainColor),
+                                  color: AppColors.mainColor),
 */
                                 gradient: LinearGradient(
                                   begin: Alignment.centerRight,

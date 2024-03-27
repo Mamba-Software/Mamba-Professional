@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';

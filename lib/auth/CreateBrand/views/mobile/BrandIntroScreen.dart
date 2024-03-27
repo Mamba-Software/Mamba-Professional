@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/l10n/language_manager.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class BrandIntroScreen extends StatefulWidget {
   const BrandIntroScreen({super.key});
@@ -33,7 +33,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
       height: 8.0,
       width: isActive ? 24.0 : 16.0,
       decoration: BoxDecoration(
-        color: isActive ? AppColors.white : AppColors.whiteTrans,
+        color: isActive ? AppColors.white : AppColors.lightGrey,
         borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
     );

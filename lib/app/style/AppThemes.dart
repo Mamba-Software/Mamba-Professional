@@ -5,8 +5,7 @@ import 'package:mamba/app/style/TextStyles.dart';
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
 class AppThemes {
-  ThemeData returnResponsiveLightTheme() {
-    TextStyles textStyles = TextStyles();
+  ThemeData lightTheme() {
     return ThemeData(
       // Primary Colors
       primaryColor: AppColors.black,
@@ -19,22 +18,29 @@ class AppThemes {
       // Texts
       textTheme: TextTheme(
         // Headlines for Titles
-        displayLarge: textStyles.blackHeadline1TextStyle(),
-        displayMedium: textStyles.whiteHeadline1TextStyle(),
+        displayLarge: textAppColors.blackHeadline1TextStyle(),
+        displayMedium: textAppColors.whiteHeadline1TextStyle(),
         // Headline 2 For Subtitles
-        displaySmall: textStyles.blackHeadline2TextStyle(),
+        displaySmall: textAppColors.blackHeadline2TextStyle(),
         // Body Texts for Descriptions
-        bodyLarge: textStyles.blackBodyText1Style(),
-        bodyMedium: textStyles.blackBodyText2Style(),
-        bodySmall: textStyles.greyBodyTextStyle(),
+        bodyLarge: textAppColors.blackBodyText1Style(),
+        bodyMedium: textAppColors.blackBodyText2Style(),
+        bodySmall: textAppColors.greyBodyTextStyle(),
       ),
       appBarTheme: AppBarTheme(
         elevation: 4.0,
         surfaceTintColor: AppColors.lightGrey,
         backgroundColor: AppColors.lightGrey,
         iconTheme: const IconThemeData(color: Colors.black),
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-        titleTextStyle: textStyles.blackHeadline2TextStyle(),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          systemNavigationBarColor: AppColors.black,
+          systemNavigationBarDividerColor: AppColors.black,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
+        titleTextStyle: textAppColors.blackHeadline2TextStyle(),
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         shape: StadiumBorder(), // Customize shape
@@ -61,7 +67,7 @@ class AppThemes {
     );
   }
 
-  ThemeData returnResponsiveDarkTheme() {
+  ThemeData darkTheme() {
     TextStyles textStyles = TextStyles();
     return ThemeData(
       // Primary Colors
@@ -74,14 +80,14 @@ class AppThemes {
       // Texts
       textTheme: TextTheme(
         // Headlines for Titles
-        displayLarge: textStyles.whiteHeadline1TextStyle(),
-        displayMedium: textStyles.blackHeadline1TextStyle(),
+        displayLarge: textAppColors.whiteHeadline1TextStyle(),
+        displayMedium: textAppColors.blackHeadline1TextStyle(),
         // Headline 2 For Subtitles
-        displaySmall: textStyles.whiteHeadline2TextStyle(),
+        displaySmall: textAppColors.whiteHeadline2TextStyle(),
         // Body Texts for Descriptions
-        bodyLarge: textStyles.whiteBodyText1Style(),
-        bodyMedium: textStyles.whiteBodyText2Style(),
-        bodySmall: textStyles.greyBodyTextStyle(),
+        bodyLarge: textAppColors.whiteBodyText1Style(),
+        bodyMedium: textAppColors.whiteBodyText2Style(),
+        bodySmall: textAppColors.greyBodyTextStyle(),
       ),
       appBarTheme: AppBarTheme(
         elevation: 4.0,
@@ -90,8 +96,15 @@ class AppThemes {
         iconTheme: const IconThemeData(
           color: AppColors.white,
         ),
-        titleTextStyle: textStyles.whiteHeadline2TextStyle(),
-        systemOverlayStyle: SystemUiOverlayStyle.light,
+        titleTextStyle: textAppColors.whiteHeadline2TextStyle(),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.light,
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarColor: AppColors.black,
+          systemNavigationBarDividerColor: AppColors.black,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         shape: StadiumBorder(), // Customize shape

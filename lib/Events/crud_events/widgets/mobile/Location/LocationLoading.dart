@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 Widget locationLoading(BuildContext context) {
   return Column(

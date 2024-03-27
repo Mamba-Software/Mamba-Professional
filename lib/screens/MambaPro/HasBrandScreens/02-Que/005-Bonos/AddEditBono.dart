@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba/app/theme/theme_manager.dart';
+import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/LibraryModels/lColor.dart';
@@ -20,7 +20,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/De
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/utils/MediaQuery/MediaQuery.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/SelectBrandImages.dart';
 import 'package:provider/provider.dart';

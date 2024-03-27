@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class ClientNumber extends StatefulWidget {
   List<Usuario> users;

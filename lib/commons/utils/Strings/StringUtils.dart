@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 // Text Styles contains all the TextStyles used in the App.
 class StringUtils {

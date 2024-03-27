@@ -8,7 +8,7 @@ import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.d
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class BrandEventsToday extends StatefulWidget {

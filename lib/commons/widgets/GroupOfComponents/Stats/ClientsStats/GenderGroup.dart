@@ -5,7 +5,7 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GenderGroup extends StatefulWidget {

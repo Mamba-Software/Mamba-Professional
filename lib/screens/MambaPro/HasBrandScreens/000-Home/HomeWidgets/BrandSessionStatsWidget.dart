@@ -5,10 +5,10 @@ import 'package:intl/intl.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 typedef DateCallBack = void Function(int pageIndex);
@@ -244,7 +244,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                           series: <ChartSeries>[
                             // Renders line chart
                             SplineAreaSeries<TotalEvents, String>(
-                              borderColor: Styles.mainColor,
+                              borderColor: AppColors.mainColor,
                               borderWidth: 2,
                               markerSettings: MarkerSettings(
                                   borderColor: AppColors.mainColor,
@@ -258,7 +258,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  Styles.mainColor,
+                                  AppColors.mainColor,
                                   AppColors.mainColor.withOpacity(0.2),
                                 ],
                               ),

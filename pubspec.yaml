@@ -174,13 +174,13 @@ flutter:
     - family: UberMove
       fonts:
         - asset: assets/fonts/UberMoveBold.ttf
-          weight: 700        
+          weight: 800        
         - asset: assets/fonts/UberMoveMedium.ttf
           weight: 600
         - asset: assets/fonts/UberMoveRegular.ttf
-          weight: 500
-        - asset: assets/fonts/UberMoveLight.ttf
           weight: 400
+        - asset: assets/fonts/UberMoveLight.ttf
+          weight: 200
 
 
   #

@@ -39,7 +39,7 @@ import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weekday_selector/weekday_selector.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import '../../../../../Data/Models/Bono.dart';
 
 class AddOrEditEvent extends StatefulWidget {

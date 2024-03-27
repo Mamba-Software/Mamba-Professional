@@ -5,7 +5,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/BuildAddUserButton.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 
 TextEditingController durationController = TextEditingController();

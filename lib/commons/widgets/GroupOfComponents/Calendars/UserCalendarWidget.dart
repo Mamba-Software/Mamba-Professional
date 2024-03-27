@@ -13,7 +13,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class UserCalendarWidget extends StatefulWidget {
   String userId;

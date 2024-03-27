@@ -7,7 +7,7 @@ import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 typedef DateCallBack = void Function(
     int pageIndex, DateTime? dateTime, CalendarView? calendarView);

@@ -19,7 +19,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/UserBonos/UserBono
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Usuario.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteFromBrandConfirmationDialog.dart';
 import 'package:mamba/user/chat/Chat.dart';

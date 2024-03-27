@@ -9,8 +9,8 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:survey_kit/survey_kit.dart';
 
-import 'package:mamba/l10n/language_manager.dart';
-import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -91,7 +91,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
                      //else notSendFeedback();
                    },
                    task: task,
-                   themeData: Styles.lightTheme.copyWith(
+                   themeData: AppColors.lightTheme.copyWith(
                       primaryColor: Theme.of(context).colorScheme.secondary,
                       backgroundColor: Colors.white,
                       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -137,7 +137,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
           iconRotationAngle: 0,
           backgroundColor: Colors.green,
           message: context.l10n.feedbackSent,
-          textStyle: Styles.whiteTextStyle,
+          textStyle: AppColors.whiteTextStyle,
         ),
       );
     }
@@ -150,7 +150,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
         iconRotationAngle: 0,
         backgroundColor: Colors.red,
         message: context.l10n.feedbackNotSent,
-        textStyle: Styles.whiteTextStyle,
+        textStyle: AppColors.whiteTextStyle,
       ),
     );
   }

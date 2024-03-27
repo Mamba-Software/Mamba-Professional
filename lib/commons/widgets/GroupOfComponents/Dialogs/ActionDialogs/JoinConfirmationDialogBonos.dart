@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -242,7 +242,7 @@ class _JoinConfirmationDialogBonosState
                                               0.04),
                                       child: Container(
                                         decoration: BoxDecoration(
-                                            color: AppColors.ligthRed
+                                            color: AppColors.ligtherRed
                                                 .withOpacity(0.8),
                                             borderRadius:
                                                 const BorderRadius.all(

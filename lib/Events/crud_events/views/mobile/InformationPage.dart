@@ -6,7 +6,7 @@ import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart
 import 'package:mamba/events/crud_events/widgets/mobile/Location/LocationBlocSelector.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionBlocSelector.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class InformationPage extends StatelessWidget {
   const InformationPage({super.key});

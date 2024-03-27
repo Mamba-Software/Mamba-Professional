@@ -9,7 +9,7 @@ import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/user/chat/ChatCore.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/Notifications.dart';
 import 'package:mamba/screens/MambaPro/Profile/Profile.dart';
 import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';

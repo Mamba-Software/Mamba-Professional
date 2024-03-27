@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba/app/theme/theme_manager.dart';
+import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
@@ -30,7 +30,7 @@ import 'package:mamba/data/Models/Usuario.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EventPageTrainer extends StatefulWidget {

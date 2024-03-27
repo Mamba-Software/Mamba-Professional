@@ -8,7 +8,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Calendars/UserCalendarWi
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class UserCalendarMonthWidget extends StatefulWidget {
   String userId;

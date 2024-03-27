@@ -8,12 +8,12 @@ import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 
 class BonosPurchased extends StatefulWidget {
   List<Purchase> purchases;
@@ -485,7 +485,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                   series: <ChartSeries>[
                                     // Renders line chart
                                     SplineAreaSeries<TotalBenefit, String>(
-                                      borderColor: Styles.mainColor,
+                                      borderColor: AppColors.mainColor,
                                       borderWidth: 2,
                                       markerSettings: const MarkerSettings(
                                           borderColor: AppColors.mainColor,

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/auth/views/mobile/SplashScreen.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Promotions/PromotionsDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
