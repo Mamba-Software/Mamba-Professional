@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/l10n/Idiomas.dart';
-import 'package:mamba/l10n/LanguageProvider.dart';
+import 'package:mamba/l10n/cubit/language_cubit.dart';
 import 'package:provider/provider.dart';
 
 class SettingsLanguage extends StatefulWidget {
@@ -16,8 +15,6 @@ class SettingsLanguage extends StatefulWidget {
 class _SettingsPrivacyState extends State<SettingsLanguage> {
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
-  // Type of Users
-  var allLocales;
   String _value = "";
 
   Color getColor(Set<MaterialState> states) {
@@ -34,11 +31,8 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
 
   @override
   void initState() {
-    final languageProvider =
-        Provider.of<LanguageProvider>(context, listen: false);
-    _value = languageProvider.idioma!.languageCode;
-    allLocales = Idiomas.all;
     super.initState();
+    _value = context.read<LanguageCubit>().currentLocale.toLanguageTag();
   }
 
   @override
@@ -89,12 +83,13 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
                     _value = value.toString();
                     mixpanel!.track('user_profile_settings_language',
                         properties: {'value': _value});
-                    Provider.of<LanguageProvider>(context, listen: false)
-                        .setLocale(allLocales[0]);
-                    currentUser.idioma =
-                        Provider.of<LanguageProvider>(context, listen: false)
-                            .idioma!
-                            .languageCode;
+                    context.read<LanguageCubit>().setLocale(AppLocalizations
+                        .supportedLocales
+                        .firstWhere((element) => element.toLanguageTag() == _value));
+                    currentUser.idioma = context
+                        .read<LanguageCubit>()
+                        .currentLocale
+                        .toLanguageTag(); 
                     _userDataService.updateCurrentUserSettingsPerifl(
                         currentUser.isPrivate!, currentUser.idioma!);
                   });
@@ -132,12 +127,13 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
                     _value = value.toString();
                     mixpanel!.track('user_profile_settings_language',
                         properties: {'value': _value});
-                    Provider.of<LanguageProvider>(context, listen: false)
-                        .setLocale(allLocales[1]);
-                    currentUser.idioma =
-                        Provider.of<LanguageProvider>(context, listen: false)
-                            .idioma!
-                            .languageCode;
+                    context.read<LanguageCubit>().setLocale(AppLocalizations
+                        .supportedLocales
+                        .firstWhere((element) => element.toLanguageTag() == _value));
+                    currentUser.idioma = context
+                        .read<LanguageCubit>()
+                        .currentLocale
+                        .toLanguageTag(); 
                     _userDataService.updateCurrentUserSettingsPerifl(
                         currentUser.isPrivate!, currentUser.idioma!);
                   });

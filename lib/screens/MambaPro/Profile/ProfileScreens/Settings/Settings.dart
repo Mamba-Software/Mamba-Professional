@@ -8,6 +8,7 @@ import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/l10n/cubit/language_cubit.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -15,13 +16,11 @@ import 'package:mamba/commons/utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:mamba/l10n/LanguageProvider.dart';
 import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
 import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Settings/SettingsLanguage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba/l10n/Idiomas.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -944,81 +943,5 @@ class _DeleteDialogState extends State<DeleteDialog> {
     return {
       'uid': id,
     };
-  }
-}
-
-// Language Picker Widget
-class LanguagePickerWidget extends StatefulWidget {
-  ValueChanged<bool?> idiomaChanged;
-  LanguagePickerWidget({super.key, required this.idiomaChanged});
-  @override
-  _LanguagePickerWidgetState createState() => _LanguagePickerWidgetState();
-}
-
-class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
-  Locale? _locale;
-  var allLocales;
-  bool idiomaChanged = false;
-  @override
-  resetIdiomaChanged() => {idiomaChanged = false};
-  @override
-  Widget build(BuildContext context) {
-    final languageProvider =
-        Provider.of<LanguageProvider>(context, listen: false);
-    _locale = languageProvider.idioma;
-    allLocales = Idiomas.all;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _iconLocale(allLocales[0], context),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.10),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.10),
-        _iconLocale(allLocales[1], context),
-      ],
-    );
-  }
-
-  Widget _iconLocale(Locale locale, BuildContext context) {
-    return SizedBox.fromSize(
-      size: Size(MediaQuery.of(context).size.width * 0.17,
-          MediaQuery.of(context).size.width * 0.17), // button width and height
-      child: ClipOval(
-        child: Material(
-          color: _locale == locale
-              ? Theme.of(context).colorScheme.secondary
-              : Theme.of(context).scaffoldBackgroundColor, // button color
-          child: InkWell(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(locale.languageCode.toUpperCase(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .displaySmall
-                            ?.copyWith(fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-              onTap: () => {
-                    setState(() {
-                      _locale = locale;
-                      if (_locale!.languageCode != currentUser.idioma!) {
-                        idiomaChanged = true;
-                      } else {
-                        idiomaChanged = false;
-                      }
-                      mixpanel!.track('user_profile_settings_language',
-                          properties: {'value': _locale!.languageCode});
-                      Provider.of<LanguageProvider>(context, listen: false)
-                          .setLocale(_locale!);
-                      widget.idiomaChanged(idiomaChanged);
-                    }),
-                  }),
-        ),
-      ),
-    );
   }
 }

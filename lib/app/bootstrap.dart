@@ -14,6 +14,8 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
+import 'package:mamba/l10n/cubit/language_cubit.dart';
+import 'package:mamba/l10n/cubit/language_state.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/mobile/SplashScreen.dart';
@@ -36,26 +38,25 @@ import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:mamba/l10n/Idiomas.dart';
-import 'package:mamba/l10n/LanguageProvider.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 class Bootstrap with PlatformMixin {
   // Initialize Variables
-  final FirebaseOptions firebaseOptions;
+  final FirebaseOptions? firebaseOptions;
   Bootstrap(this.firebaseOptions);
   // Initialize Function
   Future<void> initialize() async {
     runZonedGuarded(
       () async {
         // Initialize App
-        WidgetsFlutterBinding.ensureInitialized();        
+        WidgetsFlutterBinding.ensureInitialized();
         // Initialize Hive
         await Hive.initFlutter();
         // Initialize Env Variables
         String envFileName = ".env.${flavor.name}";
+        print("hola");
         await dotenv.load(fileName: envFileName);
         // Initialize Firebase
         if (isWeb) {
@@ -64,11 +65,11 @@ class Bootstrap with PlatformMixin {
         } else {
           // Mobile = Firebase .json or .plist
           await Firebase.initializeApp();
-        }        
+        }
 
         // TO DO: NETEJAR AIXÒ PER AL SEU PROPI CUBIT
         /////////////////////////////////////////////
-        
+
         // Initialise TimeZone
         timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
         // Firebase Messaging Back Ground Message Handler
@@ -88,7 +89,9 @@ class Bootstrap with PlatformMixin {
         // TO DO: NETEJAR AIXÒ PER AL SEU PROPI CUBIT
 
         // Firebase Crashlytics on Global Uncaught Errors
-        if (flavor != Flavor.development) FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+        if (flavor != Flavor.development)
+          FlutterError.onError =
+              FirebaseCrashlytics.instance.recordFlutterError;
         // Run App
         runApp(const App());
       },
@@ -118,12 +121,26 @@ class App extends StatelessWidget {
       ],
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider<LanguageProvider>(
-              create: (_) => LanguageProvider()),
           ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
         ],
         child: MultiBlocProvider(
           providers: [
+            // Refactor Done
+            BlocProvider<AuthCubit>(
+              create: (context) => AuthCubit(),
+              lazy: false,
+            ),
+            BlocProvider<LanguageCubit>(
+              create: (context) => LanguageCubit(
+                settingsRepository: context.read<SettingsRepository>(),
+              ),
+            ),
+            BlocProvider<PopupsCubit>(
+              create: (context) => PopupsCubit(
+                settingsRepository: context.read<SettingsRepository>(),
+              ),
+            ),
+            // To Be Refactored
             BlocProvider<ClientSessionsCubit>(
               create: (_) => ClientSessionsCubit([]),
               lazy: false,
@@ -131,10 +148,6 @@ class App extends StatelessWidget {
             BlocProvider<CrudEventCubit>(
               lazy: false,
               create: (context) => CrudEventCubit(),
-            ),
-            BlocProvider<AuthCubit>(
-              create: (context) => AuthCubit(),
-              lazy: false,
             ),
             BlocProvider<UnreadNotChatsCubit>(
               create: (context) =>
@@ -153,11 +166,6 @@ class App extends StatelessWidget {
             BlocProvider(
               create: (_) => StripeConnectCubit(),
               lazy: false,
-            ),
-            BlocProvider<PopupsCubit>(
-              create: (context) => PopupsCubit(
-                settingsRepository: context.read<SettingsRepository>(),
-              ),
             ),
           ],
           child: const AppView(), // Your AppView widget
@@ -209,8 +217,8 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<LanguageProvider, ThemeProvider>(
-        builder: (context, LanguageProvider language, ThemeProvider theme, _) {
+    return Consumer<ThemeProvider>(
+        builder: (context, ThemeProvider theme, _) {
       AppThemes appThemes = AppThemes();
       final brightness = SchedulerBinding.instance.window.platformBrightness;
       if (brightness == Brightness.dark) {
@@ -223,78 +231,83 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
       return Resize(
         allowtextScaling: true,
         builder: () {
-          return MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: flavor == Flavor.development,
-            title: appName,
-            themeMode: theme.themeMode,
-            theme: appThemes.returnResponsiveLightTheme(100.vh),
-            darkTheme: appThemes.returnResponsiveDarkTheme(100.vh),
-            locale: language.idioma,
-            supportedLocales: Idiomas.all,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            home: const SplashScreen(),
-            builder: (context, child) {
-              // Wrap every screen with PopupManager using MaterialApp.builder
-              return PopupManager(
+          return BlocBuilder<LanguageCubit, LanguageState>(
+            builder: (context, state) {
+              return MaterialApp(
                 navigatorKey: navigatorKey,
-                child: child!,
+                debugShowCheckedModeBanner: flavor == Flavor.development,
+                title: appName,
+                themeMode: theme.themeMode,
+                theme: appThemes.returnResponsiveLightTheme(100.vh),
+                darkTheme: appThemes.returnResponsiveDarkTheme(100.vh),
+                locale: state.locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                home: const SplashScreen(),
+                builder: (context, child) {
+                  // Wrap every screen with PopupManager using MaterialApp.builder
+                  return PopupManager(
+                    navigatorKey: navigatorKey,
+                    child: child!,
+                  );
+                },
+                onGenerateRoute: (RouteSettings settings) {
+                  final args = settings.arguments;
+                  print('ARGUMENTS');
+                  print(settings.name);
+                  switch (settings.name) {
+                    case 'SplashScreen':
+                      return CupertinoPageRoute(
+                        builder: (_) => const SplashScreen(),
+                        settings: const RouteSettings(name: 'SplashScreen'),
+                      );
+                    case 'Notifications':
+                      return CupertinoPageRoute(
+                        builder: (_) => const Notifications(),
+                        settings: const RouteSettings(name: 'Notifications'),
+                      );
+                    case 'Chat':
+                      return CupertinoPageRoute(
+                        builder: (_) => const ChatCore(),
+                        settings: const RouteSettings(name: 'ChatCore'),
+                      );
+                    case 'EventPage':
+                      String eventId = args as String;
+                      return CupertinoPageRoute(
+                        builder: (_) => EventPage(
+                          eventId: eventId,
+                        ),
+                        settings: const RouteSettings(name: 'EventPage'),
+                      );
+                    case 'EventFeedbackPage':
+                      String eventId = args as String;
+                      return CupertinoPageRoute(
+                        builder: (_) => EventFeedback(
+                          eventId: eventId,
+                        ),
+                        settings: const RouteSettings(name: 'EventFeedback'),
+                      );
+                    case 'BonosRequests':
+                      pageIndex = 18;
+                      break;
+                    case 'MembershipRequests':
+                      String brandId = args as String;
+                      return CupertinoPageRoute(
+                        builder: (_) => MembershipRequestsPro(
+                          brandId: brandId,
+                        ),
+                        settings:
+                            const RouteSettings(name: 'MembershipRequests'),
+                      );
+                  }
+                  return null;
+                },
               );
-            },
-            onGenerateRoute: (RouteSettings settings) {
-              final args = settings.arguments;
-              print('ARGUMENTS');
-              print(settings.name);
-              switch (settings.name) {
-                case 'SplashScreen':
-                  return CupertinoPageRoute(
-                    builder: (_) => const SplashScreen(),
-                    settings: const RouteSettings(name: 'SplashScreen'),
-                  );
-                case 'Notifications':
-                  return CupertinoPageRoute(
-                    builder: (_) => const Notifications(),
-                    settings: const RouteSettings(name: 'Notifications'),
-                  );
-                case 'Chat':
-                  return CupertinoPageRoute(
-                    builder: (_) => const ChatCore(),
-                    settings: const RouteSettings(name: 'ChatCore'),
-                  );
-                case 'EventPage':
-                  String eventId = args as String;
-                  return CupertinoPageRoute(
-                    builder: (_) => EventPage(
-                      eventId: eventId,
-                    ),
-                    settings: const RouteSettings(name: 'EventPage'),
-                  );
-                case 'EventFeedbackPage':
-                  String eventId = args as String;
-                  return CupertinoPageRoute(
-                    builder: (_) => EventFeedback(
-                      eventId: eventId,
-                    ),
-                    settings: const RouteSettings(name: 'EventFeedback'),
-                  );
-                case 'BonosRequests':
-                  pageIndex = 18;
-                  break;
-                case 'MembershipRequests':
-                  String brandId = args as String;
-                  return CupertinoPageRoute(
-                    builder: (_) => MembershipRequestsPro(
-                      brandId: brandId,
-                    ),
-                    settings: const RouteSettings(name: 'MembershipRequests'),
-                  );
-              }
-              return null;
             },
           );
         },
