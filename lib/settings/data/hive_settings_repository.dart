@@ -10,22 +10,33 @@ class HiveSettingsRepository {
 
   final String _settingsBoxName = 'settings';
 
-  Future<void> setWhatsNewBoolean(bool whatsNew) async {
-    // Check if the box is already open
+  Future<void> setWhatsNewStatus(bool whatsNew) async {
     if (!Hive.isBoxOpen(_settingsBoxName)) {
-      // Open the box if not already open
       await Hive.openBox(_settingsBoxName);
     }
     var box = Hive.box(_settingsBoxName);
     await box.put('whatsNew', whatsNew);
   }
 
-  Future<bool> getWhatsNewBoolean() async {
+  Future<bool> getWhatsNewStatus() async {
     try {
       var box = await Hive.openBox(_settingsBoxName);
       return box.get('whatsNew') ?? false;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<String?> getUserLanguage() async {
+    try {
+      if (Hive.isBoxOpen(_settingsBoxName)) {
+        var box = await Hive.openBox(_settingsBoxName);
+        return box.get('language');
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
     }
   }
 }

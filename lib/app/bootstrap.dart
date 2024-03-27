@@ -14,8 +14,7 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
-import 'package:mamba/l10n/cubit/language_cubit.dart';
-import 'package:mamba/l10n/cubit/language_state.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/mobile/SplashScreen.dart';
@@ -36,6 +35,8 @@ import 'package:mamba/settings/data/settings_repository.dart';
 import 'package:mamba/user/chat/ChatCore.dart';
 import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
+import 'package:mamba/user/data/firebase_user_repository.dart';
+import 'package:mamba/user/data/user_repository.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -112,6 +113,11 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<UserRepository>(
+          create: (context) => UserRepository(
+            FirebaseUserRepository(),
+          ),
+        ),
         RepositoryProvider<SettingsRepository>(
           create: (context) => SettingsRepository(
             FirebaseSettingsRepository(),
@@ -130,8 +136,8 @@ class App extends StatelessWidget {
               create: (context) => AuthCubit(),
               lazy: false,
             ),
-            BlocProvider<LanguageCubit>(
-              create: (context) => LanguageCubit(
+            BlocProvider<LanguageManager>(
+              create: (context) => LanguageManager(
                 settingsRepository: context.read<SettingsRepository>(),
               ),
             ),
@@ -231,7 +237,7 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
       return Resize(
         allowtextScaling: true,
         builder: () {
-          return BlocBuilder<LanguageCubit, LanguageState>(
+          return BlocBuilder<LanguageManager, Language>(
             builder: (context, state) {
               return MaterialApp(
                 navigatorKey: navigatorKey,

@@ -56,7 +56,7 @@ class PopupsCubit extends Cubit<PopupState> with PlatformMixin {
   // Popup WhatsNew
   Future<void> checkIfWhatsNew() async {
     await Future.delayed(const Duration(seconds: 2));
-    bool whatsNew = await settingsRepository.getWhatsNewBool();
+    bool whatsNew = await settingsRepository.getWhatsNewStatus();
     if (whatsNew == false) {
       String emailHTML = await settingsRepository.getProductUpdatesHTML();
       enqueuePopupAction(
@@ -70,7 +70,7 @@ class PopupsCubit extends Cubit<PopupState> with PlatformMixin {
 
   // Popup WhatsNew
   void closeWhatsNew() {
-    settingsRepository.setWhatsNewBool(true);
+    settingsRepository.setWhatsNewStatus(true);
   }
 
   // In App Review Dialog

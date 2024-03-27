@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/l10n/cubit/language_cubit.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:provider/provider.dart';
 
 class SettingsLanguage extends StatefulWidget {
@@ -32,7 +32,7 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
   @override
   void initState() {
     super.initState();
-    _value = context.read<LanguageCubit>().currentLocale.toLanguageTag();
+    _value = context.read<LanguageManager>().currentLocaleTag;
   }
 
   @override
@@ -83,13 +83,11 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
                     _value = value.toString();
                     mixpanel!.track('user_profile_settings_language',
                         properties: {'value': _value});
-                    context.read<LanguageCubit>().setLocale(AppLocalizations
-                        .supportedLocales
-                        .firstWhere((element) => element.toLanguageTag() == _value));
-                    currentUser.idioma = context
-                        .read<LanguageCubit>()
-                        .currentLocale
-                        .toLanguageTag(); 
+                    context.read<LanguageManager>().setLocale(
+                        AppLocalizations.supportedLocales.firstWhere(
+                            (element) => element.toLanguageTag() == _value));
+                    currentUser.idioma =
+                        context.read<LanguageManager>().currentLocaleTag;
                     _userDataService.updateCurrentUserSettingsPerifl(
                         currentUser.isPrivate!, currentUser.idioma!);
                   });
@@ -127,13 +125,11 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
                     _value = value.toString();
                     mixpanel!.track('user_profile_settings_language',
                         properties: {'value': _value});
-                    context.read<LanguageCubit>().setLocale(AppLocalizations
-                        .supportedLocales
-                        .firstWhere((element) => element.toLanguageTag() == _value));
-                    currentUser.idioma = context
-                        .read<LanguageCubit>()
-                        .currentLocale
-                        .toLanguageTag(); 
+                    context.read<LanguageManager>().setLocale(
+                        AppLocalizations.supportedLocales.firstWhere(
+                            (element) => element.toLanguageTag() == _value));
+                    currentUser.idioma =
+                        context.read<LanguageManager>().currentLocaleTag;
                     _userDataService.updateCurrentUserSettingsPerifl(
                         currentUser.isPrivate!, currentUser.idioma!);
                   });

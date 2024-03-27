@@ -1,12 +1,14 @@
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:mamba/commons/constants/constants.dart';
 
 class StripeConnectDataProvider {
   
   static Future createAccountApi(String parameters) async {
+    String? baseUrl = dotenv.env['URLSTRIPE'];
+    
     http.Response result = await http
-        .get(Uri.parse("${Constants.baseUrl}/createAccount?$parameters"));
+        .get(Uri.parse("$baseUrl/createAccount?$parameters"));
     return result;
   }
 

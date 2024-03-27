@@ -8,7 +8,7 @@ import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/l10n/cubit/language_cubit.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/app/style/AppColors.dart';
