@@ -778,9 +778,8 @@
   "promotionUse": "Bescanvia una promoció",
   "insertCode": "Introdueix el codi promocional",
   "anyDoubt": "Algun dubte?",
-  "seeSubscriptionPayWall": "Veure plans",
-  
-"cancelSubscriptionPayWall": "Per cancel·lar la teva subscripció, obre l'aplicació Google Play Store al teu dispositiu. Toca la icona del menú (☰) i selecciona 'Subscripcions'. Troba la subscripció que vols cancel·lar i toca-la. Després, toca 'Cancel·lar subscripció' i segueix les instruccions en pantalla per completar el procés de cancel·lació. Per a més ajuda, visita el Centre d'Ajuda de Google Play.",
+  "seeSubscriptionPayWall": "Veure plans",  
+  "cancelSubscriptionPayWall": "Per cancel·lar la teva subscripció, obre l'aplicació Google Play Store al teu dispositiu. Toca la icona del menú (☰) i selecciona 'Subscripcions'. Troba la subscripció que vols cancel·lar i toca-la. Després, toca 'Cancel·lar subscripció' i segueix les instruccions en pantalla per completar el procés de cancel·lació. Per a més ajuda, visita el Centre d'Ajuda de Google Play.",
   "noPromotions": "No hi han promocions",
   "promotionDetected": "Promoció detectada",
   "uniquePromotion": "Et regalem una promoció única",
@@ -914,6 +913,6 @@
   "stripeAccountDeactivate": "Segur que vols desactivar els pagaments des de l'aplicació?",
   "stripeAccountDeactivateDesc": "Els teus clients ja no podran pagar les tarifes directament des de l'aplicació; els pagaments i cobraments deixaran de ser automatitzats, i totes les subscripcions actives seran cancel·lades.\n\nSelecciona editar per revisar les condicions o veure el teu perfil de Stripe.",
   "stripeConnecting": "Connectant amb Stripe...",
-  "stripeConnectionSuccessful": "Connexió amb Stripe finalitzada correctament...",
+  "stripeConnectionSuccessfull": "Connexió amb Stripe finalitzada correctament...",
   "stripeError": "Problema de comunicació amb Stripe. Torna-ho a intentar, si us plau."
 }

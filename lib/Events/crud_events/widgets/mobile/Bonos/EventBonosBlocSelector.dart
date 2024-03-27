@@ -6,7 +6,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/Bonos/EventBonosWidget.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 Event event = Event();
 
@@ -22,7 +22,7 @@ class EventBonosBlocSelector extends StatelessWidget {
     }, builder: (context, eventBonosMap) {
       return Column(
         children: [
-          titleEventWidget(context, AppLocalizations.of(context)!.rates),
+          titleEventWidget(context, context.l10n.rates),
           eventBonosWidget(context, eventBonosMap),
         ],
       );

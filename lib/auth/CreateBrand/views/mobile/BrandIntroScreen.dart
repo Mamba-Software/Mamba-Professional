@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class BrandIntroScreen extends StatefulWidget {
   const BrandIntroScreen({super.key});
@@ -85,7 +86,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                                 Navigator.pop(context, true);
                               },
                               child: Text(
-                                AppLocalizations.of(context)!.skip,
+                                context.l10n.skip,
                                 style: Theme.of(context)
                                     .textTheme
                                     .displaySmall
@@ -116,8 +117,8 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                           fit: BoxFit.fitHeight,
-                                          image: AssetImage(Assets
-                                              .portadaCreateBrandIntro),
+                                          image: AssetImage(
+                                              Assets.portadaCreateBrandIntro),
                                         ),
                                         boxShadow: [
                                           BoxShadow(
@@ -152,7 +153,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                               height:
                                   MediaQuery.of(context).size.height * 0.04),
                           Text(
-                            AppLocalizations.of(context)!.createBrandCover,
+                            context.l10n.createBrandCover,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -164,7 +165,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.1,
                             child: Text(
-                              AppLocalizations.of(context)!.createBrandPortada,
+                              context.l10n.createBrandPortada,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
@@ -197,7 +198,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                                 Navigator.pop(context, true);
                               },
                               child: Text(
-                                AppLocalizations.of(context)!.skip,
+                                context.l10n.skip,
                                 style: Theme.of(context)
                                     .textTheme
                                     .displaySmall
@@ -223,7 +224,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                               height:
                                   MediaQuery.of(context).size.height * 0.05),
                           Text(
-                            AppLocalizations.of(context)!.info,
+                            context.l10n.info,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -235,7 +236,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.1,
                             child: Text(
-                              AppLocalizations.of(context)!.createBrandInfo,
+                              context.l10n.createBrandInfo,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
@@ -268,7 +269,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                                 Navigator.pop(context, true);
                               },
                               child: Text(
-                                AppLocalizations.of(context)!.skip,
+                                context.l10n.skip,
                                 style: Theme.of(context)
                                     .textTheme
                                     .displaySmall
@@ -295,8 +296,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                               height:
                                   MediaQuery.of(context).size.height * 0.05),
                           Text(
-                            AppLocalizations.of(context)!
-                                .createBrandBaseLocation,
+                            context.l10n.createBrandBaseLocation,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -308,7 +308,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.1,
                             child: Text(
-                              AppLocalizations.of(context)!.createBrandLocation,
+                              context.l10n.createBrandLocation,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
@@ -337,7 +337,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             child: TextButton(
                               onPressed: null,
                               child: Text(
-                                AppLocalizations.of(context)!.skip,
+                                context.l10n.skip,
                                 style: Theme.of(context)
                                     .textTheme
                                     .displaySmall
@@ -366,7 +366,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                               height:
                                   MediaQuery.of(context).size.height * 0.05),
                           Text(
-                            AppLocalizations.of(context)!.createBrandWorkshift,
+                            context.l10n.createBrandWorkshift,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -378,8 +378,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.1,
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .createBrandWorkshiftDescription,
+                              context.l10n.createBrandWorkshiftDescription,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
@@ -412,7 +411,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                 color: Colors.white,
                 child: Center(
                   child: Text(
-                    AppLocalizations.of(context)!.letsGo,
+                    context.l10n.letsGo,
                     style: Theme.of(context)
                         .textTheme
                         .displayLarge

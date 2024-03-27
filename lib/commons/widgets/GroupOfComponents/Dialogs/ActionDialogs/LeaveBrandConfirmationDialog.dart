@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
@@ -97,7 +97,7 @@ class _LeaveBrandConfirmationDialogState
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.leave,
+                          context.l10n.leave,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -127,7 +127,7 @@ class _LeaveBrandConfirmationDialogState
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.cancel,
+                          context.l10n.cancel,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context).primaryColorDark,

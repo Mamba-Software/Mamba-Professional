@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/Models/ImageObject.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -94,7 +94,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
     Future.delayed(Duration.zero, () {
       setState(() {
         isLoadingText =
-            "${AppLocalizations.of(context)!.loading.split(".")[0]} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
+            "${context.l10n.loading.split(".")[0]} ${context.l10n.photos.toLowerCase()}...";
       });
     });
     getBrandContentImages();
@@ -139,7 +139,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
           setState(() {
             isLoading = true;
             isLoadingText =
-                "${AppLocalizations.of(context)!.adding} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
+                "${context.l10n.adding} ${context.l10n.photos.toLowerCase()}...";
             maxImagesAdded = false;
           });
           for (File f in temp) {
@@ -275,7 +275,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.photos,
+                                  context.l10n.photos,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -321,7 +321,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                   title: AnimatedOpacity(
                       opacity: appBarExpanded ? 1.0 : 0.0,
                       duration: const Duration(milliseconds: 200),
-                      child: Text(AppLocalizations.of(context)!.photos,
+                      child: Text(context.l10n.photos,
                           style: Theme.of(context)
                               .appBarTheme
                               .titleTextStyle
@@ -363,7 +363,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                     ? SliverFillRemaining(
                         child: Center(
                             child: LoadingView(
-                        //text: (AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...") + isLoadingTextExtra!,
+                        //text: (context.l10n.loading.split(".")[0]+" "+context.l10n.photos.toLowerCase()+"...") + isLoadingTextExtra!,
                         text: isLoadingText + isLoadingTextExtra,
                       )))
                     : SliverToBoxAdapter(
@@ -384,8 +384,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                               children: [
                                 Flexible(
                                   child: Text(
-                                      AppLocalizations.of(context)!
-                                          .yourImagesDescription
+                                      context.l10n.yourImagesDescription
                                           .split("\n")[0],
                                       style: Theme.of(context)
                                           .textTheme
@@ -412,8 +411,8 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                 0.05),
                                     child: Center(
                                       child: Text(
-                                        AppLocalizations.of(context)!
-                                            .addBrandPhotosMaxLeft((_maxImages -
+                                        context.l10n.addBrandPhotosMaxLeft(
+                                            (_maxImages -
                                                     _imagesUploaded.length)
                                                 .toString()),
                                         style: Theme.of(context)
@@ -452,7 +451,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                 children: [
                                   Flexible(
                                     child: Text(
-                                      "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.photos.toLowerCase()}. ${AppLocalizations.of(context)!.yourImagesDescription.split("\n")[2]}",
+                                      "${context.l10n.noData.split(" ")[0]} ${context.l10n.photos.toLowerCase()}. ${context.l10n.yourImagesDescription.split("\n")[2]}",
                                       style:
                                           Theme.of(context).textTheme.bodySmall,
                                       textAlign: TextAlign.center,
@@ -558,7 +557,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                       if (image.isBaseImage !=
                                                               null &&
                                                           image.isBaseImage!) {
-                                                        //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
+                                                        //topSnackBarComp.showSnackBarBottom(context, context.l10n.myImagesFavouriteDelete, 5, false);
                                                       } else if (canClickFav) {
                                                         var result =
                                                             await showDialog(
@@ -566,8 +565,8 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                                     context,
                                                                 builder: (_) {
                                                                   return FavouriteConfirmationDialog(
-                                                                      text: AppLocalizations.of(
-                                                                              context)!
+                                                                      text: context
+                                                                          .l10n
                                                                           .myImagesFavouriteDescription);
                                                                 });
                                                         if (result) {
@@ -676,8 +675,8 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                                     context,
                                                                 builder: (_) {
                                                                   return DeleteConfirmationDialog(
-                                                                      text: AppLocalizations.of(
-                                                                              context)!
+                                                                      text: context
+                                                                          .l10n
                                                                           .myImagesDeleteDescription);
                                                                 });
                                                         if (result) {
@@ -686,7 +685,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                           setState(() {
                                                             isLoading = true;
                                                             isLoadingText =
-                                                                "${AppLocalizations.of(context)!.deleting} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
+                                                                "${context.l10n.deleting} ${context.l10n.photos.toLowerCase()}...";
                                                             isLoadingTextExtra =
                                                                 " (${1}/${1})";
                                                           });
@@ -699,7 +698,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                           getBrandContentImages();
                                                         }
                                                       } else {
-                                                        //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
+                                                        //topSnackBarComp.showSnackBarBottom(context, context.l10n.myImagesFavouriteDelete, 5, false);
                                                       }
                                                     }
                                                   },
@@ -768,7 +767,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                                 builder: (_) {
                                                                   return DeleteConfirmationDialog(
                                                                       text:
-                                                                          "${AppLocalizations.of(context)!.myImagesDeleteDescription}\n\n${AppLocalizations.of(context)!.yourImagesDescription.split("\n")[2]}");
+                                                                          "${context.l10n.myImagesDeleteDescription}\n\n${context.l10n.yourImagesDescription.split("\n")[2]}");
                                                                 });
                                                         if (result) {
                                                           mixpanel!.track(
@@ -776,7 +775,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                           setState(() {
                                                             isLoading = true;
                                                             isLoadingText =
-                                                                "${AppLocalizations.of(context)!.deleting} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
+                                                                "${context.l10n.deleting} ${context.l10n.photos.toLowerCase()}...";
                                                             isLoadingTextExtra =
                                                                 " (${1}/${1})";
                                                           });
@@ -826,7 +825,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                           child: GestureDetector(
                                             onTap: () {
                                               showInSnackBar(
-                                                  AppLocalizations.of(context)!
+                                                  context.l10n
                                                       .myImagesFavouriteDelete,
                                                   5);
                                             },
@@ -874,8 +873,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      AppLocalizations.of(
-                                                              context)!
+                                                      context.l10n
                                                           .createBrandCover,
                                                       style: Theme.of(context)
                                                           .textTheme
@@ -945,7 +943,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                     children: [
                       Flexible(
                         child: Text(
-                          AppLocalizations.of(context)!.photos,
+                          context.l10n.photos,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall

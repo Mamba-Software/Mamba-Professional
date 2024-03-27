@@ -6,7 +6,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/Location/LocationLoading.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/Location/LocationWidget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class LocationBlocSelector extends StatelessWidget {
   const LocationBlocSelector({super.key});
@@ -19,7 +19,7 @@ class LocationBlocSelector extends StatelessWidget {
     }, builder: (context, locationCubit) {
       return Column(
         children: [
-          titleEventWidget(context, AppLocalizations.of(context)!.location),
+          titleEventWidget(context, context.l10n.location),
           locationCubit.id == null
               ? locationLoading(context)
               : LocationWidget(

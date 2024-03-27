@@ -5,7 +5,7 @@ import 'package:mamba/events/crud_events/widgets/mobile/DateTime/DurationEvent/D
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class DurationEventSelector extends StatelessWidget {
   final Locale locale;
@@ -33,7 +33,7 @@ class DurationEventSelector extends StatelessWidget {
                       const EdgeInsets.only(left: 25, right: 25, top: 10.0),
                   child: Center(
                     child: Text(
-                      AppLocalizations.of(context)!.errorDate,
+                      context.l10n.errorDate,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -49,7 +49,7 @@ class DurationEventSelector extends StatelessWidget {
                       const EdgeInsets.only(left: 25, right: 25, top: 10.0),
                   child: Center(
                     child: Text(
-                      AppLocalizations.of(context)!.cantEditText,
+                      context.l10n.cantEditText,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -59,8 +59,7 @@ class DurationEventSelector extends StatelessWidget {
                   ),
                 )
               : Container(),
-          dividerAddEditEvent(
-              context, AppLocalizations.of(context)!.selectDayTime, validated),
+          dividerAddEditEvent(context, context.l10n.selectDayTime, validated),
         ],
       );
     });

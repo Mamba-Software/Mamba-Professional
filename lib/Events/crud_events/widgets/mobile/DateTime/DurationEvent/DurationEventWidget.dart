@@ -6,7 +6,7 @@ import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 TextEditingController durationController = TextEditingController();
 
@@ -62,7 +62,7 @@ Future selectDuration(BuildContext context, String duration) async {
   String? pickedDuration = await showCupertinoModalPopup(
       context: context,
       builder: (_) => SelectDurationDialog(
-            title: AppLocalizations.of(context)!.selectDuration,
+            title: context.l10n.selectDuration,
             initialDuration: duration,
           ));
   if (pickedDuration != null) {

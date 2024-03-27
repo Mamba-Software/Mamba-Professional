@@ -20,7 +20,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/De
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/utils/MediaQuery/MediaQuery.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/SelectBrandImages.dart';
 import 'package:provider/provider.dart';
@@ -285,7 +285,7 @@ class _AddEditBonoState extends State<AddEditBono>
             appBar: AppBar(
               toolbarHeight: MediaQuery.of(context).size.height * 0.14,
               title: Text(
-                AppLocalizations.of(context)!.bonos,
+                context.l10n.bonos,
                 style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
               centerTitle: true,
@@ -336,11 +336,11 @@ class _AddEditBonoState extends State<AddEditBono>
               title: Text(
                 widget.edit
                     ? bono.isRecurrent!
-                        ? AppLocalizations.of(context)!.editBonoRecurrent
-                        : AppLocalizations.of(context)!.editBonoSimple
+                        ? context.l10n.editBonoRecurrent
+                        : context.l10n.editBonoSimple
                     : bono.isRecurrent!
-                        ? AppLocalizations.of(context)!.createBonoRecurrent
-                        : AppLocalizations.of(context)!.createBonoSimple,
+                        ? context.l10n.createBonoRecurrent
+                        : context.l10n.createBonoSimple,
                 style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
               centerTitle: true,
@@ -514,7 +514,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               backgroundColor: Theme.of(context).primaryColor,
                               icon: Container(),
                               label: Text(
-                                AppLocalizations.of(context)!.back,
+                                context.l10n.back,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -656,9 +656,9 @@ class _AddEditBonoState extends State<AddEditBono>
                         label: Text(
                           _selectedIndex == 4
                               ? widget.edit
-                                  ? AppLocalizations.of(context)!.editBono
-                                  : AppLocalizations.of(context)!.createBono
-                              : AppLocalizations.of(context)!.next,
+                                  ? context.l10n.editBono
+                                  : context.l10n.createBono
+                              : context.l10n.next,
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge!
@@ -692,10 +692,10 @@ class _AddEditBonoState extends State<AddEditBono>
                       children: [
                         optionTextWrite(
                             TextInputType.text,
-                            AppLocalizations.of(context)!.title,
+                            context.l10n.title,
                             "",
-                            AppLocalizations.of(context)!.titleHint,
-                            AppLocalizations.of(context)!.titleError,
+                            context.l10n.titleHint,
+                            context.l10n.titleError,
                             null,
                             true,
                             titleController,
@@ -704,10 +704,10 @@ class _AddEditBonoState extends State<AddEditBono>
                             'title'),
                         optionTextWrite(
                             TextInputType.text,
-                            AppLocalizations.of(context)!.description,
+                            context.l10n.description,
                             "",
-                            AppLocalizations.of(context)!.descriptionHint,
-                            AppLocalizations.of(context)!.descriptionError,
+                            context.l10n.descriptionHint,
+                            context.l10n.descriptionError,
                             null,
                             true,
                             descriptionController,
@@ -716,10 +716,10 @@ class _AddEditBonoState extends State<AddEditBono>
                             'desc'),
                         optionTextWrite(
                             TextInputType.multiline,
-                            AppLocalizations.of(context)!.disponible,
-                            AppLocalizations.of(context)!.activeBonoQuesDesc,
-                            AppLocalizations.of(context)!.descriptionError,
-                            AppLocalizations.of(context)!.descriptionError,
+                            context.l10n.disponible,
+                            context.l10n.activeBonoQuesDesc,
+                            context.l10n.descriptionError,
+                            context.l10n.descriptionError,
                             null,
                             true,
                             null,
@@ -765,8 +765,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               const SizedBox(width: 8),
                               Flexible(
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .bonosPurchasedWarning,
+                                  context.l10n.bonosPurchasedWarning,
                                   textAlign: TextAlign.left,
                                   style: Theme.of(context)
                                       .textTheme
@@ -801,8 +800,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               const SizedBox(width: 8),
                               Flexible(
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .bonosCanPurchasedWarning,
+                                  context.l10n.bonosCanPurchasedWarning,
                                   textAlign: TextAlign.left,
                                   style: Theme.of(context)
                                       .textTheme
@@ -826,11 +824,11 @@ class _AddEditBonoState extends State<AddEditBono>
                       children: [
                         optionTextWrite(
                             TextInputType.number,
-                            AppLocalizations.of(context)!.sessions,
-                            AppLocalizations.of(context)!.sesionsBonoDesc,
-                            AppLocalizations.of(context)!.sessionHint,
-                            AppLocalizations.of(context)!.sessionPlease,
-                            AppLocalizations.of(context)!.sessionPlease,
+                            context.l10n.sessions,
+                            context.l10n.sesionsBonoDesc,
+                            context.l10n.sessionHint,
+                            context.l10n.sessionPlease,
+                            context.l10n.sessionPlease,
                             widget.edit && hasPurchases ? false : true,
                             sessionsController,
                             focusNodeSessionsController,
@@ -841,10 +839,10 @@ class _AddEditBonoState extends State<AddEditBono>
                         optionTextWrite(
                             const TextInputType.numberWithOptions(
                                 decimal: true),
-                            AppLocalizations.of(context)!.price,
+                            context.l10n.price,
                             "",
-                            AppLocalizations.of(context)!.priceHint,
-                            AppLocalizations.of(context)!.pricePlease,
+                            context.l10n.priceHint,
+                            context.l10n.pricePlease,
                             null,
                             widget.edit && hasPurchases ? false : true,
                             priceController,
@@ -893,8 +891,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               const SizedBox(width: 8),
                               Flexible(
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .bonosPurchasedWarning,
+                                  context.l10n.bonosPurchasedWarning,
                                   textAlign: TextAlign.left,
                                   style: Theme.of(context)
                                       .textTheme
@@ -929,8 +926,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               const SizedBox(width: 8),
                               Flexible(
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .bonosCanPurchasedWarning,
+                                  context.l10n.bonosCanPurchasedWarning,
                                   textAlign: TextAlign.left,
                                   style: Theme.of(context)
                                       .textTheme
@@ -955,12 +951,11 @@ class _AddEditBonoState extends State<AddEditBono>
                         bono.isRecurrent!
                             ? optionConditionsWrite(
                                 TextInputType.text,
-                                AppLocalizations.of(context)!.renovationDate,
-                                AppLocalizations.of(context)!
-                                    .renovationDateDesc,
-                                AppLocalizations.of(context)!.titleError,
-                                AppLocalizations.of(context)!.titleError,
-                                AppLocalizations.of(context)!.titleError,
+                                context.l10n.renovationDate,
+                                context.l10n.renovationDateDesc,
+                                context.l10n.titleError,
+                                context.l10n.titleError,
+                                context.l10n.titleError,
                                 widget.edit && hasPurchases ? false : true,
                                 titleController,
                                 null,
@@ -968,11 +963,11 @@ class _AddEditBonoState extends State<AddEditBono>
                                 bono.isRecurrent!)
                             : optionConditionsWrite(
                                 TextInputType.text,
-                                AppLocalizations.of(context)!.expireDate,
-                                AppLocalizations.of(context)!.expiresAtDesc,
-                                AppLocalizations.of(context)!.titleError,
-                                AppLocalizations.of(context)!.titleError,
-                                AppLocalizations.of(context)!.titleError,
+                                context.l10n.expireDate,
+                                context.l10n.expiresAtDesc,
+                                context.l10n.titleError,
+                                context.l10n.titleError,
+                                context.l10n.titleError,
                                 widget.edit && hasPurchases ? false : true,
                                 titleController,
                                 null,
@@ -982,11 +977,11 @@ class _AddEditBonoState extends State<AddEditBono>
                             height: MediaQuery.of(context).size.height * 0.01),
                         optionConditionsWrite(
                             TextInputType.number,
-                            AppLocalizations.of(context)!.trainsPerWeek,
-                            AppLocalizations.of(context)!.trainsPerWeekDesc,
-                            AppLocalizations.of(context)!.sessionHint,
-                            AppLocalizations.of(context)!.sessionPlease,
-                            AppLocalizations.of(context)!.trainsPerWeekError,
+                            context.l10n.trainsPerWeek,
+                            context.l10n.trainsPerWeekDesc,
+                            context.l10n.sessionHint,
+                            context.l10n.sessionPlease,
+                            context.l10n.trainsPerWeekError,
                             widget.edit && hasPurchases ? false : true,
                             weeklyController,
                             focusNodeWeeklyController,
@@ -996,11 +991,11 @@ class _AddEditBonoState extends State<AddEditBono>
                             height: MediaQuery.of(context).size.height * 0.03),
                         optionConditionsWrite(
                             TextInputType.number,
-                            AppLocalizations.of(context)!.freeCancel,
-                            AppLocalizations.of(context)!.freeCancelDesc,
-                            AppLocalizations.of(context)!.freeCancelHint,
-                            AppLocalizations.of(context)!.freeCancelError,
-                            AppLocalizations.of(context)!.freeCancelErrorSecond,
+                            context.l10n.freeCancel,
+                            context.l10n.freeCancelDesc,
+                            context.l10n.freeCancelHint,
+                            context.l10n.freeCancelError,
+                            context.l10n.freeCancelErrorSecond,
                             widget.edit && hasPurchases ? false : true,
                             freeCancellController,
                             focusNodeFreeCancelController,
@@ -1121,7 +1116,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 Text(
-                                  AppLocalizations.of(context)!.photo,
+                                  context.l10n.photo,
                                   style:
                                       Theme.of(context).textTheme.displayLarge,
                                 ),
@@ -1246,7 +1241,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                                         .width *
                                                     0.1),
                                             Text(
-                                              "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.photo.toLowerCase()}",
+                                              "${context.l10n.select} ${context.l10n.photo.toLowerCase()}",
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall
@@ -1280,7 +1275,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     Text(
-                                      AppLocalizations.of(context)!.colorSolid,
+                                      context.l10n.colorSolid,
                                       style: Theme.of(context)
                                           .textTheme
                                           .displayLarge,
@@ -1362,8 +1357,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   Text(
-                                    AppLocalizations.of(context)!
-                                        .degradateSolid,
+                                    context.l10n.degradateSolid,
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge,
@@ -1475,7 +1469,7 @@ class _AddEditBonoState extends State<AddEditBono>
                 children: [
                   Flexible(
                     child: Text(
-                      AppLocalizations.of(context)!.preseeBono,
+                      context.l10n.preseeBono,
                       style: Theme.of(context).textTheme.displayLarge,
                     ),
                   ),
@@ -1598,7 +1592,7 @@ class _AddEditBonoState extends State<AddEditBono>
                   numberDays != "0"
                       ? numberDays.split("-")[0]
                       : isRecurrent
-                          ? AppLocalizations.of(context)!.firstDayOfMonth
+                          ? context.l10n.firstDayOfMonth
                           : "No expira",
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: notShow == false
@@ -1614,15 +1608,15 @@ class _AddEditBonoState extends State<AddEditBono>
                   numberDays != "0"
                       ? numberDays.split("-")[1]
                       : isRecurrent
-                          ? AppLocalizations.of(context)!.firstDayOfMonth
-                          : AppLocalizations.of(context)!.allSessionsDone,
+                          ? context.l10n.firstDayOfMonth
+                          : context.l10n.allSessionsDone,
                   style: Theme.of(context).textTheme.bodySmall,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 numberDays == "0" && isRecurrent && isSelectedDays[0]
                     ? Text(
-                        AppLocalizations.of(context)!.firstDayOfMonthDesc,
+                        context.l10n.firstDayOfMonthDesc,
                         style: Theme.of(context).textTheme.bodySmall,
                       )
                     : Container(),
@@ -2006,9 +2000,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                               Theme.of(context).disabledColor),
                               decoration: InputDecoration(
                                 suffixText: variable == 'ses'
-                                    ? AppLocalizations.of(context)!
-                                        .sessions
-                                        .toLowerCase()
+                                    ? context.l10n.sessions.toLowerCase()
                                     : variable == 'price'
                                         ? "euros (€)"
                                         : "",
@@ -2045,7 +2037,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height * 0.01),
                           child: Text(
-                            "${(bono.price! / bono.sessions!).toStringAsFixed(2)} € / ${AppLocalizations.of(context)!.session}",
+                            "${(bono.price! / bono.sessions!).toStringAsFixed(2)} € / ${context.l10n.session}",
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left,
                           ),
@@ -2137,9 +2129,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                                   .disabledColor),
                                   decoration: InputDecoration(
                                     suffixText: variable == 'ses'
-                                        ? AppLocalizations.of(context)!
-                                            .sessions
-                                            .toLowerCase()
+                                        ? context.l10n.sessions.toLowerCase()
                                         : variable == 'price'
                                             ? "euros (€)"
                                             : "",
@@ -2239,9 +2229,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                           Flexible(
                                             child: noSessions == true
                                                 ? Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .freeCancelInfo,
+                                                    context.l10n.freeCancelInfo,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodySmall,
@@ -2339,19 +2327,19 @@ class _AddEditBonoState extends State<AddEditBono>
                           0, '0', editable, noSessions, isRecurrent),
                   daysSelectoWidget(
                       1,
-                      "${AppLocalizations.of(context)!.monthly}-${AppLocalizations.of(context)!.eachNDaysAprox(30.toString())}",
+                      "${context.l10n.monthly}-${context.l10n.eachNDaysAprox(30.toString())}",
                       editable,
                       false,
                       isRecurrent),
                   daysSelectoWidget(
                       2,
-                      "${AppLocalizations.of(context)!.bimonthly}-${AppLocalizations.of(context)!.eachNDaysAprox(60.toString())}",
+                      "${context.l10n.bimonthly}-${context.l10n.eachNDaysAprox(60.toString())}",
                       editable,
                       false,
                       isRecurrent),
                   daysSelectoWidget(
                       3,
-                      "${AppLocalizations.of(context)!.quarterly}-${AppLocalizations.of(context)!.eachNDaysAprox(90.toString())}",
+                      "${context.l10n.quarterly}-${context.l10n.eachNDaysAprox(90.toString())}",
                       editable,
                       false,
                       isRecurrent),
@@ -2387,13 +2375,9 @@ class _AddEditBonoState extends State<AddEditBono>
                                   color: Theme.of(context).disabledColor),
                           decoration: InputDecoration(
                             suffixText: variable == 'maxw'
-                                ? AppLocalizations.of(context)!
-                                    .trainsPerWeek
-                                    .toLowerCase()
+                                ? context.l10n.trainsPerWeek.toLowerCase()
                                 : variable == 'canFree'
-                                    ? AppLocalizations.of(context)!
-                                        .hoursString
-                                        .toLowerCase()
+                                    ? context.l10n.hoursString.toLowerCase()
                                     : "",
                             suffixStyle: Theme.of(context).textTheme.bodySmall,
                             hintStyle: Theme.of(context).textTheme.bodySmall,
@@ -2443,13 +2427,9 @@ class _AddEditBonoState extends State<AddEditBono>
                                               Theme.of(context).disabledColor),
                               decoration: InputDecoration(
                                 suffixText: variable == 'maxw'
-                                    ? AppLocalizations.of(context)!
-                                        .sessions
-                                        .toLowerCase()
+                                    ? context.l10n.sessions.toLowerCase()
                                     : variable == 'canFree'
-                                        ? AppLocalizations.of(context)!
-                                            .hoursString
-                                            .toLowerCase()
+                                        ? context.l10n.hoursString.toLowerCase()
                                         : "",
                                 suffixStyle:
                                     Theme.of(context).textTheme.bodySmall,

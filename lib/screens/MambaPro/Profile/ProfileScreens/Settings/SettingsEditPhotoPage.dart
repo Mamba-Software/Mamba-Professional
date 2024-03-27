@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
@@ -117,7 +117,7 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.uploadPhoto,
+          context.l10n.uploadPhoto,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
@@ -236,7 +236,7 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage>
           ? FloatingActionButton(
               heroTag: "38",
               onPressed: uploadPhoto,
-              tooltip: AppLocalizations.of(context)!.save,
+              tooltip: context.l10n.save,
               backgroundColor: Theme.of(context).colorScheme.secondary,
               child: const Icon(
                 Icons.check,

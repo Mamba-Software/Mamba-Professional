@@ -7,7 +7,7 @@ import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/BuildAddUserButton.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialogBonos.dart';
 
@@ -63,8 +63,7 @@ Widget clientEventWidget(
                                   context: context,
                                   builder: (_) {
                                     return LeaveConfirmationDialogBonos(
-                                      text: AppLocalizations.of(context)!
-                                          .leaveEventConfirmation,
+                                      text: context.l10n.leaveEventConfirmation,
                                       brand: currentBrand,
                                       bonos: selectedBonos,
                                       purchaseId: client.purchaseId!,

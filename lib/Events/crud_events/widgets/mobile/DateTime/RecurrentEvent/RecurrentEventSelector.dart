@@ -5,7 +5,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DateTime/RecurrentEvent/RecurrentEventObjectSelector.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class RecurrentEventSelector extends StatelessWidget {
   final Locale locale;
@@ -29,7 +29,7 @@ class RecurrentEventSelector extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Text(
-                              AppLocalizations.of(context)!.recurrentEvent,
+                              context.l10n.recurrentEvent,
                               style: Theme.of(context).textTheme.displayLarge,
                             ),
                             context
@@ -93,7 +93,7 @@ class RecurrentEventSelector extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.recurrentEvent,
+                            context.l10n.recurrentEvent,
                             style: Theme.of(context).textTheme.displayLarge,
                           ),
                           SizedBox(
@@ -118,7 +118,7 @@ class RecurrentEventSelector extends StatelessWidget {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.recurrentEvent,
+                            context.l10n.recurrentEvent,
                             style: Theme.of(context).textTheme.displayLarge,
                           ),
                           SizedBox(

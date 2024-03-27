@@ -7,7 +7,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoEvents/cubit/B
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoEvents/views/SelectAllEvents.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Purchase.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/Purchase/PurchaseEvents/cubit/PurchaseEventsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
@@ -74,7 +74,7 @@ class PurchaseEventsBody extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.sessions,
+                            context.l10n.sessions,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -127,15 +127,13 @@ class PurchaseEventsBody extends StatelessWidget {
                                         children: [
                                           state is BonoEventsLoaded
                                               ? Text(
-                                                  AppLocalizations.of(context)!
-                                                      .edit,
+                                                  context.l10n.edit,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge,
                                                 )
                                               : Text(
-                                                  AppLocalizations.of(context)!
-                                                      .chargingEvents,
+                                                  context.l10n.chargingEvents,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge,
@@ -185,15 +183,13 @@ class PurchaseEventsBody extends StatelessWidget {
                                         children: [
                                           state is BonoEventsLoaded
                                               ? Text(
-                                                  AppLocalizations.of(context)!
-                                                      .add,
+                                                  context.l10n.add,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge,
                                                 )
                                               : Text(
-                                                  AppLocalizations.of(context)!
-                                                      .chargingEvents,
+                                                  context.l10n.chargingEvents,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge,
@@ -365,7 +361,7 @@ class PurchaseEventsBody extends StatelessWidget {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        AppLocalizations.of(context)!.noEvents,
+                                        context.l10n.noEvents,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall,
@@ -394,7 +390,7 @@ class PurchaseEventsBody extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.sessions,
+                        context.l10n.sessions,
                         style: Theme.of(context)
                             .textTheme
                             .displayLarge
@@ -417,7 +413,7 @@ class PurchaseEventsBody extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              AppLocalizations.of(context)!.edit,
+                              context.l10n.edit,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
@@ -81,7 +81,7 @@ class _MyLocationsState extends State<MyLocations> {
           ? Scaffold(
               appBar: AppBar(
                 title: Text(
-                  AppLocalizations.of(context)!.locations,
+                  context.l10n.locations,
                   style: Theme.of(context).appBarTheme.titleTextStyle,
                 ),
                 centerTitle: true,
@@ -100,7 +100,7 @@ class _MyLocationsState extends State<MyLocations> {
           : Scaffold(
               appBar: AppBar(
                 title: Text(
-                  AppLocalizations.of(context)!.locations,
+                  context.l10n.locations,
                   style: Theme.of(context).appBarTheme.titleTextStyle,
                 ),
                 centerTitle: true,
@@ -190,7 +190,7 @@ class _MyLocationsState extends State<MyLocations> {
                         size: MediaQuery.of(context).size.width * 0.06,
                       ),
                       title: Text(
-                        AppLocalizations.of(context)!.addLocation,
+                        context.l10n.addLocation,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
@@ -363,8 +363,7 @@ class _MyLocationsState extends State<MyLocations> {
                                                 children: [
                                                   Expanded(
                                                     child: Text(
-                                                      AppLocalizations.of(
-                                                              context)!
+                                                      context.l10n
                                                           .myLocationsBaseLocationDesc,
                                                       style: Theme.of(context)
                                                           .textTheme
@@ -405,8 +404,7 @@ class _MyLocationsState extends State<MyLocations> {
                                               context: context,
                                               builder: (_) {
                                                 return DeleteConfirmationDialog(
-                                                    text: AppLocalizations.of(
-                                                            context)!
+                                                    text: context.l10n
                                                         .myLocationsDeleteDescription);
                                               });
                                           if (result) {

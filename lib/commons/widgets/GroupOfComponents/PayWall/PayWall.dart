@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/app/theme/ThemeProvider.dart';
 import 'package:mamba/commons/constants/constants.dart';
@@ -100,7 +100,7 @@ class _PayWallState extends State<PayWall> {
         if (offerings.current?.monthly?.storeProduct != null) {
           Subscription subMonth = Subscription.fromOfferingAllData(
               offerings.current?.monthly!.storeProduct,
-              AppLocalizations.of(context)!.perMonth,
+              context.l10n.perMonth,
               offerings.current!.monthly!);
           DateFormat format = DateFormat('dd-MM-yyyy');
           if (brand.subscription == null &&
@@ -121,7 +121,7 @@ class _PayWallState extends State<PayWall> {
         if (offerings.current?.annual?.storeProduct != null) {
           subscriptionList.add(Subscription.fromOfferingAllData(
               offerings.current?.annual!.storeProduct,
-              AppLocalizations.of(context)!.perYear,
+              context.l10n.perYear,
               offerings.current!.annual!));
         }
         // Get the price and introductory period from the Product
@@ -199,7 +199,7 @@ class _PayWallState extends State<PayWall> {
                   animationMobile(),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Text(
-                    AppLocalizations.of(context)!.tanksforUsing,
+                    context.l10n.tanksforUsing,
                     style: Theme.of(context)
                         .textTheme
                         .displayLarge
@@ -271,8 +271,7 @@ class _PayWallState extends State<PayWall> {
                                             hasLogo: false,
                                           )
                                         : Text(
-                                            AppLocalizations.of(context)!
-                                                .seeSubscriptionPayWall,
+                                            context.l10n.seeSubscriptionPayWall,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .displayLarge
@@ -391,7 +390,7 @@ class _PayWallState extends State<PayWall> {
                 )),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 Text(
-                  AppLocalizations.of(context)!.updateToday,
+                  context.l10n.updateToday,
                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                       fontWeight: FontWeight.normal,
                       color: Theme.of(context).primaryColor,
@@ -402,7 +401,7 @@ class _PayWallState extends State<PayWall> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.joinToBrands,
+                      context.l10n.joinToBrands,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.normal,
                           color: Theme.of(context).primaryColor),
@@ -434,7 +433,7 @@ class _PayWallState extends State<PayWall> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              AppLocalizations.of(context)!.getAll,
+              context.l10n.getAll,
               style: Theme.of(context)
                   .textTheme
                   .displayLarge
@@ -442,31 +441,27 @@ class _PayWallState extends State<PayWall> {
               textAlign: TextAlign.center,
             ),
             Text(
-              AppLocalizations.of(context)!.getAllDesc,
+              context.l10n.getAllDesc,
               style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             listTileGetAll(
                 Icons.feed_outlined,
-                AppLocalizations.of(context)!.personalizeBrandPayWallHeader,
-                AppLocalizations.of(context)!.personalizeBrandPayWallText),
-            listTileGetAll(
-                Icons.search,
-                AppLocalizations.of(context)!.searcherPayWallHeader,
-                AppLocalizations.of(context)!.searcherPayWallText),
+                context.l10n.personalizeBrandPayWallHeader,
+                context.l10n.personalizeBrandPayWallText),
+            listTileGetAll(Icons.search, context.l10n.searcherPayWallHeader,
+                context.l10n.searcherPayWallText),
             listTileGetAll(
                 Icons.calendar_month_outlined,
-                AppLocalizations.of(context)!.sessionControlPayWallHeader,
-                AppLocalizations.of(context)!.sessionControlPayWallText),
+                context.l10n.sessionControlPayWallHeader,
+                context.l10n.sessionControlPayWallText),
             listTileGetAll(
                 Icons.confirmation_number_outlined,
-                AppLocalizations.of(context)!.pricePolicyPayWallHeader,
-                AppLocalizations.of(context)!.pricePolicyPayWallText),
-            listTileGetAll(
-                Icons.leaderboard_outlined,
-                AppLocalizations.of(context)!.statsPayWallHeader,
-                AppLocalizations.of(context)!.statsPayWallText),
+                context.l10n.pricePolicyPayWallHeader,
+                context.l10n.pricePolicyPayWallText),
+            listTileGetAll(Icons.leaderboard_outlined,
+                context.l10n.statsPayWallHeader, context.l10n.statsPayWallText),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             TextButton(
               onPressed: () async {
@@ -490,7 +485,7 @@ class _PayWallState extends State<PayWall> {
                 height: MediaQuery.of(context).size.height * 0.075,
                 child: Center(
                     child: Text(
-                  AppLocalizations.of(context)!.moreInfoInWeb,
+                  context.l10n.moreInfoInWeb,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.normal,
                       color: Theme.of(context).primaryColor),
@@ -507,7 +502,7 @@ class _PayWallState extends State<PayWall> {
 
   Widget cancelSubscriptionText() {
     return Text(
-      AppLocalizations.of(context)!.cancelSubscriptionPayWall,
+      context.l10n.cancelSubscriptionPayWall,
       style: Theme.of(context).textTheme.bodySmall,
     );
   }
@@ -657,8 +652,7 @@ class _PayWallState extends State<PayWall> {
                     title: Text('Mamba Pro',
                         style: Theme.of(context).textTheme.bodySmall,
                         textAlign: TextAlign.left),
-                    trailing: Text(
-                        AppLocalizations.of(context)!.subscriptionsAppBar,
+                    trailing: Text(context.l10n.subscriptionsAppBar,
                         style: Theme.of(context).textTheme.bodySmall),
                     dense: true,
                   ),
@@ -684,7 +678,7 @@ class _PayWallState extends State<PayWall> {
                   ListTile(
                     title: Row(
                       children: [
-                        Text(AppLocalizations.of(context)!.uniquePromotion),
+                        Text(context.l10n.uniquePromotion),
                         const Icon(
                           Icons.done,
                           color: Colors.green,
@@ -693,7 +687,7 @@ class _PayWallState extends State<PayWall> {
                     ),
                   ),
                   ListTile(
-                    title: Text(AppLocalizations.of(context)!.startToday,
+                    title: Text(context.l10n.startToday,
                         style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.left),
                     trailing: Text(sub.descriptionAdapted!,
@@ -726,7 +720,7 @@ class _PayWallState extends State<PayWall> {
                           height: MediaQuery.of(context).size.height * 0.05,
                           child: Center(
                               child: Text(
-                            AppLocalizations.of(context)!.subscribeNow,
+                            context.l10n.subscribeNow,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
@@ -776,7 +770,7 @@ class _PayWallState extends State<PayWall> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              AppLocalizations.of(context)!.promotionUse,
+              context.l10n.promotionUse,
               style: Theme.of(context)
                   .textTheme
                   .displayLarge
@@ -805,8 +799,7 @@ class _PayWallState extends State<PayWall> {
                         child: subscritionPromo.id == null
                             ? Row(
                                 children: [
-                                  Text(AppLocalizations.of(context)!
-                                      .noPromotions),
+                                  Text(context.l10n.noPromotions),
                                   const Icon(
                                     Icons.close,
                                     color: Colors.red,
@@ -817,8 +810,7 @@ class _PayWallState extends State<PayWall> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text(AppLocalizations.of(context)!
-                                          .promotionDetected),
+                                      Text(context.l10n.promotionDetected),
                                       const Icon(
                                         Icons.done,
                                         color: Colors.green,
@@ -866,7 +858,7 @@ class _PayWallState extends State<PayWall> {
                           counterText: '',
                           filled: true,
                           fillColor: AppColors.white,
-                          hintText: AppLocalizations.of(context)!.insertCode,
+                          hintText: context.l10n.insertCode,
                           hintStyle: Theme.of(context)
                               .textTheme
                               .displaySmall
@@ -919,13 +911,13 @@ class _PayWallState extends State<PayWall> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TitleHeadline1(
-            text: AppLocalizations.of(context)!.anyDoubt,
+            text: context.l10n.anyDoubt,
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.0),
-            child: Text(AppLocalizations.of(context)!.getInTouchTextDesc,
+            child: Text(context.l10n.getInTouchTextDesc,
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge!
@@ -955,7 +947,7 @@ class _PayWallState extends State<PayWall> {
                 ),
               ),
               child: Text(
-                AppLocalizations.of(context)!.getInTouch,
+                context.l10n.getInTouch,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).primaryColor),

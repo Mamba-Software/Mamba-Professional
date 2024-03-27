@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/auth/CreateBrand/widgets/BrandImagesContainer.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -130,7 +130,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.description,
+                            context.l10n.description,
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left,
                           ),
@@ -165,7 +165,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.staff,
+                            context.l10n.staff,
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left,
                           ),
@@ -253,8 +253,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!
-                                .memberSince(brand.dateJoined!),
+                            context.l10n.memberSince(brand.dateJoined!),
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left,
                           ),
@@ -294,7 +293,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
                                 bottom:
                                     MediaQuery.of(context).size.height * 0.00),
                             child: Text(
-                              AppLocalizations.of(context)!.join,
+                              context.l10n.join,
                               style: Theme.of(context)
                                   .textTheme
                                   .displayLarge

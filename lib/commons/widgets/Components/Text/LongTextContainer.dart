@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class LongTextContainer extends StatefulWidget {
   final String text;
@@ -11,7 +11,6 @@ class LongTextContainer extends StatefulWidget {
 }
 
 class _LongTextContainerState extends State<LongTextContainer> {
-
   bool readMore = false;
   var lines;
 
@@ -27,23 +26,22 @@ class _LongTextContainerState extends State<LongTextContainer> {
             maxLines: lines,
             // overflow properties is used to show 3 dot in text widget
             // so that user can understand there are few more line to read.
-            overflow: readMore ? TextOverflow.visible: TextOverflow.ellipsis,
+            overflow: readMore ? TextOverflow.visible : TextOverflow.ellipsis,
           ),
           TextButton(
-            onPressed: () {
-              setState(() {
-                readMore = !readMore;
-              });
-            },
-            style: const ButtonStyle(
-
-            ),
-            child: Text(
-              !readMore ? AppLocalizations.of(context)!.readMore : AppLocalizations.of(context)!.readLess,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.secondary),
-              textAlign: TextAlign.left
-            )
-          )
+              onPressed: () {
+                setState(() {
+                  readMore = !readMore;
+                });
+              },
+              style: const ButtonStyle(),
+              child: Text(
+                  !readMore ? context.l10n.readMore : context.l10n.readLess,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Theme.of(context).colorScheme.secondary),
+                  textAlign: TextAlign.left))
         ],
       ),
     );

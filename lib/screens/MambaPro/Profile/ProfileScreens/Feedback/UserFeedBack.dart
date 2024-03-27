@@ -9,7 +9,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:survey_kit/survey_kit.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/Styles.dart';
 import 'package:mamba/data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -136,7 +136,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
           icon: Container(),
           iconRotationAngle: 0,
           backgroundColor: Colors.green,
-          message: AppLocalizations.of(context)!.feedbackSent,
+          message: context.l10n.feedbackSent,
           textStyle: Styles.whiteTextStyle,
         ),
       );
@@ -149,7 +149,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
         icon: Container(),
         iconRotationAngle: 0,
         backgroundColor: Colors.red,
-        message: AppLocalizations.of(context)!.feedbackNotSent,
+        message: context.l10n.feedbackNotSent,
         textStyle: Styles.whiteTextStyle,
       ),
     );
@@ -200,9 +200,9 @@ class _UserFeedBackState extends State<UserFeedBack> {
          ),
         CompletionStep(
            stepIdentifier: StepIdentifier(id: '321'),
-           text: AppLocalizations.of(context)!.finishedFeedbackSubtitle,
-           title: AppLocalizations.of(context)!.finishedFeedback,
-           buttonText: AppLocalizations.of(context)!.sendFeedback,
+           text: context.l10n.finishedFeedbackSubtitle,
+           title: context.l10n.finishedFeedback,
+           buttonText: context.l10n.sendFeedback,
          ),
        ],
      );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -102,7 +102,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
         endDate.day == maxEndDate.day &&
         endDate.month == maxEndDate.month &&
         endDate.year == maxEndDate.year) {
-      return "${AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.month)}";
+      return "${context.l10n.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(context.l10n.month)}";
     }
 
     // Check for "previous month" selection
@@ -112,7 +112,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
         endDate.day == DateTime(now.year, now.month, 0).day &&
         endDate.month == now.month - 1 &&
         endDate.year == now.year) {
-      return AppLocalizations.of(context)!.previousMonth;
+      return context.l10n.previousMonth;
     }
 
     // Check for "Historic" selection
@@ -122,7 +122,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
         endDate.day == maxEndDate.day &&
         endDate.month == maxEndDate.month &&
         endDate.year == maxEndDate.year) {
-      return AppLocalizations.of(context)!.historic;
+      return context.l10n.historic;
     }
 
     switch (daysDifference) {
@@ -133,13 +133,13 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
         if (maxEndDate.day == endDate.day &&
             maxEndDate.month == endDate.month &&
             maxEndDate.year == endDate.year) {
-          return AppLocalizations.of(context)!
+          return context.l10n
               .lastNDays(endDate.difference(startDate).inDays.toString());
         } else {
-          return AppLocalizations.of(context)!.personlized;
+          return context.l10n.personlized;
         }
       default:
-        return AppLocalizations.of(context)!.personlized;
+        return context.l10n.personlized;
     }
   }
 
@@ -147,15 +147,15 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
     String filteredRoles = "";
     int cnt = 0;
     if (filterByPurchaseStatus[0]) {
-      filteredRoles += "${AppLocalizations.of(context)!.verfied}, ";
+      filteredRoles += "${context.l10n.verfied}, ";
       cnt += 1;
     }
     if (filterByPurchaseStatus[1]) {
-      filteredRoles += "${AppLocalizations.of(context)!.unverfied}, ";
+      filteredRoles += "${context.l10n.unverfied}, ";
       cnt += 1;
     }
     if (filterByPurchaseStatus[2]) {
-      filteredRoles += AppLocalizations.of(context)!.toConfirm;
+      filteredRoles += context.l10n.toConfirm;
       cnt += 1;
     }
     if (cnt == 1) {
@@ -171,11 +171,11 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByActivePurchases[0]) {
-      activeStaff += "${AppLocalizations.of(context)!.yes}, ";
+      activeStaff += "${context.l10n.yes}, ";
       cnt += 1;
     }
     if (filterByActivePurchases[1]) {
-      activeStaff += AppLocalizations.of(context)!.no;
+      activeStaff += context.l10n.no;
       cnt += 1;
     }
     if (cnt == 1) {
@@ -206,7 +206,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
               appBar: AppBar(
                 toolbarHeight: MediaQuery.of(context).size.height * 0.14,
                 title: Text(
-                  AppLocalizations.of(context)!.purchaseHistory,
+                  context.l10n.purchaseHistory,
                   style: Theme.of(context).appBarTheme.titleTextStyle,
                 ),
                 centerTitle: true,
@@ -287,9 +287,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                               builder: (context, value, child) {
                                                 return ListTile(
                                                   title: Text(
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .filterBy,
+                                                      context.l10n.filterBy,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodySmall,
@@ -297,9 +295,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                           TextAlign.left),
                                                   trailing: TextButton(
                                                       child: Text(
-                                                          AppLocalizations.of(
-                                                                  context)!
-                                                              .clear,
+                                                          context.l10n.clear,
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -362,9 +358,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                           );
                                                         },
                                                         title: Text(
-                                                            AppLocalizations.of(
-                                                                    context)!
-                                                                .state,
+                                                            context.l10n.state,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -417,8 +411,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                           );
                                                         },
                                                         title: Text(
-                                                            AppLocalizations.of(
-                                                                    context)!
+                                                            context.l10n
                                                                 .activeRates,
                                                             style: Theme.of(
                                                                     context)
@@ -494,8 +487,8 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                                     }
                                                                   },
                                                                   title: Text(
-                                                                      AppLocalizations.of(
-                                                                              context)!
+                                                                      context
+                                                                          .l10n
                                                                           .verfied,
                                                                       style: Theme.of(
                                                                               context)
@@ -542,8 +535,8 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                                     }
                                                                   },
                                                                   title: Text(
-                                                                      AppLocalizations.of(
-                                                                              context)!
+                                                                      context
+                                                                          .l10n
                                                                           .unverfied,
                                                                       style: Theme.of(
                                                                               context)
@@ -590,8 +583,8 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                                     }
                                                                   },
                                                                   title: Text(
-                                                                      AppLocalizations.of(
-                                                                              context)!
+                                                                      context
+                                                                          .l10n
                                                                           .toConfirm,
                                                                       style: Theme.of(
                                                                               context)
@@ -642,8 +635,8 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                                     }
                                                                   },
                                                                   title: Text(
-                                                                      AppLocalizations.of(
-                                                                              context)!
+                                                                      context
+                                                                          .l10n
                                                                           .yes,
                                                                       style: Theme.of(
                                                                               context)
@@ -690,8 +683,8 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                                                     }
                                                                   },
                                                                   title: Text(
-                                                                      AppLocalizations.of(
-                                                                              context)!
+                                                                      context
+                                                                          .l10n
                                                                           .no,
                                                                       style: Theme.of(
                                                                               context)
@@ -866,7 +859,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.015),
                             Text(
-                              AppLocalizations.of(context)!.noData,
+                              context.l10n.noData,
                               style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.center,
                             ),
@@ -893,7 +886,7 @@ class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
               appBar: AppBar(
                 toolbarHeight: MediaQuery.of(context).size.height * 0.14,
                 title: Text(
-                  AppLocalizations.of(context)!.purchaseHistory,
+                  context.l10n.purchaseHistory,
                   style: Theme.of(context).appBarTheme.titleTextStyle,
                 ),
                 centerTitle: true,

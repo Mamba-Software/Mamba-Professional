@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -148,7 +148,7 @@ class _LocationsState extends State<Locations> {
                         setState(() {
                           isLoading = true;
                           loadingText =
-                              "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!.locations.toLowerCase()}...";
+                              "${context.l10n.updating} ${context.l10n.locations.toLowerCase()}...";
                         });
                         await Future.delayed(const Duration(seconds: 4));
                         getAllLocations();
@@ -190,7 +190,7 @@ class _LocationsState extends State<Locations> {
         setState(() {
           isLoading = true;
           loadingText =
-              "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!.locations.toLowerCase()}...";
+              "${context.l10n.updating} ${context.l10n.locations.toLowerCase()}...";
         });
         Location location = Location();
         location.placeId = result.placeId;
@@ -306,7 +306,7 @@ class _LocationsState extends State<Locations> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.locations,
+                            context.l10n.locations,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -349,7 +349,7 @@ class _LocationsState extends State<Locations> {
             ),
             title: appBarExpanded
                 ? Text(
-                    AppLocalizations.of(context)!.locations,
+                    context.l10n.locations,
                     style: Theme.of(context).appBarTheme.titleTextStyle,
                   )
                 : Container(),

@@ -1,16 +1,16 @@
 // Utils for page selections in Mamba Pro
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class MambaProUtils {
   // Date in the Middle of the Month
   DateTime middleMonthDate = DateTime.now();
 
   //Function to know the title on listview
-  Widget titlePageSelectorListView(var context, int pageIndex) {
+  Widget titlePageSelectorListView(BuildContext context, int pageIndex) {
     if (pageIndex == 1) {
-      return Text(AppLocalizations.of(context)!.staff,
+      return Text(context.l10n.staff,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
@@ -18,7 +18,7 @@ class MambaProUtils {
     }
     if (pageIndex == 2) {
       return Text(
-        AppLocalizations.of(context)!.clients,
+        context.l10n.clients,
         style: Theme.of(context)
             .textTheme
             .bodyLarge
@@ -26,107 +26,105 @@ class MambaProUtils {
       );
     }
     if (pageIndex == 4) {
-      return Text(AppLocalizations.of(context)!.categories,
+      return Text(context.l10n.categories,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 5) {
-      return Text("${AppLocalizations.of(context)!.rates}",
+      return Text("${context.l10n.rates}",
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 8) {
-      return Text(AppLocalizations.of(context)!.settings,
+      return Text(context.l10n.settings,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 7) {
-      return Text(AppLocalizations.of(context)!.photos,
+      return Text(context.l10n.photos,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 6) {
-      return Text(AppLocalizations.of(context)!.opinions,
+      return Text(context.l10n.opinions,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 9) {
-      return Text(AppLocalizations.of(context)!.stats,
+      return Text(context.l10n.stats,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
-    if (pageIndex == 10) {
-      return Text(AppLocalizations.of(context)!.bookings,
+    if (pageIndex == 10) {      
+      return Text(context.l10n.bookings,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 11) {
-      return Text(AppLocalizations.of(context)!.locations,
+      return Text(context.l10n.locations,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 12) {
-      return Text(AppLocalizations.of(context)!.logo,
+      return Text(context.l10n.logo,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 13) {
-      return Text(AppLocalizations.of(context)!.feedback,
+      return Text(context.l10n.feedback,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 14) {
-      return Text(AppLocalizations.of(context)!.eventHistory,
+      return Text(context.l10n.eventHistory,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 15) {
-      return Text(AppLocalizations.of(context)!.myRequests,
+      return Text(context.l10n.myRequests,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 16) {
-      return Text(AppLocalizations.of(context)!.howTheySeeMe,
+      return Text(context.l10n.howTheySeeMe,
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 17) {
-      return Text(
-          StringUtils().toCapitalized(AppLocalizations.of(context)!.yourPlan),
+      return Text(StringUtils().toCapitalized(context.l10n.yourPlan),
           style: Theme.of(context)
               .textTheme
               .bodyLarge
               ?.copyWith(color: returnColor(context)));
     }
     if (pageIndex == 18) {
-      return Text(
-          StringUtils().toCapitalized(AppLocalizations.of(context)!.payments),
+      return Text(StringUtils().toCapitalized(context.l10n.payments),
           style: Theme.of(context)
               .textTheme
               .bodyLarge
@@ -136,7 +134,7 @@ class MambaProUtils {
   }
 
   //Function to select the icon to load
-  Widget iconSelectorListView(var context, int pageIndexView) {
+  Widget iconSelectorListView(BuildContext context, int pageIndexView) {
     if (pageIndexView == 1) {
       return Icon(Icons.badge_outlined, color: returnColor(context));
     }
@@ -194,7 +192,7 @@ class MambaProUtils {
     return Container();
   }
 
-  Color returnColor(var context) {
+  Color returnColor(BuildContext context) {
     return Theme.of(context).primaryColor;
   }
 }

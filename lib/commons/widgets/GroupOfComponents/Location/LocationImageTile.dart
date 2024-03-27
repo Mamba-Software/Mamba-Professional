@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
@@ -153,9 +153,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                         SizedBox(
                                           width: widget.width * 0.02,
                                         ),
-                                        Text(
-                                            AppLocalizations.of(context)!
-                                                .baseLocation,
+                                        Text(context.l10n.baseLocation,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall!
@@ -210,10 +208,9 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                       SizedBox(
                                         width: widget.width * 0.3,
                                         child: Text(
-                                            AppLocalizations.of(context)!
-                                                .percentageEvents(
-                                                    locationPercentatgeEvents
-                                                        .toStringAsFixed(0)),
+                                            context.l10n.percentageEvents(
+                                                locationPercentatgeEvents
+                                                    .toStringAsFixed(0)),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall,
@@ -340,8 +337,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                             context: context,
                                             builder: (_) {
                                               return DeleteConfirmationDialog(
-                                                  text: AppLocalizations.of(
-                                                          context)!
+                                                  text: context.l10n
                                                       .myLocationsDeleteDescription);
                                             });
                                         if (result) {
@@ -375,9 +371,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                                 width: widget.width * 0.01),
                                             FittedBox(
                                               fit: BoxFit.contain,
-                                              child: Text(
-                                                  AppLocalizations.of(context)!
-                                                      .edit,
+                                              child: Text(context.l10n.edit,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium,
@@ -402,9 +396,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                                 width: widget.width * 0.01),
                                             FittedBox(
                                               fit: BoxFit.contain,
-                                              child: Text(
-                                                  AppLocalizations.of(context)!
-                                                      .delete,
+                                              child: Text(context.l10n.delete,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium,

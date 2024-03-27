@@ -1,4022 +1,912 @@
 {
   "language": "Idioma",
-  "@language":{
-    "description": "Lenguaje de la App"
-  },
   "homeBottomNav": "Home",
-  "@homeBottomNav":{
-    "description": "Perfil Text"
-  },
   "profileBottomNav": "Perfil",
-  "@profileBottomNav":{
-    "description": "Perfil Text"
-  },
   "brandBottomNav": "Marca",
-  "@brandBottomNav":{
-    "description": "Marca Text"
-  },
   "notificationsBottomNav": "Alertas",
-  "@notificationsBottomNav":{
-    "description": "Notificaciones Text"
-  },
   "chatBottomNav": "Chat",
-  "@chatBottomNav":{
-  "description": "Chat Text"
-  },
   "sesionsBottomNav": "Sesiones",
-  "@sesionsBottomNav":{
-  "description": "Calendario Text"
-  },
   "yes": "Sí",
-  "@yes":{
-    "description": "Sí Text"
-  },
   "no": "No",
-  "@no":{
-    "description": "No Text"
-  },
   "logOut": "¿Quieres salir de Mamba?",
-  "@logOut":{
-    "description": "logOut Text"
-  },
   "user": "Usuario",
-  "@user":{
-    "description": "Usuario Text"
-  },
   "invitedUser": "Invitado",
-  "@invitedUser":{
-    "description": "Usuario Text"
-  },
   "client": "Cliente",
-  "@client":{
-    "description": "Cliente Text"
-  },
   "clientDescription": "Busca la marca que mejor se adapta a ti, contacta con entrenadores, reserva sesiones ...",
-  "@clientDescription":{
-    "description": "Entrenador Text"
-  },
   "clients": "Clientes",
-  "@clients":{
-    "description": "Cliente Text"
-  },
   "trainer": "Entrenador",
-  "@trainer":{
-    "description": "Entrenador Text"
-  },
   "trainerDescription": "Podrás crear tu propia marca o unirte a una ya existente, planificarás sesiones, reclutarás a nuevos clientes ...",
-  "@trainerDescription":{
-    "description": "Entrenador Text"
-  },
   "trainers": "Entrenadores",
-  "@trainers":{
-    "description": "Entrenador Text"
-  },
   "email": "Email",
-  "@email":{
-    "description": "Email Text"
-  },
   "emailError": "Escribe tu email por favor",
-  "@emailError":{
-    "description": "Email Error Text"
-  },
   "emailError3rd": "Escribe su email por favor",
-  "@emailError3rd":{
-    "description": "Email Error Text"
-  },
   "password": "Contraseña",
-  "@password":{
-    "description": "Contraseña Text "
-  },
   "newPassword": "Nueva contraseña",
-  "@newPassword":{
-    "description": "Contraseña Text "
-  },
   "changePassword": "¿Quieres cambiar tu contraseña?",
-  "@changePassword":{
-    "description": "changePassword Text"
-  },
   "passwordError": "Introduzca una contraseña con 6 caracteres o más",
-  "@passwordError":{
-    "description": "Contraseña Error Text "
-  },
   "passworRepeat": "Confirma tu contraseña",
-  "@passworRepeat":{
-    "description": "Contraseña Repeat Text "
-  },
   "passwordNotSameError": "Las contraseñas no coinciden",
-  "@passwordNotSameError":{
-    "description": "Contraseña Error Text "
-  },
   "noAccount": "¿No has creado tu cuenta?",
-  "@noAccount":{
-    "description": "Contraseña Text "
-  },
   "forgotPassword": "¿Has olvidado tu contraseña?",
-  "@forgotPassword":{
-    "description": "Contraseña Text "
-  },
   "resetPassword": "Recuperar contraseña",
-  "@resetPassword":{
-    "description": "Contraseña Text "
-  },
   "recover": "Recuperar",
-  "@recover":{
-    "description": "Contraseña Text "
-  },
   "loggedInWith": "Sesión iniciada cómo",
-  "@loggedInWith":{
-    "description": "LogIn Text "
-  },
   "login": "Inicia Sesión",
-  "@login":{
-    "description": "LogIn Text "
-  },
   "continueWithApple": "Continuar con Apple",
-  "@continueWithApple":{
-    "description": "LogIn Text "
-  },
   "continueWithGoogle": "Continuar con Google",
-  "@continueWithGoogle":{
-    "description": "LogIn Text "
-  },
   "loginWithEmail": "Inicia sesión con tu email",
-  "@loginWithEmail":{
-    "description": "LogIn Text "
-  },
   "loginError": "No encontramos este usuario.\n Por favor, prueba otra vez",
-  "@loginError":{
-    "description": "LogIn Error Text "
-  },
   "validate": "Te hemos enviado un correo de validación",
-  "@validate":{
-    "description": "LogIn Text "
-  },
   "validatePassword": "Te hemos enviado un email para cambiar tu contraseña",
-  "@validatePassword":{
-    "description": "LogIn Text "
-  },
   "validateError": "No has validado tu email",
-  "@validateError":{
-    "description": "LogIn Error Text "
-  },
   "validateEmail": "Email no válido",
-  "@validateEmail":{
-    "description": "LogIn Error Text "
-  },
   "newUser": "¿No estás registrado? Crea tu cuenta",
-  "@newUser":{
-    "description": "New User Text "
-  },
   "alreadyUser": "¿Tienes una cuenta? Inicia sesión",
-  "@alreadyUser":{
-    "description": "Already user Text "
-  },
   "wrongAppUser": "Hemos detectado que tienes una cuenta de tipo Cliente.",
-  "@wrongAppUser":{
-    "description": "Already user Text "
-  },
   "wrongAppUserBody": "Inicia sesión en Mamba",
-  "@wrongAppUserBody":{
-    "description": "Already user Text "
-  },
   "createAccount": "Crea tu cuenta",
-  "@createAccount":{
-    "createAccount": "Cambiar Text"
-  },
-  "gender": "Sexo",
-  "@gender":{
-    "description": "Otros Text "
-  },
-  "male": "Hombre",
-  "@male":{
-    "description": "Hombre Text "
-  },
-  "female": "Mujer",
-  "@female":{
-    "description": "Mujer Text "
-  },
-  "transgender": "Otros",
-  "@transgender":{
-    "description": "Otros Text "
-  },
-  "optional": "Opcional",
-  "@optional":{
-    "description": "Nombre"
-  },
-  "chars": "Caracteres",
-  "@chars":{
-    "description": "Nombre"
-  },
-  "firstName": "Nombre",
-  "@firstName":{
-    "description": "Nombre"
-  },
-  "lastName": "Apellidos",
-  "@lastName":{
-    "description": "Nombre"
-  },
-  "lastNameError": "Escribe tus apellidos",
-  "@lastNameError":{
-    "description": "Nombre"
-  },
-  "lastNameError3rd": "Escribe sus apellidos por favor",
-  "@lastNameError3rd":{
-    "description": "Nombre"
-  },
-  "nickname": "Nombre de usuario",
-  "@nickname":{
-    "description": "Nombre"
-  },
-  "nicknameError": "Introduce tu nombre de usuario por favor",
-  "@nicknameError":{
-    "description": "LogIn Text "
-  },
-  "nicknameAvailable": "Disponible",
-  "@nicknameAvailable":{
-    "description": "LogIn Text "
-  },
-  "nicknameOcuppied": "Cogido",
-  "@nicknameOcuppied":{
-    "description": "LogIn Text "
-  },
-  "nameCompleto": "Nombre y apellidos",
-  "@nameCompleto":{
-    "description": "Nombre Completo Text "
-  },
-  "nameCompletoError": "Escribe tu nombre",
-  "@nameCompletoError":{
-    "description": "LogIn Text "
-  },
-  "nameCompletoError3rd": "Escribe su nombre por favor",
-  "@nameCompletoError3rd":{
-    "description": "LogIn Text "
-  },
-  "nameBrand": "Nombre de tu marca",
-  "@nameBrand":{
-    "description": "LogIn Text "
-  },
-  "nameBrandError": "Escribe el nombre de tu marca",
-  "@nameBrandError":{
-    "description": "LogIn Text "
-  },
-  "register": "Regístrate",
-  "@register":{
-    "description": "Regístrate Text "
-  },
-  "sameEmail": "Ya existe un usuario con este email",
-  "@sameEmail":{
-    "description": "Regístrate Error Text "
-  },
-  "registerError": "Ha ocurrido un error. Vuelva a probar",
-  "@registerError":{
-    "description": "Regístrate Error Text "
-  },
-  "registerGenderError": "Por favor selecciona tu género",
-  "@registerGenderError":{
-    "description": "Regístrate Gender Error Text "
-  },
-  "registerTypeError": "Por favor selecciona tu tipo de usuario",
-  "@registerTypeError":{
-    "description": "Regístrate Gender Error Text "
-  },
-  "wellcome": "Bienvenido/a",
-  "@wellcome": {
-    "description": "Wellcome message"
-  },
-  "thankyouDownload": "¡Bienvenido/a a Mamba!",
-  "@thankyouDownload": {
-    "description": "Wellcome message"
-  },
-  "wellcomeMessage": "La primera interfaz que conecta a los apasionados del deporte con las marcas de entrenamiento fitness",
-  "@wellcomeMessage": {
-    "description": "Wellcome message"
-  },
-  "alreadyCreatedClient": "¿Formas parte de una marca de entreno personal?",
-  "@alreadyCreatedClient":{
-    "description": "Cliente forma parte de una marca Text"
-  },
-  "perfectClient": "!Perfecto!",
-  "@perfectClient":{
-    "description": "Cliente forma parte de una marca SÍ Text"
-  },
-  "codigo": "Introduzca su código",
-  "@codigo":{
-    "description": "Cliente forma parte de una marca SÍ Text"
-  },
-  "noCodigo": "No tengo ningún código",
-  "@noCodigo":{
-    "description": "noCodigo Text"
-  },
-  "letsGo": "Vamos!",
-  "@letsGo":{
-    "description": "Lets Go Text"
-  },
-  "alreadyCreatedFirm": "¿Tienes un código de invitación a una marca?",
-  "@alreadyCreatedTrainerFirm":{
-    "description": "Trainer forma parte de una marca ya creada Text"
-  },
-  "info": "Información",
-  "@info":{
-    "description": "Información Text"
-  },
-  "personlize": "Personalización",
-  "@personlize":{
-    "description": "Información Text"
-  },
-  "personlized": "Personalizado",
-  "@personlized":{
-    "description": "Información Text"
-  },
-  "content": "Contenido",
-  "@content":{
-    "description": "Información Text"
-  },
-  "settings": "Configuración",
-  "@settings":{
-    "description": "Ajustes Text"
-  },
-  "sessions": "Sesiones",
-  "@sessions":{
-    "description": "Sesiones Text"
-  },
-  "allSessionsDone": "Caduca al finalizar todas las sesiones",
-  "@allSessionsDone":{
-    "description": "Sesiones Text"
-  },
-  "sessionsDone": "Sesiones realizadas",
-  "@sessionsDone":{
-    "description": "Sesiones Text"
-  },
-  "sessionsToDo": "Sesiones previstas",
-  "@sessionsToDo":{
-    "description": "Sesiones Text"
-  },
-  "stats": "Estadísticas",
-  "@stats":{
-    "description": "Análisis Text"
-  },
-  "statsBrandText": "Gestiona toda tu marca desde un mismo lugar",
-  "@statsBrandText":{
-    "description": "Análisis Text"
-  },
-  "feedback": "Feedback",
-  "@feedback":{
-    "description": "Feedback Text"
-  },
-  "management": "Gestión",
-  "@management":{
-    "description": "management Text"
-  },
-  "noFeedback": "No hay nuevas preguntas a contestar.\n\n¡Gracias por querer ayudarnos!",
-  "@noFeedback":{
-    "description": "Feedback Text"
-  },
-  "reporting": "Reporta un error",
-  "@reporting":{
-    "description": "Errores Text"
-  },
-  "feedbackSent": "¡Gracias por darnos tu opinión!\nNecesitamos a más gente como tú",
-  "@feedbackSent":{
-    "description": "Feedback Sent Text"
-  },
-  "feedbackNotSent": "Algo ha ido mal\nNo se han enviado las respuestas",
-  "@feedbackNotSent":{
-    "description": "Feedback Not Sent Text"
-  },
-  "feedbackAnswered": "Actualmente no hay ningún cuestionario que puedas responder",
-  "@feedbackAnswered":{
-    "description": "Feedback Answered Text"
-  },
-  "feedbackNotAnswered": "Ayúdanos a mejorar respondiendo el Feedbak de esta semana\n¿A qué esperas?",
-  "@feedbackNotAnswered":{
-    "description": "Feedback Not Answered Text"
-  },
-  "help": "Ayuda",
-  "@help":{
-    "description": "Feedback Not Answered Text"
-  },
-  "responderFeedback": "!Vamos!",
-  "@responderFeedback":{
-    "description": "Feedback Lets go Text"
-  },
-  "finishedFeedback": "Has terminado",
-  "@finishedFeedback":{
-    "description": "Feedback Finsihed Text"
-  },
-  "finishedFeedbackSubtitle": "!Gracias por tu tiempo!",
-  "@finishedFeedbackSubtitle":{
-    "description": "Feedback Finsihed subtitle Text"
-  },
-  "sendFeedback": "Enviar",
-  "@sendFeedback":{
-    "description": "Feedback Text Enviar"
-  },
-  "eventFeedbackText": "¿Qué te ha parecido la sesión?",
-  "@eventFeedbackText": {
-    "description": "Member Since message"
-  },
-  "eventFeedbackIntesityText": "\nIndica tu nivel de esfuerzo a lo largo de esta sesión",
-  "@eventFeedbackIntesityText": {
-    "description": "Member Since message"
-  },
-  "memberSince": "Creada el {dateJoined}",
-  "@memberSince": {
-    "description": "Member Since message",
-    "placeholders": {
-      "dateJoined": {
-        "type": "String"
-      }
-    }
-  },
-  "clientOf": "Cliente de",
-  "@clientOf": {
-    "description": "Cliente de message"
-  },
-  "trainerOf": "Entrenador en",
-  "@trainerOf": {
-    "description": "Entrena en message"
-  },
-  "closeSession": "Cerrar sesión",
-  "@closeSession":{
-    "description": "Cerrar sesión Text"
-  },
-  "closeSessionConfirmation": "¿Estás seguro de que quieres cerrar tu sesión actual?",
-  "@closeSessionConfirmation":{
-    "description": "Cerrar sesión Text"
-  },
-  "deleteAccount": "Eliminar cuenta",
-  "@deleteAccount":{
-    "description": "Cerrar sesión Text"
-  },
-  "dateOfBirth": "Fecha de nacimiento",
-  "@dateOfBirth":{
-    "description": "Fecha de nacimiento Text"
-  },
-  "noDateOfBirth": "No introducida",
-  "@noDateOfBirth":{
-    "description": "No Fecha de Nacimiento Text"
-  },
-  "selectDateOfBirth": "Selecciona tu fecha de nacimiento",
-  "@selectDateOfBirth":{
-    "description": "Fecha de Nacimiento Text"
-  },
-  "typeProfile": "Tipo de perfil",
-  "@typeProfile":{
-    "description": "typeProfile Text"
-  },
-  "typeProfilePrivate": "Privado",
-  "@typeProfilePrivate":{
-    "description": "typeProfile Text"
-  },
-  "typeProfilePrivateDescription": "Tu perfil solo podrá ser visto por los entrenadores de tu marca en caso de formar parte de una.",
-  "@typeProfilePrivateDescription":{
-    "description": "Entrenador Text"
-  },
-  "typeProfilePublic": "Público",
-  "@typeProfilePublic":{
-    "description": "typeProfile Text"
-  },
-  "typeProfilePublicDescription": "Tu perfil podrá ser visto por todos los usuarios de MAMBA. Podrán ver tu información personal así como los eventos a los que has asistido.",
-  "@typeProfilePublicDescription":{
-    "description": "Entrenador Text"
-  },
-  "typeTheme": "Personalizar",
-  "@typeTheme":{
-    "description": "typeProfile Text"
-  },
-  "typeThemeDark": "Modo Noche",
-  "@typeThemeDark":{
-    "description": "typeProfile Text"
-  },
-  "typeThemeDarkDescription": "Siempre usarás el Modo Noche.",
-  "@typeThemeDarkDescription":{
-    "description": "Entrenador Text"
-  },
-  "typeThemeLight": "Modo Día",
-  "@typeThemeLight":{
-    "description": "typeProfile Text"
-  },
-  "typeThemeLightDescription": "Siempre usarás el Modo Día.",
-  "@typeThemeLightDescription":{
-    "description": "Entrenador Text"
-  },
-  "typeThemeSystem": "Sistema",
-  "@typeThemeSystem":{
-    "description": "typeProfile Text"
-  },
-  "typeThemeSystemDescription": "MAMBA cambiará el Modo acorde con tu dispositivo.",
-  "@typeThemeSystemDescription":{
-    "description": "Entrenador Text"
-  },
-  "title": "Título",
-  "@title":{
-    "description": "Título Text"
-  },
-  "titleHint": "Introduce un título",
-  "@titleHint":{
-    "description": "Título Hint Text"
-  },
-  "titleError": "Introduce un título por favor",
-  "@titleError":{
-    "description": "Título Error Text"
-  },
-  "description": "Descripción",
-  "@description":{
-    "description": "Descripción Text"
-  },
-  "descriptionHint": "Añade una descripción",
-  "@descriptionHint":{
-    "description": "Descripción Text"
-  },
-  "noDescription": "No se ha añadido ninguna descripción",
-  "@noDescription":{
-    "description": "Descripción Text"
-  },
-  "descriptionError": "Añade una descripción por favor",
-  "@descriptionError":{
-    "description": "Descripción Text"
-  },
-  "reproducteSteps": "Pasos para reproducir el error",
-  "@reproducteSteps":{
-    "description": "reproducteSteps Text"
-  },
-  "reproducteStepsHint": "¿Sabes cómo podemos reproducir este error?",
-  "@reproducteStepsHint":{
-    "description": "reproducteStepsHint Text"
-  },
-  "errorSent": "¡Gracias por reportar este error!\nNecesitamos a más gente como tú",
-  "@errorSent":{
-    "description": "errorSent Text"
-  },
-  "choseOption": "Escoge una opción",
-  "@choseOption":{
-    "description": "choseOption Text"
-  },
-  "gallery": "Galería",
-  "@gallery":{
-    "description": "Galería Text"
-  },
-  "camera": "Cámara",
-  "@camera":{
-    "description": "Cámara Text"
-  },
-  "change": "Cambiar",
-  "@change":{
-    "description": "Cambiar Text"
-  },
-  "welcomeMes": "¡Bienvenido a Mamba {name}!",
-  "@welcomeMes": {
-    "description": "welcomeMes Text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "roles": "Roles",
-  "@roles":{
-    "description": "createBrand Text"
-  },
-  "rolesDescription": "Administra el staff de tu marca",
-  "@rolesDescription":{
-    "description": "createBrand Text"
-  },
-  "rolesInfoDescription": "Visualiza los permisos de cada tipo de rol",
-  "@rolesInfoDescription":{
-    "description": "createBrand Text"
-  },
-  "owner": "Propietario",
-  "@owner":{
-    "description": "createBrand Text"
-  },
-  "administrador": "Administrador",
-  "@administrador":{
-    "description": "createBrand Text"
-  },
-  "creator": "Creador",
-  "@creator":{
-    "description": "createBrand Text"
-  },
-  "notFoundUser": "Usuario no encontrado",
-  "@notFoundUser":{
-    "description": "createBrand Text"
-  },
-  "deletedUser": "Usuario eliminado",
-  "@deletedUser":{
-    "description": "createBrand Text"
-  },
-  "deletedBrand": "Marca eliminada",
-  "@deletedBrand":{
-    "description": "createBrand Text"
-  },
-  "deletedEvent": "Evento eliminado",
-  "@deletedEvent":{
-    "description": "createBrand Text"
-  },
-  "joinBrand": "Únete a una marca",
-  "@joinBrand":{
-    "description": "createBrand Text"
-  },
-  "joinBrandTitle": "Puedes unirte a través de un link o escaneado el código QR de la marca",
-  "@joinBrandTitle":{
-    "description": "createBrand Text"
-  },
-  "createBrand": "Crea tu marca",
-  "@createBrand":{
-    "description": "createBrand Text"
-  },
-  "createBrandTitle": "Aquí puedes crear tu propia marca en cuatro simples pasos...",
-  "@createBrandTitle":{
-    "description": "createBrand Text"
-  },
-  "createBrandPortada": "Empieza creando la portada de tu marca. Tu escaparate a todos los otros usuarios",
-  "@createBrandPortada":{
-    "description": "createBrand Text"
-  },
-  "createBrandInfo": "Añade la información más importante. Introduce una descripción general y define tus especialidades.",
-  "@createBrandInfo":{
-    "description": "createBrand Text"
-  },
-  "createBrandLocation": "Sitúa tu marca en el mapa. Define tu ubicación principal para que tus clientes sepan dónde estás y como llegar hasta ti.",
-  "@createBrandLocation":{
-    "description": "createBrand Text"
-  },
-  "createBrandTime": "Define tu horario laboral",
-  "@createBrandTime":{
-    "description": "createBrand Text"
-  },
-  "createBrandCover": "Portada",
-  "@createBrandCover":{
-    "description": "createBrand Text"
-  },
-  "createBrandCoverDescription": "Crea la portada de tu marca. Escoge tu logo y tu nombre.",
-  "@createBrandCoverDescription":{
-    "description": "createBrand Text"
-  },
-  "createBrandDesc": "Descripción",
-  "@createBrandDesc":{
-    "description": "createBrand Text"
-  },
-  "createBrandDescDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. Transmite tus valores fundamentales y beneficios de trabajar de tu mano",
-  "@createBrandDescDescription":{
-    "description": "createBrand Text"
-  },
-  "createBrandBaseLocation": "Ubicación",
-  "@createBrandBaseLocation":{
-    "description": "createBrand Text"
-  },
-  "createBrandLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor",
-  "@createBrandLocationDescription":{
-    "description": "createBrand Text"
-  },
-  "createBrandWorkshift": "Horario",
-  "@createBrandWorkshift":{
-    "description": "createBrand Text"
-  },
-  "createBrandWorkshiftDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando estás disponible. Solo podrán reservar plaza en tus eventos dentro de este horario",
-  "@createBrandWorkshiftDescription":{
-    "description": "createBrand Text"
-  },
-  "createBrandBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añádelo para que conste en tu calendario",
-  "@createBrandBreakDescription":{
-    "description": "createBrand Text"
-  },
-  "createBrandAddDescription": "Haz clic en AÑADIR para guardar tu tiempo de descanso",
-  "@createBrandAddDescription":{
-    "description": "createBrand Text"
-  },
-  "addCode": "Añadir Código",
-  "@addCode":{
-    "description": "createBrand Text"
-  },
-  "trainersZone": "Otros entrenadores en tu zona:",
-  "@trainersZone":{
-    "description": "trainersZone Text"
-  },
-  "loading": "Cargando...",
-  "@loading":{
-    "description": "loading text"
-  },
-  "basicInfo": "Información básica",
-  "@basicInfo":{
-    "description": "basicInfo text"
-  },
-  "canEdit": "Toda la información podrá ser editada más adelante.",
-  "@canEdit":{
-    "description": "basicInfo text"
-  },
-  "baseLocation": "Ubicación base",
-  "@baseLocation":{
-    "description": "baseLocation text"
-  },
-  "location": "Ubicación",
-  "@location":{
-    "description": "baseLocation text"
-  },
-  "locations": "Ubicaciones",
-  "@locations":{
-    "description": "baseLocation text"
-  },
-  "locationsBrandText": "Descubre todas nuestras ubicaciones",
-  "@locationsBrandText":{
-    "description": "baseLocation text"
-  },
-  "ranking": "Ranking",
-  "@ranking":{
-    "description": "baseLocation text"
-  },
-  "rankingBrandText": "¿En qué posición estás?",
-  "@rankingBrandText":{
-    "description": "baseLocation text"
-  },
-  "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.\n\nEn caso de no tener una dirección fija, introduce una ubicación utilizada frecuentemente.",
-  "@baseLocationDescription":{
-    "description": "baseLocation text"
-  },
-  "streetName": "Calle: ",
-  "@streetName":{
-    "description": "streetName text"
-  },
-  "streetNumber": "Número: ",
-  "@streetNumber":{
-    "description": "streetNumber text"
-  },
-  "city": "Ciudad: ",
-  "@city":{
-    "description": "city text"
-  },
-  "zipCode": "Código Postal: ",
-  "@zipCode":{
-    "description": "zipCode text"
-  },
-  "latitude": "Latitud",
-  "@latitude":{
-    "description": "zipCode text"
-  },
-  "longitud": "Longitud",
-  "@longitud":{
-    "description": "zipCode text"
-  },
-  "clear": "Limpiar",
-  "@clear":{
-    "description": "zipCode text"
-  },
-  "confirm": "Confirmar",
-  "@confirm":{
-    "description": "zipCode text"
-  },
-  "back": "Atrás",
-  "@back":{
-    "description": "zipCode text"
-  },
-  "enterAddress": "Introduce tu dirección",
-  "@enterAddress":{
-    "description": "zipCode text"
-  },
-  "enterAddressError": "Introduce tu dirección por favor",
-  "@enterAddressError":{
-    "description": "zipCode text"
-  },
-  "brandDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. En un par de líneas, transmite tus valores fundamentales y beneficios de trabajar de tu mano.",
-  "@brandDescription":{
-    "description": "zipCode text"
-  },
-  "workingHours": "Horario de trabajo",
-  "@workingHours":{
-    "description": "workingHours text"
-  },
-  "workingHoursError": "Introduce tu horario laboral por favor",
-  "@workingHoursError":{
-    "description": "workingHours text"
-  },
-  "workingHoursError1": "La hora de inicio tiene que ser previa a la hora de finalización",
-  "@workingHoursError1":{
-    "description": "workingHours text"
-  },
-  "workingHoursError2": "Tu descanso debe estar dentro de tu horario laboral",
-  "@workingHoursError2":{
-    "description": "workingHours text"
-  },
-  "workingHoursDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando puedes ser contactado y cuando estás fuera de tu horario laboral.",
-  "@workingHoursDescription":{
-    "description": "workingHours text"
-  },
-  "lunchBreak": "Descanso",
-  "@lunchBreak":{
-    "description": "Descansos text"
-  },
-  "lunchBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añádelo para que conste en tu calendario. Puedes añadir un máximo de tres descansos durante el día.",
-  "@lunchBreakDescription":{
-    "description": "workingHours text"
-  },
-  "lunchBreakAdded": "¡Descanso añadido!",
-  "@lunchBreakAdded":{
-    "description": "lunchBreakAdded text"
-  },
-  "state": "Estado",
-  "@state":{
-    "description": "disponibilidad text"
-  },
-  "disponibilidad": "Disponiblidad",
-  "@disponibilidad":{
-    "description": "disponibilidad text"
-  },
-  "calendar": "Calendario",
-  "@calendar":{
-    "description": "disponibilidad text"
-  },
-  "myCalendar": "Mi Calendario",
-  "@myCalendar":{
-    "description": "disponibilidad text"
-  },
-  "calendarBrandText": "Mira todas las sesiones de {brand}",
-  "@calendarBrandText": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "calendarWeekBrandText": "Esta semana en {brand}",
-  "@calendarWeekBrandText": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "add": "Añadir",
-  "@add":{
-    "description": "Siguiente text"
-  },
-  "select": "Seleccionar",
-  "@select":{
-    "description": "Siguiente text"
-  },
-  "selectAll": "Seleccionar todos",
-  "@selectAll":{
-    "description": "Siguiente text"
-  },
-  "next": "Siguiente",
-  "@next":{
-    "description": "Siguiente text"
-  },
-  "skip": "Omitir",
-  "@skip":{
-    "description": "Siguiente text"
-  },
-  "start": "Empezar",
-  "@start":{
-    "description": "Siguiente text"
-  },
-  "finish": "Finalizar",
-  "@finish":{
-    "description": "Siguiente text"
-  },
-  "brandFound": "¡Marca encontrada!",
-  "@brandFound":{
-    "description": "disponibilidad text"
-  },
-  "brandNotFound": "No encontramos esta marca. Por favor asegúrate que has introducido el código correctamente",
-  "@brandNotFound":{
-    "description": "disponibilidad text"
-  },
-  "notInBrand": "No formas parte de ninguna marca",
-  "@notInBrand":{
-    "description": "notInBrand text"
-  },
-  "wantDeleteUser": "¿Quieres eliminar tu usuario?",
-  "@wantDeleteUser":{
-    "description": "notInBrand text"
-  },
-  "writeDeleteUser": "Escribe tu contraseña para confirmar esta acción:",
-  "@writeDeleteUser":{
-    "description": "notInBrand text"
-  },
-  "confirmDeleteUser": "para confirmar esta acción:",
-  "@confirmDeleteUser":{
-    "description": "notInBrand text"
-  },
-  "deleteFromBrand": "Eliminar de {brand}",
-  "@deleteFromBrand":{
-    "description": "notInBrand text",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "deleteFromBrandConfirmation": "¿Estás seguro de que quieres eliminar a este miembro de tu marca?",
-  "@deleteFromBrandConfirmation":{
-    "description": "notInBrand text"
-  },
-  "deleteFromEventConfirmation": "¿Estás seguro de que quieres eliminar a este miembro del evento {name}?\n\nEn caso afirmativo, se actualizará el evento para indicar que nunca asistió a él.",
-  "@deleteFromEventConfirmation":{
-    "description": "notInBrand text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "discard": "Descartar",
-  "@discard":{
-    "description": "notInBrand text"
-  },
-  "delete": "Eliminar",
-  "@delete":{
-    "description": "notInBrand text"
-  },
-  "edit": "Editar",
-  "@edit":{
-    "description": "notInBrand text"
-  },
-  "duplicate": "Duplicar",
-  "@duplicate":{
-    "description": "notInBrand text"
-  },
-  "save": "Guardar",
-  "@save":{
-    "description": "notInBrand text"
-  },
-  "search": "Buscar",
-  "@search":{
-    "description": "notInBrand text"
-  },
-  "cancel": "Cancelar",
-  "@cancel":{
-    "description": "Cancelar text"
-  },
-  "close": "Cerrar",
-  "@close":{
-    "description": "Cancelar text"
-  },
-  "update": "Actualizar",
-  "@update":{
-    "description": "Cancelar text"
-  },
-  "entendido": "Entendido",
-  "@entendido":{
-    "description": "Cancelar text"
-  },
-  "book": "Reservar",
-  "@book":{
-    "description": "Cancelar text"
-  },
-  "join": "Unirse",
-  "@join":{
-    "description": "Cancelar text"
-  },
-  "leave": "Abandonar",
-  "@leave":{
-    "description": "Cancelar text"
-  },
-  "contact": "Contactar",
-  "@contact":{
-    "description": "Cancelar text"
-  },
-  "resend": "Reenviar",
-  "@resend":{
-    "description": "Cancelar text"
-  },
-  "send": "Enviar",
-  "@send":{
-    "description": "Cancelar text"
-  },
-  "sent": "Enviada",
-  "@sent":{
-    "description": "Cancelar text"
-  },
-  "anular": "Anular",
-  "@anular":{
-    "description": "Cancelar text"
-  },
-  "accept": "Aceptar",
-  "@accept":{
-    "description": "Cancelar text"
-  },
-  "reject": "Rechazar",
-  "@reject":{
-    "description": "Cancelar text"
-  },
-  "invite": "Invitar",
-  "@invite":{
-    "description": "Cancelar text"
-  },
-  "addMembers": "Añadir Miembros",
-  "@addMembers":{
-    "description": "Añadir Miembros text"
-  },
-  "inviteCode": "Código de invitación",
-  "@inviteCode":{
-    "description": "inviteCode text"
-  },
-  "inviteCodeError": "Copia el código de invitación por favor",
-  "@inviteCodeError":{
-    "description": "inviteCode text"
-  },
-  "inviteCodeOptional": "Finaliza el proceso de bienvenida para ver todas las marcas dentro de MAMBA.",
-  "@inviteCodeOptional":{
-    "description": "inviteCode text"
-  },
-  "copyCodeMessage": "Comparte tu enlace de invitación",
-  "@copyCodeMessage":{
-    "description": "inviteCode text"
-  },
-  "copyCorrectCode": "Código de invitación copiado correctamente",
-  "@copyCorrectCode":{
-    "description": "inviteCode text"
-  },
-  "copyCorrectLocation": "Ubicación copiada correctamente",
-  "@copyCorrectLocation":{
-    "description": "inviteCode text"
-  },
-  "member": "Miembro",
-  "@members":{
-    "description": "Añadir Miembros text"
-  },
-  "members": "Miembros",
-  "@members":{
-    "description": "Añadir Miembros text"
-  },
-  "membersTotal": "Miembros en total",
-  "@membersTotal":{
-    "description": "Añadir Miembros text"
-  },
-  "membersBrandText": "Entrenadores y clientes todos aquí",
-  "@membersBrandText": {
-    "description": "Wellcome message"
-  },
-  "mondayLetter": "L",
-  "@mondayLetter":{
-    "description": "mondayLetter text"
-  },
-  "tuesdarLetter": "M",
-  "@tuesdarLetter":{
-    "description": "tuesdarLetter text"
-  },
-  "wednesdayLetter": "M",
-  "@wednesdayLetter":{
-    "description": "tuesdarLetter text"
-  },
-  "thursdayLetter": "J",
-  "@thursdayLetter":{
-    "description": "tuesdarLetter text"
-  },
-  "fridayLetter": "V",
-  "@fridayLetter":{
-    "description": "tuesdarLetter text"
-  },
-  "saturadayLetter": "S",
-  "@saturadayLetter":{
-    "description": "tuesdarLetter text"
-  },
-  "sundayLetter": "D",
-  "@sundayLetter":{
-    "description": "tuesdarLetter text"
-  },
-  "errorDate": "Has introducido una fecha y/o hora inválida",
-  "@errorDate":{
-    "description": "tuesdarLetter text"
-  },
-  "recurrentEvent": "Evento recurrente",
-  "@recurrentEvent":{
-    "description": "tuesdarLetter text"
-  },
-  "selectDayTime": "Día y hora",
-  "@selectDayTime":{
-    "description": "tuesdarLetter text"
-  },
-  "selectDay": "Día",
-  "@selectDay":{
-    "description": "tuesdarLetter text"
-  },
-  "selectDuration": "Duración",
-  "@selectDuration":{
-    "description": "tuesdarLetter text"
-  },
-  "selectMembers": "Número de asistentes",
-  "@selectMembers":{
-    "description": "tuesdarLetter text"
-  },
-  "selectTime": "Hora",
-  "@selectTime":{
-    "description": "tuesdarLetter text"
-  },
-  "days": "Días",
-  "@days":{
-    "description": "Días text"
-  },
-  "during": "Durante",
-  "@during":{
-    "description": "Días text"
-  },
-  "thisWeek": "Esta semana",
-  "@thisWeek":{
-    "description": "Días text"
-  },
-  "nextTwoWeek": "Dos semanas",
-  "@nextTwoWeek":{
-    "description": "Días text"
-  },
-  "wholeMonth": "Un mes",
-  "@wholeMonth":{
-    "description": "Días text"
-  },
-  "wholeTwoMonth": "Ocho semanas",
-  "@wholeTwoMonth":{
-    "description": "wholeTwoMonth text"
-  },
-  "wholeThreeMonth": "Tres meses",
-  "@wholeThreeMonth":{
-    "description": "wholeThreeMonth text"
-  },
-  "wholeSixMonth": "Seis meses",
-  "@wholeSixMonth":{
-    "description": "wholeSixMonth text"
-  },
-  "wholeNineMonth": "Nueve meses",
-  "@wholeNineMonth":{
-    "description": "wholeNineMonth text"
-  },
-  "wholeTwelveMonth": "Doce meses",
-  "@wholeTwelveMonth":{
-    "description": "wholeTwelveMonth text"
-  },
-  "until": "Hasta el {date}",
-  "@until": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "addEvent": "Añadir evento",
-  "@addEvent":{
-    "description": "addEvent text"
-  },
-  "createEvent": "Crear evento",
-  "@createEvent":{
-    "description": "addEvent text"
-  },
-  "editEvent": "Editar evento",
-  "@editEvent":{
-    "description": "addEvent text"
-  },
-  "adding": "Añadiendo",
-  "@adding":{
-    "description": "addEvent text"
-  },
-  "creating": "Creando",
-  "@creating":{
-    "description": "addEvent text"
-  },
-  "checking": "Comprobando",
-  "@checking":{
-    "description": "addEvent text"
-  },
-  "editing": "Editando",
-  "@editing":{
-    "description": "addEvent text"
-  },
-  "updating": "Actualizando",
-  "@updating":{
-    "description": "addEvent text"
-  },
-  "deleting": "Eliminando",
-  "@deletingEvents":{
-    "description": "addEvent text"
-  },
-  "updateEvent": "Guardar evento",
-  "@updateEvent":{
-    "description": "addEvent text"
-  },
-  "deleteEventConfirmation": "¿Seguro que quieres eliminar este evento?",
-  "@deleteEventConfirmation":{
-    "description": "addEvent text"
-  },
-  "completeEventConfirmation": "¿Seguro que quieres marcar este evento como realizado? Esta acción no se podrá deshacer.",
-  "@completeEventConfirmation":{
-    "description": "addEvent text"
-  },
-  "maxNumberClients": "Número máximo de asistentes",
-  "@maxNumberClients":{
-    "description": "addEvent text"
-  },
-  "maxNumberClientsError": "Introduce el número máximo de asistentes que pueden asistir en cualquiera de tus sesiones.",
-  "@maxNumberClientsError":{
-    "description": "addEvent text"
-  },
-  "numberClientJoining": "Asistentes",
-  "@numberClientJoining":{
-    "description": "addEvent text"
-  },
-  "numberClients": "Número de clientes:",
-  "@numberClients":{
-    "description": "addEvent text"
-  },
-  "noClientJoining": "Sin asistentes",
-  "@noClientJoining":{
-    "description": "addEvent text"
-  },
-  "designatedTrainers": "Selecciona los entrenadores",
-  "@designatedTrainers":{
-    "description": "addEvent text"
-  },
-  "addClientsManually": "Registrar nuevo cliente manualmente",
-  "@addClientsManually":{
-    "description": "addEvent text"
-  },
-  "addDesignatedClients": "Invitar clientes",
-  "@addDesignatedClients":{
-    "description": "addEvent text"
-  },
-  "noTrainerSelectedError": "No hay ningún entrenador asignado",
-  "@noTrainerSelectedError":{
-    "description": "noTrainerSelectedError text"
-  },
-  "noClientSelectedError": "No hay ningún cliente invitado",
-  "@noClientSelectedError":{
-    "description": "noTrainerSelectedError text"
-  },
-  "clientsSelectedError": "Hay más clientes que plazas disponibles",
-  "@clientsSelectedError":{
-    "description": "noTrainerSelectedError text"
-  },
-  "slot": "plaza",
-  "@slot":{
-    "description": "noTrainerSelectedError text"
-  },
-  "slots": "plazas",
-  "@slots":{
-    "description": "noTrainerSelectedError text"
-  },
-  "totalNumberEvents": "Sesiones realizadas: {number}",
-  "@totalNumberEvents": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "number": {
-        "type": "String"
-      }
-    }
-  },
-  "noTrainingsDone": "No ha finalizado ningún evento",
-  "@noTrainingsDone": {
-    "description": "Wellcome message"
-  },
-  "todaysBrandEvents": "Previsto para hoy",
-  "@todaysBrandEvents": {
-    "description": "Wellcome message"
-  },
-  "toDo": "Por realizar",
-  "@toDo": {
-    "description": "Wellcome message"
-  },
-  "doing": "Realizando",
-  "@doing": {
-    "description": "Wellcome message"
-  },
-  "finished": "Realizado",
-  "@finished": {
-    "description": "Wellcome message"
-  }, 
-  "todayString": "Hoy",
-  "@todayString": {
-    "description": "Wellcome message"
-  },
-  "dayString": "Día",
-  "@dayString": {
-    "description": "Wellcome message"
-  },
-  "weekString": "Semanal",
-  "@weekString": {
-    "description": "Wellcome message"
-  },
-  "monthString": "Mensual",
-  "@monthString": {
-    "description": "Wellcome message"
-  },
-  "today": "Hoy {date}",
-  "@today": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "full": "Lleno",
-  "@full": {
-    "description": "Wellcome message"
-  },
-  "available": "Disponible",
-  "@available": {
-    "description": "Wellcome message"
-  },
-  "noEvents": "Sin eventos",
-  "@noEvents": {
-    "description": "Wellcome message"
-  },
-  "noEventsAccesibleBono": "No encontramos eventos que sean accesibles con esta tarifa",
-  "@noEventsAccesibleBono": {
-    "description": "Wellcome message"
-  },
-  "noMembersFound": "No hemos encontrado ningún miembro",
-  "@noMembersFound": {
-    "description": "Wellcome message"
-  },
-  "noBrandsFound": "No hemos encontrado marcas cerca de ti",
-  "@noBrandsFound": {
-    "description": "Wellcome message"
-  },
-  "myRequests": "Solicitudes",
-  "@myRequests": {
-    "description": "Wellcome message"
-  },
-  "myRequestsDesc": "Solicitudes de afiliación pendientes de respuesta",
-  "@myRequestsDesc": {
-    "description": "Wellcome message"
-  },
-  "request": "Solicitud",
-  "@request": {
-    "description": "Wellcome message"
-  },
-  "noRequestsFound": "No hemos encontrado ninguna solicitud",
-  "@noRequestsFound": {
-    "description": "Wellcome message"
-  },
-  "noImagesFound": "No hemos encontrado ninguna imagen",
-  "@noImagesFound": {
-    "description": "Wellcome message"
-  },
-  "requestFromUser": " quiere unirse como {type}",
-  "@requestFromUser": {
-    "description": "requestFromUser message",
-    "placeholders": {
-      "type": {
-        "type": "String"
-      }
-    }
-  },
-  "requestSent": "Enviada el {dateJoined}",
-  "@requestSent": {
-    "description": "Member Since message",
-    "placeholders": {
-      "dateJoined": {
-        "type": "String"
-      }
-    }
-  },
-  "purchasedAt": "Comprado el {dateJoined}",
-  "@purchasedAt": {
-    "description": "Member Since message",
-    "placeholders": {
-      "dateJoined": {
-        "type": "String"
-      }
-    }
-  },
-  "myLocations": "Mis ubicaciones",
-  "@myLocations": {
-    "description": "Wellcome message"
-  },
-  "theirLocations": "Sus ubicaciones",
-  "@theirLocations": {
-    "description": "Wellcome message"
-  },
-  "brandLocations": "Ubicaciones {brand}",
-  "@brandLocations": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "addLocation": "Añadir ubicación",
-  "@addLocation": {
-    "description": "Wellcome message"
-  },
-  "historial": "Historial",
-  "@historial": {
-    "description": "Wellcome message"
-  },
-  "notifications": "Notificaciones",
-  "@notifications": {
-    "description": "Wellcome message"
-  },
-  "mySessions": "Historial de sesiones",
-  "@mySessions": {
-    "description": "Wellcome message"
-  },
-  "mySchedule": "Mi agenda",
-  "@mySchedule": {
-    "description": "Wellcome message"
-  },
-  "myScheduleText": "Mira todas tus sesiones",
-  "@myScheduleText": {
-    "description": "Wellcome message"
-  },
-  "planSessions": "Planifica más sesiones",
-  "@planSessions": {
-    "description": "Wellcome message"
-  },
-  "myProgress": "Mi progreso",
-  "@myProgress": {
-    "description": "Wellcome message"
-  },
-  "myProgressText": "¿Quieres ver tu progreso?",
-  "@myProgressText": {
-    "description": "Wellcome message"
-  },
-  "events": "Eventos",
-  "@events": {
-    "description": "Wellcome message"
-  },
-  "myData": "Mis datos",
-  "@myData": {
-    "description": "Wellcome message"
-  },
-  "yourInfo": "Tus datos",
-  "@yourInfo": {
-    "description": "Wellcome message"
-  },
-  "brand": "Marca",
-  "@brand": {
-    "description": "Wellcome message"
-  },
-  "yourBrand": "Tu marca",
-  "@yourBrand": {
-    "description": "Wellcome message"
-  },
-  "yourImages": "Tus imágenes",
-  "@yourImages": {
-    "description": "Wellcome message"
-  },
-  "randomImageDescription": "Se escogerá una de tus imágenes de marca de manera aleatoria",
-  "@randomImageDescription": {
-    "description": "Wellcome message"
-  },
-  "yourImagesDescription": "Escoge tus imágenes preferidas para mostrarlas a todos los usuarios. Recomendamos orientación horizontal (16:9) y puedes añadir un máximo de 10 imágenes. \n\nSe utilizarán imágenes de librería.",
-  "@yourImagesDescription": {
-    "description": "Wellcome message"
-  },
-  "yourSesions": "Mis Sesiones",
-  "@yourSesions": {
-    "description": "Wellcome message"
-  },
-  "editYourPrivacy": "Cambia el tipo de perfil",
-  "@editYourPrivacy": {
-    "description": "Wellcome message"
-  },
-  "editYourTheme": "Cambia el modo",
-  "@editYourTheme": {
-    "description": "Wellcome message"
-  },
-  "editYourInfo": "Edita tu información personal",
-  "@editYourInfo": {
-    "description": "Wellcome message"
-  },
-  "photo": "Imagen",
-  "@photo": {
-    "description": "Wellcome message"
-  },
-  "randomPhoto": "Imagen aleatoria",
-  "@randomPhoto": {
-    "description": "Wellcome message"
-  },
-  "photos": "Imágenes",
-  "@photos": {
-    "description": "Wellcome message"
-  },
-  "photosDimensions": "Recomendamos Orientación Horizontal (16:9)",
-  "@photosDimensions": {
-    "description": "Wellcome message"
-  },
-  "profilePhoto": "Foto de perfil",
-  "@profilePhoto": {
-    "description": "Wellcome message"
-  },
-  "profilePhotoOptional": "En caso de que no quieras escoger tu foto de perfil en este momento, puedes saltarte este paso.",
-  "@profilePhotoOptional": {
-    "description": "Wellcome message"
-  },
-  "editYourPhoto": "Edita tu imagen",
-  "@editYourPhoto": {
-    "description": "Wellcome message"
-  },
-  "uploadPhoto": "Subir imagen",
-  "@uploadPhoto": {
-    "description": "Wellcome message"
-  },
-  "uploadPhotos": "Subir imágenes",
-  "@uploadPhotos": {
-    "description": "Wellcome message"
-  },
-  "editBrandInfo": "Edita la información de la marca",
-  "@editBrandInfo": {
-    "description": "Wellcome message"
-  },
-  "addBrandLogo": "Añade tu logo",
-  "@addBrandLogo": {
-    "description": "Wellcome message"
-  },
-  "editBrandLogo": "Edita el logo de la marca",
-  "@editBrandLogo": {
-    "description": "Wellcome message"
-  },
-  "addBrandPhotos": "Añade imágenes de tu marca",
-  "@addBrandPhotos": {
-    "description": "Wellcome message"
-  },
-  "addBrandPhotosMax": "Ya has añadido todas las imágenes possibles",
-  "@addBrandPhotosMax": {
-    "description": "Wellcome message"
-  },
-  "addBrandPhotosLeft": "Aún puedes añadir {left} imagen/es de un máximo de {max}",
-  "@addBrandPhotosLeft": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "left": {
-        "type": "String"
-      },
-      "max": {
-        "type": "String"
-      }
-    }
-  },
-  "addBrandPhotosMaxLeft": "Puedes añadir un máximo de {left} imágenes",
-  "@addBrandPhotosMaxLeft": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "left": {
-        "type": "String"
-      }
-    }
-  },
-  "exitBrand": "Abandonar marca",
-  "@exitBrand": {
-    "description": "Wellcome message"
-  },
-  "exitBrandDesc": "Dejarás de participar en los eventos previstos y perderás los beneficios y accesos actuales. Para reincorporarte, necesitarás una nueva aprobación de los administradores",
-  "@exitBrandDesc": {
-    "description": "Wellcome message"
-  },
-  "exitBrandConfirm": "¿Seguro que quieres abandonar esta marca?",
-  "@exitBrandConfirm": {
-    "description": "Wellcome message"
-  },
-  "deleteBrand": "Eliminar marca",
-  "@deleteBrand": {
-    "description": "Wellcome message"
-  },
-  "deleteBrandDesc": "Se eliminará completamente toda su información, incluyendo la relación con sus clientes y todos los datos relacionados. Esta acción es irreversible y hará que la marca desaparezca como si nunca hubiera existido",
-  "@deleteBrandDesc": {
-    "description": "Wellcome message"
-  },
-  "deleteBrandConfirmation": "¿Seguro que quieres eliminar tu marca?",
-  "@deleteBrandConfirmation": {
-    "description": "Wellcome message"
-  },
-  "writeDeleteBrand": "Escribe el nombre de tu marca para confirmar esta acción:",
-  "@writeDeleteBrand": {
-    "description": "Wellcome message"
-  },
-  "logo": "Logo",
-  "@logo": {
-    "description": "Wellcome message"
-  },
-  "group": "Grupal",
-  "@group": {
-    "description": "Wellcome message"
-  },
-  "groupEvent": "Evento Grupal",
-  "@groupEvent": {
-    "description": "Wellcome message"
-  },
-  "groupEventDesc": "Define las plazas disponibles",
-  "@groupEventDesc": {
-    "description": "Wellcome message"
-  },
-  "private": "Privado",
-  "@private": {
-    "description": "Wellcome message"
-  },
-  "privateEvent": "Evento Privado",
-  "@privateEvent": {
-    "description": "Wellcome message"
-  },
-  "privateEventDesc": "Accesible solo por invitación",
-  "@privateEventDesc": {
-    "description": "Wellcome message"
-  },
-  "noEventsToday": "Nada previsto para hoy ...",
-  "@noEventsToday": {
-    "description": "Wellcome message"
-  },
-  "planNewEvent": "Reservar una sesión",
-  "@planNewEvent": {
-    "description": "Wellcome message"
-  },
-  "calendarBrandTextClient": "Reserva una sesión con {brand}",
-  "@calendarBrandTextClient": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "joinEvent": "Reservar sesión",
-  "@joinEvent": {
-    "description": "Wellcome message"
-  },
-  "joinEventConfirmation": "Debes asignar una compra del cliente para reservar esta sesión\n\nLos cambios se realizarán si confirmas la creación o edición de la sesión.",
-  "@joinEventConfirmation": {
-    "description": "Wellcome message"
-  },
-  "leaveEvent": "Abandonar sesión",
-  "@leaveEvent": {
-    "description": "Wellcome message"
-  },
-  "leaveEventConfirmation": "Esta es la compra con la que el cliente reservó la sesión\n\nLos cambios se realizarán si confirmas la creación o edición de la sesión.",
-  "@leaveEventConfirmation": {
-    "description": "Wellcome message"
-  },
-  "allEvents": "sesiones totales",
-  "@allEvents": {
-    "description": "Wellcome message"
-  },
-  "monthEvents": "sesiones este mes",
-  "@monthEvents": {
-    "description": "Wellcome message"
-  },
-  "eventHistory": "Historial de eventos",
-  "@eventHistory": {
-    "description": "Wellcome message"
-  },
-  "recentEvents": "Últimas sesiones ...",
-  "@recentEvents": {
-    "description": "Wellcome message"
-  },
-  "percentageEvents": "{percentage}% de los eventos",
-  "@percentageEvents": {
-    "description": "percentageEvents message",
-    "placeholders": {
-      "percentage": {
-        "type": "String"
-      }
-    }
-  },
-  "sendRequestConfirmation": "¿Estás seguro de que quieres enviar una solicitud a esta marca?\n\nLos organizadores recibirán una notificación. Hasta que esta no sea aceptada o rechazada no podrás enviar otra solicitud a ninguna marca.",
-  "@sendRequestConfirmation": {
-    "description": "Wellcome message"
-  },
-  "cancelRequestConfirmation": "¿Quieres anular tu solicitud a esta marca? Aún no has recibido respuesta de los organizadores.\n\nEste cambio tendrá un efecto inmediato y ahora podrás enviar una solicitud a otra marca.",
-  "@cancelRequestConfirmation": {
-    "description": "Wellcome message"
-  },
-  "waitingRequestConfirmation": "Esperando respuesta a solicitud de admisión por parte de ",
-  "@waitingRequestConfirmation": {
-    "description": "Wellcome message"
-  },
-  "requestConfirmation": "¿Quieres aceptar a este usuario como nuevo miembro de tu marca?",
-  "@requestConfirmation": {
-    "description": "Wellcome message"
-  },
-  "markAsRead": "Marcar como leídas",
-  "@markAsRead": {
-    "description": "Wellcome message"
-  },
-  "wellcomeToMAMBA": "Bienvenido/a a MAMBA",
-  "@wellcomeToMAMBA": {
-    "description": "Wellcome to MAMBA"
-  },
-  "onlyImportantNotifications": "Aquí recibirás alertas de las novedades más importantes para ti",
-  "@onlyImportantNotifications": {
-    "description": "onlyImportantNotifications"
-  },
-  "userJoinsBrandUser": "Te has unido a {brand}",
-  "@userJoinsBrandUser": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "userJoinsBrandSubtitleUser": "Consulta el calendario para participar en tu primera sesión",
-  "@userJoinsBrandSubtitleUser": {
-    "description": "userJoinsBrandUser message"
-  },
-  "userJoinsBrandBrand": "{name} se ha unido a {brand}",
-  "@userJoinsBrandBrand": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "userJoinsBrandBrandSubtitle": "Ya sois un total de {number} miembros",
-  "@userJoinsBrandBrandSubtitle": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "number": {
-        "type": "String"
-      }
-    }
-  },
-  "userLeavesBrandUser": "Has abandonado a {brand}",
-  "@userLeavesBrandUser": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "userLeavesBrandUserSubtitle": "Ahora podrás formar parte de otra marca",
-  "@userLeavesBrandUserSubtitle": {
-    "description": "userJoinsBrandUser message"
-  },
-  "userLeavesBrandBrand": "{name} ha abandonado a {brand}",
-  "@userLeavesBrandBrand": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "userLeavesBrandBrandSubtitle": "Ahora sois un total de {number} miembros",
-  "@userLeavesBrandBrandSubtitle": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "number": {
-        "type": "String"
-      }
-    }
-  },
-  "userSendRequestToBrandUser": "Has enviado una solicitud para unirte a {brand}",
-  "@userSendRequestToBrandUser": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "userSendRequestToBrandUserSubtitle": "Los organizadores aún no han contestado",
-  "@userSendRequestToBrandUserSubtitle": {
-    "description": "userJoinsBrandUser message"
-  },
-  "userSendRequestToBrandBrand": "{name} ha enviado una solicitud de afiliación",
-  "@userSendRequestToBrandBrand": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "userSendRequestToBrandBrandSubtitle": "Enviada el {dia}",
-  "@userSendRequestToBrandBrandSubtitle": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "dia": {
-        "type": "String"
-      }
-    }
-  },
-  "userCancelRequestToBrandUser": "Has cancelado tu solicitud para unirte a {brand}",
-  "@userCancelRequestToBrandUser": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "userCancelRequestToBrandUserSubtitle": "Ahora puedes solicitar unirte a otra marca",
-  "@userCancelRequestToBrandUserSubtitle": {
-    "description": "userJoinsBrandUser message"
-  },
-  "userCancelRequestToBrandBrand": "{name} ha cancelado su solicitud de afiliación",
-  "@userCancelRequestToBrandBrand": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "userCancelRequestToBrandBrandSubtitle": "Recuerda que puedes compartir tu código de invitación para añadir a nuevos miembros directamente",
-  "@userCancelRequestToBrandBrandSubtitle": {
-    "description": "userJoinsBrandUser message"
-  },
-  "userCreatesBrandUser": "Has creado tu marca {brand}",
-  "@userCreatesBrandUser": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "userCreatesBrandUserSubtitle": "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
-  "@userCreatesBrandUserSubtitle": {
-    "description": "userJoinsBrandUser message"
-  },
-  "userDeletesBrandOwner": "Has eliminado tu marca {brand}",
-  "@userDeletesBrandOwner": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "userDeletesBrandUser": "El propietario de {brand} ha eliminado la marca",
-  "@userDeletesBrandUser": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "userDeletesBrandSubtitle": "Ahora puedes unirte a otra marca",
-  "@userDeletesBrandOwnerSubtitle": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "userSendsBonoRequestBrand": "{name} ha enviado una solicitud de compra",
-  "@userSendsBonoRequestBrand": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "userSendsBonoRequestSubtitleBrand": "Espera confirmación para comprar la tarifa {bono}",
-  "@userSendsBonoRequestSubtitleBrand": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "bono": {
-        "type": "String"
-      }
-    }
-  },
-  "userCancelsBonoRequestBrand": "{name} ha cancelado su solicitud de compra",
-  "@userCancelsBonoRequestBrand": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "userCancelsBonoRequestSubtitleBrand": "La tarifa {bono} le ha dejado de interesar",
-  "@userCancelsBonoRequestSubtitleBrand": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "bono": {
-        "type": "String"
-      }
-    }
-  },
-  "userBuysBonoBrand": "{name} ha comprado la tarifa {bono}",
-  "@userBuysBonoBrand": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "bono": {
-        "type": "String"
-      }
-    }
-  },
-  "userBuysBonoSubtitleBrand": "Puede realizar un total de {sesiones} sesiones",
-  "@userBuysBonoSubtitleBrand": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "sesiones": {
-        "type": "String"
-      }
-    }
-  },
-  "myLocationsBaseLocationDesc": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.",
-  "@myLocationsBaseLocationDesc": {
-    "description": "Wellcome message"
-  },
-  "myLocationsBaseLocationClientDesc": "Esta es la ubicación usada para localizar a la marca en el mapa para que los clientes puedan encontrarla a su alrededor.",
-  "@myLocationsBaseLocationClientDesc": {
-    "description": "Wellcome message"
-  },
-  "myLocationsDeleteDescription": "¿Estás seguro de que quieres borrar esta ubicación?\n\nEn caso de que esta ubicación esté siendo usada en cualquier evento, actualizaremos la ubicación de este a tu ubicación base.",
-  "@myLocationsOtherLocationsDesc": {
-    "description": "Wellcome message"
-  },
-  "myImagesDeleteDescription": "¿Estás seguro de que quieres borrar esta imagen?",
-  "@myImagesDeleteDescription": {
-    "description": "Wellcome message"
-  },
-  "myImagesFavouriteDescription": "¿Estás seguro de que quieres seleccionar esta imagen como tu imagen favorita?\n\nSe usará como portada de tu marca para todos los otros usuarios.",
-  "@myImagesFavouriteDescription": {
-    "description": "Wellcome message"
-  },
-  "myImagesFavouriteDelete": "Siempre debes tener una imagen favorita como portada de tu marca para todos los otros usuarios.",
-  "@myImagesFavouriteDelete": {
-    "description": "Wellcome message"
-  },
-  "userJoinEventUser": "Te has unido al evento {name}",
-  "@userJoinEventUser": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "userJoinEventUserSubtitle": "Este se realizará el {dia} a las {horas}",
-  "@userJoinEventUserSubtitle": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "dia": {
-        "type": "String"
-      },
-      "horas": {
-        "type": "String"
-      }
-    }
-  },
-  "userJoinEventBrand": "{user} se ha unido al evento {name}",
-  "@userJoinEventBrand": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "user": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "userJoinEventBrandSubtitle": "Hay {joined} miembros apuntados de un máximo de {total} plazas",
-  "@userJoinEventBrandSubtitle": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "joined": {
-        "type": "String"
-      },
-      "total": {
-        "type": "String"
-      }
-    }
-  },
-  "userLeavesEventUser": "Has abandonado tu plaza del evento {name}",
-  "@userLeavesEventUser": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "userLeavesEventUserSubtitle": "Haz clic para ver su calendario y encontrar un evento al que puedas asistir",
-  "@userLeavesEventUserSubtitle": {
-    "description": "Wellcome message"
-  },
-  "userLeavesEventBrand": "{user} ha abandonado el evento {name}",
-  "@userLeavesEventBrand": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "user": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "userLeavesEventBrandSubtitle": "Ahora quedan {joined} miembros apuntados de un máximo de {total} plazas",
-  "@userLeavesEventBrandSubtitle": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "joined": {
-        "type": "String"
-      },
-      "total": {
-        "type": "String"
-      }
-    }
-  },
-  "writeMessage": "Escribe un mensaje",
-  "@writeMessage": {
-    "description": "writeMessage message"
-  },
-  "noMessages": "Aún no has empezado ninguna conversación",
-  "@noMessages": {
-    "description": "writeMessage message"
-  },
-  "membersOfBrand": "Grupo con todos los miembros de la marca",
-  "@membersOfBrand": {
-    "description": "membersOfBrand message"
-  },
-  "locationPermision": "Compartir ubicación",
-  "@locationPermision": {
-    "description": "membersOfBrand message"
-  },
-  "notificationsPermision": "Activar notificaciones",
-  "@notificationsPermision": {
-    "description": "membersOfBrand message"
-  },
-  "termsAndConditions": "Términos y Condiciones",
-  "@termsAndConditions": {
-    "description": "membersOfBrand message"
-  },   
-  "privacy": "Privacidad",
-  "@privacy": {
-    "description": "membersOfBrand message"
-  },
-  "useMambaTermsAndConditions": "Utilizando Mamba aceptas nuestros ",
-  "@useMambaTermsAndConditions": {
-    "description": "membersOfBrand message"
-  },
-  "findBrandClientText": "Encuentra una marca o añade tu código de invitación para desbloquear todas nuestras herramientas",
-  "@findBrandClientText": {
-    "description": "membersOfBrand message"
-  },
-  "findBrandTrainerText": "Crea tu marca o únete a una para desbloquear todas nuestras herramientas",
-  "@findBrandTrainerText": {
-    "description": "membersOfBrand message"
-  },
-  "rateAppTitle": "Tu opinión nos importa!",
-  "@rateAppTitle": {
-    "description": "membersOfBrand message"
-  },
-  "rateAppText": "Trabajamos muy duro para mejorar Mamba. Nos encantaría saber qué opinas y cómo podemos mejorar...",
-  "@rateAppText": {
-    "description": "beforeEventBodyNotification message"    
-  },
-  "mambaWithLove": "Con amor, el equipo de Mamba.",
-  "@mambaWithLove": {
-    "description": "beforeEventBodyNotification message"    
-  },  
-  "updateAppTitle": "!Nueva versión disponible!",
-  "@updateAppTitle": {
-    "description": "membersOfBrand message"
-  },
-  "updateAppText": "Actualiza la app para no perderte ninguna novedad y evitar posibles errores.",
-  "@updateAppText": {
-    "description": "membersOfBrand message"
-  },
-  "lastAppUpdate": "¿Usas nuestra última versión?",
-  "@lastAppUpdate": {
-    "description": "membersOfBrand message"
-  },
-  "mandatoryUpdate": "Actualización obligatoria",
-  "@mandatoryUpdate": {
-    "description": "membersOfBrand message"
-  },
-  "shareAppTitle": "Invitar amigos",
-  "@shareAppTitle": {
-    "description": "membersOfBrand message"
-  },
-  "shareAppText": "Comparte la app con tus amigos y familiares",
-  "@shareAppText": {
-    "description": "membersOfBrand message"
-  },
-  "shareApp": "Compartir",
-  "@shareApp": {
-    "description": "membersOfBrand message"
-  },
-  "giveFeedbackTitle": "Ayúdanos a mejorar",
-  "@giveFeedbackTitle": {
-    "description": "membersOfBrand message"
-  },
-  "giveFeedbackText": "Tu opinión es vital para seguir mejorando",
-  "@giveFeedbackText": {
-    "description": "membersOfBrand message"
-  },
-  "giveFeedback": "Contestar",
-  "@giveFeedback": {
-    "description": "membersOfBrand message"
-  },
-  "getInTouchTitle": "¿Algo más?",
-  "@getInTouchTitle": {
-    "description": "membersOfBrand message"
-  },
-  "getInTouchText": "Envíanos un email",
-  "@getInTouchText": {
-    "description": "membersOfBrand message"
-  },
-  "getInTouchTextDesc": "Envíanos un email y contacta con nosotros",
-  "@getInTouchTextDesc": {
-    "description": "membersOfBrand message"
-  },
-  "getInTouchChat": "Envíanos un mensaje",
-  "@getInTouchText": {
-    "description": "membersOfBrand message"
-  },
-  "getInTouch": "Contáctanos",
-  "@getInTouch": {
-    "description": "membersOfBrand message"
-  },
-  "brandDetailsTab": "Detalles",
-  "@brandDetailsTab": {
-    "description": "membersOfBrand message"
-  },
-  "brandContentTab": "Fotos",
-  "@brandContentTab": {
-    "description": "membersOfBrand message"
-  },
-  "readMore": "Ver más",
-  "@readMore": {
-    "description": "membersOfBrand message"
-  },
-  "readLess": "Ver menos",
-  "@readLess": {
-    "description": "membersOfBrand message"
-  },
-  "goodMorningGreeting": "Buenos días,",
-  "@goodMorningGreeting": {
-    "description": "membersOfBrand message"
-  },
-  "goodAfternoonGreeting": "Buenas tardes,",
-  "@goodAfternoonGreeting": {
-    "description": "membersOfBrand message"
-  },
-  "goodNightGreeting": "Buenas noches,",
-  "@goodNightGreeting": {
-    "description": "membersOfBrand message"
-  },
-  "mambaProActivated": "Desactivar Mamba pro",
-  "@mambaProActivated":{
-    "description": "Mamba pro actived text"
-  },
-  "mambaProDesactivated": "Activar Mamba pro",
-  "@mambaProDesactivated":{
-    "description": "Mamba pro descativated text"
-  },
-  "categories": "Categorias",
-  "@categories":{
-    "description": "Categories text"
-  },
-  "bono": "Bono",
-  "@bono":{
-    "description": "Bonos text"
-  },
-  "membership": "Membresía",
-  "@membership":{
-    "description": "Bonos text"  
-  },
-  "rate": "Tarifa",
-  "@rate":{
-    "description": "Bonos text"  
-  },
-  "rates": "Tarifas",
-  "@rates":{
-    "description": "Bonos text"  
-  },
-  "activeRates": "Tarifas activas",
-  "@activeRates":{
-    "description": "Bonos text"  
-  },    
-  "typeRate": "Tipo de tarifa",
-  "@typeRate":{
-    "description": "Bonos text"  
-  },
-  "bonos": "Bonos",
-  "@bonos":{
-    "description": "Bonos text"
-  },
-  "yourBonos": "Tus bonos",
-  "@yourBonos":{
-    "yourBonos": "Tus bonos text"
-  },
-  "solicitudesBonos": "Solicitudes",
-  "@solicitudesBonos":{
-    "solicitudesBonos": "Bonos request text"
-  },
-  "bonosClient": "Bonos de clientes",
-  "@bonosClient":{
-    "bonosClient": "Bonos client text"
-  },
-  "bonosDescription": "Selecciona las tarifas que permiten a los usuarios unirse a este evento",
-  "@bonosDescription":{
-    "bonosClient": "Bonos client text"
-  },
-  "bonosDescriptionWarning": "No has seleccionado ninguna tarifa.\nCualquier persona podrá unirse al evento y no se restringirá la entrada al mismo.",
-  "@bonosDescriptionWarning":{
-    "bonosClient": "Bonos client text"
-  },
-  "bonosDescriptionGreat": "Has seleccionado almenos una tarifa.\nLa entrada al evento esta restringida.",
-  "@bonosDescriptionGreat":{
-    "bonosClient": "Bonos client text"
-  },
-  "bonosDescriptionPrivate": "Selecciona las tarifas que debe tener un cliente para poder ser invitado a este evento",
-  "@bonosDescriptionPrivate":{
-    "bonosClient": "Bonos client text"
-  },
-  "bonosDescriptionPrivateWarning": "No has seleccionado ninguna tarifa.\nCualquier persona invitada podrá unirse al evento y no se restringirá la entrada al mismo.",
-  "@bonosDescriptionPrivateWarning":{
-    "bonosClient": "Bonos client text"
-  },
-  "bonosCanPurchasedWarning": "Puedes cambiar el precio, las sesiones o las condiciones de esta tarifa ya que ningún cliente lo ha comprado.",
-  "@bonosCanPurchasedWarning":{
-    "bonosClient": "Bonos client text"
-  },
-  "bonosPurchasedWarning": "No puedes cambiar el precio, las sesiones o las condiciones de esta tarifa.\nDe esta manera, garantizamos la misma oferta para todos los usuarios, ya que algunos ya la han comprado.",
-  "@bonosPurchasedWarning":{
-    "bonosClient": "Bonos client text"
-  },
-  "deleteBonoConfirmation": "¿Seguro que quieres eliminar esta tarifa?",
-  "@deleteBonoConfirmation":{
-    "description": "addEvent text"
-  },
-  "deactivateBonoConfirmation": "¿Seguro que quieres desactivar esta tarifa?",
-  "@deactivateBonoConfirmation":{
-    "description": "addEvent text"
-  },
-  "bonosCanDeleteWarning": "Puedes borrar esta tarifa por completo ya que ningún cliente la ha comprado.",
-  "@bonosCanDeleteWarning":{
-    "bonosClient": "Bonos client text"
-  },
-  "bonosNoDeleteWarning": "No puedes borrar la tarifa porque ya lo compraron algunos clientes, pero puedes desactivarla.",
-  "@bonosNoDeleteWarning":{
-    "bonosClient": "Bonos client text"
-  },
-  "inviteClientDescription": "Podrás invitar a un cliente una vez el evento haya sido creado",
-  "@inviteClientDescription":{
-    "bonosClient": "Bonos client text"
-  },
-  "information": "Información",
-  "@information":{
-    "information": "Information text"
-  },
-  "opinions": "Opiniones",
-  "@opinions":{
-    "opinions": "opinions text"
-  },
-  "relaxedFeedbackLabel": "Leve",
-  "@relaxedFeedbackLabel": {
-    "description": "membersOfBrand message"
-  },
-  "tiredFeedbackLabel": "Moderado",
-  "@tiredFeedbackLabel": {
-    "description": "membersOfBrand message"
-  },
-  "veryTiredFeedbackLabel": "Intenso",
-  "@veryTiredFeedbackLabel": {
-    "description": "membersOfBrand message"
-  },
-  "exhaustedFeedbackLabel": "Exhaustivo",
-  "@exhaustedFeedbackLabel": {
-    "description": "membersOfBrand message"
-  },
-  "brandInviteDialog": "Has accedido a Mamba con un link de invitación a esta marca. Por favor confirma esta acción para unirte a ellos y poder disfrutar de su servicio.",
-  "@brandInviteDialog": {
-    "description": "brandInviteDialog message"
-  },
-  "selectTypeProfile": "Selecciona tu perfil",
-  "@selectTypeProfile": {
-    "description": "selectTypeProfile message"
-  },
-  "beforeMovingOn": "Ya casi estamos...",
-  "@beforeMovingOn": {
-    "description": "beforeMovingOn message"
-  },
-  "beforeEventTitleNotification": "⚠️ \uD83C\uDFCB️\u200D {event} a las {horas} \uD83C\uDFCB️\u200D ⚠️ ",
-  "@beforeEventTitleNotification": {
-    "description": "beforeEventBodyNotification message",
-    "placeholders": {
-      "event": {
-        "type": "String"
-      },
-      "horas": {
-        "type": "String"
-      }
-    }
-  },
-  "beforeEventBodyNotification": "Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles",
-  "@beforeEventBodyNotification": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "afterEventTitleNotification": "\uD83D\uDCAA ✅️ Sesión completada ✅️ \uD83D\uDCAA",
-  "@afterEventTitleNotification": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "afterEventBodyNotification": "¿Qué te ha parecido? ¿Demasiado intensa? Comunica tu nivel de esfuerzo a tu entrenador",
-  "@afterEventBodyNotification": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "deleteRecurrentEvent": "¿Cómo quieres quieres eliminar este evento recurrente?",
-  "@deleteRecurrentEvent": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "saveRecurrentEvent": "¿Cómo quieres editar este evento recurrente?",
-  "@saveRecurrentEvent": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "saveRecurrentEventDetails": "En caso de modificar más de un evento, el día del evento no serà modificado.",
-  "@saveRecurrentEventDetails": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "thisEvent": "Solo este evento",
-  "@thisEvent": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "thisEventAndRest": "Este y los eventos siguientes",
-  "@thisEventAndRest": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "trainersOnboarding": "Facilita tu trabajo",
-  "@trainersOnboarding": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "trainersOnboardingDesc": "Automatiza la calendarización y aforo de tus sesiones. Olvídate de tener que gestionar personalmente las reservas de tus clientes",
-  "@trainersOnboardingDesc": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "trainersOnboardingSecond": "Personaliza tus precios",
-  "@trainersOnboardingSecond": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "trainersOnboardingSecondDesc1": "Crea tu propia política de precios mediante ",
-  "@trainersOnboardingSecondDesc1": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "trainersOnboardingSecondDesc2": "tarifas personalizadas.",
-  "@trainersOnboardingSecondDesc2": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "trainersOnboardingSecondDesc3": " Escoge atentamente las condiciones y el estilo de tus tarifas para maximizar el interés de los clientes",
-  "@trainersOnboardingSecondDesc3": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "trainersOnboardingThird": "Manten tu negocio bajo control",
-  "@trainersOnboardingThird": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "trainersOnboardingThirdDesc1": "Analiza la evolución de tus clientes y tu negocio. ",
-  "@trainersOnboardingThirdDesc1": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "trainersOnboardingThirdDesc2": "Activa las notificaciones",
-  "@trainersOnboardingThirdDesc2": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "trainersOnboardingThirdDesc3": " para no omitir ningún detalle importante. Solo te alertaremos cuando sea realmente necesario",
-  "@trainersOnboardingThirdDesc3": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "closeToYou": "Cerca de ellos",
-  "@closeToYou": {
-    "description": "Wellcome message"
-  },
-  "changeLater": "Podrás cambiar esto más tarde",
-  "@changeLater": {
-    "description": "seeMap message"
-  },
-  "whatsYourName": "¿Cómo te llamas?",
-  "@whatsYourName": {
-    "description": "seeMap message"
-  },
-  "visibleFirstName": "Sólo tu nombre será visto por todos",
-  "@visibleByMarca": {
-    "description": "seeMap message"
-  },
-  "whensYourBday": "Cuando es tu cumpleaños?",
-  "@whensYourBday": {
-    "description": "seeMap message"
-  },
-  "age": "Edad",
-  "@age": {
-    "description": "seeMap message"
-  },
-  "visibleFact": "Dato solo usado para estadísticas, no será mostrado a ningún usuario",
-  "@visibleAge": {
-    "description": "seeMap message"
-  },
-  "hour": "Hora",
-  "@hour": {
-    "description": "seeMap message"
-  },
-  "day": "Día",
-  "@day": {
-    "description": "seeMap message"
-  },
-  "month": "Mes",
-  "@month": {
-    "description": "seeMap message"
-  },
-  "monthly": "Mensual",
-  "@monthly": {
-    "description": "seeMap message"
-  },  
-  "bimonthly": "Bimensual",
-  "@bimonthly": {
-    "description": "seeMap message"
-  },
-  "quarterly": "Trimestral",
-  "@quarterly": {
-    "description": "seeMap message"
-  },
-  "year": "Año",
-  "@year": {
-    "description": "seeMap message"
-  },
-  "whatsYourGender": "Indica tu género",
-  "@whatsYourGender": {
-    "description": "seeMap message"
-  },
-  "creatingProfile": "Creando perfil ...",
-  "@creatingProfile": {
-    "description": "seeMap message"
-  },
-  "googleInfo": "Verifica la información recogida de Google",
-  "@googleInfo": {
-    "description": "seeMap message"
-  },
-  "clientsOnboarding": "Encuentra tu profesional",
-  "@clientsOnboarding": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "clientsOnboardingDesc": "Busca, compara y decide cuál es la marca fitness que mejor se adapta a ti. Únete a ella para poder disfrutar de su servicio y de un seguimiento personalizado.",
-  "@clientsOnboardingDesc": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "yourBrands": "Tus marcas",
-  "@yourBrands": {
-    "description": "YourBrands message"
-  },
-  "howTheySeeMe": "Como me ven",
-  "@howTheySeeMe": {
-    "description": "howTheySeeMe message"
-  },
-  "quien": "Quien",
-  "@quien": {
-    "description": "Quien message"
-  },
-  "que": "Que",
-  "@que": {
-    "description": "Que message"
-  },
-  "como": "Como",
-  "@como": {
-    "description": "Como message"
-  },
-  "cuando": "Cuando",
-  "@cuando": {
-    "description": "Cuando message"
-  },
-  "donde": "Donde",
-  "@donde": {
-    "description": "Donde message"
-  },
-  "scanQRCode": "Escanea código QR",
-  "@scanQRCode": {
-    "description": "Donde message"
-  },
-  "staff": "Staff",
-  "@staff": {
-    "description": "Donde message"
-  },
-  "buyDate": "Fecha de compra",
-  "@buyDate": {
-    "description": "Donde message"
-  },
-  "bonoRequestDescription": "Pendientes de confirmación",
-  "@bonoRequestDescription": {
-    "description": "Create bono message"
-  },
-  "createBono": "Crear bono",
-  "@createBono": {
-    "description": "Create bono message"
-  },
-  "editBono": "Editar bono",
-  "@editBono": {
-    "description": "Edit bono message"
-  },
-  "createBonoRecurrent": "Crear membresía",
-  "@createBonoRecurrent": {
-    "description": "Create bono message"
-  },
-  "editBonoRecurrent": "Editar membresía",
-  "@editBonoRecurrent": {
-    "description": "Edit bono message"
-  },
-  "createBonoSimple": "Crear bono",
-  "@createBonoRecurrent": {
-    "description": "Create bono message"
-  },
-  "editBonoSimple": "Editar bono",
-  "@editBonoSimple": {
-    "description": "Edit bono message"
-  },
-  "nameBono": "Nombre de tu bono",
-  "@nameBono": {
-    "description": "Name bono message"
-  },
-  "descriptionBono": "Descripción de tu bono",
-  "@descriptionBono": {
-    "description": "Description bono message"
-  },
-  "activarBono": "Activar bono",
-  "@activarBono": {
-    "description": "Active bono message"
-  },
-  "desactivarBono": "Desactivar bono",
-  "@desactivarBono": {
-    "description": "Active bono message"
-  },
-  "activeBonoQuesDesc": "Tus clientes sólo pueden verlo y comprarlo si está disponible. Podrás cambiar la disponibilidad más tarde.",
-  "@activeBonoQuesDesc": {
-    "description": "Active bono message"
-  },
-  "sesionsBono": "¿Cuantas sesiones tiene tu bono?",
-  "@sesionsBono": {
-    "description": "Sesions bono message"
-  },
-  "sesionsBonoDesc": "Esta tarifa cuenta con sesiones ilimitadas.",
-  "@sesionsBonoDesc": {
-    "description": "Sesions bono message"
-  },
-  "priceBono": "¿Qué precio tiene?",
-  "@priceBono": {
-    "description": "Price bono message"
-  },
-  "styleBono": "Estilo del bono",
-  "@styleBono": {
-    "description": "Style bono message"
-  },
-  "colorSolid": "Color sólido",
-  "@colorSolid": {
-    "description": "Solid bono message"
-  },
-  "degradateSolid": "Degradados",
-  "@degradateSolid": {
-    "description": "Degradate bono message"
-  },
-  "metalized": "Metalizados",
-  "@metalized": {
-    "description": "Metalizados bono message"
-  },
-  "orderBy": "Ordenar por",
-  "@orderBy": {
-    "description": "Donde message"
-  },
-  "filterBy": "Filtrar por",
-  "@filterBy": {
-    "description": "Donde message"
-  },
-  "noData": "Sin datos",
-  "@noData": {
-    "description": "Donde message"
-  },
-  "paymentMethod": "Método de pago",
-  "@paymentMethod": {
-    "description": "Donde message"
-  },
-  "paymentMethodOriginal": "El método de pago indicado inicialmente es: ",
-  "@paymentMethodOriginal": {
-    "description": "Donde message"
-  },
-  "paymentMethodEdit": "Puedes editar el método de pago en cualquier momento.",
-  "@paymentMethodEdit": {
-    "description": "Donde message"
-  },
-  "paymentMethodNoEdit": "No puedes editar el método de pago ya que es un pago directo desde la plataforma.",
-  "@paymentMethodEdit": {
-    "description": "Donde message"
-  },
-  "paymentMethodConfirm": "Confirma el método de pago por favor.",
-  "@paymentMethodConfirm": {
-    "description": "Donde message"
-  },
-  "inmediatePaymentMethod": "Pagos inmediatos",
-  "@inmediatePaymentMethod": {
-    "description": "Donde message"
-  },
-  "intermediatePaymentMethod": "Pagos verificables",
-  "@intermediatePaymentMethod": {
-    "description": "Donde message"
-  },
-  "cashPaymentMethod": "Efectivo",
-  "@cashPaymentMethod": {
-    "description": "Donde message"
-  },
-  "transferPaymentMethod": "Bizum",
-  "@transferPaymentMethod": {
-    "description": "Donde message"
-  },
-  "giftPaymentMethod": "Regalo",
-  "@giftPaymentMethod": {
-    "description": "Donde message"
-  },
-  "cardPaymentMethod": "Targeta",
-  "@inAppPaymentMethod": {
-    "description": "Donde message"
-  },
-  "applePayPaymentMethod": "Apple Pay",
-  "@inAppPaymentMethod": {
-    "description": "Donde message"
-  },
-  "googlePayPaymentMethod": "Google Pay",
-  "@inAppPaymentMethod": {
-    "description": "Donde message"
-  },
-  "uniquePayment": "Pago único",
-  "@uniquePayment": {
-    "description": "Donde message"
-  },
-  "recurrentPayment": "Pago recurrente",
-  "@recurrentPayment": {
-    "description": "Donde message"
-  },
-  "ilimitadas": "ilimitadas",
-  "@ilimitadas": {
-    "description": "ilimitadas message"
-  },
-  "verfied": "Pagado",
-  "@verfied": {
-    "description": "ilimitadas message"
-  },
-  "verfiedDesc": "Se ha confirmado que se realizó el pago de esta compra. El cliente ha completado el proceso y ahora tiene acceso a la tarifa correspondiente según las condiciones establecidas.",
-  "@verfiedDesc": {
-    "description": "ilimitadas message"
-  },
-  "unverfied": "Pendiente de pago",
-  "@unverfied": {
-    "description": "ilimitadas message"
-  },
-  "unverfiedDesc": "Aún no se ha confirmado el pago de la compra realizada por el cliente. El cliente adquirió la tarifa yestá disponible para su uso, pero espera la validación del pago.",
-  "@unverfiedDesc": {
-    "description": "ilimitadas message"
-  },
-  "toConfirm": "Por confirmar",
-  "@toConfirm": {
-    "description": "ilimitadas message"
-  },
-  "toConfirmDesc": "El cliente solicitó la tarifa, pero está a la espera de confirmación por parte del profesional. Sin respuesta, no hay acceso a la tarifa.",
-  "@toConfirmDesc": {
-    "description": "ilimitadas message"
-  },
-  "automaticRenewalDesc": "Con la renovación automática activada, la tarifa se renovará automáticamente, generando una nueva compra con el método de pago establecido.",
-  "@automaticRenewalDesc": {
-    "description": "ilimitadas message"
-  },
-  "seeAutomaticRenewalPurchases": "Ver todas las compras relacionadas con esta membresía.",
-  "@seeAutomaticRenewalPurchases": {
-    "description": "ilimitadas message"
-  },
-  "numberSessions": "Nº sesiones",
-  "@numberSessions": {
-    "description": "numberSessions message"
-  },
-  "buy": "Comprar",
-  "@buy": {
-    "description": "buy message"
-  },
-  "activeBono": "Bonos activos",
-  "@activeBono": {
-    "description": "active message"
-  },
-  "desactiveBono": "Bonos inactivos",
-  "@desactiveBono": {
-    "description": "desactive message"
-  },
-  "active": "Activo",
-  "@active": {
-    "description": "active message"
-  },
-  "desactive": "Inactivo",
-  "@desactive": {
-    "description": "desactive message"
-  },
-  "activeFem": "Activa",
-  "@active": {
-    "description": "active message"
-  },
-  "desactiveFem": "Inactiva",
-  "@desactive": {
-    "description": "desactive message"
-  },
-  "disponible": "Disponible",
-  "@disponible": {
-    "description": "active message"
-  },
-  "noDisponible": "No disponible",
-  "@noDisponible": {
-    "description": "desactive message"
-  },
-  "price": "Precio",
-  "@price": {
-    "description": "price message"
-  },
-  "priceHint": "Añade el precio",
-  "@priceHint": {
-    "description": "price message"
-  },
-  "pricePlease": "Añade el precio por favor",
-  "@pricePlease": {
-    "description": "price message"
-  },
-  "session": "sesión",
-  "@session":{
-    "description": "session Text"
-  },
-  "sessionHint": "Añade las sesiones",
-  "@sessionHint":{
-    "description": "session Text"
-  },
-  "sessionPlease": "Añade las sesiones por favor",
-  "@sessionPlease":{
-    "description": "session Text"
-  },
-  "conditions": "Condiciones",
-  "@conditions":{
-    "description": "conditions Text"
-  },
-  "expired": "Expirada",
-  "@expired":{
-    "description": "expiresAt Text"
-  },
-  "esgotat": "Agotada",
-  "@esgotat":{
-    "description": "expiresAt Text"
-  },
-  "expiredAfter": "Expirado después de",
-  "@expiredAfter":{
-    "description": "expiresAt Text"
-  },  
-  "expiresAt": "Expira en",
-  "@expiresAt":{
-    "description": "expiresAt Text"
-  },
-  "renewsAt": "Se renueva en",
-  "@renewsAt":{
-    "description": "expiresAt Text"
-  },  
-  "expiresAtDesc": "Número de días hasta el vencimiento de esta tarifa.",
-  "@expiresAtDesc":{
-    "description": "expiresAt Text"
-  },
-  "freeCancelHint":  "Añade las horas",
-  "@freeCancelHint":{
-    "description": "cancelTimeAt Text"
-  },
-  "freeCancelError":  "Añade las horas por favor",
-  "@freeCancelError":{
-    "description": "cancelTimeAt Text"
-  },
-  "freeCancelErrorSecond":  "No puede ser superior a 72 horas",
-  "@freeCancelErrorSecond":{
-    "description": "cancelTimeAt Text"
-  },
-  "freeCancelDesc":  "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.",
-  "@freeCancelDesc":{
-    "description": "cancelTimeAt Text"
-  },
-  "freeCancelInfo":  "Tarifa sin límite de sesiones, lo que significa que la cancelación es gratuita y sin restricciones.",
-  "@freeCancelInfo":{
-    "description": "cancelTimeAt Text"
-  },
-  "trainsPerWeekError": "El número máximo de sesiones por semana no puede ser superior a 7",
-  "@trainsPerWeekError":{
-    "description": "trainsPerWekk Text"
-  },
-  "trainsPerWeekDesc": "Número máximo de sesiones que pueden realizar tus clientes en una misma semana",
-  "@trainsPerWeekDesc":{
-    "description": "trainsPerWekk Text"
-  },
-  "expireDate":  "Fecha de expiración",
-  "@expireDate":{
-    "description": "noExpireDate Text"
-  },
-  "noExpireDate":  "No tiene fecha de expiración",
-  "@noExpireDate":{
-    "description": "noExpireDate Text"
-  },
-  "hours":  "Horas antes de la sesión",
-  "@hours":{
-    "description": "hours Text"
-  },
-  "freeCancel":  "Cancelación gratuita",
-  "@freeCancel":{
-    "description": "cancelTimeAt Text"
-  },
-  "cancelTimeAt":  "Cancelación gratuita hasta",
-  "@cancelTimeAt":{
-    "description": "cancelTimeAt Text"
-  },
-  "max": "Máximo",
-  "@max":{
-    "description": "max Text"
-  },
-  "trainsPerWeek":  "Sesiones por semana",
-  "@trainsPerWeek":{
-    "description": "trainsPerWekk Text"
-  },
-  "first": "Primero",
-  "@first":{
-    "description": "trainsPerWekk Text"
-  },
-  "alphabetAtoZ":"Ordenar de A-Z",
-  "@alphabetAtoZ":{
-    "description": "trainsPerWekk Text"
-  },
-  "alphabetZtoA": "Ordenar de Z-A",
-  "@alphabetZtoA":{
-    "description": "trainsPerWekk Text"
-  },
-  "mostBuys": "Más comprado",
-  "@mostBuys":{
-    "description": "trainsPerWekk Text"
-  },
-  "bonoBuys": "Bonos pendientes",
-  "@bonoBuys":{
-    "description": "trainsPerWekk Text"
-  },
-  "preseeBono": "Previsualiza tu tarifa",
-  "@preseeBono":{
-    "description": "trainsPerWekk Text"
-  },
-  "acceptBono": "Otorgar tarifa",
-  "@acceptBono":{
-    "description": "trainsPerWekk Text"
-  },
-  "acceptBonoDesc": "Verifica la información antes de confirmar la compra de la tarifa",
-  "@acceptBonoDesc":{
-    "description": "trainsPerWekk Text"
-  },
-  "editBonoClientDesc": "Verifica la información antes de editar la tarifa del cliente",
-  "@editBonoClientDesc":{
-    "description": "editBonoClientDesc Text"
-  },
-  "paymentIndication": " ha indicado que ha pagado usando: ",
-  "@paymentIndication": {
-    "description": "trainsPerWekk Text"
-  },
-  "noBonosCreated": "No se ha creado ninguna tarifa",
-  "@noBonosCreated": {
-    "description": "trainsPerWekk Text"
-  },
-  "createFistBono": "Crea tu primera tarifa",
-  "@createFistBono": {
-    "description": "trainsPerWekk Text"
-  },
-  "userBuysBonoTrainer": "{user} ha comprado la tarifa {bono}",
-  "@userBuysBonoTrainer": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "user": {
-        "type": "String"
-      },
-      "bono": {
-        "type": "String"
-      }
-    }
-  },
-  "userBuysBonoTrainerSubtitle": "Puedes encontrar todos los detalles de su progreso en el perfil del usuario",
-  "@userBuysBonoTrainerSubtitle": {
-    "description": "userJoinsBrandUser message"
-  },
-  "potentialClient": "Cliente potencial",
-  "@potentialClient": {
-    "description": "active client message"  
-  },
-  "potentialClients": "Clientes potenciales",
-  "@potentialClients": {
-    "description": "active client message"  
-  },
-  "activeClients": "Clientes activos",
-  "@activeClients": {
-    "description": "active client message"
-  },
-  "desactiveClient": "Clientes inactivos",
-  "@desactiveClient": {
-    "description": "desactive client message"
-  },
-  "personalizedFieldsFirst": "Se deben rellenar todos los campos personalizados",
-  "@personalizedFieldsFirst": {
-    "description": "personalizedFieldsFirst message"
-  },
-  "allBonosInClient": "Ya dispone de todos las tarifas disponibles",
-  "@allBonosInClient": {
-    "description": "allBonosInClient message"
-  },
-  "from": "Desde",
-  "@from": {
-    "description": "from message"
-  },
-  "to": "Hasta",
-  "@to": {
-    "description": "to message"
-  },
-  "activeTrainers": "Staff activa",
-  "@activeTrainers": {
-    "description": "activeTrainers message"
-  },
-  "desactiveTrainers": "Staff inactiva",
-  "@desactiveTrainers": {
-    "description": "desactiveTrainers message"
-  },
-  "bonosNecesarios": "Tarifas necesarias",
-  "@bonosNecesarios": {
-    "description": "userJoinsBrandUser message"
-  },
-  "seeMap": "Ver mapa",
-  "@seeMap": {
-    "description": "seeMap message"
-  },
-  "personalizeBonoUser": "Personalizar solo para {user}",
-  "@personalizeBonoUser": {
-    "description": "Member Since message",
-    "placeholders": {
-      "user": {
-        "type": "String"
-      }
-    }
-  },
-  "average": "de media",
-  "@average": {
-    "description": "seeMap message"
-  },
-  "purchaseHistory": "Historial de compras",
-  "@purchaseHistory": {
-    "description": "userJoinsBrandUser message"
-  },
-  "comingNDays": "Próximos {days} Días",
-  "@comingNDays": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "days": {
-        "type": "String"
-      }
-    }
-  },  
-  "eachNDaysAprox": "Cada {days} días aproximadamente",
-  "@eachNDaysAprox": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "days": {
-        "type": "String"
-      }
-    }
-  },
-  "afterNDaysAprox": "Después de {days} días aproximadamente",
-  "@afterNDaysAprox": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "days": {
-        "type": "String"
-      }
-    }
-  },
-  "endOfMonth": "Final de Mes",
-  "@endOfMonth": {
-    "description": "Wellcome message"
-  },
-  "lastNDays": "Últimos {days} Días",
-  "@lastNDays": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "days": {
-        "type": "String"
-      }
-    }
-  },
-  "previousMonth": "Mes Anterior",
-  "@lastMonth": {
-    "description": "Wellcome message"
-  },
-  "facturation": "Facturación",
-  "@facturation": {
-    "description": "facturation message"
-  },
-
-  "eventsDone": "Eventos realizados",
-  "@eventsDone": {
-    "description": "eventsDone message"
-  },
-
-  "labelSessionMade": "Día y número de eventos",
-  "@labelSessionMade": {
-    "description": "labelSessionMade message"
-  },
-  "daysDemand": "Demanda de días",
-  "@daysDemand": {
-    "description": "daysDemand message"
-  },
-  "historic": "Histórico",
-  "@historic": {
-    "description": "Wellcome message"
-  },
-  "mon": "Lun.",
-  "@mon": {
-    "description": "mon day"
-  },
-  "tue": "Mar.",
-  "@tue": {
-    "description": "tue day"
-  },
-  "wed": "Mierc.",
-  "@wed": {
-    "description": "wed day"
-  },
-  "thur": "Jue.",
-  "@thur": {
-    "description": "thur day"
-  },
-  "fri": "Vier.",
-  "@fri": {
-    "description": "vier day"
-  },
-  "sat": "Sab.",
-  "@sat": {
-    "description": "sat day"
-  },
-  "sun": "Dom.",
-  "@sun": {
-    "description": "sun day"
-  },
-  "timeOffer": "Hora más demandada",
-  "@timeOffer": {
-    "description": "timeOffer day"
-  },
-  "timeToTimeOffer": "Demanda de franjas",
-  "@timeToTimeOffer": {
-    "description": "timeToTimeOffer day"
-  },
-  "numberClients": "Número de clientes",
-  "@numberClients": {
-    "description": "numberClients day"
-  },
-  "ageRange": "Media de edad",
-  "@ageRange": {
-    "description": "ageRange day"
-  },
   "gender": "Género",
-  "@gender": {
-    "description": "gender day"
-  },
-  "newClient": "Altas",
-  "@newClient": {
-    "description": "newClient day"
-  },
-  "actives": "Activos",
-  "@actives": {
-    "description": "actives day"
-  },
-  "atThisMoment": "actualmente",
-  "@atThisMoment": {
-    "description": "atThisMoment day"
-  },
-  "totals": "totales",
-  "@totals": {
-    "description": "totals day"
-  },
   "male": "Masculino",
-  "@male": {
-    "description": "male day"
-  },
   "female": "Femenino",
-  "@female": {
-    "description": "female day"
-  },
+  "transgender": "Otros",
+  "optional": "Opcional",
+  "chars": "Caracteres",
+  "firstName": "Nombre",
+  "lastName": "Apellidos",
+  "lastNameError": "Escribe tus apellidos",
+  "lastNameError3rd": "Escribe sus apellidos por favor",
+  "nickname": "Nombre de usuario",
+  "nicknameError": "Introduce tu nombre de usuario por favor",
+  "nicknameAvailable": "Disponible",
+  "nicknameOcuppied": "Cogido",
+  "nameCompleto": "Nombre y apellidos",
+  "nameCompletoError": "Escribe tu nombre",
+  "nameCompletoError3rd": "Escribe su nombre por favor",
+  "nameBrand": "Nombre de tu marca",
+  "nameBrandError": "Escribe el nombre de tu marca",
+  "register": "Regístrate",
+  "sameEmail": "Ya existe un usuario con este email",
+  "registerError": "Ha ocurrido un error. Vuelva a probar",
+  "registerGenderError": "Por favor selecciona tu género",
+  "registerTypeError": "Por favor selecciona tu tipo de usuario",
+  "wellcome": "Bienvenido/a",
+  "thankyouDownload": "¡Bienvenido/a a Mamba!",
+  "wellcomeMessage": "La primera interfaz que conecta a los apasionados del deporte con las marcas de entrenamiento fitness",
+  "alreadyCreatedClient": "¿Formas parte de una marca de entreno personal?",
+  "perfectClient": "!Perfecto!",
+  "codigo": "Introduzca su código",
+  "noCodigo": "No tengo ningún código",
+  "letsGo": "Vamos!",
+  "alreadyCreatedFirm": "¿Tienes un código de invitación a una marca?",
+  "info": "Información",
+  "personlize": "Personalización",
+  "personlized": "Personalizado",
+  "content": "Contenido",
+  "settings": "Configuración",
+  "sessions": "Sesiones",
+  "allSessionsDone": "Caduca al finalizar todas las sesiones",
+  "sessionsDone": "Sesiones realizadas",
+  "sessionsToDo": "Sesiones previstas",
+  "stats": "Estadísticas",
+  "statsBrandText": "Gestiona toda tu marca desde un mismo lugar",
+  "feedback": "Feedback",
+  "management": "Gestión",
+  "noFeedback": "No hay nuevas preguntas a contestar.\n\n¡Gracias por querer ayudarnos!",
+  "reporting": "Reporta un error",
+  "feedbackSent": "¡Gracias por darnos tu opinión!\nNecesitamos a más gente como tú",
+  "feedbackNotSent": "Algo ha ido mal\nNo se han enviado las respuestas",
+  "feedbackAnswered": "Actualmente no hay ningún cuestionario que puedas responder",
+  "feedbackNotAnswered": "Ayúdanos a mejorar respondiendo el Feedbak de esta semana\n¿A qué esperas?",
+  "help": "Ayuda",
+  "responderFeedback": "!Vamos!",
+  "finishedFeedback": "Has terminado",
+  "finishedFeedbackSubtitle": "!Gracias por tu tiempo!",
+  "sendFeedback": "Enviar",
+  "eventFeedbackText": "¿Qué te ha parecido la sesión?",
+  "eventFeedbackIntesityText": "\nIndica tu nivel de esfuerzo a lo largo de esta sesión",
+  "memberSince": "Creada el {dateJoined}",
+  "clientOf": "Cliente de",
+  "trainerOf": "Entrenador en",
+  "closeSession": "Cerrar sesión",
+  "closeSessionConfirmation": "¿Estás seguro de que quieres cerrar tu sesión actual?",
+  "deleteAccount": "Eliminar cuenta",
+  "dateOfBirth": "Fecha de nacimiento",
+  "noDateOfBirth": "No introducida",
+  "selectDateOfBirth": "Selecciona tu fecha de nacimiento",
+  "typeProfile": "Tipo de perfil",
+  "typeProfilePrivate": "Privado",
+  "typeProfilePrivateDescription": "Tu perfil solo podrá ser visto por los entrenadores de tu marca en caso de formar parte de una.",
+  "typeProfilePublic": "Público",
+  "typeProfilePublicDescription": "Tu perfil podrá ser visto por todos los usuarios de MAMBA. Podrán ver tu información personal así como los eventos a los que has asistido.",
+  "typeTheme": "Personalizar",
+  "typeThemeDark": "Modo Noche",
+  "typeThemeDarkDescription": "Siempre usarás el Modo Noche.",
+  "typeThemeLight": "Modo Día",
+  "typeThemeLightDescription": "Siempre usarás el Modo Día.",
+  "typeThemeSystem": "Sistema",
+  "typeThemeSystemDescription": "MAMBA cambiará el Modo acorde con tu dispositivo.",
+  "title": "Título",
+  "titleHint": "Introduce un título",
+  "titleError": "Introduce un título por favor",
+  "description": "Descripción",
+  "descriptionHint": "Añade una descripción",
+  "noDescription": "No se ha añadido ninguna descripción",
+  "descriptionError": "Añade una descripción por favor",
+  "reproducteSteps": "Pasos para reproducir el error",
+  "reproducteStepsHint": "¿Sabes cómo podemos reproducir este error?",
+  "errorSent": "¡Gracias por reportar este error!\nNecesitamos a más gente como tú",
+  "choseOption": "Escoge una opción",
+  "gallery": "Galería",
+  "camera": "Cámara",
+  "change": "Cambiar",
+  "welcomeMes": "¡Bienvenido a Mamba {name}!",
+  "roles": "Roles",
+  "rolesDescription": "Administra el staff de tu marca",
+  "rolesInfoDescription": "Visualiza los permisos de cada tipo de rol",
+  "owner": "Propietario",
+  "administrador": "Administrador",
+  "creator": "Creador",
+  "notFoundUser": "Usuario no encontrado",
+  "deletedUser": "Usuario eliminado",
+  "deletedBrand": "Marca eliminada",
+  "deletedEvent": "Evento eliminado",
+  "joinBrand": "Únete a una marca",
+  "joinBrandTitle": "Puedes unirte a través de un link o escaneado el código QR de la marca",
+  "createBrand": "Crea tu marca",
+  "createBrandTitle": "Aquí puedes crear tu propia marca en cuatro simples pasos...",
+  "createBrandPortada": "Empieza creando la portada de tu marca. Tu escaparate a todos los otros usuarios",
+  "createBrandInfo": "Añade la información más importante. Introduce una descripción general y define tus especialidades.",
+  "createBrandLocation": "Sitúa tu marca en el mapa. Define tu ubicación principal para que tus clientes sepan dónde estás y como llegar hasta ti.",
+  "createBrandTime": "Define tu horario laboral",
+  "createBrandCover": "Portada",
+  "createBrandCoverDescription": "Crea la portada de tu marca. Escoge tu logo y tu nombre.",
+  "createBrandDesc": "Descripción",
+  "createBrandDescDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. Transmite tus valores fundamentales y beneficios de trabajar de tu mano",
+  "createBrandBaseLocation": "Ubicación",
+  "createBrandLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor",
+  "createBrandWorkshift": "Horario",
+  "createBrandWorkshiftDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando estás disponible. Solo podrán reservar plaza en tus eventos dentro de este horario",
+  "createBrandBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añádelo para que conste en tu calendario",
+  "createBrandAddDescription": "Haz clic en AÑADIR para guardar tu tiempo de descanso",
+  "addCode": "Añadir Código",
+  "trainersZone": "Otros entrenadores en tu zona:",
+  "loading": "Cargando...",
+  "basicInfo": "Información básica",
+  "canEdit": "Toda la información podrá ser editada más adelante.",
+  "baseLocation": "Ubicación base",
+  "location": "Ubicación",
+  "locations": "Ubicaciones",
+  "locationsBrandText": "Descubre todas nuestras ubicaciones",
+  "ranking": "Ranking",
+  "rankingBrandText": "¿En qué posición estás?",
+  "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.\n\nEn caso de no tener una dirección fija, introduce una ubicación utilizada frecuentemente.",
+  "streetName": "Calle: ",
+  "streetNumber": "Número: ",
+  "city": "Ciudad: ",
+  "zipCode": "Código Postal: ",
+  "latitude": "Latitud",
+  "longitud": "Longitud",
+  "clear": "Limpiar",
+  "confirm": "Confirmar",
+  "back": "Atrás",
+  "enterAddress": "Introduce tu dirección",
+  "enterAddressError": "Introduce tu dirección por favor",
+  "brandDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. En un par de líneas, transmite tus valores fundamentales y beneficios de trabajar de tu mano.",
+  "workingHours": "Horario de trabajo",
+  "workingHoursError": "Introduce tu horario laboral por favor",
+  "workingHoursError1": "La hora de inicio tiene que ser previa a la hora de finalización",
+  "workingHoursError2": "Tu descanso debe estar dentro de tu horario laboral",
+  "workingHoursDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando puedes ser contactado y cuando estás fuera de tu horario laboral.",
+  "lunchBreak": "Descanso",
+  "lunchBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añádelo para que conste en tu calendario. Puedes añadir un máximo de tres descansos durante el día.",
+  "lunchBreakAdded": "¡Descanso añadido!",
+  "state": "Estado",
+  "disponibilidad": "Disponiblidad",
+  "calendar": "Calendario",
+  "myCalendar": "Mi Calendario",
+  "calendarBrandText": "Mira todas las sesiones de {brand}",
+  "calendarWeekBrandText": "Esta semana en {brand}",
+  "add": "Añadir",
+  "select": "Seleccionar",
+  "selectAll": "Seleccionar todos",
+  "next": "Siguiente",
+  "skip": "Omitir",
+  "start": "Empezar",
+  "finish": "Finalizar",
+  "brandFound": "¡Marca encontrada!",
+  "brandNotFound": "No encontramos esta marca. Por favor asegúrate que has introducido el código correctamente",
+  "notInBrand": "No formas parte de ninguna marca",
+  "wantDeleteUser": "¿Quieres eliminar tu usuario?",
+  "writeDeleteUser": "Escribe tu contraseña para confirmar esta acción:",
+  "confirmDeleteUser": "para confirmar esta acción:",
+  "deleteFromBrand": "Eliminar de {brand}",
+  "deleteFromBrandConfirmation": "¿Estás seguro de que quieres eliminar a este miembro de tu marca?",
+  "deleteFromEventConfirmation": "¿Estás seguro de que quieres eliminar a este miembro del evento {name}?\n\nEn caso afirmativo, se actualizará el evento para indicar que nunca asistió a él.",
+  "discard": "Descartar",
+  "delete": "Eliminar",
+  "edit": "Editar",
+  "duplicate": "Duplicar",
+  "save": "Guardar",
+  "search": "Buscar",
+  "cancel": "Cancelar",
+  "close": "Cerrar",
+  "update": "Actualizar",
+  "entendido": "Entendido",
+  "book": "Reservar",
+  "join": "Unirse",
+  "leave": "Abandonar",
+  "contact": "Contactar",
+  "resend": "Reenviar",
+  "send": "Enviar",
+  "sent": "Enviada",
+  "anular": "Anular",
+  "accept": "Aceptar",
+  "reject": "Rechazar",
+  "invite": "Invitar",
+  "addMembers": "Añadir Miembros",
+  "inviteCode": "Código de invitación",
+  "inviteCodeError": "Copia el código de invitación por favor",
+  "inviteCodeOptional": "Finaliza el proceso de bienvenida para ver todas las marcas dentro de MAMBA.",
+  "copyCodeMessage": "Comparte tu enlace de invitación",
+  "copyCorrectCode": "Código de invitación copiado correctamente",
+  "copyCorrectLocation": "Ubicación copiada correctamente",
+  "member": "Miembro",
+  "members": "Miembros",
+  "membersTotal": "Miembros en total",
+  "membersBrandText": "Entrenadores y clientes todos aquí",
+  "mondayLetter": "L",
+  "tuesdarLetter": "M",
+  "wednesdayLetter": "M",
+  "thursdayLetter": "J",
+  "fridayLetter": "V",
+  "saturadayLetter": "S",
+  "sundayLetter": "D",
+  "errorDate": "Has introducido una fecha y/o hora inválida",
+  "recurrentEvent": "Evento recurrente",
+  "selectDayTime": "Día y hora",
+  "selectDay": "Día",
+  "selectDuration": "Duración",
+  "selectMembers": "Número de asistentes",
+  "selectTime": "Hora",
+  "days": "Días",
+  "during": "Durante",
+  "thisWeek": "Esta semana",
+  "nextTwoWeek": "Dos semanas",
+  "wholeMonth": "Un mes",
+  "wholeTwoMonth": "Ocho semanas",
+  "wholeThreeMonth": "Tres meses",
+  "wholeSixMonth": "Seis meses",
+  "wholeNineMonth": "Nueve meses",
+  "wholeTwelveMonth": "Doce meses",
+  "until": "Hasta el {date}",
+  "addEvent": "Añadir evento",
+  "createEvent": "Crear evento",
+  "editEvent": "Editar evento",
+  "adding": "Añadiendo",
+  "creating": "Creando",
+  "checking": "Comprobando",
+  "editing": "Editando",
+  "updating": "Actualizando",
+  "deleting": "Eliminando",
+  "updateEvent": "Guardar evento",
+  "deleteEventConfirmation": "¿Seguro que quieres eliminar este evento?",
+  "completeEventConfirmation": "¿Seguro que quieres marcar este evento como realizado? Esta acción no se podrá deshacer.",
+  "maxNumberClients": "Número máximo de asistentes",
+  "maxNumberClientsError": "Introduce el número máximo de asistentes que pueden asistir en cualquiera de tus sesiones.",
+  "numberClientJoining": "Asistentes",
+  "numberClients": "Número de clientes",
+  "noClientJoining": "Sin asistentes",
+  "designatedTrainers": "Selecciona los entrenadores",
+  "addClientsManually": "Registrar nuevo cliente manualmente",
+  "addDesignatedClients": "Invitar clientes",
+  "noTrainerSelectedError": "No hay ningún entrenador asignado",
+  "noClientSelectedError": "No hay ningún cliente invitado",
+  "clientsSelectedError": "Hay más clientes que plazas disponibles",
+  "slot": "plaza",
+  "slots": "plazas",
+  "totalNumberEvents": "Sesiones realizadas: {number}",
+  "noTrainingsDone": "No ha finalizado ningún evento",
+  "todaysBrandEvents": "Previsto para hoy",
+  "toDo": "Por realizar",
+  "doing": "Realizando",
+  "finished": "Realizado",
+  "todayString": "Hoy",
+  "dayString": "Día",
+  "weekString": "Semanal",
+  "monthString": "Mensual",
+  "today": "Hoy {date}",
+  "full": "Lleno",
+  "available": "Disponible",
+  "noEvents": "Sin eventos",
+  "noEventsAccesibleBono": "No encontramos eventos que sean accesibles con esta tarifa",
+  "noMembersFound": "No hemos encontrado ningún miembro",
+  "noBrandsFound": "No hemos encontrado marcas cerca de ti",
+  "myRequests": "Solicitudes",
+  "myRequestsDesc": "Solicitudes de afiliación pendientes de respuesta",
+  "request": "Solicitud",
+  "noRequestsFound": "No hemos encontrado ninguna solicitud",
+  "noImagesFound": "No hemos encontrado ninguna imagen",
+  "requestFromUser": " quiere unirse como {type}",
+  "requestSent": "Enviada el {dateJoined}",
+  "purchasedAt": "Comprado el {dateJoined}",
+  "myLocations": "Mis ubicaciones",
+  "theirLocations": "Sus ubicaciones",
+  "brandLocations": "Ubicaciones {brand}",
+  "addLocation": "Añadir ubicación",
+  "historial": "Historial",
+  "notifications": "Notificaciones",
+  "mySessions": "Historial de sesiones",
+  "mySchedule": "Mi agenda",
+  "myScheduleText": "Mira todas tus sesiones",
+  "planSessions": "Planifica más sesiones",
+  "myProgress": "Mi progreso",
+  "myProgressText": "¿Quieres ver tu progreso?",
+  "events": "Eventos",
+  "myData": "Mis datos",
+  "yourInfo": "Tus datos",
+  "brand": "Marca",
+  "yourBrand": "Tu marca",
+  "yourImages": "Tus imágenes",
+  "randomImageDescription": "Se escogerá una de tus imágenes de marca de manera aleatoria",
+  "yourImagesDescription": "Escoge tus imágenes preferidas para mostrarlas a todos los usuarios. Recomendamos orientación horizontal (16:9) y puedes añadir un máximo de 10 imágenes. \n\nSe utilizarán imágenes de librería.",
+  "yourSesions": "Mis Sesiones",
+  "editYourPrivacy": "Cambia el tipo de perfil",
+  "editYourTheme": "Cambia el modo",
+  "editYourInfo": "Edita tu información personal",
+  "photo": "Imagen",
+  "randomPhoto": "Imagen aleatoria",
+  "photos": "Imágenes",
+  "photosDimensions": "Recomendamos Orientación Horizontal (16:9)",
+  "profilePhoto": "Foto de perfil",
+  "profilePhotoOptional": "En caso de que no quieras escoger tu foto de perfil en este momento, puedes saltarte este paso.",
+  "editYourPhoto": "Edita tu imagen",
+  "uploadPhoto": "Subir imagen",
+  "uploadPhotos": "Subir imágenes",
+  "editBrandInfo": "Edita la información de la marca",
+  "addBrandLogo": "Añade tu logo",
+  "editBrandLogo": "Edita el logo de la marca",
+  "addBrandPhotos": "Añade imágenes de tu marca",
+  "addBrandPhotosMax": "Ya has añadido todas las imágenes possibles",
+  "addBrandPhotosLeft": "Aún puedes añadir {left} imagen/es de un máximo de {max}",
+  "addBrandPhotosMaxLeft": "Puedes añadir un máximo de {left} imágenes",
+  "exitBrand": "Abandonar marca",
+  "exitBrandDesc": "Dejarás de participar en los eventos previstos y perderás los beneficios y accesos actuales. Para reincorporarte, necesitarás una nueva aprobación de los administradores",
+  "exitBrandConfirm": "¿Seguro que quieres abandonar esta marca?",
+  "deleteBrand": "Eliminar marca",
+  "deleteBrandDesc": "Se eliminará completamente toda su información, incluyendo la relación con sus clientes y todos los datos relacionados. Esta acción es irreversible y hará que la marca desaparezca como si nunca hubiera existido",
+  "deleteBrandConfirmation": "¿Seguro que quieres eliminar tu marca?",
+  "writeDeleteBrand": "Escribe el nombre de tu marca para confirmar esta acción:",
+  "logo": "Logo",
+  "group": "Grupal",
+  "groupEvent": "Evento Grupal",
+  "groupEventDesc": "Define las plazas disponibles",
+  "private": "Privado",
+  "privateEvent": "Evento Privado",
+  "privateEventDesc": "Accesible solo por invitación",
+  "noEventsToday": "Nada previsto para hoy ...",
+  "planNewEvent": "Reservar una sesión",
+  "calendarBrandTextClient": "Reserva una sesión con {brand}",
+  "joinEvent": "Reservar sesión",
+  "joinEventConfirmation": "Debes asignar una compra del cliente para reservar esta sesión\n\nLos cambios se realizarán si confirmas la creación o edición de la sesión.",
+  "leaveEvent": "Abandonar sesión",
+  "leaveEventConfirmation": "Esta es la compra con la que el cliente reservó la sesión\n\nLos cambios se realizarán si confirmas la creación o edición de la sesión.",
+  "allEvents": "sesiones totales",
+  "monthEvents": "sesiones este mes",
+  "eventHistory": "Historial de eventos",
+  "recentEvents": "Últimas sesiones ...",
+  "percentageEvents": "{percentage}% de los eventos",
+  "sendRequestConfirmation": "¿Estás seguro de que quieres enviar una solicitud a esta marca?\n\nLos organizadores recibirán una notificación. Hasta que esta no sea aceptada o rechazada no podrás enviar otra solicitud a ninguna marca.",
+  "cancelRequestConfirmation": "¿Quieres anular tu solicitud a esta marca? Aún no has recibido respuesta de los organizadores.\n\nEste cambio tendrá un efecto inmediato y ahora podrás enviar una solicitud a otra marca.",
+  "waitingRequestConfirmation": "Esperando respuesta a solicitud de admisión por parte de ",
+  "requestConfirmation": "¿Quieres aceptar a este usuario como nuevo miembro de tu marca?",
+  "markAsRead": "Marcar como leídas",
+  "wellcomeToMAMBA": "Bienvenido/a a MAMBA",
+  "onlyImportantNotifications": "Aquí recibirás alertas de las novedades más importantes para ti",
+  "userJoinsBrandUser": "Te has unido a {brand}",
+  "userJoinsBrandSubtitleUser": "Consulta el calendario para participar en tu primera sesión",
+  "userJoinsBrandBrand": "{name} se ha unido a {brand}",
+  "userJoinsBrandBrandSubtitle": "Ya sois un total de {number} miembros",
+  "userLeavesBrandUser": "Has abandonado a {brand}",
+  "userLeavesBrandUserSubtitle": "Ahora podrás formar parte de otra marca",
+  "userLeavesBrandBrand": "{name} ha abandonado a {brand}",
+  "userLeavesBrandBrandSubtitle": "Ahora sois un total de {number} miembros",
+  "userSendRequestToBrandUser": "Has enviado una solicitud para unirte a {brand}",
+  "userSendRequestToBrandUserSubtitle": "Los organizadores aún no han contestado",
+  "userSendRequestToBrandBrand": "{name} ha enviado una solicitud de afiliación",
+  "userSendRequestToBrandBrandSubtitle": "Enviada el {dia}",
+  "userCancelRequestToBrandUser": "Has cancelado tu solicitud para unirte a {brand}",
+  "userCancelRequestToBrandUserSubtitle": "Ahora puedes solicitar unirte a otra marca",
+  "userCancelRequestToBrandBrand": "{name} ha cancelado su solicitud de afiliación",
+  "userCancelRequestToBrandBrandSubtitle": "Recuerda que puedes compartir tu código de invitación para añadir a nuevos miembros directamente",
+  "userCreatesBrandUser": "Has creado tu marca {brand}",
+  "userCreatesBrandUserSubtitle": "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
+  "userDeletesBrandOwner": "Has eliminado tu marca {brand}",
+  "userDeletesBrandUser": "El propietario de {brand} ha eliminado la marca",
+  "userDeletesBrandSubtitle": "Ahora puedes unirte a otra marca",
+  "userSendsBonoRequestBrand": "{name} ha enviado una solicitud de compra",
+  "userSendsBonoRequestSubtitleBrand": "Espera confirmación para comprar la tarifa {bono}",
+  "userCancelsBonoRequestBrand": "{name} ha cancelado su solicitud de compra",
+  "userCancelsBonoRequestSubtitleBrand": "La tarifa {bono} le ha dejado de interesar",
+  "userBuysBonoBrand": "{name} ha comprado la tarifa {bono}",
+  "userBuysBonoSubtitleBrand": "Puede realizar un total de {sesiones} sesiones",
+  "myLocationsBaseLocationDesc": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.",
+  "myLocationsBaseLocationClientDesc": "Esta es la ubicación usada para localizar a la marca en el mapa para que los clientes puedan encontrarla a su alrededor.",
+  "myLocationsDeleteDescription": "¿Estás seguro de que quieres borrar esta ubicación?\n\nEn caso de que esta ubicación esté siendo usada en cualquier evento, actualizaremos la ubicación de este a tu ubicación base.",
+  "myImagesDeleteDescription": "¿Estás seguro de que quieres borrar esta imagen?",
+  "myImagesFavouriteDescription": "¿Estás seguro de que quieres seleccionar esta imagen como tu imagen favorita?\n\nSe usará como portada de tu marca para todos los otros usuarios.",
+  "myImagesFavouriteDelete": "Siempre debes tener una imagen favorita como portada de tu marca para todos los otros usuarios.",
+  "userJoinEventUser": "Te has unido al evento {name}",
+  "userJoinEventUserSubtitle": "Este se realizará el {dia} a las {horas}",
+  "userJoinEventBrand": "{user} se ha unido al evento {name}",
+  "userJoinEventBrandSubtitle": "Hay {joined} miembros apuntados de un máximo de {total} plazas",
+  "userLeavesEventUser": "Has abandonado tu plaza del evento {name}",
+  "userLeavesEventUserSubtitle": "Haz clic para ver su calendario y encontrar un evento al que puedas asistir",
+  "userLeavesEventBrand": "{user} ha abandonado el evento {name}",
+  "userLeavesEventBrandSubtitle": "Ahora quedan {joined} miembros apuntados de un máximo de {total} plazas",
+  "writeMessage": "Escribe un mensaje",
+  "noMessages": "Aún no has empezado ninguna conversación",
+  "membersOfBrand": "Grupo con todos los miembros de la marca",
+  "locationPermision": "Compartir ubicación",
+  "notificationsPermision": "Activar notificaciones",
+  "termsAndConditions": "Términos y Condiciones",
+  "privacy": "Privacidad",
+  "useMambaTermsAndConditions": "Utilizando Mamba aceptas nuestros ",
+  "findBrandClientText": "Encuentra una marca o añade tu código de invitación para desbloquear todas nuestras herramientas",
+  "findBrandTrainerText": "Crea tu marca o únete a una para desbloquear todas nuestras herramientas",
+  "rateAppTitle": "Tu opinión nos importa!",
+  "rateAppText": "Trabajamos muy duro para mejorar Mamba. Nos encantaría saber qué opinas y cómo podemos mejorar...",
+  "mambaWithLove": "Con amor, el equipo de Mamba.",
+  "updateAppTitle": "!Nueva versión disponible!",
+  "updateAppText": "Actualiza la app para no perderte ninguna novedad y evitar posibles errores.",
+  "lastAppUpdate": "¿Usas nuestra última versión?",
+  "mandatoryUpdate": "Actualización obligatoria",
+  "shareAppTitle": "Invitar amigos",
+  "shareAppText": "Comparte la app con tus amigos y familiares",
+  "shareApp": "Compartir",
+  "giveFeedbackTitle": "Ayúdanos a mejorar",
+  "giveFeedbackText": "Tu opinión es vital para seguir mejorando",
+  "giveFeedback": "Contestar",
+  "getInTouchTitle": "¿Algo más?",
+  "getInTouchText": "Envíanos un email",
+  "getInTouchTextDesc": "Envíanos un email y contacta con nosotros",
+  "getInTouchChat": "Envíanos un mensaje",
+  "getInTouch": "Contáctanos",
+  "brandDetailsTab": "Detalles",
+  "brandContentTab": "Fotos",
+  "readMore": "Ver más",
+  "readLess": "Ver menos",
+  "goodMorningGreeting": "Buenos días,",
+  "goodAfternoonGreeting": "Buenas tardes,",
+  "goodNightGreeting": "Buenas noches,",
+  "mambaProActivated": "Desactivar Mamba pro",
+  "mambaProDesactivated": "Activar Mamba pro",
+  "categories": "Categorias",
+  "bono": "Bono",
+  "membership": "Membresía",
+  "rate": "Tarifa",
+  "rates": "Tarifas",
+  "activeRates": "Tarifas activas",
+  "typeRate": "Tipo de tarifa",
+  "bonos": "Bonos",
+  "yourBonos": "Tus bonos",
+  "solicitudesBonos": "Solicitudes",
+  "bonosClient": "Bonos de clientes",
+  "bonosDescription": "Selecciona las tarifas que permiten a los usuarios unirse a este evento",
+  "bonosDescriptionWarning": "No has seleccionado ninguna tarifa.\nCualquier persona podrá unirse al evento y no se restringirá la entrada al mismo.",
+  "bonosDescriptionGreat": "Has seleccionado almenos una tarifa.\nLa entrada al evento esta restringida.",
+  "bonosDescriptionPrivate": "Selecciona las tarifas que debe tener un cliente para poder ser invitado a este evento",
+  "bonosDescriptionPrivateWarning": "No has seleccionado ninguna tarifa.\nCualquier persona invitada podrá unirse al evento y no se restringirá la entrada al mismo.",
+  "bonosCanPurchasedWarning": "Puedes cambiar el precio, las sesiones o las condiciones de esta tarifa ya que ningún cliente lo ha comprado.",
+  "bonosPurchasedWarning": "No puedes cambiar el precio, las sesiones o las condiciones de esta tarifa.\nDe esta manera, garantizamos la misma oferta para todos los usuarios, ya que algunos ya la han comprado.",
+  "deleteBonoConfirmation": "¿Seguro que quieres eliminar esta tarifa?",
+  "deactivateBonoConfirmation": "¿Seguro que quieres desactivar esta tarifa?",
+  "bonosCanDeleteWarning": "Puedes borrar esta tarifa por completo ya que ningún cliente la ha comprado.",
+  "bonosNoDeleteWarning": "No puedes borrar la tarifa porque ya lo compraron algunos clientes, pero puedes desactivarla.",
+  "inviteClientDescription": "Podrás invitar a un cliente una vez el evento haya sido creado",
+  "information": "Información",
+  "opinions": "Opiniones",
+  "relaxedFeedbackLabel": "Leve",
+  "tiredFeedbackLabel": "Moderado",
+  "veryTiredFeedbackLabel": "Intenso",
+  "exhaustedFeedbackLabel": "Exhaustivo",
+  "brandInviteDialog": "Has accedido a Mamba con un link de invitación a esta marca. Por favor confirma esta acción para unirte a ellos y poder disfrutar de su servicio.",
+  "selectTypeProfile": "Selecciona tu perfil",
+  "beforeMovingOn": "Ya casi estamos...",
+  "beforeEventTitleNotification": "⚠️ 🏋️‍ {event} a las {horas} 🏋️‍ ⚠️ ",
+  "beforeEventBodyNotification": "Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles",
+  "afterEventTitleNotification": "💪 ✅️ Sesión completada ✅️ 💪",
+  "afterEventBodyNotification": "¿Qué te ha parecido? ¿Demasiado intensa? Comunica tu nivel de esfuerzo a tu entrenador",
+  "deleteRecurrentEvent": "¿Cómo quieres quieres eliminar este evento recurrente?",
+  "saveRecurrentEvent": "¿Cómo quieres editar este evento recurrente?",
+  "saveRecurrentEventDetails": "En caso de modificar más de un evento, el día del evento no serà modificado.",
+  "thisEvent": "Solo este evento",
+  "thisEventAndRest": "Este y los eventos siguientes",
+  "trainersOnboarding": "Facilita tu trabajo",
+  "trainersOnboardingDesc": "Automatiza la calendarización y aforo de tus sesiones. Olvídate de tener que gestionar personalmente las reservas de tus clientes",
+  "trainersOnboardingSecond": "Personaliza tus precios",
+  "trainersOnboardingSecondDesc1": "Crea tu propia política de precios mediante ",
+  "trainersOnboardingSecondDesc2": "tarifas personalizadas.",
+  "trainersOnboardingSecondDesc3": " Escoge atentamente las condiciones y el estilo de tus tarifas para maximizar el interés de los clientes",
+  "trainersOnboardingThird": "Manten tu negocio bajo control",
+  "trainersOnboardingThirdDesc1": "Analiza la evolución de tus clientes y tu negocio. ",
+  "trainersOnboardingThirdDesc2": "Activa las notificaciones",
+  "trainersOnboardingThirdDesc3": " para no omitir ningún detalle importante. Solo te alertaremos cuando sea realmente necesario",
+  "closeToYou": "Cerca de ellos",
+  "changeLater": "Podrás cambiar esto más tarde",
+  "whatsYourName": "¿Cómo te llamas?",
+  "visibleFirstName": "Sólo tu nombre será visto por todos",
+  "whensYourBday": "Cuando es tu cumpleaños?",
+  "age": "Edad",
+  "visibleFact": "Dato solo usado para estadísticas, no será mostrado a ningún usuario",
+  "hour": "Hora",
+  "day": "Día",
+  "month": "Mes",
+  "monthly": "Mensual",
+  "bimonthly": "Bimensual",
+  "quarterly": "Trimestral",
+  "year": "Año",
+  "whatsYourGender": "Indica tu género",
+  "creatingProfile": "Creando perfil ...",
+  "googleInfo": "Verifica la información recogida de Google",
+  "clientsOnboarding": "Encuentra tu profesional",
+  "clientsOnboardingDesc": "Busca, compara y decide cuál es la marca fitness que mejor se adapta a ti. Únete a ella para poder disfrutar de su servicio y de un seguimiento personalizado.",
+  "yourBrands": "Tus marcas",
+  "howTheySeeMe": "Como me ven",
+  "quien": "Quien",
+  "que": "Que",
+  "como": "Como",
+  "cuando": "Cuando",
+  "donde": "Donde",
+  "scanQRCode": "Escanea código QR",
+  "staff": "Staff",
+  "buyDate": "Fecha de compra",
+  "bonoRequestDescription": "Pendientes de confirmación",
+  "createBono": "Crear bono",
+  "editBono": "Editar bono",
+  "createBonoRecurrent": "Crear membresía",
+  "editBonoRecurrent": "Editar membresía",
+  "createBonoSimple": "Crear bono",
+  "editBonoSimple": "Editar bono",
+  "nameBono": "Nombre de tu bono",
+  "descriptionBono": "Descripción de tu bono",
+  "activarBono": "Activar bono",
+  "desactivarBono": "Desactivar bono",
+  "activeBonoQuesDesc": "Tus clientes sólo pueden verlo y comprarlo si está disponible. Podrás cambiar la disponibilidad más tarde.",
+  "sesionsBono": "¿Cuantas sesiones tiene tu bono?",
+  "sesionsBonoDesc": "Esta tarifa cuenta con sesiones ilimitadas.",
+  "priceBono": "¿Qué precio tiene?",
+  "styleBono": "Estilo del bono",
+  "colorSolid": "Color sólido",
+  "degradateSolid": "Degradados",
+  "metalized": "Metalizados",
+  "orderBy": "Ordenar por",
+  "filterBy": "Filtrar por",
+  "noData": "Sin datos",
+  "paymentMethod": "Método de pago",
+  "paymentMethodOriginal": "El método de pago indicado inicialmente es: ",
+  "paymentMethodEdit": "Puedes editar el método de pago en cualquier momento.",
+  "paymentMethodNoEdit": "No puedes editar el método de pago ya que es un pago directo desde la plataforma.",
+  "paymentMethodConfirm": "Confirma el método de pago por favor.",
+  "inmediatePaymentMethod": "Pagos inmediatos",
+  "intermediatePaymentMethod": "Pagos verificables",
+  "cashPaymentMethod": "Efectivo",
+  "transferPaymentMethod": "Bizum",
+  "giftPaymentMethod": "Regalo",
+  "cardPaymentMethod": "Targeta",
+  "applePayPaymentMethod": "Apple Pay",
+  "googlePayPaymentMethod": "Google Pay",
+  "uniquePayment": "Pago único",
+  "recurrentPayment": "Pago recurrente",
+  "ilimitadas": "ilimitadas",
+  "verfied": "Pagado",
+  "verfiedDesc": "Se ha confirmado que se realizó el pago de esta compra. El cliente ha completado el proceso y ahora tiene acceso a la tarifa correspondiente según las condiciones establecidas.",
+  "unverfied": "Pendiente de pago",
+  "unverfiedDesc": "Aún no se ha confirmado el pago de la compra realizada por el cliente. El cliente adquirió la tarifa yestá disponible para su uso, pero espera la validación del pago.",
+  "toConfirm": "Por confirmar",
+  "toConfirmDesc": "El cliente solicitó la tarifa, pero está a la espera de confirmación por parte del profesional. Sin respuesta, no hay acceso a la tarifa.",
+  "automaticRenewalDesc": "Con la renovación automática activada, la tarifa se renovará automáticamente, generando una nueva compra con el método de pago establecido.",
+  "seeAutomaticRenewalPurchases": "Ver todas las compras relacionadas con esta membresía.",
+  "numberSessions": "Nº sesiones",
+  "buy": "Comprar",
+  "activeBono": "Bonos activos",
+  "desactiveBono": "Bonos inactivos",
+  "active": "Activo",
+  "desactive": "Inactivo",
+  "activeFem": "Activa",
+  "desactiveFem": "Inactiva",
+  "disponible": "Disponible",
+  "noDisponible": "No disponible",
+  "price": "Precio",
+  "priceHint": "Añade el precio",
+  "pricePlease": "Añade el precio por favor",
+  "session": "sesión",
+  "sessionHint": "Añade las sesiones",
+  "sessionPlease": "Añade las sesiones por favor",
+  "conditions": "Condiciones",
+  "expired": "Expirada",
+  "esgotat": "Agotada",
+  "expiredAfter": "Expirado después de",
+  "expiresAt": "Expira en",
+  "renewsAt": "Se renueva en",
+  "expiresAtDesc": "Número de días hasta el vencimiento de esta tarifa.",
+  "freeCancelHint": "Añade las horas",
+  "freeCancelError": "Añade las horas por favor",
+  "freeCancelErrorSecond": "No puede ser superior a 72 horas",
+  "freeCancelDesc": "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.",
+  "freeCancelInfo": "Tarifa sin límite de sesiones, lo que significa que la cancelación es gratuita y sin restricciones.",
+  "trainsPerWeekError": "El número máximo de sesiones por semana no puede ser superior a 7",
+  "trainsPerWeekDesc": "Número máximo de sesiones que pueden realizar tus clientes en una misma semana",
+  "expireDate": "Fecha de expiración",
+  "noExpireDate": "No tiene fecha de expiración",
+  "hours": "Horas antes de la sesión",
+  "freeCancel": "Cancelación gratuita",
+  "cancelTimeAt": "Cancelación gratuita hasta",
+  "max": "Máximo",
+  "trainsPerWeek": "Sesiones por semana",
+  "first": "Primero",
+  "alphabetAtoZ": "Ordenar de A-Z",
+  "alphabetZtoA": "Ordenar de Z-A",
+  "mostBuys": "Más comprado",
+  "bonoBuys": "Bonos pendientes",
+  "preseeBono": "Previsualiza tu tarifa",
+  "acceptBono": "Otorgar tarifa",
+  "acceptBonoDesc": "Verifica la información antes de confirmar la compra de la tarifa",
+  "editBonoClientDesc": "Verifica la información antes de editar la tarifa del cliente",
+  "paymentIndication": " ha indicado que ha pagado usando: ",
+  "noBonosCreated": "No se ha creado ninguna tarifa",
+  "createFistBono": "Crea tu primera tarifa",
+  "userBuysBonoTrainer": "{user} ha comprado la tarifa {bono}",
+  "userBuysBonoTrainerSubtitle": "Puedes encontrar todos los detalles de su progreso en el perfil del usuario",
+  "potentialClient": "Cliente potencial",
+  "potentialClients": "Clientes potenciales",
+  "activeClients": "Clientes activos",
+  "desactiveClient": "Clientes inactivos",
+  "personalizedFieldsFirst": "Se deben rellenar todos los campos personalizados",
+  "allBonosInClient": "Ya dispone de todos las tarifas disponibles",
+  "from": "Desde",
+  "to": "Hasta",
+  "activeTrainers": "Staff activa",
+  "desactiveTrainers": "Staff inactiva",
+  "bonosNecesarios": "Tarifas necesarias",
+  "seeMap": "Ver mapa",
+  "personalizeBonoUser": "Personalizar solo para {user}",
+  "average": "de media",
+  "purchaseHistory": "Historial de compras",
+  "comingNDays": "Próximos {days} Días",
+  "eachNDaysAprox": "Cada {days} días aproximadamente",
+  "afterNDaysAprox": "Después de {days} días aproximadamente",
+  "endOfMonth": "Final de Mes",
+  "lastNDays": "Últimos {days} Días",
+  "previousMonth": "Mes Anterior",
+  "facturation": "Facturación",
+  "eventsDone": "Eventos realizados",
+  "labelSessionMade": "Día y número de eventos",
+  "daysDemand": "Demanda de días",
+  "historic": "Histórico",
+  "mon": "Lun.",
+  "tue": "Mar.",
+  "wed": "Mierc.",
+  "thur": "Jue.",
+  "fri": "Vier.",
+  "sat": "Sab.",
+  "sun": "Dom.",
+  "timeOffer": "Hora más demandada",
+  "timeToTimeOffer": "Demanda de franjas",
+  "ageRange": "Media de edad",
+  "newClient": "Altas",
+  "actives": "Activos",
+  "atThisMoment": "actualmente",
+  "totals": "totales",
   "others": "Otros",
-  "@others": {
-    "description": "others day"
-  },
   "labelInvoiceMade": "Día y beneficio",
-  "@labelInvoiceMade": {
-    "description": "labelInvoiceMade message"
-  },
   "totalInvoice": "Facturación total",
-  "@totalInvoice": {
-    "description": "totalInvoice message"
-  },
   "benefit": "Beneficio",
-  "@benefit": {
-    "description": "benefit message"
-  },
   "bookings": "Reservas",
-  "@bookings": {
-    "description": "boughts message"
-  },
   "payments": "Pagos",
-  "@payments": {
-    "description": "boughts message"
-  },
   "boughts": "Compras",
-  "@boughts": {
-    "description": "boughts message"
-  },
   "bookingWindow": "Ventana de reserva",
-  "@bookingWindow": {
-    "description": "boughts message"
-  },  
   "bookingWindowDescription": "Indica el tiempo de antelación con el que los clientes de tu marca pueden reservar una plaza en tus sesiones",
-  "@bookingWindowDescription": {
-    "description": "boughts message"
-  },
   "minimumBookingWindow": "Alertas de reservas inminentes",
-  "@minimumBookingWindow": {
-    "description": "boughts message"
-  },
   "minimumBookingWindowDescription": "Configura el tiempo mínimo de anticipación para tus reservas. Recibirás una notificación personalizada cada vez que se realice una reserva que cumpla o esté por debajo de este plazo establecido, asegurándote de estar siempre informado sobre reservas de última hora",
-  "@minimumBookingWindowDescription": {
-    "description": "boughts message"
-  },
   "requestText": "Comprueba las solicitudes de la marca",
-  "@requestText": {
-    "description": "requestText message"
-  },
   "joinedIn": "Miembro desde {dateJoined}",
-  "@joinedIn": {
-    "description": "Member Since message",
-    "placeholders": {
-      "dateJoined": {
-        "type": "String"
-      }
-    }
-  },
   "lastActiveIn": "Última interacción {dateJoined}",
-  "@lastActiveIn": {
-    "description": "Member Since message",
-    "placeholders": {
-      "dateJoined": {
-        "type": "String"
-      }
-    }
-  },
   "averageTimeWorked": "Tiempo medio trabajado",
-  "@averageTimeWorked": {
-    "description": "seeMap message"
-  },
   "totalTimeWorked": "Tiempo total trabajado",
-  "@totalTimeWorked": {
-    "description": "seeMap message"
-  },
   "averageTimeTrained": "Tiempo medio entrenado",
-  "@averageTimeTrained": {
-    "description": "seeMap message"
-  },
   "totalTimeTrained": "Tiempo total entrenado",
-  "@totalTrainedHours": {
-    "description": "seeMap message"
-  },
   "sesionsCompleted": "Sesiones completadas",
-  "@sesionsCompleted": {
-    "description": "seeMap message"
-  },
-  "minutesString":  "Minutos",
-  "@minutesString":{
-    "description": "hours Text"
-  },
-  "hoursString":  "Horas",
-  "@hoursString":{
-    "description": "hours Text"
-  },
-  "week":  "Semana",
-  "@week":{
-    "description": "hours Text"
-  },
-  "inrow":  "Seguidas",
-  "@inrow":{
-    "description": "hours Text"
-  },
-  "trainingStreak":  "Training streak",
-  "@trainingStreak":{
-    "description": "hours Text"
-  },
-  "trainingStreakDescription":  "Solo necesitas unas pocas horas a la semana para empezar la mejor racha de tu vida",
-  "@trainingStreakDescription":{
-    "description": "hours Text"
-  },
-  "trainingStreakCongrats":  "¡Que no pare la fiesta del fitness!",
-  "@trainingStreakCongrats":{
-    "description": "hours Text"
-  },
+  "minutesString": "Minutos",
+  "hoursString": "Horas",
+  "week": "Semana",
+  "inrow": "Seguidas",
+  "trainingStreak": "Training streak",
+  "trainingStreakDescription": "Solo necesitas unas pocas horas a la semana para empezar la mejor racha de tu vida",
+  "trainingStreakCongrats": "¡Que no pare la fiesta del fitness!",
   "lastYear": "Último Año",
-  "@lastYear": {
-    "description": "Wellcome message"
-  },
   "lastNMonths": "Últimos {months} Meses",
-  "@lastNMonths": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "months": {
-        "type": "String"
-      }
-    }
-  },
   "statsMinimumSession": "Necesitas un mínimo de {sesions} sesiones para ver tu progreso",
-  "@statsMinimumSession": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "sesions": {
-        "type": "String"
-      }
-    }
-  },
   "rateThisApp": "Valora esta app",
-  "@rateThisApp": {
-    "description": "Wellcome message"
-  },
   "favoriteBrand": "Marca favorita",
-  "@favoriteBrand": {
-    "description": "Wellcome message"
-  },
   "favorites": "Favoritos",
-  "@favorites": {
-    "description": "Wellcome message"
-  },
   "upcomingEvents": "Próximos Eventos",
-  "@upcomingEvents": {
-    "description": "Wellcome message"
-  },
   "seeAll": "Ver todas",
-  "@seeAll": {
-    "description": "Wellcome message"
-  },
   "seeAllMasc": "Ver todos",
-  "@seeAllMasc": {
-    "description": "Wellcome message"
-  },
   "anotherBrand": "de otra marca",
-  "@anotherBrand": {
-    "description": "Wellcome message"
-  },
   "schedule": "Agenda",
-  "@schedule":{
-    "description": "disponibilidad text"
-  },
   "last30Days": "Últimos 30 días",
-  "@last30Days":{
-    "description": "last30Days text"
-  },
   "olderFirst": "Antiguos",
-  "@olderFirst": {
-    "description": "Donde message"
-  },
   "newerFirst": "Recientes",
-  "@newerFirst": {
-    "description": "Donde message"
-  },
   "asistants": "Asistentes",
-  "@asistants":{
-    "description": "Añadir Miembros text"
-  },
   "onlyAllowed": "Solo puedes borrar tu usuario si no perteneces a una marca.",
-  "@onlyAllowed":{
-    "description": "onlyAllowed text"
-  },
   "statsMinimumSessionBrand": "Necesitas un mínimo de sesiones para ver esta estadística",
-  "@statsMinimumSessionBrand": {
-    "description": "statsMinimumSessionBrand message"
-    },
   "subscriptionExpired": "Tu plan ha caducado, pulsa para renovar",
-  "@subscriptionExpired": {
-    "description": "subscriptionExpired message"
-  },
   "noSubscription": "No tienes plan, pulsa para adquirir uno",
-  "@noSubscription": {
-    "description": "noSubscription message"
-  },
   "adminSubscriptionDesc": "Solo el creador de la marca puede suscribirte a los planes. El pago estará vinculado a su cuenta y todas las transacciones se gestionarán a través de esta para garantizar seguridad y transparencia.",
-  "@adminSubscriptionDesc": {
-    "description": "noSubscription message"
-  },
   "seeyourSub": "Pulsa para ver tu plan",
-  "@seeyourSub": {
-    "description": "seeyourSub message"
-  },
   "subscriptionsAppBar": "Planes",
-  "@subscriptionsAppBar": {
-    "description": "subscriptionsAppBar message"
-  },
   "moreSubInfo": "El plan expira el {endDate}",
-  "@moreSubInfo": {
-    "description": "moreSubInfo message",
-    "placeholders": {
-      "endDate": {
-        "type": "String"
-      }
-    }
-  },
   "moreSubInfoRenAut": "El plan se renovará automáticamente el {endDate}",
-  "@moreSubInfoRenAut": {
-    "description": "moreSubInfoRenAut message",
-    "placeholders": {
-      "endDate": {
-        "type": "String"
-      }
-    }
-  },
   "subscriptionIncludes": "Incluye todo",
-  "@subscriptionIncludes": {
-    "description": "subscriptionIncludes message"
-  },
   "sessionControlPayWallHeader": "Gestión de sesiones",
-  "@sessionControlPayWallHeader": {
-    "description": "sessionControlPayWallHeader message"
-  },
   "sessionControlPayWallText": "Automatiza la calendarización y aforo de tus sesiones",
-  "@sessionControlPayWallText": {
-    "description": "sessionControlPayWallText message"
-  },
   "pricePolicyPayWallHeader": "Define tu política de precios",
-  "@pricePolicyPayWallHeader": {
-    "description": "pricePolicyPayWallHeader message"
-  },
   "pricePolicyPayWallText": "Gestiona tus pagos con tarifas totalmente personalizables",
-  "@pricePolicyPayWallText": {
-    "description": "pricePolicyPayWallText message"
-  },
   "statsPayWallHeader": "Tu negocio en números",
-  "@statsPayWallHeader": {
-    "description": "statsPayWallHeader message"
-  },
   "statsPayWallText": "Toma las mejores decisiones para tu negocio con el módulo de estadísticas",
-  "@statsPayWallText": {
-    "description": "statsPayWallText message"
-  },
   "personalizeBrandPayWallHeader": "Personaliza a tu gusto",
-  "@personalizeBrandPayWallHeader": {
-    "description": "personalizeBrandPayWallHeader message"
-  },
   "personalizeBrandPayWallText": "Con tu logotipo, tus colores, tus fotos y tus ubicaciones",
-  "@personalizeBrandPayWallText": {
-    "description": "personalizeBrandPayWallText message"
-  },
   "feedBackPayWallHeader": "Escucha a tus clientes",
-  "@feedBackPayWallHeader": {
-    "description": "feedBackPayWallHeader message"
-  },
   "feedBackPayWallText": "Obtén feedback de cada cliente después de tus sesiones",
-  "@feedBackPayWallText": {
-    "description": "feedBackPayWallText message"
-  },
   "searcherPayWallHeader": "Clientes cerca de ti",
-  "@searcherPayWallHeader": {
-    "description": "searcherPayWallHeader message"
-  },
   "searcherPayWallText": "Nuevos clientes te podrán contactar y solicitar tus servicios",
-  "@searcherPayWallText": {
-    "description": "searcherPayWallText message"
-  },
   "sessionControActiveText": "Gestión de tus sesiones y control de aforo",
-  "@sessionControActiveText": {
-    "description": "sessionControActiveText message"
-  },
   "pricePolicyActiveText": "Política de precios mediante tarifas personalizadas",
-  "@pricePolicyPayWallText": {
-    "description": "pricePolicyPayWallText message"
-  },
   "statsActiveText": "Análisis de tu negocio con el módulo de estadísticas",
-  "@statsActiveText": {
-    "description": "statsActiveText message"
-  },
   "personalizeBrandActiveText": "Personalización de tu marca",
-  "@personalizeBrandActiveText": {
-    "description": "personalizeBrandActiveText message"
-  },
   "feedBackActiveText": "Obtén feedback de cada cliente después de tus sesiones",
-  "@feedBackPayWallText": {
-    "description": "feedBackPayWallText message"
-  },
   "searcherActiveText": "Aparición en el buscador de marcas",
-  "@searcherActiveText": {
-    "description": "searcherActiveText message"
-  },
   "seeAllSubs": "Ver todos los planes",
-  "@seeAllSubs": {
-    "description": "seeAllSubs message"
-  },
   "tanksforUsing": "Gracias por probar Mamba Professional",
-  "@tanksforUsing": {
-    "description": "tanksforUsing message"
-  },
   "updateToday": "Suscríbete hoy",
-  "@updateToday": {
-    "description": "updateToday message"
-  },
   "joinToBrands": "Únete a la revolución del negocio ",
-  "@joinToBrands": {
-    "description": "joinToBrands message"
-  },
   "getAll": "Obtenlo todo",
-  "@getAll": {
-    "description": "getAll message"
-  },
   "getAllDesc": "Desbloquea todo el potencial de Mamba Pro con un plan único",
-  "@getAllDesc": {
-    "description": "getAllDesc message"
-  },
   "moreInfoInWeb": "Más información en nuestra web",
-  "@moreInfoInWeb": {
-    "description": "moreInfoInWeb message"
-  },
   "promotionUse": "Canjea una promoción",
-  "@promotionUse": {
-    "description": "promotionUse message"
-  },
   "insertCode": "Introduce un código promocional",
-  "@insertCode": {
-    "description": "insertCode message"
-  },
   "anyDoubt": "¿Alguna duda?",
-  "@anyDoubt": {
-    "description": "anyDoubt message"
-  },
   "seeSubscriptionPayWall": "Ver planes",
-  "@seeSubscriptionPayWall": {
-    "description": "seeSubscriptionPayWall message"
-  },
   "cancelSubscriptionPayWall": "Para cancelar tu suscripción, abre la aplicación Google Play Store en tu dispositivo. Toca el icono del menú (☰) y selecciona 'Suscripciones'. Encuentra la suscripción que deseas cancelar y tócala. Luego, toca 'Cancelar suscripción' y sigue las instrucciones en pantalla para completar el proceso de cancelación. Para más ayuda, visita el Centro de Ayuda de Google Play.",
-  "@cancelSubscriptionPayWall": {
-    "description": "seeSubscriptionPayWall message"
-  },
   "noPromotions": "No hay promociones",
-  "@noPromotions": {
-    "description": "noPromotions message"
-  },
   "promotionDetected": "Promoción detectada",
-  "@promotionDetected": {
-    "description": "promotionDetected message"
-  },
   "uniquePromotion": "Te regalamos una promoción única",
-  "@uniquePromotion": {
-    "description": "uniquePromotion message"
-  },
   "startToday": "Empieza: hoy",
-  "@startToday": {
-    "description": "startToday message"
-  },
   "threeFreeMoths": "3 meses gratis",
-  "@threeFreeMoths": {
-    "description": "threeFreeMoths message"
-  },
   "youCanPurcahseNow": "Podrás suscribirte próximamente",
-  "@youCanPurcahseNow": {
-    "description": "youCanPurcahseNow message"
-  },
   "subscribeNow": "Suscribirme",
-  "@subscribeNow": {
-    "description": "subscribeNow message"
-  },
   "paySubscription": "Pagar suscripción",
-  "@paySubscription": {
-    "description": "subscribeNow message"
-  },
   "paySubscriptionDesc": "Sólo el creador",
-  "@paySubscriptionDesc": {
-    "description": "subscribeNow message"
-  },
   "block": "Bloquear",
-  "@block": {
-    "description": "block message"
-  },
   "unblock": "Desbloquear",
-  "@unblock": {
-    "description": "unblock message"
-  },
   "report": "Reportar",
-  "@report": {
-    "description": "report message"
-  },
-  "unBlockUserToSend":  "Desbloquea al usuario para poder enviar mensajes",
-  "@unBlockUserToSend": {
-    "description": "unBlockUserToSend message"
-  },
-  "reportUserFor":  "Quiero reportar al usuario por: \n",
-  "@reportUserFor": {
-    "description": "reportUserFor message"
-  },
-  "shareInvitation":  "Compartir invitación",
-  "@shareInvitation": {
-    "description": "shareInvitation message"
-  },
-  "shareInvitationText":  "Invita clientes a tu marca",
-  "@shareInvitationText": {
-    "description": "shareInvitationText message"
-  },
-  "freeTrialDaysLeft":  "Quedan {daysLeft} días para escoger tu plan",
-  "@freeTrialDaysLeft": {
-    "description": "freeTrialDaysLeft message",
-    "placeholders": {
-      "daysLeft": {
-        "type": "String"
-      }
-    }
-  },  
-  "freeTrial":  "Prueba Gratuita",
-  "@freeTrial": {
-    "description": "chooseYourPlan message"
-  },
-  "monthlyPlan":  "Plan Mensual",
-  "@monthlyPlan": {
-    "description": "chooseYourPlan message"
-  },
-  "monthlyPlanDayRenewal":  "Se renueva el día {daysLeft}",
-  "@monthlyPlanDayRenewal": {
-    "description": "freeTrialDaysLeft message",
-    "placeholders": {
-      "daysLeft": {
-        "type": "String"
-      }
-    }
-  },
-  "chooseYourPlan":  "Escoge tu plan",  
-  "@chooseYourPlan": {
-    "description": "chooseYourPlan message"
-  },
-  "chooseYourPlanDesc":  "Desbloquea todas las funcionalidades",  
-  "@chooseYourPlanDesc": {
-    "description": "chooseYourPlan message"
-  },
-  "yourPlan":  "Tu plan",
-  "@yourPlan": {
-    "description": "chooseYourPlan message"
-  },
-  "addClient":  "Añadir clientes",
-  "@addClient": {
-    "description": "addClient message"
-  },
-  "addClientDescription": "Añadir clientes a tu marca",
-  "@addClientDescription":{
-    "description": "createBrand Text"
-  },
-  "addTrainerDescription": "Añadir staff a tu marca",
-  "@addTrainerDescription":{
-    "description": "createBrand Text"
-  },
-  "perMonth": "/ mes",
-  "@perMonth": {
-    "description": "perMonth message"
-  },
-  "perYear": "/ año (-25%)",
-  "@perYear": {
-    "description": "perYear message"
-  },
-  "autoRenovation": "Renovación automática",
-  "@autoRenovation": {
-    "description": "autoRenovation message"
-  },
-  "bonoExpirationWeekTitleNotification": "\uD83D\uDCC5 \uD83D\uDD52 ¡Tu tarifa caduca {bono} en una semana! \uD83D\uDD52 \uD83D\uDCC5 ",
-  "@bonoExpirationWeekTitleNotification": {
-    "description": "beforeEventBodyNotification message",
-    "placeholders": {
-      "bono": {
-        "type": "String"
-      }
-    }
-  },
-  "bonoExpirationWeekBodyNotification": "Este es un recordatorio amistoso de que tu tarifa caducará en una semana. ¡Asegúrate de reservar tus sesiones antes de que sea demasiado tarde!",
-  "@bonoExpirationWeekBodyNotification": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "bonoExpirationDaysTitleNotification": "⏰ \uD83D\uDCC6 ¡Tu tarifa {bono} caduca en 3 días! \uD83D\uDCC6 ⏰ ",
-  "@bonoExpirationDaysTitleNotification": {
-    "description": "beforeEventBodyNotification message",
-    "placeholders": {
-      "bono": {
-        "type": "String"
-      }
-    }
-  },
-  "bonoExpirationDaysBodyNotification": "Este es un recordatorio amistoso de que tu tarifa caducará en tan solo 3 días. ¡No te quedes sin disfrutar de tus sesiones restantes!",
-  "@bonoExpirationDaysBodyNotification": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "bonoExpirationTomorrowTitleNotification": "\uD83D\uDEA8 ❗️ ¡Tu tarifa {bono} caduca mañana! ❗️ \uD83D\uDEA8 ",
-  "@bonoExpirationTomorrowTitleNotification": {
-    "description": "beforeEventBodyNotification message",
-    "placeholders": {
-      "bono": {
-        "type": "String"
-      }
-    }
-  },
-  "bonoExpirationTomorrowBodyNotification": "Este es un recordatorio urgente de que tu tarifa caduca mañana. ¡No te pierdas la oportunidad de utilizar tus sesiones restantes! Reserva ahora.",
-  "@bonoExpirationTomorrowBodyNotification": {
-    "description": "beforeEventBodyNotification message"
-  },
-  "notSubNotAdmin": "Su marca no dispone de un plan, solo el administrador de la marca puede subscribirse a uno",
-  "@notSubNotAdmin": {
-    "description": "notSubNotAdmin message"
-  },
-  "isMaintenanceText": "Estamos afinando los detalles para llevarte una experiencia aún mejor. Solo nos tomará unos minutos regresar con fuerza...",
-  "@isMaintenanceText": {
-    "description": "notSubNotAdmin message"
-  },
-  "cantEditText": "La fecha, hora y duración de un evento finalizado no se pueden modificar",
-  "@cantEditText": {
-    "description": "cantEditText message"
-  },
-  "notAvailableFinishedEvents": "No disponible para eventos finalizados",
-  "@notAvailableFinishedEvents": {
-    "description": "cantEditText message"
-  },
-  "notAvailableClientsModifiedEvents": "No disponible ya que se han modificado clientes",
-  "@notAvailableClientsModifiedEvents": {
-    "description": "cantEditText message"
-  },
-  "freeSessionDescription": "Permite que los interesados disfruten de una sesión gratuita, con la posibilidad de reservar su plaza en uno de tus servicios sin costo alguno. Esta oferta es válida sólo una vez",
-  "@freeSessionDescription": {
-    "description": "directPurchase message"
-  },
-  "freeSession": "Sesión de prueba",
-  "@freeSession": {
-    "description": "directPurchasetext message"
-  },
-  "directPurchaseDescription": "Las solicitudes de compra se aprueban automáticamente, permitiendo que el cliente disponga de la tarifa al instante. Se debe confirmar el pago recibido posteriormente",
-  "@directPurchaseDescription": {
-    "description": "directPurchase message"
-  },
-  "directPurchasetext": "Aprobación instantánea",
-  "@directPurchasetext": {
-    "description": "directPurchasetext message"
-  },
-  "deletePurchase": "¿Estás seguro qué quieres eliminar esta compra?\n\n El cliente será eliminado de todos los eventos realizados con esta tarifa.",
-  "@deletePurchase": {
-    "description": "deletePurchase message"
-  },
-  "deletePurchaseRequest": "¿Estás seguro de que quieres eliminar esta solicitud de compra?\n\nEl cliente será notificado de que has rechazado su solicitud y no se le otorgará la tarifa.",
-  "@deletePurchaseRequest": {
-    "description": "deletePurchase message"
-  },
-  "cancelEventPurchase": "¿Estás seguro que quieres desvincular este evento de la compra?",
-  "@cancelEventPurchase": {
-    "description": "cancelEventPurchase message"
-  },
-  "addEventsToPurchaseText": "Añade o desvincula eventos a la compra",
-  "@addEventsToPurchaseText": {
-    "description": "addEventsToPurchaseText message"
-  },
-  "addEventsToPurchaseSubText": "Afectaran al número de sesiones para esta tarifa",
-  "@addEventsToPurchaseSubText": {
-    "description": "addEventsToPurchaseSubText message"
-  },
-  "purchase": "Compra",
-  "@purchase": {
-    "description": "purchase message"
-  },
-  "createdBy": "Creada por {name}",
-  "@createdBy": {
-    "description": "Member Since message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "whichBono": "¿Con qué compra quieres reservar?",
-  "@whichBono": {
-    "description": "userJoinsBrandUser message"
-  },
-  "activarCompra": "Activar compra",
-  "@activarCompra": {
-    "description": "activarCompra message"
-  },
-  "desactivarCompra": "Desactivar compra",
-  "@desactivarCompra": {
-    "description": "desactivarCompra message"
-  },
-  "activePurchaseQuesDesc": "Tus clientes pueden usar su tarifa si está activa. Ésta se activa o desactiva automaticamente, pero se puede forzar su estado de manera manual.",
-  "@activePurchaseQuesDesc": {
-    "description": "activePurchaseQuesDesc message"
-  },
-  "deleteClientsWithPurchases": "Elimine los clientes que han comprado esta sesión, confirme la edición y posteriormente podrá borrar la sesión",
-  "@deleteClientsWithPurchases": {
-    "description": "deleteClientsWithPurchases message"
-  },
-  "deleteClientsWithPurchasesBonos": "Elimine los clientes que han comprado la sesión para poder eliminar tarifas de esta sesión",
-  "@deleteClientsWithPurchasesBonos": {
-    "description": "deleteClientsWithPurchasesBonos message"
-  },
-  "orderBySessions": "Número de sesiones restantes",
-  "@orderBySessions": {
-    "description": "orderBySessions message"
-  },
-  "orderBySessionsMoreToLess": "De más sesiones a menos sesiones",
-  "@orderBySessionsMoreToLess": {
-    "description": "orderBySessionsMoreToLess message"
-  },
-  "orderBySessionsLessToMore": "De menos sesiones a más sesiones",
-  "@orderBySessionsLessToMore": {
-    "description": "orderBySessionsLessToMore message"
-  },
-  "chargingEvents": "Cargando eventos",
-  "@chargingEvents": {
-    "description": "chargingEvents message"
-  },
-  "and": "y",
-  "@and": {
-    "description": "chargingEvents message"
-  },
+  "unBlockUserToSend": "Desbloquea al usuario para poder enviar mensajes",
+  "reportUserFor": "Quiero reportar al usuario por: \n",
+  "shareInvitation": "Compartir invitación",
+  "shareInvitationText": "Invita clientes a tu marca",
+  "freeTrialDaysLeft": "Quedan {daysLeft} días para escoger tu plan",
+  "freeTrial": "Prueba Gratuita",
+  "monthlyPlan": "Plan Mensual",
+  "monthlyPlanDayRenewal": "Se renueva el día {daysLeft}",
+  "chooseYourPlan": "Escoge tu plan",
+  "chooseYourPlanDesc": "Desbloquea todas las funcionalidades",
+  "yourPlan": "Tu plan",
+  "addClient": "Añadir clientes",
   "addClientDescription": "En un evento recurrente podrás añadir clientes una vez el evento haya sido creado",
-  "@addClientDescription":{
-    "bonosClient": "addClientDescription client text"
-  },
-  "cantEditRecurrent": "Elimina los clientes del evento para poder indicar si es un evento recurrente",
-  "@addClientDescription":{
-    "bonosClient": "addClientDescription client text"
-  },
-  "noActiveBonos": "No dispone de tarifas disponibles para ser añadido a la sesión",
-  "@noActiveBonos":{
-    "noActiveBonos": "noActiveBonos text"
-  },
-  "processOnWork": "Hay un proceso ejecutandose, espere hasta que termine o reinicie la app",
-  "@processOnWork":{
-    "description": "processOnWork text"
-  },
-  "betaFeature": "Función en fase Beta. Comparte tu experiencia para ayudarnos a perfeccionarla.",
-  "@betaFeature":{
-    "description": "processOnWork text"
-  },
-  "soonFeature": "Función en última fase de desarrollo. Está a punto de estar disponible.",
-  "@soonFeature":{
-    "description": "processOnWork text"
-  },
-  "bonoSimple": "Bono",
-  "@bonoSimple":{
-    "description": "bonoSimple text"
-  },
-  "bonoSimpleText": "Pago único con vencimiento",
-  "@bonoSimpleText":{
-    "description": "bonoSimpleText text"
-  },
-  "bonoRecurrent": "Membresía",
-  "@bonoRecurrent":{
-    "description": "bonoRecurrent text"
-  },
-  "bonoRecurrentText": "Pagos periódicos con renovación",
-  "@bonoRecurrentText":{
-    "description": "bonoRecurrentText text"
-  },
-  "renovationDate": "Fecha de renovación",
-  "@renovationDate":{
-  "description": "RenovationDate text"
-  },
-  "renovationDateDesc": "Desde la compra, el número de días hasta el próximo pago",
-  "@renovationDateDesc":{
-  "description": "RenovationDate text"
-  },
-  "firstDayOfMonth": "Primer día de cada mes",
-  "@firstDayOfMonth":{
-  "description": "FirstDayOfMonth text"
-  },
-  "firstDayOfMonthDesc": "Se aplicaran cargos al cliente según las condiciones de tu marca",
-  "@firstDayOfMonthDesc":{
-  "description": "FirstDayOfMonthDesc text"
-  },
-  "gracePeriodTitle": "Periodo de gracia",
-  "@gracePeriodTitle": {
-    "description": "Título de la sección del Periodo de Gracia"
-  },
-  "gracePeriodDescription": "Plazo adicional para confirmación de pagos por el profesional, asegurando acceso continuo a servicios. Tras el período de gracia, la tarifa permanecerá inactiva hasta la confirmación del pago",
-  "@gracePeriodDescription": {
-    "description": "Descripción breve del Periodo de Gracia"
-  },
-  "maximumCancellationsPerWeekTitle": "Cancelaciones máximas por semana",
-  "@maximumCancellationsPerWeekTitle": {
-    "description": "Título de la sección de Cancelaciones Máximas por Semana"
-  },
-  "maximumCancellationsPerWeekDescription": "Número máximo de cancelaciones permitidas semanalmente sin penalización",
-  "@maximumCancellationsPerWeekDescription": {
-    "description": "Descripción breve de Cancelaciones Máximas por Semana"
-  },
-
-  "paymentTermsTitle": "Términos de pago",
-  "@paymentTermsTitle": {
-    "description": "Título de la sección de Términos de Pago"
-  },
-  "paymentTermsDescription": "Escoge cómo se aplica la fecha de vencimiento o renovación para las tarifas y cómo se calculan los precios en función de la fecha, ya sea para pagos únicos o para membresías con renovación automática, garantizando un ajuste preciso a sus necesidades financieras",
-  "@paymentTermsDescription": {
-    "description": "Descripción breve de los Términos de Pago"
-  },
-  "proratedPaymentTitle": "Prorrateo Exacto",
-  "@proratedPaymentTitle": {
-    "description": "Título de la opción de Pago Prorrateado"
-  },
-  "proratedPaymentDescription": "Ajusta el pago inicial proporcionalmente hasta el inicio del próximo mes, modificando el precio y las sesiones disponibles de forma exacta",
-  "@proratedPaymentDescription": {
-    "description": "Descripción de cómo funciona el Pago Prorrateado"
-  },
-  "midMonthPaymentTitle": "Prorrateo Mitad de Mes",
-  "@midMonthPaymentTitle": {
-    "description": "Título de la opción de Pago 15 y 15"
-  },
-  "midMonthPaymentDescription": "Compras antes del día 15, pagan y disponen de la tarifa completa. Después del día 15, el precio y las sesiones se reducen a la mitad",
-  "@midMonthPaymentDescription": {
-    "description": "Descripción de cómo funciona el Pago 15 y 15"
-  },
-  "exactDaysTitle": "Vencimiento Exacto",
-  "@exactDaysTitle": {
-    "description": "Título de la opción de Pago Exacto"
-  },
-  "exactDaysTitleDescription": "Precio íntegro sin ajustes. Caduca o renueva automáticamente en la fecha prevista, sin cálculos adicionales",
-  "@exactDaysTitleDescription": {
-    "description": "Descripción de cómo funciona el días exactos"
-  },  
-  "times": "Veces",
-  "@times": {
-    "description": "times text"
-  },
-  "vencen": "Vencen",
-  "@vencen": {
-    "description": "times text"
-  },
+  "addTrainerDescription": "Añadir staff a tu marca",
+  "perMonth": "/ mes",
+  "perYear": "/ año (-25%)",
   "autoRenovation": "Renovación automática",
-  "@autoRenovation": {
-    "description": "autoRenovation description"
-  },
+  "bonoExpirationWeekTitleNotification": "📅 🕒 ¡Tu tarifa caduca {bono} en una semana! 🕒 📅 ",
+  "bonoExpirationWeekBodyNotification": "Este es un recordatorio amistoso de que tu tarifa caducará en una semana. ¡Asegúrate de reservar tus sesiones antes de que sea demasiado tarde!",
+  "bonoExpirationDaysTitleNotification": "⏰ 📆 ¡Tu tarifa {bono} caduca en 3 días! 📆 ⏰ ",
+  "bonoExpirationDaysBodyNotification": "Este es un recordatorio amistoso de que tu tarifa caducará en tan solo 3 días. ¡No te quedes sin disfrutar de tus sesiones restantes!",
+  "bonoExpirationTomorrowTitleNotification": "🚨 ❗️ ¡Tu tarifa {bono} caduca mañana! ❗️ 🚨 ",
+  "bonoExpirationTomorrowBodyNotification": "Este es un recordatorio urgente de que tu tarifa caduca mañana. ¡No te pierdas la oportunidad de utilizar tus sesiones restantes! Reserva ahora.",
+  "notSubNotAdmin": "Su marca no dispone de un plan, solo el administrador de la marca puede subscribirse a uno",
+  "isMaintenanceText": "Estamos afinando los detalles para llevarte una experiencia aún mejor. Solo nos tomará unos minutos regresar con fuerza...",
+  "cantEditText": "La fecha, hora y duración de un evento finalizado no se pueden modificar",
+  "notAvailableFinishedEvents": "No disponible para eventos finalizados",
+  "notAvailableClientsModifiedEvents": "No disponible ya que se han modificado clientes",
+  "freeSessionDescription": "Permite que los interesados disfruten de una sesión gratuita, con la posibilidad de reservar su plaza en uno de tus servicios sin costo alguno. Esta oferta es válida sólo una vez",
+  "freeSession": "Sesión de prueba",
+  "directPurchaseDescription": "Las solicitudes de compra se aprueban automáticamente, permitiendo que el cliente disponga de la tarifa al instante. Se debe confirmar el pago recibido posteriormente",
+  "directPurchasetext": "Aprobación instantánea",
+  "deletePurchase": "¿Estás seguro qué quieres eliminar esta compra?\n\n El cliente será eliminado de todos los eventos realizados con esta tarifa.",
+  "deletePurchaseRequest": "¿Estás seguro de que quieres eliminar esta solicitud de compra?\n\nEl cliente será notificado de que has rechazado su solicitud y no se le otorgará la tarifa.",
+  "cancelEventPurchase": "¿Estás seguro que quieres desvincular este evento de la compra?",
+  "addEventsToPurchaseText": "Añade o desvincula eventos a la compra",
+  "addEventsToPurchaseSubText": "Afectaran al número de sesiones para esta tarifa",
+  "purchase": "Compra",
+  "createdBy": "Creada por {name}",
+  "whichBono": "¿Con qué compra quieres reservar?",
+  "activarCompra": "Activar compra",
+  "desactivarCompra": "Desactivar compra",
+  "activePurchaseQuesDesc": "Tus clientes pueden usar su tarifa si está activa. Ésta se activa o desactiva automaticamente, pero se puede forzar su estado de manera manual.",
+  "deleteClientsWithPurchases": "Elimine los clientes que han comprado esta sesión, confirme la edición y posteriormente podrá borrar la sesión",
+  "deleteClientsWithPurchasesBonos": "Elimine los clientes que han comprado la sesión para poder eliminar tarifas de esta sesión",
+  "orderBySessions": "Número de sesiones restantes",
+  "orderBySessionsMoreToLess": "De más sesiones a menos sesiones",
+  "orderBySessionsLessToMore": "De menos sesiones a más sesiones",
+  "chargingEvents": "Cargando eventos",
+  "and": "y",
+  "cantEditRecurrent": "Elimina los clientes del evento para poder indicar si es un evento recurrente",
+  "noActiveBonos": "No dispone de tarifas disponibles para ser añadido a la sesión",
+  "processOnWork": "Hay un proceso ejecutandose, espere hasta que termine o reinicie la app",
+  "betaFeature": "Función en fase Beta. Comparte tu experiencia para ayudarnos a perfeccionarla.",
+  "soonFeature": "Función en última fase de desarrollo. Está a punto de estar disponible.",
+  "bonoSimple": "Bono",
+  "bonoSimpleText": "Pago único con vencimiento",
+  "bonoRecurrent": "Membresía",
+  "bonoRecurrentText": "Pagos periódicos con renovación",
+  "renovationDate": "Fecha de renovación",
+  "renovationDateDesc": "Desde la compra, el número de días hasta el próximo pago",
+  "firstDayOfMonth": "Primer día de cada mes",
+  "firstDayOfMonthDesc": "Se aplicaran cargos al cliente según las condiciones de tu marca",
+  "gracePeriodTitle": "Periodo de gracia",
+  "gracePeriodDescription": "Plazo adicional para confirmación de pagos por el profesional, asegurando acceso continuo a servicios. Tras el período de gracia, la tarifa permanecerá inactiva hasta la confirmación del pago",
+  "maximumCancellationsPerWeekTitle": "Cancelaciones máximas por semana",
+  "maximumCancellationsPerWeekDescription": "Número máximo de cancelaciones permitidas semanalmente sin penalización",
+  "paymentTermsTitle": "Términos de pago",
+  "paymentTermsDescription": "Escoge cómo se aplica la fecha de vencimiento o renovación para las tarifas y cómo se calculan los precios en función de la fecha, ya sea para pagos únicos o para membresías con renovación automática, garantizando un ajuste preciso a sus necesidades financieras",
+  "proratedPaymentTitle": "Prorrateo Exacto",
+  "proratedPaymentDescription": "Ajusta el pago inicial proporcionalmente hasta el inicio del próximo mes, modificando el precio y las sesiones disponibles de forma exacta",
+  "midMonthPaymentTitle": "Prorrateo Mitad de Mes",
+  "midMonthPaymentDescription": "Compras antes del día 15, pagan y disponen de la tarifa completa. Después del día 15, el precio y las sesiones se reducen a la mitad",
+  "exactDaysTitle": "Vencimiento Exacto",
+  "exactDaysTitleDescription": "Precio íntegro sin ajustes. Caduca o renueva automáticamente en la fecha prevista, sin cálculos adicionales",
+  "times": "Veces",
+  "vencen": "Vencen",
   "notRenovation": "Renovación desactivada",
-  "@notRenovation": {
-    "description": "notRenovation"
-  },
   "cantDeletePurchase": "Para eliminar la compra origianl de una membresía, deberás eliminar sus compras relacionadas",
-  "@cantDeletePurchase": {
-    "description": "cantDeletePurchase message"
-  },
   "stripeAccountText": "Pagos In-App",
-  "@stripeAccountText": {
-    "description": "stripeAccountText message"
-  },
   "stripeAccountDescription": "Permite que tus clientes paguen tus tarifas directamente desde la aplicación. Automatitza los cobros y recibe el dinero directamente en tu banco.",
-  "@stripeAccountDescription": {
-    "description": "stripeAccountDescription message"
-  },
   "stripePaymentMethodDescription": "Facilita el proceso de pago ofreciendo métodos rápidos y sencillos para abonar tus tarifas.",
-  "@stripePaymentMethodDescription": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeBankTransfer": "Transferencias Automáticas",
-  "@stripeBankTransfer": {
-    "description": "stripeAccountText message"
-  },
   "stripeBankTransferDesc": "Tus ingresos se transferirán directa y automáticamente a tu cuenta bancaria de manera recurrente.",
-  "@stripeBankTransferDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeBankTransferDaily": "Cierre Diario",
-  "@stripeBankTransfer": {
-    "description": "stripeAccountText message"
-  },
   "stripeBankTransferDailyDesc": "Transferencia diaria de ingresos al cerrar la jornada.",
-  "@stripeBankTransferDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeBankTransferTransit": "Periodo de Tránsito",
-  "@stripeBankTransfer": {
-    "description": "stripeAccountText message"
-  },
   "stripeBankTransferTransitDesc": "De 1 a 3 días basado en la entidad bancaria.",
-  "@stripeBankTransferDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripePlatform": "Colaboración con Stripe",
-  "@stripeBankTransfer": {
-    "description": "stripeAccountText message"
-  },
   "stripePlatformDesc": "Obtén una solución segura y confiable que te libera para crecer y mejorar la experiencia de compra de tus clientes.",
-  "@stripeBankTransferDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripePlatformLeader": "Lider Indiscutible",
-  "@stripeBankTransfer": {
-    "description": "stripeAccountText message"
-  },
   "stripePlatformLeaderDesc": "Principal referente global en la industria de pagos online.",
-  "@stripeBankTransferDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripePlatformSecurity": "Solución Segura",
-  "@stripeBankTransfer": {
-    "description": "stripeAccountText message"
-  },
   "stripePlatformSecurityDesc": "Reputación impecable en cuanto a seguridad y fiabilidad.",
-  "@stripeBankTransferDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripePlatformIntegrado": "Integración Total",
-  "@stripeBankTransfer": {
-    "description": "stripeAccountText message"
-  },
   "stripePlatformIntegradoDesc": "Integrada plenamente en Mamba, para una experiencia sencilla.",
-  "@stripeBankTransferDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeComissions": "Comisiones",
-  "@stripeComissions": {
-    "description": "stripeAccountText message"
-  },
   "stripeComissionsDesc": "Stripe define las las tarifas por sus servicios. Mamba añade lo necesario para mantener nuestra plataforma sostenible.",
-  "@stripeComissionsDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeComissionsPayment": "Por Transacción",
-  "@stripeComissionsPayment": {
-    "description": "stripeAccountText message"
-  },
   "stripeComissionsPaymentDesc": "1,5 % + 0,25 € para tarjetas estándar del Espacio Económico Europeo.",
-  "@stripeComissionsPaymentDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeComissionsTransfer": "Por Transferencia",
-  "@stripeComissionsTransfer": {
-    "description": "stripeAccountText message"
-  },
   "stripeComissionsTransferDesc": "0,25 % + 0,10 € por transferencia enviada.",
-  "@stripeComissionsTransferDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeComissionsMamba": "Servicio y Gestión",
-  "@stripeComissionsMamba": {
-    "description": "stripeAccountText message"
-  },
   "stripeComissionsMambaDesc": "1% por transacción realizada dentro de la plataforma.",
-  "@stripeComissionsMambaDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeSummary": "Resumen",
-  "@stripeSummary": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeYourAccount": "Cuenta de Stripe",
-  "@stripeYourAccount": {
-    "description": "stripeAccountText message"
-  },
   "stripeYourAccountDesc": "Prellenaremos tu cuenta de Stripe con estos datos. Es importante que coincidan. Solo deberás añadir tu teléfono y cuenta bancaria para finalizar.",
-  "@stripeYourAccountDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "stripePhoneNumber": "Número de Teléfono",
-  "@stripePhoneNumber": {
-    "description": "stripeAccountText message"
-  },
   "stripePhoneNumberDesc": "Recibirás un códgio de verificación.",
-  "@stripePhoneNumberDesc": {
-    "description": "stripeAccountText message"
-  },
   "stripeBankAccount": "Cuenta Bancaria",
-  "@stripeBankAccount": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeBankAccountDesc": "Recibirás los ingresos de tus tarifas.",
-  "@stripeBankAccountDesc": {
-    "description": "stripeAccountDescription message"
-  },
   "crearCuentaStripe": "Crear cuenta de Stripe",
-  "@connectToStripe": {
-    "description": "stripeAccountDescription message"
-  },
   "completarCuentaStripe": "Completar cuenta de Stripe",
-  "@completarCuentaStripe": {
-    "description": "stripeAccountDescription message"
-  },
   "editarCuentaStripe": "Editar cuenta de Stripe",
-  "@editarCuentaStripe": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeAccountDeactivate": "¿Seguro que quieres desactivar los pagos desde la aplicación?",
-  "@stripeAccountText": {
-    "description": "stripeAccountText message"
-  },
   "stripeAccountDeactivateDesc": "Tus clientes ya no podrán pagar las tarifas directamente desde la aplicación; los pagos y cobros dejarán de ser automatizados, y todas las suscripciones activas serán canceladas.\n\nSelecciona editar para revisar las condiciones o ver tu perfil de Stripe.",
-  "@stripeAccountDescription": {
-    "description": "stripeAccountDescription message"
-  },
   "stripeConnecting": "Conectando con Stripe...",
-  "@stripeConnecting": {
-    "description": "stripeAccountText message"
-  },
   "stripeConnectionSuccessfull": "Conexión con Stripe finalizada correctamente...",
-  "@stripeConnectionSuccessfull": {
-    "description": "stripeAccountText message"
-  },  
-  "stripeError": "Problema de comunicación con Stripe. Vuelve a intentarlo, por favor.",
-  "@stripeError": {
-    "description": "stripeAccountDescription message"
-  }
+  "stripeError": "Problema de comunicación con Stripe. Vuelve a intentarlo, por favor."
 }

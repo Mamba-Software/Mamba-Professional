@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';
@@ -84,7 +84,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
             forceElevated: true, //* here//* question having 0 here
             pinned: true,
             floating: false,
-            title: Text(AppLocalizations.of(context)!.myRequests,
+            title: Text(context.l10n.myRequests,
                 style: Theme.of(context).appBarTheme.titleTextStyle),
             centerTitle: true,
             leading: IconButton(
@@ -118,13 +118,9 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                           RequestToBrand request = requestList[index];
                           String type;
                           if (request.isTrainer!) {
-                            type = AppLocalizations.of(context)!
-                                .trainer
-                                .toLowerCase();
+                            type = context.l10n.trainer.toLowerCase();
                           } else {
-                            type = AppLocalizations.of(context)!
-                                .client
-                                .toLowerCase();
+                            type = context.l10n.client.toLowerCase();
                           }
                           return Padding(
                             padding: const EdgeInsets.all(4.0),
@@ -151,8 +147,8 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                                               fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
-                                        text: AppLocalizations.of(context)!
-                                            .requestFromUser(type),
+                                        text:
+                                            context.l10n.requestFromUser(type),
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium),
@@ -167,7 +163,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                                           MediaQuery.of(context).size.height *
                                               0.01),
                                   Text(
-                                      AppLocalizations.of(context)!
+                                      context.l10n
                                           .requestSent(request.dateSent!),
                                       style: Theme.of(context)
                                           .textTheme
@@ -181,8 +177,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                                     context: context,
                                     builder: (_) {
                                       return RequestConfirmationDialog(
-                                        text: AppLocalizations.of(context)!
-                                            .requestConfirmation,
+                                        text: context.l10n.requestConfirmation,
                                         userId: request.userId!,
                                       );
                                     });
@@ -225,7 +220,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                               height:
                                   MediaQuery.of(context).size.height * 0.005),
                           Text(
-                            AppLocalizations.of(context)!.noData,
+                            context.l10n.noData,
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.center,
                           ),

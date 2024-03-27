@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -228,7 +228,7 @@ class _ProfileState extends State<Profile> {
                   textAlign: TextAlign.center),
               const SizedBox(height: 6),
               Text(
-                  AppLocalizations.of(context)!.joinedIn(DateTimeUtils()
+                  context.l10n.joinedIn(DateTimeUtils()
                       .formatDateTimeToStringMMYYYY(dateJoined,
                           Localizations.localeOf(context).languageCode)),
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -304,7 +304,7 @@ class _ProfileState extends State<Profile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.stats,
+                  context.l10n.stats,
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
@@ -327,13 +327,13 @@ class _ProfileState extends State<Profile> {
                           children: [
                             averageTime < 90
                                 ? Text(
-                                    "${averageTime.toStringAsFixed(0)} ${AppLocalizations.of(context)!.minutesString.toLowerCase()}/${AppLocalizations.of(context)!.week.toLowerCase()}",
+                                    "${averageTime.toStringAsFixed(0)} ${context.l10n.minutesString.toLowerCase()}/${context.l10n.week.toLowerCase()}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .displaySmall,
                                   )
                                 : Text(
-                                    "${(averageTime / 60).toStringAsFixed(1)} ${AppLocalizations.of(context)!.hoursString.toLowerCase()}/${AppLocalizations.of(context)!.week.toLowerCase()}",
+                                    "${(averageTime / 60).toStringAsFixed(1)} ${context.l10n.hoursString.toLowerCase()}/${context.l10n.week.toLowerCase()}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .displaySmall,
@@ -341,10 +341,8 @@ class _ProfileState extends State<Profile> {
                             const SizedBox(height: 4),
                             Text(
                               currentUser.isTrainer!
-                                  ? AppLocalizations.of(context)!
-                                      .averageTimeWorked
-                                  : AppLocalizations.of(context)!
-                                      .averageTimeTrained,
+                                  ? context.l10n.averageTimeWorked
+                                  : context.l10n.averageTimeTrained,
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
@@ -371,16 +369,14 @@ class _ProfileState extends State<Profile> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${totalTime.toStringAsFixed(0)} ${AppLocalizations.of(context)!.hoursString.toLowerCase()}",
+                              "${totalTime.toStringAsFixed(0)} ${context.l10n.hoursString.toLowerCase()}",
                               style: Theme.of(context).textTheme.displaySmall,
                             ),
                             const SizedBox(height: 4),
                             Text(
                               currentUser.isTrainer!
-                                  ? AppLocalizations.of(context)!
-                                      .totalTimeWorked
-                                  : AppLocalizations.of(context)!
-                                      .totalTimeTrained,
+                                  ? context.l10n.totalTimeWorked
+                                  : context.l10n.totalTimeTrained,
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
@@ -407,12 +403,12 @@ class _ProfileState extends State<Profile> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${totalEvents.length} ${AppLocalizations.of(context)!.sessions.toLowerCase()}",
+                              "${totalEvents.length} ${context.l10n.sessions.toLowerCase()}",
                               style: Theme.of(context).textTheme.displaySmall,
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              AppLocalizations.of(context)!.sesionsCompleted,
+                              context.l10n.sesionsCompleted,
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
@@ -435,7 +431,7 @@ class _ProfileState extends State<Profile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.stats,
+                    context.l10n.stats,
                     style: Theme.of(context).textTheme.displaySmall,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
@@ -467,8 +463,7 @@ class _ProfileState extends State<Profile> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                AppLocalizations.of(context)!
-                                    .averageTimeTrained,
+                                context.l10n.averageTimeTrained,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
@@ -505,7 +500,7 @@ class _ProfileState extends State<Profile> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                AppLocalizations.of(context)!.totalTimeTrained,
+                                context.l10n.totalTimeTrained,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
@@ -542,7 +537,7 @@ class _ProfileState extends State<Profile> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                AppLocalizations.of(context)!.sesionsCompleted,
+                                context.l10n.sesionsCompleted,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
@@ -568,9 +563,9 @@ class _ProfileState extends State<Profile> {
           children: [
             Text(
               currentUser.isTrainer!
-                  ? AppLocalizations.of(context)!.sesionsCompleted
-                  : StringUtils().toCapitalized(
-                      AppLocalizations.of(context)!.myProgress.split(" ")[1]),
+                  ? context.l10n.sesionsCompleted
+                  : StringUtils()
+                      .toCapitalized(context.l10n.myProgress.split(" ")[1]),
               style: Theme.of(context).textTheme.displaySmall,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -614,8 +609,7 @@ class _ProfileState extends State<Profile> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            AppLocalizations.of(context)!
-                                .lastNMonths(6.toString()),
+                            context.l10n.lastNMonths(6.toString()),
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -661,7 +655,7 @@ class _ProfileState extends State<Profile> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            AppLocalizations.of(context)!.lastYear,
+                            context.l10n.lastYear,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -694,7 +688,7 @@ class _ProfileState extends State<Profile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                AppLocalizations.of(context)!.myProgress,
+                context.l10n.myProgress,
                 style: Theme.of(context).textTheme.displaySmall,
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -741,8 +735,7 @@ class _ProfileState extends State<Profile> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              AppLocalizations.of(context)!
-                                  .lastNMonths(6.toString()),
+                              context.l10n.lastNMonths(6.toString()),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -792,7 +785,7 @@ class _ProfileState extends State<Profile> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              AppLocalizations.of(context)!.lastYear,
+                              context.l10n.lastYear,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -856,7 +849,7 @@ class _ProfileState extends State<Profile> {
                       color: Theme.of(context).primaryColor),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                   Text(
-                    AppLocalizations.of(context)!.myData,
+                    context.l10n.myData,
                     style: Theme.of(context).textTheme.displaySmall,
                   ),
                 ],
@@ -883,13 +876,13 @@ class _ProfileState extends State<Profile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TitleHeadline1(
-              text: AppLocalizations.of(context)!.shareAppTitle,
+              text: context.l10n.shareAppTitle,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.0),
-              child: Text(AppLocalizations.of(context)!.shareAppText,
+              child: Text(context.l10n.shareAppText,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!
@@ -922,7 +915,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 child: Text(
-                  AppLocalizations.of(context)!.shareApp,
+                  context.l10n.shareApp,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -951,13 +944,13 @@ class _ProfileState extends State<Profile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TitleHeadline1(
-              text: AppLocalizations.of(context)!.giveFeedbackTitle,
+              text: context.l10n.giveFeedbackTitle,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.0),
-              child: Text(AppLocalizations.of(context)!.giveFeedbackText,
+              child: Text(context.l10n.giveFeedbackText,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!
@@ -990,7 +983,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 child: Text(
-                  AppLocalizations.of(context)!.giveFeedback,
+                  context.l10n.giveFeedback,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -1019,13 +1012,13 @@ class _ProfileState extends State<Profile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TitleHeadline1(
-              text: AppLocalizations.of(context)!.getInTouchTitle,
+              text: context.l10n.getInTouchTitle,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.0),
-              child: Text(AppLocalizations.of(context)!.getInTouchTextDesc,
+              child: Text(context.l10n.getInTouchTextDesc,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!
@@ -1055,7 +1048,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 child: Text(
-                  AppLocalizations.of(context)!.getInTouch,
+                  context.l10n.getInTouch,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge

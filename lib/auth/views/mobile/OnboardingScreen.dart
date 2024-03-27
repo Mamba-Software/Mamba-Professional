@@ -12,9 +12,10 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
@@ -282,7 +283,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.trainersOnboarding,
+                          context.l10n.trainersOnboarding,
                           style: Theme.of(context)
                               .textTheme
                               .displayLarge
@@ -300,8 +301,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 ?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .trainersOnboardingDesc
+                                text: context.l10n.trainersOnboardingDesc
                                     .split(" ")[0],
                                 style: Theme.of(context)
                                     .textTheme
@@ -311,10 +311,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         decoration: TextDecoration.underline),
                               ),
                               TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .trainersOnboardingDesc
-                                    .substring(AppLocalizations.of(context)!
-                                        .trainersOnboardingDesc
+                                text: context.l10n.trainersOnboardingDesc
+                                    .substring(context
+                                        .l10n.trainersOnboardingDesc
                                         .split(" ")[0]
                                         .length),
                               ),
@@ -346,7 +345,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             color: AppColors.white,
                             borderRadius: BorderRadius.circular(30)),
                         child: Center(
-                          child: Text(AppLocalizations.of(context)!.next,
+                          child: Text(context.l10n.next,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -362,7 +361,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       TextButton(
                         onPressed: null,
                         child: Text(
-                          AppLocalizations.of(context)!.skip,
+                          context.l10n.skip,
                           style: Theme.of(context)
                               .textTheme
                               .displaySmall
@@ -405,8 +404,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context)!
-                              .trainersOnboardingSecond,
+                          context.l10n.trainersOnboardingSecond,
                           style: Theme.of(context)
                               .textTheme
                               .displayLarge
@@ -424,12 +422,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 ?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .trainersOnboardingSecondDesc1,
+                                text:
+                                    context.l10n.trainersOnboardingSecondDesc1,
                               ),
                               TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .trainersOnboardingSecondDesc2
+                                text: context.l10n.trainersOnboardingSecondDesc2
                                     .toLowerCase(),
                                 style: Theme.of(context)
                                     .textTheme
@@ -439,8 +436,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         decoration: TextDecoration.underline),
                               ),
                               TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .trainersOnboardingSecondDesc3,
+                                text:
+                                    context.l10n.trainersOnboardingSecondDesc3,
                               ),
                             ],
                           ),
@@ -470,7 +467,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             color: AppColors.white,
                             borderRadius: BorderRadius.circular(30)),
                         child: Center(
-                          child: Text(AppLocalizations.of(context)!.next,
+                          child: Text(context.l10n.next,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -486,7 +483,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       TextButton(
                         onPressed: null,
                         child: Text(
-                          AppLocalizations.of(context)!.skip,
+                          context.l10n.skip,
                           style: Theme.of(context)
                               .textTheme
                               .displaySmall
@@ -529,7 +526,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.trainersOnboardingThird,
+                          context.l10n.trainersOnboardingThird,
                           style: Theme.of(context)
                               .textTheme
                               .displayLarge
@@ -547,12 +544,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 ?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .trainersOnboardingThirdDesc1,
+                                text: context.l10n.trainersOnboardingThirdDesc1,
                               ),
                               TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .trainersOnboardingThirdDesc2,
+                                text: context.l10n.trainersOnboardingThirdDesc2,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge
@@ -561,8 +556,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         decoration: TextDecoration.underline),
                               ),
                               TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .trainersOnboardingThirdDesc3,
+                                text: context.l10n.trainersOnboardingThirdDesc3,
                               ),
                             ],
                           ),
@@ -593,9 +587,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             color: AppColors.white,
                             borderRadius: BorderRadius.circular(30)),
                         child: Center(
-                          child: Text(
-                              AppLocalizations.of(context)!
-                                  .notificationsPermision,
+                          child: Text(context.l10n.notificationsPermision,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -616,7 +608,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           );
                         },
                         child: Text(
-                          AppLocalizations.of(context)!.next,
+                          context.l10n.next,
                           style: Theme.of(context)
                               .textTheme
                               .displaySmall
@@ -695,8 +687,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        AppLocalizations.of(context)!
-                                            .whatsYourName,
+                                        context.l10n.whatsYourName,
                                         style: Theme.of(context)
                                             .textTheme
                                             .displayLarge
@@ -711,8 +702,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   .height *
                                               0.02),
                                       Text(
-                                        AppLocalizations.of(context)!
-                                            .changeLater,
+                                        context.l10n.changeLater,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyLarge
@@ -754,9 +744,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             0.02),
                                                     Flexible(
                                                       child: Text(
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .googleInfo,
+                                                        context.l10n.googleInfo,
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyMedium
@@ -814,7 +802,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             0.02),
                                                     Flexible(
                                                       child: Text(
-                                                        "${AppLocalizations.of(context)!.googleInfo.split("Google")[0]} Apple",
+                                                        "${context.l10n.googleInfo.split("Google")[0]} Apple",
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyMedium
@@ -876,9 +864,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 decoration: InputDecoration(
                                                     filled: true,
                                                     fillColor: AppColors.white,
-                                                    hintText: AppLocalizations
-                                                            .of(context)!
-                                                        .nameCompletoError,
+                                                    hintText: context.l10n.nameCompletoError,
                                                     hintStyle: Theme.of(context)
                                                         .textTheme
                                                         .displaySmall
@@ -990,8 +976,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 decoration: InputDecoration(
                                                     filled: true,
                                                     fillColor: AppColors.white,
-                                                    hintText: AppLocalizations
-                                                            .of(context)!
+                                                    hintText: context.l10n
                                                         .lastNameError,
                                                     hintStyle: Theme.of(context)
                                                         .textTheme
@@ -1098,8 +1083,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               0.04),
                                       Expanded(
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .visibleFirstName,
+                                          context.l10n.visibleFirstName,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium
@@ -1165,7 +1149,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "${AppLocalizations.of(context)!.uploadPhoto.split(" ")[0]} ${AppLocalizations.of(context)!.profilePhoto.toLowerCase()}",
+                                        "${context.l10n.uploadPhoto.split(" ")[0]} ${context.l10n.profilePhoto.toLowerCase()}",
                                         style: Theme.of(context)
                                             .textTheme
                                             .displayLarge
@@ -1180,8 +1164,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   .height *
                                               0.02),
                                       Text(
-                                        AppLocalizations.of(context)!
-                                            .changeLater,
+                                        context.l10n.changeLater,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyLarge
@@ -1223,8 +1206,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             0.02),
                                                     Flexible(
                                                       child: Text(
-                                                        AppLocalizations.of(
-                                                                context)!
+                                                        context.l10n
                                                             .googleInfo,
                                                         style: Theme.of(context)
                                                             .textTheme
@@ -1445,8 +1427,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        AppLocalizations.of(context)!
-                                            .whensYourBday,
+                                        context.l10n.whensYourBday,
                                         style: Theme.of(context)
                                             .textTheme
                                             .displayLarge
@@ -1461,8 +1442,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   .height *
                                               0.02),
                                       Text(
-                                        AppLocalizations.of(context)!
-                                            .changeLater,
+                                        context.l10n.changeLater,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyLarge
@@ -1485,8 +1465,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(
-                                                            context)!
+                                                    context.l10n
                                                         .day,
                                                     style: Theme.of(context)
                                                         .textTheme
@@ -1657,8 +1636,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(
-                                                            context)!
+                                                    context.l10n
                                                         .month,
                                                     style: Theme.of(context)
                                                         .textTheme
@@ -1829,7 +1807,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "${AppLocalizations.of(context)!.year} (*)",
+                                                    "${context.l10n.year} (*)",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyLarge
@@ -2000,8 +1978,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 children: [
                                                   Flexible(
                                                     child: Text(
-                                                      AppLocalizations.of(
-                                                              context)!
+                                                      context.l10n
                                                           .errorDate,
                                                       style: Theme.of(context)
                                                           .textTheme
@@ -2034,7 +2011,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    "${AppLocalizations.of(context)!.dateOfBirth}: ",
+                                                    "${context.l10n.dateOfBirth}: ",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyLarge
@@ -2102,7 +2079,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    "${AppLocalizations.of(context)!.age}: ",
+                                                    "${context.l10n.age}: ",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyLarge
@@ -2172,8 +2149,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               0.04),
                                       Expanded(
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .visibleFact,
+                                          context.l10n.visibleFact,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium
@@ -2301,8 +2277,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .whatsYourGender,
+                                          context.l10n.whatsYourGender,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displayLarge
@@ -2317,8 +2292,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     .height *
                                                 0.02),
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .changeLater,
+                                          context.l10n.changeLater,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyLarge
@@ -2351,8 +2325,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    AppLocalizations.of(
-                                                            context)!
+                                                    context.l10n
                                                         .female,
                                                     style: Theme.of(context)
                                                         .textTheme
@@ -2417,8 +2390,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    AppLocalizations.of(
-                                                            context)!
+                                                    context.l10n
                                                         .male,
                                                     style: Theme.of(context)
                                                         .textTheme
@@ -2483,8 +2455,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    AppLocalizations.of(
-                                                            context)!
+                                                    context.l10n
                                                         .transgender,
                                                     style: Theme.of(context)
                                                         .textTheme
@@ -2562,8 +2533,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               0.04),
                                       Expanded(
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .visibleFact,
+                                          context.l10n.visibleFact,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium

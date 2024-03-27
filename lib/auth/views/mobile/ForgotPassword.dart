@@ -8,7 +8,8 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/app/style/Styles.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -46,7 +47,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       key: scaffoldMessengerKey,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.resetPassword,
+          title: Text(context.l10n.resetPassword,
               style: Theme.of(context)
                   .textTheme
                   .displaySmall!
@@ -88,7 +89,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.emailError,
+                        context.l10n.emailError,
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
@@ -101,9 +102,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   TextFormField(
                       autofocus: true,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (val) => val!.isEmpty
-                          ? AppLocalizations.of(context)!.emailError
-                          : null,
+                      validator: (val) =>
+                          val!.isEmpty ? context.l10n.emailError : null,
                       onChanged: (val) {
                         setState(() => email = val);
                       },
@@ -112,7 +112,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           .bodyMedium
                           ?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
-                          labelText: AppLocalizations.of(context)!.email,
+                          labelText: context.l10n.email,
                           labelStyle: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -145,13 +145,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         if (state is AuthError) {
           switch (state.error) {
             case AuthErrorEnum.forgotEmailError:
-              showInSnackBar(AppLocalizations.of(context)!.emailError);
+              showInSnackBar(context.l10n.emailError);
               break;
             case AuthErrorEnum.forgotLoginError:
-              showInSnackBar(AppLocalizations.of(context)!.loginError);
+              showInSnackBar(context.l10n.loginError);
               break;
             case AuthErrorEnum.forgotValidateEmailError:
-              showInSnackBar(AppLocalizations.of(context)!.validateEmail);
+              showInSnackBar(context.l10n.validateEmail);
               break;
             case AuthErrorEnum.wrongAppUser:
               // TODO: Handle this case.
@@ -177,7 +177,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           }
         }
         if (state is AuthCorrectForget) {
-          showInSnackBar(AppLocalizations.of(context)!.validatePassword);
+          showInSnackBar(context.l10n.validatePassword);
           Future.delayed(const Duration(seconds: 5), () async {
             Navigator.pop(context, email.trim());
           });

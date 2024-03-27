@@ -11,7 +11,7 @@ import 'package:mamba/app/style/Styles.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class SessionsMade extends StatefulWidget {
   List<Event> events;
@@ -186,7 +186,7 @@ class SessionsMadeState extends State<SessionsMade> {
                                   height: MediaQuery.of(context).size.height *
                                       0.005),
                               Text(
-                                AppLocalizations.of(context)!.noData,
+                                context.l10n.noData,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.center,
                               ),

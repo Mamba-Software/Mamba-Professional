@@ -8,7 +8,7 @@ import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Condition.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -73,12 +73,12 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppLocalizations.of(context)!.activeRates,
+              Text(context.l10n.activeRates,
                   style: Theme.of(context).textTheme.displaySmall,
                   textAlign: TextAlign.center),
               TextButton(
                   onPressed: navigateToBonoHistoryScreen,
-                  child: Text(AppLocalizations.of(context)!.purchaseHistory,
+                  child: Text(context.l10n.purchaseHistory,
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall
@@ -204,7 +204,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.activeRates.toLowerCase()}",
+                              "${context.l10n.noData.split(" ")[0]} ${context.l10n.activeRates.toLowerCase()}",
                               style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.left,
                             ),

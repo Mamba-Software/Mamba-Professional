@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class EditStripeDialog extends StatefulWidget {
@@ -42,7 +42,7 @@ class _EditStripeDialog extends State<EditStripeDialog> {
                 Padding(
                   padding: const EdgeInsets.only(top: 25, bottom: 10.0),
                   child: Text(
-                    AppLocalizations.of(context)!.stripeAccountDeactivate,
+                    context.l10n.stripeAccountDeactivate,
                     style: Theme.of(context)
                         .textTheme
                         .displaySmall
@@ -52,7 +52,7 @@ class _EditStripeDialog extends State<EditStripeDialog> {
                 ),
                 Flexible(
                   child: Text(
-                    "${AppLocalizations.of(context)!.stripeAccountDeactivateDesc} ",
+                    "${context.l10n.stripeAccountDeactivateDesc} ",
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -72,9 +72,7 @@ class _EditStripeDialog extends State<EditStripeDialog> {
                             size: MediaQuery.of(context).size.width * 0.06,
                           ),
                           label: Text(
-                            AppLocalizations.of(context)!
-                                .desactivarBono
-                                .split(" ")[0],
+                            context.l10n.desactivarBono.split(" ")[0],
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -97,7 +95,7 @@ class _EditStripeDialog extends State<EditStripeDialog> {
                             size: MediaQuery.of(context).size.width * 0.06,
                           ),
                           label: Text(
-                            AppLocalizations.of(context)!.edit,
+                            context.l10n.edit,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium

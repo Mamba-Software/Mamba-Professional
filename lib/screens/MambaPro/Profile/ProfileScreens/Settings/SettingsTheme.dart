@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';
@@ -72,7 +72,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.typeTheme,
+          context.l10n.typeTheme,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
@@ -125,7 +125,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).size.height * 0.01),
                       child: Text(
-                        AppLocalizations.of(context)!.typeThemeLight,
+                        context.l10n.typeThemeLight,
                         style: Theme.of(context)
                             .textTheme
                             .bodyLarge
@@ -136,8 +136,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       children: [
                         Expanded(
                           child: Text(
-                            AppLocalizations.of(context)!
-                                .typeThemeLightDescription,
+                            context.l10n.typeThemeLightDescription,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
@@ -181,7 +180,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).size.height * 0.01),
                       child: Text(
-                        AppLocalizations.of(context)!.typeThemeDark,
+                        context.l10n.typeThemeDark,
                         style: Theme.of(context)
                             .textTheme
                             .bodyLarge
@@ -192,8 +191,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       children: [
                         Expanded(
                           child: Text(
-                            AppLocalizations.of(context)!
-                                .typeThemeDarkDescription,
+                            context.l10n.typeThemeDarkDescription,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
@@ -237,7 +235,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).size.height * 0.01),
                       child: Text(
-                        AppLocalizations.of(context)!.typeThemeSystem,
+                        context.l10n.typeThemeSystem,
                         style: Theme.of(context)
                             .textTheme
                             .bodyLarge
@@ -248,8 +246,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       children: [
                         Expanded(
                           child: Text(
-                            AppLocalizations.of(context)!
-                                .typeThemeSystemDescription,
+                            context.l10n.typeThemeSystemDescription,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
@@ -335,7 +332,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                   size: MediaQuery.of(context).size.width * 0.05,
                 ),
                 label: Text(
-                  AppLocalizations.of(context)!.save,
+                  context.l10n.save,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!

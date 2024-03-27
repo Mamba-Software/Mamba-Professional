@@ -4,8 +4,8 @@ import 'package:mamba/app/style/Styles.dart';
 
 class MambaCoin {
   //Mmaba coin with value and or animation
-  Widget mambaCoin(var context, String? sessions, double? size, var image,
-      animation, bool animate) {
+  Widget mambaCoin(BuildContext context, String? sessions, double? size,
+      var image, animation, bool animate) {
     image =
         'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mamba_logo.png?alt=media&token=a4307bd0-0c20-497f-abe7-0ada93129b85';
     print(size.toString());
@@ -106,7 +106,7 @@ class MambaCoin {
 
   //Mmaba coin with value and or animation
   Widget mambaCoinStatic(
-      var context, String? sessions, double? size, var image) {
+      BuildContext context, String? sessions, double? size, var image) {
     image =
         'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mamba_logo.png?alt=media&token=a4307bd0-0c20-497f-abe7-0ada93129b85';
     return Container(
@@ -170,7 +170,7 @@ class MambaCoin {
   }
 
   //Mamba coin logo
-  Widget mambaCoinLogo(var context) {
+  Widget mambaCoinLogo(BuildContext context) {
     var image =
         'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mamba_logo.png?alt=media&token=a4307bd0-0c20-497f-abe7-0ada93129b85';
     return Container(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class DeleteRecurrentEventDialog extends StatefulWidget {
@@ -59,7 +59,7 @@ class _DeleteRecurrentEventDialogState
                     padding: const EdgeInsets.only(
                         top: 8.0, bottom: 8.0, right: 10, left: 10),
                     child: Text(
-                      AppLocalizations.of(context)!.deleteRecurrentEvent,
+                      context.l10n.deleteRecurrentEvent,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -80,7 +80,7 @@ class _DeleteRecurrentEventDialogState
                         contentPadding:
                             const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
-                          AppLocalizations.of(context)!.thisEvent,
+                          context.l10n.thisEvent,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         leading: Transform.scale(
@@ -104,15 +104,14 @@ class _DeleteRecurrentEventDialogState
                         contentPadding:
                             const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
-                          AppLocalizations.of(context)!.thisEventAndRest,
+                          context.l10n.thisEventAndRest,
                           style: widget.isCompleted
                               ? Theme.of(context).textTheme.bodySmall
                               : Theme.of(context).textTheme.bodyMedium,
                         ),
                         subtitle: widget.isCompleted
                             ? Text(
-                                AppLocalizations.of(context)!
-                                    .notAvailableFinishedEvents,
+                                context.l10n.notAvailableFinishedEvents,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall
@@ -163,7 +162,7 @@ class _DeleteRecurrentEventDialogState
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.delete,
+                          context.l10n.delete,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -198,7 +197,7 @@ class _DeleteRecurrentEventDialogState
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.cancel,
+                          context.l10n.cancel,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context).primaryColorDark,

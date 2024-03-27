@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
@@ -155,10 +155,7 @@ class _UserEventCardState extends State<UserEventCard> {
                 ),
               ),
               child: Text(
-                AppLocalizations.of(context)!
-                    .freeSession
-                    .toUpperCase()
-                    .split(" ")[2],
+                context.l10n.freeSession.toUpperCase().split(" ")[2],
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold, color: Colors.white),
                 textAlign: TextAlign.left,
@@ -341,8 +338,8 @@ class _UserEventCardState extends State<UserEventCard> {
                             ),
                             Text(
                               widget.event.isPrivate!
-                                  ? AppLocalizations.of(context)!.privateEvent
-                                  : AppLocalizations.of(context)!.groupEvent,
+                                  ? context.l10n.privateEvent
+                                  : context.l10n.groupEvent,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -387,8 +384,8 @@ class _UserEventCardState extends State<UserEventCard> {
                                                 buildTimeLefText(),
                                                 SizedBox(
                                                   width: widget.width * 0.04,
-                                                  child: Image.asset(Assets
-                                                      .clockEmojiImage),
+                                                  child: Image.asset(
+                                                      Assets.clockEmojiImage),
                                                 ),
                                               ],
                                             ),

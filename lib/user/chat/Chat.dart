@@ -18,7 +18,7 @@ import 'package:mime/mime.dart';
 import 'package:mamba/app/style/Styles.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
@@ -369,7 +369,7 @@ class _ChatPageState extends State<ChatPage> {
       );
     } else {
       topSnackBarComp.showSnackBarTop(
-          context, AppLocalizations.of(context)!.unBlockUserToSend, Colors.red);
+          context, context.l10n.unBlockUserToSend, Colors.red);
     }
   }
 

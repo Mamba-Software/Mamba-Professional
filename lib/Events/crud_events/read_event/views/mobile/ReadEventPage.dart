@@ -30,7 +30,7 @@ import 'package:mamba/data/Models/Location.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EventPage extends StatelessWidget {
@@ -305,9 +305,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      places == 1
-                          ? AppLocalizations.of(context)!.slot
-                          : AppLocalizations.of(context)!.slots,
+                      places == 1 ? context.l10n.slot : context.l10n.slots,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -354,7 +352,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                   ],
                 ),
                 Text(
-                  AppLocalizations.of(context)!.average,
+                  context.l10n.average,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
@@ -387,7 +385,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                   ],
                 ),
                 Text(
-                  AppLocalizations.of(context)!.average,
+                  context.l10n.average,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
@@ -1468,10 +1466,8 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                               Theme.of(context)
                                                                   .textTheme
                                                                   .bodySmall,
-                                                          hintText:
-                                                              AppLocalizations.of(
-                                                                      context)!
-                                                                  .noDescription,
+                                                          hintText: context.l10n
+                                                              .noDescription,
                                                           border:
                                                               InputBorder.none,
                                                           focusedBorder:
@@ -1506,8 +1502,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                   bottom: 8.0),
                                               child: Center(
                                                 child: Text(
-                                                  AppLocalizations.of(context)!
-                                                      .errorDate,
+                                                  context.l10n.errorDate,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium
@@ -1830,12 +1825,9 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                         child: TextFormField(
                                                           initialValue: event
                                                                   .isPrivate!
-                                                              ? AppLocalizations
-                                                                      .of(
-                                                                          context)!
+                                                              ? context.l10n
                                                                   .privateEvent
-                                                              : AppLocalizations
-                                                                      .of(context)!
+                                                              : context.l10n
                                                                   .groupEvent,
                                                           readOnly: true,
                                                           enabled: false,
@@ -1975,9 +1967,8 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                       MainAxisSize.max,
                                                   children: <Widget>[
                                                     Text(
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .bonosNecesarios,
+                                                      context
+                                                          .l10n.bonosNecesarios,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyLarge!
@@ -2085,7 +2076,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                   ),
                                                                   Flexible(
                                                                     child: Text(
-                                                                      "${"${bono.sessions! == 10000 ? AppLocalizations.of(context)!.sessions + " " + AppLocalizations.of(context)!.ilimitadas : bono.sessions!.toString() + " " + AppLocalizations.of(context)!.sessions.toLowerCase()} desde " + bono.price!.toStringAsFixed(2)}€",
+                                                                      "${"${bono.sessions! == 10000 ? context.l10n.sessions + " " + context.l10n.ilimitadas : bono.sessions!.toString() + " " + context.l10n.sessions.toLowerCase()} desde " + bono.price!.toStringAsFixed(2)}€",
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
@@ -2123,8 +2114,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                         mainAxisSize: MainAxisSize.max,
                                         children: <Widget>[
                                           Text(
-                                            AppLocalizations.of(context)!
-                                                .trainers,
+                                            context.l10n.trainers,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge!
@@ -2229,8 +2219,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                       Flexible(
                                                         child: Text(
                                                           trainer.name! !=
-                                                                  AppLocalizations.of(
-                                                                          context)!
+                                                                  context.l10n
                                                                       .notFoundUser
                                                               ? trainer
                                                                   .firstName!
@@ -2267,8 +2256,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                         mainAxisSize: MainAxisSize.max,
                                         children: <Widget>[
                                           Text(
-                                            AppLocalizations.of(context)!
-                                                .clients,
+                                            context.l10n.clients,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge!
@@ -2323,12 +2311,10 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                   SizedBox(
                                                       height: 100,
                                                       child: Image.asset(
-                                                          Assets
-                                                              .emptyPeople)),
+                                                          Assets.emptyPeople)),
                                                   Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .noClientJoining,
+                                                    context
+                                                        .l10n.noClientJoining,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodySmall,
@@ -2542,7 +2528,8 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                                               2),
                                                                       child:
                                                                           Text(
-                                                                        StringUtils().toCapitalized(AppLocalizations.of(context)!
+                                                                        StringUtils().toCapitalized(context
+                                                                            .l10n
                                                                             .freeSession
                                                                             .split(" ")[2]),
                                                                         style: Theme.of(context)
@@ -2578,7 +2565,8 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                               Flexible(
                                                                 child: Text(
                                                                   client.name! !=
-                                                                          AppLocalizations.of(context)!
+                                                                          context
+                                                                              .l10n
                                                                               .notFoundUser
                                                                       ? client
                                                                           .firstName!
@@ -2673,7 +2661,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                           size: MediaQuery.of(context).size.width * 0.05,
                         ),
                         label: Text(
-                          "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.clients.toLowerCase()}",
+                          "${context.l10n.invite} ${context.l10n.clients.toLowerCase()}",
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
@@ -2742,9 +2730,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                       }
                     } else {
                       _topSnackBar.showSnackBarTop(
-                          context,
-                          AppLocalizations.of(context)!.processOnWork,
-                          AppColors.red);
+                          context, context.l10n.processOnWork, AppColors.red);
                     }
                   },
                   backgroundColor: Colors.green,
@@ -2754,7 +2740,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                     size: MediaQuery.of(context).size.width * 0.05,
                   ),
                   label: Text(
-                    AppLocalizations.of(context)!.edit,
+                    context.l10n.edit,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!

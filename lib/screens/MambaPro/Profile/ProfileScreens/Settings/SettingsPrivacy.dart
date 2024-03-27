@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';
@@ -49,7 +49,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.typeProfile,
+          context.l10n.typeProfile,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
@@ -80,7 +80,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).size.height * 0.01),
                       child: Text(
-                        AppLocalizations.of(context)!.typeProfilePublic,
+                        context.l10n.typeProfilePublic,
                         style: Theme.of(context)
                             .textTheme
                             .bodyLarge
@@ -91,8 +91,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                       children: [
                         Expanded(
                           child: Text(
-                            AppLocalizations.of(context)!
-                                .typeProfilePublicDescription,
+                            context.l10n.typeProfilePublicDescription,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
@@ -135,7 +134,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).size.height * 0.01),
                       child: Text(
-                        AppLocalizations.of(context)!.typeProfilePrivate,
+                        context.l10n.typeProfilePrivate,
                         style: Theme.of(context)
                             .textTheme
                             .bodyLarge
@@ -146,8 +145,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                       children: [
                         Expanded(
                           child: Text(
-                            AppLocalizations.of(context)!
-                                .typeProfilePrivateDescription,
+                            context.l10n.typeProfilePrivateDescription,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
@@ -216,7 +214,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                   size: MediaQuery.of(context).size.width * 0.05,
                 ),
                 label: Text(
-                  AppLocalizations.of(context)!.save,
+                  context.l10n.save,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!

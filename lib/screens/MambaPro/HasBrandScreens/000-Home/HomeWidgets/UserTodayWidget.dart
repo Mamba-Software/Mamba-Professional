@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/user/chat/ChatCore.dart';
@@ -235,7 +235,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                 children: [
                   /*
                   Flexible(
-                    child: Text(AppLocalizations.of(context)!.doing,
+                    child: Text(context.l10n.doing,
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
@@ -274,7 +274,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   /*
-                  Text(AppLocalizations.of(context)!.finished,
+                  Text(context.l10n.finished,
                       style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                    */
@@ -461,9 +461,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                                     horizontal:
                                         MediaQuery.of(context).size.width *
                                             0.06),
-                                child: Text(
-                                    AppLocalizations.of(context)!
-                                        .todaysBrandEvents,
+                                child: Text(context.l10n.todaysBrandEvents,
                                     style:
                                         Theme.of(context).textTheme.bodyLarge),
                               ),
@@ -500,9 +498,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Flexible(
-                                      child: Text(
-                                          AppLocalizations.of(context)!
-                                              .noEventsToday,
+                                      child: Text(context.l10n.noEventsToday,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displaySmall
@@ -514,9 +510,8 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                                       widget.onClicked(true);
                                     },
                                     child: Text(
-                                      AppLocalizations.of(context)!
-                                          .calendarWeekBrandText(
-                                              currentBrand.name!),
+                                      context.l10n.calendarWeekBrandText(
+                                          currentBrand.name!),
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium

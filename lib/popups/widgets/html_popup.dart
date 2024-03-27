@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/l10n/l10n.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class WhatsNewPopup {
   static void show({
@@ -50,7 +50,7 @@ class WhatsNewPopup {
                     surfaceTintColor: Colors.transparent,
                   ),
                   child: Text(
-                    AppLocalizations.of(context)!.entendido,
+                    context.l10n.entendido,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: AppColors.white,
                           fontWeight: FontWeight.w600,

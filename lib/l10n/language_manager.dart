@@ -1,9 +1,13 @@
-import 'dart:ui';
+import 'package:flutter/widgets.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/constants.dart';
-import 'package:mamba/l10n/l10n.dart';
 import 'package:mamba/settings/data/settings_repository.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+extension AppLocalizationsX on BuildContext {
+  AppLocalizations get l10n => AppLocalizations.of(this)!;
+}
 
 class Language extends Equatable {
   final Locale locale;

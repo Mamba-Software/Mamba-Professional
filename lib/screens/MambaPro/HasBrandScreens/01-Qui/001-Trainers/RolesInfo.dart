@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class RolesInfo extends StatelessWidget {
@@ -32,13 +32,12 @@ class RolesInfo extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Flexible(
-                    child: Text(AppLocalizations.of(context)!.roles,
+                    child: Text(context.l10n.roles,
                         style: Theme.of(context).textTheme.displayLarge,
                         textAlign: TextAlign.left),
                   ),
                   Flexible(
-                    child: Text(
-                        AppLocalizations.of(context)!.rolesInfoDescription,
+                    child: Text(context.l10n.rolesInfoDescription,
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall
@@ -81,17 +80,17 @@ class RolesInfo extends StatelessWidget {
                       children: [
                         const SizedBox(width: 20),
                         Text(
-                          AppLocalizations.of(context)!.trainer,
+                          context.l10n.trainer,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(width: 20),
                         Text(
-                          AppLocalizations.of(context)!.administrador,
+                          context.l10n.administrador,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(width: 20),
                         Text(
-                          AppLocalizations.of(context)!.owner,
+                          context.l10n.owner,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(width: 20),
@@ -130,7 +129,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.events,
+                                  context.l10n.events,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 )
@@ -166,7 +165,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.addEvent,
+                                  context.l10n.addEvent,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -242,7 +241,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.editEvent,
+                                  context.l10n.editEvent,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -312,7 +311,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.rates,
+                                  context.l10n.rates,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 )
@@ -348,7 +347,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.bono.toLowerCase()}",
+                                  "${context.l10n.add} ${context.l10n.bono.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -424,7 +423,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.bono.toLowerCase()}",
+                                  "${context.l10n.edit} ${context.l10n.bono.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -500,7 +499,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.confirm} ${AppLocalizations.of(context)!.rates.toLowerCase()}",
+                                  "${context.l10n.confirm} ${context.l10n.rates.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -577,7 +576,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.acceptBono,
+                                  context.l10n.acceptBono,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -647,7 +646,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.members,
+                                  context.l10n.members,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 )
@@ -683,7 +682,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.chatBottomNav,
+                                  context.l10n.chatBottomNav,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -758,7 +757,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.client.toLowerCase()}",
+                                  "${context.l10n.add} ${context.l10n.client.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -833,83 +832,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.trainer.toLowerCase()}",
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                  textAlign: TextAlign.left,
-                                ),
-                                const SizedBox(width: 15),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              border: Border(
-                                right: BorderSide(
-                                    width: 1.0,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .background),
-                              ),
-                            ),
-                            child: FittedBox(
-                              fit: BoxFit.fitWidth,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const SizedBox(width: 0),
-                                  Icon(
-                                    Icons.check,
-                                    color: Theme.of(context)
-                                        .scaffoldBackgroundColor,
-                                    size: MediaQuery.of(context).size.width *
-                                        0.03,
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Icon(
-                                    Icons.check,
-                                    color: AppColors.mainColor,
-                                    size: MediaQuery.of(context).size.width *
-                                        0.03,
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Icon(
-                                    Icons.check,
-                                    color: AppColors.mainColor,
-                                    size: MediaQuery.of(context).size.width *
-                                        0.03,
-                                  ),
-                                  const SizedBox(width: 10),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              border: Border(
-                                left: BorderSide(
-                                    width: 1.0,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .background),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SizedBox(width: 10),
-                                Text(
-                                  "${AppLocalizations.of(context)!.confirm} ${AppLocalizations.of(context)!.request.toLowerCase()}",
+                                  "${context.l10n.add} ${context.l10n.trainer.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -985,7 +908,83 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.delete} ${AppLocalizations.of(context)!.member.toLowerCase()}",
+                                  "${context.l10n.confirm} ${context.l10n.request.toLowerCase()}",
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  textAlign: TextAlign.left,
+                                ),
+                                const SizedBox(width: 15),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.05,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              border: Border(
+                                right: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
+                              ),
+                            ),
+                            child: FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const SizedBox(width: 0),
+                                  Icon(
+                                    Icons.check,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Icon(
+                                    Icons.check,
+                                    color: AppColors.mainColor,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.03,
+                                  ),
+                                  const SizedBox(width: 10),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.05,
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              border: Border(
+                                left: BorderSide(
+                                    width: 1.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(width: 10),
+                                Text(
+                                  "${context.l10n.delete} ${context.l10n.member.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1056,7 +1055,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.stats,
+                                  context.l10n.stats,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 )
@@ -1092,7 +1091,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.events,
+                                  context.l10n.events,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1167,7 +1166,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.clients,
+                                  context.l10n.clients,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1239,7 +1238,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.staff,
+                                  context.l10n.staff,
                                   style: Theme.of(context).textTheme.bodyText2,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1290,7 +1289,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.bonos,
+                                  context.l10n.bonos,
                                   style: Theme.of(context).textTheme.bodyText2,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1346,7 +1345,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.facturation,
+                                  context.l10n.facturation,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1417,7 +1416,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.brand,
+                                  context.l10n.brand,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 )
@@ -1453,7 +1452,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.information.toLowerCase()}",
+                                  "${context.l10n.edit} ${context.l10n.information.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1530,7 +1529,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.roles.toLowerCase()}",
+                                  "${context.l10n.edit} ${context.l10n.roles.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1607,7 +1606,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.photos.toLowerCase()}",
+                                  "${context.l10n.add} ${context.l10n.photos.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1684,7 +1683,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.locations.toLowerCase()}",
+                                  "${context.l10n.add} ${context.l10n.locations.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1761,7 +1760,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.locations.toLowerCase()}",
+                                  "${context.l10n.edit} ${context.l10n.locations.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1841,8 +1840,7 @@ class RolesInfo extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      AppLocalizations.of(context)!
-                                          .paySubscription,
+                                      context.l10n.paySubscription,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium,
@@ -1850,8 +1848,7 @@ class RolesInfo extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      AppLocalizations.of(context)!
-                                          .paySubscriptionDesc,
+                                      context.l10n.paySubscriptionDesc,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall

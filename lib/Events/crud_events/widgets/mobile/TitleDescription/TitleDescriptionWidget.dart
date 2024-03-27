@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
@@ -40,7 +40,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        titleEventWidget(context, AppLocalizations.of(context)!.title),
+        titleEventWidget(context, context.l10n.title),
         Padding(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).size.height * 0.01),
@@ -51,9 +51,8 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                   child: TextFormField(
                     focusNode: focusNodetitleController,
                     controller: titleController,
-                    validator: (val) => val!.isEmpty
-                        ? AppLocalizations.of(context)!.titleError
-                        : null,
+                    validator: (val) =>
+                        val!.isEmpty ? context.l10n.titleError : null,
                     onChanged: (val) {
                       context.read<CrudEventCubit>().editEventInfo(
                           val, EditEventType.title, null, descriptionString);
@@ -80,7 +79,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                                       .textTheme
                                       .bodySmall!
                                       .color),
-                      hintText: AppLocalizations.of(context)!.titleHint,
+                      hintText: context.l10n.titleHint,
                       errorStyle: Theme.of(context)
                           .textTheme
                           .bodySmall
@@ -112,7 +111,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                 ),
               ],
             )),
-        titleEventWidget(context, AppLocalizations.of(context)!.description),
+        titleEventWidget(context, context.l10n.description),
         Padding(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).size.height * 0.01),
@@ -136,7 +135,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                     style: Theme.of(context).textTheme.bodyMedium,
                     decoration: InputDecoration(
                       hintStyle: Theme.of(context).textTheme.bodySmall,
-                      hintText: AppLocalizations.of(context)!.descriptionHint,
+                      hintText: context.l10n.descriptionHint,
                       errorBorder: UnderlineInputBorder(
                         borderSide:
                             BorderSide(color: Theme.of(context).dividerColor),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -109,7 +109,7 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
                     textAlign: TextAlign.left,
                     decoration: InputDecoration(
                       hintStyle: Theme.of(context).textTheme.bodySmall,
-                      hintText: AppLocalizations.of(context)!.search,
+                      hintText: context.l10n.search,
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
@@ -280,15 +280,15 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
                                   children: [
                                     Text(
                                       user.lastEventAt == null
-                                          ? AppLocalizations.of(context)!
-                                              .lastActiveIn(DateTimeUtils()
+                                          ? context.l10n.lastActiveIn(
+                                              DateTimeUtils()
                                                   .formatDateTimeToStringMMMYYYY(
                                                       dateJoined,
                                                       Localizations.localeOf(
                                                               context)
                                                           .languageCode))
-                                          : AppLocalizations.of(context)!
-                                              .lastActiveIn(DateTimeUtils()
+                                          : context.l10n.lastActiveIn(
+                                              DateTimeUtils()
                                                   .formatDateTimeToStringMMMYYYY(
                                                       user.lastEventAt!
                                                           .toDate(),

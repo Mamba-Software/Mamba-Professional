@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/RequestToBrand.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 typedef DateCallBack = void Function(
     int pageIndex, DateTime? dateTime, CalendarView calendarView);
@@ -108,8 +108,7 @@ class _BrandRequestsWidgetState extends State<BrandRequestsWidget> {
                                     children: [
                                       Flexible(
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .myRequestsDesc,
+                                          context.l10n.myRequestsDesc,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium,

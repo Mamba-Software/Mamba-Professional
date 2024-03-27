@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
@@ -117,7 +117,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                                 ),
                               ),
                               label: Text(
-                                AppLocalizations.of(context)!.accept,
+                                context.l10n.accept,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -149,7 +149,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                                 ),
                               ),
                               label: Text(
-                                AppLocalizations.of(context)!.delete,
+                                context.l10n.delete,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium

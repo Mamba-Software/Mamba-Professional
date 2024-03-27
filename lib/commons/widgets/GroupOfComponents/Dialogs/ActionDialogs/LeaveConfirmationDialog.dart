@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class LeaveConfirmationDialog extends StatelessWidget {
@@ -64,7 +64,7 @@ class LeaveConfirmationDialog extends StatelessWidget {
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.leave,
+                          context.l10n.leave,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -94,7 +94,7 @@ class LeaveConfirmationDialog extends StatelessWidget {
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.cancel,
+                          context.l10n.cancel,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context).primaryColorDark,

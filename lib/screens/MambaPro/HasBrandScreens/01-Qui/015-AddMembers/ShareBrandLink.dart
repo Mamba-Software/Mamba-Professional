@@ -1,4 +1,4 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -74,7 +74,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                     children: [
                       Flexible(
                         child: Text(
-                            "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.clients}",
+                            "${context.l10n.invite} ${context.l10n.clients}",
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge!
@@ -91,7 +91,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Text(AppLocalizations.of(context)!.scanQRCode,
+                        child: Text(context.l10n.scanQRCode,
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left),
                       ),
@@ -206,7 +206,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
-                            AppLocalizations.of(context)!.copyCodeMessage,
+                            context.l10n.copyCodeMessage,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
@@ -238,7 +238,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                               });
                             },
                             child: Text(
-                              "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.staff}",
+                              "${context.l10n.add} ${context.l10n.staff}",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -273,7 +273,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                     children: [
                       Flexible(
                         child: Text(
-                            "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.staff}",
+                            "${context.l10n.invite} ${context.l10n.staff}",
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge!
@@ -290,7 +290,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Text(AppLocalizations.of(context)!.scanQRCode,
+                        child: Text(context.l10n.scanQRCode,
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.left),
                       ),
@@ -405,7 +405,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
-                            AppLocalizations.of(context)!.copyCodeMessage,
+                            context.l10n.copyCodeMessage,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
@@ -437,7 +437,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                               });
                             },
                             child: Text(
-                              "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.clients}",
+                              "${context.l10n.add} ${context.l10n.clients}",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall

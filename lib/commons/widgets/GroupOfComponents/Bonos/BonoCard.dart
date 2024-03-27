@@ -7,7 +7,7 @@ import 'package:mamba/data/LibraryModels/lDegradate.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/BonoRequest.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/Models/Condition.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -374,8 +374,8 @@ class BonoCardState extends State<BonoCard> {
                                               ),
                                               bono.sessions! > 5000
                                                   ? Text(
-                                                      "${AppLocalizations.of(context)!.sessions.toUpperCase().substring(0, 3)}. ${AppLocalizations.of(context)!.ilimitadas.toUpperCase()}",
-                                                      //"${AppLocalizations.of(context)!.ilimitadas.toUpperCase()}",
+                                                      "${context.l10n.sessions.toUpperCase().substring(0, 3)}. ${context.l10n.ilimitadas.toUpperCase()}",
+                                                      //"${context.l10n.ilimitadas.toUpperCase()}",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyLarge
@@ -385,7 +385,7 @@ class BonoCardState extends State<BonoCard> {
                                                       textAlign: TextAlign.left,
                                                     )
                                                   : Text(
-                                                      '${bono.sessions!.toString().toUpperCase()} ${AppLocalizations.of(context)!.sessions.toUpperCase()}',
+                                                      '${bono.sessions!.toString().toUpperCase()} ${context.l10n.sessions.toUpperCase()}',
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyLarge
@@ -423,8 +423,7 @@ class BonoCardState extends State<BonoCard> {
                                                               ),
                                                               child: Center(
                                                                 child: Text(
-                                                                  AppLocalizations.of(
-                                                                          context)!
+                                                                  context.l10n
                                                                       .desactiveFem
                                                                       .toUpperCase(),
                                                                   style: Theme.of(
@@ -471,8 +470,7 @@ class BonoCardState extends State<BonoCard> {
                                                               ),
                                                               child: Center(
                                                                 child: Text(
-                                                                  AppLocalizations.of(
-                                                                          context)!
+                                                                  context.l10n
                                                                       .activeFem
                                                                       .toUpperCase(),
                                                                   style: Theme.of(
@@ -578,7 +576,7 @@ class BonoCardState extends State<BonoCard> {
                                                               0.01),
                                                       bono.isRecurrent!
                                                           ? Text(
-                                                              "${StringUtils().toCapitalized(AppLocalizations.of(context)!.recurrentPayment.split(" ")[0])} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.recurrentPayment.split(" ")[1])}",
+                                                              "${StringUtils().toCapitalized(context.l10n.recurrentPayment.split(" ")[0])} ${StringUtils().toCapitalized(context.l10n.recurrentPayment.split(" ")[1])}",
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -591,7 +589,7 @@ class BonoCardState extends State<BonoCard> {
                                                                       .left,
                                                             )
                                                           : Text(
-                                                              "${StringUtils().toCapitalized(AppLocalizations.of(context)!.uniquePayment.split(" ")[0])} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.uniquePayment.split(" ")[1])}",
+                                                              "${StringUtils().toCapitalized(context.l10n.uniquePayment.split(" ")[0])} ${StringUtils().toCapitalized(context.l10n.uniquePayment.split(" ")[1])}",
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -659,8 +657,7 @@ class BonoCardState extends State<BonoCard> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  AppLocalizations.of(context)!
-                                                      .typeRate,
+                                                  context.l10n.typeRate,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium
@@ -676,12 +673,8 @@ class BonoCardState extends State<BonoCard> {
                                                 ),
                                                 Text(
                                                   bono.isRecurrent!
-                                                      ? AppLocalizations.of(
-                                                              context)!
-                                                          .membership
-                                                      : AppLocalizations.of(
-                                                              context)!
-                                                          .bono,
+                                                      ? context.l10n.membership
+                                                      : context.l10n.bono,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge
@@ -703,8 +696,7 @@ class BonoCardState extends State<BonoCard> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  AppLocalizations.of(context)!
-                                                      .disponible,
+                                                  context.l10n.disponible,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium
@@ -720,12 +712,8 @@ class BonoCardState extends State<BonoCard> {
                                                 ),
                                                 Text(
                                                   bono.isActive!
-                                                      ? AppLocalizations.of(
-                                                              context)!
-                                                          .yes
-                                                      : AppLocalizations.of(
-                                                              context)!
-                                                          .no,
+                                                      ? context.l10n.yes
+                                                      : context.l10n.no,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge
@@ -756,8 +744,7 @@ class BonoCardState extends State<BonoCard> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  AppLocalizations.of(context)!
-                                                      .sessions,
+                                                  context.l10n.sessions,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium
@@ -773,10 +760,10 @@ class BonoCardState extends State<BonoCard> {
                                                 ),
                                                 bono.sessions! > 5000
                                                     ? Text(
-                                                        StringUtils().toCapitalized(
-                                                            AppLocalizations.of(
-                                                                    context)!
-                                                                .ilimitadas),
+                                                        StringUtils()
+                                                            .toCapitalized(
+                                                                context.l10n
+                                                                    .ilimitadas),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyLarge
@@ -814,8 +801,7 @@ class BonoCardState extends State<BonoCard> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  AppLocalizations.of(context)!
-                                                      .price,
+                                                  context.l10n.price,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium
@@ -859,8 +845,7 @@ class BonoCardState extends State<BonoCard> {
                                                                     .toStringAsFixed(
                                                                         2) +
                                                                 " €/" +
-                                                                AppLocalizations.of(
-                                                                        context)!
+                                                                context.l10n
                                                                     .session +
                                                                 ')',
                                                             style: Theme.of(
@@ -902,8 +887,7 @@ class BonoCardState extends State<BonoCard> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  AppLocalizations.of(context)!
-                                                      .conditions,
+                                                  context.l10n.conditions,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium
@@ -943,7 +927,7 @@ class BonoCardState extends State<BonoCard> {
                                                           ],
                                                         ),
                                                         title: Text(
-                                                          "${bono.isRecurrent! ? AppLocalizations.of(context)!.autoRenovation.split(" ")[0] : StringUtils().toCapitalized(AppLocalizations.of(context)!.expireDate.split(" ")[2])} ${condition.expirationTime == 30 ? AppLocalizations.of(context)!.monthly : condition.expirationTime == 60 ? AppLocalizations.of(context)!.bimonthly : AppLocalizations.of(context)!.quarterly}",
+                                                          "${bono.isRecurrent! ? context.l10n.autoRenovation.split(" ")[0] : StringUtils().toCapitalized(context.l10n.expireDate.split(" ")[2])} ${condition.expirationTime == 30 ? context.l10n.monthly : condition.expirationTime == 60 ? context.l10n.bimonthly : context.l10n.quarterly}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
@@ -954,16 +938,12 @@ class BonoCardState extends State<BonoCard> {
                                                         ),
                                                         subtitle: Text(
                                                           bono.isRecurrent!
-                                                              ? AppLocalizations
-                                                                      .of(
-                                                                          context)!
+                                                              ? context.l10n
                                                                   .eachNDaysAprox(
                                                                       condition
                                                                           .expirationTime
                                                                           .toString())
-                                                              : AppLocalizations
-                                                                      .of(
-                                                                          context)!
+                                                              : context.l10n
                                                                   .afterNDaysAprox(
                                                                       condition
                                                                           .expirationTime
@@ -991,8 +971,7 @@ class BonoCardState extends State<BonoCard> {
                                                             color:
                                                                 Colors.white70),
                                                         title: Text(
-                                                          AppLocalizations.of(
-                                                                  context)!
+                                                          context.l10n
                                                               .noExpireDate,
                                                           style: Theme.of(
                                                                   context)
@@ -1003,8 +982,7 @@ class BonoCardState extends State<BonoCard> {
                                                                       .white70),
                                                         ),
                                                         subtitle: Text(
-                                                          AppLocalizations.of(
-                                                                  context)!
+                                                          context.l10n
                                                               .allSessionsDone,
                                                           style: Theme.of(
                                                                   context)
@@ -1038,7 +1016,7 @@ class BonoCardState extends State<BonoCard> {
                                                           ],
                                                         ),
                                                         title: Text(
-                                                          "${AppLocalizations.of(context)!.trainsPerWeek.split(" ")[0]} ${AppLocalizations.of(context)!.trainsPerWeek.split(" ")[1]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.trainsPerWeek.split(" ")[2])}",
+                                                          "${context.l10n.trainsPerWeek.split(" ")[0]} ${context.l10n.trainsPerWeek.split(" ")[1]} ${StringUtils().toCapitalized(context.l10n.trainsPerWeek.split(" ")[2])}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
@@ -1048,7 +1026,7 @@ class BonoCardState extends State<BonoCard> {
                                                                       .white70),
                                                         ),
                                                         subtitle: Text(
-                                                          "${AppLocalizations.of(context)!.max} ${condition.weeklySessions} ${AppLocalizations.of(context)!.trainsPerWeek.toLowerCase()}",
+                                                          "${context.l10n.max} ${condition.weeklySessions} ${context.l10n.trainsPerWeek.toLowerCase()}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
@@ -1082,7 +1060,7 @@ class BonoCardState extends State<BonoCard> {
                                                           ],
                                                         ),
                                                         title: Text(
-                                                          "${AppLocalizations.of(context)!.freeCancel.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.freeCancel.split(" ")[1])}",
+                                                          "${context.l10n.freeCancel.split(" ")[0]} ${StringUtils().toCapitalized(context.l10n.freeCancel.split(" ")[1])}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
@@ -1092,7 +1070,7 @@ class BonoCardState extends State<BonoCard> {
                                                                       .white70),
                                                         ),
                                                         subtitle: Text(
-                                                          "${StringUtils().toCapitalized(AppLocalizations.of(context)!.cancelTimeAt.split(" ")[2])} ${condition.cancelTime} ${AppLocalizations.of(context)!.hours.toLowerCase()}",
+                                                          "${StringUtils().toCapitalized(context.l10n.cancelTimeAt.split(" ")[2])} ${condition.cancelTime} ${context.l10n.hours.toLowerCase()}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
@@ -1155,8 +1133,8 @@ class BonoCardState extends State<BonoCard> {
                             child: Text(
                               widget.clientView != null &&
                                       widget.clientView == true
-                                  ? AppLocalizations.of(context)!.buy
-                                  : AppLocalizations.of(context)!.edit,
+                                  ? context.l10n.buy
+                                  : context.l10n.edit,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -1267,8 +1245,8 @@ class BonoCardState extends State<BonoCard> {
                                   child: Text(
                                     widget.clientView != null &&
                                             widget.clientView == true
-                                        ? AppLocalizations.of(context)!.buy
-                                        : AppLocalizations.of(context)!.edit,
+                                        ? context.l10n.buy
+                                        : context.l10n.edit,
                                     style: Theme.of(context)
                                         .textTheme
                                         .displaySmall
@@ -1311,7 +1289,7 @@ class BonoCardState extends State<BonoCard> {
               children: [
                 ListTile(
                   title: Text(
-                    AppLocalizations.of(context)!.choseOption,
+                    context.l10n.choseOption,
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.left,
                     maxLines: 1,
@@ -1349,7 +1327,7 @@ class BonoCardState extends State<BonoCard> {
                       color: Theme.of(context).primaryColor,
                       size: MediaQuery.of(context).size.width * 0.06),
                   title: Text(
-                      "${bono.isActive! ? AppLocalizations.of(context)!.mambaProActivated.split(" ")[0] : AppLocalizations.of(context)!.mambaProDesactivated.split(" ")[0]} ${AppLocalizations.of(context)!.rate.toLowerCase()}",
+                      "${bono.isActive! ? context.l10n.mambaProActivated.split(" ")[0] : context.l10n.mambaProDesactivated.split(" ")[0]} ${context.l10n.rate.toLowerCase()}",
                       style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left),
                 ),
@@ -1367,7 +1345,7 @@ class BonoCardState extends State<BonoCard> {
                       color: Theme.of(context).primaryColor,
                       size: MediaQuery.of(context).size.width * 0.06),
                   title: Text(
-                      "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.rate.toLowerCase()}",
+                      "${context.l10n.edit} ${context.l10n.rate.toLowerCase()}",
                       style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left),
                 ),
@@ -1385,7 +1363,7 @@ class BonoCardState extends State<BonoCard> {
                       color: Theme.of(context).primaryColor,
                       size: MediaQuery.of(context).size.width * 0.06),
                   title: Text(
-                      "${AppLocalizations.of(context)!.duplicate} ${AppLocalizations.of(context)!.rate.toLowerCase()}",
+                      "${context.l10n.duplicate} ${context.l10n.rate.toLowerCase()}",
                       style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left),
                 ),
@@ -1403,7 +1381,7 @@ class BonoCardState extends State<BonoCard> {
                       color: Colors.red,
                       size: MediaQuery.of(context).size.width * 0.06),
                   title: Text(
-                      "${AppLocalizations.of(context)!.delete} ${AppLocalizations.of(context)!.rate.toLowerCase()}",
+                      "${context.l10n.delete} ${context.l10n.rate.toLowerCase()}",
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge

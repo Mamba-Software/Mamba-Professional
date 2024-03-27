@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
@@ -249,8 +249,8 @@ class _BrandEventCardState extends State<BrandEventCard> {
                         ),
                         Text(
                           widget.event.isPrivate!
-                              ? AppLocalizations.of(context)!.privateEvent
-                              : AppLocalizations.of(context)!.groupEvent,
+                              ? context.l10n.privateEvent
+                              : context.l10n.groupEvent,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
@@ -296,8 +296,8 @@ class _BrandEventCardState extends State<BrandEventCard> {
                                   ),
                                   Text(
                                     widget.event.numClients! != 1
-                                        ? "${widget.event.numClients!} ${AppLocalizations.of(context)!.asistants.toLowerCase()}"
-                                        : "${widget.event.numClients!} ${AppLocalizations.of(context)!.asistants.toLowerCase().substring(0, AppLocalizations.of(context)!.asistants.length - 1)}",
+                                        ? "${widget.event.numClients!} ${context.l10n.asistants.toLowerCase()}"
+                                        : "${widget.event.numClients!} ${context.l10n.asistants.toLowerCase().substring(0, context.l10n.asistants.length - 1)}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall
@@ -362,7 +362,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
                                 children: [
                                   widget.event.isPrivate!
                                       ? Text(
-                                          "${widget.event.numClients!} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
+                                          "${widget.event.numClients!} ${context.l10n.asistants.toLowerCase()}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium
@@ -372,7 +372,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
                                           textAlign: TextAlign.center,
                                         )
                                       : Text(
-                                          "${widget.event.numClients!}/${widget.event.maxMembers!} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
+                                          "${widget.event.numClients!}/${widget.event.maxMembers!} ${context.l10n.asistants.toLowerCase()}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium

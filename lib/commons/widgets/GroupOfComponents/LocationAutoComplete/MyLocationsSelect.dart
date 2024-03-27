@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -92,7 +92,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
           ? Scaffold(
               appBar: AppBar(
                 title: Text(
-                  AppLocalizations.of(context)!.myLocations,
+                  context.l10n.myLocations,
                   style: Theme.of(context).appBarTheme.titleTextStyle,
                 ),
                 centerTitle: true,
@@ -111,7 +111,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
           : Scaffold(
               appBar: AppBar(
                 title: Text(
-                  AppLocalizations.of(context)!.myLocations,
+                  context.l10n.myLocations,
                   style: Theme.of(context).appBarTheme.titleTextStyle,
                 ),
                 centerTitle: true,
@@ -202,7 +202,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                         size: MediaQuery.of(context).size.width * 0.06,
                       ),
                       title: Text(
-                        AppLocalizations.of(context)!.addLocation,
+                        context.l10n.addLocation,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
@@ -353,7 +353,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                                               style: Theme.of(context).textTheme.bodyText2,
                                             ),
                                             location.isBaseLocation! ? Text(
-                                              AppLocalizations.of(context)!.baseLocation,
+                                              context.l10n.baseLocation,
                                               style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
                                             ) : Container(),
                                           ],

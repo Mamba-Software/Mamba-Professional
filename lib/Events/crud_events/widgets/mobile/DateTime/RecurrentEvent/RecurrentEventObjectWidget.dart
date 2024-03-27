@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/models/Recurrent.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Badges/BetaBadge.dart';
@@ -26,7 +26,7 @@ Widget recurrentEventObjectWidget(
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  AppLocalizations.of(context)!.days,
+                  context.l10n.days,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
@@ -44,13 +44,13 @@ Widget recurrentEventObjectWidget(
                     .copyWith(color: Theme.of(context).primaryColorDark),
                 firstDayOfWeek: 0,
                 shortWeekdays: [
-                  AppLocalizations.of(context)!.mondayLetter,
-                  AppLocalizations.of(context)!.tuesdarLetter,
-                  AppLocalizations.of(context)!.wednesdayLetter,
-                  AppLocalizations.of(context)!.thursdayLetter,
-                  AppLocalizations.of(context)!.fridayLetter,
-                  AppLocalizations.of(context)!.saturadayLetter,
-                  AppLocalizations.of(context)!.sundayLetter,
+                  context.l10n.mondayLetter,
+                  context.l10n.tuesdarLetter,
+                  context.l10n.wednesdayLetter,
+                  context.l10n.thursdayLetter,
+                  context.l10n.fridayLetter,
+                  context.l10n.saturadayLetter,
+                  context.l10n.sundayLetter,
                 ],
                 // Working Days disabledFillColor: Colors.red,
                 onChanged: (v) {
@@ -74,50 +74,29 @@ Widget recurrentEventObjectWidget(
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  AppLocalizations.of(context)!.during,
+                  context.l10n.during,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  selectorRecurrent(
-                      recurrent.value!,
-                      1,
-                      locale,
-                      context,
-                      recurrent.oneWeek!,
-                      AppLocalizations.of(context)!.thisWeek),
-                  selectorRecurrent(
-                      recurrent.value!,
-                      2,
-                      locale,
-                      context,
-                      recurrent.twoWeek!,
-                      AppLocalizations.of(context)!.nextTwoWeek),
-                  selectorRecurrent(
-                      recurrent.value!,
-                      4,
-                      locale,
-                      context,
-                      recurrent.oneMonth!,
-                      AppLocalizations.of(context)!.wholeMonth),
+                  selectorRecurrent(recurrent.value!, 1, locale, context,
+                      recurrent.oneWeek!, context.l10n.thisWeek),
+                  selectorRecurrent(recurrent.value!, 2, locale, context,
+                      recurrent.twoWeek!, context.l10n.nextTwoWeek),
+                  selectorRecurrent(recurrent.value!, 4, locale, context,
+                      recurrent.oneMonth!, context.l10n.wholeMonth),
                   selectorRecurrent(
                       recurrent.value!,
                       13,
                       locale,
                       context,
                       recurrent.threeMonth!,
-                      AppLocalizations.of(context)!.wholeThreeMonth,
+                      context.l10n.wholeThreeMonth,
                       true),
-                  selectorRecurrent(
-                      recurrent.value!,
-                      26,
-                      locale,
-                      context,
-                      recurrent.sixMonth!,
-                      AppLocalizations.of(context)!.wholeSixMonth,
-                      true)
+                  selectorRecurrent(recurrent.value!, 26, locale, context,
+                      recurrent.sixMonth!, context.l10n.wholeSixMonth, true)
                   /*
                   selectorRecurrent(
                       recurrent.value!,
@@ -125,14 +104,14 @@ Widget recurrentEventObjectWidget(
                       locale,
                       context,
                       recurrent.nineMonth!,
-                      AppLocalizations.of(context)!.wholeNineMonth),
+                      context.l10n.wholeNineMonth),
                   selectorRecurrent(
                       recurrent.value!,
                       52,
                       locale,
                       context,
                       recurrent.twelveMonth!,
-                      AppLocalizations.of(context)!.wholeTwelveMonth),*/
+                      context.l10n.wholeTwelveMonth),*/
                 ],
               )
             ],
@@ -169,7 +148,7 @@ Widget selectorRecurrent(int value, int group, Locale locale,
       ],
     ),
     subtitle: Text(
-      AppLocalizations.of(context)!.until(StringUtils().toCapitalized(
+      context.l10n.until(StringUtils().toCapitalized(
           DateFormat('EEEE - d/M/yy', locale.languageCode)
               .format(durationRecurrent))),
       style: Theme.of(context).textTheme.bodySmall,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class ErrorDialog extends StatelessWidget {
@@ -38,7 +38,7 @@ class ErrorDialog extends StatelessWidget {
                 ),
                 TextButton(
                     child: Text(
-                      AppLocalizations.of(context)!.close,
+                      context.l10n.close,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium

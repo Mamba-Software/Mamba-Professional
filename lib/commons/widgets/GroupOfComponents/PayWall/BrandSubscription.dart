@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -93,8 +93,8 @@ class _BrandInfoState extends State<BrandSubscription>
                 opacity: appBarExpanded ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
                 child: Text(
-                    StringUtils().toCapitalized(
-                        AppLocalizations.of(context)!.yourPlan.split(" ")[1]),
+                    StringUtils()
+                        .toCapitalized(context.l10n.yourPlan.split(" ")[1]),
                     style:
                         Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
                               color: AppColors.white,
@@ -116,9 +116,7 @@ class _BrandInfoState extends State<BrandSubscription>
                         children: [
                           Text(
                             StringUtils().toCapitalized(
-                                AppLocalizations.of(context)!
-                                    .yourPlan
-                                    .split(" ")[1]),
+                                context.l10n.yourPlan.split(" ")[1]),
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -289,9 +287,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                                 0.10,
                                           ),
                                         ),
-                                        title: Text(
-                                            AppLocalizations.of(context)!
-                                                .chooseYourPlan,
+                                        title: Text(context.l10n.chooseYourPlan,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .displaySmall
@@ -330,9 +326,8 @@ class _BrandInfoState extends State<BrandSubscription>
                                                     .height *
                                                 0.015),
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .freeTrialDaysLeft(
-                                                  difference.toString()),
+                                          context.l10n.freeTrialDaysLeft(
+                                              difference.toString()),
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium
@@ -444,15 +439,14 @@ class _BrandInfoState extends State<BrandSubscription>
                                       child: Text(
                                         suscriptionState
                                                 .subscription.unsuscribed!
-                                            ? AppLocalizations.of(context)!
-                                                .moreSubInfo(formatter
-                                                    .format(suscriptionState
-                                                        .subscription.endDate!
-                                                        .toDate())
-                                                    .toString())
-                                            : AppLocalizations.of(context)!
-                                                .moreSubInfoRenAut(formatter
-                                                    .format(suscriptionState
+                                            ? context.l10n.moreSubInfo(formatter
+                                                .format(suscriptionState
+                                                    .subscription.endDate!
+                                                    .toDate())
+                                                .toString())
+                                            : context.l10n.moreSubInfoRenAut(
+                                                formatter.format(
+                                                    suscriptionState
                                                         .subscription.endDate!
                                                         .toDate())),
                                         style: Theme.of(context)
@@ -508,8 +502,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                       MediaQuery.of(context).size.height *
                                           0.01),
                                   child: Text(
-                                    AppLocalizations.of(context)!
-                                        .subscriptionIncludes,
+                                    context.l10n.subscriptionIncludes,
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge,
@@ -530,32 +523,32 @@ class _BrandInfoState extends State<BrandSubscription>
                                 ),
                                 Column(
                                   children: [
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .personalizeBrandActiveText),
+                                    listTileGetAll(context
+                                        .l10n.personalizeBrandActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .searcherActiveText),
+                                    listTileGetAll(
+                                        context.l10n.searcherActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .sessionControActiveText),
+                                    listTileGetAll(
+                                        context.l10n.sessionControActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .pricePolicyActiveText),
+                                    listTileGetAll(
+                                        context.l10n.pricePolicyActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .statsActiveText),
+                                    listTileGetAll(
+                                        context.l10n.statsActiveText),
                                     canSubscribe
                                         ? SizedBox(
                                             height: MediaQuery.of(context)
@@ -597,7 +590,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                                     0.05,
                                                 child: Center(
                                                     child: Text(
-                                                  "${AppLocalizations.of(context)!.seeAllMasc.split(" ")[0]} ${AppLocalizations.of(context)!.subscriptionsAppBar.toLowerCase()}",
+                                                  "${context.l10n.seeAllMasc.split(" ")[0]} ${context.l10n.subscriptionsAppBar.toLowerCase()}",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .displaySmall
@@ -633,8 +626,7 @@ class _BrandInfoState extends State<BrandSubscription>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .adminSubscriptionDesc,
+                                context.l10n.adminSubscriptionDesc,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -704,9 +696,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                           0.10,
                                     ),
                                   ),
-                                  title: Text(
-                                      AppLocalizations.of(context)!
-                                          .chooseYourPlan,
+                                  title: Text(context.l10n.chooseYourPlan,
                                       style: Theme.of(context)
                                           .textTheme
                                           .displaySmall
@@ -742,10 +732,8 @@ class _BrandInfoState extends State<BrandSubscription>
                                               0.015),
                                   child: Text(
                                     ShowTextExpired
-                                        ? AppLocalizations.of(context)!
-                                            .subscriptionExpired
-                                        : AppLocalizations.of(context)!
-                                            .noSubscription,
+                                        ? context.l10n.subscriptionExpired
+                                        : context.l10n.noSubscription,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
@@ -800,8 +788,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                       MediaQuery.of(context).size.height *
                                           0.01),
                                   child: Text(
-                                    AppLocalizations.of(context)!
-                                        .subscriptionIncludes,
+                                    context.l10n.subscriptionIncludes,
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge,
@@ -822,32 +809,32 @@ class _BrandInfoState extends State<BrandSubscription>
                                 ),
                                 Column(
                                   children: [
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .personalizeBrandActiveText),
+                                    listTileGetAll(context
+                                        .l10n.personalizeBrandActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .searcherActiveText),
+                                    listTileGetAll(
+                                        context.l10n.searcherActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .sessionControActiveText),
+                                    listTileGetAll(
+                                        context.l10n.sessionControActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .pricePolicyActiveText),
+                                    listTileGetAll(
+                                        context.l10n.pricePolicyActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .statsActiveText),
+                                    listTileGetAll(
+                                        context.l10n.statsActiveText),
                                     canSubscribe
                                         ? SizedBox(
                                             height: MediaQuery.of(context)
@@ -880,8 +867,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                               0.05,
                                           child: Center(
                                               child: Text(
-                                            AppLocalizations.of(context)!
-                                                .seeAllSubs,
+                                            context.l10n.seeAllSubs,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge
@@ -910,8 +896,7 @@ class _BrandInfoState extends State<BrandSubscription>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .adminSubscriptionDesc,
+                                context.l10n.adminSubscriptionDesc,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),

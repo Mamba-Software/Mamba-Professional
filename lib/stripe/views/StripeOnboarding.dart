@@ -9,7 +9,7 @@ import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/stripe/models/user_stripe_model.dart';
 import 'package:mamba/stripe/views/StripeWebView.dart';
@@ -136,7 +136,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             children: [
                               // Page Title
                               Text(
-                                AppLocalizations.of(context)!.stripeAccountText,
+                                context.l10n.stripeAccountText,
                                 style: Theme.of(context)
                                     .textTheme
                                     .displayLarge
@@ -148,8 +148,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                       0.02),
                               // Page Description
                               Text(
-                                AppLocalizations.of(context)!
-                                    .stripeAccountDescription,
+                                context.l10n.stripeAccountDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -182,12 +181,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ),
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!.bonoSimple,
+                                  context.l10n.bonoSimple,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!.bonoSimpleText,
+                                  context.l10n.bonoSimpleText,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -218,13 +217,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ),
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!.bonoRecurrent,
+                                  context.l10n.bonoRecurrent,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .bonoRecurrentText,
+                                  context.l10n.bonoRecurrentText,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -258,8 +256,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                         borderRadius:
                                             BorderRadius.circular(30)),
                                     child: Center(
-                                      child: Text(
-                                          AppLocalizations.of(context)!.next,
+                                      child: Text(context.l10n.next,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displaySmall
@@ -279,7 +276,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   TextButton(
                                     onPressed: null,
                                     child: Text(
-                                      AppLocalizations.of(context)!.back,
+                                      context.l10n.back,
                                       style: Theme.of(context)
                                           .textTheme
                                           .displaySmall
@@ -347,7 +344,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             children: [
                               // Page Title
                               Text(
-                                "${AppLocalizations.of(context)!.paymentMethod.split(" ")[0]} ${AppLocalizations.of(context)!.paymentMethod.split(" ")[1]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.paymentMethod.split(" ")[2])}",
+                                "${context.l10n.paymentMethod.split(" ")[0]} ${context.l10n.paymentMethod.split(" ")[1]} ${StringUtils().toCapitalized(context.l10n.paymentMethod.split(" ")[2])}",
                                 style: Theme.of(context)
                                     .textTheme
                                     .displayLarge
@@ -359,8 +356,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                       0.02),
                               // Page Description
                               Text(
-                                AppLocalizations.of(context)!
-                                    .stripePaymentMethodDescription,
+                                context.l10n.stripePaymentMethodDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -392,8 +388,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ),
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .cardPaymentMethod,
+                                  context.l10n.cardPaymentMethod,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -427,8 +422,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ),
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .googlePayPaymentMethod,
+                                  context.l10n.googlePayPaymentMethod,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -463,8 +457,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ),
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .applePayPaymentMethod,
+                                  context.l10n.applePayPaymentMethod,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
@@ -498,8 +491,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                         borderRadius:
                                             BorderRadius.circular(30)),
                                     child: Center(
-                                      child: Text(
-                                          AppLocalizations.of(context)!.next,
+                                      child: Text(context.l10n.next,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displaySmall
@@ -531,7 +523,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               .withOpacity(0.1)),
                                     ),
                                     child: Text(
-                                      AppLocalizations.of(context)!.back,
+                                      context.l10n.back,
                                       style: Theme.of(context)
                                           .textTheme
                                           .displaySmall
@@ -600,8 +592,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             children: [
                               // Page Title
                               Text(
-                                AppLocalizations.of(context)!
-                                    .stripeBankTransfer,
+                                context.l10n.stripeBankTransfer,
                                 style: Theme.of(context)
                                     .textTheme
                                     .displayLarge
@@ -613,8 +604,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                       0.02),
                               // Page Description
                               Text(
-                                AppLocalizations.of(context)!
-                                    .stripeBankTransferDesc,
+                                context.l10n.stripeBankTransferDesc,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -647,14 +637,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ),
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeBankTransferDaily,
+                                  context.l10n.stripeBankTransferDaily,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeBankTransferDailyDesc,
+                                  context.l10n.stripeBankTransferDailyDesc,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -685,14 +673,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ),
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeBankTransferTransit,
+                                  context.l10n.stripeBankTransferTransit,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeBankTransferTransitDesc,
+                                  context.l10n.stripeBankTransferTransitDesc,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -726,8 +712,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                         borderRadius:
                                             BorderRadius.circular(30)),
                                     child: Center(
-                                      child: Text(
-                                          AppLocalizations.of(context)!.next,
+                                      child: Text(context.l10n.next,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displaySmall
@@ -759,7 +744,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               .withOpacity(0.1)),
                                     ),
                                     child: Text(
-                                      AppLocalizations.of(context)!.back,
+                                      context.l10n.back,
                                       style: Theme.of(context)
                                           .textTheme
                                           .displaySmall
@@ -834,7 +819,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             children: [
                               // Page Title
                               Text(
-                                AppLocalizations.of(context)!.stripePlatform,
+                                context.l10n.stripePlatform,
                                 style: Theme.of(context)
                                     .textTheme
                                     .displayLarge
@@ -846,8 +831,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                       0.02),
                               // Page Description
                               Text(
-                                AppLocalizations.of(context)!
-                                    .stripePlatformDesc,
+                                context.l10n.stripePlatformDesc,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -897,14 +881,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ],
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripePlatformLeader,
+                                  context.l10n.stripePlatformLeader,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripePlatformLeaderDesc,
+                                  context.l10n.stripePlatformLeaderDesc,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -952,14 +934,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ],
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripePlatformSecurity,
+                                  context.l10n.stripePlatformSecurity,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripePlatformSecurityDesc,
+                                  context.l10n.stripePlatformSecurityDesc,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1007,14 +987,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ],
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripePlatformIntegrado,
+                                  context.l10n.stripePlatformIntegrado,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripePlatformIntegradoDesc,
+                                  context.l10n.stripePlatformIntegradoDesc,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1048,8 +1026,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                         borderRadius:
                                             BorderRadius.circular(30)),
                                     child: Center(
-                                      child: Text(
-                                          AppLocalizations.of(context)!.next,
+                                      child: Text(context.l10n.next,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displaySmall
@@ -1081,7 +1058,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               .withOpacity(0.1)),
                                     ),
                                     child: Text(
-                                      AppLocalizations.of(context)!.back,
+                                      context.l10n.back,
                                       style: Theme.of(context)
                                           .textTheme
                                           .displaySmall
@@ -1146,7 +1123,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             children: [
                               // Page Title
                               Text(
-                                AppLocalizations.of(context)!.stripeComissions,
+                                context.l10n.stripeComissions,
                                 style: Theme.of(context)
                                     .textTheme
                                     .displayLarge
@@ -1158,8 +1135,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                       0.02),
                               // Page Description
                               Text(
-                                AppLocalizations.of(context)!
-                                    .stripeComissionsDesc,
+                                context.l10n.stripeComissionsDesc,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -1209,14 +1185,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ],
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeComissionsPayment,
+                                  context.l10n.stripeComissionsPayment,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeComissionsPaymentDesc,
+                                  context.l10n.stripeComissionsPaymentDesc,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1264,14 +1238,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ],
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeComissionsTransfer,
+                                  context.l10n.stripeComissionsTransfer,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeComissionsTransferDesc,
+                                  context.l10n.stripeComissionsTransferDesc,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1302,14 +1274,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ),
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeComissionsMamba,
+                                  context.l10n.stripeComissionsMamba,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeComissionsMambaDesc,
+                                  context.l10n.stripeComissionsMambaDesc,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1343,8 +1313,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                         borderRadius:
                                             BorderRadius.circular(30)),
                                     child: Center(
-                                      child: Text(
-                                          AppLocalizations.of(context)!.next,
+                                      child: Text(context.l10n.next,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displaySmall
@@ -1376,7 +1345,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               .withOpacity(0.1)),
                                     ),
                                     child: Text(
-                                      AppLocalizations.of(context)!.back,
+                                      context.l10n.back,
                                       style: Theme.of(context)
                                           .textTheme
                                           .displaySmall
@@ -1441,7 +1410,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                             children: [
                               // Page Title
                               Text(
-                                AppLocalizations.of(context)!.stripeYourAccount,
+                                context.l10n.stripeYourAccount,
                                 style: Theme.of(context)
                                     .textTheme
                                     .displayLarge
@@ -1453,8 +1422,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                       0.02),
                               // Page Description
                               Text(
-                                AppLocalizations.of(context)!
-                                    .stripeYourAccountDesc,
+                                context.l10n.stripeYourAccountDesc,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -1594,14 +1562,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ],
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripePhoneNumber,
+                                  context.l10n.stripePhoneNumber,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripePhoneNumberDesc,
+                                  context.l10n.stripePhoneNumberDesc,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1649,14 +1615,12 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   ],
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeBankAccount,
+                                  context.l10n.stripeBankAccount,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Text(
-                                  AppLocalizations.of(context)!
-                                      .stripeBankAccountDesc,
+                                  context.l10n.stripeBankAccountDesc,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1690,8 +1654,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                         borderRadius:
                                             BorderRadius.circular(30)),
                                     child: Center(
-                                      child: Text(
-                                          AppLocalizations.of(context)!.next,
+                                      child: Text(context.l10n.next,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displaySmall
@@ -1723,7 +1686,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               .withOpacity(0.1)),
                                     ),
                                     child: Text(
-                                      AppLocalizations.of(context)!.back,
+                                      context.l10n.back,
                                       style: Theme.of(context)
                                           .textTheme
                                           .displaySmall
@@ -1786,7 +1749,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                   MediaQuery.of(context).size.width * 0.1,
                             ),
                             child: Text(
-                              AppLocalizations.of(context)!.stripeSummary,
+                              context.l10n.stripeSummary,
                               style: Theme.of(context)
                                   .textTheme
                                   .displayLarge
@@ -1813,8 +1776,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .stripeAccountDescription,
+                                          context.l10n.stripeAccountDescription,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall,
@@ -1827,8 +1789,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                 0.04),
                                         // Page Title
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .stripeAccountText,
+                                          context.l10n.stripeAccountText,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displayLarge,
@@ -1871,16 +1832,14 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ),
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .bonoSimple,
+                                              context.l10n.bonoSimple,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
-                                                  .bonoSimpleText,
+                                              context.l10n.bonoSimpleText,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall,
@@ -1925,16 +1884,14 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ),
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .bonoRecurrent,
+                                              context.l10n.bonoRecurrent,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
-                                                  .bonoRecurrentText,
+                                              context.l10n.bonoRecurrentText,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall,
@@ -1957,7 +1914,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                 0.04),
                                         // Page Title
                                         Text(
-                                          "${AppLocalizations.of(context)!.paymentMethod.split(" ")[0]} ${AppLocalizations.of(context)!.paymentMethod.split(" ")[1]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.paymentMethod.split(" ")[2])}",
+                                          "${context.l10n.paymentMethod.split(" ")[0]} ${context.l10n.paymentMethod.split(" ")[1]} ${StringUtils().toCapitalized(context.l10n.paymentMethod.split(" ")[2])}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .displayLarge,
@@ -2006,8 +1963,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ),
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .cardPaymentMethod,
+                                              context.l10n.cardPaymentMethod,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
@@ -2053,8 +2009,8 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ),
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .googlePayPaymentMethod,
+                                              context
+                                                  .l10n.googlePayPaymentMethod,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
@@ -2102,8 +2058,8 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ),
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .applePayPaymentMethod,
+                                              context
+                                                  .l10n.applePayPaymentMethod,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
@@ -2126,8 +2082,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                     .height *
                                                 0.03),
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .stripeBankTransfer,
+                                          context.l10n.stripeBankTransfer,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displayLarge,
@@ -2170,15 +2125,15 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ),
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .stripeBankTransferDaily,
+                                              context
+                                                  .l10n.stripeBankTransferDaily,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
+                                              context.l10n
                                                   .stripeBankTransferDailyDesc,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -2230,7 +2185,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ),
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
+                                              context.l10n
                                                   .stripeBankTransferTransit,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -2238,7 +2193,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
+                                              context.l10n
                                                   .stripeBankTransferTransitDesc,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -2263,8 +2218,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                         ),
                                         // Page Title
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .stripePlatform,
+                                          context.l10n.stripePlatform,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displayLarge,
@@ -2328,15 +2282,14 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ],
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .stripePlatformLeader,
+                                              context.l10n.stripePlatformLeader,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
+                                              context.l10n
                                                   .stripePlatformLeaderDesc,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -2403,15 +2356,15 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ],
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .stripePlatformSecurity,
+                                              context
+                                                  .l10n.stripePlatformSecurity,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
+                                              context.l10n
                                                   .stripePlatformSecurityDesc,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -2478,15 +2431,15 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ],
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .stripePlatformIntegrado,
+                                              context
+                                                  .l10n.stripePlatformIntegrado,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
+                                              context.l10n
                                                   .stripePlatformIntegradoDesc,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -2511,8 +2464,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                         ),
                                         // Page Title
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .stripeComissions,
+                                          context.l10n.stripeComissions,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displayLarge,
@@ -2577,15 +2529,15 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ],
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .stripeComissionsPayment,
+                                              context
+                                                  .l10n.stripeComissionsPayment,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
+                                              context.l10n
                                                   .stripeComissionsPaymentDesc,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -2652,7 +2604,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ],
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
+                                              context.l10n
                                                   .stripeComissionsTransfer,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -2660,7 +2612,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
+                                              context.l10n
                                                   .stripeComissionsTransferDesc,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -2706,15 +2658,15 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ),
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .stripeComissionsMamba,
+                                              context
+                                                  .l10n.stripeComissionsMamba,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
+                                              context.l10n
                                                   .stripeComissionsMambaDesc,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -2737,8 +2689,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                     .height *
                                                 0.03), // Page Title
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .stripeYourAccount,
+                                          context.l10n.stripeYourAccount,
                                           style: Theme.of(context)
                                               .textTheme
                                               .displayLarge,
@@ -2934,16 +2885,15 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ],
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .stripePhoneNumber,
+                                              context.l10n.stripePhoneNumber,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
-                                                  .stripePhoneNumberDesc,
+                                              context
+                                                  .l10n.stripePhoneNumberDesc,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall,
@@ -3015,16 +2965,15 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               ],
                                             ),
                                             title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .stripeBankAccount,
+                                              context.l10n.stripeBankAccount,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium,
                                               textAlign: TextAlign.left,
                                             ),
                                             subtitle: Text(
-                                              AppLocalizations.of(context)!
-                                                  .stripeBankAccountDesc,
+                                              context
+                                                  .l10n.stripeBankAccountDesc,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall,
@@ -3091,16 +3040,13 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                               child: Center(
                                                 child: Text(
                                                   widget.isStarted! == false
-                                                      ? AppLocalizations.of(
-                                                              context)!
+                                                      ? context.l10n
                                                           .crearCuentaStripe
                                                       : widget.isFinished! ==
                                                               false
-                                                          ? AppLocalizations.of(
-                                                                  context)!
+                                                          ? context.l10n
                                                               .completarCuentaStripe
-                                                          : AppLocalizations.of(
-                                                                  context)!
+                                                          : context.l10n
                                                               .editarCuentaStripe,
                                                   style: Theme.of(context)
                                                       .textTheme
@@ -3138,8 +3084,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                             .withOpacity(0.1)),
                                               ),
                                               child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .back,
+                                                context.l10n.back,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .displaySmall

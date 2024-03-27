@@ -6,7 +6,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/commons/widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 TextEditingController startTimeController = TextEditingController();
 
@@ -61,7 +61,7 @@ Future selectTime(BuildContext context, DateTime startDate) async {
   DateTime? pickedTimeTemp = await showCupertinoModalPopup(
       context: context,
       builder: (_) => SelectTimeDialog(
-            title: AppLocalizations.of(context)!.selectTime,
+            title: context.l10n.selectTime,
             startDate: startDate,
             onlyFuture: true,
           ));

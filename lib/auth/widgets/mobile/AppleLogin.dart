@@ -4,7 +4,7 @@ import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 Widget appleLogin(BuildContext context, AuthState state) {
   return GestureDetector(
@@ -39,7 +39,7 @@ Widget appleLogin(BuildContext context, AuthState state) {
             ),
             Expanded(
               child: checkIfProvider(state, AuthProviderEnum.apple)
-                  ? Text(AppLocalizations.of(context)!.continueWithApple,
+                  ? Text(context.l10n.continueWithApple,
                       style: Theme.of(context)
                           .textTheme
                           .displaySmall

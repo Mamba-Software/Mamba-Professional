@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/BonoRequest.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -127,13 +127,13 @@ class UserPurchaseCard extends StatelessWidget {
 
     if (bonoRequest!.paymentMethod! == 0) {
       paymentIcon = Icons.paid_outlined;
-      paymentText = AppLocalizations.of(context)!.cashPaymentMethod;
+      paymentText = context.l10n.cashPaymentMethod;
     } else if (bonoRequest!.paymentMethod! == 1) {
       paymentIcon = Icons.payment_outlined;
-      paymentText = AppLocalizations.of(context)!.transferPaymentMethod;
+      paymentText = context.l10n.transferPaymentMethod;
     } else {
       paymentIcon = Icons.card_giftcard_outlined;
-      paymentText = AppLocalizations.of(context)!.giftPaymentMethod;
+      paymentText = context.l10n.giftPaymentMethod;
       priceStyle = priceStyle?.copyWith(decoration: TextDecoration.lineThrough);
     }
 
@@ -148,7 +148,7 @@ class UserPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            bono.sessions! < 5000 ? bono.sessions.toString() + " ses..." : StringUtils().toCapitalized(AppLocalizations.of(context)!.ilimitadas),
+            bono.sessions! < 5000 ? bono.sessions.toString() + " ses..." : StringUtils().toCapitalized(context.l10n.ilimitadas),
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -166,8 +166,7 @@ class UserPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            StringUtils()
-                .toCapitalized(AppLocalizations.of(context)!.desactiveFem),
+            StringUtils().toCapitalized(context.l10n.desactiveFem),
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -216,17 +215,17 @@ class UserPurchaseCard extends StatelessWidget {
 
     if (purchase!.paymentMethod! == 0) {
       paymentIcon = Icons.paid_outlined;
-      paymentText = AppLocalizations.of(context)!.cashPaymentMethod;
+      paymentText = context.l10n.cashPaymentMethod;
     } else if (purchase!.paymentMethod! == 1) {
       paymentIcon = Icons.send_to_mobile_outlined;
-      paymentText = AppLocalizations.of(context)!.transferPaymentMethod;
+      paymentText = context.l10n.transferPaymentMethod;
     } else if (purchase!.paymentMethod! == 2) {
       paymentIcon = Icons.card_giftcard_outlined;
-      paymentText = AppLocalizations.of(context)!.giftPaymentMethod;
+      paymentText = context.l10n.giftPaymentMethod;
       priceStyle = priceStyle?.copyWith(decoration: TextDecoration.lineThrough);
     } else {
       paymentIcon = Icons.payment_outlined;
-      paymentText = AppLocalizations.of(context)!.cardPaymentMethod;
+      paymentText = context.l10n.cardPaymentMethod;
     }
 
     return Row(
@@ -241,7 +240,7 @@ class UserPurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            purchase!.sessions! < 5000 ? purchase!.sessions.toString() + " ses..." : StringUtils().toCapitalized(AppLocalizations.of(context)!.ilimitadas),
+            purchase!.sessions! < 5000 ? purchase!.sessions.toString() + " ses..." : StringUtils().toCapitalized(context.l10n.ilimitadas),
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -260,8 +259,8 @@ class UserPurchaseCard extends StatelessWidget {
         Flexible(
           child: Text(
             purchase!.isActive!
-                ? AppLocalizations.of(context)!.activeFem
-                : AppLocalizations.of(context)!.desactiveFem,
+                ? context.l10n.activeFem
+                : context.l10n.desactiveFem,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -356,7 +355,7 @@ class UserPurchaseCard extends StatelessWidget {
           ),
           SizedBox(width: MediaQuery.of(context).size.width * 0.01),
           Text(
-            AppLocalizations.of(context)!.toConfirm,
+            context.l10n.toConfirm,
             style: Theme.of(context)
                 .textTheme
                 .bodySmall
@@ -377,7 +376,7 @@ class UserPurchaseCard extends StatelessWidget {
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Text(
-              AppLocalizations.of(context)!.unverfied,
+              context.l10n.unverfied,
               style: Theme.of(context)
                   .textTheme
                   .bodySmall
@@ -397,7 +396,7 @@ class UserPurchaseCard extends StatelessWidget {
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Text(
-              AppLocalizations.of(context)!.verfied,
+              context.l10n.verfied,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.right,
             ),

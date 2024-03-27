@@ -1,17 +1,18 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 // Text Styles contains all the TextStyles used in the App.
 class StringUtils {
+  String toCapitalized(String s) =>
+      s.isNotEmpty ? '${s[0].toUpperCase()}${s.substring(1)}' : '';
 
-  String toCapitalized(String s) => s.isNotEmpty ?'${s[0].toUpperCase()}${s.substring(1)}':'';
-
-  String undoCapitalized(String s) => s.isNotEmpty ?'${s[0].toLowerCase()}${s.substring(1)}':'';
+  String undoCapitalized(String s) =>
+      s.isNotEmpty ? '${s[0].toLowerCase()}${s.substring(1)}' : '';
 
   String capitalizedAllWords(String s) {
     var result = "";
     var arrayStrings = splitByChar(s, " ");
-    for (var i=0; i<arrayStrings.length; i++) {
+    for (var i = 0; i < arrayStrings.length; i++) {
       String temp = toCapitalized(arrayStrings[i]);
       result += "$temp ";
     }
@@ -27,14 +28,14 @@ class StringUtils {
     return aux[0];
   }
 
-  String greetingMessage(BuildContext context){
+  String greetingMessage(BuildContext context) {
     var timeNow = DateTime.now().hour;
     if (timeNow <= 12) {
-      return AppLocalizations.of(context)!.goodMorningGreeting;
+      return context.l10n.goodMorningGreeting;
     } else if ((timeNow > 12) && (timeNow <= 20)) {
-      return AppLocalizations.of(context)!.goodAfternoonGreeting;
+      return context.l10n.goodAfternoonGreeting;
     } else {
-      return AppLocalizations.of(context)!.goodNightGreeting;
+      return context.l10n.goodNightGreeting;
     }
   }
 
@@ -58,6 +59,4 @@ class StringUtils {
     }
     return "$hourSt:${minuteSt}h";
   }
-
-
 }

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -175,8 +175,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .comingNDays(7.toString()),
+                              context.l10n.comingNDays(7.toString()),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -211,8 +210,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .comingNDays(14.toString()),
+                              context.l10n.comingNDays(14.toString()),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -247,7 +245,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!.endOfMonth,
+                              context.l10n.endOfMonth,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -280,8 +278,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .comingNDays(30.toString()),
+                              context.l10n.comingNDays(30.toString()),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -314,8 +311,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .comingNDays(60.toString()),
+                              context.l10n.comingNDays(60.toString()),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -348,8 +344,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .comingNDays(90.toString()),
+                              context.l10n.comingNDays(90.toString()),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -400,8 +395,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .lastNDays(7.toString()),
+                              context.l10n.lastNDays(7.toString()),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -439,8 +433,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .lastNDays(14.toString()),
+                              context.l10n.lastNDays(14.toString()),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -478,8 +471,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .lastNDays(30.toString()),
+                              context.l10n.lastNDays(30.toString()),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -516,7 +508,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              "${AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.month)}",
+                              "${context.l10n.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(context.l10n.month)}",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -553,7 +545,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!.previousMonth,
+                              context.l10n.previousMonth,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -591,8 +583,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .lastNDays(90.toString()),
+                              context.l10n.lastNDays(90.toString()),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -624,7 +615,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
                             child: Text(
-                              AppLocalizations.of(context)!.historic,
+                              context.l10n.historic,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -736,7 +727,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                         ? MediaQuery.of(context).size.height * 0.01
                         : 0),
                 child: Text(
-                  AppLocalizations.of(context)!.confirm,
+                  context.l10n.confirm,
                   style: Theme.of(context)
                       .textTheme
                       .displayLarge

@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -67,7 +67,7 @@ class _QRScannerState extends State<QRScanner> {
                     size: MediaQuery.of(context).size.width * 0.08),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                 Flexible(
-                  child: Text(AppLocalizations.of(context)!.scanQRCode,
+                  child: Text(context.l10n.scanQRCode,
                       style: Theme.of(context)
                           .textTheme
                           .displayLarge!
@@ -147,7 +147,7 @@ class _QRScannerState extends State<QRScanner> {
             context: context,
             builder: (_) {
               return ErrorDialog(
-                text: AppLocalizations.of(context)!.brandNotFound,
+                text: context.l10n.brandNotFound,
               );
             });
       }).whenComplete(() {
@@ -184,7 +184,7 @@ class _QRScannerState extends State<QRScanner> {
             context: context,
             builder: (_) {
               return ErrorDialog(
-                text: AppLocalizations.of(context)!.brandNotFound,
+                text: context.l10n.brandNotFound,
               );
             }
         );

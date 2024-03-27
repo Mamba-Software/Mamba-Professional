@@ -11,7 +11,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 typedef DateCallBack = void Function(int pageIndex);
 
@@ -131,7 +131,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                               SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.02),
-                              Text(AppLocalizations.of(context)!.bonos,
+                              Text(context.l10n.bonos,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displaySmall
@@ -152,8 +152,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                                     await navigateToPayWall(context);
                                   }
                                 },
-                                child: Text(
-                                    AppLocalizations.of(context)!.mostBuys,
+                                child: Text(context.l10n.mostBuys,
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                     textAlign: TextAlign.center),
@@ -224,9 +223,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                                               0.01,
                                     ),
                                     Flexible(
-                                        child: Text(
-                                            AppLocalizations.of(context)!
-                                                .noBonosCreated,
+                                        child: Text(context.l10n.noBonosCreated,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .displaySmall
@@ -256,8 +253,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                                         }
                                       },
                                       child: Text(
-                                        AppLocalizations.of(context)!
-                                            .createFistBono,
+                                        context.l10n.createFistBono,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium

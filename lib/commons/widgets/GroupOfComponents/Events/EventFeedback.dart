@@ -9,7 +9,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -98,7 +98,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                       });
                     }),
                 Text(
-                  AppLocalizations.of(context)!.eventFeedbackIntesityText,
+                  context.l10n.eventFeedbackIntesityText,
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall
@@ -139,7 +139,7 @@ class _EventFeedbackState extends State<EventFeedback> {
               ),
               Image.asset(Assets.relaxedEmojiImage),
               Text(
-                AppLocalizations.of(context)!.relaxedFeedbackLabel,
+                context.l10n.relaxedFeedbackLabel,
                 style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
@@ -159,7 +159,7 @@ class _EventFeedbackState extends State<EventFeedback> {
               ),
               Image.asset(Assets.tiredEmojiImage),
               Text(
-                AppLocalizations.of(context)!.tiredFeedbackLabel,
+                context.l10n.tiredFeedbackLabel,
                 style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
@@ -179,7 +179,7 @@ class _EventFeedbackState extends State<EventFeedback> {
               ),
               Image.asset(Assets.exhalingEmojiImage),
               Text(
-                AppLocalizations.of(context)!.veryTiredFeedbackLabel,
+                context.l10n.veryTiredFeedbackLabel,
                 style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
@@ -199,7 +199,7 @@ class _EventFeedbackState extends State<EventFeedback> {
               ),
               Image.asset(Assets.sweatingEmojiImage),
               Text(
-                AppLocalizations.of(context)!.exhaustedFeedbackLabel,
+                context.l10n.exhaustedFeedbackLabel,
                 style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
@@ -365,7 +365,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.6,
                           child: Text(
-                            AppLocalizations.of(context)!.eventFeedbackText,
+                            context.l10n.eventFeedbackText,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -512,7 +512,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                             child: !isLoadingBody
                                 ? Center(
                                     child: Text(
-                                      AppLocalizations.of(context)!.save,
+                                      context.l10n.save,
                                       style: Theme.of(context)
                                           .textTheme
                                           .displaySmall

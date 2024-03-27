@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -129,8 +129,7 @@ class _JoinConfirmationDialogBonosState
                                       children: [
                                         Flexible(
                                           child: Text(
-                                            AppLocalizations.of(context)!
-                                                .whichBono,
+                                            context.l10n.whichBono,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge
@@ -267,7 +266,7 @@ class _JoinConfirmationDialogBonosState
                                                     0.07,
                                                 color: Colors.white),
                                             title: Text(
-                                              "${AppLocalizations.of(context)!.cancelTimeAt} ${userBonosPurchases[_currentPage].bono!.condition!.cancelTime} ${AppLocalizations.of(context)!.hours.toLowerCase()}",
+                                              "${context.l10n.cancelTimeAt} ${userBonosPurchases[_currentPage].bono!.condition!.cancelTime} ${context.l10n.hours.toLowerCase()}",
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium
@@ -351,7 +350,7 @@ class _JoinConfirmationDialogBonosState
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.book,
+                          context.l10n.book,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -394,7 +393,7 @@ class _JoinConfirmationDialogBonosState
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.cancel,
+                          context.l10n.cancel,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context).primaryColorDark,

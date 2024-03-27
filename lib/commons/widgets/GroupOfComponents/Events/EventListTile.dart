@@ -9,7 +9,7 @@ import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
@@ -239,7 +239,7 @@ class _EventListTileState extends State<EventListTile>
                     width: widget.width * 0.1,
                     child: FittedBox(
                       fit: BoxFit.fitWidth,
-                      child: Text(AppLocalizations.of(context)!.average,
+                      child: Text(context.l10n.average,
                           style: Theme.of(context).textTheme.bodySmall,
                           textAlign: TextAlign.center),
                     ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/data/Models/Subscription.dart';
 import 'package:mamba/commons/constants/assets.dart';
@@ -38,7 +38,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.subscriptionsAppBar,
+          context.l10n.subscriptionsAppBar,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
@@ -122,14 +122,11 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                     MediaQuery.of(context).size.height * 0.015),
                             child: Text(
                               subscription.unsuscribed!
-                                  ? AppLocalizations.of(context)!.moreSubInfo(
-                                      formatter
-                                          .format(
-                                              subscription.endDate!.toDate())
-                                          .toString())
-                                  : AppLocalizations.of(context)!
-                                      .moreSubInfoRenAut(formatter.format(
-                                          subscription.endDate!.toDate())),
+                                  ? context.l10n.moreSubInfo(formatter
+                                      .format(subscription.endDate!.toDate())
+                                      .toString())
+                                  : context.l10n.moreSubInfoRenAut(formatter
+                                      .format(subscription.endDate!.toDate())),
                               style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.left,
                             ),
@@ -173,8 +170,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                 padding: EdgeInsets.all(
                                     MediaQuery.of(context).size.height * 0.01),
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .subscriptionIncludes,
+                                  context.l10n.subscriptionIncludes,
                                   style:
                                       Theme.of(context).textTheme.displayLarge,
                                   textAlign: TextAlign.left,
@@ -199,32 +195,32 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                             0.00),
                                 child: Column(
                                   children: [
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .personalizeBrandActiveText),
+                                    listTileGetAll(context
+                                        .l10n.personalizeBrandActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .searcherActiveText),
+                                    listTileGetAll(
+                                        context.l10n.searcherActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .sessionControActiveText),
+                                    listTileGetAll(
+                                        context.l10n.sessionControActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .pricePolicyActiveText),
+                                    listTileGetAll(
+                                        context.l10n.pricePolicyActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.005),
-                                    listTileGetAll(AppLocalizations.of(context)!
-                                        .statsActiveText),
+                                    listTileGetAll(
+                                        context.l10n.statsActiveText),
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
@@ -251,7 +247,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                       MediaQuery.of(context).size.height * 0.05,
                                   child: Center(
                                       child: Text(
-                                    AppLocalizations.of(context)!.seeAllSubs,
+                                    context.l10n.seeAllSubs,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyLarge

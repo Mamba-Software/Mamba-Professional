@@ -8,7 +8,7 @@ import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class TimeToTimeOffer extends StatefulWidget {
   List<Event> events;
@@ -258,7 +258,7 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.005),
                         Text(
-                          AppLocalizations.of(context)!.noData,
+                          context.l10n.noData,
                           style: Theme.of(context).textTheme.bodySmall,
                           textAlign: TextAlign.center,
                         ),

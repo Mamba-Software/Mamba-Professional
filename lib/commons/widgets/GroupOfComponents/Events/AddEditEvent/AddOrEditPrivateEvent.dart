@@ -33,7 +33,7 @@ import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/SelectEventUsers/SelectClientsEvent.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weekday_selector/weekday_selector.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class AddOrEditPrivateEvent extends StatefulWidget {
   Locale locale;
@@ -315,7 +315,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
     DateTime? pickedDateTemp = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDateDialog(
-              title: AppLocalizations.of(context)!.selectDay,
+              title: context.l10n.selectDay,
               startDate: startDate,
               onlyFuture: true,
               dateOfWeek: true,
@@ -351,7 +351,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
     DateTime? pickedTimeTemp = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectTimeDialog(
-              title: AppLocalizations.of(context)!.selectTime,
+              title: context.l10n.selectTime,
               startDate: startDate,
               onlyFuture: true,
             ));
@@ -378,7 +378,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
     String? pickedDuration = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDurationDialog(
-              title: AppLocalizations.of(context)!.selectDuration,
+              title: context.l10n.selectDuration,
               initialDuration: duration,
             ));
     if (pickedDuration != null) {
@@ -455,7 +455,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.add,
+                    context.l10n.add,
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -524,7 +524,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.add,
+                    context.l10n.add,
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -544,10 +544,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
             appBar: AppBar(
               toolbarHeight: MediaQuery.of(context).size.height * 0.08,
               title: widget.eventId == null
-                  ? Text(AppLocalizations.of(context)!.createEvent,
+                  ? Text(context.l10n.createEvent,
                       style: Theme.of(context).appBarTheme.titleTextStyle)
                   : Text(
-                      AppLocalizations.of(context)!.editEvent,
+                      context.l10n.editEvent,
                       style: Theme.of(context).appBarTheme.titleTextStyle,
                     ),
               centerTitle: true,
@@ -575,7 +575,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                         width: MediaQuery.of(context).size.width * 0.1,
                         child: FittedBox(
                           fit: BoxFit.contain,
-                          child: Text(AppLocalizations.of(context)!.private,
+                          child: Text(context.l10n.private,
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center),
                         ),
@@ -606,10 +606,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
             appBar: AppBar(
               toolbarHeight: MediaQuery.of(context).size.height * 0.08,
               title: widget.eventId == null
-                  ? Text(AppLocalizations.of(context)!.createEvent,
+                  ? Text(context.l10n.createEvent,
                       style: Theme.of(context).appBarTheme.titleTextStyle)
                   : Text(
-                      AppLocalizations.of(context)!.editEvent,
+                      context.l10n.editEvent,
                       style: Theme.of(context).appBarTheme.titleTextStyle,
                     ),
               centerTitle: true,
@@ -634,8 +634,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                   context: context,
                                   builder: (_) {
                                     return DeleteConfirmationDialog(
-                                        text: AppLocalizations.of(context)!
-                                            .deleteEventConfirmation);
+                                        text: context
+                                            .l10n.deleteEventConfirmation);
                                   });
                               if (result) {
                                 _deleteEventFunction();
@@ -665,8 +665,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                 context: context,
                                 builder: (_) {
                                   return DeleteConfirmationDialog(
-                                      text: AppLocalizations.of(context)!
-                                          .deleteClientsWithPurchases,
+                                      text: context
+                                          .l10n.deleteClientsWithPurchases,
                                       permitDelete: false);
                                 });
                           }
@@ -698,8 +698,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                               width: MediaQuery.of(context).size.width * 0.1,
                               child: FittedBox(
                                 fit: BoxFit.contain,
-                                child: Text(
-                                    AppLocalizations.of(context)!.private,
+                                child: Text(context.l10n.private,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                     textAlign: TextAlign.center),
@@ -772,9 +771,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           MainAxisSize.min,
                                                       children: <Widget>[
                                                         Text(
-                                                          AppLocalizations.of(
-                                                                  context)!
-                                                              .title,
+                                                          context.l10n.title,
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -797,12 +794,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                             focusNodetitleController,
                                                         controller:
                                                             titleController,
-                                                        validator: (val) => val!
-                                                                .isEmpty
-                                                            ? AppLocalizations
-                                                                    .of(context)!
-                                                                .titleError
-                                                            : null,
+                                                        validator: (val) =>
+                                                            val!.isEmpty
+                                                                ? context.l10n
+                                                                    .titleError
+                                                                : null,
                                                         onChanged: (val) {
                                                           setState(() {
                                                             titleString = val;
@@ -835,10 +831,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                   color:
                                                                       AppColors
                                                                           .red),
-                                                          hintText:
-                                                              AppLocalizations.of(
-                                                                      context)!
-                                                                  .titleHint,
+                                                          hintText: context
+                                                              .l10n.titleHint,
                                                           errorBorder:
                                                               const UnderlineInputBorder(
                                                             borderSide:
@@ -891,9 +885,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           MainAxisSize.min,
                                                       children: <Widget>[
                                                         Text(
-                                                          AppLocalizations.of(
-                                                                  context)!
-                                                              .description,
+                                                          context
+                                                              .l10n.description,
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -936,8 +929,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                               Theme.of(context)
                                                                   .textTheme
                                                                   .bodySmall,
-                                                          hintText: AppLocalizations
-                                                                  .of(context)!
+                                                          hintText: context.l10n
                                                               .descriptionHint,
                                                           errorBorder:
                                                               const UnderlineInputBorder(
@@ -990,9 +982,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           MainAxisSize.min,
                                                       children: <Widget>[
                                                         Text(
-                                                          AppLocalizations.of(
-                                                                  context)!
-                                                              .location,
+                                                          context.l10n.location,
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -1145,8 +1135,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                               ),
                                                               location.isBaseLocation!
                                                                   ? Text(
-                                                                      AppLocalizations.of(
-                                                                              context)!
+                                                                      context
+                                                                          .l10n
                                                                           .baseLocation,
                                                                       style: Theme.of(
                                                                               context)
@@ -1251,9 +1241,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                               MainAxisSize.min,
                                                           children: <Widget>[
                                                             Text(
-                                                              AppLocalizations.of(
-                                                                      context)!
-                                                                  .bonos,
+                                                              context
+                                                                  .l10n.bonos,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -1281,8 +1270,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                       children: <Widget>[
                                                         Flexible(
                                                           child: Text(
-                                                            AppLocalizations.of(
-                                                                    context)!
+                                                            context.l10n
                                                                 .bonosDescriptionPrivate,
                                                             style: Theme.of(
                                                                     context)
@@ -1344,8 +1332,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                 width: 8),
                                                             Flexible(
                                                               child: Text(
-                                                                AppLocalizations.of(
-                                                                        context)!
+                                                                context.l10n
                                                                     .bonosDescriptionPrivateWarning,
                                                                 textAlign:
                                                                     TextAlign
@@ -1415,8 +1402,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                 width: 8),
                                                             Flexible(
                                                               child: Text(
-                                                                AppLocalizations.of(
-                                                                        context)!
+                                                                context.l10n
                                                                     .bonosDescriptionGreat,
                                                                 textAlign:
                                                                     TextAlign
@@ -1476,9 +1462,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                         }
                                                       },
                                                       child: Text(
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .selectAll,
+                                                        context.l10n.selectAll,
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyMedium
@@ -1505,8 +1489,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                 0.01),
                                                         child: Center(
                                                           child: Text(
-                                                            AppLocalizations.of(
-                                                                    context)!
+                                                            context.l10n
                                                                 .deleteClientsWithPurchasesBonos,
                                                             style: Theme.of(
                                                                     context)
@@ -1611,7 +1594,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                   ),
                                                                   Flexible(
                                                                     child: Text(
-                                                                      "${bono.sessions! == 10000 ? "${AppLocalizations.of(context)!.sessions} ${AppLocalizations.of(context)!.ilimitadas}" : "${bono.sessions!} ${AppLocalizations.of(context)!.sessions.toLowerCase()}"} desde ${bono.price!.toStringAsFixed(2)}€",
+                                                                      "${bono.sessions! == 10000 ? "${context.l10n.sessions} ${context.l10n.ilimitadas}" : "${bono.sessions!} ${context.l10n.sessions.toLowerCase()}"} desde ${bono.price!.toStringAsFixed(2)}€",
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
@@ -1774,8 +1757,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                       .height *
                                                   0.01),
                                           child: Text(
-                                            AppLocalizations.of(context)!
-                                                .selectDayTime,
+                                            context.l10n.selectDayTime,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .displayLarge,
@@ -2003,9 +1985,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                     top: 10.0),
                                                 child: Center(
                                                   child: Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .errorDate,
+                                                    context.l10n.errorDate,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyMedium
@@ -2025,9 +2005,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                     top: 10.0),
                                                 child: Center(
                                                   child: Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .cantEditText,
+                                                    context.l10n.cantEditText,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyMedium
@@ -2058,8 +2036,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                             MainAxisSize.max,
                                                         children: [
                                                           Text(
-                                                            AppLocalizations.of(
-                                                                    context)!
+                                                            context.l10n
                                                                 .recurrentEvent,
                                                             style: Theme.of(
                                                                     context)
@@ -2136,8 +2113,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                   top: 10.0),
                                                           child: Center(
                                                             child: Text(
-                                                              AppLocalizations.of(
-                                                                      context)!
+                                                              context.l10n
                                                                   .cantEditRecurrent,
                                                               style: Theme.of(
                                                                       context)
@@ -2176,7 +2152,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                           10.0),
                                                                       child:
                                                                           Text(
-                                                                        AppLocalizations.of(context)!
+                                                                        context
+                                                                            .l10n
                                                                             .days,
                                                                         style: Theme.of(context)
                                                                             .textTheme
@@ -2207,19 +2184,26 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                       firstDayOfWeek:
                                                                           0,
                                                                       shortWeekdays: [
-                                                                        AppLocalizations.of(context)!
+                                                                        context
+                                                                            .l10n
                                                                             .mondayLetter,
-                                                                        AppLocalizations.of(context)!
+                                                                        context
+                                                                            .l10n
                                                                             .tuesdarLetter,
-                                                                        AppLocalizations.of(context)!
+                                                                        context
+                                                                            .l10n
                                                                             .wednesdayLetter,
-                                                                        AppLocalizations.of(context)!
+                                                                        context
+                                                                            .l10n
                                                                             .thursdayLetter,
-                                                                        AppLocalizations.of(context)!
+                                                                        context
+                                                                            .l10n
                                                                             .fridayLetter,
-                                                                        AppLocalizations.of(context)!
+                                                                        context
+                                                                            .l10n
                                                                             .saturadayLetter,
-                                                                        AppLocalizations.of(context)!
+                                                                        context
+                                                                            .l10n
                                                                             .sundayLetter,
                                                                       ],
                                                                       // Working Days disabledFillColor: Colors.red,
@@ -2265,7 +2249,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                           10.0),
                                                                       child:
                                                                           Text(
-                                                                        AppLocalizations.of(context)!
+                                                                        context
+                                                                            .l10n
                                                                             .during,
                                                                         style: Theme.of(context)
                                                                             .textTheme
@@ -2286,13 +2271,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                               right: 0.0),
                                                                           title:
                                                                               Text(
-                                                                            AppLocalizations.of(context)!.thisWeek,
+                                                                            context.l10n.thisWeek,
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodyMedium,
                                                                           ),
                                                                           subtitle:
                                                                               Text(
-                                                                            AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneWeek))),
+                                                                            context.l10n.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneWeek))),
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodySmall,
                                                                             textAlign:
@@ -2327,13 +2312,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                               right: 0.0),
                                                                           title:
                                                                               Text(
-                                                                            AppLocalizations.of(context)!.nextTwoWeek,
+                                                                            context.l10n.nextTwoWeek,
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodyMedium,
                                                                           ),
                                                                           subtitle:
                                                                               Text(
-                                                                            AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(twoWeek))),
+                                                                            context.l10n.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(twoWeek))),
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodySmall,
                                                                             textAlign:
@@ -2368,13 +2353,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                               right: 0.0),
                                                                           title:
                                                                               Text(
-                                                                            AppLocalizations.of(context)!.wholeMonth,
+                                                                            context.l10n.wholeMonth,
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodyMedium,
                                                                           ),
                                                                           subtitle:
                                                                               Text(
-                                                                            AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneMonth))),
+                                                                            context.l10n.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneMonth))),
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodySmall,
                                                                             textAlign:
@@ -2429,8 +2414,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                               .spaceBetween,
                                                       children: [
                                                         Text(
-                                                          AppLocalizations.of(
-                                                                  context)!
+                                                          context.l10n
                                                               .recurrentEvent,
                                                           style:
                                                               Theme.of(context)
@@ -2477,8 +2461,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                           MainAxisSize.max,
                                                       children: [
                                                         Text(
-                                                          AppLocalizations.of(
-                                                                  context)!
+                                                          context.l10n
                                                               .recurrentEvent,
                                                           style:
                                                               Theme.of(context)
@@ -2559,9 +2542,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                       MainAxisSize.min,
                                                   children: <Widget>[
                                                     Text(
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .staff,
+                                                      context.l10n.staff,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .displayLarge,
@@ -2752,8 +2733,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                             0.05),
                                                 child: Center(
                                                   child: Text(
-                                                    AppLocalizations.of(
-                                                            context)!
+                                                    context.l10n
                                                         .noTrainerSelectedError,
                                                     style: Theme.of(context)
                                                         .textTheme
@@ -2790,9 +2770,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                       MainAxisSize.min,
                                                   children: <Widget>[
                                                     Text(
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .clients,
+                                                      context.l10n.clients,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .displayLarge,
@@ -2836,8 +2814,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                               children: <Widget>[
                                                 Flexible(
                                                   child: Text(
-                                                    AppLocalizations.of(
-                                                            context)!
+                                                    context.l10n
                                                         .inviteClientDescription,
                                                     style: Theme.of(context)
                                                         .textTheme
@@ -2869,8 +2846,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                   children: <Widget>[
                                                     Flexible(
                                                       child: Text(
-                                                        AppLocalizations.of(
-                                                                context)!
+                                                        context.l10n
                                                             .addClientDescription,
                                                         style: Theme.of(context)
                                                             .textTheme
@@ -2935,7 +2911,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                                                                               context: context,
                                                                               builder: (_) {
                                                                                 return LeaveConfirmationDialogBonos(
-                                                                                  text: AppLocalizations.of(context)!.leaveEventConfirmation,
+                                                                                  text: context.l10n.leaveEventConfirmation,
                                                                                   brand: currentBrand,
                                                                                   bonos: filterBonosByIds(),
                                                                                   purchaseId: client.purchaseId!,
@@ -3101,7 +3077,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                               backgroundColor: Theme.of(context).primaryColor,
                               icon: Container(),
                               label: Text(
-                                AppLocalizations.of(context)!.back,
+                                context.l10n.back,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -3245,8 +3221,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                         label: widget.eventId == null
                             ? Text(
                                 _selectedIndex == 2
-                                    ? AppLocalizations.of(context)!.createEvent
-                                    : AppLocalizations.of(context)!.next,
+                                    ? context.l10n.createEvent
+                                    : context.l10n.next,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -3254,8 +3230,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
                               )
                             : Text(
                                 _selectedIndex == 2
-                                    ? AppLocalizations.of(context)!.editEvent
-                                    : AppLocalizations.of(context)!.next,
+                                    ? context.l10n.editEvent
+                                    : context.l10n.next,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -3361,7 +3337,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
       // Updating Loading Text
       setState(() {
         isRecurrentLoadingText =
-            "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$currentEvent)";
+            "${context.l10n.creating} ${context.l10n.events.toLowerCase()}... ($currentEvent/$currentEvent)";
       });
       // Creating Event Object
       Event event = Event(
@@ -3444,7 +3420,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
             // Updating Loading Text
             setState(() {
               isRecurrentLoadingText =
-                  "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$totalEvents)";
+                  "${context.l10n.creating} ${context.l10n.events.toLowerCase()}... ($currentEvent/$totalEvents)";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
@@ -3492,7 +3468,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
             // Updating Loading Text
             setState(() {
               isRecurrentLoadingText =
-                  "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$totalEvents)";
+                  "${context.l10n.creating} ${context.l10n.events.toLowerCase()}... ($currentEvent/$totalEvents)";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
@@ -3540,7 +3516,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
             // Updating Loading Text
             setState(() {
               isRecurrentLoadingText =
-                  "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$totalEvents)";
+                  "${context.l10n.creating} ${context.l10n.events.toLowerCase()}... ($currentEvent/$totalEvents)";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
@@ -3606,7 +3582,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
       isLoading = true;
       // Updating Loading Text
       isRecurrentLoadingText =
-          "${AppLocalizations.of(context)!.deleting} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$currentEvent)";
+          "${context.l10n.deleting} ${context.l10n.events.toLowerCase()}... ($currentEvent/$currentEvent)";
     });
     // Delete Event Call
     await _eventDataService.deleteEvent(widget.eventId!, true);
@@ -3649,7 +3625,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
       isLoading = true;
       // Updating Loading Text
       isRecurrentLoadingText =
-          "${AppLocalizations.of(context)!.editing} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$currentEvent)";
+          "${context.l10n.editing} ${context.l10n.events.toLowerCase()}... ($currentEvent/$currentEvent)";
     });
     // Get Random Photo if no Image Selected
     if (isRandomImage) {
@@ -3863,7 +3839,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
       // Updating Loading Text
       setState(() {
         isRecurrentLoadingText =
-            "${AppLocalizations.of(context)!.deleting} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$totalEvents)";
+            "${context.l10n.deleting} ${context.l10n.events.toLowerCase()}... ($currentEvent/$totalEvents)";
       });
       currentEvent += 1;
       // Event Id
@@ -3906,7 +3882,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent>
       // Updating Loading Text
       setState(() {
         isRecurrentLoadingText =
-            "${AppLocalizations.of(context)!.editing} ${AppLocalizations.of(context)!.events.toLowerCase()}... ($currentEvent/$totalEvents)";
+            "${context.l10n.editing} ${context.l10n.events.toLowerCase()}... ($currentEvent/$totalEvents)";
       });
       currentEvent += 1;
       // Event Id

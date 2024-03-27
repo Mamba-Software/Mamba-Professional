@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Purchase/PurchaseDataService.dart';
@@ -141,7 +141,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                     textAlign: TextAlign.left,
                     decoration: InputDecoration(
                       hintStyle: Theme.of(context).textTheme.bodySmall,
-                      hintText: AppLocalizations.of(context)!.search,
+                      hintText: context.l10n.search,
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
@@ -356,16 +356,16 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                         children: [
                                           Text(
                                             user.lastEventAt == null
-                                                ? AppLocalizations.of(context)!
-                                                    .lastActiveIn(DateTimeUtils()
+                                                ? context.l10n.lastActiveIn(
+                                                    DateTimeUtils()
                                                         .formatDateTimeToStringMMMYYYY(
                                                             dateJoined,
                                                             Localizations
                                                                     .localeOf(
                                                                         context)
                                                                 .languageCode))
-                                                : AppLocalizations.of(context)!
-                                                    .lastActiveIn(DateTimeUtils()
+                                                : context.l10n.lastActiveIn(
+                                                    DateTimeUtils()
                                                         .formatDateTimeToStringMMMYYYY(
                                                             user.lastEventAt!
                                                                 .toDate(),
@@ -423,8 +423,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                             context: context,
                                             builder: (_) {
                                               return LeaveConfirmationDialogBonos(
-                                                text: AppLocalizations.of(
-                                                        context)!
+                                                text: context.l10n
                                                     .leaveEventConfirmation,
                                                 brand: currentBrand,
                                                 bonos: widget.bonos,
@@ -443,9 +442,8 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                             context: context,
                                             builder: (_) {
                                               return JoinConfirmationDialogBonos(
-                                                text: AppLocalizations.of(
-                                                        context)!
-                                                    .joinEventConfirmation,
+                                                text: context
+                                                    .l10n.joinEventConfirmation,
                                                 brand: currentBrand,
                                                 bonos: widget.bonos,
                                                 userId: user.id!,

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -66,7 +66,7 @@ class _BrandLocationsState extends State<BrandLocations> {
           ? Scaffold(
               appBar: AppBar(
                 title: Text(
-                  AppLocalizations.of(context)!.locations,
+                  context.l10n.locations,
                   style: Theme.of(context).appBarTheme.titleTextStyle,
                 ),
                 centerTitle: true,
@@ -85,7 +85,7 @@ class _BrandLocationsState extends State<BrandLocations> {
           : Scaffold(
               appBar: AppBar(
                 title: Text(
-                  AppLocalizations.of(context)!.locations,
+                  context.l10n.locations,
                   style: Theme.of(context).appBarTheme.titleTextStyle,
                 ),
                 centerTitle: true,
@@ -163,8 +163,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                                                         Theme.of(context)
                                                             .colorScheme
                                                             .secondary,
-                                                    message: AppLocalizations
-                                                            .of(context)!
+                                                    message: context.l10n
                                                         .copyCorrectLocation,
                                                     textStyle: Theme.of(context)
                                                         .textTheme
@@ -207,8 +206,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                                                 children: [
                                                   Expanded(
                                                     child: Text(
-                                                      AppLocalizations.of(
-                                                              context)!
+                                                      context.l10n
                                                           .myLocationsBaseLocationClientDesc,
                                                       style: Theme.of(context)
                                                           .textTheme
@@ -255,9 +253,8 @@ class _BrandLocationsState extends State<BrandLocations> {
                                                     Theme.of(context)
                                                         .colorScheme
                                                         .secondary,
-                                                message: AppLocalizations.of(
-                                                        context)!
-                                                    .copyCorrectLocation,
+                                                message: context
+                                                    .l10n.copyCorrectLocation,
                                                 textStyle: Theme.of(context)
                                                     .textTheme
                                                     .bodyLarge!

@@ -5,7 +5,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/Clients/ClientEventWidget.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 Event event = Event();
 
@@ -30,8 +30,7 @@ class ClientEventSelector extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  titleEventWidget(
-                      context, AppLocalizations.of(context)!.clients),
+                  titleEventWidget(context, context.l10n.clients),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.03,
                   ),
@@ -53,7 +52,7 @@ class ClientEventSelector extends StatelessWidget {
               /*
               dividerAddEditEvent(
                   context,
-                  AppLocalizations.of(context)!.clients +
+                  context.l10n.clients +
                       "    ( " +
                       joinedMembersList.length.toString() +
                       " )",

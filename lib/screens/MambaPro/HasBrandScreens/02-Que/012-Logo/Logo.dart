@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
@@ -75,7 +75,7 @@ class _LogoState extends State<Logo> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.uploadPhoto,
+          context.l10n.uploadPhoto,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
@@ -171,7 +171,7 @@ class _LogoState extends State<Logo> {
           ? FloatingActionButton(
               heroTag: "31",
               onPressed: uploadPhoto,
-              tooltip: AppLocalizations.of(context)!.save,
+              tooltip: context.l10n.save,
               backgroundColor: Theme.of(context).colorScheme.secondary,
               child: const Icon(
                 Icons.check,

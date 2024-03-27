@@ -2,8 +2,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -18,14 +19,14 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 
 // Top Level -- Local BackGroundNotificationHandler
-  Future<void> backgroundMessageHandler(RemoteMessage message) async {
-    LocalNotificationService localNotificationService =
-        LocalNotificationService();
-    if (message.data.containsKey('route')) {
-      String route = message.data['route'];
-      localNotificationService.onNotifications.add(route);
-    }
+Future<void> backgroundMessageHandler(RemoteMessage message) async {
+  LocalNotificationService localNotificationService =
+      LocalNotificationService();
+  if (message.data.containsKey('route')) {
+    String route = message.data['route'];
+    localNotificationService.onNotifications.add(route);
   }
+}
 
 // Top Level -- Local BackGroundNotificationHandler
 Future<void> backgroundLocalMessageHandler(
@@ -43,7 +44,6 @@ Future<void> backgroundLocalMessageHandler(
       break;
   }
 }
-
 
 /// Streams are created so that app can respond to notification-related events
 /// since the plugin is initialised in the `main` function
@@ -193,8 +193,8 @@ class LocalNotificationService {
       // Scheduling Notification
       _notificationsPlugin.zonedSchedule(
           notification.id!,
-          AppLocalizations.of(context)!.afterEventTitleNotification,
-          AppLocalizations.of(context)!.afterEventBodyNotification,
+          context.l10n.afterEventTitleNotification,
+          context.l10n.afterEventBodyNotification,
           scheduledDate,
           platformChannelSpecifics,
           payload: notification.payload,
@@ -205,9 +205,9 @@ class LocalNotificationService {
       // Scheduling Notification
       _notificationsPlugin.zonedSchedule(
           notification.id!,
-          AppLocalizations.of(context)!
+          context.l10n
               .beforeEventTitleNotification(event.title!, eventTimeTime),
-          AppLocalizations.of(context)!.beforeEventBodyNotification,
+          context.l10n.beforeEventBodyNotification,
           scheduledDate,
           platformChannelSpecifics,
           payload: notification.payload,
@@ -401,8 +401,8 @@ class LocalNotificationService {
       // Notification 1 minute after
       ReceivedNotification notificationAfter = ReceivedNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        title: AppLocalizations.of(context)!.afterEventTitleNotification,
-        body: AppLocalizations.of(context)!.afterEventBodyNotification,
+        title: context.l10n.afterEventTitleNotification,
+        body: context.l10n.afterEventBodyNotification,
         payload: "F-${event.id!}",
         createdAt: Timestamp.now(),
         firesAt: afterDate,
@@ -435,14 +435,14 @@ class LocalNotificationService {
     // Notification one hour before
     ReceivedNotification notificationBefore = ReceivedNotification(
       id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title: AppLocalizations.of(context)!
+      title: context.l10n
           .beforeEventTitleNotification(event.title!, eventTimeTime),
       /*title: '⚠️ 🏋️‍ ' +
           event.title! +
           ' a las ' +
           eventTimeTime.toString() +
           ' 🏋️‍ ⚠️ ',*/
-      body: AppLocalizations.of(context)!.beforeEventBodyNotification,
+      body: context.l10n.beforeEventBodyNotification,
       /*  body:
           'Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles',*/
 
@@ -495,8 +495,8 @@ class LocalNotificationService {
       
       ReceivedNotification notificationAfter = ReceivedNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        title: AppLocalizations.of(context)!.afterEventTitleNotification,
-        body: AppLocalizations.of(context)!.afterEventBodyNotification,
+        title: context.l10n.afterEventTitleNotification,
+        body: context.l10n.afterEventBodyNotification,
         payload: "F-" + event.id!,
         createdAt: Timestamp.now(),
         firesAt: afterDate,
@@ -583,10 +583,10 @@ class LocalNotificationService {
       ReceivedNotification notificationAfter = ReceivedNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         title: '💪 ✅️ Sesión completada ✅️ 💪',
-        //title: AppLocalizations.of(context)!.afterEventTitleNotification, PROBLEMS
+        //title: context.l10n.afterEventTitleNotification, PROBLEMS
         body:
             '¿Qué te ha parecido? ¿Demasiado intensa? Comunica tu nivel de esfuerzo a tu entrenador',
-        //body: AppLocalizations.of(context)!.afterEventBodyNotification, PROBLEMS
+        //body: context.l10n.afterEventBodyNotification, PROBLEMS
         payload: "F-${event.id!}",
         createdAt: Timestamp.now(),
         firesAt: afterDate,
@@ -605,11 +605,11 @@ class LocalNotificationService {
     // Notification one hour before
     ReceivedNotification notificationBefore = ReceivedNotification(
       id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      // title: AppLocalizations.of(context)!
+      // title: context.l10n
       // .beforeEventTitleNotification(event.title!, eventTimeTime), PROBLEMS
-      // body: AppLocalizations.of(context)!.beforeEventBodyNotification, PROBLEMS
+      // body: context.l10n.beforeEventBodyNotification, PROBLEMS
       title: '⚠️ 🏋️‍ ${event.title!} a las $eventTimeTime 🏋️‍ ⚠️ ',
-      //body: AppLocalizations.of(context)!.beforeEventBodyNotification, PROBLEMS
+      //body: context.l10n.beforeEventBodyNotification, PROBLEMS
       body:
           'Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles',
       payload: event.id!,
@@ -677,10 +677,9 @@ class LocalNotificationService {
       /// NOTIFICATION 1 DAY BEFORE
       DateTime oneDayBefore = expirationDate.subtract(const Duration(days: 1));
       // This means the Bono has finished with this session
-      title = AppLocalizations.of(context)!
+      title = context.l10n
           .bonoExpirationTomorrowTitleNotification(bono.title!.toUpperCase());
-      body =
-          AppLocalizations.of(context)!.bonoExpirationTomorrowBodyNotification;
+      body = context.l10n.bonoExpirationTomorrowBodyNotification;
       payload = "E-$brandId";
       // Notification 1 Day before
       ReceivedNotification notificationOneDayBefore = ReceivedNotification(
@@ -701,9 +700,9 @@ class LocalNotificationService {
       /// NOTIFICATION 7 DAYS BEFORE
       DateTime oneWeekBefore = expirationDate.subtract(const Duration(days: 1));
       // This means the Bono has finished with this session
-      title = AppLocalizations.of(context)!
+      title = context.l10n
           .bonoExpirationWeekTitleNotification(bono.title!.toUpperCase());
-      body = AppLocalizations.of(context)!.bonoExpirationWeekBodyNotification;
+      body = context.l10n.bonoExpirationWeekBodyNotification;
       payload = "E-$brandId";
       // Notification 1 Day before
       ReceivedNotification notificationOneWeekBefore = ReceivedNotification(

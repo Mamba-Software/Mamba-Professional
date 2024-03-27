@@ -4,7 +4,7 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class TimeOffer extends StatefulWidget {
@@ -111,7 +111,7 @@ class TimeOfferState extends State<TimeOffer> {
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.005),
                         Text(
-                          AppLocalizations.of(context)!.noData,
+                          context.l10n.noData,
                           style: Theme.of(context).textTheme.bodySmall,
                           textAlign: TextAlign.center,
                         ),

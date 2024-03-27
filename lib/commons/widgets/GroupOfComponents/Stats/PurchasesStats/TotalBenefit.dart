@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/app/style/Styles.dart';
@@ -191,7 +191,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.005),
                             Text(
-                              AppLocalizations.of(context)!.noData,
+                              context.l10n.noData,
                               style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.center,
                             ),

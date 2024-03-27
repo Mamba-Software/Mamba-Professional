@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 
@@ -9,14 +9,14 @@ class UserRecentEventsWidget extends StatefulWidget {
   String userId;
   List<Event> events;
 
-  UserRecentEventsWidget({super.key, required this.userId, required this.events});
+  UserRecentEventsWidget(
+      {super.key, required this.userId, required this.events});
 
   @override
   _UserRecentEventsWidgetState createState() => _UserRecentEventsWidgetState();
 }
 
 class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
-
   List<Event> listEvents = [];
 
   @override
@@ -36,48 +36,53 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
           builder: (context) => EventPage(
             eventId: eventId,
           ),
-        )
-    );
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return listEvents.isNotEmpty ? ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: listEvents.length,
-      itemBuilder: (context,int index) {
-        Event event = listEvents[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: GestureDetector(
-            onTap: () {
-              navigateToEventScreen(event.id!);
+    return listEvents.isNotEmpty
+        ? ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: listEvents.length,
+            itemBuilder: (context, int index) {
+              Event event = listEvents[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: GestureDetector(
+                  onTap: () {
+                    navigateToEventScreen(event.id!);
+                  },
+                  child: UserEventCard(
+                    event: event,
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    isMyEvent: false,
+                    showEmoji: false,
+                  ),
+                ),
+              );
             },
-            child: UserEventCard(
-              event: event,
-              height: MediaQuery.of(context).size.height*0.15,
-              width: MediaQuery.of(context).size.width*0.9,
-              isMyEvent: false,
-              showEmoji: false,
-            ),
-          ),
-        );
-      },
-    ) : Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.015),
-            Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
-            SizedBox(height: MediaQuery.of(context).size.height*0.1),
-          ],
-        ),
-      ],
-    );
+          )
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                  Text(
+                    context.l10n.noEvents,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                ],
+              ),
+            ],
+          );
   }
 }

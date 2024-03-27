@@ -13,7 +13,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class UserCalendarWidget extends StatefulWidget {
   String userId;
@@ -193,7 +193,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                   });
                 }
               },
-              child: Text(AppLocalizations.of(context)!.todayString,
+              child: Text(context.l10n.todayString,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center),
             ),
@@ -224,7 +224,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         ),
                         FittedBox(
                           fit: BoxFit.contain,
-                          child: Text(AppLocalizations.of(context)!.weekString,
+                          child: Text(context.l10n.weekString,
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center),
                         ),
@@ -243,7 +243,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         ),
                         FittedBox(
                           fit: BoxFit.contain,
-                          child: Text(AppLocalizations.of(context)!.monthString,
+                          child: Text(context.l10n.monthString,
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center),
                         ),

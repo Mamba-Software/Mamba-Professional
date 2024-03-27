@@ -7,7 +7,7 @@ import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/app/style/Styles.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class SessionsMade extends StatefulWidget {
   List<Event> events;
@@ -232,8 +232,7 @@ class SessionsMadeState extends State<SessionsMade> {
                       borderRadius: BorderRadius.circular(10)),
                   child: Center(
                     child: Text(
-                      AppLocalizations.of(context)!
-                          .statsMinimumSession(5.toString()),
+                      context.l10n.statsMinimumSession(5.toString()),
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium

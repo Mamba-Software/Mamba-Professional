@@ -6,7 +6,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
 class TopSnackBarDef {
   //Function to send a snack bar message
-  void showSnackBarTop(var context, String? message, var color) {
+  void showSnackBarTop(BuildContext context, String? message, var color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: CustomSnackBar.success(

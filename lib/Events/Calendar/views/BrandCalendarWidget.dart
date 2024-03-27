@@ -29,7 +29,7 @@ import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
 class BrandCalendarWidget extends StatefulWidget {
@@ -304,7 +304,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
     switch (_controller.view) {
       case CalendarView.schedule:
         return Text(
-          "${AppLocalizations.of(context)!.schedule} ",
+          "${context.l10n.schedule} ",
           style: Theme.of(context)
               .textTheme
               .displayLarge
@@ -473,7 +473,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                       size: MediaQuery.of(context).size.width * 0.06,
                       color: Theme.of(context).primaryColor),
                   title: Text(
-                    AppLocalizations.of(context)!.schedule,
+                    context.l10n.schedule,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   trailing: FaIcon(
@@ -499,7 +499,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     size: MediaQuery.of(context).size.width * 0.06,
                     color: Theme.of(context).primaryColor),
                 title: Text(
-                  AppLocalizations.of(context)!.day,
+                  context.l10n.day,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
@@ -524,7 +524,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     size: MediaQuery.of(context).size.width * 0.06,
                     color: Theme.of(context).primaryColor),
                 title: Text(
-                  AppLocalizations.of(context)!.week,
+                  context.l10n.week,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
@@ -549,7 +549,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     size: MediaQuery.of(context).size.width * 0.06,
                     color: Theme.of(context).primaryColor),
                 title: Text(
-                  AppLocalizations.of(context)!.month,
+                  context.l10n.month,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
@@ -656,7 +656,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     child: Container(
                       margin: const EdgeInsets.only(top: 8),
                       child: Text(
-                        "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
+                        "${appointment.subject} ${context.l10n.asistants.toLowerCase()}",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
@@ -673,8 +673,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                               margin: const EdgeInsets.only(top: 8),
                               child: Text(
                                 event.numFreeSessions == 1
-                                    ? "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClient.toLowerCase()}"
-                                    : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}",
+                                    ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}"
+                                    : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -755,7 +755,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                   ),
                   Flexible(
                     child: Text(
-                      "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
+                      "${appointment.subject} ${context.l10n.asistants.toLowerCase()}",
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -774,8 +774,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                   event.numFreeSessions != 0
                               ? Text(
                                   event.numFreeSessions == 1
-                                      ? "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClient.toLowerCase()}  -  "
-                                      : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}   -  ",
+                                      ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}  -  "
+                                      : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}   -  ",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -861,7 +861,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           event.isPrivate!
                               ? TextSpan(
                                   text:
-                                      "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
+                                      "   ${appointment.subject} ${context.l10n.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -869,7 +869,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                 )
                               : TextSpan(
                                   text:
-                                      "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
+                                      "   ${appointment.subject} ${context.l10n.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -888,8 +888,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                   event.numFreeSessions != 0
                               ? Text(
                                   event.numFreeSessions == 1
-                                      ? "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClient.toLowerCase()}  -  "
-                                      : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}   -  ",
+                                      ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}  -  "
+                                      : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}   -  ",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -974,7 +974,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           event.isPrivate!
                               ? TextSpan(
                                   text:
-                                      "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
+                                      "   ${appointment.subject} ${context.l10n.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -982,7 +982,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                 )
                               : TextSpan(
                                   text:
-                                      "   ${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}   ",
+                                      "   ${appointment.subject} ${context.l10n.asistants.toLowerCase()}   ",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -995,8 +995,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                   event.numFreeSessions != null && event.numFreeSessions != 0
                       ? Text(
                           event.numFreeSessions == 1
-                              ? "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClient.toLowerCase()}"
-                              : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}",
+                              ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}"
+                              : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}",
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: AppColors.white,
@@ -1008,7 +1008,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                         )
                       : Container(),
                   /*
-                      event.title!.length+("   "+appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase()).length < 35 ? Flexible(
+                      event.title!.length+("   "+appointment.subject+" "+context.l10n.asistants.toLowerCase()).length < 35 ? Flexible(
                         child: SizedBox(
                           height: MediaQuery.of(context).size.width*0.05,
                           child: ListView.builder(
@@ -1077,7 +1077,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                         TextSpan(text: "${event.title!}\n"),
                         TextSpan(
                           text: event.isPrivate!
-                              ? "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase().substring(0, 4)}.\n"
+                              ? "${appointment.subject} ${context.l10n.asistants.toLowerCase().substring(0, 4)}.\n"
                               : "${appointment.subject}\n",
                           style: Theme.of(context)
                               .textTheme
@@ -1088,8 +1088,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                 event.numFreeSessions != 0
                             ? TextSpan(
                                 text: event.numFreeSessions == 1
-                                    ? "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClient.toLowerCase()}\n"
-                                    : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}\n",
+                                    ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}\n"
+                                    : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}\n",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -1209,7 +1209,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "${appointment.subject} ${AppLocalizations.of(context)!.asistants.toLowerCase()}",
+                                    "${appointment.subject} ${context.l10n.asistants.toLowerCase()}",
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                     overflow: TextOverflow.fade,
@@ -1235,8 +1235,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                         event.numFreeSessions != 0
                                     ? Text(
                                         event.numFreeSessions == 1
-                                            ? "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClient.toLowerCase()}  -  "
-                                            : "${event.numFreeSessions} ${AppLocalizations.of(context)!.potentialClients.toLowerCase()}  -  ",
+                                            ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}  -  "
+                                            : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}  -  ",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium
@@ -1318,11 +1318,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
     String filteredEvents = "";
     int cnt = 0;
     if (filterByCalendar[0]) {
-      filteredEvents += "${AppLocalizations.of(context)!.groupEvent}, ";
+      filteredEvents += "${context.l10n.groupEvent}, ";
       cnt += 1;
     }
     if (filterByCalendar[1]) {
-      filteredEvents += "${AppLocalizations.of(context)!.privateEvent}, ";
+      filteredEvents += "${context.l10n.privateEvent}, ";
       cnt += 1;
     }
     if (cnt == 1) {
@@ -1399,9 +1399,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       style: TextButton.styleFrom(
                                         foregroundColor: AppColors.white,
                                       ),
-                                      child: Text(
-                                          AppLocalizations.of(context)!
-                                              .todayString,
+                                      child: Text(context.l10n.todayString,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyLarge
@@ -1483,8 +1481,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                               children: [
                                                                 ListTile(
                                                                   title: Text(
-                                                                      AppLocalizations.of(
-                                                                              context)!
+                                                                      context
+                                                                          .l10n
                                                                           .filterBy,
                                                                       style: Theme.of(
                                                                               context)
@@ -1496,7 +1494,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                   trailing:
                                                                       TextButton(
                                                                           child: Text(
-                                                                              AppLocalizations.of(context)!.clear,
+                                                                              context.l10n.clear,
                                                                               style: Theme.of(context).textTheme.bodySmall),
                                                                           onPressed: () {
                                                                             setStateBottom(() {
@@ -1560,7 +1558,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                 curve: Curves.ease,
                                                                               );
                                                                             },
-                                                                            title: Text("${AppLocalizations.of(context)!.typeProfile.split(" ")[0]} ${AppLocalizations.of(context)!.typeProfile.split(" ")[1]} ${AppLocalizations.of(context)!.events.toLowerCase()}",
+                                                                            title: Text("${context.l10n.typeProfile.split(" ")[0]} ${context.l10n.typeProfile.split(" ")[1]} ${context.l10n.events.toLowerCase()}",
                                                                                 style: Theme.of(context).textTheme.bodyLarge,
                                                                                 textAlign: TextAlign.left),
                                                                             subtitle: Text(returnFilteredRolesString(),
@@ -1583,7 +1581,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                 curve: Curves.ease,
                                                                               );
                                                                             },
-                                                                            title: Text(AppLocalizations.of(context)!.trainers,
+                                                                            title: Text(context.l10n.trainers,
                                                                                 style: Theme.of(context).textTheme.bodyLarge,
                                                                                 textAlign: TextAlign.left),
                                                                             subtitle:
@@ -1616,7 +1614,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                       Navigator.pop(context);
                                                                                     }
                                                                                   },
-                                                                                  title: Text(AppLocalizations.of(context)!.groupEvent, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                  title: Text(context.l10n.groupEvent, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                   trailing: filterByCalendar[0]
                                                                                       ? SizedBox(
                                                                                           width: MediaQuery.of(context).size.width * 0.15,
@@ -1635,7 +1633,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                       Navigator.pop(context);
                                                                                     }
                                                                                   },
-                                                                                  title: Text(AppLocalizations.of(context)!.privateEvent, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                  title: Text(context.l10n.privateEvent, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                   trailing: filterByCalendar[1]
                                                                                       ? SizedBox(
                                                                                           width: MediaQuery.of(context).size.width * 0.15,
@@ -2244,10 +2242,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(AppLocalizations.of(context)!.groupEvent,
+                            Text(context.l10n.groupEvent,
                                 style: Theme.of(context).textTheme.displaySmall,
                                 textAlign: TextAlign.right),
-                            Text(AppLocalizations.of(context)!.groupEventDesc,
+                            Text(context.l10n.groupEventDesc,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
@@ -2262,10 +2260,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           }
                           _addEvent(eventDate!, false);
                         } else {
-                          _topSnackBar.showSnackBarTop(
-                              context,
-                              AppLocalizations.of(context)!.processOnWork,
-                              AppColors.red);
+                          _topSnackBar.showSnackBarTop(context,
+                              context.l10n.processOnWork, AppColors.red);
                         }
                       }),
                   SpeedDialChild(
@@ -2284,10 +2280,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(AppLocalizations.of(context)!.privateEvent,
+                            Text(context.l10n.privateEvent,
                                 style: Theme.of(context).textTheme.displaySmall,
                                 textAlign: TextAlign.right),
-                            Text(AppLocalizations.of(context)!.privateEventDesc,
+                            Text(context.l10n.privateEventDesc,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
@@ -2302,10 +2298,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                           }
                           _addEvent(eventDate!, true);
                         } else {
-                          _topSnackBar.showSnackBarTop(
-                              context,
-                              AppLocalizations.of(context)!.processOnWork,
-                              AppColors.red);
+                          _topSnackBar.showSnackBarTop(context,
+                              context.l10n.processOnWork, AppColors.red);
                         }
                       }),
                 ],

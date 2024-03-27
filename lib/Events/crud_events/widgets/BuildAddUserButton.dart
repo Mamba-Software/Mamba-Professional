@@ -7,7 +7,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/SelectEventUsers/SelectClientsEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/SelectEventUsers/SelectTrainersEvent.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 Widget buildAddUserButton(
     BuildContext context, bool isTrainer, List<Usuario> brandUsersSelected) {
@@ -90,7 +90,7 @@ Widget buildAddUserButton(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.add,
+                  context.l10n.add,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),

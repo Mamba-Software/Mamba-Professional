@@ -15,10 +15,11 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/app/style/Styles.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -69,29 +70,26 @@ class _LoginState extends State<Login>
           switch (state.error) {
             case AuthErrorEnum.wrongAppUser:
               // Handle wrong app user error here.
-              showInSnackBar(AppLocalizations.of(context)!.wrongAppUser,
-                  AppLocalizations.of(context)!.wrongAppUserBody, true);
+              showInSnackBar(context.l10n.wrongAppUser,
+                  context.l10n.wrongAppUserBody, true);
 
               break;
             case AuthErrorEnum.loginError:
               // Handle login error here.
-              showInSnackBar(AppLocalizations.of(context)!.loginError);
+              showInSnackBar(context.l10n.loginError);
 
               break;
             case AuthErrorEnum.validateError:
               print('Error: Validation failed.');
               // Handle validation error here.
-              showInSnackBar(
-                  AppLocalizations.of(context)!.validateError,
-                  "${AppLocalizations.of(context)!.resend} ${AppLocalizations.of(context)!.email}",
-                  true,
-                  true);
+              showInSnackBar(context.l10n.validateError,
+                  "${context.l10n.resend} ${context.l10n.email}", true, true);
 
               break;
             case AuthErrorEnum.registerError:
               print('Error: Registration failed.');
               // Handle registration error here.
-              showInSnackBar(AppLocalizations.of(context)!.registerError);
+              showInSnackBar(context.l10n.registerError);
               //context.read<AuthCubit>().resetState();
               break;
             case AuthErrorEnum.validateErrorRegister:
@@ -188,8 +186,7 @@ class _LoginState extends State<Login>
                         ),
                       ),
                       Expanded(
-                          child: Text(
-                              AppLocalizations.of(context)!.loginWithEmail,
+                          child: Text(context.l10n.loginWithEmail,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -228,10 +225,10 @@ class _LoginState extends State<Login>
                       ?.copyWith(color: AppColors.white),
                   children: [
                     TextSpan(
-                      text: "${AppLocalizations.of(context)!.noAccount} ",
+                      text: "${context.l10n.noAccount} ",
                     ),
                     TextSpan(
-                        text: AppLocalizations.of(context)!.register,
+                        text: context.l10n.register,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             decoration: TextDecoration.underline)),
@@ -258,13 +255,10 @@ class _LoginState extends State<Login>
                       ?.copyWith(color: AppColors.white),
                   children: [
                     TextSpan(
-                      text: AppLocalizations.of(context)!
-                          .useMambaTermsAndConditions,
+                      text: context.l10n.useMambaTermsAndConditions,
                     ),
                     TextSpan(
-                        text: AppLocalizations.of(context)!
-                            .termsAndConditions
-                            .toLowerCase(),
+                        text: context.l10n.termsAndConditions.toLowerCase(),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             decoration: TextDecoration.underline)),
@@ -296,8 +290,7 @@ class _LoginState extends State<Login>
             autofocus: true,
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
-            validator: (val) =>
-                val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+            validator: (val) => val!.isEmpty ? context.l10n.emailError : null,
             onChanged: (val) {
               setState(() {
                 email = val;
@@ -311,7 +304,7 @@ class _LoginState extends State<Login>
                 .bodyMedium
                 ?.copyWith(color: AppColors.white),
             decoration: Styles.textFromInputDecoration.copyWith(
-                labelText: AppLocalizations.of(context)!.email,
+                labelText: context.l10n.email,
                 labelStyle: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -332,9 +325,8 @@ class _LoginState extends State<Login>
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           TextFormField(
               focusNode: focusNodePassword,
-              validator: (val) => val!.length < 6
-                  ? AppLocalizations.of(context)!.passwordError
-                  : null,
+              validator: (val) =>
+                  val!.length < 6 ? context.l10n.passwordError : null,
               onChanged: (val) {
                 setState(() {
                   password = val;
@@ -347,7 +339,7 @@ class _LoginState extends State<Login>
                   ?.copyWith(color: AppColors.white),
               obscureText: !_passwordVisible,
               decoration: Styles.textFromInputDecoration.copyWith(
-                  labelText: AppLocalizations.of(context)!.password,
+                  labelText: context.l10n.password,
                   labelStyle: Theme.of(context)
                       .textTheme
                       .bodyMedium
@@ -416,11 +408,11 @@ class _LoginState extends State<Login>
                   children: [
                     /*
                                       TextSpan(
-                                          text: AppLocalizations.of(context)!.forgotPassword+" "
+                                          text: context.l10n.forgotPassword+" "
                                       ),
                                       */
                     TextSpan(
-                        text: AppLocalizations.of(context)!.forgotPassword,
+                        text: context.l10n.forgotPassword,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             fontWeight: FontWeight.normal)),
@@ -459,10 +451,10 @@ class _LoginState extends State<Login>
                     ?.copyWith(color: AppColors.white),
                 children: [
                   TextSpan(
-                    text: "${AppLocalizations.of(context)!.noAccount} ",
+                    text: "${context.l10n.noAccount} ",
                   ),
                   TextSpan(
-                      text: AppLocalizations.of(context)!.register,
+                      text: context.l10n.register,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.white,
                           decoration: TextDecoration.underline)),
@@ -489,13 +481,10 @@ class _LoginState extends State<Login>
                     ?.copyWith(color: AppColors.white),
                 children: [
                   TextSpan(
-                    text: AppLocalizations.of(context)!
-                        .useMambaTermsAndConditions,
+                    text: context.l10n.useMambaTermsAndConditions,
                   ),
                   TextSpan(
-                      text: AppLocalizations.of(context)!
-                          .termsAndConditions
-                          .toLowerCase(),
+                      text: context.l10n.termsAndConditions.toLowerCase(),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.white,
                           decoration: TextDecoration.underline)),

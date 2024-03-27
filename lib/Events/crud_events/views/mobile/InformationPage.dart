@@ -6,7 +6,7 @@ import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart
 import 'package:mamba/events/crud_events/widgets/mobile/Location/LocationBlocSelector.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionBlocSelector.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class InformationPage extends StatelessWidget {
   const InformationPage({super.key});
@@ -22,12 +22,11 @@ class InformationPage extends StatelessWidget {
           children: [
             const TitleDescriptionBlocSelector(),
             const LocationBlocSelector(),
-            dividerAddEditEvent(
-                context, AppLocalizations.of(context)!.location, true),
+            dividerAddEditEvent(context, context.l10n.location, true),
             const EventBonosBlocSelector(),
             /*
             dividerAddEditEvent(
-                context, AppLocalizations.of(context)!.bonos, true),
+                context, context.l10n.bonos, true),
                 */
             SizedBox(height: MediaQuery.of(context).size.height * 0.15),
           ],

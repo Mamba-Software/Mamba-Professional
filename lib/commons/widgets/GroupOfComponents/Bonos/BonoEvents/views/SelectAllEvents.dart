@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Purchase.dart';
@@ -37,8 +37,12 @@ class SelectAllEvents extends StatelessWidget {
   // Members Page
   List<Appointment> allAppointments = <Appointment>[];
 
-  Widget _buildEventContainer(CalendarAppointmentDetails details,
-      List<Event> selectedEvents, Event event, var context, var loadedState) {
+  Widget _buildEventContainer(
+      CalendarAppointmentDetails details,
+      List<Event> selectedEvents,
+      Event event,
+      BuildContext context,
+      var loadedState) {
     //final Event event = getEvent(appointment.id.toString(), loadedState);
     return Stack(
       alignment: Alignment.topLeft,
@@ -120,7 +124,7 @@ class SelectAllEvents extends StatelessWidget {
                         textAlign: TextAlign.left,
                         decoration: InputDecoration(
                           hintStyle: Theme.of(context).textTheme.bodySmall,
-                          hintText: AppLocalizations.of(context)!.search,
+                          hintText: context.l10n.search,
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           enabledBorder: InputBorder.none,
@@ -478,8 +482,7 @@ class SelectAllEvents extends StatelessWidget {
                                                     .height *
                                                 0.005),
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .noEventsAccesibleBono,
+                                          context.l10n.noEventsAccesibleBono,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall,
@@ -534,7 +537,7 @@ class SelectAllEvents extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.sessions,
+                            context.l10n.sessions,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -557,7 +560,7 @@ class SelectAllEvents extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.edit,
+                                  context.l10n.edit,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyLarge

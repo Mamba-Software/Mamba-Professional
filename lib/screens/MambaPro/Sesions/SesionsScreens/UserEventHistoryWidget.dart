@@ -9,7 +9,7 @@ import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class UserEventHistoryWidget extends StatefulWidget {
   String userId;
@@ -107,7 +107,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.mySessions,
+          context.l10n.mySessions,
           style: Theme.of(context).appBarTheme.titleTextStyle,
           textAlign: TextAlign.center,
         ),

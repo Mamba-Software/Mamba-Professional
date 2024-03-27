@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/data/DataService/FeedBack/FeedbackDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -69,7 +69,7 @@ class _FeedBackState extends State<FeedBack> {
         appBar: AppBar(
           elevation: 0,
           title: Text(
-            AppLocalizations.of(context)!.help,
+            context.l10n.help,
             style: Theme.of(context).appBarTheme.titleTextStyle,
           ),
           centerTitle: true,
@@ -106,7 +106,7 @@ class _FeedBackState extends State<FeedBack> {
                     size: MediaQuery.of(context).size.width * 0.07,
                     color: Theme.of(context).primaryColor),
                 title: Text(
-                  AppLocalizations.of(context)!.reporting,
+                  context.l10n.reporting,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -131,7 +131,7 @@ class _FeedBackState extends State<FeedBack> {
                     size: MediaQuery.of(context).size.width * 0.07,
                     color: Theme.of(context).primaryColor),
                 title: Text(
-                  AppLocalizations.of(context)!.giveFeedbackTitle,
+                  context.l10n.giveFeedbackTitle,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -149,7 +149,7 @@ class _FeedBackState extends State<FeedBack> {
                     size: MediaQuery.of(context).size.width * 0.07,
                     color: Theme.of(context).primaryColor),
                 title: Text(
-                  AppLocalizations.of(context)!.getInTouchChat,
+                  context.l10n.getInTouchChat,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -166,7 +166,7 @@ class _FeedBackState extends State<FeedBack> {
                     size: MediaQuery.of(context).size.width * 0.07,
                     color: Theme.of(context).primaryColor),
                 title: Text(
-                  AppLocalizations.of(context)!.getInTouchText,
+                  context.l10n.getInTouchText,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -203,7 +203,7 @@ class _FeedBackState extends State<FeedBack> {
                             size: MediaQuery.of(context).size.width * 0.05,
                           ),
                           title: Text(
-                            AppLocalizations.of(context)!.reporting,
+                            context.l10n.reporting,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -228,7 +228,7 @@ class _FeedBackState extends State<FeedBack> {
                             horizontal:
                                 MediaQuery.of(context).size.width * 0.2),
                         child: Text(
-                          AppLocalizations.of(context)!.feedbackAnswered,
+                          context.l10n.feedbackAnswered,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
@@ -263,7 +263,7 @@ class _FeedBackState extends State<FeedBack> {
                             size: MediaQuery.of(context).size.width * 0.05,
                           ),
                           title: Text(
-                            AppLocalizations.of(context)!.reporting,
+                            context.l10n.reporting,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -288,7 +288,7 @@ class _FeedBackState extends State<FeedBack> {
                             horizontal:
                                 MediaQuery.of(context).size.width * 0.15),
                         child: Text(
-                          AppLocalizations.of(context)!.feedbackNotAnswered,
+                          context.l10n.feedbackNotAnswered,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),

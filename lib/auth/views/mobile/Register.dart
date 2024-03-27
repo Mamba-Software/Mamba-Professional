@@ -8,7 +8,7 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/app/style/Styles.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 // Register Page that allows the User to create his profile. This is the same for Client and Trainer.
 // After registering the page pop´s after 5 seconds and the user is sent to the Login page. Before Login in
@@ -54,7 +54,7 @@ class _RegisterState extends State<Register> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context)!.createAccount,
+            context.l10n.createAccount,
             style: Theme.of(context)
                 .textTheme
                 .displaySmall!
@@ -97,7 +97,7 @@ class _RegisterState extends State<Register> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.emailError,
+                        context.l10n.emailError,
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
@@ -110,9 +110,8 @@ class _RegisterState extends State<Register> {
                   TextFormField(
                       autofocus: true,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (val) => val!.isEmpty
-                          ? AppLocalizations.of(context)!.emailError
-                          : null,
+                      validator: (val) =>
+                          val!.isEmpty ? context.l10n.emailError : null,
                       onChanged: (val) {
                         setState(() => email = val);
                       },
@@ -124,7 +123,7 @@ class _RegisterState extends State<Register> {
                           .bodyMedium
                           ?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
-                          labelText: AppLocalizations.of(context)!.email,
+                          labelText: context.l10n.email,
                           labelStyle: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -146,7 +145,7 @@ class _RegisterState extends State<Register> {
                     children: [
                       Expanded(
                         child: Text(
-                          AppLocalizations.of(context)!.passwordError,
+                          context.l10n.passwordError,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -159,9 +158,8 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   TextFormField(
                       focusNode: focusNodePassword1,
-                      validator: (val) => val!.length < 6
-                          ? AppLocalizations.of(context)!.passwordError
-                          : null,
+                      validator: (val) =>
+                          val!.length < 6 ? context.l10n.passwordError : null,
                       onChanged: (val) {
                         setState(() => password1 = val);
                       },
@@ -174,7 +172,7 @@ class _RegisterState extends State<Register> {
                           .bodyMedium
                           ?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
-                          labelText: AppLocalizations.of(context)!.password,
+                          labelText: context.l10n.password,
                           labelStyle: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -210,7 +208,7 @@ class _RegisterState extends State<Register> {
                       focusNode: focusNodePassword2,
                       validator: (val) => val == password1
                           ? null
-                          : AppLocalizations.of(context)!.passwordNotSameError,
+                          : context.l10n.passwordNotSameError,
                       onChanged: (val) {
                         setState(() => password2 = val);
                       },
@@ -220,8 +218,7 @@ class _RegisterState extends State<Register> {
                           .bodyMedium
                           ?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
-                          labelText:
-                              AppLocalizations.of(context)!.passworRepeat,
+                          labelText: context.l10n.passworRepeat,
                           labelStyle: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -270,15 +267,15 @@ class _RegisterState extends State<Register> {
           switch (state.error) {
             case AuthErrorEnum.sameEmail:
               // Handle wrong same email.
-              showInSnackBar(AppLocalizations.of(context)!.sameEmail);
+              showInSnackBar(context.l10n.sameEmail);
               break;
             case AuthErrorEnum.manualRegisterError:
               // Handle register error here.
-              showInSnackBar(AppLocalizations.of(context)!.registerError);
+              showInSnackBar(context.l10n.registerError);
               break;
             case AuthErrorEnum.validateErrorRegister:
               // Handle validation error here.
-              showInSnackBar(AppLocalizations.of(context)!.validateEmail);
+              showInSnackBar(context.l10n.validateEmail);
               break;
             case AuthErrorEnum.wrongAppUser:
               break;
@@ -297,7 +294,7 @@ class _RegisterState extends State<Register> {
           }
         }
         if (state is AuthRegistered) {
-          showInSnackBar(AppLocalizations.of(context)!.validate);
+          showInSnackBar(context.l10n.validate);
           Future.delayed(const Duration(seconds: 5), () async {
             Navigator.pop(context, email.trim());
           });
@@ -340,7 +337,7 @@ class _RegisterState extends State<Register> {
       setState(() {
         isLoading = false;
       });
-      showInSnackBar(AppLocalizations.of(context)!.validateEmail);
+      showInSnackBar(context.l10n.validateEmail);
     }
   }
 
@@ -351,7 +348,7 @@ class _RegisterState extends State<Register> {
       setState(() {
         isLoading = false;
       });
-      showInSnackBar(AppLocalizations.of(context)!.validate);
+      showInSnackBar(context.l10n.validate);
       mixpanel!.track('mamba_register_completed');
       Future.delayed(const Duration(seconds: 5), () async {
         Navigator.pop(context, email.trim());
@@ -361,12 +358,12 @@ class _RegisterState extends State<Register> {
         isLoading = false;
       });
       mixpanel!.track('mamba_register_existing_email_error');
-      showInSnackBar(AppLocalizations.of(context)!.sameEmail);
+      showInSnackBar(context.l10n.sameEmail);
     } else {
       setState(() {
         isLoading = false;
       });
-      showInSnackBar(AppLocalizations.of(context)!.registerError);
+      showInSnackBar(context.l10n.registerError);
     }
   }
 

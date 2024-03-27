@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/user/chat/Chat.dart';
@@ -169,11 +169,11 @@ class _Clients extends State<Clients> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByClients[0]) {
-      activeStaff += "${AppLocalizations.of(context)!.yes}, ";
+      activeStaff += "${context.l10n.yes}, ";
       cnt += 1;
     }
     if (filterByClients[1]) {
-      activeStaff += AppLocalizations.of(context)!.no;
+      activeStaff += context.l10n.no;
       cnt += 1;
     }
     if (cnt == 1) {
@@ -185,10 +185,10 @@ class _Clients extends State<Clients> {
   String returnFilteredOrderClientsString() {
     String activeStaff = "";
     if (orderBySessions[0]) {
-      activeStaff += AppLocalizations.of(context)!.orderBySessionsMoreToLess;
+      activeStaff += context.l10n.orderBySessionsMoreToLess;
     }
     if (orderBySessions[1]) {
-      activeStaff += AppLocalizations.of(context)!.orderBySessionsLessToMore;
+      activeStaff += context.l10n.orderBySessionsLessToMore;
     }
     return activeStaff;
   }
@@ -265,7 +265,7 @@ class _Clients extends State<Clients> {
                           children: [
                             searchClicked == false
                                 ? Text(
-                                    AppLocalizations.of(context)!.clients,
+                                    context.l10n.clients,
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge
@@ -293,8 +293,7 @@ class _Clients extends State<Clients> {
                                         hintStyle: Theme.of(context)
                                             .textTheme
                                             .bodySmall,
-                                        hintText: AppLocalizations.of(context)!
-                                            .search,
+                                        hintText: context.l10n.search,
                                         enabledBorder: const OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: AppColors.grey),
@@ -452,9 +451,11 @@ class _Clients extends State<Clients> {
                                                                 title: Text(
                                                                     isFilterBy ==
                                                                             false
-                                                                        ? AppLocalizations.of(context)!
+                                                                        ? context
+                                                                            .l10n
                                                                             .orderBy
-                                                                        : AppLocalizations.of(context)!
+                                                                        : context
+                                                                            .l10n
                                                                             .filterBy,
                                                                     style: Theme.of(
                                                                             context)
@@ -466,8 +467,8 @@ class _Clients extends State<Clients> {
                                                                 trailing:
                                                                     TextButton(
                                                                         child: Text(
-                                                                            AppLocalizations.of(context)!
-                                                                                .clear,
+                                                                            context
+                                                                                .l10n.clear,
                                                                             style: Theme.of(context)
                                                                                 .textTheme
                                                                                 .bodySmall),
@@ -551,7 +552,7 @@ class _Clients extends State<Clients> {
                                                                             );
                                                                           },
                                                                           title: Text(
-                                                                              "${AppLocalizations.of(context)!.active} ${AppLocalizations.of(context)!.lastNDays(30.toString())}",
+                                                                              "${context.l10n.active} ${context.l10n.lastNDays(30.toString())}",
                                                                               style: Theme.of(context).textTheme.bodyLarge,
                                                                               textAlign: TextAlign.left),
                                                                           subtitle: Text(
@@ -569,7 +570,7 @@ class _Clients extends State<Clients> {
                                                                         state is ClientsSessionsLoaded &&
                                                                                 state.finished
                                                                             ? ListTile(
-                                                                                title: Text(AppLocalizations.of(context)!.orderBy, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.left),
+                                                                                title: Text(context.l10n.orderBy, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.left),
                                                                                 dense: true,
                                                                                 onTap: currentPage == 0
                                                                                     ? null
@@ -595,7 +596,7 @@ class _Clients extends State<Clients> {
                                                                                     curve: Curves.ease,
                                                                                   );
                                                                                 },
-                                                                                title: Text(AppLocalizations.of(context)!.orderBySessions, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                title: Text(context.l10n.orderBySessions, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                 subtitle: Text(returnFilteredOrderClientsString(), style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.left),
                                                                                 trailing: SizedBox(
                                                                                   width: MediaQuery.of(context).size.width * 0.15,
@@ -628,7 +629,7 @@ class _Clients extends State<Clients> {
                                                                                     }
                                                                                   });
                                                                                 },
-                                                                                title: Text(AppLocalizations.of(context)!.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                title: Text(context.l10n.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                 trailing: filterByClients[0]
                                                                                     ? SizedBox(
                                                                                         width: MediaQuery.of(context).size.width * 0.15,
@@ -656,7 +657,7 @@ class _Clients extends State<Clients> {
                                                                                     }
                                                                                   });
                                                                                 },
-                                                                                title: Text(AppLocalizations.of(context)!.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                title: Text(context.l10n.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                 trailing: filterByClients[1]
                                                                                     ? SizedBox(
                                                                                         width: MediaQuery.of(context).size.width * 0.15,
@@ -678,7 +679,7 @@ class _Clients extends State<Clients> {
                                                                                     filterSearchResults(query, state, true);
                                                                                   });
                                                                                 },
-                                                                                title: Text(AppLocalizations.of(context)!.orderBySessionsMoreToLess, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                title: Text(context.l10n.orderBySessionsMoreToLess, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                 trailing: orderBySessions[0]
                                                                                     ? SizedBox(
                                                                                         width: MediaQuery.of(context).size.width * 0.15,
@@ -695,7 +696,7 @@ class _Clients extends State<Clients> {
                                                                                     filterSearchResults(query, state, true);
                                                                                   });
                                                                                 },
-                                                                                title: Text(AppLocalizations.of(context)!.orderBySessionsLessToMore, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                title: Text(context.l10n.orderBySessionsLessToMore, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                 trailing: orderBySessions[1]
                                                                                     ? SizedBox(
                                                                                         width: MediaQuery.of(context).size.width * 0.15,
@@ -763,7 +764,7 @@ class _Clients extends State<Clients> {
               title: AnimatedOpacity(
                   opacity: appBarExpanded || searchClicked ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 200),
-                  child: Text(AppLocalizations.of(context)!.clients,
+                  child: Text(context.l10n.clients,
                       style: Theme.of(context)
                           .appBarTheme
                           .titleTextStyle
@@ -838,15 +839,15 @@ class _Clients extends State<Clients> {
                                   children: [
                                     Text(
                                       user.lastEventAt == null
-                                          ? AppLocalizations.of(context)!
-                                              .lastActiveIn(DateTimeUtils()
+                                          ? context.l10n.lastActiveIn(
+                                              DateTimeUtils()
                                                   .formatDateTimeToStringMMMYYYY(
                                                       dateJoined,
                                                       Localizations.localeOf(
                                                               context)
                                                           .languageCode))
-                                          : AppLocalizations.of(context)!
-                                              .lastActiveIn(DateTimeUtils()
+                                          : context.l10n.lastActiveIn(
+                                              DateTimeUtils()
                                                   .formatDateTimeToStringMMMYYYY(
                                                       user.lastEventAt!
                                                           .toDate(),
@@ -1042,7 +1043,7 @@ class _Clients extends State<Clients> {
                                 children: [
                                   Flexible(
                                     child: Text(
-                                      "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.clients.toLowerCase()}",
+                                      "${context.l10n.noData.split(" ")[0]} ${context.l10n.clients.toLowerCase()}",
                                       style:
                                           Theme.of(context).textTheme.bodySmall,
                                       textAlign: TextAlign.center,
@@ -1216,10 +1217,7 @@ class _Clients extends State<Clients> {
                                 GestureDetector(
                                     onTap: () {
                                       TopSnackBarDef().showSnackBarBottom(
-                                          context,
-                                          AppLocalizations.of(context)!
-                                              .betaFeature,
-                                          5);
+                                          context, context.l10n.betaFeature, 5);
                                     },
                                     child: const BetaBadge()),
                                 SizedBox(
@@ -1227,16 +1225,14 @@ class _Clients extends State<Clients> {
                                       MediaQuery.of(context).size.width * 0.02,
                                 ),
                                 Text(
-                                    "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.client}",
+                                    "${context.l10n.add} ${context.l10n.client}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .displaySmall,
                                     textAlign: TextAlign.right),
                               ],
                             ),
-                            Text(
-                                AppLocalizations.of(context)!
-                                    .addClientsManually,
+                            Text(context.l10n.addClientsManually,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
@@ -1265,10 +1261,10 @@ class _Clients extends State<Clients> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                                "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.client}",
+                                "${context.l10n.invite} ${context.l10n.client}",
                                 style: Theme.of(context).textTheme.displaySmall,
                                 textAlign: TextAlign.right),
-                            Text(AppLocalizations.of(context)!.copyCodeMessage,
+                            Text(context.l10n.copyCodeMessage,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
@@ -1369,8 +1365,8 @@ class _Clients extends State<Clients> {
                 ),
                 Text(
                   places == 1
-                      ? AppLocalizations.of(context)!.session.toLowerCase()
-                      : AppLocalizations.of(context)!.sessions.toLowerCase(),
+                      ? context.l10n.session.toLowerCase()
+                      : context.l10n.sessions.toLowerCase(),
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium

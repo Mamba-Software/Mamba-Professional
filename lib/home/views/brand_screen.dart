@@ -18,7 +18,7 @@ import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/BrandSubscription.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
@@ -220,7 +220,7 @@ class _BrandScreenState extends State<BrandScreen> {
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      AppLocalizations.of(context)!.invite,
+                                      context.l10n.invite,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!
@@ -261,7 +261,7 @@ class _BrandScreenState extends State<BrandScreen> {
                   height: MediaQuery.of(context).size.height * 0.1,
                   padding: const EdgeInsets.only(left: 4.0),
                   child: ListTile(
-                      title: Text(AppLocalizations.of(context)!.freeTrial,
+                      title: Text(context.l10n.freeTrial,
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
@@ -270,8 +270,7 @@ class _BrandScreenState extends State<BrandScreen> {
                       subtitle: FittedBox(
                         fit: BoxFit.contain,
                         child: Text(
-                          AppLocalizations.of(context)!
-                              .freeTrialDaysLeft(difference.toString()),
+                          context.l10n.freeTrialDaysLeft(difference.toString()),
                           style: Theme.of(context).textTheme.bodySmall,
                           maxLines: 1,
                           textAlign: TextAlign.left,
@@ -290,15 +289,14 @@ class _BrandScreenState extends State<BrandScreen> {
                   height: MediaQuery.of(context).size.height * 0.1,
                   padding: const EdgeInsets.only(left: 4.0),
                   child: ListTile(
-                      title: Text(AppLocalizations.of(context)!.monthlyPlan,
+                      title: Text(context.l10n.monthlyPlan,
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
                               ?.copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.left),
                       subtitle: Text(
-                        AppLocalizations.of(context)!
-                            .monthlyPlanDayRenewal(date.toString()),
+                        context.l10n.monthlyPlanDayRenewal(date.toString()),
                         style: Theme.of(context).textTheme.bodySmall,
                         textAlign: TextAlign.left,
                       ),
@@ -316,14 +314,14 @@ class _BrandScreenState extends State<BrandScreen> {
             height: MediaQuery.of(context).size.height * 0.1,
             padding: const EdgeInsets.only(left: 4.0),
             child: ListTile(
-                title: Text(AppLocalizations.of(context)!.chooseYourPlan,
+                title: Text(context.l10n.chooseYourPlan,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge
                         ?.copyWith(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.left),
                 subtitle: Text(
-                  AppLocalizations.of(context)!.chooseYourPlanDesc,
+                  context.l10n.chooseYourPlanDesc,
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.left,
                 ),
@@ -346,17 +344,17 @@ class _BrandScreenState extends State<BrandScreen> {
     switch (currentUser.brandRole) {
       case 1:
         if (currentBrand.adminID == currentUser.id) {
-          return StringUtils().toCapitalized(
-              AppLocalizations.of(context)!.paySubscriptionDesc.split(" ")[2]);
+          return StringUtils()
+              .toCapitalized(context.l10n.paySubscriptionDesc.split(" ")[2]);
         } else {
-          return AppLocalizations.of(context)!.owner;
+          return context.l10n.owner;
         }
       case 2:
-        return AppLocalizations.of(context)!.administrador;
+        return context.l10n.administrador;
       case 3:
-        return AppLocalizations.of(context)!.trainer;
+        return context.l10n.trainer;
       default:
-        return AppLocalizations.of(context)!.trainer;
+        return context.l10n.trainer;
     }
   }
 
@@ -385,7 +383,7 @@ class _BrandScreenState extends State<BrandScreen> {
           padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
-            AppLocalizations.of(context)!.management,
+            context.l10n.management,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
           ),
@@ -400,7 +398,7 @@ class _BrandScreenState extends State<BrandScreen> {
           padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
-            AppLocalizations.of(context)!.yourBrand,
+            context.l10n.yourBrand,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
           ),
@@ -416,7 +414,7 @@ class _BrandScreenState extends State<BrandScreen> {
           padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
-            AppLocalizations.of(context)!.information,
+            context.l10n.information,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.left,
           ),
@@ -437,7 +435,7 @@ class _BrandScreenState extends State<BrandScreen> {
               ),
               SizedBox(width: MediaQuery.of(context).size.width*0.03),
               Text(
-                AppLocalizations.of(context)!.quien,
+                context.l10n.quien,
                 style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
               ),
             ],
@@ -475,7 +473,7 @@ class _BrandScreenState extends State<BrandScreen> {
               ),
               SizedBox(width: MediaQuery.of(context).size.width*0.03),
               Text(
-                AppLocalizations.of(context)!.que,
+                context.l10n.que,
                 style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
               ),
             ],
@@ -515,7 +513,7 @@ class _BrandScreenState extends State<BrandScreen> {
               ),
               SizedBox(width: MediaQuery.of(context).size.width*0.03),
               Text(
-                AppLocalizations.of(context)!.cuando,
+                context.l10n.cuando,
                 style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
               ),
             ],
@@ -552,7 +550,7 @@ class _BrandScreenState extends State<BrandScreen> {
               ),
               SizedBox(width: MediaQuery.of(context).size.width*0.03),
               Text(
-                AppLocalizations.of(context)!.como,
+                context.l10n.como,
                 style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
               ),
             ],
@@ -592,7 +590,7 @@ class _BrandScreenState extends State<BrandScreen> {
               ),
               SizedBox(width: MediaQuery.of(context).size.width*0.03),
               Text(
-                AppLocalizations.of(context)!.donde,
+                context.l10n.donde,
                 style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
               ),
             ],

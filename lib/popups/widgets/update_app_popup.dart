@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class UpdateAppPopup {
   static void show({
@@ -38,7 +38,7 @@ class UpdateAppPopup {
                         children: <Widget>[
                           Flexible(
                             child: Text(
-                              AppLocalizations.of(context)!.updateAppTitle,
+                              context.l10n.updateAppTitle,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
@@ -52,7 +52,7 @@ class UpdateAppPopup {
                           ),
                           Flexible(
                             child: Text(
-                              AppLocalizations.of(context)!.updateAppText,
+                              context.l10n.updateAppText,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -91,8 +91,7 @@ class UpdateAppPopup {
                                                         .width *
                                                     0.01),
                                             Text(
-                                              AppLocalizations.of(context)!
-                                                  .mandatoryUpdate,
+                                              context.l10n.mandatoryUpdate,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium
@@ -137,7 +136,7 @@ class UpdateAppPopup {
                               onAcceptFunction();
                             },
                             child: Text(
-                              AppLocalizations.of(context)!.update,
+                              context.l10n.update,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge

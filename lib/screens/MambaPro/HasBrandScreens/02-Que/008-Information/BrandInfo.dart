@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/auth/views/mobile/SplashScreen.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Promotions/PromotionsDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
@@ -54,7 +54,8 @@ class BrandInfo extends StatefulWidget {
 }
 
 class _BrandInfoState extends State<BrandInfo>
-    with SingleTickerProviderStateMixin {  DateFormat formatter = DateFormat('dd/MM/yy');
+    with SingleTickerProviderStateMixin {
+  DateFormat formatter = DateFormat('dd/MM/yy');
   // DataBase Access
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
@@ -419,7 +420,7 @@ class _BrandInfoState extends State<BrandInfo>
             title: AnimatedOpacity(
                 opacity: appBarExpanded ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
-                child: Text(AppLocalizations.of(context)!.settings,
+                child: Text(context.l10n.settings,
                     style:
                         Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
                               color: AppColors.white,
@@ -440,7 +441,7 @@ class _BrandInfoState extends State<BrandInfo>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.settings,
+                            context.l10n.settings,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -545,7 +546,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 width:
                                     MediaQuery.of(context).size.width * 0.02),
                             Text(
-                              AppLocalizations.of(context)!.information,
+                              context.l10n.information,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -570,7 +571,7 @@ class _BrandInfoState extends State<BrandInfo>
                         children: [
                           /// LOGO
                           Text(
-                            AppLocalizations.of(context)!.logo,
+                            context.l10n.logo,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
@@ -664,10 +665,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                             0.035,
                                                       ),
                                                     ),
-                                                    Text(
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .edit,
+                                                    Text(context.l10n.edit,
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyMedium,
@@ -692,7 +690,7 @@ class _BrandInfoState extends State<BrandInfo>
 
                           /// NAME
                           Text(
-                            AppLocalizations.of(context)!.firstName,
+                            context.l10n.firstName,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
@@ -716,8 +714,7 @@ class _BrandInfoState extends State<BrandInfo>
                                       });
                                     },
                                     validator: (val) => val!.isEmpty
-                                        ? AppLocalizations.of(context)!
-                                            .nameBrandError
+                                        ? context.l10n.nameBrandError
                                         : null,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
@@ -733,8 +730,7 @@ class _BrandInfoState extends State<BrandInfo>
                                         hintStyle: Theme.of(context)
                                             .textTheme
                                             .bodySmall,
-                                        hintText: AppLocalizations.of(context)!
-                                            .nameBrandError,
+                                        hintText: context.l10n.nameBrandError,
                                         border: OutlineInputBorder(
                                           borderSide: const BorderSide(
                                               color: Colors.transparent,
@@ -779,8 +775,7 @@ class _BrandInfoState extends State<BrandInfo>
                             children: [
                               Expanded(
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .createBrandCoverDescription,
+                                  context.l10n.createBrandCoverDescription,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -793,7 +788,7 @@ class _BrandInfoState extends State<BrandInfo>
 
                           /// DESCRIPTION
                           Text(
-                            AppLocalizations.of(context)!.description,
+                            context.l10n.description,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
@@ -822,7 +817,7 @@ class _BrandInfoState extends State<BrandInfo>
                                           descriptionControllerTemp = value;
                                         });
                                       },
-                                      //validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
+                                      //validator: (val) => val!.isEmpty ? context.l10n.descriptionError : null,
                                       minLines: 1,
                                       maxLines: 5,
                                       maxLength: 250,
@@ -836,8 +831,7 @@ class _BrandInfoState extends State<BrandInfo>
                                               .colorScheme
                                               .background,
                                           hintText:
-                                              AppLocalizations.of(context)!
-                                                  .descriptionHint,
+                                              context.l10n.descriptionHint,
                                           counter: Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical:
@@ -898,8 +892,7 @@ class _BrandInfoState extends State<BrandInfo>
                             children: [
                               Expanded(
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .createBrandDescDescription,
+                                  context.l10n.createBrandDescDescription,
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -916,7 +909,7 @@ class _BrandInfoState extends State<BrandInfo>
                             children: [
                               Expanded(
                                 child: Text(
-                                  "${AppLocalizations.of(context)!.createdBy(admin.name!)} el ${DateTimeUtils().formatDateTimeToStringDDMMMMYYYY(dateJoinedBrand, Localizations.localeOf(context).languageCode)}",
+                                  "${context.l10n.createdBy(admin.name!)} el ${DateTimeUtils().formatDateTimeToStringDDMMMMYYYY(dateJoinedBrand, Localizations.localeOf(context).languageCode)}",
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.left,
                                 ),
@@ -955,7 +948,7 @@ class _BrandInfoState extends State<BrandInfo>
                                     width: MediaQuery.of(context).size.width *
                                         0.02),
                                 Text(
-                                  AppLocalizations.of(context)!.bookings,
+                                  context.l10n.bookings,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displaySmall
@@ -994,7 +987,7 @@ class _BrandInfoState extends State<BrandInfo>
                       children: [
                         /// WORKING HOURS
                         Text(
-                          AppLocalizations.of(context)!.workingHours,
+                          context.l10n.workingHours,
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
@@ -1012,9 +1005,8 @@ class _BrandInfoState extends State<BrandInfo>
                                           await showCupertinoModalPopup(
                                               context: context,
                                               builder: (_) => SelectTimeDialog(
-                                                    title: AppLocalizations.of(
-                                                            context)!
-                                                        .selectTime,
+                                                    title:
+                                                        context.l10n.selectTime,
                                                     startDate: startTime,
                                                     onlyFuture: false,
                                                   ));
@@ -1078,9 +1070,8 @@ class _BrandInfoState extends State<BrandInfo>
                                           await showCupertinoModalPopup(
                                               context: context,
                                               builder: (_) => SelectTimeDialog(
-                                                    title: AppLocalizations.of(
-                                                            context)!
-                                                        .selectTime,
+                                                    title:
+                                                        context.l10n.selectTime,
                                                     startDate: endTime,
                                                     onlyFuture: false,
                                                   ));
@@ -1138,10 +1129,8 @@ class _BrandInfoState extends State<BrandInfo>
                                     left: 0, right: 0, top: 10.0, bottom: 0),
                                 child: Text(
                                   errorTime == 1
-                                      ? AppLocalizations.of(context)!
-                                          .workingHoursError
-                                      : AppLocalizations.of(context)!
-                                          .workingHoursError1,
+                                      ? context.l10n.workingHoursError
+                                      : context.l10n.workingHoursError1,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -1157,8 +1146,7 @@ class _BrandInfoState extends State<BrandInfo>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .createBrandWorkshiftDescription,
+                                context.l10n.createBrandWorkshiftDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -1172,7 +1160,7 @@ class _BrandInfoState extends State<BrandInfo>
                         Row(
                           children: [
                             Text(
-                              AppLocalizations.of(context)!.lunchBreak,
+                              context.l10n.lunchBreak,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
@@ -1200,9 +1188,8 @@ class _BrandInfoState extends State<BrandInfo>
                                           await showCupertinoModalPopup(
                                               context: context,
                                               builder: (_) => SelectTimeDialog(
-                                                    title: AppLocalizations.of(
-                                                            context)!
-                                                        .selectTime,
+                                                    title:
+                                                        context.l10n.selectTime,
                                                     startDate: breakStartTime,
                                                     onlyFuture: false,
                                                   ));
@@ -1274,9 +1261,8 @@ class _BrandInfoState extends State<BrandInfo>
                                           await showCupertinoModalPopup(
                                               context: context,
                                               builder: (_) => SelectTimeDialog(
-                                                    title: AppLocalizations.of(
-                                                            context)!
-                                                        .selectTime,
+                                                    title:
+                                                        context.l10n.selectTime,
                                                     startDate: breakEndTime,
                                                     onlyFuture: false,
                                                   ));
@@ -1387,10 +1373,8 @@ class _BrandInfoState extends State<BrandInfo>
                                     left: 0, right: 0, top: 10.0, bottom: 0),
                                 child: Text(
                                   errorBreakTime == 1
-                                      ? AppLocalizations.of(context)!
-                                          .workingHoursError2
-                                      : AppLocalizations.of(context)!
-                                          .workingHoursError1,
+                                      ? context.l10n.workingHoursError2
+                                      : context.l10n.workingHoursError1,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -1406,8 +1390,7 @@ class _BrandInfoState extends State<BrandInfo>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .createBrandBreakDescription,
+                                context.l10n.createBrandBreakDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -1419,7 +1402,7 @@ class _BrandInfoState extends State<BrandInfo>
 
                         /// BOOKING WINDOW
                         Text(
-                          AppLocalizations.of(context)!.bookingWindow,
+                          context.l10n.bookingWindow,
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
@@ -1452,7 +1435,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    "$bookingWindow ${AppLocalizations.of(context)!.days.toLowerCase()}",
+                                    "$bookingWindow ${context.l10n.days.toLowerCase()}",
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),
@@ -1468,8 +1451,7 @@ class _BrandInfoState extends State<BrandInfo>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .bookingWindowDescription,
+                                context.l10n.bookingWindowDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -1483,8 +1465,7 @@ class _BrandInfoState extends State<BrandInfo>
                         Row(
                           children: [
                             Text(
-                              AppLocalizations.of(context)!
-                                  .minimumBookingWindow,
+                              context.l10n.minimumBookingWindow,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
@@ -1520,8 +1501,8 @@ class _BrandInfoState extends State<BrandInfo>
                                 children: <Widget>[
                                   Text(
                                     bookingWindowMin > 1
-                                        ? "$bookingWindowMin ${AppLocalizations.of(context)!.hoursString.toLowerCase()}"
-                                        : "$bookingWindowMin ${AppLocalizations.of(context)!.hour.toLowerCase()}",
+                                        ? "$bookingWindowMin ${context.l10n.hoursString.toLowerCase()}"
+                                        : "$bookingWindowMin ${context.l10n.hour.toLowerCase()}",
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),
@@ -1537,8 +1518,7 @@ class _BrandInfoState extends State<BrandInfo>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .minimumBookingWindowDescription,
+                                context.l10n.minimumBookingWindowDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -1560,7 +1540,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 Row(
                                   children: [
                                     Text(
-                                      AppLocalizations.of(context)!.freeSession,
+                                      context.l10n.freeSession,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge
@@ -1597,8 +1577,7 @@ class _BrandInfoState extends State<BrandInfo>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .freeSessionDescription,
+                                context.l10n.freeSessionDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -1631,8 +1610,8 @@ class _BrandInfoState extends State<BrandInfo>
                                 width:
                                     MediaQuery.of(context).size.width * 0.02),
                             Text(
-                              StringUtils().toCapitalized(
-                                  AppLocalizations.of(context)!.payments),
+                              StringUtils()
+                                  .toCapitalized(context.l10n.payments),
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -1666,8 +1645,7 @@ class _BrandInfoState extends State<BrandInfo>
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!
-                                      .directPurchasetext,
+                                  context.l10n.directPurchasetext,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyLarge
@@ -1701,8 +1679,7 @@ class _BrandInfoState extends State<BrandInfo>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .directPurchaseDescription,
+                                context.l10n.directPurchaseDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -1716,7 +1693,7 @@ class _BrandInfoState extends State<BrandInfo>
                         Row(
                           children: [
                             Text(
-                              AppLocalizations.of(context)!.gracePeriodTitle,
+                              context.l10n.gracePeriodTitle,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
@@ -1725,9 +1702,7 @@ class _BrandInfoState extends State<BrandInfo>
                             GestureDetector(
                                 onTap: () {
                                   _topSnackBar.showSnackBarBottom(
-                                      context,
-                                      AppLocalizations.of(context)!.betaFeature,
-                                      5);
+                                      context, context.l10n.betaFeature, 5);
                                 },
                                 child: const BetaBadge())
                           ],
@@ -1759,7 +1734,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    "$gracePeriodDays ${AppLocalizations.of(context)!.days.toLowerCase()}",
+                                    "$gracePeriodDays ${context.l10n.days.toLowerCase()}",
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),
@@ -1775,8 +1750,7 @@ class _BrandInfoState extends State<BrandInfo>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .gracePeriodDescription,
+                                context.l10n.gracePeriodDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -1790,7 +1764,7 @@ class _BrandInfoState extends State<BrandInfo>
                         Row(
                           children: [
                             Text(
-                              AppLocalizations.of(context)!
+                              context.l10n
                                   .maximumCancellationsPerWeekTitle,
                               style: Theme.of(context)
                                   .textTheme
@@ -1801,7 +1775,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 onTap: () {
                                   _topSnackBar.showSnackBarBottom(
                                       context,
-                                      AppLocalizations.of(context)!.betaFeature,
+                                      context.l10n.betaFeature,
                                       5);
                                 },
                                 child: const BetaBadge())
@@ -1834,7 +1808,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    "$cancelationsPerWeek ${AppLocalizations.of(context)!.times.toLowerCase()}",
+                                    "$cancelationsPerWeek ${context.l10n.times.toLowerCase()}",
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),
@@ -1850,7 +1824,7 @@ class _BrandInfoState extends State<BrandInfo>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
+                                context.l10n
                                     .maximumCancellationsPerWeekDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
@@ -1865,7 +1839,7 @@ class _BrandInfoState extends State<BrandInfo>
                         Row(
                           children: [
                             Text(
-                              AppLocalizations.of(context)!.paymentTermsTitle,
+                              context.l10n.paymentTermsTitle,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
@@ -1874,9 +1848,7 @@ class _BrandInfoState extends State<BrandInfo>
                             GestureDetector(
                                 onTap: () {
                                   _topSnackBar.showSnackBarBottom(
-                                      context,
-                                      AppLocalizations.of(context)!.betaFeature,
-                                      5);
+                                      context, context.l10n.betaFeature, 5);
                                 },
                                 child: const BetaBadge())
                           ],
@@ -1892,30 +1864,22 @@ class _BrandInfoState extends State<BrandInfo>
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.015),
-                                selectedTerms(
-                                    2,
-                                    AppLocalizations.of(context)!
-                                        .exactDaysTitle,
-                                    AppLocalizations.of(context)!
-                                        .exactDaysTitleDescription),
+                                selectedTerms(2, context.l10n.exactDaysTitle,
+                                    context.l10n.exactDaysTitleDescription),
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.015),
                                 selectedTerms(
                                     1,
-                                    AppLocalizations.of(context)!
-                                        .midMonthPaymentTitle,
-                                    AppLocalizations.of(context)!
-                                        .midMonthPaymentDescription),
+                                    context.l10n.midMonthPaymentTitle,
+                                    context.l10n.midMonthPaymentDescription),
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.015),
                                 selectedTerms(
                                     0,
-                                    AppLocalizations.of(context)!
-                                        .proratedPaymentTitle,
-                                    AppLocalizations.of(context)!
-                                        .proratedPaymentDescription),
+                                    context.l10n.proratedPaymentTitle,
+                                    context.l10n.proratedPaymentDescription),
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.015),
@@ -1928,8 +1892,7 @@ class _BrandInfoState extends State<BrandInfo>
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .paymentTermsDescription,
+                                context.l10n.paymentTermsDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 textAlign: TextAlign.left,
                               ),
@@ -1962,7 +1925,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 width:
                                     MediaQuery.of(context).size.width * 0.02),
                             Text(
-                              AppLocalizations.of(context)!.others,
+                              context.l10n.others,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -1999,8 +1962,7 @@ class _BrandInfoState extends State<BrandInfo>
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Text(
-                                            AppLocalizations.of(context)!
-                                                .exitBrand,
+                                            context.l10n.exitBrand,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge
@@ -2027,8 +1989,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                   context: context,
                                                   builder: (_) {
                                                     return ConfirmationDialog(
-                                                        text: AppLocalizations
-                                                                .of(context)!
+                                                        text: context.l10n
                                                             .exitBrandConfirm);
                                                   });
                                               if (result) {
@@ -2070,8 +2031,7 @@ class _BrandInfoState extends State<BrandInfo>
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .exitBrandDesc,
+                                          context.l10n.exitBrandDesc,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall,
@@ -2100,8 +2060,7 @@ class _BrandInfoState extends State<BrandInfo>
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Text(
-                                            AppLocalizations.of(context)!
-                                                .deleteBrand,
+                                            context.l10n.deleteBrand,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge
@@ -2164,8 +2123,7 @@ class _BrandInfoState extends State<BrandInfo>
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .deleteBrandDesc,
+                                          context.l10n.deleteBrandDesc,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall,
@@ -2256,7 +2214,7 @@ class _BrandInfoState extends State<BrandInfo>
                   size: MediaQuery.of(context).size.width * 0.05,
                 ),
                 label: Text(
-                  AppLocalizations.of(context)!.save,
+                  context.l10n.save,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
@@ -2273,7 +2231,7 @@ class _BrandInfoState extends State<BrandInfo>
         context: context,
         builder: (_) => SelectDaysDialog(
               title:
-                  "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.days.toLowerCase()}",
+                  "${context.l10n.select} ${context.l10n.days.toLowerCase()}",
               intialDays: bookingWindow - 1,
             ));
     if (pickedMembers != null) {
@@ -2288,7 +2246,7 @@ class _BrandInfoState extends State<BrandInfo>
         context: context,
         builder: (_) => SelectOtherDialog(
               title:
-                  "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.days.toLowerCase()}",
+                  "${context.l10n.select} ${context.l10n.days.toLowerCase()}",
               intialDays: gracePeriodDays,
             ));
     if (gracePeriodDaysAux != null) {
@@ -2303,7 +2261,7 @@ class _BrandInfoState extends State<BrandInfo>
         context: context,
         builder: (_) => SelectOtherDialog(
               title:
-                  "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.times.toLowerCase()}",
+                  "${context.l10n.select} ${context.l10n.times.toLowerCase()}",
               intialDays: cancelationsPerWeek,
             ));
     if (cancelationsPerWeekAux != null) {
@@ -2318,7 +2276,7 @@ class _BrandInfoState extends State<BrandInfo>
         context: context,
         builder: (_) => SelectHoursDialog(
               title:
-                  "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.hoursString.toLowerCase()}",
+                  "${context.l10n.select} ${context.l10n.hoursString.toLowerCase()}",
               intialDays: bookingWindowMin,
             ));
     if (pickedMembers != null) {
@@ -2338,8 +2296,8 @@ class _BrandInfoState extends State<BrandInfo>
   Widget textToShow() {
     return Text(
       ShowTextExpired
-          ? AppLocalizations.of(context)!.subscriptionExpired
-          : AppLocalizations.of(context)!.noSubscription,
+          ? context.l10n.subscriptionExpired
+          : context.l10n.noSubscription,
       style: Theme.of(context)
           .textTheme
           .bodyMedium!
@@ -2432,14 +2390,13 @@ class _BrandInfoState extends State<BrandInfo>
             title: Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.width * 0.01),
-              child: Text(AppLocalizations.of(context)!.chooseYourPlan,
+              child: Text(context.l10n.chooseYourPlan,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       color: AppColors.mainColor, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left),
             ),
             subtitle: Text(
-              AppLocalizations.of(context)!
-                  .freeTrialDaysLeft(difference.toString()),
+              context.l10n.freeTrialDaysLeft(difference.toString()),
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color: AppColors.mainColor,
                   fontWeight: FontWeight.normal,
@@ -2460,7 +2417,7 @@ class _BrandInfoState extends State<BrandInfo>
                 ),
                 child: Center(
                     child: Text(
-                  AppLocalizations.of(context)!.subscriptionsAppBar,
+                  context.l10n.subscriptionsAppBar,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: AppColors.white,
                       fontWeight: FontWeight.bold,
@@ -2573,7 +2530,7 @@ class _BrandInfoState extends State<BrandInfo>
               mainAxisSize: MainAxisSize.max,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.stripeAccountText,
+                  context.l10n.stripeAccountText,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -2650,7 +2607,7 @@ class _BrandInfoState extends State<BrandInfo>
           children: [
             Expanded(
               child: Text(
-                AppLocalizations.of(context)!.stripeAccountDescription,
+                context.l10n.stripeAccountDescription,
                 style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.left,
               ),

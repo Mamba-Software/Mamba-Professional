@@ -20,7 +20,7 @@ import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart
 import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Settings/SettingsLanguage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -147,7 +147,7 @@ class _SettingsState extends State<Settings> {
         : Scaffold(
             appBar: AppBar(
               title: Text(
-                AppLocalizations.of(context)!.settings,
+                context.l10n.settings,
                 style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
               centerTitle: true,
@@ -187,7 +187,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.myData,
+                      context.l10n.myData,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -204,7 +204,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.editYourTheme,
+                      context.l10n.editYourTheme,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -221,7 +221,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.language,
+                      context.l10n.language,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -238,7 +238,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.help,
+                      context.l10n.help,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -258,7 +258,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.shareAppTitle,
+                      context.l10n.shareAppTitle,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -275,7 +275,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.getInTouch,
+                      context.l10n.getInTouch,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -298,7 +298,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.rateThisApp,
+                      context.l10n.rateThisApp,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -321,7 +321,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.lastAppUpdate,
+                      context.l10n.lastAppUpdate,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -343,7 +343,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.privacy,
+                      context.l10n.privacy,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -365,7 +365,7 @@ class _SettingsState extends State<Settings> {
                         size: MediaQuery.of(context).size.width * 0.07,
                         color: Theme.of(context).primaryColor),
                     title: Text(
-                      AppLocalizations.of(context)!.termsAndConditions,
+                      context.l10n.termsAndConditions,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -376,7 +376,7 @@ class _SettingsState extends State<Settings> {
                   const Divider(color: AppColors.grey, height: 1),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                   Text(
-                    AppLocalizations.of(context)!.loggedInWith,
+                    context.l10n.loggedInWith,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -401,8 +401,7 @@ class _SettingsState extends State<Settings> {
                           context: context,
                           builder: (_) {
                             return ConfirmationDialog(
-                                text: AppLocalizations.of(context)!
-                                    .closeSessionConfirmation);
+                                text: context.l10n.closeSessionConfirmation);
                           });
                       if (result) {
                         mixpanel!.track(
@@ -456,7 +455,7 @@ class _SettingsState extends State<Settings> {
                                 width:
                                     MediaQuery.of(context).size.width * 0.05),
                             Text(
-                              AppLocalizations.of(context)!.closeSession,
+                              context.l10n.closeSession,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -504,7 +503,7 @@ class _SettingsState extends State<Settings> {
                                 width:
                                     MediaQuery.of(context).size.width * 0.05),
                             Text(
-                              AppLocalizations.of(context)!.deleteAccount,
+                              context.l10n.deleteAccount,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -522,7 +521,7 @@ class _SettingsState extends State<Settings> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        AppLocalizations.of(context)!.yourInfo,
+                        context.l10n.yourInfo,
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -534,7 +533,7 @@ class _SettingsState extends State<Settings> {
                             Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
                             const SizedBox(width: 10),
                             Text(
-                              AppLocalizations.of(context)!.editYourInfo,
+                              context.l10n.editYourInfo,
                               style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ],
@@ -548,7 +547,7 @@ class _SettingsState extends State<Settings> {
                             Icon(Icons.face_retouching_natural, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
                             const SizedBox(width: 10),
                             Text(
-                              AppLocalizations.of(context)!.editYourPhoto,
+                              context.l10n.editYourPhoto,
                               style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ],
@@ -562,7 +561,7 @@ class _SettingsState extends State<Settings> {
                             Icon(Icons.visibility_outlined, color: Theme.of(context).primaryColor),
                             const SizedBox(width: 10),
                             Text(
-                              AppLocalizations.of(context)!.editYourPrivacy,
+                              context.l10n.editYourPrivacy,
                               style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ],
@@ -576,7 +575,7 @@ class _SettingsState extends State<Settings> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        AppLocalizations.of(context)!.language,
+                        context.l10n.language,
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -649,7 +648,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                 Padding(
                   padding: const EdgeInsets.only(top: 15, bottom: 10.0),
                   child: Text(
-                    AppLocalizations.of(context)!.wantDeleteUser,
+                    context.l10n.wantDeleteUser,
                     style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: Colors.red, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
@@ -657,7 +656,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                 ),
                 Flexible(
                   child: Text(
-                    "${AppLocalizations.of(context)!.onlyAllowed} ",
+                    "${context.l10n.onlyAllowed} ",
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium
@@ -667,7 +666,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                 ),
                 Flexible(
                   child: Text(
-                    "${AppLocalizations.of(context)!.writeDeleteUser} ",
+                    "${context.l10n.writeDeleteUser} ",
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium
@@ -701,8 +700,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                               .bodyMedium
                               ?.copyWith(color: Colors.red),
                           decoration: InputDecoration(
-                            hintText:
-                                AppLocalizations.of(context)!.passworRepeat,
+                            hintText: context.l10n.passworRepeat,
                             hintStyle: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -743,7 +741,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           padding: const EdgeInsets.only(
                               top: 20.0, left: 10, right: 10),
                           child: Text(
-                            "${AppLocalizations.of(context)!.passwordNotSameError} ",
+                            "${context.l10n.passwordNotSameError} ",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -759,7 +757,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           padding: const EdgeInsets.only(
                               top: 20.0, left: 10, right: 10),
                           child: Text(
-                            "${AppLocalizations.of(context)!.passwordNotSameError} ",
+                            "${context.l10n.passwordNotSameError} ",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -779,7 +777,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                         heroTag: "39",
                         label: !isLoading
                             ? Text(
-                                AppLocalizations.of(context)!.delete,
+                                context.l10n.delete,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -885,7 +883,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           size: MediaQuery.of(context).size.width * 0.06,
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.cancel,
+                          context.l10n.cancel,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium

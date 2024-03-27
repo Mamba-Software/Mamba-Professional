@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class DeleteBonoDialog extends StatelessWidget {
@@ -34,10 +34,8 @@ class DeleteBonoDialog extends StatelessWidget {
                         top: 8.0, bottom: 8.0, right: 10, left: 10),
                     child: Text(
                       hasPurchases && isActive
-                          ? AppLocalizations.of(context)!
-                              .deactivateBonoConfirmation
-                          : AppLocalizations.of(context)!
-                              .deleteBonoConfirmation,
+                          ? context.l10n.deactivateBonoConfirmation
+                          : context.l10n.deleteBonoConfirmation,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -75,8 +73,7 @@ class DeleteBonoDialog extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 4.0),
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .bonosNoDeleteWarning,
+                                  context.l10n.bonosNoDeleteWarning,
                                   textAlign: TextAlign.left,
                                   style: Theme.of(context)
                                       .textTheme
@@ -113,8 +110,7 @@ class DeleteBonoDialog extends StatelessWidget {
                             const SizedBox(width: 8),
                             Flexible(
                               child: Text(
-                                AppLocalizations.of(context)!
-                                    .bonosCanDeleteWarning,
+                                context.l10n.bonosCanDeleteWarning,
                                 textAlign: TextAlign.left,
                                 style: Theme.of(context)
                                     .textTheme
@@ -151,10 +147,9 @@ class DeleteBonoDialog extends StatelessWidget {
                               ),
                               label: Text(
                                 hasPurchases
-                                    ? AppLocalizations.of(context)!
-                                        .mambaProActivated
+                                    ? context.l10n.mambaProActivated
                                         .split(" ")[0]
-                                    : AppLocalizations.of(context)!.delete,
+                                    : context.l10n.delete,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -189,7 +184,7 @@ class DeleteBonoDialog extends StatelessWidget {
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.cancel,
+                          context.l10n.cancel,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context).primaryColorDark,

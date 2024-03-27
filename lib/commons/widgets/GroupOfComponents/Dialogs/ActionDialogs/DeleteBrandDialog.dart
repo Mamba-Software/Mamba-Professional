@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
@@ -43,7 +43,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                 Padding(
                   padding: const EdgeInsets.only(top: 25, bottom: 10.0),
                   child: Text(
-                    AppLocalizations.of(context)!.deleteBrandConfirmation,
+                    context.l10n.deleteBrandConfirmation,
                     style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: Colors.red, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
@@ -51,7 +51,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                 ),
                 Flexible(
                   child: Text(
-                    "${AppLocalizations.of(context)!.writeDeleteBrand} ",
+                    "${context.l10n.writeDeleteBrand} ",
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -119,7 +119,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                         shape: const StadiumBorder(),
                         heroTag: "32",
                         label: Text(
-                          AppLocalizations.of(context)!.delete,
+                          context.l10n.delete,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -146,7 +146,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                           size: MediaQuery.of(context).size.width * 0.06,
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.cancel,
+                          context.l10n.cancel,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium

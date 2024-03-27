@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/l10n/language_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsLanguage extends StatefulWidget {
   const SettingsLanguage({super.key});
@@ -40,7 +40,7 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.language,
+          context.l10n.language,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,

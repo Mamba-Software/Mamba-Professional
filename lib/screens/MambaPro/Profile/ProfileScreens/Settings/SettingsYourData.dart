@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -109,7 +109,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
           }),
     );
     if (type == 0) {
-      title = AppLocalizations.of(context)!.selectDateOfBirth;
+      title = context.l10n.selectDateOfBirth;
       widgetPicker = dateTimePicker;
     }
     showCupertinoModalPopup(
@@ -162,7 +162,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                           },
                           backgroundColor: Theme.of(context).primaryColor,
                           icon: Container(),
-                          label: Text(AppLocalizations.of(context)!.confirm,
+                          label: Text(context.l10n.confirm,
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -213,7 +213,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.myData,
+          context.l10n.myData,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
@@ -264,8 +264,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                 MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                AppLocalizations.of(context)!
-                                                    .firstName,
+                                                context.l10n.firstName,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyLarge
@@ -301,8 +300,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                           TextInputType.name,
                                                       validator: (val) => val!
                                                               .isEmpty
-                                                          ? AppLocalizations.of(
-                                                                  context)!
+                                                          ? context.l10n
                                                               .nameCompletoError
                                                           : null,
                                                       style: Theme.of(context)
@@ -319,16 +317,15 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                               .words,
                                                       decoration:
                                                           InputDecoration(
-                                                              hintText: AppLocalizations.of(
-                                                                      context)!
+                                                              hintText: context
+                                                                  .l10n
                                                                   .nameCompletoError,
                                                               hintStyle: Theme.of(
                                                                       context)
                                                                   .textTheme
                                                                   .bodySmall,
-                                                              errorStyle: Theme
-                                                                      .of(
-                                                                          context)
+                                                              errorStyle: Theme.of(
+                                                                      context)
                                                                   .textTheme
                                                                   .bodyMedium
                                                                   ?.copyWith(
@@ -409,8 +406,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                 MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                AppLocalizations.of(context)!
-                                                    .lastName,
+                                                context.l10n.lastName,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyLarge
@@ -450,12 +446,11 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                               value;
                                                         });
                                                       },
-                                                      validator: (val) => val!
-                                                              .isEmpty
-                                                          ? AppLocalizations.of(
-                                                                  context)!
-                                                              .lastNameError
-                                                          : null,
+                                                      validator: (val) =>
+                                                          val!.isEmpty
+                                                              ? context.l10n
+                                                                  .lastNameError
+                                                              : null,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyMedium,
@@ -464,16 +459,15 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                               .words,
                                                       decoration:
                                                           InputDecoration(
-                                                              hintText: AppLocalizations.of(
-                                                                      context)!
+                                                              hintText: context
+                                                                  .l10n
                                                                   .lastNameError,
                                                               hintStyle: Theme.of(
                                                                       context)
                                                                   .textTheme
                                                                   .bodySmall,
-                                                              errorStyle: Theme
-                                                                      .of(
-                                                                          context)
+                                                              errorStyle: Theme.of(
+                                                                      context)
                                                                   .textTheme
                                                                   .bodyMedium
                                                                   ?.copyWith(
@@ -581,8 +575,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                               MainAxisAlignment.start,
                                           children: [
                                             Text(
-                                              AppLocalizations.of(context)!
-                                                  .editYourPhoto,
+                                              context.l10n.editYourPhoto,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall
@@ -637,7 +630,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            AppLocalizations.of(context)!.firstName,
+                            context.l10n.firstName,
                             style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -651,9 +644,9 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                 });
                               },
                               style: Theme.of(context).textTheme.bodyText2,
-                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
+                              validator: (val) => val!.isEmpty ? context.l10n.nameCompletoError : null,
                               decoration: InputDecoration(
-                                hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                hintText: context.l10n.nameCompletoError,
                                 hintStyle: Theme.of(context).textTheme.caption,
                                 enabledBorder: const UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey)
@@ -673,7 +666,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            AppLocalizations.of(context)!.lastName,
+                            context.l10n.lastName,
                             style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -687,10 +680,10 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                 });
                               },
                               style: Theme.of(context).textTheme.bodyText2,
-                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
+                              validator: (val) => val!.isEmpty ? context.l10n.lastNameError : null,
                               decoration: InputDecoration(
                                 hintStyle: Theme.of(context).textTheme.caption,
-                                hintText: AppLocalizations.of(context)!.lastNameError,
+                                hintText: context.l10n.lastNameError,
                                 enabledBorder: const UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey)
                                 ),
@@ -712,7 +705,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                           Row(
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.nickname,
+                                context.l10n.nickname,
                                 style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left,
                               ),
@@ -728,7 +721,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                             child: TextFormField(
                               style: Theme.of(context).textTheme.bodyText2,
                               decoration: InputDecoration(
-                                hintText: AppLocalizations.of(context)!.nickname,
+                                hintText: context.l10n.nickname,
                               ),
                               initialValue: "@${currentUser.nick!}",
                               enabled: false,
@@ -745,7 +738,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                           Row(
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.email,
+                                context.l10n.email,
                                 style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(width: MediaQuery.of(context).size.height*0.01),
@@ -760,7 +753,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                             child: TextFormField(
                               style: Theme.of(context).textTheme.bodyText2,
                               decoration: InputDecoration(
-                                hintText: AppLocalizations.of(context)!.email,
+                                hintText: context.l10n.email,
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
@@ -780,7 +773,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Text(
-                                AppLocalizations.of(context)!.email,
+                                context.l10n.email,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge
@@ -809,8 +802,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                             fillColor: Theme.of(context)
                                                 .scaffoldBackgroundColor,
                                             hintText:
-                                                AppLocalizations.of(context)!
-                                                    .lastNameError,
+                                                context.l10n.lastNameError,
                                             hintStyle: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall,
@@ -930,7 +922,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Text(
-                                AppLocalizations.of(context)!.dateOfBirth,
+                                context.l10n.dateOfBirth,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge
@@ -966,8 +958,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                                   .textTheme
                                                   .bodyMedium,
                                               decoration: InputDecoration(
-                                                  hintText: AppLocalizations
-                                                          .of(context)!
+                                                  hintText: context.l10n
                                                       .lastNameError,
                                                   hintStyle: Theme.of(context)
                                                       .textTheme
@@ -1052,7 +1043,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Text(
-                                AppLocalizations.of(context)!.gender,
+                                context.l10n.gender,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge
@@ -1127,7 +1118,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                   size: MediaQuery.of(context).size.width * 0.05,
                 ),
                 label: Text(
-                  AppLocalizations.of(context)!.save,
+                  context.l10n.save,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
@@ -1169,15 +1160,10 @@ class _GenderWidgetState extends State<GenderWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _icon(0,
-            text: AppLocalizations.of(context)!.male,
-            icon: Icons.male_outlined),
-        _icon(1,
-            text: AppLocalizations.of(context)!.female,
-            icon: Icons.female_outlined),
+        _icon(0, text: context.l10n.male, icon: Icons.male_outlined),
+        _icon(1, text: context.l10n.female, icon: Icons.female_outlined),
         _icon(2,
-            text: AppLocalizations.of(context)!.transgender,
-            icon: Icons.transgender_outlined),
+            text: context.l10n.transgender, icon: Icons.transgender_outlined),
       ],
     );
   }

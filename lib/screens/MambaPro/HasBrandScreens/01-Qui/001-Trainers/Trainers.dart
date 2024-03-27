@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
@@ -215,13 +215,13 @@ class _Trainers extends State<Trainers> {
   String returnBrandRoleString(Usuario user) {
     switch (user.brandRole) {
       case 1:
-        return AppLocalizations.of(context)!.owner;
+        return context.l10n.owner;
       case 2:
-        return AppLocalizations.of(context)!.administrador;
+        return context.l10n.administrador;
       case 3:
-        return AppLocalizations.of(context)!.trainer;
+        return context.l10n.trainer;
       default:
-        return AppLocalizations.of(context)!.trainer;
+        return context.l10n.trainer;
     }
   }
 
@@ -229,15 +229,15 @@ class _Trainers extends State<Trainers> {
     String filteredRoles = "";
     int cnt = 0;
     if (filterByTrainers[0]) {
-      filteredRoles += "${AppLocalizations.of(context)!.owner}, ";
+      filteredRoles += "${context.l10n.owner}, ";
       cnt += 1;
     }
     if (filterByTrainers[1]) {
-      filteredRoles += "${AppLocalizations.of(context)!.administrador}, ";
+      filteredRoles += "${context.l10n.administrador}, ";
       cnt += 1;
     }
     if (filterByTrainers[2]) {
-      filteredRoles += AppLocalizations.of(context)!.trainer;
+      filteredRoles += context.l10n.trainer;
       cnt += 1;
     }
     if (cnt == 1) {
@@ -253,11 +253,11 @@ class _Trainers extends State<Trainers> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByTrainers[3]) {
-      activeStaff += "${AppLocalizations.of(context)!.yes}, ";
+      activeStaff += "${context.l10n.yes}, ";
       cnt += 1;
     }
     if (filterByTrainers[4]) {
-      activeStaff += AppLocalizations.of(context)!.no;
+      activeStaff += context.l10n.no;
       cnt += 1;
     }
     if (cnt == 1) {
@@ -318,7 +318,7 @@ class _Trainers extends State<Trainers> {
                         children: [
                           searchClicked == false
                               ? Text(
-                                  AppLocalizations.of(context)!.staff,
+                                  context.l10n.staff,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -343,8 +343,7 @@ class _Trainers extends State<Trainers> {
                                     decoration: InputDecoration(
                                       hintStyle:
                                           Theme.of(context).textTheme.bodySmall,
-                                      hintText:
-                                          AppLocalizations.of(context)!.search,
+                                      hintText: context.l10n.search,
                                       enabledBorder: const OutlineInputBorder(
                                           borderSide:
                                               BorderSide(color: AppColors.grey),
@@ -490,8 +489,7 @@ class _Trainers extends State<Trainers> {
                                                           children: [
                                                             ListTile(
                                                               title: Text(
-                                                                  AppLocalizations.of(
-                                                                          context)!
+                                                                  context.l10n
                                                                       .filterBy,
                                                                   style: Theme.of(
                                                                           context)
@@ -503,7 +501,8 @@ class _Trainers extends State<Trainers> {
                                                               trailing:
                                                                   TextButton(
                                                                       child: Text(
-                                                                          AppLocalizations.of(context)!
+                                                                          context
+                                                                              .l10n
                                                                               .clear,
                                                                           style: Theme.of(context)
                                                                               .textTheme
@@ -592,8 +591,8 @@ class _Trainers extends State<Trainers> {
                                                                           );
                                                                         },
                                                                         title: Text(
-                                                                            AppLocalizations.of(context)!
-                                                                                .roles,
+                                                                            context
+                                                                                .l10n.roles,
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodyLarge,
                                                                             textAlign: TextAlign.left),
@@ -629,7 +628,7 @@ class _Trainers extends State<Trainers> {
                                                                           );
                                                                         },
                                                                         title: Text(
-                                                                            "${AppLocalizations.of(context)!.active} ${AppLocalizations.of(context)!.lastNDays(30.toString())}",
+                                                                            "${context.l10n.active} ${context.l10n.lastNDays(30.toString())}",
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodyLarge,
                                                                             textAlign: TextAlign.left),
@@ -672,7 +671,7 @@ class _Trainers extends State<Trainers> {
                                                                                   }
                                                                                 });
                                                                               },
-                                                                              title: Text(AppLocalizations.of(context)!.owner, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                              title: Text(context.l10n.owner, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                               trailing: filterByTrainers[0]
                                                                                   ? SizedBox(
                                                                                       width: MediaQuery.of(context).size.width * 0.15,
@@ -701,7 +700,7 @@ class _Trainers extends State<Trainers> {
                                                                                   }
                                                                                 });
                                                                               },
-                                                                              title: Text(AppLocalizations.of(context)!.administrador, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                              title: Text(context.l10n.administrador, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                               trailing: filterByTrainers[1]
                                                                                   ? SizedBox(
                                                                                       width: MediaQuery.of(context).size.width * 0.15,
@@ -730,7 +729,7 @@ class _Trainers extends State<Trainers> {
                                                                                   }
                                                                                 });
                                                                               },
-                                                                              title: Text(AppLocalizations.of(context)!.trainer, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                              title: Text(context.l10n.trainer, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                               trailing: filterByTrainers[2]
                                                                                   ? SizedBox(
                                                                                       width: MediaQuery.of(context).size.width * 0.15,
@@ -762,7 +761,7 @@ class _Trainers extends State<Trainers> {
                                                                                   }
                                                                                 });
                                                                               },
-                                                                              title: Text(AppLocalizations.of(context)!.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                              title: Text(context.l10n.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                               trailing: filterByTrainers[3]
                                                                                   ? SizedBox(
                                                                                       width: MediaQuery.of(context).size.width * 0.15,
@@ -790,7 +789,7 @@ class _Trainers extends State<Trainers> {
                                                                                   }
                                                                                 });
                                                                               },
-                                                                              title: Text(AppLocalizations.of(context)!.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                              title: Text(context.l10n.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                               trailing: filterByTrainers[4]
                                                                                   ? SizedBox(
                                                                                       width: MediaQuery.of(context).size.width * 0.15,
@@ -858,7 +857,7 @@ class _Trainers extends State<Trainers> {
             title: AnimatedOpacity(
                 opacity: appBarExpanded || searchClicked ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
-                child: Text(AppLocalizations.of(context)!.staff,
+                child: Text(context.l10n.staff,
                     style:
                         Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
                               color: AppColors.white,
@@ -934,7 +933,7 @@ class _Trainers extends State<Trainers> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "${AppLocalizations.of(context)!.edit} ${AppLocalizations.of(context)!.staff.toLowerCase()}",
+                                      "${context.l10n.edit} ${context.l10n.staff.toLowerCase()}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
@@ -945,8 +944,7 @@ class _Trainers extends State<Trainers> {
                                               fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      AppLocalizations.of(context)!
-                                          .rolesDescription,
+                                      context.l10n.rolesDescription,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!
@@ -1203,7 +1201,7 @@ class _Trainers extends State<Trainers> {
                               height:
                                   MediaQuery.of(context).size.height * 0.005),
                           Text(
-                            AppLocalizations.of(context)!.noData,
+                            context.l10n.noData,
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.center,
                           ),
@@ -1266,10 +1264,7 @@ class _Trainers extends State<Trainers> {
                                 GestureDetector(
                                     onTap: () {
                                       TopSnackBarDef().showSnackBarBottom(
-                                          context,
-                                          AppLocalizations.of(context)!
-                                              .betaFeature,
-                                          5);
+                                          context, context.l10n.betaFeature, 5);
                                     },
                                     child: const BetaBadge()),
                                 SizedBox(
@@ -1277,7 +1272,7 @@ class _Trainers extends State<Trainers> {
                                       MediaQuery.of(context).size.width * 0.02,
                                 ),
                                 Text(
-                                    "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.staff}",
+                                    "${context.l10n.add} ${context.l10n.staff}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .displaySmall,
@@ -1285,19 +1280,11 @@ class _Trainers extends State<Trainers> {
                               ],
                             ),
                             Text(
-                                AppLocalizations.of(context)!
-                                        .addClientsManually
-                                        .split(AppLocalizations.of(context)!
-                                            .client
-                                            .toLowerCase())[0] +
-                                    AppLocalizations.of(context)!
-                                        .staff
-                                        .toLowerCase() +
-                                    AppLocalizations.of(context)!
-                                        .addClientsManually
-                                        .split(AppLocalizations.of(context)!
-                                            .client
-                                            .toLowerCase())[1],
+                                context.l10n.addClientsManually.split(
+                                        context.l10n.client.toLowerCase())[0] +
+                                    context.l10n.staff.toLowerCase() +
+                                    context.l10n.addClientsManually.split(
+                                        context.l10n.client.toLowerCase())[1],
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
@@ -1325,11 +1312,10 @@ class _Trainers extends State<Trainers> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(
-                                "${AppLocalizations.of(context)!.invite} ${AppLocalizations.of(context)!.staff}",
+                            Text("${context.l10n.invite} ${context.l10n.staff}",
                                 style: Theme.of(context).textTheme.displaySmall,
                                 textAlign: TextAlign.right),
-                            Text(AppLocalizations.of(context)!.copyCodeMessage,
+                            Text(context.l10n.copyCodeMessage,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],

@@ -17,7 +17,7 @@ import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 
 class UserBonosHistoryPage extends StatefulWidget {
@@ -116,7 +116,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
     if (purchase.paymentMethod == 0) {
       return Row(
         children: [
-          Text(AppLocalizations.of(context)!.cashPaymentMethod,
+          Text(context.l10n.cashPaymentMethod,
               style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.left),
           const SizedBox(width: 1),
@@ -130,7 +130,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
     } else if (purchase.paymentMethod == 1) {
       return Row(
         children: [
-          Text(AppLocalizations.of(context)!.transferPaymentMethod,
+          Text(context.l10n.transferPaymentMethod,
               style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.left),
           const SizedBox(width: 1),
@@ -144,7 +144,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
     } else {
       return Row(
         children: [
-          Text(AppLocalizations.of(context)!.giftPaymentMethod,
+          Text(context.l10n.giftPaymentMethod,
               style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.left),
           const SizedBox(width: 1),
@@ -163,7 +163,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context)!.purchaseHistory,
+            context.l10n.purchaseHistory,
             style: Theme.of(context).appBarTheme.titleTextStyle,
             textAlign: TextAlign.center,
           ),
@@ -326,10 +326,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Text(
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .info,
+                                                  Text(context.l10n.info,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyLarge
@@ -366,7 +363,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                         MainAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                          "${AppLocalizations.of(context)!.price}: ",
+                                                          "${context.l10n.price}: ",
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -389,7 +386,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                         MainAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                          "${AppLocalizations.of(context)!.buyDate}: ",
+                                                          "${context.l10n.buyDate}: ",
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -420,7 +417,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                         MainAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                          "${AppLocalizations.of(context)!.paymentMethod}: ",
+                                                          "${context.l10n.paymentMethod}: ",
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -479,8 +476,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                       .height *
                                                   0.005),
                                           Text(
-                                            AppLocalizations.of(context)!
-                                                .noData,
+                                            context.l10n.noData,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall,
@@ -716,7 +712,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                                   .start,
                                                           children: [
                                                             Text(
-                                                                "${AppLocalizations.of(context)!.price}: ",
+                                                                "${context.l10n.price}: ",
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -743,7 +739,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                                   .start,
                                                           children: [
                                                             Text(
-                                                                "${AppLocalizations.of(context)!.buyDate}: ",
+                                                                "${context.l10n.buyDate}: ",
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -777,7 +773,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                                   .start,
                                                           children: [
                                                             Text(
-                                                                "${AppLocalizations.of(context)!.paymentMethod}: ",
+                                                                "${context.l10n.paymentMethod}: ",
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -837,8 +833,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                         builder: (_) {
                                           return DeleteConfirmationDialog(
                                               text:
-                                                  AppLocalizations.of(context)!
-                                                      .deletePurchase);
+                                                  context.l10n.deletePurchase);
                                         });
                                     if (result) {
                                       print(purchase.id!);

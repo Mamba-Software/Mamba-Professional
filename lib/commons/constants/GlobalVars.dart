@@ -9,7 +9,7 @@ import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/user/chat/ChatCore.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/Notifications.dart';
 import 'package:mamba/screens/MambaPro/Profile/Profile.dart';
 import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
@@ -69,7 +69,7 @@ void setBrandActive() {
   }
 }
 
-Future<void> navigateToPayWall(var context,
+Future<void> navigateToPayWall(BuildContext context,
     [bool fromActiveSubs = false]) async {
   final topSnackBar = TopSnackBarDef();
   if (currentUser.id == currentBrand.adminID) {
@@ -113,8 +113,7 @@ Future<void> navigateToPayWall(var context,
       );
     }
   } else {
-    topSnackBar.showSnackBarTop(
-        context, AppLocalizations.of(context)!.notSubNotAdmin, 5);
+    topSnackBar.showSnackBarTop(context, context.l10n.notSubNotAdmin, 5);
   }
 }
 

@@ -6,7 +6,7 @@ import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 Widget eventBonosWidget(BuildContext context, Map<Bono, bool> eventBonosMap) {
   return eventBonosMap.isNotEmpty
@@ -32,7 +32,7 @@ Widget bonoFieldDescription(
                   children: <Widget>[
                     Flexible(
                       child: Text(
-                        AppLocalizations.of(context)!.bonosDescription,
+                        context.l10n.bonosDescription,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
@@ -62,8 +62,7 @@ Widget bonoFieldDescription(
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
-                            AppLocalizations.of(context)!
-                                .bonosDescriptionWarning,
+                            context.l10n.bonosDescriptionWarning,
                             textAlign: TextAlign.left,
                             style: Theme.of(context)
                                 .textTheme
@@ -97,7 +96,7 @@ Widget bonoFieldDescription(
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
-                            AppLocalizations.of(context)!.bonosDescriptionGreat,
+                            context.l10n.bonosDescriptionGreat,
                             textAlign: TextAlign.left,
                             style: Theme.of(context)
                                 .textTheme
@@ -134,7 +133,7 @@ Widget bonoFieldDescription(
                                 .editEventInfo('AllBonos', EditEventType.bonos);
                           },
                           child: Text(
-                            AppLocalizations.of(context)!.selectAll,
+                            context.l10n.selectAll,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -158,8 +157,8 @@ Widget bonoFieldDescription(
                                           0.01),
                                   child: Center(
                                     child: Text(
-                                      AppLocalizations.of(context)!
-                                          .deleteClientsWithPurchasesBonos,
+                                      context
+                                          .l10n.deleteClientsWithPurchasesBonos,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
@@ -243,7 +242,7 @@ Widget bonoFieldDescription(
                                         ),
                                         Flexible(
                                           child: Text(
-                                            "${bono.sessions! == 10000 ? "${AppLocalizations.of(context)!.sessions} ${AppLocalizations.of(context)!.ilimitadas}" : "${bono.sessions!} ${AppLocalizations.of(context)!.sessions.toLowerCase()}"} desde ${bono.price!.toStringAsFixed(2)}€",
+                                            "${bono.sessions! == 10000 ? "${context.l10n.sessions} ${context.l10n.ilimitadas}" : "${bono.sessions!} ${context.l10n.sessions.toLowerCase()}"} desde ${bono.price!.toStringAsFixed(2)}€",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall,
@@ -324,7 +323,7 @@ Widget bonoFieldDescription(
                       right: MediaQuery.of(context).size.width * 0.01),
                   child: Center(
                     child: Text(
-                      AppLocalizations.of(context)!.noActiveBonos,
+                      context.l10n.noActiveBonos,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium

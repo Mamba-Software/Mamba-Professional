@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 // Loading View Widget which displays a Circular Progress indicator with the Mamba "M" inside.
 class SplashScreenView extends StatefulWidget {
@@ -145,7 +145,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.6,
                       child: Text(
-                        AppLocalizations.of(context)!.isMaintenanceText,
+                        context.l10n.isMaintenanceText,
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium

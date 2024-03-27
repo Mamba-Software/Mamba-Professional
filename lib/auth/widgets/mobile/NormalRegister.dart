@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 Widget normalRegister(BuildContext context, AuthState state, final formKey,
     String email, String password) {
@@ -29,7 +29,7 @@ Widget normalRegister(BuildContext context, AuthState state, final formKey,
             color: AppColors.white, borderRadius: BorderRadius.circular(30)),
         child: checkIfProvider(state, AuthProviderEnum.register)
             ? Center(
-                child: Text(AppLocalizations.of(context)!.register,
+                child: Text(context.l10n.register,
                     style: Theme.of(context)
                         .textTheme
                         .displaySmall

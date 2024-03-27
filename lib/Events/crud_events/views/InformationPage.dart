@@ -35,7 +35,7 @@ Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         Text(
-                                          AppLocalizations.of(context)!.bonos,
+                                          context.l10n.bonos,
                                           style: Theme.of(context).textTheme.headline1,
                                         ),
                                       ],
@@ -50,7 +50,7 @@ Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
                                   children: <Widget>[
                                     Flexible(
                                       child: Text(
-                                        AppLocalizations.of(context)!.bonosDescription,
+                                        context.l10n.bonosDescription,
                                         style: Theme.of(context).textTheme.caption,
                                       ),
                                     ),
@@ -74,7 +74,7 @@ Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
                                   const SizedBox(width: 8),
                                   Flexible(
                                     child: Text(
-                                      AppLocalizations.of(context)!.bonosDescriptionWarning,
+                                      context.l10n.bonosDescriptionWarning,
                                       textAlign: TextAlign.left,
                                       style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
                                     ),
@@ -98,7 +98,7 @@ Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
                                   const SizedBox(width: 8),
                                   Flexible(
                                     child: Text(
-                                      AppLocalizations.of(context)!.bonosDescriptionGreat,
+                                      context.l10n.bonosDescriptionGreat,
                                       textAlign: TextAlign.left,
                                       style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
                                     ),
@@ -111,7 +111,7 @@ Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
                               children: [
                                 TextButton(
                                   child: Text(
-                                    AppLocalizations.of(context)!.selectAll,
+                                    context.l10n.selectAll,
                                     style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w700),
                                   ),
                                   style: TextButton.styleFrom(
@@ -138,7 +138,7 @@ Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
                               padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.01, right:  MediaQuery.of(context).size.width * 0.01),
                               child: Center(
                                 child: Text(
-                                  AppLocalizations.of(context)!.deleteClientsWithPurchasesBonos,
+                                  context.l10n.deleteClientsWithPurchasesBonos,
                                   style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                   textAlign: TextAlign.center,
                                 ),
@@ -187,7 +187,7 @@ Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
                                               ),
                                               Flexible(
                                                 child: Text(
-                                                  (bono.sessions! == 10000 ? AppLocalizations.of(context)!.sessions+" "+AppLocalizations.of(context)!.ilimitadas : bono.sessions!.toString()+" "+AppLocalizations.of(context)!.sessions.toLowerCase())
+                                                  (bono.sessions! == 10000 ? context.l10n.sessions+" "+context.l10n.ilimitadas : bono.sessions!.toString()+" "+context.l10n.sessions.toLowerCase())
                                                       +" desde "+bono.price!.toStringAsFixed(2)+"€",
                                                   style: Theme.of(context).textTheme.caption,
                                                   maxLines: 1,

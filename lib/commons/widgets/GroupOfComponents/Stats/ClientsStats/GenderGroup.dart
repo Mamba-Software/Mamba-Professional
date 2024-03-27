@@ -5,12 +5,13 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GenderGroup extends StatefulWidget {
   List<Usuario> users;
   bool resize;
-  var context;
+  BuildContext context;
 
   GenderGroup({
     required this.users,
@@ -190,7 +191,7 @@ class GenderGroupState extends State<GenderGroup> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.005),
                             Text(
-                              AppLocalizations.of(context)!.noData,
+                              context.l10n.noData,
                               style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.center,
                             ),

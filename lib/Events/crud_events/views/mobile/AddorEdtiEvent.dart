@@ -15,7 +15,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/De
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class AddOrEditEvent extends StatefulWidget {
   Locale locale;
@@ -59,10 +59,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
               appBar: AppBar(
                 toolbarHeight: MediaQuery.of(context).size.height * 0.08,
                 title: state.isNew
-                    ? Text(AppLocalizations.of(context)!.createEvent,
+                    ? Text(context.l10n.createEvent,
                         style: Theme.of(context).appBarTheme.titleTextStyle)
                     : Text(
-                        AppLocalizations.of(context)!.editEvent,
+                        context.l10n.editEvent,
                         style: Theme.of(context).appBarTheme.titleTextStyle,
                       ),
                 centerTitle: true,
@@ -90,7 +90,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                           width: MediaQuery.of(context).size.width * 0.1,
                           child: FittedBox(
                             fit: BoxFit.contain,
-                            child: Text(AppLocalizations.of(context)!.group,
+                            child: Text(context.l10n.group,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.center),
                           ),
@@ -124,10 +124,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
               appBar: AppBar(
                 toolbarHeight: MediaQuery.of(context).size.height * 0.08,
                 title: state.isNew
-                    ? Text(AppLocalizations.of(context)!.createEvent,
+                    ? Text(context.l10n.createEvent,
                         style: Theme.of(context).appBarTheme.titleTextStyle)
                     : Text(
-                        AppLocalizations.of(context)!.editEvent,
+                        context.l10n.editEvent,
                         style: Theme.of(context).appBarTheme.titleTextStyle,
                       ),
                 centerTitle: true,
@@ -152,8 +152,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                     context: context,
                                     builder: (_) {
                                       return DeleteConfirmationDialog(
-                                          text: AppLocalizations.of(context)!
-                                              .deleteEventConfirmation);
+                                          text: context
+                                              .l10n.deleteEventConfirmation);
                                     });
                                 if (result) {
                                   context
@@ -199,8 +199,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                   context: context,
                                   builder: (_) {
                                     return DeleteConfirmationDialog(
-                                        text: AppLocalizations.of(context)!
-                                            .deleteClientsWithPurchases,
+                                        text: context
+                                            .l10n.deleteClientsWithPurchases,
                                         permitDelete: false);
                                   });
                             }
@@ -233,8 +233,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                 width: MediaQuery.of(context).size.width * 0.1,
                                 child: FittedBox(
                                   fit: BoxFit.contain,
-                                  child: Text(
-                                      AppLocalizations.of(context)!.group,
+                                  child: Text(context.l10n.group,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium,
@@ -399,7 +398,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                               backgroundColor: Theme.of(context).primaryColor,
                               icon: Container(),
                               label: Text(
-                                AppLocalizations.of(context)!.back,
+                                context.l10n.back,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -585,8 +584,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                         label: state.isNew
                             ? Text(
                                 _selectedIndex == 2
-                                    ? AppLocalizations.of(context)!.createEvent
-                                    : AppLocalizations.of(context)!.next,
+                                    ? context.l10n.createEvent
+                                    : context.l10n.next,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -594,8 +593,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                               )
                             : Text(
                                 _selectedIndex == 2
-                                    ? AppLocalizations.of(context)!.editEvent
-                                    : AppLocalizations.of(context)!.next,
+                                    ? context.l10n.editEvent
+                                    : context.l10n.next,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -615,20 +614,19 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
     return event.isRecurrent!
         ? _notificationsEvents.setEventNotificationBefore(
             event,
-            AppLocalizations.of(context)!
-                .beforeEventTitleNotification(event.title!, 'replace'),
-            AppLocalizations.of(context)!.beforeEventBodyNotification)
+            context.l10n.beforeEventTitleNotification(event.title!, 'replace'),
+            context.l10n.beforeEventBodyNotification)
         : _notificationsEvents.setEventNotificationBefore(
             event,
-            AppLocalizations.of(context)!
+            context.l10n
                 .beforeEventTitleNotification(event.title!, eventTimeTime),
-            AppLocalizations.of(context)!.beforeEventBodyNotification);
+            context.l10n.beforeEventBodyNotification);
   }
 
   ReceivedNotification _setNotificationAfter(Event event) {
     return _notificationsEvents.setEventNotificationAfter(
         event,
-        AppLocalizations.of(context)!.afterEventTitleNotification,
-        AppLocalizations.of(context)!.afterEventBodyNotification);
+        context.l10n.afterEventTitleNotification,
+        context.l10n.afterEventBodyNotification);
   }
 }

@@ -4,7 +4,7 @@ import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 Widget googleLogin(BuildContext context, AuthState state) {
   return GestureDetector(
@@ -40,7 +40,7 @@ Widget googleLogin(BuildContext context, AuthState state) {
             ),
             Expanded(
               child: checkIfProvider(state, AuthProviderEnum.google)
-                  ? Text(AppLocalizations.of(context)!.continueWithGoogle,
+                  ? Text(context.l10n.continueWithGoogle,
                       style: Theme.of(context)
                           .textTheme
                           .displaySmall

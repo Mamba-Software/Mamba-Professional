@@ -31,7 +31,7 @@ import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class Stats extends StatefulWidget {
   String brandId;
@@ -308,7 +308,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                                     right: MediaQuery.of(context).size.width *
                                         0.025),
                                 child: Text(
-                                  AppLocalizations.of(context)!.stats,
+                                  context.l10n.stats,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -330,7 +330,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                       title: AnimatedOpacity(
                           opacity: appBarExpanded ? 1.0 : 0.0,
                           duration: const Duration(milliseconds: 200),
-                          child: Text(AppLocalizations.of(context)!.stats,
+                          child: Text(context.l10n.stats,
                               style: Theme.of(context)
                                   .appBarTheme
                                   .titleTextStyle
@@ -439,13 +439,13 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                           labelStyle: Theme.of(context).textTheme.bodyMedium,
                           tabs: [
                             Tab(
-                              text: AppLocalizations.of(context)!.events,
+                              text: context.l10n.events,
                             ),
                             Tab(
-                              text: AppLocalizations.of(context)!.clients,
+                              text: context.l10n.clients,
                             ),
                             Tab(
-                              text: AppLocalizations.of(context)!.facturation,
+                              text: context.l10n.facturation,
                             ),
                           ],
                           onTap: (index) {
@@ -511,7 +511,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                                     right: MediaQuery.of(context).size.width *
                                         0.025),
                                 child: Text(
-                                  AppLocalizations.of(context)!.stats,
+                                  context.l10n.stats,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -532,7 +532,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                       ),
                       title: appBarExpanded
                           ? Text(
-                              AppLocalizations.of(context)!.stats,
+                              context.l10n.stats,
                               style: Theme.of(context)
                                   .appBarTheme
                                   .titleTextStyle
@@ -651,10 +651,10 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                           labelStyle: Theme.of(context).textTheme.bodyMedium,
                           tabs: [
                             Tab(
-                              text: AppLocalizations.of(context)!.events,
+                              text: context.l10n.events,
                             ),
                             Tab(
-                              text: AppLocalizations.of(context)!.clients,
+                              text: context.l10n.clients,
                             ),
                           ],
                           onTap: (index) {
@@ -808,7 +808,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           right: MediaQuery.of(context).size.width * 0.06),
       child: Column(
         children: [
-          statsTitle(AppLocalizations.of(context)!.eventsDone),
+          statsTitle(context.l10n.eventsDone),
           Padding(
             padding: EdgeInsets.symmetric(
                 vertical: MediaQuery.of(context).size.height * 0.02),
@@ -818,7 +818,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
             ),
           ),
           dividerStats(),
-          statsTitle(AppLocalizations.of(context)!.daysDemand),
+          statsTitle(context.l10n.daysDemand),
           Padding(
             padding: EdgeInsets.symmetric(
                 vertical: MediaQuery.of(context).size.height * 0.02),
@@ -828,14 +828,14 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
             ),
           ),
           dividerStats(),
-          statsTitle(AppLocalizations.of(context)!.timeOffer),
+          statsTitle(context.l10n.timeOffer),
           Padding(
             padding: EdgeInsets.symmetric(
                 vertical: MediaQuery.of(context).size.height * 0.02),
             child: TimeOffer(events: filteredEvents),
           ),
           dividerStats(),
-          statsTitle(AppLocalizations.of(context)!.timeToTimeOffer),
+          statsTitle(context.l10n.timeToTimeOffer),
           Padding(
             padding: EdgeInsets.symmetric(
                 vertical: MediaQuery.of(context).size.height * 0.02),
@@ -861,7 +861,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           right: MediaQuery.of(context).size.width * 0.06),
       child: Column(
         children: [
-          statsTitle(AppLocalizations.of(context)!.numberClients),
+          statsTitle(context.l10n.numberClients),
           Padding(
             padding: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height * 0.02,
@@ -873,14 +873,14 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 allUsers: users),
           ),
           dividerStats(),
-          statsTitle(AppLocalizations.of(context)!.ageRange),
+          statsTitle(context.l10n.ageRange),
           Padding(
             padding: EdgeInsets.symmetric(
                 vertical: MediaQuery.of(context).size.height * 0.02),
             child: AgeRange(users: filteredUsers),
           ),
           dividerStats(),
-          statsTitle(AppLocalizations.of(context)!.gender),
+          statsTitle(context.l10n.gender),
           Padding(
             padding: EdgeInsets.symmetric(
                 vertical: MediaQuery.of(context).size.height * 0.02),
@@ -929,7 +929,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 right: MediaQuery.of(context).size.width * 0.06),
             child: Column(
               children: [
-                statsTitle(AppLocalizations.of(context)!.totalInvoice),
+                statsTitle(context.l10n.totalInvoice),
                 Padding(
                   padding: EdgeInsets.symmetric(
                       vertical: MediaQuery.of(context).size.height * 0.02),
@@ -942,7 +942,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
             ),
           ),
         ),
-        statsTitle(AppLocalizations.of(context)!.paymentMethod),
+        statsTitle(context.l10n.paymentMethod),
         Padding(
           padding: EdgeInsets.symmetric(
               vertical: MediaQuery.of(context).size.height * 0.02),
@@ -956,7 +956,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
               EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.06),
           child: Column(
             children: [
-              statsTitle(AppLocalizations.of(context)!.rates),
+              statsTitle(context.l10n.rates),
             ],
           ),
         ),
@@ -1022,7 +1022,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         endDate.day == maxEndDate.day &&
         endDate.month == maxEndDate.month &&
         endDate.year == maxEndDate.year) {
-      return "${AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.month)}";
+      return "${context.l10n.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(context.l10n.month)}";
     }
 
     // Check for "previous month" selection
@@ -1032,7 +1032,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         endDate.day == DateTime(now.year, now.month, 0).day &&
         endDate.month == now.month - 1 &&
         endDate.year == now.year) {
-      return AppLocalizations.of(context)!.previousMonth;
+      return context.l10n.previousMonth;
     }
 
     // Check for "Historic" selection
@@ -1042,7 +1042,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         endDate.day == maxEndDate.day &&
         endDate.month == maxEndDate.month &&
         endDate.year == maxEndDate.year) {
-      return AppLocalizations.of(context)!.historic;
+      return context.l10n.historic;
     }
 
     switch (daysDifference) {
@@ -1053,13 +1053,13 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         if (maxEndDate.day == endDate.day &&
             maxEndDate.month == endDate.month &&
             maxEndDate.year == endDate.year) {
-          return AppLocalizations.of(context)!
+          return context.l10n
               .lastNDays(endDate.difference(startDate).inDays.toString());
         } else {
-          return AppLocalizations.of(context)!.personlized;
+          return context.l10n.personlized;
         }
       default:
-        return AppLocalizations.of(context)!.personlized;
+        return context.l10n.personlized;
     }
   }
 

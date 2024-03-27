@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
@@ -76,7 +76,7 @@ class _BonoListTileState extends State<PurchaseListTile>
           SizedBox(width: widget.width * 0.02),
           Flexible(
             child: Text(
-                "${AppLocalizations.of(context)!.paymentMethod}: ${AppLocalizations.of(context)!.cashPaymentMethod}",
+                "${context.l10n.paymentMethod}: ${context.l10n.cashPaymentMethod}",
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
@@ -96,7 +96,7 @@ class _BonoListTileState extends State<PurchaseListTile>
           SizedBox(width: widget.width * 0.02),
           Flexible(
             child: Text(
-                "${AppLocalizations.of(context)!.paymentMethod}: ${AppLocalizations.of(context)!.transferPaymentMethod}",
+                "${context.l10n.paymentMethod}: ${context.l10n.transferPaymentMethod}",
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
@@ -116,7 +116,7 @@ class _BonoListTileState extends State<PurchaseListTile>
           SizedBox(width: widget.width * 0.02),
           Flexible(
             child: Text(
-                "${AppLocalizations.of(context)!.paymentMethod}: ${AppLocalizations.of(context)!.giftPaymentMethod}",
+                "${context.l10n.paymentMethod}: ${context.l10n.giftPaymentMethod}",
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
@@ -330,7 +330,7 @@ class _BonoListTileState extends State<PurchaseListTile>
                                   SizedBox(width: widget.width * 0.02),
                                   Flexible(
                                     child: Text(
-                                        "${AppLocalizations.of(context)!.buyDate}: ${StringUtils().toCapitalized(DateFormat('EEEE dd/MM/yy', Localizations.localeOf(context).languageCode).format(widget.purchase.purchasedAt!.toDate()))}",
+                                        "${context.l10n.buyDate}: ${StringUtils().toCapitalized(DateFormat('EEEE dd/MM/yy', Localizations.localeOf(context).languageCode).format(widget.purchase.purchasedAt!.toDate()))}",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall

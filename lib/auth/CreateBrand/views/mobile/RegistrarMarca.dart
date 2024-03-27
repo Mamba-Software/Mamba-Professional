@@ -8,6 +8,7 @@ import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/data/DataService/Promotions/PromotionsDataService.dart';
 import 'package:mamba/data/Models/Subscription.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
@@ -16,7 +17,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView
 import 'package:mamba/data/Models/Location.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba/auth/views/mobile/SplashScreen.dart';
@@ -219,7 +220,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
         title: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width * 0.01),
-          child: Text(AppLocalizations.of(context)!.createBrand,
+          child: Text(context.l10n.createBrand,
               style: Theme.of(context).textTheme.displaySmall),
         ),
         centerTitle: false,
@@ -295,7 +296,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.addBrandLogo,
+                                  context.l10n.addBrandLogo,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -306,8 +307,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                     height: MediaQuery.of(context).size.height *
                                         0.02),
                                 Text(
-                                  AppLocalizations.of(context)!
-                                      .createBrandPortada,
+                                  context.l10n.createBrandPortada,
                                   style: Theme.of(context).textTheme.bodyLarge,
                                   textAlign: TextAlign.left,
                                 ),
@@ -391,7 +391,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                         0.04),
                                 Expanded(
                                   child: Text(
-                                    AppLocalizations.of(context)!.changeLater,
+                                    context.l10n.changeLater,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                     textAlign: TextAlign.left,
@@ -447,7 +447,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.nameBrand,
+                                  context.l10n.nameBrand,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -458,8 +458,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                     height: MediaQuery.of(context).size.height *
                                         0.02),
                                 Text(
-                                  AppLocalizations.of(context)!
-                                      .createBrandPortada,
+                                  context.l10n.createBrandPortada,
                                   style: Theme.of(context).textTheme.bodyLarge,
                                   textAlign: TextAlign.left,
                                 ),
@@ -503,8 +502,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                               filled: true,
                                               fillColor: AppColors.white,
                                               hintText:
-                                                  AppLocalizations.of(context)!
-                                                      .nameBrandError,
+                                                  context.l10n.nameBrandError,
                                               hintStyle: Theme.of(context)
                                                   .textTheme
                                                   .displaySmall
@@ -596,7 +594,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                             filled: true,
                                             fillColor: AppColors.white,
                                             hintText:
-                                                "${AppLocalizations.of(context)!.descriptionError}. Max. 250 ${AppLocalizations.of(context)!.chars.toLowerCase()} (${AppLocalizations.of(context)!.optional.toLowerCase()})",
+                                                "${context.l10n.descriptionError}. Max. 250 ${context.l10n.chars.toLowerCase()} (${context.l10n.optional.toLowerCase()})",
                                             hintStyle: Theme.of(context)
                                                 .textTheme
                                                 .displaySmall
@@ -662,7 +660,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                           children: [
                                             Flexible(
                                               child: Text(
-                                                "Max. 250 ${AppLocalizations.of(context)!.chars.toLowerCase()}",
+                                                "Max. 250 ${context.l10n.chars.toLowerCase()}",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyMedium
@@ -704,7 +702,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                         0.04),
                                 Expanded(
                                   child: Text(
-                                    AppLocalizations.of(context)!.changeLater,
+                                    context.l10n.changeLater,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                     textAlign: TextAlign.left,
@@ -765,7 +763,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.baseLocation.toLowerCase()}",
+                                  "${context.l10n.add} ${context.l10n.baseLocation.toLowerCase()}",
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayLarge
@@ -776,8 +774,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                     height: MediaQuery.of(context).size.height *
                                         0.02),
                                 Text(
-                                  AppLocalizations.of(context)!
-                                      .createBrandLocation,
+                                  context.l10n.createBrandLocation,
                                   style: Theme.of(context).textTheme.bodyLarge,
                                   textAlign: TextAlign.left,
                                 ),
@@ -866,8 +863,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                                     color: AppColors.black),
                                           )
                                         : Text(
-                                            AppLocalizations.of(context)!
-                                                .enterAddressError,
+                                            context.l10n.enterAddressError,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium
@@ -901,8 +897,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                                 MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                AppLocalizations.of(context)!
-                                                    .streetName,
+                                                context.l10n.streetName,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodySmall,
@@ -925,8 +920,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                                 MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                AppLocalizations.of(context)!
-                                                    .streetNumber,
+                                                context.l10n.streetNumber,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodySmall,
@@ -949,8 +943,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                                 MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                AppLocalizations.of(context)!
-                                                    .city,
+                                                context.l10n.city,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodySmall,
@@ -973,8 +966,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                                 MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                AppLocalizations.of(context)!
-                                                    .zipCode,
+                                                context.l10n.zipCode,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodySmall,
@@ -997,7 +989,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                                 MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "${AppLocalizations.of(context)!.latitude}: ",
+                                                "${context.l10n.latitude}: ",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodySmall,
@@ -1020,7 +1012,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                                 MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "${AppLocalizations.of(context)!.longitud}: ",
+                                                "${context.l10n.longitud}: ",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodySmall,
@@ -1065,7 +1057,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                         0.04),
                                 Expanded(
                                   child: Text(
-                                    AppLocalizations.of(context)!.changeLater,
+                                    context.l10n.changeLater,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                     textAlign: TextAlign.left,
@@ -1120,7 +1112,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.02),
                         Text(
-                          "${AppLocalizations.of(context)!.creating} ${AppLocalizations.of(context)!.yourBrand.toLowerCase()} ...",
+                          "${context.l10n.creating} ${context.l10n.yourBrand.toLowerCase()} ...",
                           style: Theme.of(context)
                               .textTheme
                               .displayLarge
@@ -1242,7 +1234,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          AppLocalizations.of(context)!.createBrandCoverDescription,
+                                          context.l10n.createBrandCoverDescription,
                                           style: Theme.of(context).textTheme.caption,
                                           textAlign: TextAlign.left,
                                         ),
@@ -1251,7 +1243,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                                   Text(
-                                    AppLocalizations.of(context)!.logo,
+                                    context.l10n.logo,
                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -1296,20 +1288,20 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                   Text(
-                                    AppLocalizations.of(context)!.nameBrand,
+                                    context.l10n.nameBrand,
                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                   Flexible(
                                     child: TextFormField(
                                       controller: nameBrandController,
-                                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
+                                      validator: (val) => val!.isEmpty ? context.l10n.nameBrandError : null,
                                       style: Theme.of(context).textTheme.headline1,
                                       textAlign: TextAlign.center,
                                       textCapitalization: TextCapitalization.words,
                                       decoration: InputDecoration(
                                         hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.grey),
-                                        hintText: AppLocalizations.of(context)!.nameBrandError,
+                                        hintText: context.l10n.nameBrandError,
                                         enabledBorder: InputBorder.none,
                                         errorBorder: InputBorder.none,
                                         disabledBorder: InputBorder.none,
@@ -1342,7 +1334,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          AppLocalizations.of(context)!.createBrandDescDescription,
+                                          context.l10n.createBrandDescDescription,
                                           style: Theme.of(context).textTheme.caption,
                                           textAlign: TextAlign.left,
                                         ),
@@ -1351,7 +1343,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                                   Text(
-                                    AppLocalizations.of(context)!.description,
+                                    context.l10n.description,
                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -1360,14 +1352,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                         keyboardType: TextInputType.text,
                                         controller: descriptionController,
                                         textCapitalization: TextCapitalization.sentences,
-                                        validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
+                                        validator: (val) => val!.isEmpty ? context.l10n.descriptionError : null,
                                         minLines: 1,
                                         maxLines: 5,
                                         maxLength: 250,
                                         style: Theme.of(context).textTheme.bodyText2,
                                         decoration: InputDecoration(
                                           hintStyle: Theme.of(context).textTheme.caption,
-                                          hintText: AppLocalizations.of(context)!.descriptionError,
+                                          hintText: context.l10n.descriptionError,
                                           enabledBorder: InputBorder.none,
                                           errorBorder: InputBorder.none,
                                           disabledBorder: InputBorder.none,
@@ -1398,7 +1390,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        AppLocalizations.of(context)!.createBrandLocationDescription,
+                                        context.l10n.createBrandLocationDescription,
                                         style: Theme.of(context).textTheme.caption,
                                         textAlign: TextAlign.left,
                                       ),
@@ -1407,7 +1399,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
                                 Text(
-                                  AppLocalizations.of(context)!.createBrandBaseLocation,
+                                  context.l10n.createBrandBaseLocation,
                                   style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -1469,7 +1461,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                     location.description!,
                                     style: Theme.of(context).textTheme.bodyText2,
                                   ) : Text(
-                                    AppLocalizations.of(context)!.enterAddressError,
+                                    context.l10n.enterAddressError,
                                     style: Theme.of(context).textTheme.bodyText2,
                                   ),
                                   leading: Icon(
@@ -1480,7 +1472,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                 errorLocation ? Padding(
                                   padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
                                   child: Text(
-                                    AppLocalizations.of(context)!.enterAddressError,
+                                    context.l10n.enterAddressError,
                                     style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                   ),
                                 ) : Container(),
@@ -1492,7 +1484,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!.streetName,
+                                          context.l10n.streetName,
                                           style: Theme.of(context).textTheme.caption,
                                         ),
                                         Text(location.street!, style: Theme.of(context).textTheme.bodyText2,)
@@ -1503,7 +1495,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!.streetNumber,
+                                          context.l10n.streetNumber,
                                           style: Theme.of(context).textTheme.caption,
                                         ),
                                         Text(location.streetNumber!, style: Theme.of(context).textTheme.bodyText2,)
@@ -1514,7 +1506,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!.city,
+                                          context.l10n.city,
                                           style: Theme.of(context).textTheme.caption,
                                         ),
                                         Text(location.city!, style: Theme.of(context).textTheme.bodyText2,)
@@ -1525,7 +1517,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!.zipCode,
+                                          context.l10n.zipCode,
                                           style: Theme.of(context).textTheme.caption,
                                         ),
                                         Text(location.zipCode!, style: Theme.of(context).textTheme.bodyText2,)
@@ -1536,7 +1528,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "${AppLocalizations.of(context)!.latitude}: ",
+                                          "${context.l10n.latitude}: ",
                                           style: Theme.of(context).textTheme.caption,
                                         ),
                                         Text(location.latitude!.toString(), style: Theme.of(context).textTheme.bodyText2,)
@@ -1547,7 +1539,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "${AppLocalizations.of(context)!.longitud}: ",
+                                          "${context.l10n.longitud}: ",
                                           style: Theme.of(context).textTheme.caption,
                                         ),
                                         Text(location.longitude!.toString(), style: Theme.of(context).textTheme.bodyText2,)
@@ -1576,7 +1568,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        AppLocalizations.of(context)!.createBrandWorkshiftDescription,
+                                        context.l10n.createBrandWorkshiftDescription,
                                         style: Theme.of(context).textTheme.caption,
                                         textAlign: TextAlign.left,
                                       ),
@@ -1585,7 +1577,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Text(
-                                  AppLocalizations.of(context)!.workingHours,
+                                  context.l10n.workingHours,
                                   style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -1597,7 +1589,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                         DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
                                             context: context,
                                             builder: (_) => SelectTimeDialog(
-                                              title: AppLocalizations.of(context)!.selectTime,
+                                              title: context.l10n.selectTime,
                                               startDate: startTime,
                                               onlyFuture: false,
                                             )
@@ -1629,7 +1621,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                         DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
                                             context: context,
                                             builder: (_) => SelectTimeDialog(
-                                              title: AppLocalizations.of(context)!.selectTime,
+                                              title: context.l10n.selectTime,
                                               startDate: endTime,
                                               onlyFuture: false,
                                             )
@@ -1659,7 +1651,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                 errorTime != null ? Padding(
                                   padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
                                   child: Text(
-                                    errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
+                                    errorTime == 1 ? context.l10n.workingHoursError : context.l10n.workingHoursError1,
                                     style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                     textAlign: TextAlign.center,
                                   ),
@@ -1671,7 +1663,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        AppLocalizations.of(context)!.createBrandBreakDescription,
+                                        context.l10n.createBrandBreakDescription,
                                         style: Theme.of(context).textTheme.caption,
                                         textAlign: TextAlign.left,
                                       ),
@@ -1680,7 +1672,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Text(
-                                  AppLocalizations.of(context)!.lunchBreak,
+                                  context.l10n.lunchBreak,
                                   style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -1772,7 +1764,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                 errorBreakTime ? Padding(
                                   padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
                                   child: Text(
-                                    AppLocalizations.of(context)!.workingHoursError1,
+                                    context.l10n.workingHoursError1,
                                     style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                     textAlign: TextAlign.center,
                                   ),
@@ -1854,7 +1846,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                             ),
                                           ),
                                           Flexible(
-                                            child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
+                                            child: Text(context.l10n.lunchBreakAdded, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
                                           ),
                                         ],
                                       );
@@ -1870,7 +1862,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        AppLocalizations.of(context)!.createBrandAddDescription,
+                                        context.l10n.createBrandAddDescription,
                                         style: Theme.of(context).textTheme.bodyText2,
                                         textAlign: TextAlign.left,
                                       ),
@@ -1883,7 +1875,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        AppLocalizations.of(context)!.bookingWindowDescription,
+                                        context.l10n.bookingWindowDescription,
                                         style: Theme.of(context).textTheme.caption,
                                         textAlign: TextAlign.left,
                                       ),
@@ -1892,7 +1884,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Text(
-                                  AppLocalizations.of(context)!.bookingWindow,
+                                  context.l10n.bookingWindow,
                                   style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
@@ -1916,7 +1908,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           Text(
-                                            bookingWindow.toString()+" "+AppLocalizations.of(context)!.days.toLowerCase(),
+                                            bookingWindow.toString()+" "+context.l10n.days.toLowerCase(),
                                             style: Theme.of(context).textTheme.headline3,
                                           ),
                                         ],
@@ -1972,7 +1964,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                     backgroundColor: Theme.of(context).primaryColor,
                     icon: Container(),
                     label: Text(
-                      AppLocalizations.of(context)!.back,
+                      context.l10n.back,
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorDark),),
                   ),
                 ),
@@ -2031,7 +2023,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                     backgroundColor: _selectedIndex == 3 ? Colors.green : Theme.of(context).colorScheme.secondary,
                     icon: Container(),
                     label: Text(
-                      _selectedIndex == 3 ? AppLocalizations.of(context)!.createBrand : AppLocalizations.of(context)!.next,
+                      _selectedIndex == 3 ? context.l10n.createBrand : context.l10n.next,
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.white),),
                   ),
                 ),

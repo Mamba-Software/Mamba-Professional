@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -90,7 +90,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
-                    AppLocalizations.of(context)!.stripeConnecting,
+                    context.l10n.stripeConnecting,
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
@@ -116,7 +116,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
-                    AppLocalizations.of(context)!.stripeConnectionSuccessfull,
+                    context.l10n.stripeConnectionSuccessfull,
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                     maxLines: 5,
@@ -164,7 +164,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
-                    AppLocalizations.of(context)!.stripeError,
+                    context.l10n.stripeError,
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),

@@ -13,7 +13,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class BonosPurchased extends StatefulWidget {
   List<Purchase> purchases;
@@ -285,8 +285,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                       fontWeight:
                                                           FontWeight.bold),
                                             ),
-                                            Text(AppLocalizations.of(context)!
-                                                .benefit),
+                                            Text(context.l10n.benefit),
                                           ]),
                                     ),
                                     Container(
@@ -320,8 +319,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                       fontWeight:
                                                           FontWeight.bold),
                                             ),
-                                            Text(AppLocalizations.of(context)!
-                                                .boughts),
+                                            Text(context.l10n.boughts),
                                           ]),
                                     ),
                                   ],
@@ -364,8 +362,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                       fontWeight:
                                                           FontWeight.bold),
                                             ),
-                                            Text(AppLocalizations.of(context)!
-                                                .benefit),
+                                            Text(context.l10n.benefit),
                                           ]),
                                     ),
                                     Container(
@@ -397,8 +394,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                       fontWeight:
                                                           FontWeight.bold),
                                             ),
-                                            Text(AppLocalizations.of(context)!
-                                                .boughts),
+                                            Text(context.l10n.boughts),
                                           ]),
                                     ),
                                   ],
@@ -437,7 +433,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                     .height *
                                                 0.005),
                                         Text(
-                                          AppLocalizations.of(context)!.noData,
+                                          context.l10n.noData,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall,
@@ -528,7 +524,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.005),
                       Text(
-                        AppLocalizations.of(context)!.noData,
+                        context.l10n.noData,
                         style: Theme.of(context).textTheme.bodySmall,
                         textAlign: TextAlign.center,
                       ),
@@ -582,8 +578,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                       fontWeight:
                                                           FontWeight.bold),
                                             ),
-                                            Text(AppLocalizations.of(context)!
-                                                .benefit),
+                                            Text(context.l10n.benefit),
                                           ]),
                                     ),
                                     Container(
@@ -617,8 +612,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                       fontWeight:
                                                           FontWeight.bold),
                                             ),
-                                            Text(AppLocalizations.of(context)!
-                                                .boughts),
+                                            Text(context.l10n.boughts),
                                           ]),
                                     ),
                                   ],
@@ -661,8 +655,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                       fontWeight:
                                                           FontWeight.bold),
                                             ),
-                                            Text(AppLocalizations.of(context)!
-                                                .benefit),
+                                            Text(context.l10n.benefit),
                                           ]),
                                     ),
                                     Container(
@@ -694,8 +687,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                       fontWeight:
                                                           FontWeight.bold),
                                             ),
-                                            Text(AppLocalizations.of(context)!
-                                                .boughts),
+                                            Text(context.l10n.boughts),
                                           ]),
                                     ),
                                   ],

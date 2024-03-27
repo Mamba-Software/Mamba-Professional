@@ -7,14 +7,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
-import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/mobile/SplashScreen.dart';
@@ -42,6 +41,7 @@ import 'package:provider/provider.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Bootstrap with PlatformMixin {
   // Initialize Variables
@@ -223,8 +223,7 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-        builder: (context, ThemeProvider theme, _) {
+    return Consumer<ThemeProvider>(builder: (context, ThemeProvider theme, _) {
       AppThemes appThemes = AppThemes();
       final brightness = SchedulerBinding.instance.window.platformBrightness;
       if (brightness == Brightness.dark) {

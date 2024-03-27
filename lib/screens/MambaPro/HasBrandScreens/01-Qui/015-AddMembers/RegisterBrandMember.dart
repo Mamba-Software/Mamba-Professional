@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -126,8 +126,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
           isLoading = true;
           loadingEmail = false;
           emailExistsError = false;
-          isRecurrentLoadingText =
-              AppLocalizations.of(context)!.creatingProfile;
+          isRecurrentLoadingText = context.l10n.creatingProfile;
         });
 
         /// Get the User UID
@@ -153,7 +152,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
         /// Add User To Brand
         setState(() {
           isRecurrentLoadingText =
-              "${AppLocalizations.of(context)!.adding} ${widget.isTrainer ? AppLocalizations.of(context)!.staff.toLowerCase() : AppLocalizations.of(context)!.client.toLowerCase()} a ${currentBrand.name!} ...";
+              "${context.l10n.adding} ${widget.isTrainer ? context.l10n.staff.toLowerCase() : context.l10n.client.toLowerCase()} a ${currentBrand.name!} ...";
         });
         await Future.delayed(const Duration(milliseconds: 500));
         int role = 0;
@@ -166,7 +165,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
         /// User Has Been Created
         setState(() {
           isRecurrentLoadingText =
-              "${AppLocalizations.of(context)!.updating} ${AppLocalizations.of(context)!.creatingProfile.split(" ")[1]} ...";
+              "${context.l10n.updating} ${context.l10n.creatingProfile.split(" ")[1]} ...";
         });
         await Future.delayed(const Duration(milliseconds: 500));
         Navigator.pop(context, true);
@@ -188,7 +187,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
             appBar: AppBar(
               toolbarHeight: MediaQuery.of(context).size.height * 0.08,
               title: Text(
-                "${AppLocalizations.of(context)!.add} ${!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff}",
+                "${context.l10n.add} ${!widget.isTrainer ? context.l10n.client : context.l10n.staff}",
                 style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
               centerTitle: true,
@@ -225,7 +224,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
             appBar: AppBar(
               toolbarHeight: MediaQuery.of(context).size.height * 0.08,
               title: Text(
-                "${AppLocalizations.of(context)!.add} ${(!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff).toLowerCase()}",
+                "${context.l10n.add} ${(!widget.isTrainer ? context.l10n.client : context.l10n.staff).toLowerCase()}",
                 style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
               centerTitle: true,
@@ -286,7 +285,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.firstName,
+                                  context.l10n.firstName,
                                   style:
                                       Theme.of(context).textTheme.displayLarge,
                                   textAlign: TextAlign.left,
@@ -300,8 +299,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                         controller: firstNameController,
                                         keyboardType: TextInputType.name,
                                         validator: (val) => val!.isEmpty
-                                            ? AppLocalizations.of(context)!
-                                                .nameCompletoError3rd
+                                            ? context.l10n.nameCompletoError3rd
                                             : null,
                                         onFieldSubmitted: (val) {
                                           if (lastNameController.text.isEmpty) {
@@ -324,8 +322,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                               .bodySmall
                                               ?.copyWith(color: AppColors.red),
                                           hintText:
-                                              AppLocalizations.of(context)!
-                                                  .nameCompletoError3rd,
+                                              context.l10n.nameCompletoError3rd,
                                           errorBorder:
                                               const UnderlineInputBorder(
                                             borderSide:
@@ -355,7 +352,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                     height: MediaQuery.of(context).size.height *
                                         0.05),
                                 Text(
-                                  AppLocalizations.of(context)!.lastName,
+                                  context.l10n.lastName,
                                   style:
                                       Theme.of(context).textTheme.displayLarge,
                                   textAlign: TextAlign.left,
@@ -367,8 +364,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                         focusNode: focusNodeName,
                                         controller: lastNameController,
                                         validator: (val) => val!.isEmpty
-                                            ? AppLocalizations.of(context)!
-                                                .lastNameError3rd
+                                            ? context.l10n.lastNameError3rd
                                             : null,
                                         keyboardType: TextInputType.name,
                                         style: Theme.of(context)
@@ -385,8 +381,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                               .bodySmall
                                               ?.copyWith(color: AppColors.red),
                                           hintText:
-                                              AppLocalizations.of(context)!
-                                                  .lastNameError3rd,
+                                              context.l10n.lastNameError3rd,
                                           errorBorder:
                                               const UnderlineInputBorder(
                                             borderSide:
@@ -424,7 +419,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.dateOfBirth,
+                                context.l10n.dateOfBirth,
                                 style: Theme.of(context).textTheme.displayLarge,
                                 textAlign: TextAlign.left,
                               ),
@@ -713,8 +708,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                         children: [
                                           Flexible(
                                             child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .errorDate,
+                                              context.l10n.errorDate,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium
@@ -743,7 +737,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                       Row(
                                         children: [
                                           Text(
-                                            "${AppLocalizations.of(context)!.dateOfBirth}: ",
+                                            "${context.l10n.dateOfBirth}: ",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium
@@ -774,7 +768,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                       Row(
                                         children: [
                                           Text(
-                                            "${AppLocalizations.of(context)!.age}: ",
+                                            "${context.l10n.age}: ",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium
@@ -809,7 +803,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.gender,
+                                context.l10n.gender,
                                 style: Theme.of(context).textTheme.displayLarge,
                                 textAlign: TextAlign.left,
                               ),
@@ -834,7 +828,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          AppLocalizations.of(context)!.female,
+                                          context.l10n.female,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium,
@@ -886,7 +880,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          AppLocalizations.of(context)!.male,
+                                          context.l10n.male,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium,
@@ -938,8 +932,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .transgender,
+                                          context.l10n.transgender,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium,
@@ -987,8 +980,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                         children: [
                                           Flexible(
                                             child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .registerGenderError,
+                                              context.l10n.registerGenderError,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium
@@ -1015,7 +1007,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.email,
+                                  context.l10n.email,
                                   style:
                                       Theme.of(context).textTheme.displayLarge,
                                   textAlign: TextAlign.left,
@@ -1032,8 +1024,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                         keyboardType:
                                             TextInputType.emailAddress,
                                         validator: (val) => val!.isEmpty
-                                            ? AppLocalizations.of(context)!
-                                                .emailError3rd
+                                            ? context.l10n.emailError3rd
                                             : null,
                                         onChanged: (val) {
                                           if (emailController.text.isNotEmpty) {
@@ -1066,9 +1057,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                               .textTheme
                                               .bodySmall
                                               ?.copyWith(color: AppColors.red),
-                                          hintText:
-                                              AppLocalizations.of(context)!
-                                                  .emailError3rd,
+                                          hintText: context.l10n.emailError3rd,
                                           errorBorder:
                                               const UnderlineInputBorder(
                                             borderSide:
@@ -1108,8 +1097,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                           children: [
                                             Flexible(
                                               child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .validateEmail,
+                                                context.l10n.validateEmail,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyMedium
@@ -1158,7 +1146,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                             ),
                                             Flexible(
                                               child: Text(
-                                                "${AppLocalizations.of(context)!.checking} ${AppLocalizations.of(context)!.email.toLowerCase()} ...",
+                                                "${context.l10n.checking} ${context.l10n.email.toLowerCase()} ...",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyMedium,
@@ -1183,8 +1171,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                                           children: [
                                             Flexible(
                                               child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .sameEmail,
+                                                context.l10n.sameEmail,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyMedium
@@ -1235,7 +1222,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                             backgroundColor: Theme.of(context).primaryColor,
                             icon: Container(),
                             label: Text(
-                              AppLocalizations.of(context)!.back,
+                              context.l10n.back,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
@@ -1350,8 +1337,8 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember>
                         icon: Container(),
                         label: Text(
                           _selectedIndex == 3
-                              ? "${AppLocalizations.of(context)!.add} ${(!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff).toLowerCase()}"
-                              : AppLocalizations.of(context)!.next,
+                              ? "${context.l10n.add} ${(!widget.isTrainer ? context.l10n.client : context.l10n.staff).toLowerCase()}"
+                              : context.l10n.next,
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge!

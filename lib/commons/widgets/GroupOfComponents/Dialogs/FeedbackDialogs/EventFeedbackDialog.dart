@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
@@ -87,7 +87,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.23,
             child: Text(
-              AppLocalizations.of(context)!.relaxedFeedbackLabel,
+              context.l10n.relaxedFeedbackLabel,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
@@ -95,7 +95,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.23,
             child: Text(
-              AppLocalizations.of(context)!.tiredFeedbackLabel,
+              context.l10n.tiredFeedbackLabel,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
@@ -103,7 +103,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.23,
             child: Text(
-              AppLocalizations.of(context)!.exhaustedFeedbackLabel,
+              context.l10n.exhaustedFeedbackLabel,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
@@ -139,7 +139,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   Image.asset(Assets.relaxedEmojiImage),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Text(
-                    AppLocalizations.of(context)!.relaxedFeedbackLabel,
+                    context.l10n.relaxedFeedbackLabel,
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -167,7 +167,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   Image.asset(Assets.tiredEmojiImage),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Text(
-                    AppLocalizations.of(context)!.tiredFeedbackLabel,
+                    context.l10n.tiredFeedbackLabel,
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -195,7 +195,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   Image.asset(Assets.sweatingEmojiImage),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Text(
-                    AppLocalizations.of(context)!.exhaustedFeedbackLabel,
+                    context.l10n.exhaustedFeedbackLabel,
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -299,7 +299,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                 Text(
-                  AppLocalizations.of(context)!.eventFeedbackText,
+                  context.l10n.eventFeedbackText,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge

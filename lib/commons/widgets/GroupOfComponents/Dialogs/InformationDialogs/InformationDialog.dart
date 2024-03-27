@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class InformationDialog extends StatelessWidget {
   final String text;
   const InformationDialog({super.key, required this.text});
-
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +11,11 @@ class InformationDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(20),
       child: Container(
-        padding: const EdgeInsets.only(top: 40, bottom: 10, left: 20, right: 20),
+        padding:
+            const EdgeInsets.only(top: 40, bottom: 10, left: 20, right: 20),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(15),
+          color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Stack(
           clipBehavior: Clip.none,
@@ -26,14 +26,26 @@ class InformationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Flexible(
-                  child: Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                  child: Text(
+                    text,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(height: 1.5),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 TextButton(
-                  child: Text(AppLocalizations.of(context)!.close, style: Theme.of(context).textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline), ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }
-                ),
+                    child: Text(
+                      context.l10n.close,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(decoration: TextDecoration.underline),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
               ],
             ),
             Positioned(
@@ -45,18 +57,22 @@ class InformationDialog extends StatelessWidget {
                       size: const Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
-                          color: Theme.of(context).colorScheme.secondary, // button color
+                          color: Theme.of(context)
+                              .colorScheme
+                              .secondary, // button color
                           child: InkWell(
-                            onTap: () async {
-                            },
-                            child: const Icon(Icons.info_outlined, color: Colors.white, size: 45,), // icon
+                            onTap: () async {},
+                            child: const Icon(
+                              Icons.info_outlined,
+                              color: Colors.white,
+                              size: 45,
+                            ), // icon
                           ),
                         ),
                       ),
                     ),
                   ],
-                )
-            ),
+                )),
           ],
         ),
       ),

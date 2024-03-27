@@ -8,7 +8,7 @@ import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.d
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class BrandEventsToday extends StatefulWidget {
@@ -82,8 +82,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
         ? Scaffold(
             appBar: AppBar(
               title: Text(
-                AppLocalizations.of(context)!.today(toCapitalized(DateFormat(
-                        'EEEE d/M/yy',
+                context.l10n.today(toCapitalized(DateFormat('EEEE d/M/yy',
                         Localizations.localeOf(context).languageCode)
                     .format(DateTime.now()))),
                 style: Theme.of(context).appBarTheme.titleTextStyle,
@@ -105,8 +104,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
         : Scaffold(
             appBar: AppBar(
               title: Text(
-                AppLocalizations.of(context)!.today(toCapitalized(DateFormat(
-                        'EEEE d/M/yy',
+                context.l10n.today(toCapitalized(DateFormat('EEEE d/M/yy',
                         Localizations.localeOf(context).languageCode)
                     .format(DateTime.now()))),
                 style: Theme.of(context).appBarTheme.titleTextStyle,

@@ -11,7 +11,7 @@ import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class BrandEventHistoryPage extends StatefulWidget {
   String brandId;
@@ -149,7 +149,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.eventHistory,
+                            context.l10n.eventHistory,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -191,7 +191,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
             ),
             title: appBarExpanded
                 ? Text(
-                    AppLocalizations.of(context)!.eventHistory,
+                    context.l10n.eventHistory,
                     style:
                         Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
                               color: AppColors.white,
@@ -473,7 +473,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                               height:
                                   MediaQuery.of(context).size.height * 0.005),
                           Text(
-                            AppLocalizations.of(context)!.noEvents,
+                            context.l10n.noEvents,
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.center,
                           ),

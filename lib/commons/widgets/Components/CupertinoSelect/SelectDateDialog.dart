@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 
@@ -176,7 +176,7 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
                   },
                   backgroundColor: Theme.of(context).primaryColor,
                   icon: Container(),
-                  label: Text(AppLocalizations.of(context)!.confirm,
+                  label: Text(context.l10n.confirm,
                       style: Theme.of(context).textTheme.displaySmall?.copyWith(
                           color: Theme.of(context).primaryColorDark)),
                 ),

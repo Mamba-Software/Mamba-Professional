@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class GenderWidget extends StatefulWidget {
@@ -28,15 +28,10 @@ class _GenderWidgetState extends State<GenderWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _icon(0,
-            text: AppLocalizations.of(context)!.male,
-            icon: Icons.male_outlined),
-        _icon(1,
-            text: AppLocalizations.of(context)!.female,
-            icon: Icons.female_outlined),
+        _icon(0, text: context.l10n.male, icon: Icons.male_outlined),
+        _icon(1, text: context.l10n.female, icon: Icons.female_outlined),
         _icon(2,
-            text: AppLocalizations.of(context)!.transgender,
-            icon: Icons.transgender_outlined),
+            text: context.l10n.transgender, icon: Icons.transgender_outlined),
       ],
     );
   }

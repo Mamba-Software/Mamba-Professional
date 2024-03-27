@@ -8,7 +8,7 @@ import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/app/style/Styles.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 typedef DateCallBack = void Function(int pageIndex);
@@ -174,7 +174,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                               SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.02),
-                              Text(AppLocalizations.of(context)!.stats,
+                              Text(context.l10n.stats,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displaySmall
@@ -193,7 +193,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                           child: Column(
                             children: [
                               Text(
-                                  "${AppLocalizations.of(context)!.sessions} - 30 ${AppLocalizations.of(context)!.days.toLowerCase()}",
+                                  "${context.l10n.sessions} - 30 ${context.l10n.days.toLowerCase()}",
                                   style: Theme.of(context).textTheme.bodySmall,
                                   textAlign: TextAlign.center),
                             ],
@@ -285,8 +285,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                                   borderRadius: BorderRadius.circular(10)),
                               child: Center(
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .statsMinimumSessionBrand,
+                                  context.l10n.statsMinimumSessionBrand,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium

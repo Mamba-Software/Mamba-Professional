@@ -14,7 +14,7 @@ import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:shimmer/shimmer.dart';
 import 'Chat.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class ChatCore extends StatefulWidget {
   const ChatCore({super.key});
@@ -99,8 +99,7 @@ class _ChatCoreState extends State<ChatCore> {
                 ': ' +
                 room.lastMessages[0].text;
           } else {
-            return '${AppLocalizations.of(context)!.user}: ' +
-                room.lastMessages[0].text;
+            return '${context.l10n.user}: ' + room.lastMessages[0].text;
           }
         } else {
           return room.lastMessages[0].text;
@@ -125,7 +124,7 @@ class _ChatCoreState extends State<ChatCore> {
                   width: MediaQuery.of(context).size.width * 0.01,
                 ),
                 Text(
-                  AppLocalizations.of(context)!.chatBottomNav,
+                  context.l10n.chatBottomNav,
                   style: Theme.of(context).textTheme.displaySmall,
                   textAlign: TextAlign.center,
                 ),
@@ -165,7 +164,7 @@ class _ChatCoreState extends State<ChatCore> {
                             textAlign: TextAlign.left,
                             decoration: InputDecoration(
                               hintStyle: Theme.of(context).textTheme.bodySmall,
-                              hintText: AppLocalizations.of(context)!.search,
+                              hintText: context.l10n.search,
                               focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey),
                                   borderRadius:
@@ -318,7 +317,7 @@ class _ChatCoreState extends State<ChatCore> {
                   width: MediaQuery.of(context).size.width * 0.01,
                 ),
                 Text(
-                  AppLocalizations.of(context)!.chatBottomNav,
+                  context.l10n.chatBottomNav,
                   style: Theme.of(context).textTheme.displaySmall,
                   textAlign: TextAlign.center,
                 ),
@@ -348,7 +347,7 @@ class _ChatCoreState extends State<ChatCore> {
                             textAlign: TextAlign.left,
                             decoration: InputDecoration(
                               hintStyle: Theme.of(context).textTheme.bodySmall,
-                              hintText: AppLocalizations.of(context)!.search,
+                              hintText: context.l10n.search,
                               focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey),
                                   borderRadius:
@@ -498,7 +497,7 @@ class _ChatCoreState extends State<ChatCore> {
                 width: MediaQuery.of(context).size.width * 0.01,
               ),
               Text(
-                AppLocalizations.of(context)!.chatBottomNav,
+                context.l10n.chatBottomNav,
                 style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
@@ -528,7 +527,7 @@ class _ChatCoreState extends State<ChatCore> {
                           textAlign: TextAlign.left,
                           decoration: InputDecoration(
                             hintStyle: Theme.of(context).textTheme.bodySmall,
-                            hintText: AppLocalizations.of(context)!.search,
+                            hintText: context.l10n.search,
                             focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
                                 borderRadius:
@@ -689,7 +688,7 @@ class _ChatCoreState extends State<ChatCore> {
                       padding: EdgeInsets.symmetric(
                           horizontal: MediaQuery.of(context).size.width * 0.1),
                       child: Text(
-                        AppLocalizations.of(context)!.noMessages,
+                        context.l10n.noMessages,
                         style: Theme.of(context).textTheme.bodySmall,
                         textAlign: TextAlign.center,
                       ),

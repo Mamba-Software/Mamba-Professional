@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -131,7 +131,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
         endDate.day == maxEndDate.day &&
         endDate.month == maxEndDate.month &&
         endDate.year == maxEndDate.year) {
-      return "${AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(AppLocalizations.of(context)!.month)}";
+      return "${context.l10n.thisEventAndRest.split(" ")[0]} ${StringUtils().toCapitalized(context.l10n.month)}";
     }
 
     // Check for "previous month" selection
@@ -141,7 +141,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
         endDate.day == DateTime(now.year, now.month, 0).day &&
         endDate.month == now.month - 1 &&
         endDate.year == now.year) {
-      return AppLocalizations.of(context)!.previousMonth;
+      return context.l10n.previousMonth;
     }
 
     // Check for "Historic" selection
@@ -151,7 +151,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
         endDate.day == maxEndDate.day &&
         endDate.month == maxEndDate.month &&
         endDate.year == maxEndDate.year) {
-      return AppLocalizations.of(context)!.historic;
+      return context.l10n.historic;
     }
 
     switch (daysDifference) {
@@ -162,13 +162,13 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
         if (maxEndDate.day == endDate.day &&
             maxEndDate.month == endDate.month &&
             maxEndDate.year == endDate.year) {
-          return AppLocalizations.of(context)!
+          return context.l10n
               .lastNDays(endDate.difference(startDate).inDays.toString());
         } else {
-          return AppLocalizations.of(context)!.personlized;
+          return context.l10n.personlized;
         }
       default:
-        return AppLocalizations.of(context)!.personlized;
+        return context.l10n.personlized;
     }
   }
 
@@ -176,15 +176,15 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
     String filteredRoles = "";
     int cnt = 0;
     if (filterByPurchaseStatus[0]) {
-      filteredRoles += "${AppLocalizations.of(context)!.verfied}, ";
+      filteredRoles += "${context.l10n.verfied}, ";
       cnt += 1;
     }
     if (filterByPurchaseStatus[1]) {
-      filteredRoles += "${AppLocalizations.of(context)!.unverfied}, ";
+      filteredRoles += "${context.l10n.unverfied}, ";
       cnt += 1;
     }
     if (filterByPurchaseStatus[2]) {
-      filteredRoles += AppLocalizations.of(context)!.toConfirm;
+      filteredRoles += context.l10n.toConfirm;
       cnt += 1;
     }
     if (cnt == 1) {
@@ -200,11 +200,11 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByActivePurchases[0]) {
-      activeStaff += "${AppLocalizations.of(context)!.yes}, ";
+      activeStaff += "${context.l10n.yes}, ";
       cnt += 1;
     }
     if (filterByActivePurchases[1]) {
-      activeStaff += AppLocalizations.of(context)!.no;
+      activeStaff += context.l10n.no;
       cnt += 1;
     }
     if (cnt == 1) {
@@ -247,7 +247,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                     title: AnimatedOpacity(
                         opacity: appBarExpanded ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 200),
-                        child: Text(AppLocalizations.of(context)!.payments,
+                        child: Text(context.l10n.payments,
                             style: Theme.of(context)
                                 .appBarTheme
                                 .titleTextStyle
@@ -273,7 +273,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.payments,
+                                    context.l10n.payments,
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge
@@ -364,7 +364,8 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                         child) {
                                                                   return ListTile(
                                                                     title: Text(
-                                                                        AppLocalizations.of(context)!
+                                                                        context
+                                                                            .l10n
                                                                             .filterBy,
                                                                         style: Theme.of(context)
                                                                             .textTheme
@@ -372,7 +373,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                         textAlign:
                                                                             TextAlign.left),
                                                                     trailing: TextButton(
-                                                                        child: Text(AppLocalizations.of(context)!.clear, style: Theme.of(context).textTheme.bodySmall),
+                                                                        child: Text(context.l10n.clear, style: Theme.of(context).textTheme.bodySmall),
                                                                         onPressed: () {
                                                                           filterByPurchaseStatus =
                                                                               [
@@ -440,7 +441,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                             );
                                                                           },
                                                                           title: Text(
-                                                                              AppLocalizations.of(context)!.state,
+                                                                              context.l10n.state,
                                                                               style: Theme.of(context).textTheme.bodyLarge,
                                                                               textAlign: TextAlign.left),
                                                                           subtitle: Text(
@@ -468,7 +469,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                             );
                                                                           },
                                                                           title: Text(
-                                                                              AppLocalizations.of(context)!.activeRates,
+                                                                              context.l10n.activeRates,
                                                                               style: Theme.of(context).textTheme.bodyLarge,
                                                                               textAlign: TextAlign.left),
                                                                           subtitle: Text(
@@ -508,7 +509,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                                         Navigator.pop(context);
                                                                                       }
                                                                                     },
-                                                                                    title: Text(AppLocalizations.of(context)!.verfied, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                    title: Text(context.l10n.verfied, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                     trailing: filterByPurchaseStatus[0]
                                                                                         ? SizedBox(
                                                                                             width: MediaQuery.of(context).size.width * 0.15,
@@ -527,7 +528,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                                         Navigator.pop(context);
                                                                                       }
                                                                                     },
-                                                                                    title: Text(AppLocalizations.of(context)!.unverfied, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                    title: Text(context.l10n.unverfied, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                     trailing: filterByPurchaseStatus[1]
                                                                                         ? SizedBox(
                                                                                             width: MediaQuery.of(context).size.width * 0.15,
@@ -546,7 +547,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                                         Navigator.pop(context);
                                                                                       }
                                                                                     },
-                                                                                    title: Text(AppLocalizations.of(context)!.toConfirm, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                    title: Text(context.l10n.toConfirm, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                     trailing: filterByPurchaseStatus[2]
                                                                                         ? SizedBox(
                                                                                             width: MediaQuery.of(context).size.width * 0.15,
@@ -569,7 +570,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                                         Navigator.pop(context);
                                                                                       }
                                                                                     },
-                                                                                    title: Text(AppLocalizations.of(context)!.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                    title: Text(context.l10n.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                     trailing: filterByActivePurchases[0]
                                                                                         ? SizedBox(
                                                                                             width: MediaQuery.of(context).size.width * 0.15,
@@ -588,7 +589,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                                                         Navigator.pop(context);
                                                                                       }
                                                                                     },
-                                                                                    title: Text(AppLocalizations.of(context)!.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
+                                                                                    title: Text(context.l10n.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
                                                                                     trailing: filterByActivePurchases[1]
                                                                                         ? SizedBox(
                                                                                             width: MediaQuery.of(context).size.width * 0.15,
@@ -861,7 +862,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        "${AppLocalizations.of(context)!.noData.split(" ")[0]} ${AppLocalizations.of(context)!.payments.toLowerCase()}",
+                                        "${context.l10n.noData.split(" ")[0]} ${context.l10n.payments.toLowerCase()}",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall,
@@ -906,7 +907,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                     title: AnimatedOpacity(
                         opacity: appBarExpanded ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 200),
-                        child: Text(AppLocalizations.of(context)!.payments,
+                        child: Text(context.l10n.payments,
                             style: Theme.of(context)
                                 .appBarTheme
                                 .titleTextStyle
@@ -932,7 +933,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.payments,
+                                    context.l10n.payments,
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge

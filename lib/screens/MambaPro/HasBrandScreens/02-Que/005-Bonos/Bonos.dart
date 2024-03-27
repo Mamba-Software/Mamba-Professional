@@ -24,7 +24,7 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class BonosPro extends StatefulWidget {
   String brandId;
@@ -169,11 +169,11 @@ class _BonosProState extends State<BonosPro> {
     String filteredRates = "";
     int cnt = 0;
     if (filterByBonos[2]) {
-      filteredRates += "${AppLocalizations.of(context)!.membership}, ";
+      filteredRates += "${context.l10n.membership}, ";
       cnt += 1;
     }
     if (filterByBonos[3]) {
-      filteredRates += "${AppLocalizations.of(context)!.bono}, ";
+      filteredRates += "${context.l10n.bono}, ";
       cnt += 1;
     }
     if (cnt == 1) {
@@ -189,11 +189,11 @@ class _BonosProState extends State<BonosPro> {
     String activeStaff = "";
     int cnt = 0;
     if (filterByBonos[0]) {
-      activeStaff += "${AppLocalizations.of(context)!.yes}, ";
+      activeStaff += "${context.l10n.yes}, ";
       cnt += 1;
     }
     if (filterByBonos[1]) {
-      activeStaff += AppLocalizations.of(context)!.no;
+      activeStaff += context.l10n.no;
       cnt += 1;
     }
     if (cnt == 1) {
@@ -223,7 +223,7 @@ class _BonosProState extends State<BonosPro> {
             title: AnimatedOpacity(
                 opacity: appBarExpanded ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
-                child: Text(AppLocalizations.of(context)!.rates,
+                child: Text(context.l10n.rates,
                     style:
                         Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
                               color: AppColors.white,
@@ -244,7 +244,7 @@ class _BonosProState extends State<BonosPro> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.rates,
+                            context.l10n.rates,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge
@@ -312,9 +312,8 @@ class _BonosProState extends State<BonosPro> {
                                                     children: [
                                                       ListTile(
                                                         title: Text(
-                                                            AppLocalizations.of(
-                                                                    context)!
-                                                                .filterBy,
+                                                            context
+                                                                .l10n.filterBy,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -323,9 +322,8 @@ class _BonosProState extends State<BonosPro> {
                                                                 TextAlign.left),
                                                         trailing: TextButton(
                                                           child: Text(
-                                                              AppLocalizations.of(
-                                                                      context)!
-                                                                  .clear,
+                                                              context
+                                                                  .l10n.clear,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -408,8 +406,8 @@ class _BonosProState extends State<BonosPro> {
                                                                     );
                                                                   },
                                                                   title: Text(
-                                                                      AppLocalizations.of(
-                                                                              context)!
+                                                                      context
+                                                                          .l10n
                                                                           .typeRate,
                                                                       style: Theme.of(
                                                                               context)
@@ -462,7 +460,7 @@ class _BonosProState extends State<BonosPro> {
                                                                     );
                                                                   },
                                                                   title: Text(
-                                                                      "${AppLocalizations.of(context)!.rates} ${AppLocalizations.of(context)!.disponible.toLowerCase()}s",
+                                                                      "${context.l10n.rates} ${context.l10n.disponible.toLowerCase()}s",
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
@@ -518,8 +516,8 @@ class _BonosProState extends State<BonosPro> {
                                                                           }
                                                                         },
                                                                         title: Text(
-                                                                            AppLocalizations.of(context)!
-                                                                                .membership,
+                                                                            context
+                                                                                .l10n.membership,
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodyLarge,
                                                                             textAlign: TextAlign.left),
@@ -548,8 +546,8 @@ class _BonosProState extends State<BonosPro> {
                                                                           }
                                                                         },
                                                                         title: Text(
-                                                                            AppLocalizations.of(context)!
-                                                                                .bono,
+                                                                            context
+                                                                                .l10n.bono,
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodyLarge,
                                                                             textAlign: TextAlign.left),
@@ -585,8 +583,8 @@ class _BonosProState extends State<BonosPro> {
                                                                           }
                                                                         },
                                                                         title: Text(
-                                                                            AppLocalizations.of(context)!
-                                                                                .yes,
+                                                                            context
+                                                                                .l10n.yes,
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodyLarge,
                                                                             textAlign: TextAlign.left),
@@ -624,8 +622,8 @@ class _BonosProState extends State<BonosPro> {
                                                                           }
                                                                         },
                                                                         title: Text(
-                                                                            AppLocalizations.of(context)!
-                                                                                .no,
+                                                                            context
+                                                                                .l10n.no,
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodyLarge,
                                                                             textAlign: TextAlign.left),
@@ -806,7 +804,7 @@ class _BonosProState extends State<BonosPro> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            AppLocalizations.of(context)!
+                                            context.l10n
                                                 .purchaseHistory,
                                             style: Theme.of(context)
                                                 .textTheme
@@ -820,7 +818,7 @@ class _BonosProState extends State<BonosPro> {
                                             textAlign: TextAlign.start,
                                           ),
                                           Text(
-                                            AppLocalizations.of(context)!
+                                            context.l10n
                                                 .bonoRequestDescription,
                                             style: Theme.of(context)
                                                 .textTheme
@@ -984,7 +982,7 @@ class _BonosProState extends State<BonosPro> {
                               height:
                                   MediaQuery.of(context).size.height * 0.005),
                           Text(
-                            AppLocalizations.of(context)!.noData,
+                            context.l10n.noData,
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.center,
                           ),
@@ -1073,16 +1071,14 @@ class _BonosProState extends State<BonosPro> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 const BetaBadge(),
-                                Text(
-                                    AppLocalizations.of(context)!.bonoRecurrent,
+                                Text(context.l10n.bonoRecurrent,
                                     style: Theme.of(context)
                                         .textTheme
                                         .displaySmall,
                                     textAlign: TextAlign.right),
                               ],
                             ),
-                            Text(
-                                AppLocalizations.of(context)!.bonoRecurrentText,
+                            Text(context.l10n.bonoRecurrentText,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
@@ -1119,10 +1115,10 @@ class _BonosProState extends State<BonosPro> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(AppLocalizations.of(context)!.bonoSimple,
+                            Text(context.l10n.bonoSimple,
                                 style: Theme.of(context).textTheme.displaySmall,
                                 textAlign: TextAlign.right),
-                            Text(AppLocalizations.of(context)!.bonoSimpleText,
+                            Text(context.l10n.bonoSimpleText,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],

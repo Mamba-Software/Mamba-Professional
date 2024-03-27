@@ -27,7 +27,7 @@ import 'package:mamba/data/Models/RequestToBrand.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class EventPageClient extends StatefulWidget {
   String eventId;
@@ -338,9 +338,7 @@ class _EventPageClientState extends State<EventPageClient>
                 textAlign: TextAlign.center,
               ),
               Text(
-                places == 1
-                    ? AppLocalizations.of(context)!.slot
-                    : AppLocalizations.of(context)!.slots,
+                places == 1 ? context.l10n.slot : context.l10n.slots,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 5, color: isFull ? AppColors.red : Colors.green),
                 textAlign: TextAlign.center,
@@ -807,8 +805,7 @@ class _EventPageClientState extends State<EventPageClient>
                                                   hintStyle: Theme.of(context)
                                                       .textTheme
                                                       .bodySmall,
-                                                  hintText: AppLocalizations.of(
-                                                          context)!
+                                                  hintText: context.l10n
                                                       .titleHint,
                                                   border: InputBorder.none,
                                                   focusedBorder:
@@ -835,9 +832,8 @@ class _EventPageClientState extends State<EventPageClient>
                                                   ? Row(
                                                       children: [
                                                         Text(
-                                                            AppLocalizations.of(
-                                                                    context)!
-                                                                .private,
+                                                            context
+                                                                .l10n.private,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -865,10 +861,7 @@ class _EventPageClientState extends State<EventPageClient>
                                                     )
                                                   : Row(
                                                       children: [
-                                                        Text(
-                                                            AppLocalizations.of(
-                                                                    context)!
-                                                                .group,
+                                                        Text(context.l10n.group,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -918,10 +911,8 @@ class _EventPageClientState extends State<EventPageClient>
                                                           Theme.of(context)
                                                               .textTheme
                                                               .bodySmall,
-                                                      hintText:
-                                                          AppLocalizations.of(
-                                                                  context)!
-                                                              .noDescription,
+                                                      hintText: context
+                                                          .l10n.noDescription,
                                                       border: InputBorder.none,
                                                       focusedBorder:
                                                           InputBorder.none,
@@ -954,8 +945,7 @@ class _EventPageClientState extends State<EventPageClient>
                                               bottom: 8.0),
                                           child: Center(
                                             child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .errorDate,
+                                              context.l10n.errorDate,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium
@@ -1299,8 +1289,7 @@ class _EventPageClientState extends State<EventPageClient>
                                       mainAxisSize: MainAxisSize.max,
                                       children: <Widget>[
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .trainers,
+                                          context.l10n.trainers,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyLarge!
@@ -1415,7 +1404,8 @@ class _EventPageClientState extends State<EventPageClient>
                                                               Expanded(
                                                                 child: Text(
                                                                   trainer.name! !=
-                                                                          AppLocalizations.of(context)!
+                                                                          context
+                                                                              .l10n
                                                                               .notFoundUser
                                                                       ? trainer
                                                                           .firstName!
@@ -1452,7 +1442,7 @@ class _EventPageClientState extends State<EventPageClient>
                                       mainAxisSize: MainAxisSize.max,
                                       children: <Widget>[
                                         Text(
-                                          AppLocalizations.of(context)!.clients,
+                                          context.l10n.clients,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyLarge!
@@ -1508,12 +1498,10 @@ class _EventPageClientState extends State<EventPageClient>
                                                   SizedBox(
                                                       height: 100,
                                                       child: Image.asset(
-                                                          Assets
-                                                              .emptyPeople)),
+                                                          Assets.emptyPeople)),
                                                   Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .noClientJoining,
+                                                    context
+                                                        .l10n.noClientJoining,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodySmall,
@@ -1616,7 +1604,7 @@ class _EventPageClientState extends State<EventPageClient>
                                                                       Expanded(
                                                                         child:
                                                                             Text(
-                                                                          client.name! != AppLocalizations.of(context)!.notFoundUser
+                                                                          client.name! != context.l10n.notFoundUser
                                                                               ? client.firstName!
                                                                               : client.name!,
                                                                           style: Theme.of(context)
@@ -1708,7 +1696,7 @@ class _EventPageClientState extends State<EventPageClient>
                                                                       Expanded(
                                                                         child:
                                                                             Text(
-                                                                          client.name! != AppLocalizations.of(context)!.notFoundUser
+                                                                          client.name! != context.l10n.notFoundUser
                                                                               ? client.firstName!
                                                                               : client.name!,
                                                                           style: Theme.of(context)
@@ -1771,985 +1759,7 @@ class _EventPageClientState extends State<EventPageClient>
             ),
             floatingActionButton: whichFloatingActionButton(),
           );
-
-    Scaffold(
-      appBar: null,
-      resizeToAvoidBottomInset: true,
-      body: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          Positioned(
-            top: MediaQuery.of(context).size.height * 0.32,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: !isLoadingBody
-                ? Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                    child: SingleChildScrollView(
-                      physics: const ClampingScrollPhysics(),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.05),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.01),
-                                Form(
-                                  key: formKeyInfo,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: TextField(
-                                              controller: titleController,
-                                              readOnly: true,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displayLarge
-                                                  ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                              decoration: InputDecoration(
-                                                labelStyle: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium,
-                                                hintText: AppLocalizations.of(
-                                                        context)!
-                                                    .noDescription,
-                                                border: InputBorder.none,
-                                                focusedBorder: InputBorder.none,
-                                                enabledBorder: InputBorder.none,
-                                                errorBorder: InputBorder.none,
-                                                disabledBorder:
-                                                    InputBorder.none,
-                                              ),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .background,
-                                            ),
-                                            child: event!.isPrivate!
-                                                ? Row(
-                                                    children: [
-                                                      Text(
-                                                          AppLocalizations.of(
-                                                                  context)!
-                                                              .private,
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodyMedium,
-                                                          textAlign:
-                                                              TextAlign.right),
-                                                      SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.01),
-                                                      Icon(
-                                                        Icons.person,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        size: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.05,
-                                                      ),
-                                                    ],
-                                                  )
-                                                : Row(
-                                                    children: [
-                                                      Text(
-                                                          AppLocalizations.of(
-                                                                  context)!
-                                                              .group,
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodyMedium,
-                                                          textAlign:
-                                                              TextAlign.right),
-                                                      SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.01),
-                                                      Icon(
-                                                        Icons.groups,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        size: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.05,
-                                                      ),
-                                                    ],
-                                                  ),
-                                          ),
-                                        ],
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Flexible(
-                                                child: TextFormField(
-                                                  controller:
-                                                      descriptionController,
-                                                  readOnly: true,
-                                                  minLines: 1,
-                                                  maxLines: 4,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium,
-                                                  decoration: InputDecoration(
-                                                    hintStyle: Theme.of(context)
-                                                        .textTheme
-                                                        .bodySmall,
-                                                    hintText:
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .noDescription,
-                                                    border: InputBorder.none,
-                                                    focusedBorder:
-                                                        InputBorder.none,
-                                                    enabledBorder:
-                                                        InputBorder.none,
-                                                    errorBorder:
-                                                        InputBorder.none,
-                                                    disabledBorder:
-                                                        InputBorder.none,
-                                                    contentPadding:
-                                                        const EdgeInsets.all(0),
-                                                  ),
-                                                  textAlign: TextAlign.justify,
-                                                ),
-                                              ),
-                                            ],
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
-                                Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.08,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.90,
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(5.0))),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.07,
-                                        width:
-                                            MediaQuery.of(context).size.height *
-                                                0.07,
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary
-                                                .withOpacity(0.08),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(5.0))),
-                                        child: Center(
-                                            child: Text(event!.day.toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .displayLarge
-                                                    ?.copyWith(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary),
-                                                textAlign: TextAlign.center)),
-                                      ),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.04),
-                                      SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.08,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.64,
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Flexible(
-                                                  child: TextFormField(
-                                                    controller:
-                                                        startDateController,
-                                                    readOnly: true,
-                                                    enabled: false,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge
-                                                        ?.copyWith(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                    decoration: InputDecoration(
-                                                      labelStyle: Theme.of(
-                                                              context)
-                                                          .textTheme
-                                                          .bodyLarge
-                                                          ?.copyWith(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                      border: InputBorder.none,
-                                                      focusedBorder:
-                                                          InputBorder.none,
-                                                      enabledBorder:
-                                                          InputBorder.none,
-                                                      errorBorder:
-                                                          InputBorder.none,
-                                                      disabledBorder:
-                                                          InputBorder.none,
-                                                    ),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
-                                Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.08,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.90,
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(5.0))),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.07,
-                                        width:
-                                            MediaQuery.of(context).size.height *
-                                                0.07,
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary
-                                                .withOpacity(0.08),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(5.0))),
-                                        child: Center(
-                                            child: Icon(
-                                          Icons.timer_outlined,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          size: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.06,
-                                        )),
-                                      ),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.04),
-                                      SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.08,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.64,
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Flexible(
-                                                  child: TextFormField(
-                                                    controller:
-                                                        durationController,
-                                                    readOnly: true,
-                                                    enabled: false,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      border: InputBorder.none,
-                                                      focusedBorder:
-                                                          InputBorder.none,
-                                                      enabledBorder:
-                                                          InputBorder.none,
-                                                      errorBorder:
-                                                          InputBorder.none,
-                                                      disabledBorder:
-                                                          InputBorder.none,
-                                                      contentPadding:
-                                                          EdgeInsets.zero,
-                                                    ),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.02),
-                              Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .background,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(15.0))),
-                                child: Stack(
-                                  children: <Widget>[
-                                    Center(
-                                      child: ClipRRect(
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(15),
-                                          topRight: Radius.circular(15),
-                                          bottomRight: Radius.circular(15),
-                                          bottomLeft: Radius.circular(15),
-                                        ),
-                                        child: Align(
-                                          alignment: Alignment.bottomRight,
-                                          heightFactor: 1,
-                                          widthFactor: 2.5,
-                                          child: GoogleMap(
-                                            onMapCreated: _onMapCreated,
-                                            initialCameraPosition:
-                                                _initialPosition,
-                                            scrollGesturesEnabled: false,
-                                            zoomGesturesEnabled: false,
-                                            rotateGesturesEnabled: false,
-                                            mapToolbarEnabled: false,
-                                            zoomControlsEnabled: false,
-                                            minMaxZoomPreference:
-                                                const MinMaxZoomPreference(
-                                                    17, 17),
-                                            myLocationButtonEnabled: false,
-                                            markers: markers,
-                                            mapType: MapType.hybrid,
-                                            onTap: _onLaunchCoordinates,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 5.0,
-                                      bottom: 5.0,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            color: Theme.of(context)
-                                                .scaffoldBackgroundColor),
-                                        padding: const EdgeInsets.all(10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Icon(
-                                              Icons.location_on,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              size: 15,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5.0),
-                                              child: Text(
-                                                location.description!,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.0),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.025),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal:
-                                          MediaQuery.of(context).size.width *
-                                              0.05,
-                                      vertical: 10),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      Text(
-                                        AppLocalizations.of(context)!.trainers,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge!
-                                            .copyWith(
-                                                fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.15,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.99,
-                                        child: ListView.builder(
-                                            shrinkWrap: true,
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount: eventTrainers.length,
-                                            itemBuilder: (context, int index) {
-                                              var trainer =
-                                                  eventTrainers[index];
-                                              return GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      CupertinoPageRoute<Null>(
-                                                          builder: (context) =>
-                                                              ProfileViewUser(
-                                                                userID:
-                                                                    trainer.id!,
-                                                                viewOnly: false,
-                                                              )));
-                                                },
-                                                child: Padding(
-                                                  padding: !(index == 0 ||
-                                                          index ==
-                                                              eventTrainers
-                                                                      .length -
-                                                                  1)
-                                                      ? const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 8.0)
-                                                      : (index == 0)
-                                                          ? EdgeInsets.only(
-                                                              left: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.06,
-                                                              right: 8.0)
-                                                          : EdgeInsets.only(
-                                                              right: eventTrainers
-                                                                          .length !=
-                                                                      1
-                                                                  ? MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width *
-                                                                      0.06
-                                                                  : 8.0,
-                                                              left: 8.0),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      CircularImage(
-                                                        size: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.18,
-                                                        image: trainer.imageUrl,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        borderWidth: 1,
-                                                      ),
-                                                      SizedBox(
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .height *
-                                                              0.01),
-                                                      SizedBox(
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.2,
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Expanded(
-                                                              child: Text(
-                                                                trainer.name! !=
-                                                                        AppLocalizations.of(context)!
-                                                                            .notFoundUser
-                                                                    ? trainer
-                                                                        .firstName!
-                                                                    : trainer
-                                                                        .name!,
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .bodyMedium,
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            }),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal:
-                                          MediaQuery.of(context).size.width *
-                                              0.05,
-                                      vertical: 10),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      Text(
-                                        AppLocalizations.of(context)!.clients,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge!
-                                            .copyWith(
-                                                fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      (event!.isPrivate! == false)
-                                          ? Row(
-                                              children: [
-                                                Text(
-                                                  "( ${event!.numClients}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium,
-                                                ),
-                                                Text(
-                                                  " / ",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium,
-                                                ),
-                                                Text(
-                                                  "${event!.maxMembers} )",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium,
-                                                ),
-                                              ],
-                                            )
-                                          : Row(
-                                              children: [
-                                                Text(
-                                                  "( ${event!.numClients} )",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium,
-                                                ),
-                                              ],
-                                            ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 0),
-                                  child: eventClients.isEmpty
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                SizedBox(
-                                                    height: 100,
-                                                    child: Image.asset(
-                                                        Assets.emptyPeople)),
-                                                Text(
-                                                  AppLocalizations.of(context)!
-                                                      .noClientJoining,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall,
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        )
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.15,
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              child: ListView.builder(
-                                                  shrinkWrap: true,
-                                                  physics:
-                                                      const BouncingScrollPhysics(),
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  itemCount:
-                                                      eventClients.length,
-                                                  itemBuilder:
-                                                      (context, int index) {
-                                                    var client =
-                                                        eventClients[index];
-                                                    var clientFeedback =
-                                                        eventClientsFeedback[
-                                                            index];
-                                                    if (client.isPrivate! &&
-                                                        client.id !=
-                                                            currentUser.id) {
-                                                      return GestureDetector(
-                                                        onTap: () {},
-                                                        child: Padding(
-                                                          padding: !(index == 0 ||
-                                                                  index ==
-                                                                      eventClients
-                                                                              .length -
-                                                                          1)
-                                                              ? const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                      8.0)
-                                                              : (index == 0)
-                                                                  ? EdgeInsets.only(
-                                                                      left: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.06,
-                                                                      right:
-                                                                          8.0)
-                                                                  : EdgeInsets.only(
-                                                                      right: eventClients.length !=
-                                                                              1
-                                                                          ? MediaQuery.of(context).size.width *
-                                                                              0.06
-                                                                          : 8.0,
-                                                                      left:
-                                                                          8.0),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              CircularImage(
-                                                                size: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width *
-                                                                    0.18,
-                                                                image: client
-                                                                    .noImageUrl,
-                                                                color:
-                                                                    Colors.grey,
-                                                                borderWidth: 1,
-                                                              ),
-                                                              SizedBox(
-                                                                  height: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .height *
-                                                                      0.01),
-                                                              SizedBox(
-                                                                width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width *
-                                                                    0.2,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child:
-                                                                          Text(
-                                                                        client.name! !=
-                                                                                AppLocalizations.of(context)!.notFoundUser
-                                                                            ? client.firstName!
-                                                                            : client.name!,
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .bodySmall,
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      return GestureDetector(
-                                                        onTap: () {
-                                                          Navigator.push(
-                                                              context,
-                                                              CupertinoPageRoute<
-                                                                      Null>(
-                                                                  builder: (context) => ProfileViewUser(
-                                                                      userID:
-                                                                          client
-                                                                              .id!,
-                                                                      viewOnly:
-                                                                          false)));
-                                                        },
-                                                        child: Padding(
-                                                          padding: !(index == 0 ||
-                                                                  index ==
-                                                                      eventClients
-                                                                              .length -
-                                                                          1)
-                                                              ? const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                      8.0)
-                                                              : (index == 0)
-                                                                  ? EdgeInsets.only(
-                                                                      left: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.06,
-                                                                      right:
-                                                                          8.0)
-                                                                  : EdgeInsets.only(
-                                                                      right: eventClients.length !=
-                                                                              1
-                                                                          ? MediaQuery.of(context).size.width *
-                                                                              0.06
-                                                                          : 8.0,
-                                                                      left:
-                                                                          8.0),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              CircularImage(
-                                                                size: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width *
-                                                                    0.18,
-                                                                image: client
-                                                                    .imageUrl,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColor,
-                                                                borderWidth: 1,
-                                                              ),
-                                                              SizedBox(
-                                                                  height: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .height *
-                                                                      0.01),
-                                                              SizedBox(
-                                                                width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width *
-                                                                    0.2,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child:
-                                                                          Text(
-                                                                        client.name! !=
-                                                                                AppLocalizations.of(context)!.notFoundUser
-                                                                            ? client.firstName!
-                                                                            : client.name!,
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .bodyMedium,
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                  height: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .height *
-                                                                      0.01),
-                                                              clientFeedback !=
-                                                                      null
-                                                                  ? SizedBox(
-                                                                      height: MediaQuery.of(context)
-                                                                              .size
-                                                                              .height *
-                                                                          0.02,
-                                                                      width: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.1,
-                                                                      child: FittedBox(
-                                                                          fit: BoxFit
-                                                                              .fitHeight,
-                                                                          child:
-                                                                              buildEventFeedbackIcon(clientFeedback)),
-                                                                    )
-                                                                  : Container(),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }
-                                                  }),
-                                            ),
-                                          ],
-                                        ),
-                                ),
-                                canJoin || (widget.onlyView != null)
-                                    ? SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.14)
-                                    : SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.05),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ))
-                : Padding(
-                    padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).size.height * 0.13),
-                    child: LoadingView()),
-          ),
-        ],
-      ),
-      floatingActionButton: whichFloatingActionButton(),
-    );
-  }
+    }
 
   Widget whichFloatingActionButton() {
     if (isLoadingBody) {
@@ -2782,8 +1792,8 @@ class _EventPageClientState extends State<EventPageClient>
                                   context: context,
                                   builder: (_) {
                                     return CancelRequestConfirmationDialog(
-                                      text: AppLocalizations.of(context)!
-                                          .cancelRequestConfirmation,
+                                      text: context
+                                          .l10n.cancelRequestConfirmation,
                                       brand: brand!,
                                     );
                                   });
@@ -2805,7 +1815,7 @@ class _EventPageClientState extends State<EventPageClient>
                               size: MediaQuery.of(context).size.width * 0.05,
                             ),
                             label: Text(
-                              AppLocalizations.of(context)!.sent,
+                              context.l10n.sent,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -2842,8 +1852,8 @@ class _EventPageClientState extends State<EventPageClient>
                                   context: context,
                                   builder: (_) {
                                     return SendRequestConfirmationDialog(
-                                      text: AppLocalizations.of(context)!
-                                          .sendRequestConfirmation,
+                                      text:
+                                          context.l10n.sendRequestConfirmation,
                                       brand: brand!,
                                     );
                                   });
@@ -2868,7 +1878,7 @@ class _EventPageClientState extends State<EventPageClient>
                               size: MediaQuery.of(context).size.width * 0.05,
                             ),
                             label: Text(
-                              AppLocalizations.of(context)!.join,
+                              context.l10n.join,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -2909,8 +1919,7 @@ class _EventPageClientState extends State<EventPageClient>
                                 context: context,
                                 builder: (_) {
                                   return JoinConfirmationDialog(
-                                      text: AppLocalizations.of(context)!
-                                          .joinEventConfirmation);
+                                      text: context.l10n.joinEventConfirmation);
                                 });
                             if (result) {
                               // Join Event
@@ -2946,7 +1955,7 @@ class _EventPageClientState extends State<EventPageClient>
                             color: Colors.white,
                           ),
                           label: Text(
-                            AppLocalizations.of(context)!.book,
+                            context.l10n.book,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
@@ -2982,8 +1991,8 @@ class _EventPageClientState extends State<EventPageClient>
                                 context: context,
                                 builder: (_) {
                                   return LeaveConfirmationDialog(
-                                      text: AppLocalizations.of(context)!
-                                          .leaveEventConfirmation);
+                                      text:
+                                          context.l10n.leaveEventConfirmation);
                                 });
                             if (result) {
                               // Leave Event
@@ -3018,7 +2027,7 @@ class _EventPageClientState extends State<EventPageClient>
                             color: Colors.white,
                           ),
                           label: Text(
-                            AppLocalizations.of(context)!.leave,
+                            context.l10n.leave,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!

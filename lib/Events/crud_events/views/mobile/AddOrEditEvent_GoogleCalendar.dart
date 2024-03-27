@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class AddOrEditEvent extends StatelessWidget {
   Locale locale;
@@ -23,10 +23,10 @@ class AddOrEditEvent extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
         title: eventId == null
-            ? Text(AppLocalizations.of(context)!.createEvent,
+            ? Text(context.l10n.createEvent,
                 style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(
-                AppLocalizations.of(context)!.editEvent,
+                context.l10n.editEvent,
                 style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
         centerTitle: true,
@@ -70,7 +70,7 @@ class AddOrEditEvent extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.1,
                         child: FittedBox(
                           fit: BoxFit.contain,
-                          child: Text(AppLocalizations.of(context)!.group,
+                          child: Text(context.l10n.group,
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center),
                         ),
@@ -144,14 +144,14 @@ class AddOrEditEvent extends StatelessWidget {
                   icon: Container(),
                   label: eventId == null
                       ? Text(
-                          AppLocalizations.of(context)!.createEvent,
+                          context.l10n.createEvent,
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge!
                               .copyWith(color: AppColors.white),
                         )
                       : Text(
-                          AppLocalizations.of(context)!.editEvent,
+                          context.l10n.editEvent,
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge!

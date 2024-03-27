@@ -4,7 +4,7 @@ import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/Staff/staffEventWidget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class StaffEventSelector extends StatelessWidget {
   const StaffEventSelector({super.key});
@@ -28,7 +28,7 @@ class StaffEventSelector extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              titleEventWidget(context, AppLocalizations.of(context)!.staff),
+              titleEventWidget(context, context.l10n.staff),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.03,
               ),
@@ -49,7 +49,7 @@ class StaffEventSelector extends StatelessWidget {
           staffEventWidget(context, brandTrainersSelected),
           dividerAddEditEvent(
               context,
-              "${AppLocalizations.of(context)!.staff}    ( ${brandTrainersSelected.length} )",
+              "${context.l10n.staff}    ( ${brandTrainersSelected.length} )",
               !errorNoTrainerSelected),
         ],
       );

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
@@ -107,9 +107,8 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                                     textAlign: TextAlign.left),
                                 subtitle: Text(
                                     suscriptionState.subscription.unsuscribed!
-                                        ? '${AppLocalizations.of(context)!.expiresAt} ${formatter.format(suscriptionState.subscription.endDate!.toDate())}'
-                                        : AppLocalizations.of(context)!
-                                            .autoRenovation,
+                                        ? '${context.l10n.expiresAt} ${formatter.format(suscriptionState.subscription.endDate!.toDate())}'
+                                        : context.l10n.autoRenovation,
                                     style:
                                         Theme.of(context).textTheme.bodySmall),
                                 dense: true,
@@ -170,8 +169,8 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
   Widget textToShow() {
     return Text(
       ShowTextExpired
-          ? AppLocalizations.of(context)!.subscriptionExpired
-          : AppLocalizations.of(context)!.noSubscription,
+          ? context.l10n.subscriptionExpired
+          : context.l10n.noSubscription,
       style: Theme.of(context)
           .textTheme
           .bodyMedium!
@@ -203,14 +202,13 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
             title: Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.width * 0.01),
-              child: Text(AppLocalizations.of(context)!.chooseYourPlan,
+              child: Text(context.l10n.chooseYourPlan,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       color: AppColors.mainColor, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left),
             ),
             subtitle: Text(
-              AppLocalizations.of(context)!
-                  .freeTrialDaysLeft(difference.toString()),
+              context.l10n.freeTrialDaysLeft(difference.toString()),
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color: AppColors.mainColor,
                   fontWeight: FontWeight.normal,
@@ -231,7 +229,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                 ),
                 child: Center(
                     child: Text(
-                  AppLocalizations.of(context)!.subscriptionsAppBar,
+                  context.l10n.subscriptionsAppBar,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: AppColors.white,
                       fontWeight: FontWeight.bold,

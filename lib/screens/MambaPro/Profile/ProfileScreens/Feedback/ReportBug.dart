@@ -7,7 +7,7 @@ import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 // Report a Bug Widget.
 class ReportBug extends StatefulWidget {
@@ -55,7 +55,7 @@ class _ReportBugState extends State<ReportBug> {
           icon: Container(),
           iconRotationAngle: 0,
           backgroundColor: Colors.green,
-          message: AppLocalizations.of(context)!.errorSent,
+          message: context.l10n.errorSent,
           textStyle: Theme.of(context)
               .textTheme
               .bodyLarge!
@@ -102,7 +102,7 @@ class _ReportBugState extends State<ReportBug> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalizations.of(context)!.title,
+        Text(context.l10n.title,
             style: Theme.of(context)
                 .textTheme
                 .bodyLarge
@@ -115,14 +115,13 @@ class _ReportBugState extends State<ReportBug> {
           borderRadius: BorderRadius.circular(15.0),
           child: TextFormField(
             controller: tituloController,
-            validator: (val) =>
-                val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+            validator: (val) => val!.isEmpty ? context.l10n.titleError : null,
             onChanged: (val) {
               setState(() => tituloTemp = val);
             },
             style: Theme.of(context).textTheme.bodyMedium,
             decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.titleError,
+                hintText: context.l10n.titleError,
                 hintStyle: Theme.of(context).textTheme.bodySmall,
                 errorStyle: Theme.of(context)
                     .textTheme
@@ -161,7 +160,7 @@ class _ReportBugState extends State<ReportBug> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalizations.of(context)!.description,
+        Text(context.l10n.description,
             style: Theme.of(context)
                 .textTheme
                 .bodyLarge
@@ -174,9 +173,8 @@ class _ReportBugState extends State<ReportBug> {
           borderRadius: BorderRadius.circular(15.0),
           child: TextFormField(
             controller: descriptionController,
-            validator: (val) => val!.isEmpty
-                ? AppLocalizations.of(context)!.descriptionError
-                : null,
+            validator: (val) =>
+                val!.isEmpty ? context.l10n.descriptionError : null,
             onChanged: (val) {
               setState(() => descriptionTemp = val);
             },
@@ -184,7 +182,7 @@ class _ReportBugState extends State<ReportBug> {
             maxLines: 6,
             style: Theme.of(context).textTheme.bodyMedium,
             decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.descriptionError,
+                hintText: context.l10n.descriptionError,
                 hintStyle: Theme.of(context).textTheme.bodySmall,
                 errorStyle: Theme.of(context)
                     .textTheme
@@ -223,7 +221,7 @@ class _ReportBugState extends State<ReportBug> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalizations.of(context)!.reproducteSteps,
+        Text(context.l10n.reproducteSteps,
             style: Theme.of(context)
                 .textTheme
                 .bodyLarge
@@ -244,7 +242,7 @@ class _ReportBugState extends State<ReportBug> {
             style: Theme.of(context).textTheme.bodyMedium,
             decoration: InputDecoration(
                 hintMaxLines: 5,
-                hintText: AppLocalizations.of(context)!.reproducteStepsHint,
+                hintText: context.l10n.reproducteStepsHint,
                 hintStyle: Theme.of(context).textTheme.bodySmall,
                 errorStyle: Theme.of(context)
                     .textTheme
@@ -311,7 +309,7 @@ class _ReportBugState extends State<ReportBug> {
                         sendError();
                       }
                     },
-                    child: Text(AppLocalizations.of(context)!.send,
+                    child: Text(context.l10n.send,
                         style: Theme.of(context)
                             .textTheme
                             .bodyLarge
@@ -330,7 +328,7 @@ class _ReportBugState extends State<ReportBug> {
         ? Scaffold(
             appBar: AppBar(
               title: Text(
-                AppLocalizations.of(context)!.reporting,
+                context.l10n.reporting,
                 style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
               centerTitle: true,
@@ -348,7 +346,7 @@ class _ReportBugState extends State<ReportBug> {
         : Scaffold(
             appBar: AppBar(
               title: Text(
-                AppLocalizations.of(context)!.reporting,
+                context.l10n.reporting,
                 style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
               centerTitle: true,

@@ -6,9 +6,9 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class TopSnackBar {
   //Function to send a snack bar message
-  void topsnackbar(var context, String? message, var color) {
+  void topsnackbar(BuildContext context, String? message, var color) {
     showTopSnackBar(
-      context,
+      context as OverlayState,
       CustomSnackBar.success(
         icon: Container(),
         iconRotationAngle: 0,

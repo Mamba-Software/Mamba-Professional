@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
-
 
 class BrandRoles extends StatefulWidget {
   String brandId;
@@ -42,7 +41,7 @@ class _BrandRolesState extends State<BrandRoles> {
     List<Usuario> allOwners = [];
     List<Usuario> allAdmins = [];
     List<Usuario> allTrainers = [];
-    for (var i=0; i< trainers.length; i++) {
+    for (var i = 0; i < trainers.length; i++) {
       Usuario user = trainers[i];
       if (user.brandRole == 1) {
         allOwners.add(user);
@@ -53,13 +52,22 @@ class _BrandRolesState extends State<BrandRoles> {
       }
     }
     allOwners.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+      return a.name
+          .toString()
+          .toLowerCase()
+          .compareTo(b.name.toString().toLowerCase());
     });
     allAdmins.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+      return a.name
+          .toString()
+          .toLowerCase()
+          .compareTo(b.name.toString().toLowerCase());
     });
     allTrainers.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+      return a.name
+          .toString()
+          .toLowerCase()
+          .compareTo(b.name.toString().toLowerCase());
     });
     setState(() {
       this.allOwners = allOwners;
@@ -83,20 +91,19 @@ class _BrandRolesState extends State<BrandRoles> {
           builder: (BuildContext context, StateSetter setStateBottom) {
             return FractionallySizedBox(
               heightFactor: 0.33,
-              child: SizedBox(height: MediaQuery.of(context).size.height * 0.5,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
                 width: MediaQuery.of(context).size.width,
                 child: Padding(
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
                   child: Column(
-                    mainAxisAlignment:
-                    MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       ListTile(
-                        title: Text(
-                            AppLocalizations.of(context)!.roles,
+                        title: Text(context.l10n.roles,
                             style: Theme.of(context).textTheme.bodySmall,
-                            textAlign: TextAlign.left
-                        ),
+                            textAlign: TextAlign.left),
                         dense: true,
                       ),
                       ListTile(
@@ -106,9 +113,11 @@ class _BrandRolesState extends State<BrandRoles> {
                             trainer.brandRole = 1;
                           });
                           // Change the User Role
-                          await _brandDataService.updateUserBrandRole(trainer.id!, widget.brandId, 1);
+                          await _brandDataService.updateUserBrandRole(
+                              trainer.id!, widget.brandId, 1);
                           // Remove the old Trainer Object from AllMembers Array
-                          allMembers.removeWhere((element) => element.id! == trainer.id!);
+                          allMembers.removeWhere(
+                              (element) => element.id! == trainer.id!);
                           // Add New Trainer Obeject
                           allMembers.add(trainer);
                           // Call Init Function
@@ -117,15 +126,24 @@ class _BrandRolesState extends State<BrandRoles> {
                           hasChanged = true;
                           Navigator.pop(context);
                         },
-                        title: Text(
-                            AppLocalizations.of(context)!.owner,
+                        title: Text(context.l10n.owner,
                             style: Theme.of(context).textTheme.bodyLarge,
-                            textAlign: TextAlign.left
-                        ),
-                        trailing: trainer.brandRole == 1 ? SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.15,
-                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                            textAlign: TextAlign.left),
+                        trailing: trainer.brandRole == 1
+                            ? SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                child: Center(
+                                    child: Icon(Icons.check,
+                                        size:
+                                            MediaQuery.of(context).size.width *
+                                                0.08,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                              )
+                            : SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.15),
                       ),
                       ListTile(
                         onTap: () async {
@@ -134,9 +152,11 @@ class _BrandRolesState extends State<BrandRoles> {
                             trainer.brandRole = 2;
                           });
                           // Change the User Role
-                          await _brandDataService.updateUserBrandRole(trainer.id!, widget.brandId, 2);
+                          await _brandDataService.updateUserBrandRole(
+                              trainer.id!, widget.brandId, 2);
                           // Remove the old Trainer Object from AllMembers Array
-                          allMembers.removeWhere((element) => element.id! == trainer.id!);
+                          allMembers.removeWhere(
+                              (element) => element.id! == trainer.id!);
                           // Add New Trainer Obeject
                           allMembers.add(trainer);
                           // Call Init Function
@@ -145,15 +165,24 @@ class _BrandRolesState extends State<BrandRoles> {
                           hasChanged = true;
                           Navigator.pop(context);
                         },
-                        title: Text(
-                            AppLocalizations.of(context)!.administrador,
+                        title: Text(context.l10n.administrador,
                             style: Theme.of(context).textTheme.bodyLarge,
-                            textAlign: TextAlign.left
-                        ),
-                        trailing: trainer.brandRole == 2 ? SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.15,
-                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                            textAlign: TextAlign.left),
+                        trailing: trainer.brandRole == 2
+                            ? SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                child: Center(
+                                    child: Icon(Icons.check,
+                                        size:
+                                            MediaQuery.of(context).size.width *
+                                                0.08,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                              )
+                            : SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.15),
                       ),
                       ListTile(
                         onTap: () async {
@@ -162,9 +191,11 @@ class _BrandRolesState extends State<BrandRoles> {
                             trainer.brandRole = 3;
                           });
                           // Change the User Role
-                          await _brandDataService.updateUserBrandRole(trainer.id!, widget.brandId, 3);
+                          await _brandDataService.updateUserBrandRole(
+                              trainer.id!, widget.brandId, 3);
                           // Remove the old Trainer Object from AllMembers Array
-                          allMembers.removeWhere((element) => element.id! == trainer.id!);
+                          allMembers.removeWhere(
+                              (element) => element.id! == trainer.id!);
                           // Add New Trainer Obeject
                           allMembers.add(trainer);
                           // Call Init Function
@@ -173,22 +204,31 @@ class _BrandRolesState extends State<BrandRoles> {
                           hasChanged = true;
                           Navigator.pop(context);
                         },
-                        title: Text(
-                            AppLocalizations.of(context)!.trainer,
+                        title: Text(context.l10n.trainer,
                             style: Theme.of(context).textTheme.bodyLarge,
-                            textAlign: TextAlign.left
-                        ),
-                        trailing: trainer.brandRole == 3 ? SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.15,
-                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                            textAlign: TextAlign.left),
+                        trailing: trainer.brandRole == 3
+                            ? SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                child: Center(
+                                    child: Icon(Icons.check,
+                                        size:
+                                            MediaQuery.of(context).size.width *
+                                                0.08,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                              )
+                            : SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.15),
                       ),
                     ],
                   ),
                 ),
               ),
             );
-          } ,
+          },
         );
       },
     );
@@ -212,9 +252,7 @@ class _BrandRolesState extends State<BrandRoles> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
         return const FractionallySizedBox(
-          heightFactor: 0.935,
-          child: RolesInfo()
-        );
+            heightFactor: 0.935, child: RolesInfo());
       },
     );
   }
@@ -224,7 +262,7 @@ class _BrandRolesState extends State<BrandRoles> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.roles,
+          context.l10n.roles,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
@@ -256,7 +294,9 @@ class _BrandRolesState extends State<BrandRoles> {
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05, vertical: MediaQuery.of(context).size.width * 0.05),
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.05,
+              vertical: MediaQuery.of(context).size.width * 0.05),
           child: Column(
             children: [
               /* Add Staff
@@ -309,11 +349,11 @@ class _BrandRolesState extends State<BrandRoles> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
+                                  context.l10n.add+" "+context.l10n.staff.toLowerCase(),
                                   style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  AppLocalizations.of(context)!.shareInvitationText.split(AppLocalizations.of(context)!.clients.toLowerCase())[0]+AppLocalizations.of(context)!.trainers.toLowerCase()+AppLocalizations.of(context)!.shareInvitationText.split(AppLocalizations.of(context)!.clients.toLowerCase())[1],
+                                  context.l10n.shareInvitationText.split(context.l10n.clients.toLowerCase())[0]+context.l10n.trainers.toLowerCase()+context.l10n.shareInvitationText.split(context.l10n.clients.toLowerCase())[1],
                                   style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
                                   textAlign: TextAlign.start,
                                   overflow: TextOverflow.ellipsis,
@@ -336,18 +376,18 @@ class _BrandRolesState extends State<BrandRoles> {
               // Owners
               Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.background,
-                  borderRadius: const BorderRadius.all(Radius.circular(10))
-                ),
+                    color: Theme.of(context).colorScheme.background,
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.owner,
+                            context.l10n.owner,
                             style: Theme.of(context).textTheme.bodyLarge,
                             textAlign: TextAlign.left,
                           ),
@@ -355,7 +395,7 @@ class _BrandRolesState extends State<BrandRoles> {
                             icon: Icon(
                               Icons.info_outline,
                               color: Theme.of(context).primaryColor,
-                              size: MediaQuery.of(context).size.width*0.06,
+                              size: MediaQuery.of(context).size.width * 0.06,
                             ),
                             splashColor: Colors.transparent,
                             onPressed: navigateToRolesInformationModal,
@@ -366,24 +406,34 @@ class _BrandRolesState extends State<BrandRoles> {
                     ListView.builder(
                         physics: const BouncingScrollPhysics(),
                         shrinkWrap: true,
-                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.02),
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height * 0.02),
                         scrollDirection: Axis.vertical,
                         itemCount: allOwners.length,
                         itemBuilder: (context, index) {
                           Usuario user = allOwners[index];
-                          DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
+                          DateTime dateJoined = DateTimeUtils()
+                              .formatStringToDateTimeDDMMYY(user.dateJoined!,
+                                  Localizations.localeOf(context).languageCode);
                           return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.width * 0.01),
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.02,
+                                vertical:
+                                    MediaQuery.of(context).size.width * 0.01),
                             child: ListTile(
                               leading: CircularImage(
-                                size: MediaQuery.of(context).size.width*0.15,
+                                size: MediaQuery.of(context).size.width * 0.15,
                                 image: user.imageUrl,
                                 color: Theme.of(context).primaryColor,
                                 borderWidth: 1.0,
                               ),
                               title: Text(
                                 getUsersFullName(user),
-                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -392,21 +442,40 @@ class _BrandRolesState extends State<BrandRoles> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
-                                    AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
-                                    style: Theme.of(context).textTheme.bodySmall,
+                                    user.lastEventAt == null
+                                        ? context.l10n.lastActiveIn(
+                                            DateTimeUtils()
+                                                .formatDateTimeToStringMMMYYYY(
+                                                    dateJoined,
+                                                    Localizations.localeOf(
+                                                            context)
+                                                        .languageCode))
+                                        : context.l10n.lastActiveIn(
+                                            DateTimeUtils()
+                                                .formatDateTimeToStringMMMYYYY(
+                                                    user.lastEventAt!.toDate(),
+                                                    Localizations.localeOf(
+                                                            context)
+                                                        .languageCode)),
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
                                     maxLines: 1,
                                   ),
                                 ],
                               ),
-                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.background, size: MediaQuery.of(context).size.width*0.05,),
+                              trailing: Icon(
+                                Icons.edit,
+                                color: user.id! != currentUser.id
+                                    ? Theme.of(context).primaryColor
+                                    : Theme.of(context).colorScheme.background,
+                                size: MediaQuery.of(context).size.width * 0.05,
+                              ),
                               onTap: () async {
                                 await onEditTrainerRole(user);
                               },
                             ),
                           );
-                        }
-                    ),
+                        }),
                   ],
                 ),
               ),
@@ -415,18 +484,17 @@ class _BrandRolesState extends State<BrandRoles> {
               Container(
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.background,
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(10))
-                ),
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.administrador,
+                            context.l10n.administrador,
                             style: Theme.of(context).textTheme.bodyLarge,
                             textAlign: TextAlign.left,
                           ),
@@ -434,7 +502,7 @@ class _BrandRolesState extends State<BrandRoles> {
                             icon: Icon(
                               Icons.info_outline,
                               color: Theme.of(context).primaryColor,
-                              size: MediaQuery.of(context).size.width*0.06,
+                              size: MediaQuery.of(context).size.width * 0.06,
                             ),
                             splashColor: Colors.transparent,
                             onPressed: navigateToRolesInformationModal,
@@ -442,58 +510,109 @@ class _BrandRolesState extends State<BrandRoles> {
                         ],
                       ),
                     ),
-                    allAdmins.isNotEmpty ? ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.02),
-                        itemCount: allAdmins.length,
-                        itemBuilder: (context, index) {
-                          Usuario user = allAdmins[index];
-                          DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
-                          return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.width * 0.01),
-                            child: ListTile(
-                              leading: CircularImage(
-                                size: MediaQuery.of(context).size.width*0.15,
-                                image: user.imageUrl,
-                                color: Theme.of(context).primaryColor,
-                                borderWidth: 1.0,
-                              ),
-                              title: Text(
-                                getUsersFullName(user),
-                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
-                                    AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                    maxLines: 1,
+                    allAdmins.isNotEmpty
+                        ? ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            padding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).size.height * 0.02),
+                            itemCount: allAdmins.length,
+                            itemBuilder: (context, index) {
+                              Usuario user = allAdmins[index];
+                              DateTime dateJoined = DateTimeUtils()
+                                  .formatStringToDateTimeDDMMYY(
+                                      user.dateJoined!,
+                                      Localizations.localeOf(context)
+                                          .languageCode);
+                              return Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            0.02,
+                                    vertical:
+                                        MediaQuery.of(context).size.width *
+                                            0.01),
+                                child: ListTile(
+                                  leading: CircularImage(
+                                    size: MediaQuery.of(context).size.width *
+                                        0.15,
+                                    image: user.imageUrl,
+                                    color: Theme.of(context).primaryColor,
+                                    borderWidth: 1.0,
                                   ),
-                                ],
+                                  title: Text(
+                                    getUsersFullName(user),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        user.lastEventAt == null
+                                            ? context.l10n.lastActiveIn(
+                                                DateTimeUtils()
+                                                    .formatDateTimeToStringMMMYYYY(
+                                                        dateJoined,
+                                                        Localizations.localeOf(
+                                                                context)
+                                                            .languageCode))
+                                            : context.l10n.lastActiveIn(
+                                                DateTimeUtils()
+                                                    .formatDateTimeToStringMMMYYYY(
+                                                        user.lastEventAt!
+                                                            .toDate(),
+                                                        Localizations.localeOf(
+                                                                context)
+                                                            .languageCode)),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
+                                        maxLines: 1,
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: Icon(
+                                    Icons.edit,
+                                    color: user.id! != currentUser.id
+                                        ? Theme.of(context).primaryColor
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .background,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.05,
+                                  ),
+                                  onTap: () async {
+                                    await onEditTrainerRole(user);
+                                  },
+                                ),
+                              );
+                            })
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.005),
+                              Text(
+                                context.l10n.noData,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                textAlign: TextAlign.center,
                               ),
-                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.background, size: MediaQuery.of(context).size.width*0.05,),
-                              onTap: () async {
-                                await onEditTrainerRole(user);
-                              },
-                            ),
-                          );
-                        }
-                    ) : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
-                        SizedBox(height: MediaQuery.of(context).size.width * 0.05)
-                      ],
-                    ),
+                              SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.05)
+                            ],
+                          ),
                   ],
                 ),
               ),
@@ -502,18 +621,17 @@ class _BrandRolesState extends State<BrandRoles> {
               Container(
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.background,
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(10))
-                ),
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.trainer,
+                            context.l10n.trainer,
                             style: Theme.of(context).textTheme.bodyLarge,
                             textAlign: TextAlign.left,
                           ),
@@ -521,7 +639,7 @@ class _BrandRolesState extends State<BrandRoles> {
                             icon: Icon(
                               Icons.info_outline,
                               color: Theme.of(context).primaryColor,
-                              size: MediaQuery.of(context).size.width*0.06,
+                              size: MediaQuery.of(context).size.width * 0.06,
                             ),
                             splashColor: null,
                             onPressed: navigateToRolesInformationModal,
@@ -529,58 +647,109 @@ class _BrandRolesState extends State<BrandRoles> {
                         ],
                       ),
                     ),
-                    allTrainers.isNotEmpty ? ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        itemCount: allTrainers.length,
-                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.02),
-                        itemBuilder: (context, index) {
-                          Usuario user = allTrainers[index];
-                          DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
-                          return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.width * 0.01),
-                            child: ListTile(
-                              leading: CircularImage(
-                                size: MediaQuery.of(context).size.width*0.15,
-                                image: user.imageUrl,
-                                color: Theme.of(context).primaryColor,
-                                borderWidth: 1.0,
-                              ),
-                              title: Text(
-                                getUsersFullName(user),
-                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
-                                    AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                    maxLines: 1,
+                    allTrainers.isNotEmpty
+                        ? ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: allTrainers.length,
+                            padding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).size.height * 0.02),
+                            itemBuilder: (context, index) {
+                              Usuario user = allTrainers[index];
+                              DateTime dateJoined = DateTimeUtils()
+                                  .formatStringToDateTimeDDMMYY(
+                                      user.dateJoined!,
+                                      Localizations.localeOf(context)
+                                          .languageCode);
+                              return Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            0.02,
+                                    vertical:
+                                        MediaQuery.of(context).size.width *
+                                            0.01),
+                                child: ListTile(
+                                  leading: CircularImage(
+                                    size: MediaQuery.of(context).size.width *
+                                        0.15,
+                                    image: user.imageUrl,
+                                    color: Theme.of(context).primaryColor,
+                                    borderWidth: 1.0,
                                   ),
-                                ],
+                                  title: Text(
+                                    getUsersFullName(user),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        user.lastEventAt == null
+                                            ? context.l10n.lastActiveIn(
+                                                DateTimeUtils()
+                                                    .formatDateTimeToStringMMMYYYY(
+                                                        dateJoined,
+                                                        Localizations.localeOf(
+                                                                context)
+                                                            .languageCode))
+                                            : context.l10n.lastActiveIn(
+                                                DateTimeUtils()
+                                                    .formatDateTimeToStringMMMYYYY(
+                                                        user.lastEventAt!
+                                                            .toDate(),
+                                                        Localizations.localeOf(
+                                                                context)
+                                                            .languageCode)),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
+                                        maxLines: 1,
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: Icon(
+                                    Icons.edit,
+                                    color: user.id! != currentUser.id
+                                        ? Theme.of(context).primaryColor
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .background,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.05,
+                                  ),
+                                  onTap: () async {
+                                    await onEditTrainerRole(user);
+                                  },
+                                ),
+                              );
+                            })
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.005),
+                              Text(
+                                context.l10n.noData,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                textAlign: TextAlign.center,
                               ),
-                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.background, size: MediaQuery.of(context).size.width*0.05,),
-                              onTap: () async {
-                                await onEditTrainerRole(user);
-                              },
-                            ),
-                          );
-                        }
-                    ) : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
-                        SizedBox(height: MediaQuery.of(context).size.width * 0.05)
-                      ],
-                    ),
+                              SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.05)
+                            ],
+                          ),
                   ],
                 ),
               ),

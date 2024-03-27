@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class RateAppPopup {
   static void show({
@@ -39,7 +39,7 @@ class RateAppPopup {
                         children: <Widget>[
                           Flexible(
                             child: Text(
-                              AppLocalizations.of(context)!.rateAppTitle,
+                              context.l10n.rateAppTitle,
                               style: Theme.of(context)
                                   .textTheme
                                   .displayLarge
@@ -53,7 +53,7 @@ class RateAppPopup {
                           ),
                           Flexible(
                             child: Text(
-                              AppLocalizations.of(context)!.rateAppText,
+                              context.l10n.rateAppText,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -101,8 +101,7 @@ class RateAppPopup {
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: Theme.of(context).backgroundColor,
-                                  hintText:
-                                      AppLocalizations.of(context)!.optional,
+                                  hintText: context.l10n.optional,
                                   hintStyle: Theme.of(context)
                                       .textTheme
                                       .bodySmall
@@ -141,7 +140,7 @@ class RateAppPopup {
                               backgroundColor: Colors.transparent,
                             ),
                             child: Text(
-                              AppLocalizations.of(context)!.close,
+                              context.l10n.close,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
@@ -152,7 +151,7 @@ class RateAppPopup {
                             ),
                           ),
                           Text(
-                            AppLocalizations.of(context)!.mambaWithLove,
+                            context.l10n.mambaWithLove,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall

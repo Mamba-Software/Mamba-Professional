@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CustomCalendarView.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class CalendarPopupView extends StatefulWidget {
   const CalendarPopupView(
@@ -101,7 +101,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView>
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    AppLocalizations.of(context)!.from,
+                                    context.l10n.from,
                                     textAlign: TextAlign.left,
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
@@ -138,7 +138,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView>
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    AppLocalizations.of(context)!.to,
+                                    context.l10n.to,
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
@@ -221,7 +221,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView>
                               },
                               child: Center(
                                 child: Text(
-                                  AppLocalizations.of(context)!.confirm,
+                                  context.l10n.confirm,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyLarge

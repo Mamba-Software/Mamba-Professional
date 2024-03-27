@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:mamba/app/style/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 Widget locationLoading(BuildContext context) {
   return Column(
@@ -28,8 +28,7 @@ Widget locationLoading(BuildContext context) {
           ],
         ),
       ),
-      dividerAddEditEvent(
-          context, AppLocalizations.of(context)!.location, true),
+      dividerAddEditEvent(context, context.l10n.location, true),
     ],
   );
 }

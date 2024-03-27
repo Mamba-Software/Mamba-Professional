@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class ClientNumber extends StatefulWidget {
   List<Usuario> users;
@@ -76,10 +76,8 @@ class ClientNumberState extends State<ClientNumber> {
                                         fontSize: 30,
                                         fontWeight: FontWeight.normal),
                               ),
-                              Text(AppLocalizations.of(context)!.newClient),
-                              Text(AppLocalizations.of(context)!
-                                  .clients
-                                  .toLowerCase()),
+                              Text(context.l10n.newClient),
+                              Text(context.l10n.clients.toLowerCase()),
                             ]),
                       ),
                       Container(
@@ -103,8 +101,8 @@ class ClientNumberState extends State<ClientNumber> {
                                         fontSize: 30,
                                         fontWeight: FontWeight.normal),
                               ),
-                              Text(AppLocalizations.of(context)!.actives),
-                              Text(AppLocalizations.of(context)!.atThisMoment)
+                              Text(context.l10n.actives),
+                              Text(context.l10n.atThisMoment)
                             ]),
                       ),
                     ],
@@ -131,7 +129,7 @@ class ClientNumberState extends State<ClientNumber> {
                                     fontWeight: FontWeight.normal),
                           ),
                           Text(
-                              '${AppLocalizations.of(context)!.clients} ${AppLocalizations.of(context)!.totals}'),
+                              '${context.l10n.clients} ${context.l10n.totals}'),
                         ]),
                   ),
                 ],

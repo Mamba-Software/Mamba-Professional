@@ -2,7 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/data/Models/ImageObject.dart';
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
@@ -44,7 +44,7 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
     Future.delayed(Duration.zero, () {
       setState(() {
         isLoadingText =
-            "${AppLocalizations.of(context)!.loading.split(".")[0]} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
+            "${context.l10n.loading.split(".")[0]} ${context.l10n.photos.toLowerCase()}...";
       });
     });
     getBrandContentImages();
@@ -62,7 +62,7 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
       setState(() {
         isLoading = true;
         isLoadingText =
-            "${AppLocalizations.of(context)!.adding} ${AppLocalizations.of(context)!.photos.toLowerCase()}...";
+            "${context.l10n.adding} ${context.l10n.photos.toLowerCase()}...";
         maxImagesAdded = false;
       });
       for (File f in temp) {
@@ -118,7 +118,7 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
               children: [
                 Flexible(
                   child: Text(
-                      "${AppLocalizations.of(context)!.select} ${AppLocalizations.of(context)!.photo.toLowerCase()}",
+                      "${context.l10n.select} ${context.l10n.photo.toLowerCase()}",
                       style: Theme.of(context)
                           .textTheme
                           .displayLarge!
@@ -161,8 +161,7 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        AppLocalizations.of(context)!
-                                            .yourImagesDescription,
+                                        context.l10n.yourImagesDescription,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall,
@@ -188,10 +187,9 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                                       MediaQuery.of(context).size.width * 0.05),
                               child: Center(
                                 child: Text(
-                                  AppLocalizations.of(context)!
-                                      .addBrandPhotosMaxLeft(
-                                          (_maxImages - _imagesUploaded.length)
-                                              .toString()),
+                                  context.l10n.addBrandPhotosMaxLeft(
+                                      (_maxImages - _imagesUploaded.length)
+                                          .toString()),
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -245,7 +243,7 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                                                               0.1),
                                                       //SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                                       Text(
-                                                        "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.photos.toLowerCase()}",
+                                                        "${context.l10n.add} ${context.l10n.photos.toLowerCase()}",
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodySmall,
@@ -255,9 +253,8 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                                                     ],
                                                   ),
                                                   Text(
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .photosDimensions,
+                                                    context
+                                                        .l10n.photosDimensions,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodySmall

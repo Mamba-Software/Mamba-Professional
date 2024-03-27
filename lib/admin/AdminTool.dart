@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/Styles.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class AdminTool extends StatefulWidget {
   final String title;
@@ -126,7 +127,7 @@ class _AdminToolState extends State<AdminTool> {
                                   width: 10,
                                 ),
                                 Text(
-                                  AppLocalizations.of(context)!.trainer,
+                                  context.l10n.trainer,
                                   style: Styles.purpleTextStyle
                                       .copyWith(fontWeight: FontWeight.bold),
                                 ),
@@ -148,7 +149,7 @@ class _AdminToolState extends State<AdminTool> {
                                   width: 10,
                                 ),
                                 Text(
-                                  AppLocalizations.of(context)!.client,
+                                  context.l10n.client,
                                   style: Styles.purpleTextStyle
                                       .copyWith(fontWeight: FontWeight.bold),
                                 ),

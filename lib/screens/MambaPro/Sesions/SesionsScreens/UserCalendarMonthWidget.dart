@@ -8,7 +8,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Calendars/UserCalendarWi
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 class UserCalendarMonthWidget extends StatefulWidget {
   String userId;
@@ -137,7 +137,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(AppLocalizations.of(context)!.myCalendar,
+                      Text(context.l10n.myCalendar,
                           style: Theme.of(context).textTheme.displayLarge),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -560,7 +560,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(AppLocalizations.of(context)!.myCalendar,
+                      Text(context.l10n.myCalendar,
                           style: Theme.of(context).textTheme.displayLarge),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,

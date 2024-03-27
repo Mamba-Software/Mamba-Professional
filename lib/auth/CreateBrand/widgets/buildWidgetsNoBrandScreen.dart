@@ -8,11 +8,12 @@ import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/QRCode/QRScanner.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba/screens/MambaPro/Profile/Profile.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 
 Widget buildUserPicture(
     BuildContext context, double safeAreaWidth, double safeAreaHeight) {
@@ -150,7 +151,7 @@ Widget buildCreateBrandWidget(BuildContext context, var height, var width) {
                   child: Row(
                     children: [
                       Flexible(
-                        child: Text(AppLocalizations.of(context)!.createBrand,
+                        child: Text(context.l10n.createBrand,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge!
@@ -170,8 +171,7 @@ Widget buildCreateBrandWidget(BuildContext context, var height, var width) {
                   child: Row(
                     children: [
                       Flexible(
-                        child: Text(
-                            AppLocalizations.of(context)!.createBrandTitle,
+                        child: Text(context.l10n.createBrandTitle,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!
@@ -266,7 +266,7 @@ Widget buildJoinBrandWidget(BuildContext context, var height, var width) {
                   child: Row(
                     children: [
                       Flexible(
-                        child: Text(AppLocalizations.of(context)!.joinBrand,
+                        child: Text(context.l10n.joinBrand,
                             style: Theme.of(context)
                                 .textTheme
                                 .displayLarge!
@@ -286,8 +286,7 @@ Widget buildJoinBrandWidget(BuildContext context, var height, var width) {
                   child: Row(
                     children: [
                       Flexible(
-                        child: Text(
-                            AppLocalizations.of(context)!.joinBrandTitle,
+                        child: Text(context.l10n.joinBrandTitle,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!

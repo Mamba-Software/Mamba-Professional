@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba/l10n/language_manager.dart';
 import 'package:mamba/app/style/AppColors.dart';
 
 class EditRecurrentEventDialog extends StatefulWidget {
@@ -61,7 +61,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                     padding: const EdgeInsets.only(
                         top: 8.0, bottom: 0, right: 10, left: 10),
                     child: Text(
-                      AppLocalizations.of(context)!.saveRecurrentEvent,
+                      context.l10n.saveRecurrentEvent,
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
@@ -79,8 +79,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                               right: MediaQuery.of(context).size.width * 0.05,
                               left: MediaQuery.of(context).size.width * 0.05),
                           child: Text(
-                            AppLocalizations.of(context)!
-                                .saveRecurrentEventDetails,
+                            context.l10n.saveRecurrentEventDetails,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall
@@ -102,7 +101,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                         contentPadding:
                             const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
-                          AppLocalizations.of(context)!.thisEvent,
+                          context.l10n.thisEvent,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         leading: Transform.scale(
@@ -126,15 +125,14 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                         contentPadding:
                             const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
-                          AppLocalizations.of(context)!.thisEventAndRest,
+                          context.l10n.thisEventAndRest,
                           style: widget.isCompleted
                               ? Theme.of(context).textTheme.bodySmall
                               : Theme.of(context).textTheme.bodyMedium,
                         ),
                         subtitle: widget.clientsModified
                             ? Text(
-                                AppLocalizations.of(context)!
-                                    .notAvailableClientsModifiedEvents,
+                                context.l10n.notAvailableClientsModifiedEvents,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall
@@ -142,8 +140,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                               )
                             : widget.isCompleted
                                 ? Text(
-                                    AppLocalizations.of(context)!
-                                        .notAvailableFinishedEvents,
+                                    context.l10n.notAvailableFinishedEvents,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall
@@ -194,7 +191,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.save,
+                          context.l10n.save,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -229,7 +226,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.cancel,
+                          context.l10n.cancel,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context).primaryColorDark,

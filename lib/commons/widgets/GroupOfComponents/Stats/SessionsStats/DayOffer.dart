@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/app/style/Styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DayOffer extends StatefulWidget {
   List<Event> events;
-  var context;
+  BuildContext context;
 
   DayOffer({
     required this.events,
