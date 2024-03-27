@@ -90,9 +90,10 @@ class Bootstrap with PlatformMixin {
         // TO DO: NETEJAR AIXÒ PER AL SEU PROPI CUBIT
 
         // Firebase Crashlytics on Global Uncaught Errors
-        if (flavor != Flavor.development)
+        if (flavor != Flavor.development) {
           FlutterError.onError =
               FirebaseCrashlytics.instance.recordFlutterError;
+        }
         // Run App
         runApp(const App());
       },
