@@ -7,7 +7,6 @@ enum Flavor {
   staging,
   development,
 }
-
 Flavor flavor = Flavor.development;
 
 // Standard Language
@@ -18,18 +17,20 @@ String mainFontFamily = "UberMove";
 String displayFontFamily = "UberMove";
 
 // Text Sizes
-int display1 = 30; // For large, expressive text
-int display2 = 28; // Lesser emphasis compared to display1
-int headline1 = 24; // Primary title, more prominent
-int headline2 = 20; // Secondary title, slightly less prominent than headline1
-int headline3 = 18; // Tertiary title, useful for widget titles or modal headers
-int subtitle1 = 16; // For subtitles under headlines or titles
-int subtitle2 = 14; // Smaller subtitles, for less emphasis
-int bodyText1 = 16; // Main body text, improved for readability
-int bodyText2 = 14; // Secondary body text
-int caption = 12; // For captions under images or to denote additional information
-int overline = 10; // For overlines, often used in material design for categories or to introduce content
+double display1 = 30; // For large, expressive text
+double headline1 = 25; // Primary title, more prominent
+double headline2 = 20; // Secondary title, slightly less prominent than headline1
+double headline3 = 18; // Tertiary title, useful for widget titles or modal headers
+double title1 = 16; // For subtitles under headlines or titles
+double body1 = 14; // Main body text, improved for readability
+double body2 = 12; // Secondary body text
+double body3 = 10; // Tertiary body text
 
+// Icon Sizes
+double iconSize = 25;
+
+// Border Radius
+double borderRadius = 10;
 
 // App
 var androidGooglePlayUrl =
@@ -41,7 +42,7 @@ var iosAppStoreUrl =
 var contactEmail = "contacto@mambafitness.es";
 var contactNumber = "+34677909194";
 var contactNumberMessage =
-    "¡Hola! Estoy interesad@ en saber más sobre sus servicios. ¿Podrían proporcionarme más información?";
+    "¡Hola! Estoy doubleeresad@ en saber más sobre sus servicios. ¿Podrían proporcionarme más información?";
 var whatsappUrl =
     "whatsapp://send?phone=$contactNumber&text=${Uri.encodeComponent(contactNumberMessage)}";
 

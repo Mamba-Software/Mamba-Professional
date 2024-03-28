@@ -5,7 +5,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 Widget eventBonosWidget(BuildContext context, Map<Bono, bool> eventBonosMap) {

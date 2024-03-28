@@ -2,9 +2,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/data/Models/Purchase.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -152,8 +152,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                         style: Theme.of(context)
                             .textTheme
                             .headlineMedium
-                            ?.copyWith(
-                                color: AppColors.mainColor, fontSize: 45),
+                            ?.copyWith(color: AppColors.mamba, fontSize: 45),
                       ),
                       Padding(
                         padding: EdgeInsets.only(
@@ -238,22 +237,22 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                           series: <ChartSeries>[
                             // Renders line chart
                             SplineAreaSeries<TotalBenefit, String>(
-                              borderColor: AppColors.mainColor,
+                              borderColor: AppColors.mamba,
                               borderWidth: 2,
                               markerSettings: MarkerSettings(
-                                  borderColor: AppColors.mainColor,
+                                  borderColor: AppColors.mamba,
                                   isVisible:
                                       totalBenefits.length == 1 ? true : false,
                                   height: 10,
                                   width: 10,
                                   shape: DataMarkerType.circle,
-                                  color: AppColors.mainColor),
+                                  color: AppColors.mamba),
                               gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  AppColors.mainColor,
-                                  AppColors.mainColor.withOpacity(0.2),
+                                  AppColors.mamba,
+                                  AppColors.mamba.withOpacity(0.2),
                                 ],
                               ),
                               dataSource: totalBenefits,

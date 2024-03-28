@@ -17,7 +17,7 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Subscription.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -68,7 +68,7 @@ class _PayWallState extends State<PayWall> {
   initState() {
     super.initState();
     _scrollController = ScrollController();
-    isDark = context.read<ThemeManager>().isDarkMode;    
+    isDark = context.read<ThemeManager>().isDarkMode;
   }
 
   Future<void> getSubscriptions() async {
@@ -255,7 +255,7 @@ class _PayWallState extends State<PayWall> {
                               child: Center(
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: AppColors.mainColor,
+                                    color: AppColors.mamba,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   width:
@@ -408,7 +408,7 @@ class _PayWallState extends State<PayWall> {
                       'fitness',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.normal,
-                            color: AppColors.mainColor,
+                            color: AppColors.mamba,
                           ),
                     )
                   ],
@@ -581,11 +581,11 @@ class _PayWallState extends State<PayWall> {
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: AppColors.mainColor,
+                    color: AppColors.mamba,
                     width: 1,
                   ),
                   color: index == subscriptionList.length - 1
-                      ? AppColors.mainColor
+                      ? AppColors.mamba
                       : null,
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -597,7 +597,7 @@ class _PayWallState extends State<PayWall> {
                           isSmall: true,
                           color: index == subscriptionList.length - 1
                               ? AppColors.white
-                              : AppColors.mainColor,
+                              : AppColors.mamba,
                           hasLogo: false,
                         )
                       : index == subscriptionList.length - 1
@@ -711,7 +711,7 @@ class _PayWallState extends State<PayWall> {
                       child: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: AppColors.mainColor,
+                            color: AppColors.mamba,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           width: MediaQuery.of(context).size.width * 0.90,

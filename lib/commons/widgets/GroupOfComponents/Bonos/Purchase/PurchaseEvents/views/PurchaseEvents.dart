@@ -8,7 +8,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoEvents/views/S
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/Purchase/PurchaseEvents/cubit/PurchaseEventsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
 import 'package:shimmer/shimmer.dart';

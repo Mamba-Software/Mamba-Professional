@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 
 class SendRequestConfirmationDialog extends StatelessWidget {

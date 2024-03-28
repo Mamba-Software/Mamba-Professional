@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 class WhatsNewPopup {
@@ -8,7 +8,7 @@ class WhatsNewPopup {
     required BuildContext context,
     required String html,
     required Function() onAcceptFunction,
-  }) {    
+  }) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -28,7 +28,8 @@ class WhatsNewPopup {
                   height: MediaQuery.of(context).size.height * 0.65,
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    color: AppColors.white, // Or any background color for the dialog
+                    color: AppColors
+                        .white, // Or any background color for the dialog
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: SingleChildScrollView(

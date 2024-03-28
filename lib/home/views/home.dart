@@ -14,7 +14,7 @@ import 'package:mamba/home/views/no_brand_screen.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
@@ -112,7 +112,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     pageIndex = 10;
     // Getting User Information
     getUserAndBrand();
-    // Check If App Update    
+    // Check If App Update
     context.read<PopupsCubit>().checkIfAppUpdate();
     // On StartUp Dialogs
     launchOnStartUpDialogs();

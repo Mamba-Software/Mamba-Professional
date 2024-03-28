@@ -11,7 +11,7 @@ import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Condition.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
 import 'package:mamba/commons/widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBar.dart';

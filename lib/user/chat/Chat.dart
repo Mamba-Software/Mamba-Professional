@@ -15,7 +15,7 @@ import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mime/mime.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
@@ -317,7 +317,7 @@ class _ChatPageState extends State<ChatPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: (customMessage.author.id == currentUser.id
-                    ? AppColors.mainColorTrans
+                    ? AppColors.mamba.withOpacity(0.5)
                     : Theme.of(context).colorScheme.background),
               ),
               padding: EdgeInsets.symmetric(
@@ -485,7 +485,7 @@ class _ChatPageState extends State<ChatPage> {
                             inputTextCursorColor:
                                 Theme.of(context).colorScheme.secondary,
                             inputBorderRadius: BorderRadius.circular(0),
-                            primaryColor: AppColors.mainColorTrans,
+                            primaryColor: AppColors.mamba.withOpacity(0.5),
                             secondaryColor:
                                 Theme.of(context).colorScheme.background,
                             emptyChatPlaceholderTextStyle:
@@ -536,7 +536,7 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                             seenIcon: const Icon(
                               Icons.done_all,
-                              color: AppColors.mainColor,
+                              color: AppColors.mamba,
                             ),
                             dateDividerTextStyle: Theme.of(context)
                                 .textTheme

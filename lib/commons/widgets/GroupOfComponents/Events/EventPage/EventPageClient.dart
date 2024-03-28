@@ -8,7 +8,7 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/CancelRequestConfirmationDialog.dart';
@@ -805,8 +805,8 @@ class _EventPageClientState extends State<EventPageClient>
                                                   hintStyle: Theme.of(context)
                                                       .textTheme
                                                       .bodySmall,
-                                                  hintText: context.l10n
-                                                      .titleHint,
+                                                  hintText:
+                                                      context.l10n.titleHint,
                                                   border: InputBorder.none,
                                                   focusedBorder:
                                                       InputBorder.none,
@@ -1759,7 +1759,7 @@ class _EventPageClientState extends State<EventPageClient>
             ),
             floatingActionButton: whichFloatingActionButton(),
           );
-    }
+  }
 
   Widget whichFloatingActionButton() {
     if (isLoadingBody) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 
 class DeleteConfirmationDialog extends StatelessWidget {
   final String text;

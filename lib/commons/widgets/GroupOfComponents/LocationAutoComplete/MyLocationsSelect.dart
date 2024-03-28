@@ -8,7 +8,7 @@ import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:uuid/uuid.dart';

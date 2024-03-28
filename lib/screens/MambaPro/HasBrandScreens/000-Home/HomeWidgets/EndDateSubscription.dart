@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
@@ -204,13 +204,13 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                   bottom: MediaQuery.of(context).size.width * 0.01),
               child: Text(context.l10n.chooseYourPlan,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: AppColors.mainColor, fontWeight: FontWeight.bold),
+                      color: AppColors.mamba, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left),
             ),
             subtitle: Text(
               context.l10n.freeTrialDaysLeft(difference.toString()),
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: AppColors.mainColor,
+                  color: AppColors.mamba,
                   fontWeight: FontWeight.normal,
                   fontSize: 12),
             ),

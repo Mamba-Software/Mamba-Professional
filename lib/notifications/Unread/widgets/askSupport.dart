@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 
 Widget askSupport(BuildContext context) {
   return InkWell(

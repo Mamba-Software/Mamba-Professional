@@ -13,7 +13,7 @@ import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/commons/widgets/Components/Badges/BetaBadge.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
@@ -852,7 +852,7 @@ class _BonosProState extends State<BonosPro> {
                                             MediaQuery.of(context).size.width *
                                                 0.08,
                                         decoration: const BoxDecoration(
-                                            color: AppColors.mainColor,
+                                            color: AppColors.mamba,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20))),
                                         child: Align(
@@ -881,7 +881,7 @@ class _BonosProState extends State<BonosPro> {
                                             MediaQuery.of(context).size.width *
                                                 0.08,
                                         decoration: const BoxDecoration(
-                                            color: AppColors.mainColor,
+                                            color: AppColors.mamba,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20))),
                                         child: Align(

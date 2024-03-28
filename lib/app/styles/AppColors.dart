@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 class AppColors {
 
   // Accent Color
-  static const Color mainColor = Color(0xFFF4AD1F);
-  static const Color mainColorTrans = Color(0x33E9B044);
+  static const Color mamba = Color(0xFFF4AD1F);
   
-  // Background Colors
+  // Primary Colors
   static const Color black = Color(0xFF000000);
   static Color darkerGrey = Colors.grey.shade900;
   static const Color darkGrey = Color(0xFF313131);
@@ -15,11 +14,16 @@ class AppColors {
   static const Color lightGrey = Color(0xFFF2F2F2);
   static const Color white = Color(0xFFFFFFFF);
 
-  //static const Color red = Color(0xFFFF0000);
+  // Success Colors
+  static const Color green = Colors.green;
+  static Color ligtherGreen = Colors.green.shade300;
+  
+  // Error Colors
   static const Color red = Colors.red;
-  static const Color ligtherRed = Color(0xFFFF5D5D);
+  static Color ligtherRed = Colors.red.shade300;
 
-  // Stripe Colors
-  static const Color stripeColor = Color(0xFF5433FF);
+  // Brand Colors
+  static const Color stripe = Color(0xFF5433FF);
+  static const Color google = Color(0xFF4285F4);
 
 }

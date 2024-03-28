@@ -8,7 +8,7 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/stripe/models/user_stripe_model.dart';
@@ -774,7 +774,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
               Container(
                 height: MediaQuery.of(context).size.height * 0.23,
                 width: double.infinity,
-                color: AppColors.stripeColor.withOpacity(0.33),
+                color: AppColors.stripe.withOpacity(0.33),
                 child: Center(
                   child: Stack(
                     alignment: Alignment.center,
@@ -799,7 +799,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                 child: Stack(
                   children: [
                     Container(
-                      color: AppColors.stripeColor.withOpacity(0.33),
+                      color: AppColors.stripe.withOpacity(0.33),
                     ),
                     Container(
                       padding: EdgeInsets.only(
@@ -866,7 +866,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                           MediaQuery.of(context).size.height *
                                               0.07,
                                       decoration: BoxDecoration(
-                                          color: AppColors.stripeColor
+                                          color: AppColors.stripe
                                               .withOpacity(0.33),
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(5.0))),
@@ -919,7 +919,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                           MediaQuery.of(context).size.height *
                                               0.07,
                                       decoration: BoxDecoration(
-                                          color: AppColors.stripeColor
+                                          color: AppColors.stripe
                                               .withOpacity(0.33),
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(5.0))),
@@ -972,7 +972,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                           MediaQuery.of(context).size.height *
                                               0.07,
                                       decoration: BoxDecoration(
-                                          color: AppColors.stripeColor
+                                          color: AppColors.stripe
                                               .withOpacity(0.33),
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(5.0))),
@@ -1088,7 +1088,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
               Container(
                 height: MediaQuery.of(context).size.height * 0.23,
                 width: double.infinity,
-                color: AppColors.stripeColor.withOpacity(0.33),
+                color: AppColors.stripe.withOpacity(0.33),
                 child: Center(
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.25,
@@ -1103,7 +1103,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                 child: Stack(
                   children: [
                     Container(
-                      color: AppColors.stripeColor.withOpacity(0.33),
+                      color: AppColors.stripe.withOpacity(0.33),
                     ),
                     Container(
                       padding: EdgeInsets.only(
@@ -1170,7 +1170,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                           MediaQuery.of(context).size.height *
                                               0.07,
                                       decoration: BoxDecoration(
-                                          color: AppColors.stripeColor
+                                          color: AppColors.stripe
                                               .withOpacity(0.33),
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(5.0))),
@@ -1223,7 +1223,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                           MediaQuery.of(context).size.height *
                                               0.07,
                                       decoration: BoxDecoration(
-                                          color: AppColors.stripeColor
+                                          color: AppColors.stripe
                                               .withOpacity(0.33),
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(5.0))),
@@ -1375,7 +1375,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
               Container(
                 height: MediaQuery.of(context).size.height * 0.23,
                 width: double.infinity,
-                color: AppColors.stripeColor.withOpacity(0.33),
+                color: AppColors.stripe.withOpacity(0.33),
                 child: Center(
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.15,
@@ -1390,7 +1390,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                 child: Stack(
                   children: [
                     Container(
-                      color: AppColors.stripeColor.withOpacity(0.33),
+                      color: AppColors.stripe.withOpacity(0.33),
                     ),
                     Container(
                       padding: EdgeInsets.only(
@@ -1547,7 +1547,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                           MediaQuery.of(context).size.height *
                                               0.07,
                                       decoration: BoxDecoration(
-                                          color: AppColors.stripeColor
+                                          color: AppColors.stripe
                                               .withOpacity(0.33),
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(5.0))),
@@ -1600,7 +1600,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                           MediaQuery.of(context).size.height *
                                               0.07,
                                       decoration: BoxDecoration(
-                                          color: AppColors.stripeColor
+                                          color: AppColors.stripe
                                               .withOpacity(0.33),
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(5.0))),
@@ -2263,8 +2263,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                           .height *
                                                       0.05,
                                                   decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .stripeColor
+                                                      color: AppColors.stripe
                                                           .withOpacity(0.33),
                                                       borderRadius:
                                                           const BorderRadius
@@ -2337,8 +2336,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                           .height *
                                                       0.05,
                                                   decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .stripeColor
+                                                      color: AppColors.stripe
                                                           .withOpacity(0.33),
                                                       borderRadius:
                                                           const BorderRadius
@@ -2412,8 +2410,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                           .height *
                                                       0.05,
                                                   decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .stripeColor
+                                                      color: AppColors.stripe
                                                           .withOpacity(0.33),
                                                       borderRadius:
                                                           const BorderRadius
@@ -2509,8 +2506,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                           .height *
                                                       0.05,
                                                   decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .stripeColor
+                                                      color: AppColors.stripe
                                                           .withOpacity(0.33),
                                                       borderRadius:
                                                           const BorderRadius
@@ -2585,8 +2581,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                           .height *
                                                       0.05,
                                                   decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .stripeColor
+                                                      color: AppColors.stripe
                                                           .withOpacity(0.33),
                                                       borderRadius:
                                                           const BorderRadius
@@ -2866,8 +2861,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                           .height *
                                                       0.05,
                                                   decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .stripeColor
+                                                      color: AppColors.stripe
                                                           .withOpacity(0.33),
                                                       borderRadius:
                                                           const BorderRadius
@@ -2946,8 +2940,7 @@ class _StripeOnboardingState extends State<StripeOnboarding> {
                                                           .height *
                                                       0.05,
                                                   decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .stripeColor
+                                                      color: AppColors.stripe
                                                           .withOpacity(0.33),
                                                       borderRadius:
                                                           const BorderRadius

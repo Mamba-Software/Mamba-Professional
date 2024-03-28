@@ -10,7 +10,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView
 import 'package:survey_kit/survey_kit.dart';
 
 import 'package:mamba/commons/managers/language_manager.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';

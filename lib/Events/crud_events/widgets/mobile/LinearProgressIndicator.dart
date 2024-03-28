@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 
 class LinearProgressIndicatorWidget extends StatelessWidget {
   const LinearProgressIndicatorWidget({super.key});
@@ -16,7 +16,7 @@ class LinearProgressIndicatorWidget extends StatelessWidget {
         height: isWorking < 100 ? 2 : 0,
         child: LinearProgressIndicator(
           value: isWorking / 100,
-          color: AppColors.mainColor,
+          color: AppColors.mamba,
           backgroundColor: Colors.transparent,
         ),
       );

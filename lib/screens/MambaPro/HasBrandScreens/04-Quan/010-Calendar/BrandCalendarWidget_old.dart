@@ -13,7 +13,7 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent_old.dart';
@@ -1681,8 +1681,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                         width: MediaQuery.of(context).size.width * 0.06,
                                                                                         child: MaterialButton(
                                                                                           elevation: 4,
-                                                                                          color: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
-                                                                                          textColor: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
+                                                                                          color: selectedTrainersBottom.contains(trainer) ? AppColors.mamba : Theme.of(context).scaffoldBackgroundColor,
+                                                                                          textColor: selectedTrainersBottom.contains(trainer) ? AppColors.mamba : Theme.of(context).scaffoldBackgroundColor,
                                                                                           padding: EdgeInsets.zero,
                                                                                           shape: const CircleBorder(),
                                                                                           onPressed: () {

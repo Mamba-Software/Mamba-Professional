@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
@@ -197,7 +197,7 @@ class SessionsMadeState extends State<SessionsMade> {
                 // Renders line chart
                 SplineAreaSeries<TotalEvents, String>(
                   animationDuration: 0,
-                  borderColor: AppColors.mainColor,
+                  borderColor: AppColors.mamba,
                   borderWidth: 5,
                   emptyPointSettings: EmptyPointSettings(
                       mode: EmptyPointMode.gap,
@@ -208,8 +208,8 @@ class SessionsMadeState extends State<SessionsMade> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      AppColors.mainColor,
-                      AppColors.mainColor.withOpacity(0.2),
+                      AppColors.mamba,
+                      AppColors.mamba.withOpacity(0.2),
                     ],
                   ),
                   dataSource: isYearly ? chartDataYear : chartDataSixMonths,

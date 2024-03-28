@@ -6,8 +6,8 @@ import 'package:mamba/auth/utils/enumAuth.dart';
 import 'package:mamba/auth/widgets/mobile/RecoverPassword.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 

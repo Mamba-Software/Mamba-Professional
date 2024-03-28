@@ -14,7 +14,7 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
@@ -864,7 +864,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 decoration: InputDecoration(
                                                     filled: true,
                                                     fillColor: AppColors.white,
-                                                    hintText: context.l10n.nameCompletoError,
+                                                    hintText: context
+                                                        .l10n.nameCompletoError,
                                                     hintStyle: Theme.of(context)
                                                         .textTheme
                                                         .displaySmall
@@ -874,13 +875,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             fontWeight:
                                                                 FontWeight
                                                                     .normal),
-                                                    errorStyle: Theme.of(
-                                                            context)
-                                                        .textTheme
-                                                        .bodyMedium
-                                                        ?.copyWith(
-                                                            color:
-                                                                AppColors.red),
+                                                    errorStyle:
+                                                        Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium
+                                                            ?.copyWith(
+                                                                color: AppColors
+                                                                    .red),
                                                     border: OutlineInputBorder(
                                                       borderSide:
                                                           const BorderSide(
@@ -976,8 +977,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 decoration: InputDecoration(
                                                     filled: true,
                                                     fillColor: AppColors.white,
-                                                    hintText: context.l10n
-                                                        .lastNameError,
+                                                    hintText: context
+                                                        .l10n.lastNameError,
                                                     hintStyle: Theme.of(context)
                                                         .textTheme
                                                         .displaySmall
@@ -987,13 +988,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             fontWeight:
                                                                 FontWeight
                                                                     .normal),
-                                                    errorStyle: Theme.of(
-                                                            context)
-                                                        .textTheme
-                                                        .bodyMedium
-                                                        ?.copyWith(
-                                                            color:
-                                                                AppColors.red),
+                                                    errorStyle:
+                                                        Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium
+                                                            ?.copyWith(
+                                                                color: AppColors
+                                                                    .red),
                                                     border: OutlineInputBorder(
                                                       borderSide:
                                                           const BorderSide(
@@ -1206,8 +1207,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                             0.02),
                                                     Flexible(
                                                       child: Text(
-                                                        context.l10n
-                                                            .googleInfo,
+                                                        context.l10n.googleInfo,
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyMedium
@@ -1465,8 +1465,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    context.l10n
-                                                        .day,
+                                                    context.l10n.day,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyLarge
@@ -1636,8 +1635,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    context.l10n
-                                                        .month,
+                                                    context.l10n.month,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyLarge
@@ -1978,8 +1976,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 children: [
                                                   Flexible(
                                                     child: Text(
-                                                      context.l10n
-                                                          .errorDate,
+                                                      context.l10n.errorDate,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyMedium
@@ -2325,8 +2322,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    context.l10n
-                                                        .female,
+                                                    context.l10n.female,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .displaySmall
@@ -2390,8 +2386,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    context.l10n
-                                                        .male,
+                                                    context.l10n.male,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .displaySmall
@@ -2455,8 +2450,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    context.l10n
-                                                        .transgender,
+                                                    context.l10n.transgender,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .displaySmall

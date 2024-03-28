@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 // Text Styles contains all the TextStyles used in the App.
 class TextStyles {
   

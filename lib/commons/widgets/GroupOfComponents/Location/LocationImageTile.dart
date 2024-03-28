@@ -8,7 +8,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/Loc
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/AddressSearch.dart';
 import 'package:maps_launcher/maps_launcher.dart';

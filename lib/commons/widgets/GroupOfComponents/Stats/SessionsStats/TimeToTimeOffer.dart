@@ -6,7 +6,7 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
@@ -113,7 +113,7 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
 
     mapHours.forEach((k, v) {
       if (v == maxHour) {
-        timeDemand.add(TimeDemand(k, v, AppColors.mainColor));
+        timeDemand.add(TimeDemand(k, v, AppColors.mamba));
       } else {
         timeDemand.add(TimeDemand(k, v, AppColors.grey));
       }
@@ -177,7 +177,7 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
 
     mapHours.forEach((k, v) {
       if (v == maxHour) {
-        timeDemand.add(TimeDemand(k, v, AppColors.mainColor));
+        timeDemand.add(TimeDemand(k, v, AppColors.mamba));
       } else {
         timeDemand.add(TimeDemand(k, v, AppColors.grey));
       }

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 Widget googleLogin(BuildContext context, AuthState state) {
@@ -23,8 +23,7 @@ Widget googleLogin(BuildContext context, AuthState state) {
         width: MediaQuery.of(context).size.width * 0.9,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-            color: const Color(0xFF4285F4),
-            borderRadius: BorderRadius.circular(30)),
+            color: AppColors.google, borderRadius: BorderRadius.circular(30)),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

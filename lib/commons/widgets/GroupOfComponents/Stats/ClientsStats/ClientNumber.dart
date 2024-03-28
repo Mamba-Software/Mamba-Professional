@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
@@ -72,7 +72,7 @@ class ClientNumberState extends State<ClientNumber> {
                                     .textTheme
                                     .headlineMedium
                                     ?.copyWith(
-                                        color: AppColors.mainColor,
+                                        color: AppColors.mamba,
                                         fontSize: 30,
                                         fontWeight: FontWeight.normal),
                               ),
@@ -97,7 +97,7 @@ class ClientNumberState extends State<ClientNumber> {
                                     .textTheme
                                     .headlineMedium
                                     ?.copyWith(
-                                        color: AppColors.mainColor,
+                                        color: AppColors.mamba,
                                         fontSize: 30,
                                         fontWeight: FontWeight.normal),
                               ),
@@ -124,7 +124,7 @@ class ClientNumberState extends State<ClientNumber> {
                                 .textTheme
                                 .headlineMedium
                                 ?.copyWith(
-                                    color: AppColors.mainColor,
+                                    color: AppColors.mamba,
                                     fontSize: 30,
                                     fontWeight: FontWeight.normal),
                           ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/AdminService/ScriptsService.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/admin/AdminTool.dart';
 import 'package:mamba/admin/AdminFeedBack.dart';
 
@@ -39,8 +39,7 @@ class _AdminState extends State<Admin> {
             const SizedBox(width: 15),
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
-              child: Text("ADMIN",
-                  style: context.textTheme.bodyMedium),
+              child: Text("ADMIN", style: context.textTheme.bodyMedium),
             ),
           ],
         ),
@@ -73,7 +72,7 @@ class EachList extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           radius: 25.0,
-          backgroundColor: AppColors.mainColor,
+          backgroundColor: AppColors.mamba,
           child: Text(name[0]),
         ),
         trailing: const Icon(Icons.east),

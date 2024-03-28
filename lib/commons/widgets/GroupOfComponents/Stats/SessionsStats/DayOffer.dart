@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'package:mamba/app/style/AppColors.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -154,7 +154,7 @@ class DayOfferState extends State<DayOffer> {
                                 args.textStyle = (Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
-                                    .copyWith(color: AppColors.mainColor));
+                                    .copyWith(color: AppColors.mamba));
                               } else {
                                 args.textStyle = (Theme.of(context)
                                     .textTheme
@@ -206,7 +206,7 @@ class DayOfferState extends State<DayOffer> {
                                 width: 0.3,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(30)),
-                                borderColor: AppColors.mainColor,
+                                borderColor: AppColors.mamba,
                                 borderWidth: 0,
                                 /*
                               markerSettings: MarkerSettings(
@@ -214,14 +214,14 @@ class DayOfferState extends State<DayOffer> {
                                   height:  5,
                                   width:  5,
                                   shape: DataMarkerType.circle,
-                                  color: AppColors.mainColor),
+                                  color: AppColors.mamba),
 */
                                 gradient: LinearGradient(
                                   begin: Alignment.centerRight,
                                   end: Alignment.centerLeft,
                                   colors: [
-                                    AppColors.mainColor,
-                                    AppColors.mainColor.withOpacity(0.2),
+                                    AppColors.mamba,
+                                    AppColors.mamba.withOpacity(0.2),
                                   ],
                                 ),
                                 dataSource: totalEvents,

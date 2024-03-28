@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/constants/assets.dart';
 
 // Loading View Widget which displays a Circular Progress indicator with the Mamba "M" inside.

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba/app/style/AppThemes.dart';
+import 'package:mamba/app/styles/AppThemes.dart';
 import 'package:mamba/commons/mixins/platform.dart'; // Ensure correct path
 
 class ThemeState extends Equatable {
