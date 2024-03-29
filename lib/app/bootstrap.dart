@@ -39,6 +39,7 @@ import 'package:mamba/user/data/user_repository.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 class Bootstrap with PlatformMixin {
   // Initialize Variables
@@ -53,7 +54,7 @@ class Bootstrap with PlatformMixin {
         // Initialize Hive
         await Hive.initFlutter();
         // Initialize Env Variables
-        String envFileName = ".env.${flavor.name}";        
+        String envFileName = ".env.${flavor.name}";
         await dotenv.load(fileName: envFileName);
         // Initialize Firebase
         if (isWeb) {
@@ -66,6 +67,12 @@ class Bootstrap with PlatformMixin {
 
         // TO DO: NETEJAR AIXÒ PER AL SEU PROPI CUBIT
         /////////////////////////////////////////////
+
+        mixpanel = await Mixpanel.init(
+          dotenv.env['MIXPANEL_KEY']!,
+          trackAutomaticEvents: true,
+          optOutTrackingDefault: false,
+        );
 
         // Initialise TimeZone
         timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
@@ -81,7 +88,8 @@ class Bootstrap with PlatformMixin {
 
         // Firebase Crashlytics on Global Uncaught Errors
         if (flavor != Flavor.development) {
-          FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+          FlutterError.onError =
+              FirebaseCrashlytics.instance.recordFlutterError;
         }
         // Run App
         runApp(const App());

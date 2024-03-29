@@ -59,8 +59,7 @@ class _LoginState extends State<Login>
 
   @override
   initState() {
-    super.initState();
-    mixpanel!.track('mamba_login_view');
+    super.initState();    
     context.read<PopupsCubit>().checkIfAppUpdate(false);
   }
 

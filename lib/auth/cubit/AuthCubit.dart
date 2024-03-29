@@ -5,8 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
 import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -306,11 +308,11 @@ class AuthCubit extends Cubit<AuthState> {
       await Future.delayed(const Duration(seconds: 1));
       emit(const AuthNotLoged());
     }
+    
     // Set App Locale To User Preferred Language - TO Do once user cubit is implemented    
     // context.read<LanguageManager>().setLocale();
-
     // Set App Theme To User Preferred Theme Settings - TO Do once user cubit is implemented    
-    // context.read<ThemeManager>().setInitialState();
+    // context.read<ThemeManager>().personalizeAccentColor(AppColors.stripe);
 
     // Get Current User Brand, if any.
     // WAIT TO AVOID PROBLEMS DUE TO CLOUD FUNCTIONS NOT BEING INSTANTANEOUS.

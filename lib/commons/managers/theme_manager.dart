@@ -29,7 +29,27 @@ class ThemeManager extends Cubit<ThemeState> with PlatformMixin {
           ),
         );
 
-  bool get isDarkMode => state.isDarkMode;
+  bool get isDarkMode => state.isDarkMode;  
+
+  void toggleTheme(bool isDark) {
+    ThemeData themeData = isDark ? appThemes.darkTheme() : appThemes.lightTheme();
+    emit(
+      ThemeState(
+        isDarkMode: isDark,
+        themeData: themeData,
+      ),
+    );
+  }
+
+  void personalizeAccentColor(Color highlightColor) {
+    ThemeData themeData = state.isDarkMode ? appThemes.darkTheme(highlightColor) : appThemes.lightTheme(highlightColor);
+    emit(
+      ThemeState(
+        isDarkMode: state.isDarkMode,
+        themeData: themeData,
+      ),
+    );
+  }
 
   /*
   Brightness getSystemPreference(BuildContext context) {
@@ -42,14 +62,5 @@ class ThemeManager extends Cubit<ThemeState> with PlatformMixin {
     }    
   }
   */
-
-  void toggleTheme(bool isDark) {
-    final themeData = isDark ? appThemes.darkTheme() : appThemes.lightTheme();
-    emit(
-      ThemeState(
-        isDarkMode: isDark,
-        themeData: themeData,
-      ),
-    );
-  }
+  
 }

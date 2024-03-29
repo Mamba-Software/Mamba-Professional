@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/mobile/Login.dart';
@@ -10,12 +9,6 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
 import 'package:mamba/admin/Admin.dart';
 import 'package:mamba/home/views/home.dart';
-import 'package:mamba/popups/cubit/popups_cubit.dart';
-import 'package:mamba/popups/cubit/popups_state.dart';
-import 'package:mamba/popups/models/popup_type.dart';
-import 'package:mamba/popups/widgets/html_popup.dart';
-import 'package:mamba/popups/widgets/update_app_popup.dart';
-import 'package:store_redirect/store_redirect.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

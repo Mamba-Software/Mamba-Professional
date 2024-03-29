@@ -37,7 +37,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   @override
   void initState() {
-    mixpanel!.track('mamba_forgot_password_view');
     super.initState();
   }
 
