@@ -4,6 +4,7 @@ import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 Widget googleLogin(BuildContext context, AuthState state) {
@@ -40,9 +41,7 @@ Widget googleLogin(BuildContext context, AuthState state) {
             Expanded(
               child: checkIfProvider(state, AuthProviderEnum.google)
                   ? Text(context.l10n.continueWithGoogle,
-                      style: Theme.of(context)
-                          .textTheme
-                          .displaySmall
+                      style: context.textTheme.titleLarge
                           ?.copyWith(color: AppColors.white),
                       textAlign: TextAlign.center)
                   : Center(

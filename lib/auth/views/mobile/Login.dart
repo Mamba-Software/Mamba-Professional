@@ -12,6 +12,7 @@ import 'package:mamba/auth/widgets/mobile/AppleLogin.dart';
 import 'package:mamba/auth/widgets/mobile/GoogleLogin.dart';
 import 'package:mamba/auth/widgets/mobile/NormalLogin.dart';
 import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';
@@ -187,9 +188,7 @@ class _LoginState extends State<Login>
                       ),
                       Expanded(
                           child: Text(context.l10n.loginWithEmail,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall
+                              style: context.textTheme.titleLarge
                                   ?.copyWith(color: AppColors.black),
                               textAlign: TextAlign.center)),
                     ],
@@ -259,7 +258,7 @@ class _LoginState extends State<Login>
                     ),
                     TextSpan(
                         text: context.l10n.termsAndConditions.toLowerCase(),
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: context.textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             decoration: TextDecoration.underline)),
                   ],

@@ -7,9 +7,9 @@ import 'package:mamba/commons/constants/constants.dart';
 // Styles contains all the Colors, Themes and TextStyles used in the App.
 class AppThemes {
   
-  ThemeData lightTheme() {
+  ThemeData lightTheme([Color? specificHighlghtColor ]) {
     // Define Colors
-    Color highlightColor = AppColors.mamba;
+    Color highlightColor = specificHighlghtColor ?? AppColors.mamba;
     Color primaryColor = AppColors.black;
     Color primaryColorDark = AppColors.darkerGrey;
     Color primaryColorLight = AppColors.grey;
@@ -261,9 +261,9 @@ class AppThemes {
     );
   }
 
-  ThemeData darkTheme() {
+  ThemeData darkTheme([Color? specificHighlghtColor ]) {
     // Define Colors
-    Color highlightColor = AppColors.mamba;
+    Color highlightColor = specificHighlghtColor ?? AppColors.mamba;
     Color primaryColor = AppColors.white;
     Color primaryColorDark = AppColors.lightGrey;
     Color primaryColorLight = AppColors.grey;
@@ -287,7 +287,7 @@ class AppThemes {
       canvasColor: scaffoldBackgroundColor,
       dialogBackgroundColor: backgroundColor,
       scaffoldBackgroundColor: scaffoldBackgroundColor,
-      // applyElevationOverlayColor: true -- A boolean that determines whether an overlay color will be applied to indicate elevation for dark themes. This is typically only applied in dark themes.
+      applyElevationOverlayColor: true,
       // Hint / Divider / Disabled / Unselected
       hintColor: disabledColor,
       dividerColor: disabledColor,
