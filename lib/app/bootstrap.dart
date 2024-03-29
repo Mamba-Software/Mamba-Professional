@@ -7,6 +7,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mamba/analytics/data/analytics_repository.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -35,9 +36,7 @@ import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba/user/data/firebase_user_repository.dart';
 import 'package:mamba/user/data/user_repository.dart';
-import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -54,8 +53,7 @@ class Bootstrap with PlatformMixin {
         // Initialize Hive
         await Hive.initFlutter();
         // Initialize Env Variables
-        String envFileName = ".env.${flavor.name}";
-        print("hola");
+        String envFileName = ".env.${flavor.name}";        
         await dotenv.load(fileName: envFileName);
         // Initialize Firebase
         if (isWeb) {
@@ -77,20 +75,13 @@ class Bootstrap with PlatformMixin {
         if (isWeb == false) {
           await DynamicLinkUtils().retrieveDynamicLink();
         }
-        // Init MixPanel
-        mixpanel = await Mixpanel.init(
-          dotenv.env['MIXPANEL_KEY']!,
-          trackAutomaticEvents: true,
-          optOutTrackingDefault: false,
-        );
 
         /////////////////////////////////////////////
         // TO DO: NETEJAR AIXÒ PER AL SEU PROPI CUBIT
 
         // Firebase Crashlytics on Global Uncaught Errors
         if (flavor != Flavor.development) {
-          FlutterError.onError =
-              FirebaseCrashlytics.instance.recordFlutterError;
+          FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
         }
         // Run App
         runApp(const App());
@@ -112,6 +103,11 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<AnalyticsRepository>(
+          create: (context) => AnalyticsRepository(
+            isRelease: flavor != Flavor.development || flavor != Flavor.staging,
+          ),
+        ),
         RepositoryProvider<UserRepository>(
           create: (context) => UserRepository(
             FirebaseUserRepository(),
