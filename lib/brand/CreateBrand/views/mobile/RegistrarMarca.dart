@@ -14,7 +14,7 @@ import 'package:mamba/notifications/NotificationService/NotificationService.dart
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:mamba/commons/constants/GlobalVars.dart';

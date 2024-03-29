@@ -17,7 +17,7 @@ import 'package:mamba/commons/widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBonoDialog.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/managers/language_manager.dart';

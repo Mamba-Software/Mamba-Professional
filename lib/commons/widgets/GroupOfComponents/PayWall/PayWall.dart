@@ -21,7 +21,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/data/Models/RequestToBrand.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';

@@ -27,36 +27,15 @@ class ResponsiveCenter extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(
               "Mamba",
-              style: context.textTheme.displayLarge,
+              style: context.textTheme.headlineLarge,
             ),
           ),
         ),
         Expanded(
-          child: Container(
+          child: Center(
             child: child,
           ),
-        ),
-        Container(
-          height: kToolbarHeight,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: context.colorScheme.background,
-            border: Border(
-              bottom: BorderSide(
-                color: context.theme.dividerColor, // Color of the bottom border
-                width: 0.5, // Width of the bottom border
-              ),
-            ),
-          ),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              "Mamba",
-              style: context.textTheme.displayLarge,
-            ),
-          ),
-        ),
-      ],
+        ),        ],
     );
   }
 }

@@ -16,7 +16,7 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:notification_permissions/notification_permissions.dart';

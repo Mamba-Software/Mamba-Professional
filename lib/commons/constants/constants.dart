@@ -30,7 +30,9 @@ double body3 = 10; // Tertiary body text
 double iconSize = 25;
 
 // Border Radius
-double borderRadius = 10;
+double borderRadiusSmall = 5;
+double borderRadiusMedium = 10;
+double borderRadiusBig = 20;
 
 // App
 var androidGooglePlayUrl =

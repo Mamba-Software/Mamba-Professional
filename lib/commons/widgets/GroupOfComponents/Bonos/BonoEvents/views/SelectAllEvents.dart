@@ -10,7 +10,7 @@ import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoEvents/cubit/BonoEventsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_core/theme.dart';

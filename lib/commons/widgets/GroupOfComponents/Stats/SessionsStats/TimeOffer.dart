@@ -4,7 +4,7 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 

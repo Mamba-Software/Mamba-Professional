@@ -7,7 +7,7 @@ import 'package:mamba/data/Models/ImageObject.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/RectangularImage.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 
 class SelectBrandImages extends StatefulWidget {
   String brandId;

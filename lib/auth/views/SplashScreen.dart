@@ -6,7 +6,7 @@ import 'package:mamba/auth/views/Login.dart';
 import 'package:mamba/auth/views/OnboardingScreen.dart';
 import 'package:mamba/data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
+import 'package:mamba/commons/widgets/loading/SplashScreenView.dart';
 import 'package:mamba/admin/Admin.dart';
 import 'package:mamba/home/views/home.dart';
 

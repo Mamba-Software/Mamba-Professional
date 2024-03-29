@@ -14,7 +14,7 @@ import 'package:mamba/notifications/NotificationService/NotificationService.dart
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
 import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Settings/SettingsLanguage.dart';

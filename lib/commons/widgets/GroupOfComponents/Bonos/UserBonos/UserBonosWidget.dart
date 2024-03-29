@@ -11,7 +11,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 
 import 'UserPurchaseHistory/views/UserPurchaseHistory.dart';
 

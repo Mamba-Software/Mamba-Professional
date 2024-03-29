@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 

@@ -184,7 +184,7 @@ class AppThemes {
         surfaceTintColor: AppColors.lightGrey,
         shape: RoundedRectangleBorder(
           borderRadius:
-              BorderRadius.vertical(top: Radius.circular(borderRadius)),
+              BorderRadius.vertical(top: Radius.circular(borderRadiusSmall)),
         ),
         clipBehavior: Clip.antiAlias,
       ),
@@ -204,7 +204,7 @@ class AppThemes {
           mainFontFamily,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(borderRadiusSmall),
         ),
         contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       ),
@@ -438,7 +438,7 @@ class AppThemes {
         surfaceTintColor: AppColors.lightGrey,
         shape: RoundedRectangleBorder(
           borderRadius:
-              BorderRadius.vertical(top: Radius.circular(borderRadius)),
+              BorderRadius.vertical(top: Radius.circular(borderRadiusSmall)),
         ),
         clipBehavior: Clip.antiAlias,
       ),
@@ -458,7 +458,7 @@ class AppThemes {
           mainFontFamily,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(borderRadiusSmall),
         ),
         contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       ),
@@ -478,7 +478,7 @@ class AppThemes {
           mainFontFamily,
         ),
         shape: const StadiumBorder(),
-      ),
+      ),     
       // Button Theme
       buttonTheme: ButtonThemeData(
         buttonColor: primaryColor,

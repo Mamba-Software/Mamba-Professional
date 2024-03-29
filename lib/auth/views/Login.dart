@@ -11,6 +11,7 @@ import 'package:mamba/auth/views/SplashScreen.dart';
 import 'package:mamba/auth/widgets/AppleLogin.dart';
 import 'package:mamba/auth/widgets/GoogleLogin.dart';
 import 'package:mamba/auth/widgets/NormalLogin.dart';
+import 'package:mamba/auth/widgets/signin_button.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
@@ -126,236 +127,213 @@ class _LoginState extends State<Login>
   }
 
   Widget initialLogIn(AuthState state) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        //isIOS ? appleLogin(context, state) : Container(),
-        isAndroid == false ? appleLogin(context, state) : Container(),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-        googleLogin(context, state),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.width * 0.05),
-          child: Row(children: <Widget>[
-            Expanded(
-              child: Divider(
-                  color: context.theme.dividerColor,
-                  height: 0.5,
-                  indent: MediaQuery.of(context).size.width * 0.05,
-                  endIndent: MediaQuery.of(context).size.width * 0.05),
-            ),
-            Text(context.l10n.intermediatePaymentMethod,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: AppColors.grey),
-                textAlign: TextAlign.center),
-            Expanded(
-              child: Divider(
-                  color: context.theme.dividerColor,
-                  height: 0.5,
-                  indent: MediaQuery.of(context).size.width * 0.05,
-                  endIndent: MediaQuery.of(context).size.width * 0.05),
-            ),
-          ]),
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 30,
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-        TextFormField(
-          autofocus: true,
-          controller: emailController,
-          keyboardType: TextInputType.emailAddress,
-          validator: (val) => val!.isEmpty ? context.l10n.emailError : null,
-          onChanged: (val) {
-            setState(() {
-              email = val;
-            });
-          },
-          onFieldSubmitted: (val) {
-            focusNodePassword.requestFocus();
-          },
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: AppColors.white),
-          decoration: InputDecoration(
-            labelText: context.l10n.email,
-          ),
-        ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        TextFormField(
-            focusNode: focusNodePassword,
-            validator: (val) =>
-                val!.length < 6 ? context.l10n.passwordError : null,
-            onChanged: (val) {
-              setState(() {
-                password = val;
-              });
-            },
-            keyboardType: TextInputType.visiblePassword,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: AppColors.white),
-            obscureText: !_passwordVisible,
-            decoration: InputDecoration(
-              labelText: context.l10n.password,
-            )),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.08),
-          child: TextButton(
-            onPressed: () async {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-              String? email = await Navigator.push(
-                  context,
-                  CupertinoPageRoute<String>(
-                    builder: (context) => const ForgotPassword(),
-                    settings: const RouteSettings(name: 'ForgotPassword'),
-                  ));
-              if (email != null) {
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Log In",
+              style: context.textTheme.displayLarge,
+            ),
+            const SizedBox(height: 40),
+            SignUpButton(
+              foregroundColor: context.colorScheme.primary,
+              backgroundColor: context.colorScheme.background,
+              text: context.l10n.continueWithApple,
+              icon: Image(
+                image: AssetImage(Assets.apple),
+                color: context.theme.primaryColor,
+              ),
+              onTap: () => context
+                  .read<AuthCubit>()
+                  .generalSignIn(AuthProviderEnum.apple, context),
+              isLoading: () {
+                if (state is AuthLoading &&
+                    state.provider == AuthProviderEnum.apple) {
+                  return false;
+                }
+                return true;
+              },
+            ),
+            const SizedBox(height: 10),
+            SignUpButton(
+              foregroundColor: context.colorScheme.primary,
+              backgroundColor: context.colorScheme.background,
+              text: context.l10n.continueWithGoogle,
+              icon: Image(
+                image: AssetImage(Assets.google),
+              ),
+              onTap: () => context
+                  .read<AuthCubit>()
+                  .generalSignIn(AuthProviderEnum.google, context),
+              isLoading: () {
+                if (state is AuthLoading &&
+                    state.provider == AuthProviderEnum.google) {
+                  return false;
+                }
+                return true;
+              },
+            ),
+            const SizedBox(height: 20),
+            Row(children: <Widget>[
+              Expanded(
+                child: Divider(
+                    color: context.theme.dividerColor,
+                    height: 0.5,
+                    indent: MediaQuery.of(context).size.width * 0.05,
+                    endIndent: MediaQuery.of(context).size.width * 0.05),
+              ),
+              Text(context.l10n.intermediatePaymentMethod,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: AppColors.grey),
+                  textAlign: TextAlign.center),
+              Expanded(
+                child: Divider(
+                    color: context.theme.dividerColor,
+                    height: 0.5,
+                    indent: MediaQuery.of(context).size.width * 0.05,
+                    endIndent: MediaQuery.of(context).size.width * 0.05),
+              ),
+            ]),
+            const SizedBox(height: 20),
+            TextFormField(
+              autofocus: true,
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              validator: (val) => val!.isEmpty ? context.l10n.emailError : null,
+              onChanged: (val) {
                 setState(() {
-                  emailController.text = email;
-                  this.email = email;
+                  email = val;
                 });
-              }
-            },
-            child: Text(
-              context.l10n.forgotPassword,
-              style: context.textTheme.bodyMedium,
+              },
+              onFieldSubmitted: (val) {
+                focusNodePassword.requestFocus();
+              },
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: AppColors.white),
+              decoration: InputDecoration(
+                labelText: context.l10n.email,
+              ),
             ),
-          ),
-        ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        normalLogin(context, state, _formKey, email, password),
-        TextButton(
-          onPressed: () async {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-            String? email = await Navigator.push(
-                context,
-                CupertinoPageRoute<String>(
-                  builder: (context) => const Register(),
-                  settings: const RouteSettings(name: 'Register'),
-                ));
-            if (email != null) {
-              setState(() {
-                emailController.text = email;
-                this.email = email;
-              });
-            }
-          },
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              style: context.textTheme.bodyMedium,
-              children: [
-                TextSpan(
-                  text: "${context.l10n.noAccount} ",
-                ),
-                TextSpan(
-                  text: context.l10n.register,
-                  style: context.textTheme.bodyMedium
-                      ?.copyWith(decoration: TextDecoration.underline),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget logInWithEmail(AuthState state) {
-    return Container(
-      key: const ValueKey<int>(1),
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.05,
-          vertical: MediaQuery.of(context).size.height * 0.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25),
-        color: AppColors.black,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          TextButton(
-            onPressed: () async {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-              String? email = await Navigator.push(
-                  context,
-                  CupertinoPageRoute<String>(
-                    builder: (context) => const Register(),
-                    settings: const RouteSettings(name: 'Register'),
-                  ));
-              if (email != null) {
-                setState(() {
-                  emailController.text = email;
-                  this.email = email;
-                });
-              }
-            },
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
+            const SizedBox(height: 10),
+            TextFormField(
+                focusNode: focusNodePassword,
+                validator: (val) =>
+                    val!.length < 6 ? context.l10n.passwordError : null,
+                onChanged: (val) {
+                  setState(() {
+                    password = val;
+                  });
+                },
+                keyboardType: TextInputType.visiblePassword,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
                     ?.copyWith(color: AppColors.white),
-                children: [
-                  TextSpan(
-                    text: "${context.l10n.noAccount} ",
-                  ),
-                  TextSpan(
+                obscureText: !_passwordVisible,
+                decoration: InputDecoration(
+                  labelText: context.l10n.password,
+                )),
+            const SizedBox(height: 10),
+            SignUpButton(
+              foregroundColor: context.colorScheme.onPrimary,
+              backgroundColor: context.colorScheme.primary,
+              text: context.l10n.continueWithGoogle.split(" ")[0],
+              onTap: () {
+                if (_formKey.currentState!.validate()) {
+                  //emailTemp = email;
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                  context.read<AuthCubit>().generalSignIn(
+                      AuthProviderEnum.normal, context, email, password);
+                }
+              },
+              isLoading: () {
+                if (state is AuthLoading &&
+                    state.provider == AuthProviderEnum.normal) {
+                  return false;
+                }
+                return true;
+              },
+            ),
+            const SizedBox(height: 0),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.08),
+              child: TextButton(
+                onPressed: () async {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                  String? email = await Navigator.push(
+                      context,
+                      CupertinoPageRoute<String>(
+                        builder: (context) => const ForgotPassword(),
+                        settings: const RouteSettings(name: 'ForgotPassword'),
+                      ));
+                  if (email != null) {
+                    setState(() {
+                      emailController.text = email;
+                      this.email = email;
+                    });
+                  }
+                },
+                child: Text(
+                  context.l10n.forgotPassword,
+                  style: context.textTheme.bodyMedium,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+                String? email = await Navigator.push(
+                    context,
+                    CupertinoPageRoute<String>(
+                      builder: (context) => const Register(),
+                      settings: const RouteSettings(name: 'Register'),
+                    ));
+                if (email != null) {
+                  setState(() {
+                    emailController.text = email;
+                    this.email = email;
+                  });
+                }
+              },
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: context.textTheme.bodyMedium,
+                  children: [
+                    TextSpan(
+                      text: "${context.l10n.noAccount} ",
+                    ),
+                    TextSpan(
                       text: context.l10n.register,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.white,
-                          decoration: TextDecoration.underline)),
-                ],
+                      style: context.textTheme.bodyMedium
+                          ?.copyWith(decoration: TextDecoration.underline),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          TextButton(
-            onPressed: () async {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-              if (!await launchUrl(Uri.parse(termsAndConditions)))
-                throw 'Could not launch $termsAndConditions';
-            },
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: AppColors.white),
-                children: [
-                  TextSpan(
-                    text: context.l10n.useMambaTermsAndConditions,
-                  ),
-                  TextSpan(
-                      text: context.l10n.termsAndConditions.toLowerCase(),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.white,
-                          decoration: TextDecoration.underline)),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.005),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -363,23 +341,9 @@ class _LoginState extends State<Login>
   @override
   Widget build(BuildContext context) {
     return ResponsiveCenter(
-      child: ScaffoldMessenger(
-        key: scaffoldMessengerKey,
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          body: Form(
-            key: _formKey,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.02,
-                  vertical: MediaQuery.of(context).size.height * 0.02),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[_renderWidget()],
-              ),
-            ),
-          ),
-        ),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: _renderWidget(),
       ),
     );
   }

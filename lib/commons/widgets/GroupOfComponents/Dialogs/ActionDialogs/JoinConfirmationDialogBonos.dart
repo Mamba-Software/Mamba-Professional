@@ -12,7 +12,7 @@ import 'package:mamba/notifications/NotificationService/LocalNotificationService
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 
 class JoinConfirmationDialogBonos extends StatefulWidget {
   final String text;

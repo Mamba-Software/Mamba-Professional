@@ -13,7 +13,7 @@ import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mime/mime.dart';
 import 'package:intl/intl.dart';

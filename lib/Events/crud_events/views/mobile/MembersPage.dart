@@ -4,7 +4,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/Clients/ClientEventSelector.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/MaxClients/MaxClientsEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/Staff/StaffEventSelector.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 
 class MembersPage extends StatelessWidget {
   const MembersPage({super.key});

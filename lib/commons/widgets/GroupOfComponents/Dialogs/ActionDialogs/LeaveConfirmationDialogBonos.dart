@@ -12,7 +12,7 @@ import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 
 class LeaveConfirmationDialogBonos extends StatefulWidget {
   final String text;

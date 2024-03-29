@@ -11,7 +11,7 @@ import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 

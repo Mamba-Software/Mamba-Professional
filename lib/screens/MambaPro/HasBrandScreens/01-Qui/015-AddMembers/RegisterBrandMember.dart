@@ -9,7 +9,7 @@ import 'package:mamba/notifications/NotificationService/NotificationService.dart
 
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 
 class RegisterBrandMember extends StatefulWidget {
   final bool isTrainer;

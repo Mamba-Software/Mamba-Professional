@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/assets.dart';
 
@@ -22,9 +23,7 @@ class _LoadingViewState extends State<LoadingView> {
           child: SizedBox(
             width: widget.isSmall != null && widget.isSmall == true ? 25 : 50,
             height: widget.isSmall != null && widget.isSmall == true ? 25 : 50,
-            child: CircularProgressIndicator(
-              strokeWidth:
-                  widget.isSmall != null && widget.isSmall == true ? 2.5 : 4,
+            child: CupertinoActivityIndicator(
               color: widget.color ?? Theme.of(context).colorScheme.secondary,
             ),
           ),
