@@ -140,7 +140,7 @@ class _LoginState extends State<Login>
               "Log In",
               style: context.textTheme.displayLarge,
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 60),
             SignUpButton(
               foregroundColor: context.colorScheme.primary,
               backgroundColor: context.colorScheme.background,
@@ -160,7 +160,7 @@ class _LoginState extends State<Login>
                 return true;
               },
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             SignUpButton(
               foregroundColor: context.colorScheme.primary,
               backgroundColor: context.colorScheme.background,
@@ -179,7 +179,7 @@ class _LoginState extends State<Login>
                 return true;
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             Row(children: <Widget>[
               Expanded(
                 child: Divider(
@@ -202,7 +202,7 @@ class _LoginState extends State<Login>
                     endIndent: MediaQuery.of(context).size.width * 0.05),
               ),
             ]),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             TextFormField(
               autofocus: true,
               controller: emailController,
@@ -267,7 +267,7 @@ class _LoginState extends State<Login>
                 return true;
               },
             ),
-            const SizedBox(height: 0),
+            const SizedBox(height: 10),
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.08),
