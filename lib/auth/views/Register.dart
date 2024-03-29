@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
-import 'package:mamba/auth/widgets/mobile/NormalRegister.dart';
+import 'package:mamba/auth/widgets/NormalRegister.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/styles/AppColors.dart';

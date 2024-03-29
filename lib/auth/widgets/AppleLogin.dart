@@ -4,6 +4,7 @@ import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 Widget appleLogin(BuildContext context, AuthState state) {
@@ -40,10 +41,7 @@ Widget appleLogin(BuildContext context, AuthState state) {
             Expanded(
               child: checkIfProvider(state, AuthProviderEnum.apple)
                   ? Text(context.l10n.continueWithApple,
-                      style: Theme.of(context)
-                          .textTheme
-                          .displaySmall
-                          ?.copyWith(color: AppColors.black),
+                      style: context.textTheme.titleLarge,
                       textAlign: TextAlign.center)
                   : Center(
                       child: SizedBox(

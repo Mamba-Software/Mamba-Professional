@@ -1,10 +1,10 @@
 //YourBrand class used to have a list of your brands
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba/auth/views/SplashScreen.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/app/styles/AppColors.dart';
-import 'package:mamba/auth/views/mobile/SplashScreen.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/data/Models/Brand.dart';
 

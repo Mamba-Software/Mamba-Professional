@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/utils/enumAuth.dart';
 import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 Widget normalLogin(BuildContext context, AuthState state, final formKey,
@@ -35,12 +36,10 @@ Widget normalLogin(BuildContext context, AuthState state, final formKey,
             color: AppColors.white, borderRadius: BorderRadius.circular(30)),
         child: checkIfProvider(state, AuthProviderEnum.normal)
             ? Center(
-                child: Text(context.l10n.continueWithGoogle.split(" ")[0],
-                    style: Theme.of(context)
-                        .textTheme
-                        .displaySmall
-                        ?.copyWith(color: AppColors.black)),
-              )
+                child: Text(
+                context.l10n.continueWithGoogle.split(" ")[0],
+                style: context.textTheme.titleLarge,
+              ))
             : Center(
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.06,
