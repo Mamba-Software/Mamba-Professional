@@ -1,4 +1,5 @@
 import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -150,7 +151,8 @@ class AgeRangeState extends State<AgeRange> {
                                 args.textStyle = (Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
-                                    .copyWith(color: AppColors.mamba));
+                                    .copyWith(
+                                        color: context.colorScheme.secondary));
                               } else {
                                 args.textStyle = (Theme.of(context)
                                     .textTheme
@@ -203,7 +205,7 @@ class AgeRangeState extends State<AgeRange> {
                                 width: 0.3,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(30)),
-                                borderColor: AppColors.mamba,
+                                borderColor: context.colorScheme.secondary,
                                 borderWidth: 0,
                                 /*
                               markerSettings: MarkerSettings(
@@ -211,14 +213,15 @@ class AgeRangeState extends State<AgeRange> {
                                   height:  5,
                                   width:  5,
                                   shape: DataMarkerType.circle,
-                                  color: AppColors.mamba),
+                                  color: context.colorScheme.secondary),
 */
                                 gradient: LinearGradient(
                                   begin: Alignment.centerRight,
                                   end: Alignment.centerLeft,
                                   colors: [
-                                    AppColors.mamba,
-                                    AppColors.mamba.withOpacity(0.2),
+                                    context.colorScheme.secondary,
+                                    context.colorScheme.secondary
+                                        .withOpacity(0.2),
                                   ],
                                 ),
                                 dataSource: clientsAgeTotalList,

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
-import 'package:mamba/auth/CreateBrand/widgets/BrandImagesContainer.dart';
+import 'package:mamba/brand/CreateBrand/widgets/BrandImagesContainer.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';

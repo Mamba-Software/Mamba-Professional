@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -1704,8 +1705,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                                                                               width: MediaQuery.of(context).size.width * 0.06,
                                                                                               child: MaterialButton(
                                                                                                 elevation: 4,
-                                                                                                color: selectedTrainersBottom.contains(trainer) ? AppColors.mamba : Theme.of(context).scaffoldBackgroundColor,
-                                                                                                textColor: selectedTrainersBottom.contains(trainer) ? AppColors.mamba : Theme.of(context).scaffoldBackgroundColor,
+                                                                                                color: selectedTrainersBottom.contains(trainer) ? context.colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
+                                                                                                textColor: selectedTrainersBottom.contains(trainer) ? context.colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
                                                                                                 padding: EdgeInsets.zero,
                                                                                                 shape: const CircleBorder(),
                                                                                                 onPressed: () {

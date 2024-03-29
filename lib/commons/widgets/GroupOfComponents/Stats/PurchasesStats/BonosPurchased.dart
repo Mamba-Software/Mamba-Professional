@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/assets.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Purchase.dart';
-import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
@@ -279,7 +279,8 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                   .textTheme
                                                   .headlineMedium
                                                   ?.copyWith(
-                                                      color: AppColors.mamba,
+                                                      color: context.colorScheme
+                                                          .secondary,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -312,7 +313,8 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                   .textTheme
                                                   .headlineMedium
                                                   ?.copyWith(
-                                                      color: AppColors.mamba,
+                                                      color: context.colorScheme
+                                                          .secondary,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -354,7 +356,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                   .textTheme
                                                   .headlineMedium
                                                   ?.copyWith(
-                                                      color: AppColors.mamba,
+                                                      color: context.colorScheme.secondary,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -385,7 +387,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                   .textTheme
                                                   .headlineMedium
                                                   ?.copyWith(
-                                                      color: AppColors.mamba,
+                                                      color: context.colorScheme.secondary,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -481,16 +483,16 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                   series: <ChartSeries>[
                                     // Renders line chart
                                     SplineAreaSeries<TotalBenefit, String>(
-                                      borderColor: AppColors.mamba,
+                                      borderColor: context.colorScheme.secondary,
                                       borderWidth: 2,
-                                      markerSettings: const MarkerSettings(
-                                          borderColor: AppColors.mamba,
+                                      markerSettings: MarkerSettings(
+                                          borderColor: context.colorScheme.secondary,
                                           //isVisible: bonos.isEmpty || bonoStats[index].totalBenefits.length == 1 ? true : false,
                                           isVisible: false,
                                           height: 10,
                                           width: 10,
                                           shape: DataMarkerType.circle,
-                                          color: AppColors.mamba),
+                                          color: context.colorScheme.secondary),
                                       color: Colors.transparent,
                                       dataSource:
                                           bonoStats[index].totalBenefits,
@@ -568,7 +570,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                   .textTheme
                                                   .headlineMedium
                                                   ?.copyWith(
-                                                      color: AppColors.mamba,
+                                                      color: context.colorScheme.secondary,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -601,7 +603,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                   .textTheme
                                                   .headlineMedium
                                                   ?.copyWith(
-                                                      color: AppColors.mamba,
+                                                      color: context.colorScheme.secondary,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -643,7 +645,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                   .textTheme
                                                   .headlineMedium
                                                   ?.copyWith(
-                                                      color: AppColors.mamba,
+                                                      color: context.colorScheme.secondary,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -674,7 +676,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                                   .textTheme
                                                   .headlineMedium
                                                   ?.copyWith(
-                                                      color: AppColors.mamba,
+                                                      color: context.colorScheme.secondary,
                                                       fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold),

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/assets.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -113,7 +114,7 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
 
     mapHours.forEach((k, v) {
       if (v == maxHour) {
-        timeDemand.add(TimeDemand(k, v, AppColors.mamba));
+        timeDemand.add(TimeDemand(k, v, context.colorScheme.secondary));
       } else {
         timeDemand.add(TimeDemand(k, v, AppColors.grey));
       }
@@ -177,7 +178,7 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
 
     mapHours.forEach((k, v) {
       if (v == maxHour) {
-        timeDemand.add(TimeDemand(k, v, AppColors.mamba));
+        timeDemand.add(TimeDemand(k, v, context.colorScheme.secondary));
       } else {
         timeDemand.add(TimeDemand(k, v, AppColors.grey));
       }

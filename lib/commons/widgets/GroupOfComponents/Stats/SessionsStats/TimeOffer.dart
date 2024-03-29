@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/assets.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -127,10 +128,8 @@ class TimeOfferState extends State<TimeOffer> {
                   alignment: Alignment.topLeft,
                   child: Text(
                     timeOffered,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineMedium
-                        ?.copyWith(color: AppColors.mamba, fontSize: 60),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: context.colorScheme.secondary, fontSize: 60),
                   ),
                 ),
               ),

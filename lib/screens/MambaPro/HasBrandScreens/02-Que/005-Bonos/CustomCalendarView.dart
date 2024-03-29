@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 
 class CustomCalendarView extends StatefulWidget {
@@ -218,7 +219,8 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                               color: startDate != null && endDate != null
                                   ? getIsItStartAndEndDate(date) ||
                                           getIsInRange(date)
-                                      ? AppColors.mamba.withOpacity(0.4)
+                                      ? context.colorScheme.secondary
+                                          .withOpacity(0.4)
                                       : Colors.transparent
                                   : Colors.transparent,
                               borderRadius: BorderRadius.only(
@@ -287,7 +289,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: getIsItStartAndEndDate(date)
-                                  ? AppColors.mamba
+                                  ? context.colorScheme.secondary
                                   : Colors.transparent,
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(32.0)),

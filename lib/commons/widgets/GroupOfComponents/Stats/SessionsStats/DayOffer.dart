@@ -4,6 +4,7 @@ import 'package:mamba/app/styles/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -154,7 +155,8 @@ class DayOfferState extends State<DayOffer> {
                                 args.textStyle = (Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
-                                    .copyWith(color: AppColors.mamba));
+                                    .copyWith(
+                                        color: context.colorScheme.secondary));
                               } else {
                                 args.textStyle = (Theme.of(context)
                                     .textTheme
@@ -206,7 +208,7 @@ class DayOfferState extends State<DayOffer> {
                                 width: 0.3,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(30)),
-                                borderColor: AppColors.mamba,
+                                borderColor: context.colorScheme.secondary,
                                 borderWidth: 0,
                                 /*
                               markerSettings: MarkerSettings(
@@ -214,14 +216,15 @@ class DayOfferState extends State<DayOffer> {
                                   height:  5,
                                   width:  5,
                                   shape: DataMarkerType.circle,
-                                  color: AppColors.mamba),
+                                  color: context.colorScheme.secondary),
 */
                                 gradient: LinearGradient(
                                   begin: Alignment.centerRight,
                                   end: Alignment.centerLeft,
                                   colors: [
-                                    AppColors.mamba,
-                                    AppColors.mamba.withOpacity(0.2),
+                                    context.colorScheme.secondary,
+                                    context.colorScheme.secondary
+                                        .withOpacity(0.2),
                                   ],
                                 ),
                                 dataSource: totalEvents,

@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 class RateAppPopup {
@@ -69,9 +70,9 @@ class RateAppPopup {
                             initialRating: 0,
                             itemCount: 5,
                             itemSize: MediaQuery.of(context).size.height * 0.06,
-                            itemBuilder: (context, index) => const Icon(
+                            itemBuilder: (context, index) => Icon(
                               Icons.star,
-                              color: AppColors.mamba,
+                              color: context.colorScheme.secondary,
                             ),
                             onRatingUpdate: (rating) {
                               Navigator.pop(context);

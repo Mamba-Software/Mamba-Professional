@@ -8,6 +8,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -15,7 +16,6 @@ import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mime/mime.dart';
-import 'package:mamba/app/styles/AppColors.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
@@ -317,7 +317,7 @@ class _ChatPageState extends State<ChatPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: (customMessage.author.id == currentUser.id
-                    ? AppColors.mamba.withOpacity(0.5)
+                    ? context.colorScheme.secondary.withOpacity(0.5)
                     : Theme.of(context).colorScheme.background),
               ),
               padding: EdgeInsets.symmetric(
@@ -485,7 +485,8 @@ class _ChatPageState extends State<ChatPage> {
                             inputTextCursorColor:
                                 Theme.of(context).colorScheme.secondary,
                             inputBorderRadius: BorderRadius.circular(0),
-                            primaryColor: AppColors.mamba.withOpacity(0.5),
+                            primaryColor:
+                                context.colorScheme.secondary.withOpacity(0.5),
                             secondaryColor:
                                 Theme.of(context).colorScheme.background,
                             emptyChatPlaceholderTextStyle:
@@ -534,9 +535,9 @@ class _ChatPageState extends State<ChatPage> {
                               Icons.done_all,
                               color: Theme.of(context).primaryColor,
                             ),
-                            seenIcon: const Icon(
+                            seenIcon: Icon(
                               Icons.done_all,
-                              color: AppColors.mamba,
+                              color: context.colorScheme.secondary,
                             ),
                             dateDividerTextStyle: Theme.of(context)
                                 .textTheme

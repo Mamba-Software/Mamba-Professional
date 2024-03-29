@@ -852,7 +852,7 @@ class _BonosProState extends State<BonosPro> {
                                             MediaQuery.of(context).size.width *
                                                 0.08,
                                         decoration: const BoxDecoration(
-                                            color: AppColors.mamba,
+                                            color: context.colorScheme.secondary,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20))),
                                         child: Align(
@@ -881,7 +881,7 @@ class _BonosProState extends State<BonosPro> {
                                             MediaQuery.of(context).size.width *
                                                 0.08,
                                         decoration: const BoxDecoration(
-                                            color: AppColors.mamba,
+                                            color: context.colorScheme.secondary,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20))),
                                         child: Align(

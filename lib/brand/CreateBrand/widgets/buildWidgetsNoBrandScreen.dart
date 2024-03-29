@@ -1,7 +1,7 @@
 // Build the Widget of the Image
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba/auth/CreateBrand/views/mobile/RegistrarMarca.dart';
+import 'package:mamba/brand/CreateBrand/views/mobile/RegistrarMarca.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';

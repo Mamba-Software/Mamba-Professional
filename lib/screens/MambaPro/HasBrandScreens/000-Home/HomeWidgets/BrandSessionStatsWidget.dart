@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/styles/AppColors.dart';
@@ -244,22 +245,23 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                           series: <ChartSeries>[
                             // Renders line chart
                             SplineAreaSeries<TotalEvents, String>(
-                              borderColor: AppColors.mamba,
+                              borderColor: context.colorScheme.secondary,
                               borderWidth: 2,
                               markerSettings: MarkerSettings(
-                                  borderColor: AppColors.mamba,
+                                  borderColor: context.colorScheme.secondary,
                                   isVisible:
                                       totalEvents.length == 1 ? true : false,
                                   height: 10,
                                   width: 10,
                                   shape: DataMarkerType.circle,
-                                  color: AppColors.mamba),
+                                  color: context.colorScheme.secondary),
                               gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  AppColors.mamba,
-                                  AppColors.mamba.withOpacity(0.2),
+                                  context.colorScheme.secondary,
+                                  context.colorScheme.secondary
+                                      .withOpacity(0.2),
                                 ],
                               ),
                               dataSource: totalEvents,

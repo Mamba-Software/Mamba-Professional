@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/styles/AppColors.dart';
@@ -197,7 +198,7 @@ class SessionsMadeState extends State<SessionsMade> {
                 // Renders line chart
                 SplineAreaSeries<TotalEvents, String>(
                   animationDuration: 0,
-                  borderColor: AppColors.mamba,
+                  borderColor: context.colorScheme.secondary,
                   borderWidth: 5,
                   emptyPointSettings: EmptyPointSettings(
                       mode: EmptyPointMode.gap,
@@ -208,8 +209,8 @@ class SessionsMadeState extends State<SessionsMade> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      AppColors.mamba,
-                      AppColors.mamba.withOpacity(0.2),
+                      context.colorScheme.secondary,
+                      context.colorScheme.secondary.withOpacity(0.2),
                     ],
                   ),
                   dataSource: isYearly ? chartDataYear : chartDataSixMonths,

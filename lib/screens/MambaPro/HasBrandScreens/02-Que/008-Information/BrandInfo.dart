@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/auth/views/mobile/SplashScreen.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
@@ -2392,13 +2393,14 @@ class _BrandInfoState extends State<BrandInfo>
                   bottom: MediaQuery.of(context).size.width * 0.01),
               child: Text(context.l10n.chooseYourPlan,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: AppColors.mamba, fontWeight: FontWeight.bold),
+                      color: context.colorScheme.secondary,
+                      fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left),
             ),
             subtitle: Text(
               context.l10n.freeTrialDaysLeft(difference.toString()),
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: AppColors.mamba,
+                  color: context.colorScheme.secondary,
                   fontWeight: FontWeight.normal,
                   fontSize: 12),
             ),
@@ -2596,7 +2598,7 @@ class _BrandInfoState extends State<BrandInfo>
                         : currentBrand.stripeActivated! &&
                                 currentBrand.isVerified
                             ? Colors.green
-                            : AppColors.mamba,
+                            : context.colorScheme.secondary,
                   ),
                 ),
               ],

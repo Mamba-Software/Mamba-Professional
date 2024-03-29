@@ -72,7 +72,7 @@ class EachList extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           radius: 25.0,
-          backgroundColor: AppColors.mamba,
+          backgroundColor: context.colorScheme.secondary,
           child: Text(name[0]),
         ),
         trailing: const Icon(Icons.east),

@@ -207,7 +207,7 @@ class _FeedBackState extends State<FeedBack> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(color: AppColors.mamba),
+                                ?.copyWith(color: context.colorScheme.secondary),
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
@@ -267,7 +267,7 @@ class _FeedBackState extends State<FeedBack> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(color: AppColors.mamba),
+                                ?.copyWith(color: context.colorScheme.secondary),
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,

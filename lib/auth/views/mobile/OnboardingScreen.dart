@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba/auth/CreateBrand/views/mobile/RegistrarMarca.dart';
+import 'package:mamba/brand/CreateBrand/views/mobile/RegistrarMarca.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';

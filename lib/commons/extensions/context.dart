@@ -9,6 +9,8 @@ extension BuildContextX on BuildContext {
 
   // Access to the app theme
   ThemeData get theme => Theme.of(this);
+  // Access to the app theme
+  ColorScheme get colorScheme => Theme.of(this).colorScheme;
   // Access to the primary TextTheme
   TextTheme get textTheme => Theme.of(this).textTheme;
 

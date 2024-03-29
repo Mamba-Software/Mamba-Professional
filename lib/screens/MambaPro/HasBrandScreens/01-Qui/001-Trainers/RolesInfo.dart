@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 
@@ -203,14 +204,14 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -279,14 +280,14 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -385,14 +386,14 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -461,14 +462,14 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -537,14 +538,14 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -614,14 +615,14 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -712,21 +713,21 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 0),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -787,21 +788,21 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 0),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -870,14 +871,14 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -946,14 +947,14 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -1030,7 +1031,7 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -1121,21 +1122,21 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 0),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -1196,21 +1197,21 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 0),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -1263,9 +1264,9 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mamba, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(Icons.check, color: context.colorScheme.secondary, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mamba, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(Icons.check, color: context.colorScheme.secondary, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -1314,9 +1315,9 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mamba, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(Icons.check, color: context.colorScheme.secondary, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
-                                  Icon(Icons.check, color: AppColors.mamba, size: MediaQuery.of(context).size.width*0.03,),
+                                  Icon(Icons.check, color: context.colorScheme.secondary, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 10),
                                 ],
                               ),
@@ -1391,7 +1392,7 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -1498,7 +1499,7 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -1575,7 +1576,7 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -1652,7 +1653,7 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -1729,7 +1730,7 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -1806,7 +1807,7 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),
@@ -1899,7 +1900,7 @@ class RolesInfo extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   Icon(
                                     Icons.check,
-                                    color: AppColors.mamba,
+                                    color: context.colorScheme.secondary,
                                     size: MediaQuery.of(context).size.width *
                                         0.03,
                                   ),

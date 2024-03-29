@@ -1,4 +1,5 @@
 import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/data/Models/Brand.dart';
@@ -72,7 +73,9 @@ class GenderGroupState extends State<GenderGroup> {
     }
 
     genderGrouped.add(GenderGroupClass(
-        AppLocalizations.of(widget.context)!.male, totalMen, AppColors.mamba));
+        AppLocalizations.of(widget.context)!.male,
+        totalMen,
+        context.colorScheme.secondary));
     genderGrouped.add(GenderGroupClass(
         AppLocalizations.of(widget.context)!.female,
         totalWomen,
@@ -92,14 +95,14 @@ class GenderGroupState extends State<GenderGroup> {
 
     /*
     if((genderGrouped[0].total >= genderGrouped[1].total) && (genderGrouped[0].total >= genderGrouped[2].total)) {
-      genderGrouped[0].color = AppColors.mamba;
+      genderGrouped[0].color = context.colorScheme.secondary;
       genderGrouped[1].color = Colors.black;
       genderGrouped[2].color = AppColors.grey;
     }*/
 
     for (int i = 0; i < genderGrouped.length; ++i) {
       if (i == 0) {
-        genderGrouped[i].color = AppColors.mamba;
+        genderGrouped[i].color = context.colorScheme.secondary;
       } else if (i == 1) {
         genderGrouped[i].color = AppColors.black;
       } else {
@@ -140,13 +143,13 @@ class GenderGroupState extends State<GenderGroup> {
         else if (totalWomen < totalOthers)
         {
           //totalOthers el mes gran
-          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.mamba));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, context.colorScheme.secondary));
           explodeIndex = 2;
         }
         else
         {
-          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.mamba));
-          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.mambaTrans));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, context.colorScheme.secondary));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, context.colorScheme.secondaryheme.secondaryTrans));
 
           //totalOthers i totalWomen iguals
         }
@@ -154,14 +157,14 @@ class GenderGroupState extends State<GenderGroup> {
       else {
         if(totalMen == totalOthers)
         {
-          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.mamba));
-          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.male, totalMen, AppColors.mambaTrans));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, context.colorScheme.secondary));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.male, totalMen, context.colorScheme.secondaryTrans));
           genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.grey));
           //els tres iguals
         }
         else {
-          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.mamba));
-          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.male, totalMen, AppColors.mambaTrans));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, context.colorScheme.secondary));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.male, totalMen, context.colorScheme.secondaryTrans));
           //totalMen i totalWomen igual
         }
       }

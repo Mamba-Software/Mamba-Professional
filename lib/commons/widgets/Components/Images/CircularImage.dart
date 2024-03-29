@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class CircularImage extends StatefulWidget {
   final double? size;
@@ -53,7 +54,7 @@ class _CircularImageState extends State<CircularImage> {
             decoration: BoxDecoration(
                 border: Border.all(
                   width: widget.borderWidth == null ? 0 : widget.borderWidth!,
-                  color: widget.color == null ? AppColors.mamba : widget.color!,
+                  color: widget.color == null ? context.colorScheme.secondary : widget.color!,
                   style: widget.borderWidth == null
                       ? BorderStyle.none
                       : BorderStyle.solid,
