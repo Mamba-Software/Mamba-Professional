@@ -28,13 +28,9 @@ class Login extends StatefulWidget {
   _LoginState createState() => _LoginState();
 }
 
-class _LoginState extends State<Login>
-    with TickerProviderStateMixin, PlatformMixin {
+class _LoginState extends State<Login> with PlatformMixin {
   // Access to DatabaseService
   final _userDataService = UserDataService();
-
-  bool isEmailSignIn = false;
-
   // Scaffold Messenger Key
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -42,10 +38,8 @@ class _LoginState extends State<Login>
   // FormVariables
   final _formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
+  var passwordController = TextEditingController();
   FocusNode focusNodePassword = FocusNode();
-  String email = '';
-  String password = '';
-  String emailTemp = '';
 
   // Apple Sign In
   bool isLoadingApple = false;
@@ -112,7 +106,7 @@ class _LoginState extends State<Login>
               ),
             ),
             Text(
-              "  ${context.l10n.loginWithEmail}  ",
+              "  ${context.l10n.loginWithEmail}   ",
               style: context.textTheme.labelMedium,
               textAlign: TextAlign.center,
             ),
@@ -124,42 +118,27 @@ class _LoginState extends State<Login>
             ),
           ]),
           const SizedBox(height: 30),
-          TextFormField(
-            autofocus: true,
+          TextFormField(            
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             validator: (val) => val!.isEmpty ? context.l10n.emailError : null,
-            onChanged: (val) {
-              setState(() {
-                email = val;
-              });
-            },
             onFieldSubmitted: (val) {
               focusNodePassword.requestFocus();
             },
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: AppColors.white),
+            style: context.textTheme.bodyMedium,
             decoration: InputDecoration(
               labelText: context.l10n.email,
             ),
           ),
           const SizedBox(height: 10),
           TextFormField(
+            controller: passwordController,
             focusNode: focusNodePassword,
             validator: (val) =>
                 val!.length < 6 ? context.l10n.passwordError : null,
-            onChanged: (val) {
-              setState(() {
-                password = val;
-              });
-            },
             keyboardType: TextInputType.visiblePassword,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: AppColors.white),
+            style: context.textTheme.bodyMedium,
+            obscureText: true,
             decoration: InputDecoration(
               labelText: context.l10n.password,
             ),
@@ -176,12 +155,13 @@ class _LoginState extends State<Login>
                     builder: (context) => const ForgotPassword(),
                     settings: const RouteSettings(name: 'ForgotPassword'),
                   ));
+              /*
               if (email != null) {
                 setState(() {
                   emailController.text = email;
                   this.email = email;
                 });
-              }
+              }*/
             },
             child: Text(
               context.l10n.forgotPassword,
@@ -202,7 +182,10 @@ class _LoginState extends State<Login>
                     currentFocus.unfocus();
                   }
                   context.read<AuthCubit>().generalSignIn(
-                      AuthProviderEnum.normal, context, email, password);
+                      AuthProviderEnum.normal,
+                      context,
+                      emailController.text,
+                      passwordController.text);
                 }
               },
               isLoading: () => context
@@ -221,12 +204,14 @@ class _LoginState extends State<Login>
                     builder: (context) => const Register(),
                     settings: const RouteSettings(name: 'Register'),
                   ));
+              /*
               if (email != null) {
                 setState(() {
                   emailController.text = email;
                   this.email = email;
                 });
               }
+              */
             },
             child: RichText(
               textAlign: TextAlign.center,
@@ -265,9 +250,11 @@ class _LoginState extends State<Login>
                           text: context.l10n.useMambaTermsAndConditions,
                         ),
                         TextSpan(
-                            text: context.l10n.termsAndConditions.toLowerCase(),
-                            style: context.textTheme.labelMedium?.copyWith(
-                                decoration: TextDecoration.underline)),
+                          text: context.l10n.termsAndConditions.toLowerCase(),
+                          /*style: context.textTheme.labelMedium?.copyWith(
+                                decoration: TextDecoration.underline)
+                                */
+                        ),
                       ],
                     ),
                   ),
@@ -359,7 +346,7 @@ class _LoginState extends State<Login>
                       "https://apps.apple.com/us/app/mamba-professional/id1642701679",
                   openStore: true);
             } else {
-              await _userDataService.resendEmail(email.trim());
+              await _userDataService.resendEmail(emailController.text.trim());
               scaffoldMessengerKey.currentState!.hideCurrentSnackBar();
             }
           },

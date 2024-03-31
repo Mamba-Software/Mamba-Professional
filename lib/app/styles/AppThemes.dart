@@ -6,8 +6,7 @@ import 'package:mamba/commons/constants/constants.dart';
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
 class AppThemes {
-  
-  ThemeData lightTheme([Color? specificHighlghtColor ]) {
+  ThemeData lightTheme([Color? specificHighlghtColor]) {
     // Define Colors
     Color highlightColor = specificHighlghtColor ?? AppColors.mamba;
     Color primaryColor = AppColors.black;
@@ -45,8 +44,8 @@ class AppThemes {
       // Button Colors
       splashColor: primaryColor.withOpacity(0.5),
       shadowColor: primaryColor.withOpacity(0.5),
-      focusColor: invertedPrimaryColor,
-      hoverColor: invertedPrimaryColor,
+      focusColor: scaffoldBackgroundColor,
+      hoverColor: scaffoldBackgroundColor,
       // Color Scheme
       colorScheme: ColorScheme(
         primary: primaryColor,
@@ -261,7 +260,7 @@ class AppThemes {
     );
   }
 
-  ThemeData darkTheme([Color? specificHighlghtColor ]) {
+  ThemeData darkTheme([Color? specificHighlghtColor]) {
     // Define Colors
     Color highlightColor = specificHighlghtColor ?? AppColors.mamba;
     Color primaryColor = AppColors.white;
@@ -299,8 +298,8 @@ class AppThemes {
       // Button Colors
       splashColor: primaryColor.withOpacity(0.5),
       shadowColor: primaryColor.withOpacity(0.5),
-      focusColor: invertedPrimaryColor,
-      hoverColor: invertedPrimaryColor,
+      focusColor: primaryColor.withOpacity(0.25),
+      hoverColor: primaryColor.withOpacity(0.25),
       // Color Scheme
       colorScheme: ColorScheme(
         primary: primaryColor,
@@ -419,13 +418,13 @@ class AppThemes {
           mainFontFamily,
         ),
         systemOverlayStyle: const SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.light,
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: AppColors.black,
-        systemNavigationBarDividerColor: AppColors.black,
-        systemNavigationBarIconBrightness: Brightness.light,
-      ), // For light icons on dark background
+          statusBarBrightness: Brightness.light,
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarColor: AppColors.black,
+          systemNavigationBarDividerColor: AppColors.black,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ), // For light icons on dark background
       ),
       // Bottom Sheet Theme
       bottomSheetTheme: BottomSheetThemeData(
@@ -478,7 +477,7 @@ class AppThemes {
           mainFontFamily,
         ),
         shape: const StadiumBorder(),
-      ),     
+      ),
       // Button Theme
       buttonTheme: ButtonThemeData(
         buttonColor: primaryColor,
@@ -514,5 +513,4 @@ class AppThemes {
       ),
     );
   }
-
 }

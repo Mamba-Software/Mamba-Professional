@@ -16,7 +16,6 @@ class ResponsiveCenter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           if (context.isMobile) {
