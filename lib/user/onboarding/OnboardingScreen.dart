@@ -22,7 +22,7 @@ import 'package:mamba/commons/utils/Images/ImageUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import '../splash/SplashScreen.dart';
+import '../../auth/splash/SplashScreen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});

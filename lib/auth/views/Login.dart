@@ -1,12 +1,11 @@
 import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
-import 'package:mamba/auth/utils/enumAuth.dart';
-import 'package:mamba/auth/views/ForgotPassword.dart';
-import 'package:mamba/auth/views/Register.dart';
+import 'package:mamba/auth/models/enum_auth.dart';
+import 'package:mamba/auth/views/forgot_password.dart';
+import 'package:mamba/auth/views/register.dart';
 import 'package:mamba/auth/splash/SplashScreen.dart';
 import 'package:mamba/auth/widgets/signin_button.dart';
 import 'package:mamba/commons/constants/constants.dart';

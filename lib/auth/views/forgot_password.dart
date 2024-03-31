@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
-import 'package:mamba/auth/utils/enumAuth.dart';
-import 'package:mamba/auth/widgets/RecoverPassword.dart';
+import 'package:mamba/auth/models/enum_auth.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/auth/widgets/signin_button.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
@@ -19,16 +16,12 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  // Access to DataBaseService
-  final _userDataService = UserDataService();
-
   // Scaffold Messenger Key
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   // FormVariables
   final _formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
-
 
   @override
   void initState() {
@@ -64,7 +57,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             text: context.l10n.recover,
             onTap: () {
               if (_formKey.currentState!.validate()) {
-                context.read<AuthCubit>().forgotPassword(emailController.text.trim(), context);
+                context
+                    .read<AuthCubit>()
+                    .forgotPassword(emailController.text.trim(), context);
               }
             },
             isLoading: () => context

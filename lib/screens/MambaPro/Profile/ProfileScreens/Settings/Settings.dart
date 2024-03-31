@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mamba/auth/views/Login.dart';
+import 'package:mamba/auth/views/login.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';

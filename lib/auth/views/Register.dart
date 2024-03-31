@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
-import 'package:mamba/auth/utils/enumAuth.dart';
-import 'package:mamba/auth/widgets/NormalRegister.dart';
+import 'package:mamba/auth/models/enum_auth.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/auth/widgets/signin_button.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
-import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 

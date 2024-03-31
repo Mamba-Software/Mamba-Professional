@@ -5,17 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mamba/app/styles/AppColors.dart';
-import 'package:mamba/auth/utils/enumAuth.dart';
+import 'package:mamba/auth/models/enum_auth.dart';
 import 'package:mamba/commons/constants/constants.dart';
-import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 part 'AuthState.dart';
 
