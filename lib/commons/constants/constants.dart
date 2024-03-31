@@ -53,6 +53,7 @@ var website = "https://mambafitness.es/";
 var termsAndConditions = "https://mambafitness.es/terminos-y-condiciones/";
 var privacy = "https://mambafitness.es/privacidad/";
 var functionalities = "https://mambafitness.es/profesionales/";
+var pricing = "https://mambafitness.es/demo/";
 
 // Stripe
 var stripeConnect = "https://stripe.com/es/privacy";

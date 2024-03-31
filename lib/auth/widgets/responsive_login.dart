@@ -1,0 +1,213 @@
+import 'package:flutter/material.dart';
+import 'package:mamba/auth/widgets/app_bar.dart';
+import 'package:mamba/commons/constants/assets.dart';
+import 'package:mamba/commons/extensions/context.dart';
+import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+
+import '../../commons/constants/constants.dart';
+
+class ResponsiveCenter extends StatelessWidget {
+  final Widget child;
+
+  const ResponsiveCenter({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          if (context.isMobile) {
+            return ListView(
+              children: [
+                const CustomAppBar(
+                  height: kToolbarHeight,
+                ),
+                Container(
+                  margin: const EdgeInsets.all(30),
+                  child: child,
+                ),
+              ],
+            );
+          } else if (context.isTablet) {
+            // Ignore this
+            return ListView(
+              children: [
+                const CustomAppBar(
+                  height: kToolbarHeight,
+                  maxWidth: 500,
+                ),
+                Center(
+                  child: Container(
+                    margin: const EdgeInsets.all(30),
+                    constraints: const BoxConstraints(maxWidth: 500),
+                    child: child,
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return ListView(
+              children: [
+                const CustomAppBar(
+                  height: kToolbarHeight,
+                  maxWidth: 1250,
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SizedBox(
+                      height: context.height,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Center(
+                              child: Container(
+                                margin: const EdgeInsets.all(30),
+                                constraints:
+                                    const BoxConstraints(maxWidth: 400),
+                                child: child,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              height: context.height,
+                              color: context.theme.primaryColorDark
+                                  .withOpacity(0.05),
+                              child: Image(
+                                fit: BoxFit.fitHeight,
+                                image: AssetImage(
+                                  Assets.mambaCoverBW,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: kToolbarHeight,
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.background,
+                        border: Border(
+                          top: BorderSide(
+                            color: context.theme
+                                .dividerColor, // Color of the bottom border
+                            width: 0.5, // Width of the bottom border
+                          ),
+                        ),
+                      ),
+                      child: Center(
+                        child: Container(
+                          constraints: const BoxConstraints(
+                            maxWidth: 1250,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Flexible(
+                                flex: 1,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () async {
+                                        FocusScopeNode currentFocus =
+                                            FocusScope.of(context);
+                                        if (!currentFocus.hasPrimaryFocus) {
+                                          currentFocus.unfocus();
+                                        }
+                                        if (!await launchUrl(
+                                            Uri.parse(pricing))) {
+                                          throw 'Could not launch $pricing';
+                                        }
+                                      },
+                                      child: Text(
+                                        "Pricing",
+                                        style: context.textTheme.labelMedium,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        FocusScopeNode currentFocus =
+                                            FocusScope.of(context);
+                                        if (!currentFocus.hasPrimaryFocus) {
+                                          currentFocus.unfocus();
+                                        }
+                                        if (!await launchUrl(
+                                            Uri.parse(termsAndConditions))) {
+                                          throw 'Could not launch $termsAndConditions';
+                                        }
+                                      },
+                                      child: Text(
+                                        context.l10n.termsAndConditions,
+                                        style: context.textTheme.labelMedium,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        FocusScopeNode currentFocus =
+                                            FocusScope.of(context);
+                                        if (!currentFocus.hasPrimaryFocus) {
+                                          currentFocus.unfocus();
+                                        }
+                                        if (!await launchUrl(
+                                            Uri.parse(privacy))) {
+                                          throw 'Could not launch $privacy';
+                                        }
+                                      },
+                                      child: Text(
+                                        context.l10n.privacy,
+                                        style: context.textTheme.labelMedium,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        FocusScopeNode currentFocus =
+                                            FocusScope.of(context);
+                                        if (!currentFocus.hasPrimaryFocus) {
+                                          currentFocus.unfocus();
+                                        }
+                                        String url = 'mailto:$contactEmail';
+                                        if (await canLaunchUrlString(url)) {
+                                          await launchUrlString(url);
+                                        }
+                                      },
+                                      child: Text(
+                                        context.l10n.getInTouch,
+                                        style: context.textTheme.labelMedium,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Flexible(
+                                flex: 1,
+                                child: Text(
+                                  "Copyright © 2024 Mamba Software",
+                                  style: context.textTheme.labelMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }
+        },
+      ),
+    );
+  }
+}

@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mamba/analytics/data/analytics_repository.dart';
-import 'package:mamba/auth/views/SplashScreen.dart';
+import 'package:mamba/auth/splash/SplashScreen.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

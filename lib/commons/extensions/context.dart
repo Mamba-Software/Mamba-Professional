@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 extension BuildContextX on BuildContext {
-  // Existing size getter
-  Size get size => MediaQuery.of(this).size;
   // MediaQuery data
   MediaQueryData get mediaQuery => MediaQuery.of(this);
+  // Existing size getter
+  Size get size => MediaQuery.of(this).size;
+  double get height => MediaQuery.of(this).size.height;
+  double get width => MediaQuery.of(this).size.width;  
   
   // Access to the app theme
   ThemeData get theme => Theme.of(this);

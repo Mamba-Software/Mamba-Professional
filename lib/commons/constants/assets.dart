@@ -15,6 +15,10 @@ class Assets {
   static String google = "assets/images/google.png";
   static String apple = "assets/images/apple.png";
 
+  // Mamba Cover
+  static String mambaCover = "assets/images/mambaCover.jpg";
+  static String mambaCoverBW = "assets/images/mambaCoverB&W.jpg";
+
   // Onboarding Images
   static String onboardingApp = "assets/images/OnboardingApp.png";
   static String onboardingFindBrand = "assets/images/OnboardingFindBrand.png";
