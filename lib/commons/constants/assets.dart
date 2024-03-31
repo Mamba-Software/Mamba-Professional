@@ -16,6 +16,7 @@ class Assets {
   static String apple = "assets/images/apple.png";
 
   // Mamba Cover
+  static String mambaLogoIcon = "assets/images/logoIcon512x512.png";
   static String mambaCover = "assets/images/mambaCover.jpg";
   static String mambaCoverBW = "assets/images/mambaCoverB&W.jpg";
 

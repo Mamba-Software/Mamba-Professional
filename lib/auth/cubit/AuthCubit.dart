@@ -252,8 +252,7 @@ class AuthCubit extends Cubit<AuthState> {
         // 2.1 User is logged in.
         // 3. We are in PROD or STG. We checked if email has been verified.
         if (flavor == Flavor.development ||
-            (flavor != Flavor.development &&
-                firebaseUser.emailVerified)) {
+            (flavor != Flavor.development && firebaseUser.emailVerified)) {
           // 4. Define Prod Config for FirebaseChatCore
           FirebaseChatCore.instance.setConfig(const FirebaseChatCoreConfig(
             null,
@@ -308,10 +307,10 @@ class AuthCubit extends Cubit<AuthState> {
       await Future.delayed(const Duration(seconds: 1));
       emit(const AuthNotLoged());
     }
-    
-    // Set App Locale To User Preferred Language - TO Do once user cubit is implemented    
+
+    // Set App Locale To User Preferred Language - TO Do once user cubit is implemented
     // context.read<LanguageManager>().setLocale();
-    // Set App Theme To User Preferred Theme Settings - TO Do once user cubit is implemented    
+    // Set App Theme To User Preferred Theme Settings - TO Do once user cubit is implemented
     // context.read<ThemeManager>().personalizeAccentColor(AppColors.stripe);
 
     // Get Current User Brand, if any.
@@ -366,6 +365,17 @@ class AuthCubit extends Cubit<AuthState> {
   void logOut() {
     emit(const AuthLogOut());
   }
+
+  bool checkIfIsLoading(AuthProviderEnum provider) {
+  if (state is AuthLoading) {
+    final authLoadingState = state as AuthLoading; // Cast to AuthLoading
+    if (authLoadingState.provider == provider) {
+      return true;
+    }
+  }
+  return false;
+}
+
 }
 
 // Validate email and pwd format

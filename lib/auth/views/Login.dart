@@ -8,9 +8,6 @@ import 'package:mamba/auth/utils/enumAuth.dart';
 import 'package:mamba/auth/views/ForgotPassword.dart';
 import 'package:mamba/auth/views/Register.dart';
 import 'package:mamba/auth/splash/SplashScreen.dart';
-import 'package:mamba/auth/widgets/AppleLogin.dart';
-import 'package:mamba/auth/widgets/GoogleLogin.dart';
-import 'package:mamba/auth/widgets/NormalLogin.dart';
 import 'package:mamba/auth/widgets/signin_button.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
@@ -68,69 +65,62 @@ class _LoginState extends State<Login>
         children: [
           const SizedBox(height: 30),
           Text(
-            "Log In",
+            context.l10n.login,
             style: context.textTheme.displayLarge,
           ),
           const SizedBox(height: 60),
+          isAndroid == false
+              ? Column(
+                  children: [
+                    SignUpButton(
+                        foregroundColor: context.colorScheme.primary,
+                        backgroundColor: context.colorScheme.background,
+                        text: context.l10n.continueWithApple,
+                        icon: Image(
+                          image: AssetImage(Assets.apple),
+                          color: context.theme.primaryColor,
+                        ),
+                        onTap: () => context
+                            .read<AuthCubit>()
+                            .generalSignIn(AuthProviderEnum.apple, context),
+                        isLoading: () => context
+                            .read<AuthCubit>()
+                            .checkIfIsLoading(AuthProviderEnum.apple)),
+                    const SizedBox(height: 20),
+                  ],
+                )
+              : Container(),
           SignUpButton(
-            foregroundColor: context.colorScheme.primary,
-            backgroundColor: context.colorScheme.background,
-            text: context.l10n.continueWithApple,
-            icon: Image(
-              image: AssetImage(Assets.apple),
-              color: context.theme.primaryColor,
-            ),
-            onTap: () => context
-                .read<AuthCubit>()
-                .generalSignIn(AuthProviderEnum.apple, context),
-            isLoading: () {
-              if (state is AuthLoading &&
-                  state.provider == AuthProviderEnum.apple) {
-                return false;
-              }
-              return true;
-            },
-          ),
-          const SizedBox(height: 20),
-          SignUpButton(
-            foregroundColor: context.colorScheme.primary,
-            backgroundColor: context.colorScheme.background,
-            text: context.l10n.continueWithGoogle,
-            icon: Image(
-              image: AssetImage(Assets.google),
-            ),
-            onTap: () => context
-                .read<AuthCubit>()
-                .generalSignIn(AuthProviderEnum.google, context),
-            isLoading: () {
-              if (state is AuthLoading &&
-                  state.provider == AuthProviderEnum.google) {
-                return false;
-              }
-              return true;
-            },
-          ),
+              foregroundColor: context.colorScheme.primary,
+              backgroundColor: context.colorScheme.background,
+              text: context.l10n.continueWithGoogle,
+              icon: Image(
+                image: AssetImage(Assets.google),
+              ),
+              onTap: () => context
+                  .read<AuthCubit>()
+                  .generalSignIn(AuthProviderEnum.google, context),
+              isLoading: () => context
+                  .read<AuthCubit>()
+                  .checkIfIsLoading(AuthProviderEnum.google)),
           const SizedBox(height: 30),
           Row(children: <Widget>[
             Expanded(
               child: Divider(
-                  color: context.theme.dividerColor,
-                  height: 0.5,
-                  indent: MediaQuery.of(context).size.width * 0.05,
-                  endIndent: MediaQuery.of(context).size.width * 0.05),
+                color: context.theme.dividerColor,
+                height: 0.5,
+              ),
             ),
-            Text(context.l10n.intermediatePaymentMethod,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: AppColors.grey),
-                textAlign: TextAlign.center),
+            Text(
+              "  ${context.l10n.loginWithEmail}  ",
+              style: context.textTheme.labelMedium,
+              textAlign: TextAlign.center,
+            ),
             Expanded(
               child: Divider(
-                  color: context.theme.dividerColor,
-                  height: 0.5,
-                  indent: MediaQuery.of(context).size.width * 0.05,
-                  endIndent: MediaQuery.of(context).size.width * 0.05),
+                color: context.theme.dividerColor,
+                height: 0.5,
+              ),
             ),
           ]),
           const SizedBox(height: 30),
@@ -174,31 +164,6 @@ class _LoginState extends State<Login>
               labelText: context.l10n.password,
             ),
           ),
-          const SizedBox(height: 20),
-          SignUpButton(
-            foregroundColor: context.colorScheme.onPrimary,
-            backgroundColor: context.colorScheme.primary,
-            text: context.l10n.continueWithGoogle.split(" ")[0],
-            onTap: () {
-              if (_formKey.currentState!.validate()) {
-                //emailTemp = email;
-                FocusScopeNode currentFocus = FocusScope.of(context);
-                if (!currentFocus.hasPrimaryFocus) {
-                  currentFocus.unfocus();
-                }
-                context.read<AuthCubit>().generalSignIn(
-                    AuthProviderEnum.normal, context, email, password);
-              }
-            },
-            isLoading: () {
-              if (state is AuthLoading &&
-                  state.provider == AuthProviderEnum.normal) {
-                return false;
-              }
-              return true;
-            },
-          ),
-          const SizedBox(height: 10),
           TextButton(
             onPressed: () async {
               FocusScopeNode currentFocus = FocusScope.of(context);
@@ -224,6 +189,26 @@ class _LoginState extends State<Login>
               textAlign: TextAlign.center,
             ),
           ),
+          const SizedBox(height: 10),
+          SignUpButton(
+              foregroundColor: context.colorScheme.onSecondary,
+              backgroundColor: context.colorScheme.secondary,
+              text: context.l10n.continueWithGoogle.split(" ")[0],
+              onTap: () {
+                if (_formKey.currentState!.validate()) {
+                  //emailTemp = email;
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                  context.read<AuthCubit>().generalSignIn(
+                      AuthProviderEnum.normal, context, email, password);
+                }
+              },
+              isLoading: () => context
+                  .read<AuthCubit>()
+                  .checkIfIsLoading(AuthProviderEnum.normal)),
+          const SizedBox(height: 10),
           TextButton(
             onPressed: () async {
               FocusScopeNode currentFocus = FocusScope.of(context);
@@ -260,6 +245,34 @@ class _LoginState extends State<Login>
               ),
             ),
           ),
+          const SizedBox(height: 5),
+          context.isDesktop == false
+              ? TextButton(
+                  onPressed: () async {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+                    if (!await launchUrl(Uri.parse(termsAndConditions)))
+                      throw 'Could not launch $termsAndConditions';
+                  },
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: context.textTheme.labelMedium,
+                      children: [
+                        TextSpan(
+                          text: context.l10n.useMambaTermsAndConditions,
+                        ),
+                        TextSpan(
+                            text: context.l10n.termsAndConditions.toLowerCase(),
+                            style: context.textTheme.labelMedium?.copyWith(
+                                decoration: TextDecoration.underline)),
+                      ],
+                    ),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );

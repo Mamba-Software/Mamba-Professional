@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba/auth/widgets/app_bar.dart';
+import 'package:mamba/auth/widgets/custom_appbar.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
@@ -32,7 +32,6 @@ class ResponsiveCenter extends StatelessWidget {
               ],
             );
           } else if (context.isTablet) {
-            // Ignore this
             return ListView(
               children: [
                 const CustomAppBar(
@@ -64,25 +63,27 @@ class ResponsiveCenter extends StatelessWidget {
                         children: [
                           Expanded(
                             flex: 1,
-                            child: Center(
-                              child: Container(
-                                margin: const EdgeInsets.all(30),
-                                constraints:
-                                    const BoxConstraints(maxWidth: 400),
-                                child: child,
-                              ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.only(top: 120),
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 400),
+                                  child: child,
+                                ),
+                              ],
                             ),
                           ),
                           Expanded(
                             flex: 1,
-                            child: Container(
+                            child: SizedBox(
                               height: context.height,
-                              color: context.theme.primaryColorDark
-                                  .withOpacity(0.05),
                               child: Image(
                                 fit: BoxFit.fitHeight,
                                 image: AssetImage(
-                                  Assets.mambaCoverBW,
+                                  Assets.mambaCover,
                                 ),
                               ),
                             ),

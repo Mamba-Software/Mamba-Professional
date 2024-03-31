@@ -4,8 +4,8 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 
 class CustomAppBar extends StatelessWidget {
-  final double height;  
-  final double? maxWidth;  
+  final double height;
+  final double? maxWidth;
 
   const CustomAppBar({super.key, required this.height, this.maxWidth});
 
@@ -30,11 +30,17 @@ class CustomAppBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Image(
+              Container(
                 height: 30,
-                color: context.theme.primaryColor,
-                image: AssetImage(
-                  Assets.logoSimple,
+                width: 30,
+                decoration: BoxDecoration(
+                  color: context.colorScheme.primary,
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage(
+                      Assets.mambaLogoIcon,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 8),

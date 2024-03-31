@@ -33,7 +33,7 @@
   "recover": "Recuperar",
   "loggedInWith": "Sessió iniciada com",
   "login": "Inicia Sessió",
-  "loginWithEmail": "Inicia sessió amb el teu email",
+  "loginWithEmail": "O amb el teu email",
   "continueWithApple": "Continuar amb Apple",
   "continueWithGoogle": "Continuar amb Google",
   "loginError": "No trobem aquest usuari.\n Torneu a provar si us plau",

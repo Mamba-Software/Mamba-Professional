@@ -34,7 +34,7 @@
   "login": "Inicia Sesión",
   "continueWithApple": "Continuar con Apple",
   "continueWithGoogle": "Continuar con Google",
-  "loginWithEmail": "Inicia sesión con tu email",
+  "loginWithEmail": "O con tu email",
   "loginError": "No encontramos este usuario.\n Por favor, prueba otra vez",
   "validate": "Te hemos enviado un correo de validación",
   "validatePassword": "Te hemos enviado un email para cambiar tu contraseña",
