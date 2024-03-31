@@ -7,6 +7,7 @@ enum Flavor {
   staging,
   development,
 }
+
 Flavor flavor = Flavor.development;
 
 // Standard Language
@@ -19,8 +20,10 @@ String displayFontFamily = "UberMove";
 // Text Sizes
 double display1 = 30; // For large, expressive text
 double headline1 = 25; // Primary title, more prominent
-double headline2 = 20; // Secondary title, slightly less prominent than headline1
-double headline3 = 18; // Tertiary title, useful for widget titles or modal headers
+double headline2 =
+    20; // Secondary title, slightly less prominent than headline1
+double headline3 =
+    18; // Tertiary title, useful for widget titles or modal headers
 double title1 = 16; // For subtitles under headlines or titles
 double body1 = 14; // Main body text, improved for readability
 double body2 = 12; // Secondary body text
@@ -33,6 +36,9 @@ double iconSize = 25;
 double borderRadiusSmall = 5;
 double borderRadiusMedium = 10;
 double borderRadiusBig = 20;
+
+// Snackbar
+int snackbarDefaultDuration = 5;
 
 // App
 var androidGooglePlayUrl =

@@ -30,6 +30,8 @@ import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/Mem
 import 'package:mamba/settings/data/firebase_settings_repository.dart';
 import 'package:mamba/settings/data/hive_settings_repository.dart';
 import 'package:mamba/settings/data/settings_repository.dart';
+import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
+import 'package:mamba/snackbar/views/snackbar_manager.dart';
 import 'package:mamba/user/chat/ChatCore.dart';
 import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
@@ -147,6 +149,9 @@ class App extends StatelessWidget {
               settingsRepository: context.read<SettingsRepository>(),
             ),
           ),
+          BlocProvider<SnackbarCubit>(
+            create: (context) => SnackbarCubit(),
+          ),
           // To Be Refactored
           BlocProvider<ClientSessionsCubit>(
             create: (_) => ClientSessionsCubit([]),
@@ -242,7 +247,10 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
             builder: (context, child) {
               return PopupManager(
                 navigatorKey: navigatorKey,
-                child: child!,
+                child: SnackbarManager(
+                  navigatorKey: navigatorKey,
+                  child: child!,
+                ),
               );
             },
             onGenerateRoute: (RouteSettings settings) {

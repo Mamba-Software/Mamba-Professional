@@ -92,13 +92,13 @@ class ResponsiveLogin extends StatelessWidget with PlatformMixin {
           );
         } else {
           return Scaffold(
-            appBar: const CustomAppBar(
-              isDesktop: true,
-              height: kToolbarHeight,
-              maxWidth: 1250,
-            ),
             body: ListView(
               children: [
+                const CustomAppBar(
+                  isDesktop: true,
+                  height: kToolbarHeight,
+                  maxWidth: 1250,
+                ),
                 Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [

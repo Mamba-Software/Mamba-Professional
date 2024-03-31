@@ -4,9 +4,13 @@ import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/auth/widgets/signin_button.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
+import 'package:mamba/snackbar/models/snackbar_type.dart';
+
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -66,6 +70,32 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 .read<AuthCubit>()
                 .checkIfIsLoading(AuthProviderEnum.forgot),
           ),
+          const SizedBox(height: 10),
+          TextButton(
+            onPressed: () async {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+              Navigator.pop(context, emailController.text.trim());
+            },
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: context.textTheme.bodyMedium,
+                children: [
+                  TextSpan(
+                    text: "${context.l10n.rememberedPassword} ",
+                  ),
+                  TextSpan(
+                    text: context.l10n.login,
+                    style: context.textTheme.bodyMedium
+                        ?.copyWith(color: context.colorScheme.secondary),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -79,40 +109,34 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           if (state is AuthError) {
             switch (state.error) {
               case AuthErrorEnum.forgotEmailError:
-                showInSnackBar(context.l10n.emailError);
+                context.read<SnackbarCubit>().createSnackbar(
+                      SnackbarType.error,
+                      context.l10n.emailError,
+                    );
                 break;
               case AuthErrorEnum.forgotLoginError:
-                showInSnackBar(context.l10n.loginError);
+                context.read<SnackbarCubit>().createSnackbar(
+                      SnackbarType.error,
+                      context.l10n.loginError,
+                    );
                 break;
               case AuthErrorEnum.forgotValidateEmailError:
-                showInSnackBar(context.l10n.validateEmail);
+                context.read<SnackbarCubit>().createSnackbar(
+                      SnackbarType.error,
+                      context.l10n.validateEmail,
+                    );
                 break;
-              case AuthErrorEnum.wrongAppUser:
-                // TODO: Handle this case.
-                break;
-              case AuthErrorEnum.loginError:
-                // TODO: Handle this case.
-                break;
-              case AuthErrorEnum.validateError:
-                // TODO: Handle this case.
-                break;
-              case AuthErrorEnum.registerError:
-                // TODO: Handle this case.
-                break;
-              case AuthErrorEnum.validateErrorRegister:
-                // TODO: Handle this case.
-                break;
-              case AuthErrorEnum.sameEmail:
-                // TODO: Handle this case.
-                break;
-              case AuthErrorEnum.manualRegisterError:
-                // TODO: Handle this case.
+              default:
                 break;
             }
           }
           if (state is AuthCorrectForget) {
-            showInSnackBar(context.l10n.validatePassword);
-            Future.delayed(const Duration(seconds: 5), () async {
+            context.read<SnackbarCubit>().createSnackbar(
+                  SnackbarType.success,
+                  context.l10n.validatePassword,
+                );
+            Future.delayed(Duration(seconds: snackbarDefaultDuration + 1),
+                () async {
               Navigator.pop(context, emailController.text.trim());
             });
           }

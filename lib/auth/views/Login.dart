@@ -12,11 +12,12 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
-import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
+import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
+import 'package:mamba/snackbar/models/snackbar_type.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.
@@ -28,12 +29,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> with PlatformMixin {
-  // Access to DatabaseService
-  final _userDataService = UserDataService();
-  // Scaffold Messenger Key
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
-
   // Form Variables
   final _formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
@@ -172,13 +167,12 @@ class _LoginState extends State<Login> with PlatformMixin {
                     builder: (context) => const ForgotPassword(),
                     settings: const RouteSettings(name: 'ForgotPassword'),
                   ));
-              /*
+
               if (email != null) {
                 setState(() {
                   emailController.text = email;
-                  this.email = email;
                 });
-              }*/
+              }
             },
             child: Text(
               context.l10n.forgotPassword,
@@ -220,15 +214,13 @@ class _LoginState extends State<Login> with PlatformMixin {
                   CupertinoPageRoute<String>(
                     builder: (context) => const Register(),
                     settings: const RouteSettings(name: 'Register'),
-                  ));
-              /*
+                  ));              
               if (email != null) {
                 setState(() {
-                  emailController.text = email;
-                  this.email = email;
+                  emailController.text = email;                  
                 });
               }
-              */
+              
             },
             child: RichText(
               textAlign: TextAlign.center,
@@ -251,8 +243,8 @@ class _LoginState extends State<Login> with PlatformMixin {
           // Privacy Terms
           context.isDesktop == false
               ? Column(
-                children: [
-                  TextButton(
+                  children: [
+                    TextButton(
                       onPressed: () async {
                         FocusScopeNode currentFocus = FocusScope.of(context);
                         if (!currentFocus.hasPrimaryFocus) {
@@ -270,7 +262,8 @@ class _LoginState extends State<Login> with PlatformMixin {
                               text: context.l10n.useMambaTermsAndConditions,
                             ),
                             TextSpan(
-                              text: context.l10n.termsAndConditions.toLowerCase(),
+                              text:
+                                  context.l10n.termsAndConditions.toLowerCase(),
                               /*style: context.textTheme.labelMedium?.copyWith(
                                     decoration: TextDecoration.underline)
                                     */
@@ -279,8 +272,8 @@ class _LoginState extends State<Login> with PlatformMixin {
                         ),
                       ),
                     ),
-                ],
-              )
+                  ],
+                )
               : Container(),
         ],
       ),
@@ -296,52 +289,52 @@ class _LoginState extends State<Login> with PlatformMixin {
             switch (state.error) {
               case AuthErrorEnum.wrongAppUser:
                 // Handle wrong app user error here.
-                showInSnackBar(context.l10n.wrongAppUser,
-                    context.l10n.wrongAppUserBody, true);
+                // TO DO: Afegir aquí una on Function
+                context.read<SnackbarCubit>().createSnackbar(
+                      SnackbarType.error,
+                      context.l10n.wrongAppUserBody,
+                      context.l10n.wrongAppUser,
+                      true,
+                    );
                 break;
               case AuthErrorEnum.loginError:
                 // Handle login error here.
-                showInSnackBar(context.l10n.loginError);
+                context.read<SnackbarCubit>().createSnackbar(
+                      SnackbarType.error,
+                      context.l10n.loginError,
+                    );
                 break;
               case AuthErrorEnum.validateError:
                 print('Error: Validation failed.');
                 // Handle validation error here.
-                showInSnackBar(context.l10n.validateError,
-                    "${context.l10n.resend} ${context.l10n.email}", true, true);
+                // TO DO: Afegir aquí una on Function
+                context.read<SnackbarCubit>().createSnackbar(
+                    SnackbarType.error,
+                    context.l10n.validateError,
+                    null,
+                    true,
+                    "${context.l10n.resend} ${context.l10n.email}");
                 break;
               case AuthErrorEnum.registerError:
                 print('Error: Registration failed.');
-                // Handle registration error here.
-                showInSnackBar(context.l10n.registerError);
-                //context.read<AuthCubit>().resetState();
+                context.read<SnackbarCubit>().createSnackbar(
+                      SnackbarType.error,
+                      context.l10n.registerError,
+                    );
                 break;
-              case AuthErrorEnum.validateErrorRegister:
-                // TODO: Handle this case.
+              default:
                 break;
-              case AuthErrorEnum.sameEmail:
-                // TODO: Handle this case.
-                break;
-              case AuthErrorEnum.manualRegisterError:
-                // TODO: Handle this case.
-                break;
-              case AuthErrorEnum.forgotLoginError:
-                // TODO: Handle this case.
-                break;
-              case AuthErrorEnum.forgotEmailError:
-                // TODO: Handle this case.
-                break;
-              case AuthErrorEnum.forgotValidateEmailError:
-                // TODO: Handle this case.
-                break;
+
             }
           }
           if (state is AuthLoaded) {
             Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute<void>(
-                  builder: (context) => const SplashScreen(),
-                  settings: const RouteSettings(name: 'SplashScreen'),
-                ));
+              context,
+              CupertinoPageRoute<void>(
+                builder: (context) => const SplashScreen(),
+                settings: const RouteSettings(name: 'SplashScreen'),
+              ),
+            );
           }
         },
         builder: (context, state) {
@@ -351,65 +344,4 @@ class _LoginState extends State<Login> with PlatformMixin {
     );
   }
 
-  void showInSnackBar(String value,
-      [String valueBody = "",
-      bool isClickable = false,
-      bool resendEmail = false]) {
-    Widget snackbar;
-    if (isClickable) {
-      snackbar = SnackBar(
-        content: GestureDetector(
-          onTap: () async {
-            if (resendEmail == false) {
-              await LaunchApp.openApp(
-                  androidPackageName: 'com.mamba.mambaprofessionalapp',
-                  iosUrlScheme: "mamba-professional",
-                  appStoreLink:
-                      "https://apps.apple.com/us/app/mamba-professional/id1642701679",
-                  openStore: true);
-            } else {
-              await _userDataService.resendEmail(emailController.text.trim());
-              scaffoldMessengerKey.currentState!.hideCurrentSnackBar();
-            }
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Flexible(
-                child: Text(value,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: AppColors.black)),
-              ),
-              Flexible(
-                child: Text(
-                  valueBody,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppColors.black,
-                      decoration: TextDecoration.underline),
-                ),
-              ),
-            ],
-          ),
-        ),
-        backgroundColor: Colors.white,
-        duration: const Duration(seconds: 6),
-      );
-    } else {
-      snackbar = SnackBar(
-        content: Text(value,
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: AppColors.black)),
-        backgroundColor: Colors.white,
-        duration: const Duration(seconds: 3),
-      );
-    }
-    scaffoldMessengerKey.currentState!.showSnackBar(snackbar as SnackBar);
   }
-}

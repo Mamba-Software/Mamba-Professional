@@ -210,8 +210,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> forgotPassword(
-      String email, BuildContext context) async {
+  Future<void> forgotPassword(String email, BuildContext context) async {
+    emit(const AuthLoading(AuthProviderEnum.forgot));
     if (email.isEmpty) {
       emit(const AuthError(AuthErrorEnum.forgotEmailError));
     } else {
@@ -332,6 +332,10 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> resendVerificationEmail(String email) async {
+    await _userDataService.resendEmail(email);
+  }
+  
   void _sendMixPanelDataUsers() {
     // Send User Mix Panel Data
     mixpanel!.getPeople().set("email", currentUser.email);
