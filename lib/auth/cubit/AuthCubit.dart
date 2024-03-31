@@ -214,7 +214,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> forgotPassword(
-      String email, String password1, BuildContext context) async {
+      String email, BuildContext context) async {
     if (email.isEmpty) {
       emit(const AuthError(AuthErrorEnum.forgotEmailError));
     } else {
@@ -367,15 +367,14 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   bool checkIfIsLoading(AuthProviderEnum provider) {
-  if (state is AuthLoading) {
-    final authLoadingState = state as AuthLoading; // Cast to AuthLoading
-    if (authLoadingState.provider == provider) {
-      return true;
+    if (state is AuthLoading) {
+      final authLoadingState = state as AuthLoading; // Cast to AuthLoading
+      if (authLoadingState.provider == provider) {
+        return true;
+      }
     }
+    return false;
   }
-  return false;
-}
-
 }
 
 // Validate email and pwd format

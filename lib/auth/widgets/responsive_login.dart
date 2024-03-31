@@ -8,10 +8,10 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../commons/constants/constants.dart';
 
-class ResponsiveCenter extends StatelessWidget {
+class ResponsiveLogin extends StatelessWidget {
   final Widget child;
 
-  const ResponsiveCenter({super.key, required this.child});
+  const ResponsiveLogin({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

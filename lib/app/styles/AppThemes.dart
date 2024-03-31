@@ -187,6 +187,14 @@ class AppThemes {
         ),
         clipBehavior: Clip.antiAlias,
       ),
+      // Your other theme configurations
+      textSelectionTheme: TextSelectionThemeData(
+        selectionColor:
+            highlightColor.withOpacity(0.5), // Color for text selection
+        selectionHandleColor:
+            highlightColor, // Color for the handles used to adjust the selection
+        // Color for the cursor
+      ),
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -203,6 +211,7 @@ class AppThemes {
           mainFontFamily,
         ),
         border: OutlineInputBorder(
+          borderSide: BorderSide(color: disabledColor, width: 0.5),
           borderRadius: BorderRadius.circular(borderRadiusSmall),
         ),
         contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
@@ -298,8 +307,8 @@ class AppThemes {
       // Button Colors
       splashColor: primaryColor.withOpacity(0.5),
       shadowColor: primaryColor.withOpacity(0.5),
-      focusColor: primaryColor.withOpacity(0.25),
-      hoverColor: primaryColor.withOpacity(0.25),
+      focusColor: scaffoldBackgroundColor,
+      hoverColor: scaffoldBackgroundColor,
       // Color Scheme
       colorScheme: ColorScheme(
         primary: primaryColor,
@@ -441,6 +450,14 @@ class AppThemes {
         ),
         clipBehavior: Clip.antiAlias,
       ),
+      // Your other theme configurations
+      textSelectionTheme: TextSelectionThemeData(
+        selectionColor:
+            highlightColor.withOpacity(0.5), // Color for text selection
+        selectionHandleColor:
+            highlightColor, // Color for the handles used to adjust the selection
+        // Color for the cursor
+      ),
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -457,6 +474,7 @@ class AppThemes {
           mainFontFamily,
         ),
         border: OutlineInputBorder(
+          borderSide: BorderSide(color: disabledColor, width: 0.5),
           borderRadius: BorderRadius.circular(borderRadiusSmall),
         ),
         contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),

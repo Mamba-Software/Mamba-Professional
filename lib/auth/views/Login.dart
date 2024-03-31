@@ -35,14 +35,12 @@ class _LoginState extends State<Login> with PlatformMixin {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
-  // FormVariables
+  // Form Variables
   final _formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   FocusNode focusNodePassword = FocusNode();
-
-  // Apple Sign In
-  bool isLoadingApple = false;
+  bool _passwordVisible = false;
 
   @override
   initState() {
@@ -50,19 +48,21 @@ class _LoginState extends State<Login> with PlatformMixin {
     context.read<PopupsCubit>().checkIfAppUpdate(false);
   }
 
-  Widget initialLogIn(AuthState state) {
+  Widget loginForm(AuthState state) {
     return Form(
       key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Title
           const SizedBox(height: 30),
           Text(
             context.l10n.login,
             style: context.textTheme.displayLarge,
           ),
           const SizedBox(height: 60),
+          // Apple and Google
           isAndroid == false
               ? Column(
                   children: [
@@ -98,6 +98,7 @@ class _LoginState extends State<Login> with PlatformMixin {
                   .read<AuthCubit>()
                   .checkIfIsLoading(AuthProviderEnum.google)),
           const SizedBox(height: 30),
+          // Divider
           Row(children: <Widget>[
             Expanded(
               child: Divider(
@@ -117,8 +118,9 @@ class _LoginState extends State<Login> with PlatformMixin {
               ),
             ),
           ]),
+          // Text Form Field
           const SizedBox(height: 30),
-          TextFormField(            
+          TextFormField(
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             validator: (val) => val!.isEmpty ? context.l10n.emailError : null,
@@ -138,11 +140,27 @@ class _LoginState extends State<Login> with PlatformMixin {
                 val!.length < 6 ? context.l10n.passwordError : null,
             keyboardType: TextInputType.visiblePassword,
             style: context.textTheme.bodyMedium,
-            obscureText: true,
+            obscureText: !_passwordVisible,
             decoration: InputDecoration(
               labelText: context.l10n.password,
+              suffixIcon: Padding(
+                padding: const EdgeInsets.only(right: 2.0),
+                child: IconButton(                  
+                  icon: Icon(
+                    // Based on passwordVisible state choose the icon
+                    !_passwordVisible ? Icons.visibility : Icons.visibility_off,                    
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _passwordVisible = !_passwordVisible;
+                    });
+                  },
+                ),
+              ),
             ),
           ),
+          // Forgot Password
           TextButton(
             onPressed: () async {
               FocusScopeNode currentFocus = FocusScope.of(context);
@@ -170,28 +188,28 @@ class _LoginState extends State<Login> with PlatformMixin {
             ),
           ),
           const SizedBox(height: 10),
+          // LogIn Button
           SignUpButton(
-              foregroundColor: context.colorScheme.onSecondary,
-              backgroundColor: context.colorScheme.secondary,
-              text: context.l10n.continueWithGoogle.split(" ")[0],
-              onTap: () {
-                if (_formKey.currentState!.validate()) {
-                  //emailTemp = email;
-                  FocusScopeNode currentFocus = FocusScope.of(context);
-                  if (!currentFocus.hasPrimaryFocus) {
-                    currentFocus.unfocus();
-                  }
-                  context.read<AuthCubit>().generalSignIn(
-                      AuthProviderEnum.normal,
-                      context,
-                      emailController.text,
-                      passwordController.text);
+            foregroundColor: context.colorScheme.onSecondary,
+            backgroundColor: context.colorScheme.secondary,
+            text: context.l10n.continueWithGoogle.split(" ")[0],
+            onTap: () {
+              if (_formKey.currentState!.validate()) {
+                //emailTemp = email;
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
                 }
-              },
-              isLoading: () => context
-                  .read<AuthCubit>()
-                  .checkIfIsLoading(AuthProviderEnum.normal)),
+                context.read<AuthCubit>().generalSignIn(AuthProviderEnum.normal,
+                    context, emailController.text, passwordController.text);
+              }
+            },
+            isLoading: () => context
+                .read<AuthCubit>()
+                .checkIfIsLoading(AuthProviderEnum.normal),
+          ),
           const SizedBox(height: 10),
+          // Register
           TextButton(
             onPressed: () async {
               FocusScopeNode currentFocus = FocusScope.of(context);
@@ -231,6 +249,7 @@ class _LoginState extends State<Login> with PlatformMixin {
             ),
           ),
           const SizedBox(height: 5),
+          // Privacy Terms
           context.isDesktop == false
               ? TextButton(
                   onPressed: () async {
@@ -267,7 +286,7 @@ class _LoginState extends State<Login> with PlatformMixin {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveCenter(
+    return ResponsiveLogin(
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
@@ -323,7 +342,7 @@ class _LoginState extends State<Login> with PlatformMixin {
           }
         },
         builder: (context, state) {
-          return initialLogIn(state);
+          return loginForm(state);
         },
       ),
     );
