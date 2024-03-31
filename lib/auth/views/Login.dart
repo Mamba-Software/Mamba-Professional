@@ -144,10 +144,10 @@ class _LoginState extends State<Login> with PlatformMixin {
               labelText: context.l10n.password,
               suffixIcon: Padding(
                 padding: const EdgeInsets.only(right: 2.0),
-                child: IconButton(                  
+                child: IconButton(
                   icon: Icon(
                     // Based on passwordVisible state choose the icon
-                    !_passwordVisible ? Icons.visibility : Icons.visibility_off,                    
+                    !_passwordVisible ? Icons.visibility : Icons.visibility_off,
                     size: 20,
                   ),
                   onPressed: () {
@@ -250,33 +250,37 @@ class _LoginState extends State<Login> with PlatformMixin {
           const SizedBox(height: 5),
           // Privacy Terms
           context.isDesktop == false
-              ? TextButton(
-                  onPressed: () async {
-                    FocusScopeNode currentFocus = FocusScope.of(context);
-                    if (!currentFocus.hasPrimaryFocus) {
-                      currentFocus.unfocus();
-                    }
-                    if (!await launchUrl(Uri.parse(termsAndConditions)))
-                      throw 'Could not launch $termsAndConditions';
-                  },
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: context.textTheme.labelMedium,
-                      children: [
-                        TextSpan(
-                          text: context.l10n.useMambaTermsAndConditions,
+              ? Column(
+                children: [
+                  TextButton(
+                      onPressed: () async {
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+                        if (!await launchUrl(Uri.parse(termsAndConditions)))
+                          throw 'Could not launch $termsAndConditions';
+                      },
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: context.textTheme.labelMedium,
+                          children: [
+                            TextSpan(
+                              text: context.l10n.useMambaTermsAndConditions,
+                            ),
+                            TextSpan(
+                              text: context.l10n.termsAndConditions.toLowerCase(),
+                              /*style: context.textTheme.labelMedium?.copyWith(
+                                    decoration: TextDecoration.underline)
+                                    */
+                            ),
+                          ],
                         ),
-                        TextSpan(
-                          text: context.l10n.termsAndConditions.toLowerCase(),
-                          /*style: context.textTheme.labelMedium?.copyWith(
-                                decoration: TextDecoration.underline)
-                                */
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                )
+                ],
+              )
               : Container(),
         ],
       ),

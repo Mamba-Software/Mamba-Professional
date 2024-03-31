@@ -41,6 +41,9 @@ class ResponsiveLogin extends StatelessWidget with PlatformMixin {
               ),
               child: ListView(
                 children: [
+                  const CustomAppBar(
+                    height: kToolbarHeight,
+                  ),
                   Container(
                     margin: const EdgeInsets.all(30),
                     child: child,
@@ -73,6 +76,9 @@ class ResponsiveLogin extends StatelessWidget with PlatformMixin {
               ),
               child: ListView(
                 children: [
+                  const CustomAppBar(
+                    height: kToolbarHeight,
+                  ),
                   Center(
                     child: Container(
                       margin: const EdgeInsets.all(30),
