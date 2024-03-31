@@ -3,56 +3,96 @@ import 'package:mamba/auth/widgets/custom_appbar.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
 import '../../commons/constants/constants.dart';
 
-class ResponsiveLogin extends StatelessWidget {
+class ResponsiveLogin extends StatelessWidget with PlatformMixin {
   final Widget child;
 
   const ResponsiveLogin({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          if (context.isMobile) {
-            return ListView(
-              children: [
-                const CustomAppBar(
-                  height: kToolbarHeight,
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        if (context.isMobile) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+            ),
+            extendBodyBehindAppBar: true,
+            body: Container(
+              decoration: BoxDecoration(
+                color: context.theme.scaffoldBackgroundColor,
+                image: DecorationImage(
+                  opacity: 1,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.secondary.withOpacity(0.25),
+                    BlendMode.dstATop,
+                  ),
+                  image:
+                      AssetImage(Assets.mambaCover), // Specify your image path
+                  fit: BoxFit
+                      .fitHeight, // Cover the entire widget with the image
                 ),
-                Container(
-                  margin: const EdgeInsets.all(30),
-                  child: child,
-                ),
-              ],
-            );
-          } else if (context.isTablet) {
-            return ListView(
-              children: [
-                const CustomAppBar(
-                  height: kToolbarHeight,
-                  maxWidth: 500,
-                ),
-                Center(
-                  child: Container(
+              ),
+              child: ListView(
+                children: [
+                  Container(
                     margin: const EdgeInsets.all(30),
-                    constraints: const BoxConstraints(maxWidth: 500),
                     child: child,
                   ),
+                ],
+              ),
+            ),
+          );
+        } else if (context.isTablet) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+            ),
+            extendBodyBehindAppBar: true,
+            body: Container(
+              decoration: BoxDecoration(
+                color: context.theme.scaffoldBackgroundColor,
+                image: DecorationImage(
+                  opacity: 1,
+                  colorFilter: ColorFilter.mode(
+                    context.colorScheme.secondary.withOpacity(0.25),
+                    BlendMode.dstATop,
+                  ),
+                  image:
+                      AssetImage(Assets.mambaCover), // Specify your image path
+                  fit: BoxFit
+                      .fitHeight, // Cover the entire widget with the image
                 ),
-              ],
-            );
-          } else {
-            return ListView(
+              ),
+              child: ListView(
+                children: [
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.all(30),
+                      constraints: const BoxConstraints(maxWidth: 500),
+                      child: child,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return Scaffold(
+            appBar: const CustomAppBar(
+              isDesktop: true,
+              height: kToolbarHeight,
+              maxWidth: 1250,
+            ),
+            body: ListView(
               children: [
-                const CustomAppBar(
-                  height: kToolbarHeight,
-                  maxWidth: 1250,
-                ),
                 Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -204,10 +244,10 @@ class ResponsiveLogin extends StatelessWidget {
                   ],
                 ),
               ],
-            );
-          }
-        },
-      ),
+            ),
+          );
+        }
+      },
     );
   }
 }

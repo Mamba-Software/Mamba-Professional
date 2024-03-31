@@ -241,7 +241,7 @@ class _LoginState extends State<Login> with PlatformMixin {
                   TextSpan(
                     text: context.l10n.register,
                     style: context.textTheme.bodyMedium
-                        ?.copyWith(decoration: TextDecoration.underline),
+                        ?.copyWith(color: context.colorScheme.secondary),
                   ),
                 ],
               ),

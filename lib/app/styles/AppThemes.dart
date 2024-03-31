@@ -162,7 +162,7 @@ class AppThemes {
           title1,
           FontWeight.w600,
           mainFontFamily,
-        ),
+        ),        
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
           statusBarColor: Colors.transparent,
