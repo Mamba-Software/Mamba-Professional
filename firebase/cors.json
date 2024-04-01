@@ -1,8 +1,8 @@
 [
   {
-    "origin": ["http://localhost:61999", "https://yourdomain.com"],
+    "origin": ["http://localhost:61999", "https://pro.mamba.software", "https://mamba.software"],
     "responseHeader": ["Content-Type"],
-    "method": ["GET", "HEAD"],
+    "method": ["GET", "HEAD", "POST", "PUT"],
     "maxAgeSeconds": 3600
   }
 ]
