@@ -6,25 +6,25 @@ import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
 
 class CustomSnackbarView extends StatelessWidget {
+  final double padding;
   final double maxWidth;
   final CustomSnackbar snackbar;
-  final VoidCallback? actionCallback;
-  final String? actionText;
+  final VoidCallback? onAccept;
 
   const CustomSnackbarView({
     Key? key,
+    required this.padding,
     required this.maxWidth,
     required this.snackbar,
-    this.actionText,
-    this.actionCallback,
+    this.onAccept,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        constraints: BoxConstraints(maxWidth: maxWidth) ,
-        padding: const EdgeInsets.all(5),
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        padding: EdgeInsets.all(padding),
         decoration: BoxDecoration(
           color: _getBackgroundColor(snackbar.type, context),
           borderRadius: BorderRadius.circular(borderRadiusSmall),
@@ -35,8 +35,8 @@ class CustomSnackbarView extends StatelessWidget {
           ),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _getIconForType(snackbar.type, context),
             const SizedBox(width: 10),
@@ -44,23 +44,34 @@ class CustomSnackbarView extends StatelessWidget {
               child: Text(
                 snackbar.message,
                 style: _getTextStyle(snackbar.type, context),
+                softWrap: true,
+                overflow: TextOverflow.visible,
               ),
             ),
-            if (actionText != null && actionCallback != null)
-              Flexible(
-                child: TextButton(
-                  onPressed: actionCallback,
-                  child: Text(actionText!),
+            if (snackbar.onAccept != null && snackbar.actionText != null)
+              TextButton(
+                onPressed: () {
+                  print("TextButton onPressed triggered.");
+                  onAccept?.call();
+                },
+                child: Text(
+                  snackbar.actionText!,
+                  style: context.textTheme.titleSmall?.copyWith(
+                    color: snackbar.type == SnackbarType.information
+                        ? context.colorScheme.primary
+                        : AppColors.white,
+                  ),
                 ),
               ),
-            const SizedBox(width: 10),
+            if (snackbar.onAccept == null && snackbar.actionText == null)
+              const SizedBox(width: 10),
             CountdownIndicator(
                 foregroundColor: _getColor(snackbar.type, context),
                 backgroundColor: snackbar.type == SnackbarType.information
-                    ? context.colorScheme.background
+                    ? context.theme.primaryColor
                     : AppColors.white,
-                duration: snackbar.duration ??
-                    Duration(seconds: snackbarDefaultDuration)),
+                snackbar: snackbar,
+                duration: Duration(seconds: snackbarDefaultDuration)),
             const SizedBox(width: 5),
           ],
         ),
@@ -70,13 +81,17 @@ class CustomSnackbarView extends StatelessWidget {
 
   TextStyle? _getTextStyle(SnackbarType type, BuildContext context,
       {bool isTitle = false}) {
-    final color =
-        (type == SnackbarType.error || type == SnackbarType.success)
-            ? Colors.white
-            : context.colorScheme.onPrimary;
+    var textStyle = context.isDesktop
+        ? context.textTheme.bodyLarge
+        : context.textTheme.bodyMedium;
+    final color = (type == SnackbarType.error || type == SnackbarType.success)
+        ? Colors.white
+        : context.colorScheme.primary;
     return isTitle
         ? context.textTheme.titleLarge?.copyWith(color: color)
-        : context.textTheme.bodyLarge?.copyWith(color: color);
+        : textStyle?.copyWith(
+            color: color,
+          );
   }
 
   Widget _getIconForType(SnackbarType type, BuildContext context) {
@@ -97,7 +112,7 @@ class CustomSnackbarView extends StatelessWidget {
       default:
         return Icon(
           Icons.info,
-          color: context.theme.scaffoldBackgroundColor,
+          color: context.colorScheme.primary,
           size: 20,
         );
     }
@@ -111,7 +126,7 @@ class CustomSnackbarView extends StatelessWidget {
         return AppColors.red;
       case SnackbarType.information:
       default:
-        return context.colorScheme.onPrimary;
+        return context.colorScheme.primary;
     }
   }
 }
@@ -124,7 +139,7 @@ Color _getBackgroundColor(SnackbarType type, BuildContext context) {
       return AppColors.ligtherRed;
     case SnackbarType.information:
     default:
-      return context.colorScheme.primary;
+      return context.colorScheme.background;
   }
 }
 
@@ -132,13 +147,15 @@ class CountdownIndicator extends StatelessWidget {
   final Color foregroundColor;
   final Color backgroundColor;
   final Duration duration;
+  final CustomSnackbar snackbar;
 
-  const CountdownIndicator(
-      {Key? key,
-      required this.foregroundColor,
-      required this.backgroundColor,
-      required this.duration})
-      : super(key: key);
+  const CountdownIndicator({
+    Key? key,
+    required this.foregroundColor,
+    required this.backgroundColor,
+    required this.snackbar,
+    required this.duration,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +171,9 @@ class CountdownIndicator extends StatelessWidget {
             child: CircularProgressIndicator(
               value: value,
               strokeWidth: 1.5,
-              backgroundColor: foregroundColor,
+              backgroundColor: snackbar.type == SnackbarType.information
+                  ? context.theme.scaffoldBackgroundColor
+                  : foregroundColor,
               valueColor: AlwaysStoppedAnimation<Color>(backgroundColor),
             ),
           ),

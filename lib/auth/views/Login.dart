@@ -1,5 +1,6 @@
 import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
@@ -17,6 +18,7 @@ import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
+import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -214,13 +216,12 @@ class _LoginState extends State<Login> with PlatformMixin {
                   CupertinoPageRoute<String>(
                     builder: (context) => const Register(),
                     settings: const RouteSettings(name: 'Register'),
-                  ));              
+                  ));
               if (email != null) {
                 setState(() {
-                  emailController.text = email;                  
+                  emailController.text = email;
                 });
               }
-              
             },
             child: RichText(
               textAlign: TextAlign.center,
@@ -288,43 +289,55 @@ class _LoginState extends State<Login> with PlatformMixin {
           if (state is AuthError) {
             switch (state.error) {
               case AuthErrorEnum.wrongAppUser:
-                // Handle wrong app user error here.
-                // TO DO: Afegir aquí una on Function
-                context.read<SnackbarCubit>().createSnackbar(
-                      SnackbarType.error,
-                      context.l10n.wrongAppUserBody,
-                      context.l10n.wrongAppUser,
-                      true,
-                    );
+                CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.error,
+                  message: "${context.l10n.wrongAppUser} ${context.l10n.wrongAppUserBody}",
+                  onAccept: () async {
+                    if (isWeb) {
+                      if (!await launchUrl(Uri.parse(clients))) {
+                        throw 'Could not launch $termsAndConditions';
+                      }
+                    } else {
+                      LaunchApp.openApp(
+                        androidPackageName: 'com.mamba.mambaprofessionalapp',
+                        iosUrlScheme: "mamba-professional",
+                        appStoreLink:
+                            "https://apps.apple.com/us/app/mamba-professional/id1642701679",
+                        openStore: true,
+                      );
+                    }
+                  },
+                  actionText: context.l10n.open,
+                );
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
               case AuthErrorEnum.loginError:
-                // Handle login error here.
-                context.read<SnackbarCubit>().createSnackbar(
-                      SnackbarType.error,
-                      context.l10n.loginError,
-                    );
+                CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.error,
+                  message: context.l10n.loginError,
+                );
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
               case AuthErrorEnum.validateError:
-                print('Error: Validation failed.');
-                // Handle validation error here.
-                // TO DO: Afegir aquí una on Function
-                context.read<SnackbarCubit>().createSnackbar(
-                    SnackbarType.error,
-                    context.l10n.validateError,
-                    null,
-                    true,
-                    "${context.l10n.resend} ${context.l10n.email}");
+                CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.error,
+                  message: context.l10n.validateError,
+                  onAccept: () => context
+                      .read<AuthCubit>()
+                      .resendVerificationEmail(emailController.text.trim()),
+                  actionText: "${context.l10n.resend} ${context.l10n.email}",
+                );
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
               case AuthErrorEnum.registerError:
-                print('Error: Registration failed.');
-                context.read<SnackbarCubit>().createSnackbar(
-                      SnackbarType.error,
-                      context.l10n.registerError,
-                    );
+                CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.error,
+                  message: context.l10n.registerError,
+                );
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
               default:
                 break;
-
             }
           }
           if (state is AuthLoaded) {
@@ -343,5 +356,4 @@ class _LoginState extends State<Login> with PlatformMixin {
       ),
     );
   }
-
-  }
+}

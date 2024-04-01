@@ -12,6 +12,7 @@ import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
+import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
 
 // Register Page that allows the User to create his profile. This is the same for Client and Trainer.
@@ -200,36 +201,37 @@ class _RegisterState extends State<Register> with PlatformMixin {
           if (state is AuthError) {
             switch (state.error) {
               case AuthErrorEnum.sameEmail:
-                // Handle wrong same email.
-                context.read<SnackbarCubit>().createSnackbar(
-                      SnackbarType.error,
-                      context.l10n.sameEmail,
-                    );
+                CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.error,
+                  message: context.l10n.sameEmail,
+                );
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
               case AuthErrorEnum.manualRegisterError:
-                // Handle register error here.
-                context.read<SnackbarCubit>().createSnackbar(
-                      SnackbarType.error,
-                      context.l10n.registerError,
-                    );
+                CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.error,
+                  message: context.l10n.registerError,
+                );
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
               case AuthErrorEnum.validateErrorRegister:
-                // Handle validation error here.
-                context.read<SnackbarCubit>().createSnackbar(
-                      SnackbarType.error,
-                      context.l10n.validateEmail,
-                    );
+                CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.error,
+                  message: context.l10n.validateEmail,
+                );
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
               default:
                 break;
             }
           }
           if (state is AuthRegistered) {
-            context.read<SnackbarCubit>().createSnackbar(
-                  SnackbarType.success,
-                  context.l10n.validate,
+            CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.success,
+                  message: context.l10n.validate,
                 );
-            Future.delayed(Duration(seconds: snackbarDefaultDuration + 1),
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+            Future.delayed(Duration(seconds: (snackbarDefaultDuration + 0.5).toInt()),
                 () async {
               Navigator.pop(context, emailController.text.trim());
             });

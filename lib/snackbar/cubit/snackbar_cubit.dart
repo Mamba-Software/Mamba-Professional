@@ -32,21 +32,4 @@ class SnackbarCubit extends Cubit<SnackbarState> with PlatformMixin {
       }
     }
   }
-
-  void createSnackbar(
-    SnackbarType type,
-    String message, [
-    String? title,
-    bool? hasAction,
-    String? actionText,
-    Duration? duration,
-  ]) {
-    enqueueSnackbarAction(CustomSnackbar(
-      type: type,
-      message: message,
-      duration: duration,
-      title: title,
-      hasAction: hasAction,
-    ));
-  }
 }

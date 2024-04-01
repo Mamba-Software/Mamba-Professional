@@ -24,11 +24,22 @@ class SnackbarManager extends StatelessWidget {
     }
   }
 
+  double getPadding(BuildContext context) {
+    if (context.isMobile) {
+      return 5.0;
+    } else if (context.isTablet) {
+      return 8.0;
+    } else {
+      return 10;
+    }
+  }
+
   void _showSnackbar(
     BuildContext context,
     GlobalKey<NavigatorState> navigatorKey,
-    CustomSnackbar snackbar,
-  ) {
+    CustomSnackbar snackbar, [
+    VoidCallback? onAccept,
+  ]) {
     // Use navigatorKey to obtain the OverlayState
     OverlayState? overlayState = navigatorKey.currentState?.overlay;
     // Check if we can find OverlayState
@@ -42,17 +53,18 @@ class SnackbarManager extends StatelessWidget {
       builder: (context) => Positioned(
         bottom: 50,
         width: context.width,
-        child: CustomSnackbarView(
+        child: CustomSnackbarView(          
+          padding: getPadding(context),
           maxWidth: getMaxWidth(context),
           snackbar: snackbar,
+          onAccept: onAccept,
         ),
       ),
     );
     // Insert
     overlayState.insert(overlayEntry);
     // Automatically dismiss the snackbar after a duration
-    Future.delayed(
-        snackbar.duration ?? Duration(seconds: snackbarDefaultDuration), () {
+    Future.delayed(Duration(seconds: snackbarDefaultDuration), () {
       if (overlayEntry.mounted) {
         overlayEntry.remove();
         context.read<SnackbarCubit>().processNextAction();
@@ -68,12 +80,15 @@ class SnackbarManager extends StatelessWidget {
           context = navigatorKey.currentState!.overlay!.context;
           if (snackbarState is SnackbarQueueFull &&
               snackbarState.queue.isNotEmpty) {
-            final snackbar = snackbarState.queue.first;
+            CustomSnackbar snackbar = snackbarState.queue.first;
             _showSnackbar(
               context,
               navigatorKey,
               snackbar,
+              snackbar.onAccept,
             );
+            print("Is onAccept being passed to _showSnackbar? ${snackbar.onAccept != null}");
+
           }
         }
       },

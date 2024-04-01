@@ -334,8 +334,9 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> resendVerificationEmail(String email) async {
     await _userDataService.resendEmail(email);
+    print("hola");
   }
-  
+
   void _sendMixPanelDataUsers() {
     // Send User Mix Panel Data
     mixpanel!.getPeople().set("email", currentUser.email);

@@ -9,8 +9,8 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
+import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
-
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -109,33 +109,38 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           if (state is AuthError) {
             switch (state.error) {
               case AuthErrorEnum.forgotEmailError:
-                context.read<SnackbarCubit>().createSnackbar(
-                      SnackbarType.error,
-                      context.l10n.emailError,
-                    );
+                CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.error,
+                  message: context.l10n.emailError,
+                );
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
               case AuthErrorEnum.forgotLoginError:
-                context.read<SnackbarCubit>().createSnackbar(
-                      SnackbarType.error,
-                      context.l10n.loginError,
-                    );
+                CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.error,
+                  message: context.l10n.loginError,
+                );
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
               case AuthErrorEnum.forgotValidateEmailError:
-                context.read<SnackbarCubit>().createSnackbar(
-                      SnackbarType.error,
-                      context.l10n.validateEmail,
-                    );
+                CustomSnackbar snackbar = CustomSnackbar(
+                  type: SnackbarType.error,
+                  message: context.l10n.validateEmail,
+                );
+                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
               default:
                 break;
             }
           }
           if (state is AuthCorrectForget) {
-            context.read<SnackbarCubit>().createSnackbar(
-                  SnackbarType.success,
-                  context.l10n.validatePassword,
-                );
-            Future.delayed(Duration(seconds: snackbarDefaultDuration + 1),
+            CustomSnackbar snackbar = CustomSnackbar(
+              type: SnackbarType.success,
+              message: context.l10n.validatePassword,
+            );
+            context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+            Future.delayed(
+                Duration(seconds: (snackbarDefaultDuration + 0.5).toInt()),
                 () async {
               Navigator.pop(context, emailController.text.trim());
             });
