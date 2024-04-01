@@ -1,13 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/AdminService/ScriptsService.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/admin/AdminTool.dart';
 import 'package:mamba/admin/AdminFeedBack.dart';
 
 class Admin extends StatefulWidget {
+  
+  static String routeName = '/admin';
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: '/admin',
+    builder: (BuildContext context, GoRouterState state) => const Admin(),
+  );
+  
   const Admin({super.key});
 
   @override

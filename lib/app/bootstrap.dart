@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mamba/analytics/data/analytics_repository.dart';
-import 'package:mamba/auth/splash/SplashScreen.dart';
+import 'package:mamba/app/router/router.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -15,24 +15,19 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/cubit/BrandEventsCubit.dart';
-import 'package:mamba/notifications/NotificationService/Notifications.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/views/popup_manager.dart';
-import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:mamba/settings/data/firebase_settings_repository.dart';
 import 'package:mamba/settings/data/hive_settings_repository.dart';
 import 'package:mamba/settings/data/settings_repository.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/views/snackbar_manager.dart';
-import 'package:mamba/user/chat/ChatCore.dart';
 import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba/user/data/firebase_user_repository.dart';
@@ -41,6 +36,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 class Bootstrap with PlatformMixin {
   // Initialize Variables
@@ -92,6 +88,8 @@ class Bootstrap with PlatformMixin {
           FlutterError.onError =
               FirebaseCrashlytics.instance.recordFlutterError;
         }
+        // For Path Url Strategy in Web
+        usePathUrlStrategy();
         // Run App
         runApp(const App());
       },
@@ -230,6 +228,32 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
     return BlocBuilder<ThemeManager, ThemeState>(builder: (context, theme) {
       return BlocBuilder<LanguageManager, LanguageState>(
         builder: (context, language) {
+          return MaterialApp.router(
+            title: appName,
+            debugShowCheckedModeBanner: flavor == Flavor.development,
+            theme: theme.themeData,
+            locale: language.locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            builder: (context, child) {
+              return PopupManager(
+                navigatorKey: navigatorKey, // Use the GoRouter navigatorKey
+                child: SnackbarManager(
+                  navigatorKey: navigatorKey, // Use the same navigatorKey
+                  child: child!,
+                ),
+              );
+            },
+            routerDelegate: AppRouter.router.routerDelegate,
+            routeInformationProvider: AppRouter.router.routeInformationProvider,
+            routeInformationParser: AppRouter.router.routeInformationParser,
+          );
+          /*
           return MaterialApp(
             title: appName,
             navigatorKey: navigatorKey,
@@ -255,8 +279,6 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
             },
             onGenerateRoute: (RouteSettings settings) {
               final args = settings.arguments;
-              print('ARGUMENTS');
-              print(settings.name);
               switch (settings.name) {
                 case 'SplashScreen':
                   return CupertinoPageRoute(
@@ -289,21 +311,11 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
                     ),
                     settings: const RouteSettings(name: 'EventFeedback'),
                   );
-                case 'BonosRequests':
-                  pageIndex = 18;
-                  break;
-                case 'MembershipRequests':
-                  String brandId = args as String;
-                  return CupertinoPageRoute(
-                    builder: (_) => MembershipRequestsPro(
-                      brandId: brandId,
-                    ),
-                    settings: const RouteSettings(name: 'MembershipRequests'),
-                  );
               }
               return null;
             },
           );
+          */
         },
       );
     });

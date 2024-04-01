@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
 import 'package:mamba/auth/views/login.dart';
@@ -9,7 +10,6 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
-import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
@@ -18,7 +18,15 @@ import 'package:mamba/snackbar/models/snackbar_type.dart';
 // Register Page that allows the User to create his profile. This is the same for Client and Trainer.
 // After registering the page pop´s after 5 seconds and the user is sent to the Login page. Before Login in
 // they need to verify his email.
-class Register extends StatefulWidget {
+class Register extends StatefulWidget {  
+  
+  static String routeName = 'register';  
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: 'register',    
+    builder: (BuildContext context, GoRouterState state) => const Register(),
+  );
+
   const Register({super.key});
 
   @override
@@ -227,14 +235,18 @@ class _RegisterState extends State<Register> with PlatformMixin {
           }
           if (state is AuthRegistered) {
             CustomSnackbar snackbar = CustomSnackbar(
-                  type: SnackbarType.success,
-                  message: context.l10n.validate,
+              type: SnackbarType.success,
+              message: context.l10n.validate,
+            );
+            context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+            Future.delayed(
+              Duration(seconds: (snackbarDefaultDuration + 0.5).toInt()),
+              () async {
+                context.pop(
+                  emailController.text.trim(),
                 );
-                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
-            Future.delayed(Duration(seconds: (snackbarDefaultDuration + 0.5).toInt()),
-                () async {
-              Navigator.pop(context, emailController.text.trim());
-            });
+              },
+            );
           }
         },
         builder: (context, state) {

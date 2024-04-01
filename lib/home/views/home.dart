@@ -3,6 +3,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
@@ -23,6 +24,14 @@ import 'package:notification_permissions/notification_permissions.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 class HomePage extends StatelessWidget {
+  
+  static String routeName = '/';
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: '/',
+    builder: (BuildContext context, GoRouterState state) => HomePage(),
+  );
+  
   @override
   Widget build(BuildContext context) {
     return const HomePageBody();

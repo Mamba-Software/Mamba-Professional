@@ -1,8 +1,8 @@
 import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
 import 'package:mamba/auth/views/forgot_password.dart';
@@ -15,7 +15,6 @@ import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
-import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
@@ -24,6 +23,17 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.
 class Login extends StatefulWidget {
+  static String routeName = 'login';
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: "/login",
+    builder: (BuildContext context, GoRouterState state) => const Login(),
+    routes: [
+      Register.route,
+      ForgotPassword.route,
+    ],
+  );
+
   const Login({super.key});
 
   @override
@@ -163,18 +173,15 @@ class _LoginState extends State<Login> with PlatformMixin {
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
               }
-              String? email = await Navigator.push(
-                  context,
-                  CupertinoPageRoute<String>(
-                    builder: (context) => const ForgotPassword(),
-                    settings: const RouteSettings(name: 'ForgotPassword'),
-                  ));
-
+              context.goNamed(ForgotPassword.routeName);
+              /*
+              String? email = await context.push<String>('/login/password');
               if (email != null) {
                 setState(() {
                   emailController.text = email;
                 });
               }
+              */
             },
             child: Text(
               context.l10n.forgotPassword,
@@ -211,17 +218,17 @@ class _LoginState extends State<Login> with PlatformMixin {
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
               }
-              String? email = await Navigator.push(
-                  context,
-                  CupertinoPageRoute<String>(
-                    builder: (context) => const Register(),
-                    settings: const RouteSettings(name: 'Register'),
-                  ));
+              context.goNamed(Register.routeName);
+              /*
+              String? email =
+                  await context.pushNamed<String>(Register.routeName);
               if (email != null) {
                 setState(() {
                   emailController.text = email;
                 });
               }
+              */
+
             },
             child: RichText(
               textAlign: TextAlign.center,
@@ -291,7 +298,8 @@ class _LoginState extends State<Login> with PlatformMixin {
               case AuthErrorEnum.wrongAppUser:
                 CustomSnackbar snackbar = CustomSnackbar(
                   type: SnackbarType.error,
-                  message: "${context.l10n.wrongAppUser} ${context.l10n.wrongAppUserBody}",
+                  message:
+                      "${context.l10n.wrongAppUser} ${context.l10n.wrongAppUserBody}",
                   onAccept: () async {
                     if (isWeb) {
                       if (!await launchUrl(Uri.parse(clients))) {

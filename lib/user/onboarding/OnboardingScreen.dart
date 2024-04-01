@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/brand/CreateBrand/views/mobile/RegistrarMarca.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -15,7 +16,6 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/app/styles/AppColors.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
@@ -25,6 +25,14 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../../auth/splash/SplashScreen.dart';
 
 class OnboardingScreen extends StatefulWidget {
+  
+  static String routeName = '/onboarding';
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: '/onboarding',
+    builder: (BuildContext context, GoRouterState state) => const OnboardingScreen(),
+  );
+  
   const OnboardingScreen({super.key});
 
   @override

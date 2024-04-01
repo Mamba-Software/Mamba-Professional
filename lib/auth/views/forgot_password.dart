@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/auth/widgets/signin_button.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
 
 class ForgotPassword extends StatefulWidget {
+  static String routeName = 'password';
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: 'password',
+    builder: (BuildContext context, GoRouterState state) =>
+        const ForgotPassword(),
+  );
+
   const ForgotPassword({super.key});
 
   @override
@@ -20,9 +28,6 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  // Scaffold Messenger Key
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
   // FormVariables
   final _formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
@@ -77,7 +82,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
               }
-              Navigator.pop(context, emailController.text.trim());
+              context.pop();
             },
             child: RichText(
               textAlign: TextAlign.center,
@@ -140,10 +145,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             );
             context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
             Future.delayed(
-                Duration(seconds: (snackbarDefaultDuration + 0.5).toInt()),
-                () async {
-              Navigator.pop(context, emailController.text.trim());
-            });
+              Duration(seconds: (snackbarDefaultDuration + 0.5).toInt()),
+              () async {
+                context.pop(
+                  emailController.text.trim(),
+                );
+              },
+            );
           }
         },
         builder: (context, state) {
@@ -151,19 +159,5 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         },
       ),
     );
-  }
-
-  void showInSnackBar(String value) {
-    final snackbar = SnackBar(
-      content: Text(value,
-          textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(color: AppColors.black)),
-      backgroundColor: Colors.white,
-      duration: const Duration(seconds: 3),
-    );
-    scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
   }
 }
