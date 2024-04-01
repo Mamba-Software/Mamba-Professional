@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/extensions/context.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -54,7 +54,7 @@ class BrandCalendarWidget extends StatefulWidget {
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
 }
 
-class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
+class _BrandCalendarWidgetState extends State<BrandCalendarWidget> with PlatformMixin {
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
@@ -2140,7 +2140,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                             _controller.view == CalendarView.week ||
                                     _controller.view == CalendarView.day
                                 ? Padding(
-                                    padding: Platform.isAndroid
+                                    padding: isAndroid
                                         ? EdgeInsets.symmetric(
                                             vertical: MediaQuery.of(context)
                                                     .size
@@ -2210,7 +2210,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
   Widget whichFloatingActionButton() {
     return canEdit
         ? Padding(
-            padding: Platform.isAndroid
+            padding: isAndroid
                 ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
                 : const EdgeInsets.all(10),
             child: SizedBox(

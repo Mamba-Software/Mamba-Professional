@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 
 class Place {
   String? streetNumber;
@@ -37,17 +37,16 @@ class Suggestion {
   }
 }
 
-class LocationPlacesSearch {
-  final apiKey = Platform.isAndroid
-      ? dotenv.env['PLACES_API_ANDROID']!
-      : dotenv.env['PLACES_API_IOS']!;
+class LocationPlacesSearch with PlatformMixin {
+  var apiKey;
   var sessionToken;
   var language;
   var radius = 10000;
 
-  LocationPlacesSearch(String sessionToken, String language) {
-    this.sessionToken = sessionToken;
-    this.language = language;
+  LocationPlacesSearch(String this.sessionToken, String this.language) {
+    apiKey = isAndroid
+        ? dotenv.env['PLACES_API_ANDROID']!
+        : dotenv.env['PLACES_API_IOS']!;
   }
 
   Future<List<Suggestion>> fetchSuggestions(String input) async {

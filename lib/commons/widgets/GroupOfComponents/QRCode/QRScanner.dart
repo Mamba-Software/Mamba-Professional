@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/InformationDialogs/ErrorDialog.dart';
@@ -14,7 +15,7 @@ class QRScanner extends StatefulWidget {
   State<StatefulWidget> createState() => _QRScannerState();
 }
 
-class _QRScannerState extends State<QRScanner> {
+class _QRScannerState extends State<QRScanner> with PlatformMixin {
   // QR Variables
   Barcode? result;
   QRViewController? controller;
@@ -31,7 +32,7 @@ class _QRScannerState extends State<QRScanner> {
   @override
   void reassemble() {
     super.reassemble();
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       controller!.pauseCamera();
     }
     controller!.resumeCamera();

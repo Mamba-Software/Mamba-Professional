@@ -5,6 +5,7 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/read_event/cubit/ReadEventCubit.dart';
@@ -82,7 +83,7 @@ class EventPageTrainer extends StatefulWidget {
 }
 
 class _EventPageTrainerState extends State<EventPageTrainer>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, PlatformMixin {
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
   final _eventDataService = EventDataService();
@@ -400,7 +401,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
 
   // Build Places Left Event
   SystemUiOverlayStyle returnSystemBarColor(bool appBarExpandedValue) {
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       return SystemUiOverlayStyle.light;
     } else {
       bool isDark = context.read<ThemeManager>().isDarkMode;

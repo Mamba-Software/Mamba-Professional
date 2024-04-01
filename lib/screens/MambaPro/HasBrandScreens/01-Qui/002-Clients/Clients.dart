@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/user/chat/Chat.dart';
 import 'package:mamba/commons/constants/assets.dart';
@@ -46,7 +47,7 @@ class Clients extends StatefulWidget {
   _Clients createState() => _Clients();
 }
 
-class _Clients extends State<Clients> {
+class _Clients extends State<Clients> with PlatformMixin {
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
@@ -1177,7 +1178,7 @@ class _Clients extends State<Clients> {
   Widget whichFloatingActionButton() {
     return currentUser.brandRole < 3
         ? Padding(
-            padding: Platform.isAndroid
+            padding: isAndroid
                 ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
                 : const EdgeInsets.all(10),
             child: SizedBox(

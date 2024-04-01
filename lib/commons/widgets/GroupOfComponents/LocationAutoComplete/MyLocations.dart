@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
@@ -21,7 +22,7 @@ class MyLocations extends StatefulWidget {
   _MyLocationsState createState() => _MyLocationsState();
 }
 
-class _MyLocationsState extends State<MyLocations> {
+class _MyLocationsState extends State<MyLocations> with PlatformMixin{
   // Acceso a Base de Datos
   final _locationDataService = LocationDataService();
   // Google APIS
@@ -46,7 +47,7 @@ class _MyLocationsState extends State<MyLocations> {
   @override
   initState() {
     isLoading = true;
-    gPlace = googlePlace.GooglePlace(Platform.isAndroid
+    gPlace = googlePlace.GooglePlace(isAndroid
         ? dotenv.env['PLACES_API_ANDROID']!
         : dotenv.env['PLACES_API_IOS']!);
     getAllLocations();

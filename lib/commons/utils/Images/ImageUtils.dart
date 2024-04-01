@@ -2,12 +2,13 @@ import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:math';
 
 // Text Styles contains all the TextStyles used in the App.
-class ImageUtils {
+class ImageUtils with PlatformMixin{
 
   Future<File?> pickImage() async {
     // Pick Image
@@ -18,7 +19,7 @@ class ImageUtils {
       maxHeight: 800,
       imageQuality: 75,
     );
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       // Check if Lost Data in Android
       final LostDataResponse response = await ImagePicker().retrieveLostData();
       if (response.file != null) {
@@ -39,7 +40,7 @@ class ImageUtils {
       maxHeight: 800,
       imageQuality: 75,
     );
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       // Check if Lost Data in Android
       final LostDataResponse response = await ImagePicker().retrieveLostData();
       if (response.file != null) {

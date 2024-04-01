@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/data/Models/Location.dart';
@@ -37,7 +38,7 @@ class LocationImageTile extends StatefulWidget {
   _LocationImageTileState createState() => _LocationImageTileState();
 }
 
-class _LocationImageTileState extends State<LocationImageTile> {
+class _LocationImageTileState extends State<LocationImageTile> with PlatformMixin {
   // Boolean Loading
   bool isLoading = true;
   // Acceso a Base de Datos
@@ -55,7 +56,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
   @override
   void initState() {
     isLoading = true;
-    gPlace = googlePlace.GooglePlace(Platform.isAndroid
+    gPlace = googlePlace.GooglePlace(isAndroid
         ? dotenv.env['PLACES_API_ANDROID']!
         : dotenv.env['PLACES_API_IOS']!);
     initLocationTile();

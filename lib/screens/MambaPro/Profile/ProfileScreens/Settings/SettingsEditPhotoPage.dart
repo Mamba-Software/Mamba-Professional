@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
@@ -16,7 +17,7 @@ class SettingsEditPhotoPage extends StatefulWidget {
 }
 
 class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, PlatformMixin {
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   // Boolean Loading

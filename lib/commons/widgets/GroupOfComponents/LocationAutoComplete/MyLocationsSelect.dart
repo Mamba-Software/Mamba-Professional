@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/styles/AppColors.dart';
@@ -23,7 +24,7 @@ class MyLocationsSelect extends StatefulWidget {
   _MyLocationsSelectState createState() => _MyLocationsSelectState();
 }
 
-class _MyLocationsSelectState extends State<MyLocationsSelect> {
+class _MyLocationsSelectState extends State<MyLocationsSelect> with PlatformMixin{
   // Acceso a Base de Datos
   final _locationDataService = LocationDataService();
   // Google APIS
@@ -58,7 +59,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
   @override
   initState() {
     isLoading = true;
-    gPlace = googlePlace.GooglePlace(Platform.isAndroid
+    gPlace = googlePlace.GooglePlace(isAndroid
         ? dotenv.env['PLACES_API_ANDROID']!
         : dotenv.env['PLACES_API_IOS']!);
     getAllLocations();

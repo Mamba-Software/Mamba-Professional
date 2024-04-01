@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -45,7 +46,7 @@ class Trainers extends StatefulWidget {
   _Trainers createState() => _Trainers();
 }
 
-class _Trainers extends State<Trainers> {
+class _Trainers extends State<Trainers> with PlatformMixin {
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
@@ -1224,7 +1225,7 @@ class _Trainers extends State<Trainers> {
   Widget whichFloatingActionButton() {
     return currentUser.brandRole < 2
         ? Padding(
-            padding: Platform.isAndroid
+            padding: isAndroid
                 ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
                 : const EdgeInsets.all(10),
             child: SizedBox(

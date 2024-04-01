@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
@@ -28,14 +29,14 @@ import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 // Profile Page
-class Profile extends StatefulWidget {
+class Profile extends StatefulWidget  {
   const Profile({super.key});
 
   @override
   _ProfileState createState() => _ProfileState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfileState extends State<Profile> with PlatformMixin {
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _eventDataService = EventDataService();
@@ -1183,7 +1184,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Positioned(
-                  bottom: Platform.isAndroid
+                  bottom: isAndroid
                       ? MediaQuery.of(context).size.height * 0.03
                       : MediaQuery.of(context).size.height * 0.06,
                   child: Row(

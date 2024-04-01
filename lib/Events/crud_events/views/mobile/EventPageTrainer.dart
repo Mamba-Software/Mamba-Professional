@@ -340,7 +340,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
 
   // Build Places Left Event
   SystemUiOverlayStyle returnSystemBarColor() {
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       return SystemUiOverlayStyle.light;
     } else {
       bool isDark =

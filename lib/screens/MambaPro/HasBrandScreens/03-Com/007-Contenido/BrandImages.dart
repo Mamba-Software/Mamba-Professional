@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/Models/ImageObject.dart';
@@ -9,7 +10,6 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
-import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba/commons/widgets/Components/Images/FullScreenImageCarousel.dart';
@@ -36,7 +36,8 @@ class BrandImages extends StatefulWidget {
   _BrandImagesState createState() => _BrandImagesState();
 }
 
-class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
+class _BrandImagesState extends State<BrandImages>
+    with WidgetsBindingObserver, PlatformMixin {
   // App Bar and Scroll View
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -160,7 +161,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
         });
         print(e.toString());
         var status = await Permission.photos.status;
-        if (Platform.isIOS && (status.isDenied || status.isPermanentlyDenied)) {
+        if (isIOS && (status.isDenied || status.isPermanentlyDenied)) {
           bool temp = await openAppSettings();
           setState(() {
             isSettingsOpened = temp;
@@ -918,7 +919,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
               ],
             ),
             Padding(
-              padding: Platform.isAndroid
+              padding: isAndroid
                   ? EdgeInsets.symmetric(
                       vertical: MediaQuery.of(context).size.width * 0.02,
                       horizontal: MediaQuery.of(context).size.width * 0.045)
@@ -967,7 +968,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
         ),
         floatingActionButton: canEdit && _imagesUploaded.length != 10
             ? Padding(
-                padding: Platform.isAndroid
+                padding: isAndroid
                     ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
                     : const EdgeInsets.all(10),
                 child: SizedBox(

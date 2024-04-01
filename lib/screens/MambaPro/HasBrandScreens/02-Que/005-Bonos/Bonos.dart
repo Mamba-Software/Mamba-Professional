@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
@@ -41,7 +40,7 @@ class BonosPro extends StatefulWidget {
   _BonosProState createState() => _BonosProState();
 }
 
-class _BonosProState extends State<BonosPro> {
+class _BonosProState extends State<BonosPro> with PlatformMixin{
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;
@@ -1000,7 +999,7 @@ class _BonosProState extends State<BonosPro> {
       floatingActionButton: whichFloatingActionButton(),
       /*
           Padding(
-              padding: Platform.isAndroid
+              padding: isAndroid
                   ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
                   : const EdgeInsets.all(10),
               child: SizedBox(
@@ -1034,7 +1033,7 @@ class _BonosProState extends State<BonosPro> {
   Widget whichFloatingActionButton() {
     return canEdit
         ? Padding(
-            padding: Platform.isAndroid
+            padding: isAndroid
                 ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10)
                 : const EdgeInsets.all(10),
             child: SizedBox(

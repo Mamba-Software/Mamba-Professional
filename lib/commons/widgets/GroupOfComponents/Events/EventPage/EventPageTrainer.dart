@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
@@ -42,7 +43,7 @@ class EventPageTrainer extends StatefulWidget {
 }
 
 class _EventPageTrainerState extends State<EventPageTrainer>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, PlatformMixin {
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
   final _eventDataService = EventDataService();
@@ -472,7 +473,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
 
   // Build Places Left Event
   SystemUiOverlayStyle returnSystemBarColor() {
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       return SystemUiOverlayStyle.light;
     } else {
       bool isDark = context.read<ThemeManager>().isDarkMode;

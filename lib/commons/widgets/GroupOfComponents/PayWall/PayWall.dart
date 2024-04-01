@@ -9,6 +9,7 @@ import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -37,7 +38,7 @@ class PayWall extends StatefulWidget {
   _PayWallState createState() => _PayWallState();
 }
 
-class _PayWallState extends State<PayWall> {
+class _PayWallState extends State<PayWall> with PlatformMixin{
   // App Bar and Scroll View
   ScrollController _scrollController = ScrollController();
   bool appBarExpanded = false;
@@ -224,7 +225,7 @@ class _PayWallState extends State<PayWall> {
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                  Platform.isAndroid ? cancelSubscriptionText() : Container(),
+                  isAndroid ? cancelSubscriptionText() : Container(),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 ],
               ),
