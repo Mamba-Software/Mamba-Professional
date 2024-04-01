@@ -219,16 +219,6 @@ class _LoginState extends State<Login> with PlatformMixin {
                 currentFocus.unfocus();
               }
               context.goNamed(Register.routeName);
-              /*
-              String? email =
-                  await context.pushNamed<String>(Register.routeName);
-              if (email != null) {
-                setState(() {
-                  emailController.text = email;
-                });
-              }
-              */
-
             },
             child: RichText(
               textAlign: TextAlign.center,
@@ -348,14 +338,16 @@ class _LoginState extends State<Login> with PlatformMixin {
                 break;
             }
           }
+          if (state is AuthRegistered) {
+            AuthRegistered castedState = state;
+            emailController.text = castedState.email;
+          }
+          if (state is AuthCorrectForget) {
+            AuthCorrectForget castedState = state;
+            emailController.text = castedState.email;
+          }
           if (state is AuthLoaded) {
-            Navigator.pushReplacement(
-              context,
-              CupertinoPageRoute<void>(
-                builder: (context) => const SplashScreen(),
-                settings: const RouteSettings(name: 'SplashScreen'),
-              ),
-            );
+            context.goNamed(SplashScreen.routeName);
           }
         },
         builder: (context, state) {

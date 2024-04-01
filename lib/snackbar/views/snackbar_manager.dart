@@ -87,8 +87,6 @@ class SnackbarManager extends StatelessWidget {
               snackbar,
               snackbar.onAccept,
             );
-            print("Is onAccept being passed to _showSnackbar? ${snackbar.onAccept != null}");
-
           }
         }
       },

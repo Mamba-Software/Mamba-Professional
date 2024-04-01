@@ -144,12 +144,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               message: context.l10n.validatePassword,
             );
             context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+            context.read<AuthCubit>().saveEmailVariable(emailController.text.trim());
             Future.delayed(
               Duration(seconds: (snackbarDefaultDuration + 0.5).toInt()),
               () async {
-                context.pop(
-                  emailController.text.trim(),
-                );
+                context.pop();
               },
             );
           }

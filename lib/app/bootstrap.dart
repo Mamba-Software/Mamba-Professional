@@ -192,7 +192,7 @@ class AppView extends StatefulWidget {
 }
 
 class AppViewState extends State<AppView> with WidgetsBindingObserver {
-  final navigatorKey = GlobalKey<NavigatorState>();
+
   final _dynamicLinkUtils = DynamicLinkUtils();
   Timer? _timerLink;
 
@@ -242,9 +242,9 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
             ],
             builder: (context, child) {
               return PopupManager(
-                navigatorKey: navigatorKey, // Use the GoRouter navigatorKey
+                navigatorKey: AppRouter.navigatorKey, // Use the GoRouter navigatorKey
                 child: SnackbarManager(
-                  navigatorKey: navigatorKey, // Use the same navigatorKey
+                  navigatorKey: AppRouter.navigatorKey, // Use the same navigatorKey
                   child: child!,
                 ),
               );

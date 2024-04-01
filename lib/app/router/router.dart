@@ -7,7 +7,10 @@ import 'package:mamba/home/views/home.dart';
 import 'package:mamba/user/onboarding/OnboardingScreen.dart';
 
 class AppRouter {
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: '/splash',
     routes: [
       HomePage.route,

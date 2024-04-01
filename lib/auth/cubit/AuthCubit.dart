@@ -24,6 +24,8 @@ class AuthCubit extends Cubit<AuthState> {
   final _settingsDataService = SettingsDataService();
   final googleSignIn = GoogleSignIn();
 
+  String email = "";
+
   void generalSignIn(AuthProviderEnum provider, BuildContext context,
       [String? email, String? password]) {
     emit(AuthLoading(provider));
@@ -201,7 +203,7 @@ class AuthCubit extends Cubit<AuthState> {
         Localizations.localeOf(context).languageCode, true);
     if (result == 0) {
       mixpanel!.track('mamba_register_completed');
-      emit(const AuthRegistered());
+      emit(AuthRegistered(email: email));
     } else if (result == -1) {
       mixpanel!.track('mamba_register_existing_email_error');
       emit(const AuthError(AuthErrorEnum.sameEmail));
@@ -223,7 +225,7 @@ class AuthCubit extends Cubit<AuthState> {
         }
         var result = await _userDataService.resetPassword(email);
         if (result == 1) {
-          emit(const AuthCorrectForget());
+          emit(AuthCorrectForget(email: email));
         } else {
           emit(const AuthError(AuthErrorEnum.forgotLoginError));
         }
@@ -333,9 +335,16 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> resendVerificationEmail(String email) async {
-    await _userDataService.resendEmail(email);
-    print("hola");
+    await _userDataService.resendEmail(email);    
   }
+
+  void saveEmailVariable(String email) {
+    this.email = email;
+  }
+
+  String getEmailVariable() {
+    return email;
+  }  
 
   void _sendMixPanelDataUsers() {
     // Send User Mix Panel Data

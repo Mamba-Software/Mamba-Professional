@@ -38,17 +38,23 @@ class AuthLoaded extends AuthState {
 
 class AuthRegistered extends AuthState {
 
-  const AuthRegistered();
+  final String email;
+  const AuthRegistered({
+    required this.email
+  });
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [email];
 }
 class AuthCorrectForget extends AuthState {
 
-  const AuthCorrectForget();
+  final String email;
+  const AuthCorrectForget({
+    required this.email
+  });
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [email];
 }
 
 class AuthError extends AuthState {

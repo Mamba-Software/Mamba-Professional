@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
-import 'package:mamba/auth/views/login.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/auth/widgets/signin_button.dart';
 import 'package:mamba/commons/constants/assets.dart';
@@ -18,12 +17,11 @@ import 'package:mamba/snackbar/models/snackbar_type.dart';
 // Register Page that allows the User to create his profile. This is the same for Client and Trainer.
 // After registering the page pop´s after 5 seconds and the user is sent to the Login page. Before Login in
 // they need to verify his email.
-class Register extends StatefulWidget {  
-  
-  static String routeName = 'register';  
+class Register extends StatefulWidget {
+  static String routeName = 'register';
   static GoRoute route = GoRoute(
     name: routeName,
-    path: 'register',    
+    path: 'register',
     builder: (BuildContext context, GoRouterState state) => const Register(),
   );
 
@@ -177,7 +175,7 @@ class _RegisterState extends State<Register> with PlatformMixin {
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
               }
-              Navigator.pop(context);
+              context.pop();
             },
             child: RichText(
               textAlign: TextAlign.center,
@@ -239,12 +237,11 @@ class _RegisterState extends State<Register> with PlatformMixin {
               message: context.l10n.validate,
             );
             context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+            context.read<AuthCubit>().saveEmailVariable(emailController.text.trim());
             Future.delayed(
               Duration(seconds: (snackbarDefaultDuration + 0.5).toInt()),
               () async {
-                context.pop(
-                  emailController.text.trim(),
-                );
+                context.pop();
               },
             );
           }
