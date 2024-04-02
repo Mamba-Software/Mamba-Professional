@@ -338,14 +338,6 @@ class AuthCubit extends Cubit<AuthState> {
     await _userDataService.resendEmail(email);    
   }
 
-  void saveEmailVariable(String email) {
-    this.email = email;
-  }
-
-  String getEmailVariable() {
-    return email;
-  }  
-
   void _sendMixPanelDataUsers() {
     // Send User Mix Panel Data
     mixpanel!.getPeople().set("email", currentUser.email);

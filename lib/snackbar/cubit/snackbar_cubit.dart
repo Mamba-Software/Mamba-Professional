@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/snackbar/cubit/snackbar_state.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
-import 'package:mamba/snackbar/models/snackbar_type.dart';
 
 class SnackbarCubit extends Cubit<SnackbarState> with PlatformMixin {
   SnackbarCubit() : super(const SnackbarInitial());

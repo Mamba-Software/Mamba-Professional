@@ -11,7 +11,7 @@ import '../../commons/constants/constants.dart';
 class ResponsiveLogin extends StatelessWidget with PlatformMixin {
   final Widget child;
 
-  const ResponsiveLogin({super.key, required this.child});
+  const ResponsiveLogin({super.key, required this.child}); 
 
   @override
   Widget build(BuildContext context) {
@@ -109,11 +109,10 @@ class ResponsiveLogin extends StatelessWidget with PlatformMixin {
                           Expanded(
                             flex: 1,
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.only(top: 120),
+                                Container(                                  
                                   constraints:
                                       const BoxConstraints(maxWidth: 400),
                                   child: child,

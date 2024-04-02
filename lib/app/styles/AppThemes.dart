@@ -97,9 +97,15 @@ class AppThemes {
           FontWeight.w600,
           mainFontFamily,
         ),
-        titleSmall: AppThemeData.textStyle(
+        titleMedium: AppThemeData.textStyle(
           primaryColor,
           body1,
+          FontWeight.w600,
+          mainFontFamily,
+        ),
+        titleSmall: AppThemeData.textStyle(
+          primaryColor,
+          body2,
           FontWeight.w600,
           mainFontFamily,
         ),
@@ -162,7 +168,7 @@ class AppThemes {
           title1,
           FontWeight.w600,
           mainFontFamily,
-        ),        
+        ),
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
           statusBarColor: Colors.transparent,
@@ -360,9 +366,15 @@ class AppThemes {
           FontWeight.w600,
           mainFontFamily,
         ),
-        titleSmall: AppThemeData.textStyle(
+        titleMedium: AppThemeData.textStyle(
           primaryColor,
           body1,
+          FontWeight.w600,
+          mainFontFamily,
+        ),
+        titleSmall: AppThemeData.textStyle(
+          primaryColor,
+          body2,
           FontWeight.w600,
           mainFontFamily,
         ),

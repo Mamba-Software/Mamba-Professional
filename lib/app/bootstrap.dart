@@ -253,69 +253,6 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
             routeInformationProvider: AppRouter.router.routeInformationProvider,
             routeInformationParser: AppRouter.router.routeInformationParser,
           );
-          /*
-          return MaterialApp(
-            title: appName,
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: flavor == Flavor.development,
-            theme: theme.themeData,
-            locale: language.locale,
-            supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            home: const SplashScreen(),
-            builder: (context, child) {
-              return PopupManager(
-                navigatorKey: navigatorKey,
-                child: SnackbarManager(
-                  navigatorKey: navigatorKey,
-                  child: child!,
-                ),
-              );
-            },
-            onGenerateRoute: (RouteSettings settings) {
-              final args = settings.arguments;
-              switch (settings.name) {
-                case 'SplashScreen':
-                  return CupertinoPageRoute(
-                    builder: (_) => const SplashScreen(),
-                    settings: const RouteSettings(name: 'SplashScreen'),
-                  );
-                case 'Notifications':
-                  return CupertinoPageRoute(
-                    builder: (_) => const Notifications(),
-                    settings: const RouteSettings(name: 'Notifications'),
-                  );
-                case 'Chat':
-                  return CupertinoPageRoute(
-                    builder: (_) => const ChatCore(),
-                    settings: const RouteSettings(name: 'ChatCore'),
-                  );
-                case 'EventPage':
-                  String eventId = args as String;
-                  return CupertinoPageRoute(
-                    builder: (_) => EventPage(
-                      eventId: eventId,
-                    ),
-                    settings: const RouteSettings(name: 'EventPage'),
-                  );
-                case 'EventFeedbackPage':
-                  String eventId = args as String;
-                  return CupertinoPageRoute(
-                    builder: (_) => EventFeedback(
-                      eventId: eventId,
-                    ),
-                    settings: const RouteSettings(name: 'EventFeedback'),
-                  );
-              }
-              return null;
-            },
-          );
-          */
         },
       );
     });
