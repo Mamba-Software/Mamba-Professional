@@ -17,5 +17,4 @@ enum AuthErrorEnum {
   forgotLoginError,
   forgotEmailError,
   forgotValidateEmailError
-
 }
