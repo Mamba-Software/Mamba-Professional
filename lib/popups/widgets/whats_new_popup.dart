@@ -6,6 +6,7 @@ import 'package:mamba/l10n/l10n.dart';
 class WhatsNewPopup {
   static void show({
     required BuildContext context,
+    required Color backgroundColor,
     required String html,
     required Function() onAcceptFunction,
   }) {    
@@ -28,7 +29,7 @@ class WhatsNewPopup {
                   height: MediaQuery.of(context).size.height * 0.65,
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    color: AppColors.white, // Or any background color for the dialog
+                    color: backgroundColor, // Or any background color for the dialog
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: SingleChildScrollView(

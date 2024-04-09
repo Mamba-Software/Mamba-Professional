@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:mamba/popups/models/html_popup.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
 
 //Singleton
 class FirebaseSettingsRepository {
-
   static final FirebaseSettingsRepository _instance =
       FirebaseSettingsRepository._internal();
 
@@ -41,11 +42,37 @@ class FirebaseSettingsRepository {
     }
   }
 
-  Future<String> getProductUpdatesHTML() async {
+  Future<int> getLatestWhatsNewBuildNumber() async {
+    // Get Lastest Product Updates Build Number Available from Settings Collection
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await _settingsCollection.doc("ProductUpdates").get();
+    int productUpdatesBuildNumber =
+        documentSnapshot.get("productUpdatesBuildNumber");
+    // Return 
+    return productUpdatesBuildNumber;
+  }
+
+  Future<HTMLPopup> getProductUpdatesHTML() async {
     // Get Product Updates HTML
     DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _settingsCollection.doc("ProductUpdates").get();
     String emailHTML = documentSnapshot.get("emailContentPro");
-    return emailHTML;
+    String emailBackground = documentSnapshot.get("background");
+    // Auxiliar Function
+    Color hexStringToColor(String hexColor) {
+      hexColor = hexColor.toUpperCase().replaceAll("#", "");
+      if (hexColor.length == 6) {
+        hexColor = "FF$hexColor";
+      }
+      return Color(int.parse(hexColor, radix: 16));
+    }
+
+    // Turn into color
+    Color backgroundColor = hexStringToColor(emailBackground);
+    // Return
+    return HTMLPopup(
+      htmlContent: emailHTML,
+      htmlBackground: backgroundColor,
+    );
   }
 }

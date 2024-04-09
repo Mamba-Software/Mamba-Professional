@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mamba/commons/mixins/platform.dart';
+import 'package:mamba/popups/models/html_popup.dart';
 import 'package:mamba/popups/models/popup.dart';
 import 'package:mamba/popups/models/popup_type.dart';
 import 'package:mamba/settings/data/settings_repository.dart';
@@ -56,13 +57,14 @@ class PopupsCubit extends Cubit<PopupState> with PlatformMixin {
   // Popup WhatsNew
   Future<void> checkIfWhatsNew() async {
     await Future.delayed(const Duration(seconds: 2));
-    bool whatsNew = await settingsRepository.getWhatsNewBool();
-    if (whatsNew == false) {
-      String emailHTML = await settingsRepository.getProductUpdatesHTML();
+    bool showWhatsNew = await settingsRepository.checkIfWhatsNewPopup();    
+    if (showWhatsNew) {
+      HTMLPopup htmlPopup = await settingsRepository.getProductUpdatesHTML();
       enqueuePopupAction(
         Popup(
-          type: PopupType.whats_new,
-          htmlContent: emailHTML,
+          type: PopupType.whats_new,          
+          htmlContent: htmlPopup.htmlContent,
+          htmlBackground: htmlPopup.htmlBackground,
         ),
       );
     }
@@ -70,7 +72,7 @@ class PopupsCubit extends Cubit<PopupState> with PlatformMixin {
 
   // Popup WhatsNew
   void closeWhatsNew() {
-    settingsRepository.setWhatsNewBool(true);
+    settingsRepository.setLocalWhatsNewBuildNumber();
   }
 
   // In App Review Dialog

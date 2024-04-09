@@ -1,8 +1,8 @@
+import 'package:mamba/popups/models/html_popup.dart';
 import 'package:mamba/settings/data/firebase_settings_repository.dart';
 import 'package:mamba/settings/data/hive_settings_repository.dart';
 
 class SettingsRepository {
-
   final FirebaseSettingsRepository _firebaseRepo;
   final HiveSettingsRepository _hiveRepo;
 
@@ -13,17 +13,30 @@ class SettingsRepository {
     return _firebaseRepo.checkAppVersion();
   }
 
-  // Setter/Getter Whats New Boolean
-  Future<void> setWhatsNewBool(bool whatsNew) async {
-    return await _hiveRepo.setWhatsNewBoolean(whatsNew);
+  // Check Whats New Popup
+  Future<bool> checkIfWhatsNewPopup() async {
+    try {
+      // Check online product updates available version
+      int onlineProductUpdates = await _firebaseRepo.getLatestWhatsNewBuildNumber();
+      // Check local product updates version
+      int localProductUpdates = await _hiveRepo.getLocalWhatsNewBuildNumber();
+      // If Online > Local show WhatsNew Popup
+      if (onlineProductUpdates > localProductUpdates) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
-  Future<bool> getWhatsNewBool() async {
-    return await _hiveRepo.getWhatsNewBoolean();
+
+  // Setter Whats New Build Number
+  Future<void> setLocalWhatsNewBuildNumber() async {
+    return await _hiveRepo.setLocalWhatsNewBuildNumber();
   }
 
   // Get Product Update HTML
-  Future<String> getProductUpdatesHTML() async {
+  Future<HTMLPopup> getProductUpdatesHTML() async {
     return _firebaseRepo.getProductUpdatesHTML();
   }
-  
 }

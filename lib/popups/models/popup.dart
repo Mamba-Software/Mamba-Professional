@@ -7,6 +7,7 @@ class Popup extends Equatable {
   final String? title;
   final String? message;
   final String? htmlContent;
+  final Color? htmlBackground;
   final bool? forceAppUpdate;
   final Widget? widget;
 
@@ -15,10 +16,11 @@ class Popup extends Equatable {
     this.title,
     this.message,
     this.htmlContent,
+    this.htmlBackground,
     this.forceAppUpdate,
     this.widget,
   });
 
   @override
-  List<Object?> get props => [type, title, message, htmlContent, forceAppUpdate, widget];
+  List<Object?> get props => [type, title, message, htmlContent, htmlBackground, forceAppUpdate, widget];
 }
