@@ -35,7 +35,7 @@ var iosAppStoreUrl =
     "https://apps.apple.com/es/app/mamba-professional/id1642701679";
 
 // Contact
-var contactEmail = "contacto@mambafitness.es";
+var contactEmail = "contacto@mamba.software";
 var contactNumber = "+34677909194"; // Your platform's contact number
 var contactNumberMessage =
     "¡Hola! Estoy interesad@ en saber más sobre sus servicios. ¿Podrían proporcionarme más información?";
@@ -43,10 +43,10 @@ var whatsappUrl =
     "whatsapp://send?phone=$contactNumber&text=${Uri.encodeComponent(contactNumberMessage)}";
 
 // Website
-var website = "https://mambafitness.es/";
-var termsAndConditions = "https://mambafitness.es/terminos-y-condiciones/";
-var privacy = "https://mambafitness.es/privacidad/";
-var functionalities = "https://mambafitness.es/profesionales/";
+var website = "https://mamba.software";
+var termsAndConditions = "https://mamba.software/terminos-y-condiciones/";
+var privacy = "https://mamba.software/privacidad/";
+var functionalities = "https://mamba.software/profesionales/";
 
 // Stripe
 var stripeConnect = "https://stripe.com/es/privacy";
