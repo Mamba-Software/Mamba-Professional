@@ -115,6 +115,7 @@ class _BrandInfoState extends State<BrandInfo>
   bool freeSession = false;
   bool directPurchase = false;
   int gracePeriodDays = 7;
+  bool gracePeriodActive = false;
   int cancelationsPerWeek = 7;
   List<bool> isSelectedTerms = [false, false, true];
   bool isStripeActive = false;
@@ -266,6 +267,12 @@ class _BrandInfoState extends State<BrandInfo>
     } else {
       currentBrand.gracePeriod = 7;
     }
+    //Grace period Active
+    if (currentBrand.gracePeriodActive != null) {
+      gracePeriodActive = currentBrand.gracePeriodActive!;
+    } else {
+      currentBrand.gracePeriodActive = false;
+    }
     //Max cancel per week
     if (currentBrand.maxCanWeek != null) {
       cancelationsPerWeek = currentBrand.maxCanWeek!;
@@ -383,6 +390,9 @@ class _BrandInfoState extends State<BrandInfo>
         mixpanel!.track('brand_info_free_session_change');
       } else {
         isUpdated = false;
+      }
+      if (currentBrand.gracePeriodActive != gracePeriodActive) {
+        isUpdated = true;
       }
       if (currentBrand.gracePeriod != gracePeriodDays) {
         isUpdated = true;
@@ -1719,63 +1729,90 @@ class _BrandInfoState extends State<BrandInfo>
                             height: MediaQuery.of(context).size.height * 0.03),
 
                         ///PERIODO DE GRACIA
-                        Row(
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.gracePeriodTitle,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            GestureDetector(
-                                onTap: () {
-                                  _topSnackBar.showSnackBarBottom(
-                                      context,
-                                      AppLocalizations.of(context)!.betaFeature,
-                                      5);
-                                },
-                                child: const BetaBadge())
-                          ],
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.015),
-                        GestureDetector(
-                          onTap: canEdit
-                              ? () {
-                                  selectNumberOfDaysGracePeriod();
-                                }
-                              : null,
-                          child: Material(
-                            elevation: 4,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(15)),
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4),
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(15)),
-                                color: Theme.of(context).colorScheme.background,
-                              ),
-                              height: MediaQuery.of(context).size.width * 0.1,
-                              width: MediaQuery.of(context).size.width * 0.2,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    "$gracePeriodDays ${AppLocalizations.of(context)!.days.toLowerCase()}",
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                        Padding(
+                            padding: EdgeInsets.only(
+                                right:
+                                    MediaQuery.of(context).size.height * 0.01),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .gracePeriodTitle,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.035,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  child: CupertinoSwitch(
+                                    value: gracePeriodActive,
+                                    onChanged: canEdit
+                                        ? (bool newVal) {
+                                            setState(() {
+                                              gracePeriodActive = newVal;
+                                            });
+                                          }
+                                        : null,
+                                    trackColor: Colors.green.withOpacity(0.4),
+                                    thumbColor: AppColors.white,
+                                    activeColor: Colors.green,
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                                ),
+                              ],
+                            )),
                         SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.015),
+                            height: MediaQuery.of(context).size.height * 0.01),
+                        gracePeriodActive
+                            ? GestureDetector(
+                                onTap: canEdit
+                                    ? () {
+                                        selectNumberOfDaysGracePeriod();
+                                      }
+                                    : null,
+                                child: Material(
+                                  elevation: 4,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(15)),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4),
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(15)),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
+                                    ),
+                                    height:
+                                        MediaQuery.of(context).size.width * 0.1,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          "$gracePeriodDays ${AppLocalizations.of(context)!.days.toLowerCase()}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.01),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -1791,6 +1828,7 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
+
 /*
                         ///CANCELACIONES MAXIMAS POR SEMANA
                         Row(
@@ -2247,6 +2285,7 @@ class _BrandInfoState extends State<BrandInfo>
                         bookingWindowMin,
                         directPurchase,
                         freeSession,
+                        gracePeriodActive,
                         gracePeriodDays,
                         cancelationsPerWeek,
                         termsSelected,
@@ -2592,7 +2631,7 @@ class _BrandInfoState extends State<BrandInfo>
                     value: isStripeActive,
                     onChanged: canEdit && currentBrand.adminID == currentUser.id
                         ? (bool newVal) async {
-                            if (newVal) {                              
+                            if (newVal) {
                               // Show Stripe Onboarding
                               await navigateToStripeOnboarding(false, false);
                               // Check If Sripe Is Activated
@@ -2603,7 +2642,7 @@ class _BrandInfoState extends State<BrandInfo>
                                 isStripeActive = true;
                               }
                             } else {
-                              if (isStripeActive && !currentBrand.isVerified) {                                
+                              if (isStripeActive && !currentBrand.isVerified) {
                                 // Show Stripe Onboarding
                                 var result = await navigateToStripeOnboarding(
                                     true, false);
@@ -2629,7 +2668,7 @@ class _BrandInfoState extends State<BrandInfo>
                                   },
                                 );
                                 if (deactivateStripe == true) {
-                                  isStripeActive = newVal;                                  
+                                  isStripeActive = newVal;
                                 } else if (deactivateStripe == false) {
                                   await navigateToStripeOnboarding(true, true);
                                 }

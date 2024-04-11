@@ -31,6 +31,7 @@ class Brand {
   double? latitude;
   bool? notShow;
   bool? directPurchase;
+  bool? gracePeriodActive;
   int? gracePeriod;
   int? maxCanWeek;
   int? paymentTerms;
@@ -78,6 +79,7 @@ class Brand {
     this.endDatePay,
     this.subscriptionId,
     this.subscription,
+    this.gracePeriodActive,
     this.gracePeriod,
     this.maxCanWeek,
     this.paymentTerms,
@@ -119,8 +121,7 @@ class Brand {
         .containsKey('baseLocation')) {
       baseLocation = documentSnapshot.get("baseLocation").toString();
     }
-    if ((documentSnapshot.data() as Map<String, dynamic>)
-        .containsKey('city')) {
+    if ((documentSnapshot.data() as Map<String, dynamic>).containsKey('city')) {
       city = documentSnapshot.get("city").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
@@ -181,6 +182,13 @@ class Brand {
         .containsKey('subscription')) {
       subscription = documentSnapshot.get("subscription");
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('gracePeriodActive')) {
+      gracePeriodActive = documentSnapshot.get("gracePeriodActive");
+    } else {
+      gracePeriodActive = false;
+    }
+
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('gracePeriod')) {
       gracePeriod = documentSnapshot.get("gracePeriod");
@@ -282,6 +290,7 @@ class Brand {
     latitude = brand.latitude;
     longitude = brand.longitude;
     notShow = brand.notShow;
+    gracePeriodActive = brand.gracePeriodActive;
     gracePeriod = brand.gracePeriod;
     maxCanWeek = brand.maxCanWeek;
     paymentTerms = brand.paymentTerms;
