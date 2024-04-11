@@ -131,21 +131,50 @@ exports.scheduledDailyFunction = functions
 exports.scheduledCheckBonoFunction = functions
 .region("europe-west1")
 .pubsub
-.schedule('every day 00:00')
+.schedule('every day 6:00')
 .timeZone('Europe/Madrid')
 .onRun( async (context) => {
   var today = new Date();
   const todayNew = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   functions.logger.log("Empezamos", todayNew);
-
+  const startTime = new Date();
   // Ejecutar subfunciones
-  await processGracePeriodPurchases();
+  //await processGracePeriodPurchases();
+  functions.logger.log("PRIMERA FUNCIÓN", 'Expiration purchases');
   await processRegularPurchasesExpTime();
+  functions.logger.log("SEGUNDA FUNCIÓN", 'Recurrent purchases');
   await processDirectAndRecurrentPurchases();
 
+  const endTime = new Date();
+  const executionTime = endTime - startTime; 
+
+  functions.logger.log("Función ejecutada correctamente. Tiempo de ejecución: ", executionTime, "ms");
   functions.logger.log("Función ejecutada correctamente", todayNew);
   return { result: "Success", executionDate: today.toISOString() };
       
+});
+
+//Test schedule
+exports.testScheduledCheckBonoFunction = functions
+.region("europe-west1")
+.firestore
+.document("/TestCF/{TestCF}")
+.onWrite(async (change, context) => {
+
+  var today = new Date();
+  const todayNew = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  functions.logger.log("Empezamos", todayNew);
+  const startTime = new Date();
+  // Ejecutar subfunciones
+  //await processGracePeriodPurchases();
+  await processRegularPurchasesExpTime();
+  await processDirectAndRecurrentPurchases();
+  const endTime = new Date();
+  const executionTime = endTime - startTime; 
+
+  functions.logger.log("Función ejecutada correctamente. Tiempo de ejecución: ", executionTime, "ms");
+  functions.logger.log("Función ejecutada correctamente", todayNew);
+  return { result: "Success", executionDate: today.toISOString() };
 });
 
 // Daily Notification For Events
@@ -3705,7 +3734,7 @@ exports.scheduledCheckBonoFunctionOnCall = functions
   functions.logger.log("Empezamos", todayNew);
 
   // Ejecutar subfunciones
-  await processGracePeriodPurchases();
+  //await processGracePeriodPurchases();
   await processRegularPurchasesExpTime();
   await processDirectAndRecurrentPurchases();
 
@@ -3770,26 +3799,26 @@ for (const doc of snapshot.docs) {
   const { expirationTime, purchasedAt, purchaseGroupId } = purchase;
   let shouldCreateNewPurchase = false;
 
-  functions.logger.log("purchasedAt", 'purchasedAt');
-
   if (expirationTime > 0) {
 
     // Lógica para cuando expirationTime es mayor que 0
-    functions.logger.log("expirationTime", expirationTime);
+    //functions.logger.log("expirationTime", expirationTime);
 
     let expirationDate;
     expirationDate = new Date(purchasedAt.toDate().getTime() + expirationTime * 24 * 60 * 60 * 1000);
 
     const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
 
-    functions.logger.log("ExpirationTime", expirationDateNormalized);
-    functions.logger.log("today", todayNormalized);
+    //functions.logger.log("ExpirationTime", expirationDateNormalized);
+    //functions.logger.log("today", todayNormalized);
 
-    shouldCreateNewPurchase = todayNormalized >= expirationDateNormalized;
+    shouldCreateNewPurchase = todayNormalized > expirationDateNormalized;
 
   } 
 
   if (shouldCreateNewPurchase) {
+
+    functions.logger.log("SE ACTUALIZA", purchaseGroupId);
   // Crear nuevo registro en la colección Purchases
   // ... Aquí iría tu lógica para obtener las características de la colección Brand/brandId o Bonos/bonoId si es necesario
  
@@ -3823,7 +3852,7 @@ for (const doc of snapshot.docs) {
     userId: purchase.userId,
     brandId: purchase.brandId,
     bonoId: purchase.bonoId,
-    price: purchase.price, // o bonoSelected.price si necesitas el precio actualizado del bono
+    price: bonoSelected.price, // o bonoSelected.price si necesitas el precio actualizado del bono
     sessions: bonoSelected.sessions, // Asegúrate de tener el bonoSelected actualizado
     weeklySessions: bonoSelected.weeklySessions,
     cancelTime: bonoSelected.cancelTime,
@@ -3887,7 +3916,7 @@ async function processRegularPurchasesExpTime() {
     if (expirationTime > 0) {
 
       // Lógica para cuando expirationTime es mayor que 0
-      functions.logger.log("expirationTime", expirationTime);
+      //functions.logger.log("expirationTime", expirationTime);
       let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
   
       let expirationDate;
@@ -3895,13 +3924,15 @@ async function processRegularPurchasesExpTime() {
       expirationDate = new Date(purchasedAtNormalized.getTime() + expirationTime * 24 * 60 * 60 * 1000);
       const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
   
-      functions.logger.log("ExpirationTime", expirationDateNormalized);
-      functions.logger.log("today", todayNormalized);
+      //functions.logger.log("ExpirationTime", expirationDateNormalized);
+      //functions.logger.log("today", todayNormalized);
   
-      shouldSetInactivePurchase = todayNormalized >= expirationDateNormalized;
+      //shouldSetInactivePurchase = todayNormalized > expirationDateNormalized;
 
       if(shouldSetInactivePurchase) 
       {
+        functions.logger.log("SE ACTUALIZA", "EN LA FUNCIÓN DE EXPIRATION");
+        //await doc.ref.update({isUpdating: true});
         await doc.ref.update({isActive: false});
       }
     }

@@ -4171,4 +4171,79 @@ class ScriptsDatabaseService {
       return false;
     }
   }
+
+  Future<bool> JMFSolveBonosPurchases09042024ADN() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('JMFSolveBonosPurchases09042024ADN');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modiifying USEEEER bonos\n');
+      print('--------------');
+      print('\n');
+
+      /// THE GOAL IS TO REMOVE DE DELETED BONOS FROM THE EVENT, THIS IS A BUG WE DISCOVERED TODAY
+      String purchasesCollection = "Purchases";
+      String usersCollection = "Users";
+
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(purchasesCollection)
+          .where("isRecurrent", isEqualTo: true)
+          .where("isActive", isEqualTo: true)
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String purchaseId = querySnapshot.docs[i].id;
+
+        DocumentSnapshot documentPurchase = await _firestore
+            .collection(purchasesCollection)
+            .doc(purchaseId)
+            .get();
+
+        Purchase purchase =
+            Purchase.fromObjectAllData(documentPurchase.id, documentPurchase);
+
+        DocumentSnapshot document = await _firestore
+            .collection(usersCollection)
+            .doc(purchase.userId)
+            .collection("Bonos")
+            .doc(purchase.bonoId)
+            .get();
+
+        Bono bono = Bono.fromObjectAllData(document.id, document);
+
+        if (bono.purchaseId != null) {
+          if (bono.purchaseId != purchaseId) {
+            /*
+            await _firestore
+                .collection(usersCollection)
+                .doc(purchase.userId)
+                .collection("Bonos")
+                .doc(purchase.bonoId)
+                .update({
+              "purchaseId": purchaseId,
+            });*/
+
+            print('--------------');
+            print(purchase.userId);
+            print("DIFERENT PURCHASE ID ON BONO:" + bono.id!);
+            print("BONO PURCHASEID" + bono.purchaseId!);
+            print("PURCHASEID" + purchaseId);
+            print('--------------');
+          }
+        }
+      }
+
+      print('\n');
+      print(
+          '=================================================================================');
+      print(
+          '=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

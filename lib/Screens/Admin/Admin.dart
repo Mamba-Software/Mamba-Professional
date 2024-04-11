@@ -112,7 +112,7 @@ class EachList extends StatelessWidget {
             ));
         break;
       case 3:
-        var result = await _script.getStatisticsPurchases();
+        var result = await _script.JMFSolveBonosPurchases09042024ADN();
         print("RESULT: $result");
         break;
     }

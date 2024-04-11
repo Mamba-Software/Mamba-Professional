@@ -74,15 +74,67 @@ exports.getPaymentMethods = getPaymentMethods;
 async function createSubscription(customerId, priceId, brandId, productId, paymentMethodId, purchaseId, expirationTime) {
     const v2_1 = require("firebase-functions/v2");
     try {
+        
         let brandData = await constants_1.brandCollection.doc(brandId).get();
         let brandPaymentTerms = brandData.data().paymentTerms;
         let stripeAccountId =  brandData.data().stripeAccountId;
         let subscription = null;
         const now = new Date();
         let addMonth = 1;
+        let paymentMethodFound = 0;
 
         v2_1.logger.info(now.getDate());
         v2_1.logger.info(brandPaymentTerms);
+/*
+        //todo borrar
+        const paymentMethod = await constants_1.stripe.paymentMethods.create({
+            type: 'sepa_debit',
+            sepa_debit: { iban: 'DE89370400440532013000' },
+            billing_details: { name: 'test' },
+          }, {
+            stripeAccount: stripeAccountId, // Especifica la cuenta conectada aquí
+          });
+          
+          // Paso 4: Adjuntar el PaymentMethod al cliente en la cuenta conectada
+          await constants_1.stripe.paymentMethods.attach(paymentMethod.id, {
+            customer: customerId,
+          }, {
+            stripeAccount: stripeAccountId, // Especifica la cuenta conectada aquí también
+          });
+          paymentMethodId = paymentMethod.id;
+//todo borrar
+*/
+
+        let paymentMethods = await constants_1.stripe.paymentMethods.list({
+            customer: customerId,
+        },  { stripeAccount: stripeAccountId});
+
+        if (paymentMethods.data.length === 0) {
+            
+        }
+        else {
+
+            for (let i = 0; i < paymentMethods.data.length; i++) {
+                if(paymentMethods.data[i].id === paymentMethodId) {
+                    paymentMethodFound = 1;
+                    v2_1.logger.info('FOUND');
+                }
+            }
+        }
+
+        if(paymentMethodFound === 0) {
+
+            v2_1.logger.info('PRE ATTACH');
+
+            const attachedPaymentMethod = await constants_1.stripe.paymentMethods.attach(paymentMethodId, {
+                customer: customerId,
+            }, {
+                stripeAccount: stripeAccountId, // Especifica la cuenta conectada aquí
+            });
+    
+            v2_1.logger.info('POST ATTACH' + attachedPaymentMethod);
+        }
+      
         
         if (now.getDate() !== 1 && brandPaymentTerms !== null && brandPaymentTerms !== 2) {
         
@@ -116,6 +168,13 @@ async function createSubscription(customerId, priceId, brandId, productId, payme
                 dayTouse = firstOfMonthMath;
             }
         }
+        //constants_1.stripe.paymentMethod.attach(paymentMethodId, Stripe.PaymentMethodAttachParams(), {stripeAccount: stripeAccountId})
+
+       /* const setupIntent = await stripe.setupIntents.create({
+            payment_method: paymentMethodId,
+            customer: customerId,
+            usage: 'off_session', // Indicating future off-session use
+          });*/
 
           subscription = await constants_1.stripe.subscriptions.create({
             customer: customerId,

@@ -13,6 +13,7 @@ async function createPaymentIntent(amount, customerId, brandId) {
     }
     //customerData.stripeCustomerId = 'cus_PeYbnXjmnCJ0QD';
     const paymentIntent = await constants_1.stripe.paymentIntents.create({
+        
         amount: amount,
         customer: customerData === null || customerData === void 0 ? void 0 : customerData.stripeCustomerId,
         currency: 'eur',
