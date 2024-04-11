@@ -139,7 +139,8 @@ exports.scheduledCheckBonoFunction = functions
   functions.logger.log("Empezamos", todayNew);
   const startTime = new Date();
   // Ejecutar subfunciones
-  //await processGracePeriodPurchases();
+  functions.logger.log("PRE PRIMERA FUNCIÓN", 'Grace period');
+  await processGracePeriodPurchases();
   functions.logger.log("PRIMERA FUNCIÓN", 'Expiration purchases');
   await processRegularPurchasesExpTime();
   functions.logger.log("SEGUNDA FUNCIÓN", 'Recurrent purchases');
@@ -3749,36 +3750,62 @@ async function processGracePeriodPurchases() {
 var today = new Date();
 const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 const purchasesRef = db.collection('Purchases');
-const snapshot = await purchasesRef
-  .where('isActive', '==', true)
-  .where('directPurchase', '==', true)
-  .get();
+const brandsRef = db.collection('Brands');
 
-for (const doc of snapshot.docs) {
-  const purchase = doc.data();
-  let { purchasedAt, isRecurrent } = purchase;
+  const snapshotBrands = await brandsRef.get();
 
-  const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
-  const brandSelected = brandSnapshot.data();
+  for (const docBrand of snapshotBrands.docs) {
 
-  let gracePeriod = brandSelected.gracePeriod ?? 0;
+    let brand = docBrand.data();
+    let brandId = docBrand.id;
+    let {gracePeriodActive } = brand;
 
-  let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
+    if(gracePeriodActive != null && gracePeriodActive === true) {
 
-  // Convertir purchasedAt a una fecha y sumarle el gracePeriod
-  const gracePeriodEndDate = new Date(purchasedAtNormalized.getTime());
-  gracePeriodEndDate.setDate(gracePeriodEndDate.getDate() + gracePeriod);
+    functions.logger.log("TIENE GRACE PERIOD LA MARCA: ", brandId);
 
-  if(gracePeriodEndDate >= todayNormalized) {
-    const updateData = {
-      isActive: false,
-      };
-      if (isRecurrent) {
-        updateData.isRecurrencyActive = false;
-      }
-      await doc.ref.update(updateData);
+    const snapshot = await purchasesRef
+    .where('isActive', '==', true)
+    .where('directPurchase', '==', true)
+    .where('brandId', '==', brandId)
+    .get();
+  
+  for (const doc of snapshot.docs) {
+    const purchase = doc.data();
+    let { purchasedAt, isRecurrent } = purchase;
+  
+    const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
+    const brandSelected = brandSnapshot.data();
+  
+    let gracePeriod = brandSelected.gracePeriod ?? 0;
+  
+    let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
+  
+    // Convertir purchasedAt a una fecha y sumarle el gracePeriod
+    const gracePeriodEndDate = new Date(purchasedAtNormalized.getTime());
+    gracePeriodEndDate.setDate(gracePeriodEndDate.getDate() + gracePeriod);
+
+    functions.logger.log("Purchase  ", doc.id);
+    functions.logger.log("Grace  ", gracePeriod);
+    functions.logger.log("purchasedAtNormalized  ", purchasedAtNormalized);
+    functions.logger.log("gracePeriodEndDate  ", gracePeriodEndDate);
+    functions.logger.log("todayNormalized  ", todayNormalized);
+  
+    if(todayNormalized >= gracePeriodEndDate) {
+      functions.logger.log("ACTUALIZA ", doc.id);
+      const updateData = {
+        isActive: false,
+        };
+        if (isRecurrent) {
+          updateData.isRecurrencyActive = false;
+        }
+        await doc.ref.update(updateData);
+    }
   }
 }
+  }
+
+
 }
 
 // Subfunción para procesar las Purchases directas y recurrentes
