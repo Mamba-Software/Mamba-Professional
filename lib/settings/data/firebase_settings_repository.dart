@@ -47,7 +47,7 @@ class FirebaseSettingsRepository {
     DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _settingsCollection.doc("ProductUpdates").get();
     int productUpdatesBuildNumber =
-        documentSnapshot.get("productUpdatesBuildNumber");
+        documentSnapshot.get("productUpdatesBuildNumberPro");
     // Return 
     return productUpdatesBuildNumber;
   }
