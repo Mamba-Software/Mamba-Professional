@@ -671,6 +671,30 @@ exports.brandUpdatesCoverData = functions
           });
         }
       }
+      if(before.stripeActivated != after.stripeActivated) {
+        if(after.stripeActivated === true && after.stripeAccountId != null)  {
+          const brandBonosSnapshot = await db.collection("Brands").doc(brandId).collection("Bonos").get();
+          for (var j in brandBonosSnapshot.docs) {
+            const bonoId = brandBonosSnapshot.docs[j].id;
+            const bonoSnapshot = await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).get(); 
+            const bonoDoc = bonoSnapshot.data();
+            if(bonoDoc.isRecurrent === true) {
+              let productData = {
+                productId: bonoId,
+                brandId: brandId,
+                brandName: after.name,
+                title: (_b = bonoDoc) === null || _b === void 0 ? void 0 : _b.title,
+                description: (_c = bonoDoc) === null || _c === void 0 ? void 0 : _c.description,
+                active: (_d = bonoDoc) === null || _d === void 0 ? void 0 : _d.isActive,
+                priceId: (_f = (_e = bonoDoc) === null || _e === void 0 ? void 0 : _e.priceId) !== null && _f !== void 0 ? _f : null,
+                price: ((_h = (_g = bonoDoc) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
+                expirationTime: bonoDoc.expirationTime,
+            };
+            (0, products_1.createProduct)(productData, after.stripeAccountId);
+            }
+          }
+        }
+      }
       return null;
     });
 
