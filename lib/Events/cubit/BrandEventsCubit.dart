@@ -1,36 +1,33 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba/auth/cubit/AuthCubit.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 part 'BrandEventsState.dart';
 
 class BrandEventsCubit extends Cubit<BrandEventsState> {
-
   BrandEventsCubit(final cubitAuth) : super(const BrandEventsInitial()) {
-
     cubitAuth.stream.distinct().listen((state) async {
       // Handle the state change
       if (state is AuthUserBrand) {
-        if(isStreamActive) _subscription.cancel();
+        if (isStreamActive) _subscription.cancel();
         // Set the State to Loading
         emit(const BrandEventsLoading());
 
         isStreamActive = true;
-        _brandTrainers = await _brandDataService.getBrandTrainers(currentBrand.id!);
+        _brandTrainers =
+            await _brandDataService.getBrandTrainers(currentBrand.id!);
         getInitialBrandEvents(_brandTrainers);
-      }
-      else {
-        if(isStreamActive) {
+      } else {
+        if (isStreamActive) {
           _subscription.cancel();
           isStreamActive = false;
         }
-
       }
     });
   }
@@ -49,12 +46,14 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       // Brand Id String
       String brandId = currentBrand.id!;
       // Get Last 100 Finished Events
-      finishedEventsList = await _eventDataService.getBrandFirstCompletedEventsLimit(brandId, limit);
+      finishedEventsList = await _eventDataService
+          .getBrandFirstCompletedEventsLimit(brandId, limit);
       // Add The Trainers to the Event
       List<Usuario> eventTrainers = [];
       for (Event evt in finishedEventsList) {
         for (Usuario trainer in brandTrainers) {
-          int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
+          int index =
+              trainer.eventsList.indexWhere((element) => element.id == evt.id);
           if (index != -1) {
             eventTrainers.add(trainer);
           }
@@ -63,20 +62,22 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         eventTrainers = [];
       }
       // Open the Stream to Get Brand Upcoming Events
-      _subscription = _eventDataService.getBrandUpcomingEventsStream(brandId).listen((querySnapshot) async {
+      _subscription =
+          _eventDataService.getBrandUpcomingEventsStream(brandId).listen(
+        (querySnapshot) async {
           List<DocumentSnapshot> documents = querySnapshot.docs;
           upcomingEventsList = documentsToEvents(documents, brandTrainers);
-          List<Event> finalList = finishedEventsList+upcomingEventsList;
+          List<Event> finalList = finishedEventsList + upcomingEventsList;
           // Order Notification List Descending Time
-          finalList.sort((a,b) {
-            var aDate =  DateTime(
+          finalList.sort((a, b) {
+            var aDate = DateTime(
               int.parse(a.year!),
               int.parse(a.month!),
               int.parse(a.day!),
               int.parse(a.hour!),
               int.parse(a.minute!),
             );
-            var bDate =  DateTime(
+            var bDate = DateTime(
               int.parse(b.year!),
               int.parse(b.month!),
               int.parse(b.day!),
@@ -88,29 +89,32 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
           // Emit a new state with the list of `Events`.
           emit(BrandEventsLoaded(finalList));
         },
-          onError: (e) {
-            print("Brand Events Error$e");
-            emit(BrandEventsError(e.toString()));
-          },
-        );
-      } catch(e) {
-        print("Brand Events Error$e");
-        emit(BrandEventsError(e.toString()));
-      }
+        onError: (e) {
+          print("Brand Events Error$e");
+          emit(BrandEventsError(e.toString()));
+        },
+      );
+    } catch (e) {
+      print("Brand Events Error$e");
+      emit(BrandEventsError(e.toString()));
+    }
   }
 
-  Future<void> getMoreBrandEvents(String eventId, List<Usuario> brandTrainers) async {
+  Future<void> getMoreBrandEvents(
+      String eventId, List<Usuario> brandTrainers) async {
     try {
       print("Getting More Brand Events");
       // Set the State to Loading
       String brandId = currentBrand.id!;
       // Get Last 100 Finished Events
-      List<Event> moreFinishedEvents = await _eventDataService.getBrandMoreCompletedEventsLimit(brandId, eventId, limit*2);
+      List<Event> moreFinishedEvents = await _eventDataService
+          .getBrandMoreCompletedEventsLimit(brandId, eventId, limit * 2);
       // Add The Trainers to the Event
       List<Usuario> eventTrainers = [];
       for (Event evt in moreFinishedEvents) {
         for (Usuario trainer in brandTrainers) {
-          int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
+          int index =
+              trainer.eventsList.indexWhere((element) => element.id == evt.id);
           if (index != -1) {
             eventTrainers.add(trainer);
           }
@@ -118,18 +122,19 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         evt.setUserList = eventTrainers;
         eventTrainers = [];
       }
-      finishedEventsList = List.from(moreFinishedEvents+finishedEventsList);
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
+      finishedEventsList = List.from(moreFinishedEvents + finishedEventsList);
+      List<Event> finalList =
+          List.from(finishedEventsList + upcomingEventsList);
       // Order Notification List Descending Time
-      finalList.sort((a,b) {
-        var aDate =  DateTime(
+      finalList.sort((a, b) {
+        var aDate = DateTime(
           int.parse(a.year!),
           int.parse(a.month!),
           int.parse(a.day!),
           int.parse(a.hour!),
           int.parse(a.minute!),
         );
-        var bDate =  DateTime(
+        var bDate = DateTime(
           int.parse(b.year!),
           int.parse(b.month!),
           int.parse(b.day!),
@@ -139,13 +144,14 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         return aDate.compareTo(bDate);
       });
       emit(BrandEventsLoaded(finalList));
-    } catch(e) {
+    } catch (e) {
       print("More Brand Events Error$e");
       emit(BrandEventsError(e.toString()));
     }
   }
 
-  Future<void> updateBrandEvent(String eventId, List<Usuario> brandTrainers) async {
+  Future<void> updateBrandEvent(
+      String eventId, List<Usuario> brandTrainers) async {
     try {
       print("Update Brand Event");
       // Set the State to Loading
@@ -155,7 +161,8 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       // Add The Trainers to the Event
       List<Usuario> eventTrainers = [];
       for (Usuario trainer in brandTrainers) {
-        int index = trainer.eventsList.indexWhere((element) => element.id == event.id);
+        int index =
+            trainer.eventsList.indexWhere((element) => element.id == event.id);
         if (index != -1) {
           eventTrainers.add(trainer);
         }
@@ -164,17 +171,18 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       // Remove From Finished List First and Add Again
       finishedEventsList.removeWhere((element) => element.id == eventId);
       finishedEventsList.add(event);
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
+      List<Event> finalList =
+          List.from(finishedEventsList + upcomingEventsList);
       // Order Notification List Descending Time
-      finalList.sort((a,b) {
-        var aDate =  DateTime(
+      finalList.sort((a, b) {
+        var aDate = DateTime(
           int.parse(a.year!),
           int.parse(a.month!),
           int.parse(a.day!),
           int.parse(a.hour!),
           int.parse(a.minute!),
         );
-        var bDate =  DateTime(
+        var bDate = DateTime(
           int.parse(b.year!),
           int.parse(b.month!),
           int.parse(b.day!),
@@ -185,7 +193,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       });
       emit(BrandEventsLoaded(finalList));
       print("Event $eventId Successfully Updated");
-    } catch(e) {
+    } catch (e) {
       print("Delete Brand Event Error$e");
       emit(BrandEventsError(e.toString()));
     }
@@ -196,17 +204,18 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       print("Delete More Brand Events");
       upcomingEventsList.removeWhere((element) => element.id == eventId);
       finishedEventsList.removeWhere((element) => element.id == eventId);
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
+      List<Event> finalList =
+          List.from(finishedEventsList + upcomingEventsList);
       // Order Notification List Descending Time
-      finalList.sort((a,b) {
-        var aDate =  DateTime(
+      finalList.sort((a, b) {
+        var aDate = DateTime(
           int.parse(a.year!),
           int.parse(a.month!),
           int.parse(a.day!),
           int.parse(a.hour!),
           int.parse(a.minute!),
         );
-        var bDate =  DateTime(
+        var bDate = DateTime(
           int.parse(b.year!),
           int.parse(b.month!),
           int.parse(b.day!),
@@ -217,7 +226,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       });
       emit(BrandEventsLoaded(finalList));
       print("Event $eventId Successfully Deleted");
-    } catch(e) {
+    } catch (e) {
       print("Delete Brand Event Error$e");
       emit(BrandEventsError(e.toString()));
     }
@@ -253,18 +262,18 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
     }
   }
    */
-
 }
 
-
-List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> brandTrainers) {
+List<Event> documentsToEvents(
+    List<DocumentSnapshot> documents, List<Usuario> brandTrainers) {
   List<Event> events = [];
   List<Usuario> eventTrainers = [];
-  for(int i = 0; i < documents.length; i++) {
+  for (int i = 0; i < documents.length; i++) {
     Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
     // Check Trainers in Event
     for (Usuario trainer in brandTrainers) {
-      int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
+      int index =
+          trainer.eventsList.indexWhere((element) => element.id == evt.id);
       if (index != -1) {
         eventTrainers.add(trainer);
       }
@@ -274,9 +283,9 @@ List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> br
     eventTrainers = [];
   }
   // Order By
-  events.sort((a,b) {
-    var aDate =  a.doneAt!.toDate();
-    var bDate =  b.doneAt!.toDate();
+  events.sort((a, b) {
+    var aDate = a.doneAt!.toDate();
+    var bDate = b.doneAt!.toDate();
     return aDate.compareTo(bDate);
   });
   // Return List of Events
@@ -288,7 +297,8 @@ Event documentToEvent(DocumentSnapshot document, List<Usuario> brandTrainers) {
   Event evt = Event.fromObjectOnlyCoverData(document.id, document);
   // Check Trainers in Event
   for (Usuario trainer in brandTrainers) {
-    int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
+    int index =
+        trainer.eventsList.indexWhere((element) => element.id == evt.id);
     if (index != -1) {
       eventTrainers.add(trainer);
     }

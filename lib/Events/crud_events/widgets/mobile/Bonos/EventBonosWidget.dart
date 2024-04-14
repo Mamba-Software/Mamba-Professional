@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget eventBonosWidget(BuildContext context, Map<Bono, bool> eventBonosMap) {
@@ -243,16 +243,7 @@ Widget bonoFieldDescription(
                                         ),
                                         Flexible(
                                           child: Text(
-                                            "${bono.sessions! == 10000
-                                                    ? "${AppLocalizations.of(
-                                                                context)!
-                                                            .sessions} ${AppLocalizations.of(
-                                                                context)!
-                                                            .ilimitadas}"
-                                                    : "${bono.sessions!} ${AppLocalizations.of(
-                                                                context)!
-                                                            .sessions
-                                                            .toLowerCase()}"} desde ${bono.price!.toStringAsFixed(2)}€",
+                                            "${bono.sessions! == 10000 ? "${AppLocalizations.of(context)!.sessions} ${AppLocalizations.of(context)!.ilimitadas}" : "${bono.sessions!} ${AppLocalizations.of(context)!.sessions.toLowerCase()}"} desde ${bono.price!.toStringAsFixed(2)}€",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall,
@@ -275,10 +266,14 @@ Widget bonoFieldDescription(
                                       elevation: 4,
                                       color: eventBonosMap[bono] == true
                                           ? Theme.of(context).primaryColor
-                                          : Theme.of(context).colorScheme.background,
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .background,
                                       textColor: eventBonosMap[bono] == true
                                           ? Theme.of(context).primaryColor
-                                          : Theme.of(context).colorScheme.background,
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .background,
                                       padding: EdgeInsets.zero,
                                       shape: const CircleBorder(),
                                       onPressed: () {

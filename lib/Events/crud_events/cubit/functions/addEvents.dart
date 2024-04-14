@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/notificationsEvents.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/events/crud_events/cubit/functions/notificationsEvents.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 
 class AddEventFunctions {
   final _eventDataService = EventDataService();
@@ -106,12 +106,8 @@ class AddEventFunctions {
     }
   }
 
-  Future<void> assignTrainers(
-      BuildContext context,
-      Event oldEvent,
-      Event event,
-      String currentUserId,
-      ReceivedNotification notificationBefore) async {
+  Future<void> assignTrainers(BuildContext context, Event oldEvent, Event event,
+      String currentUserId, ReceivedNotification notificationBefore) async {
     Set<String?> oldIds =
         oldEvent.selectedTrainersList!.map((usuario) => usuario.id).toSet();
     Set<String?> newIds =

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Bonos/EventBonosBlocSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationBlocSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionBlocSelector.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/Bonos/EventBonosBlocSelector.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/Location/LocationBlocSelector.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionBlocSelector.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InformationPage extends StatelessWidget {

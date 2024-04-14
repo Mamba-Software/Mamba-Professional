@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
+import 'package:mamba/app/style/AppColors.dart';
 
 class TitleDescriptionWidget extends StatefulWidget {
   const TitleDescriptionWidget({super.key});
@@ -70,10 +70,16 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                     },
                     style: Theme.of(context).textTheme.bodyMedium,
                     decoration: InputDecoration(
-                      hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: titleString.isEmpty
-                              ? AppColors.red
-                              : Theme.of(context).textTheme.bodySmall!.color),
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(
+                              color: titleString.isEmpty
+                                  ? AppColors.red
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .color),
                       hintText: AppLocalizations.of(context)!.titleHint,
                       errorStyle: Theme.of(context)
                           .textTheme

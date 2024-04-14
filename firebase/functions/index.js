@@ -200,6 +200,8 @@ exports.monthlyProductUpdates = functions
         // Send Email Function  
         function sendEmail(user, updatesData, retryCount = 0) {
             // Determine the base email content
+            let emailTemplate = user.isTrainer ? updatesData.emailContentPro : updatesData.emailContent;  
+            // Determine the base email content
             let baseContent = user.isTrainer ? updatesData.emailContentPro : updatesData.emailContent;
             // Replace macros with actual data
             let content = baseContent.replace(/{{firstName}}/g, user.firstName);

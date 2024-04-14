@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/app/style/AppColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -127,7 +127,7 @@ class AddOrEditEvent extends StatelessWidget {
                 height: 50,
                 child: FloatingActionButton.extended(
                   shape: const StadiumBorder(),
-                  heroTag: "48",                  
+                  heroTag: "48",
                   onPressed: () async {
                     if (state.isValidated.every((bool value) => value)) {
                       if (state.isNew) {

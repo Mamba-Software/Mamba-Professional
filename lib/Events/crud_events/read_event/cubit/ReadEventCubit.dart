@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/DataService/Location/LocationDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Location.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 part 'ReadEventState.dart';
 
 class ReadEventCubit extends Cubit<ReadEventLoaded> {

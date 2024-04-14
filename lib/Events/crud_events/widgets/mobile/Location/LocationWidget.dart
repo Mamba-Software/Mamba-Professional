@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/MyLocationsSelect.dart';
+import 'package:mamba/data/Models/Location.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/MyLocationsSelect.dart';
 
 class LocationWidget extends StatefulWidget {
   final Location location;
@@ -75,7 +75,8 @@ class _LocationWidgetState extends State<LocationWidget> {
                       margin: EdgeInsets.all(
                           MediaQuery.of(context).size.height * 0.015),
                       decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
                         image: DecorationImage(
                           image: AssetImage(Constants.mapsImg),
                           fit: BoxFit.cover,

@@ -1,19 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/notificationsEvents.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Events/crud_events/views/mobile/DateTimePage.dart';
-import 'package:mamba_castelldefels/Events/crud_events/views/mobile/InformationPage.dart';
-import 'package:mamba_castelldefels/Events/crud_events/views/mobile/MembersPage.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/cubit/functions/notificationsEvents.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/events/crud_events/views/mobile/DateTimePage.dart';
+import 'package:mamba/events/crud_events/views/mobile/InformationPage.dart';
+import 'package:mamba/events/crud_events/views/mobile/MembersPage.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -235,8 +235,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                   fit: BoxFit.contain,
                                   child: Text(
                                       AppLocalizations.of(context)!.group,
-                                      style:
-                                          Theme.of(context).textTheme.bodyMedium,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
                                       textAlign: TextAlign.center),
                                 ),
                               ),
@@ -351,7 +352,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                             height: 50,
                             child: FloatingActionButton.extended(
                               shape: const StadiumBorder(),
-                              heroTag: "47",                              
+                              heroTag: "47",
                               onPressed: () {
                                 if (_selectedIndex == 1) {
                                   if (!state.isNew) {

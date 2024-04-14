@@ -3,19 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 part 'CalendarFunctionState.dart';
 
 class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
-
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
@@ -60,35 +59,35 @@ class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
   DateTime? calendarDateTime;
   CalendarView? calendarView;
 
-  CalendarFunctionCubit(context, brandId) : super(const CalendarFunctionInitial())
-  {
+  CalendarFunctionCubit(context, brandId)
+      : super(const CalendarFunctionInitial()) {
     emit(const CalendarFunctionLoading());
     initAppBarDateTitle();
     getUserBrandDetails(context, brandId);
     emit(CalendarFunctionLoaded(
-    selectedValue: selectedValue,
-    items: items,
-    canEdit: canEdit,
-    brand: _brand,
-    brandTrainers: _brandTrainers,
-    selectedTrainers: selectedTrainers,
-    controller: _controller,
-    nonWorkDays: nonWorkDays,
-    startHour: _startHour,
-    endHour: _endHour,
-    timeSlotViewZoom: _timeSlotViewZoom,
-    baseTimeSlotViewZoom: _baseTimeSlotViewZoom,
-    timeSlotViewScale: _timeSlotViewScale,
-    baseTimeSlotViewScale: _baseTimeSlotViewScale,
-    dateJoined: dateJoined,
-    displayDateTimeStart: displayDateTimeStart,
-    displayDateTimeEnd: displayDateTimeEnd,
-    middleMonthDate: middleMonthDate,
-    hasFilter: hasFilter,
-    filterEventsNumber: filterEventsNumber,
-    filterByCalendar: filterByCalendar,
-    calendarDateTime: calendarDateTime,
-    calendarView: calendarView,
+      selectedValue: selectedValue,
+      items: items,
+      canEdit: canEdit,
+      brand: _brand,
+      brandTrainers: _brandTrainers,
+      selectedTrainers: selectedTrainers,
+      controller: _controller,
+      nonWorkDays: nonWorkDays,
+      startHour: _startHour,
+      endHour: _endHour,
+      timeSlotViewZoom: _timeSlotViewZoom,
+      baseTimeSlotViewZoom: _baseTimeSlotViewZoom,
+      timeSlotViewScale: _timeSlotViewScale,
+      baseTimeSlotViewScale: _baseTimeSlotViewScale,
+      dateJoined: dateJoined,
+      displayDateTimeStart: displayDateTimeStart,
+      displayDateTimeEnd: displayDateTimeEnd,
+      middleMonthDate: middleMonthDate,
+      hasFilter: hasFilter,
+      filterEventsNumber: filterEventsNumber,
+      filterByCalendar: filterByCalendar,
+      calendarDateTime: calendarDateTime,
+      calendarView: calendarView,
     ));
   }
 
@@ -99,25 +98,29 @@ class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
     //timeSlotViewZoom = _controller.view == CalendarView.week ? -1 : MediaQuery.of(context).size.height*0.15;
     // Date Joined Information
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
-    _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
-    _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    _startHour =
+        double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+    _endHour =
+        double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
     // Calcula el TimeSlotView per cadascuna
     _baseTimeSlotViewZoom = getScreenHeightDifference(context);
-    _timeSlotViewScale = await _userDataService.getUserZoomScale(brandId, currentUser.id!);
+    _timeSlotViewScale =
+        await _userDataService.getUserZoomScale(brandId, currentUser.id!);
     _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
   }
+
   // Init App Bar Title
   initAppBarDateTitle() {
     // Initial Date Time
     if (calendarDateTime == null) {
       DateTime now = DateTime.now();
       int currentDay = now.weekday;
-      displayDateTimeStart = now.subtract(Duration(days: currentDay-1));
+      displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
     } else {
       DateTime dateTime = calendarDateTime!;
       int currentDay = dateTime.weekday;
-      displayDateTimeStart = dateTime.subtract(Duration(days: currentDay-1));
+      displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
     }
   }
@@ -127,7 +130,8 @@ class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
     _brandTrainers = await _brandDataService.getBrandTrainers(brandId);
     selectedTrainers = List.from(_brandTrainers);
     for (Usuario trainer in _brandTrainers) {
-      trainer.setEventsList = await _eventDataService.getUserEvents(trainer.id!);
+      trainer.setEventsList =
+          await _eventDataService.getUserEvents(trainer.id!);
     }
     if (currentUser.brandRole < 3) {
       canEdit = true;
@@ -144,13 +148,14 @@ class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
     // Full screen height
     double screenHeight = MediaQuery.of(context).size.height;
     // Expanded Height of AppBar
-    double expandedHeight = MediaQuery.of(context).size.height*0.15 + MediaQuery.of(context).padding.top;
+    double expandedHeight = MediaQuery.of(context).size.height * 0.15 +
+        MediaQuery.of(context).padding.top;
     // View Header Height Calendar
     double viewHeaderHeight = 50;
     // We're using TargetPlatform to determine the type of device
     switch (Theme.of(context).platform) {
       case TargetPlatform.android:
-      //adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight - bottomNavigationBarHeight;
+        //adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight - bottomNavigationBarHeight;
         adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
         break;
       case TargetPlatform.iOS:
@@ -161,23 +166,23 @@ class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
         break;
     }
     // Diferencia de Hores
-    double difference = _endHour!-_startHour!;
-    difference = _startHour! != 0 ? difference+1 : difference;
-    difference = _endHour! != 24 ? difference+1 : difference;
+    double difference = _endHour! - _startHour!;
+    difference = _startHour! != 0 ? difference + 1 : difference;
+    difference = _endHour! != 24 ? difference + 1 : difference;
     return adjustedHeight / difference;
   }
-
 }
 
-
-List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> brandTrainers) {
+List<Event> documentsToEvents(
+    List<DocumentSnapshot> documents, List<Usuario> brandTrainers) {
   List<Event> events = [];
   List<Usuario> eventTrainers = [];
-  for(int i = 0; i < documents.length; i++) {
+  for (int i = 0; i < documents.length; i++) {
     Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
     // Check Trainers in Event
     for (Usuario trainer in brandTrainers) {
-      int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
+      int index =
+          trainer.eventsList.indexWhere((element) => element.id == evt.id);
       if (index != -1) {
         eventTrainers.add(trainer);
       }
@@ -187,9 +192,9 @@ List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> br
     eventTrainers = [];
   }
   // Order By
-  events.sort((a,b) {
-    var aDate =  a.doneAt!.toDate();
-    var bDate =  b.doneAt!.toDate();
+  events.sort((a, b) {
+    var aDate = a.doneAt!.toDate();
+    var bDate = b.doneAt!.toDate();
     return aDate.compareTo(bDate);
   });
   // Return List of Events
@@ -201,7 +206,8 @@ Event documentToEvent(DocumentSnapshot document, List<Usuario> brandTrainers) {
   Event evt = Event.fromObjectOnlyCoverData(document.id, document);
   // Check Trainers in Event
   for (Usuario trainer in brandTrainers) {
-    int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
+    int index =
+        trainer.eventsList.indexWhere((element) => element.id == evt.id);
     if (index != -1) {
       eventTrainers.add(trainer);
     }

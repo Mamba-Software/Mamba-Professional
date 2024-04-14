@@ -4,21 +4,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/addEvents.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/notificationsEvents.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/recurrentEvents.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/DataService/Location/LocationDataService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/data/Models/Location.dart';
+import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba/events/crud_events/cubit/functions/addEvents.dart';
+import 'package:mamba/events/crud_events/cubit/functions/notificationsEvents.dart';
+import 'package:mamba/events/crud_events/cubit/functions/recurrentEvents.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Recurrent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba/events/crud_events/models/Recurrent.dart';
+import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:uuid/uuid.dart';
 part 'CrudEventState.dart';
 
@@ -457,8 +457,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       Event event,
       Event oldEvent,
       ReceivedNotification notificationBefore,
-      ReceivedNotification notificationAfter) async {    
-emit(state.copyWith(isWorking: 30));
+      ReceivedNotification notificationAfter) async {
+    emit(state.copyWith(isWorking: 30));
     await _updateEventFunction(
         context, event, oldEvent, notificationBefore, notificationAfter);
   }
@@ -468,8 +468,8 @@ emit(state.copyWith(isWorking: 30));
       Event event,
       Event oldEvent,
       ReceivedNotification notificationBefore,
-      ReceivedNotification notificationAfter) async {  
-emit(state.copyWith(isWorking: 30));
+      ReceivedNotification notificationAfter) async {
+    emit(state.copyWith(isWorking: 30));
     await _updateRecurrentEventFunction(context, event, oldEvent.isPrivate!,
         notificationBefore, notificationAfter);
   }
@@ -493,8 +493,7 @@ emit(state.copyWith(isWorking: 30));
     List<String> eventGroupIdsList = eventGroupIds.cast<String>();
 
     // Find index of Current Event
-    int index =
-        eventGroupIdsList.indexWhere((element) => element == event.id!);
+    int index = eventGroupIdsList.indexWhere((element) => element == event.id!);
     // Recurrent total
     //totalEvents = eventGroupIdsList.length - index;
     int totalEvents = eventGroupIdsList.length;
@@ -762,8 +761,7 @@ emit(state.copyWith(isWorking: 30));
         eventGroupIdsList.indexWhere((element) => element == oldEvent.id!);
     // Update Recurrent Event Group
     if (index == 0) {
-      await _eventDataService
-          .deleteRecurrentEventGroup(oldEvent.eventGroupId!);
+      await _eventDataService.deleteRecurrentEventGroup(oldEvent.eventGroupId!);
     } else {
       eventGroupIds = eventGroupIds.sublist(0, index);
       await _eventDataService.updateRecurrentEventGroup(
