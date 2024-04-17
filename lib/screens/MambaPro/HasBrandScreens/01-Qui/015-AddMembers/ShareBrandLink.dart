@@ -110,7 +110,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                     ),
                     border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                   ),
-                  child: QrImage(
+                  child: QrImageView(
                     data: brandUrlClient,
                     version: QrVersions.auto,
                     size: MediaQuery.of(context).size.width*0.5,
@@ -287,7 +287,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                     ),
                     border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                   ),
-                  child: QrImage(
+                  child: QrImageView(
                     data: brandUrlTrainer,
                     version: QrVersions.auto,
                     size: MediaQuery.of(context).size.width*0.5,
