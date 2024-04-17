@@ -67,3 +67,6 @@ node_modules/
 
 # Firebase configuration
 /functions/config/
+
+# Firebase Hosting Build
+/build/
