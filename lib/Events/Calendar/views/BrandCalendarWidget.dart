@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,31 +7,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
-import 'package:mamba_castelldefels/Events/crud_events/views/mobile/AddorEdtiEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
-
-import 'package:mamba_castelldefels/Events/cubit/BrandEventsCubit.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
-import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
+import 'package:mamba/events/crud_events/views/mobile/AddorEdtiEvent.dart';
+import 'package:mamba/events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
+import 'package:mamba/events/cubit/BrandEventsCubit.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Strings/StringUtils.dart';
+import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
+import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
+import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import '../../../../../Data/Models/Usuario.dart';
 
 class BrandCalendarWidget extends StatefulWidget {
   String brandId;

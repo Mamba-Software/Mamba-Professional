@@ -29,13 +29,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.onBonosDeleteForStripe = exports.onBonosUpdatedForStripe = exports.onBonosCreateForStripe = exports.webhookListenerConnect = exports.webhookListenerAccount = exports.stripeApi = void 0;
 const serviceAccount = require('./service_key.json');
 const v2_1 = require("firebase-functions/v2");
-
+admin.initializeApp();
 // Initialize Firebase
-admin.initializeApp({
+/*admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://insights-books-app.firebaseio.com",
 }
-);
+); */
 const db = admin.firestore();
 
 // Environment-specific values
@@ -131,21 +131,51 @@ exports.scheduledDailyFunction = functions
 exports.scheduledCheckBonoFunction = functions
 .region("europe-west1")
 .pubsub
-.schedule('every day 00:00')
+.schedule('every day 6:00')
 .timeZone('Europe/Madrid')
 .onRun( async (context) => {
   var today = new Date();
   const todayNew = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   functions.logger.log("Empezamos", todayNew);
-
+  const startTime = new Date();
   // Ejecutar subfunciones
+  functions.logger.log("PRE PRIMERA FUNCIÓN", 'Grace period');
   await processGracePeriodPurchases();
+  functions.logger.log("PRIMERA FUNCIÓN", 'Expiration purchases');
   await processRegularPurchasesExpTime();
+  functions.logger.log("SEGUNDA FUNCIÓN", 'Recurrent purchases');
   await processDirectAndRecurrentPurchases();
 
+  const endTime = new Date();
+  const executionTime = endTime - startTime; 
+
+  functions.logger.log("Función ejecutada correctamente. Tiempo de ejecución: ", executionTime, "ms");
   functions.logger.log("Función ejecutada correctamente", todayNew);
   return { result: "Success", executionDate: today.toISOString() };
       
+});
+
+//Test schedule
+exports.testScheduledCheckBonoFunction = functions
+.region("europe-west1")
+.firestore
+.document("/TestCF/{TestCF}")
+.onWrite(async (change, context) => {
+
+  var today = new Date();
+  const todayNew = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  functions.logger.log("Empezamos", todayNew);
+  const startTime = new Date();
+  // Ejecutar subfunciones
+  //await processGracePeriodPurchases();
+  await processRegularPurchasesExpTime();
+  await processDirectAndRecurrentPurchases();
+  const endTime = new Date();
+  const executionTime = endTime - startTime; 
+
+  functions.logger.log("Función ejecutada correctamente. Tiempo de ejecución: ", executionTime, "ms");
+  functions.logger.log("Función ejecutada correctamente", todayNew);
+  return { result: "Success", executionDate: today.toISOString() };
 });
 
 // Daily Notification For Events
@@ -169,6 +199,8 @@ exports.monthlyProductUpdates = functions
         }
         // Send Email Function  
         function sendEmail(user, updatesData, retryCount = 0) {
+            // Determine the base email content
+            let emailTemplate = user.isTrainer ? updatesData.emailContentPro : updatesData.emailContent;  
             // Determine the base email content
             let baseContent = user.isTrainer ? updatesData.emailContentPro : updatesData.emailContent;
             // Replace macros with actual data
@@ -639,6 +671,30 @@ exports.brandUpdatesCoverData = functions
             "name": after.name,
             "logoUrl": after.logoUrl,
           });
+        }
+      }
+      if(before.stripeActivated != after.stripeActivated) {
+        if(after.stripeActivated === true && after.stripeAccountId != null)  {
+          const brandBonosSnapshot = await db.collection("Brands").doc(brandId).collection("Bonos").get();
+          for (var j in brandBonosSnapshot.docs) {
+            const bonoId = brandBonosSnapshot.docs[j].id;
+            const bonoSnapshot = await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).get(); 
+            const bonoDoc = bonoSnapshot.data();
+            if(bonoDoc.isRecurrent === true) {
+              let productData = {
+                productId: bonoId,
+                brandId: brandId,
+                brandName: after.name,
+                title: (_b = bonoDoc) === null || _b === void 0 ? void 0 : _b.title,
+                description: (_c = bonoDoc) === null || _c === void 0 ? void 0 : _c.description,
+                active: (_d = bonoDoc) === null || _d === void 0 ? void 0 : _d.isActive,
+                priceId: (_f = (_e = bonoDoc) === null || _e === void 0 ? void 0 : _e.priceId) !== null && _f !== void 0 ? _f : null,
+                price: ((_h = (_g = bonoDoc) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
+                expirationTime: bonoDoc.expirationTime,
+            };
+            (0, products_1.createProduct)(productData, after.stripeAccountId);
+            }
+          }
         }
       }
       return null;
@@ -3053,6 +3109,8 @@ exports.UserPurchasesBono = functions
       "expirationTime": purchaseDoc.expirationTime,
       "directPurchase": purchaseDoc.directPurchase,
     };
+
+    
     
     if (purchaseDoc.purchaseGroupId != null) {
       purchaseData["purchaseGroupId"] = purchaseDoc.purchaseGroupId;
@@ -3703,7 +3761,7 @@ exports.scheduledCheckBonoFunctionOnCall = functions
   functions.logger.log("Empezamos", todayNew);
 
   // Ejecutar subfunciones
-  await processGracePeriodPurchases();
+  //await processGracePeriodPurchases();
   await processRegularPurchasesExpTime();
   await processDirectAndRecurrentPurchases();
 
@@ -3718,36 +3776,62 @@ async function processGracePeriodPurchases() {
 var today = new Date();
 const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 const purchasesRef = db.collection('Purchases');
-const snapshot = await purchasesRef
-  .where('isActive', '==', true)
-  .where('directPurchase', '==', true)
-  .get();
+const brandsRef = db.collection('Brands');
 
-for (const doc of snapshot.docs) {
-  const purchase = doc.data();
-  let { purchasedAt, isRecurrent } = purchase;
+  const snapshotBrands = await brandsRef.get();
 
-  const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
-  const brandSelected = brandSnapshot.data();
+  for (const docBrand of snapshotBrands.docs) {
 
-  let gracePeriod = brandSelected.gracePeriod ?? 0;
+    let brand = docBrand.data();
+    let brandId = docBrand.id;
+    let {gracePeriodActive } = brand;
 
-  let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
+    if(gracePeriodActive != null && gracePeriodActive === true) {
 
-  // Convertir purchasedAt a una fecha y sumarle el gracePeriod
-  const gracePeriodEndDate = new Date(purchasedAtNormalized.getTime());
-  gracePeriodEndDate.setDate(gracePeriodEndDate.getDate() + gracePeriod);
+    functions.logger.log("TIENE GRACE PERIOD LA MARCA: ", brandId);
 
-  if(gracePeriodEndDate >= todayNormalized) {
-    const updateData = {
-      isActive: false,
-      };
-      if (isRecurrent) {
-        updateData.isRecurrencyActive = false;
-      }
-      await doc.ref.update(updateData);
+    const snapshot = await purchasesRef
+    .where('isActive', '==', true)
+    .where('directPurchase', '==', true)
+    .where('brandId', '==', brandId)
+    .get();
+  
+  for (const doc of snapshot.docs) {
+    const purchase = doc.data();
+    let { purchasedAt, isRecurrent } = purchase;
+  
+    const brandSnapshot = await db.collection("Brands").doc(purchase.brandId).get();
+    const brandSelected = brandSnapshot.data();
+  
+    let gracePeriod = brandSelected.gracePeriod ?? 0;
+  
+    let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
+  
+    // Convertir purchasedAt a una fecha y sumarle el gracePeriod
+    const gracePeriodEndDate = new Date(purchasedAtNormalized.getTime());
+    gracePeriodEndDate.setDate(gracePeriodEndDate.getDate() + gracePeriod);
+
+    functions.logger.log("Purchase  ", doc.id);
+    functions.logger.log("Grace  ", gracePeriod);
+    functions.logger.log("purchasedAtNormalized  ", purchasedAtNormalized);
+    functions.logger.log("gracePeriodEndDate  ", gracePeriodEndDate);
+    functions.logger.log("todayNormalized  ", todayNormalized);
+  
+    if(todayNormalized >= gracePeriodEndDate) {
+      functions.logger.log("ACTUALIZA ", doc.id);
+      const updateData = {
+        isActive: false,
+        };
+        if (isRecurrent) {
+          updateData.isRecurrencyActive = false;
+        }
+        await doc.ref.update(updateData);
+    }
   }
 }
+  }
+
+
 }
 
 // Subfunción para procesar las Purchases directas y recurrentes
@@ -3768,26 +3852,26 @@ for (const doc of snapshot.docs) {
   const { expirationTime, purchasedAt, purchaseGroupId } = purchase;
   let shouldCreateNewPurchase = false;
 
-  functions.logger.log("purchasedAt", 'purchasedAt');
-
   if (expirationTime > 0) {
 
     // Lógica para cuando expirationTime es mayor que 0
-    functions.logger.log("expirationTime", expirationTime);
+    //functions.logger.log("expirationTime", expirationTime);
 
     let expirationDate;
     expirationDate = new Date(purchasedAt.toDate().getTime() + expirationTime * 24 * 60 * 60 * 1000);
 
     const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
 
-    functions.logger.log("ExpirationTime", expirationDateNormalized);
-    functions.logger.log("today", todayNormalized);
+    //functions.logger.log("ExpirationTime", expirationDateNormalized);
+    //functions.logger.log("today", todayNormalized);
 
-    shouldCreateNewPurchase = todayNormalized >= expirationDateNormalized;
+    shouldCreateNewPurchase = todayNormalized > expirationDateNormalized;
 
   } 
 
   if (shouldCreateNewPurchase) {
+
+    functions.logger.log("SE ACTUALIZA", purchaseGroupId);
   // Crear nuevo registro en la colección Purchases
   // ... Aquí iría tu lógica para obtener las características de la colección Brand/brandId o Bonos/bonoId si es necesario
  
@@ -3821,7 +3905,7 @@ for (const doc of snapshot.docs) {
     userId: purchase.userId,
     brandId: purchase.brandId,
     bonoId: purchase.bonoId,
-    price: purchase.price, // o bonoSelected.price si necesitas el precio actualizado del bono
+    price: bonoSelected.price, // o bonoSelected.price si necesitas el precio actualizado del bono
     sessions: bonoSelected.sessions, // Asegúrate de tener el bonoSelected actualizado
     weeklySessions: bonoSelected.weeklySessions,
     cancelTime: bonoSelected.cancelTime,
@@ -3885,7 +3969,7 @@ async function processRegularPurchasesExpTime() {
     if (expirationTime > 0) {
 
       // Lógica para cuando expirationTime es mayor que 0
-      functions.logger.log("expirationTime", expirationTime);
+      //functions.logger.log("expirationTime", expirationTime);
       let purchasedAtNormalized = new Date(purchasedAt.toDate().getFullYear(), purchasedAt.toDate().getMonth(), purchasedAt.toDate().getDate());
   
       let expirationDate;
@@ -3893,13 +3977,15 @@ async function processRegularPurchasesExpTime() {
       expirationDate = new Date(purchasedAtNormalized.getTime() + expirationTime * 24 * 60 * 60 * 1000);
       const expirationDateNormalized = new Date(expirationDate.getFullYear(), expirationDate.getMonth(), expirationDate.getDate());
   
-      functions.logger.log("ExpirationTime", expirationDateNormalized);
-      functions.logger.log("today", todayNormalized);
+      //functions.logger.log("ExpirationTime", expirationDateNormalized);
+      //functions.logger.log("today", todayNormalized);
   
-      shouldSetInactivePurchase = todayNormalized >= expirationDateNormalized;
+      //shouldSetInactivePurchase = todayNormalized > expirationDateNormalized;
 
       if(shouldSetInactivePurchase) 
       {
+        functions.logger.log("SE ACTUALIZA", "EN LA FUNCIÓN DE EXPIRATION");
+        //await doc.ref.update({isUpdating: true});
         await doc.ref.update({isActive: false});
       }
     }
@@ -3938,7 +4024,7 @@ app.get('/createAccount', async (req, res) => {
             price: ((_h = (_g = snap.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
             expirationTime: snap.data().expirationTime,
         };
-        (0, products_1.createProduct)(productData);
+        (0, products_1.createProduct)(productData, brandData.data().stripeAccountId);
       }
     }
     catch (e) {
@@ -3962,12 +4048,12 @@ exports.onBonosUpdatedForStripeProd = functions.region("europe-west1").firestore
             price: ((_h = (_g = snap.after.data()) === null || _g === void 0 ? void 0 : _g.price) !== null && _h !== void 0 ? _h : 0) * 100,
             expirationTime:  snap.after.data().expirationTime,
         };
-        (0, products_1.updateProduct)(productData);
+        (0, products_1.updateProduct)(productData, brandData.data().stripeAccountId);
         if (
           ((_j = snap.before.data()) === null || _j === void 0 ? void 0 : _j.price) !== ((_k = snap.after.data()) === null || _k === void 0 ? void 0 : _k.price) ||
           ((_l = snap.before.data()) === null || _l === void 0 ? void 0 : _l.expirationTime) !== ((_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.expirationTime)
         ) {
-            (0, products_1.updatePrice)((_l = snap.after.data()) === null || _l === void 0 ? void 0 : _l.priceId, ((_o = (_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.price) !== null && _o !== void 0 ? _o : 0) * 100, snap.after.id, snap.after.data().expirationTime);
+            (0, products_1.updatePrice)((_l = snap.after.data()) === null || _l === void 0 ? void 0 : _l.priceId, ((_o = (_m = snap.after.data()) === null || _m === void 0 ? void 0 : _m.price) !== null && _o !== void 0 ? _o : 0) * 100, snap.after.id, snap.after.data().expirationTime,  brandData.data().stripeAccountId);
         }
       }
     }
@@ -3982,8 +4068,9 @@ exports.onBonosDeleteForStripeProd = functions
 .document("/Brands/{brandId}/Bonos/{bonoId}")
 .onDelete( async (snap, context) => {
   try {
+    let brandData = await constants_1.brandCollection.doc(context.params.brandId).get();
     v2_1.logger.info('deleted a bono');
-    (0, products_1.deleteProduct)(snap.id);
+    (0, products_1.deleteProduct)(snap.id, brandData.data().stripeAccountId);
 }
 catch (e) {
     v2_1.logger.error(e);
@@ -4112,13 +4199,13 @@ app.get('/createPaymentIntent', async (req, res) => {
 });
 /* ------------------- get payment methods for a user ------------------- */
 app.get('/paymentMethod', async (req, res) => {
-  if (req.query.userId === undefined) {
+  if (req.query.userId === undefined || req.query.brandId === undefined) {
       res.send({
           message: 'Missing parameters', required: ['userId']
       });
       return;
   }
-  let result = await (0, subscription_1.getPaymentMethods)(req.query.userId);
+  let result = await (0, subscription_1.getPaymentMethods)(req.query.userId, req.query.brandId);
   res.send(result).status(200);
 });
 /* --------------------------- create subscription -------------------------- */
@@ -4142,13 +4229,13 @@ app.post('/createSubscription', async (req, res) => {
 /* --------------------------- cancel subscription -------------------------- */
 app.post('/cancelSubscription', async (req, res) => {
   console.log(req.body);
-  if (req.body.subscriptionId === undefined) {
+  if (req.body.subscriptionId === undefined || req.body.brandId == undefined) {
       res.status(400).send({
           message: 'Missing parameters', required: ['subscriptionId']
       });
       return;
   }
-  let result = await (0, subscription_1.cancelSubscription)(req.body.subscriptionId );
+  let result = await (0, subscription_1.cancelSubscription)(req.body.subscriptionId, req.body.brandId );
   if (result.error == null) {
       res.send(result.data).status(200);
   }

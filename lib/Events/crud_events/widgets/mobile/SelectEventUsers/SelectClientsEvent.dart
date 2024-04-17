@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/JoinConfirmationDialogBonos.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialogBonos.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/data/Models/Bono.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/app/style/AppColors.dart';
+import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
+import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/JoinConfirmationDialogBonos.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialogBonos.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 
 class SelectClientsEvent extends StatefulWidget {
   List<Usuario> selectedUsers = [];
@@ -288,11 +288,13 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                       Localizations.localeOf(context)
                                           .languageCode);
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 0),
                                 child: ListTile(
                                   tileColor: selectedClients.contains(user)
                                       ? Theme.of(context)
-                                          .colorScheme.background
+                                          .colorScheme
+                                          .background
                                           .withOpacity(0.5)
                                       : Theme.of(context)
                                           .scaffoldBackgroundColor,
@@ -381,8 +383,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                   ),
                                   onTap: () async {
                                     //if (widget.selectedBonos!.isEmpty ||
-                                    if (
-                                        user.purchaseId == "") {
+                                    if (user.purchaseId == "") {
                                       var selectedUsers = selectedClients;
                                       if (selectedUsers.contains(user)) {
                                         selectedUsers.remove(user);

@@ -108,9 +108,7 @@ async function invoicePaidHandler(event) {
                 totalEarning: admin.firestore.FieldValue.increment(amount),
             });
             //TODO POSAR EL SUSCRIPTION ID
-            await admin.firestore().collection('Purchases').doc(purchaseId).update({
-                subscriptionStripe: event.data.object.subscription,
-            });
+            await admin.firestore().collection('PurchasesStripe').doc(purchaseId).set({subscriptionStripe: event.data.object.subscription}, { merge: true });
         }
         return 'Success';
     }
