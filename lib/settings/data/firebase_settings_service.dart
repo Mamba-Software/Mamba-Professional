@@ -1,15 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:package_info_plus/package_info_plus.dart';
 
 //Singleton
-class FirebaseSettingsRepository {
-
-  static final FirebaseSettingsRepository _instance =
-      FirebaseSettingsRepository._internal();
-
-  factory FirebaseSettingsRepository() => _instance;
-  FirebaseSettingsRepository._internal();
+class FirebaseSettingsService {
 
   static final _settingsCollection =
       FirebaseFirestore.instance.collection('Settings');

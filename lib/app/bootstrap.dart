@@ -23,8 +23,8 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cub
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/views/popup_manager.dart';
-import 'package:mamba/settings/data/firebase_settings_repository.dart';
-import 'package:mamba/settings/data/hive_settings_repository.dart';
+import 'package:mamba/settings/data/firebase_settings_service.dart';
+import 'package:mamba/settings/data/hive_settings_service.dart';
 import 'package:mamba/settings/data/settings_repository.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/views/snackbar_manager.dart';
@@ -121,10 +121,7 @@ class App extends StatelessWidget {
           ),
         ),
         RepositoryProvider<SettingsRepository>(
-          create: (context) => SettingsRepository(
-            FirebaseSettingsRepository(),
-            HiveSettingsRepository(),
-          ),
+          create: (context) => SettingsRepository(),          
         ),
       ],
       child: MultiBlocProvider(
@@ -192,7 +189,6 @@ class AppView extends StatefulWidget {
 }
 
 class AppViewState extends State<AppView> with WidgetsBindingObserver {
-
   final _dynamicLinkUtils = DynamicLinkUtils();
   Timer? _timerLink;
 
@@ -242,9 +238,11 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
             ],
             builder: (context, child) {
               return PopupManager(
-                navigatorKey: AppRouter.navigatorKey, // Use the GoRouter navigatorKey
+                navigatorKey:
+                    AppRouter.navigatorKey, // Use the GoRouter navigatorKey
                 child: SnackbarManager(
-                  navigatorKey: AppRouter.navigatorKey, // Use the same navigatorKey
+                  navigatorKey:
+                      AppRouter.navigatorKey, // Use the same navigatorKey
                   child: child!,
                 ),
               );

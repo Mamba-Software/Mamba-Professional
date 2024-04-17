@@ -28,6 +28,11 @@ class Login extends StatefulWidget {
     name: routeName,
     path: "/login",
     builder: (BuildContext context, GoRouterState state) => const Login(),
+    /*
+    pageBuilder: CustomTransitionPage(
+      
+    ),
+    */ 
     routes: [
       Register.route,
       ForgotPassword.route,

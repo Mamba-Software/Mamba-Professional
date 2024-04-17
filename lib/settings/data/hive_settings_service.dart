@@ -1,12 +1,7 @@
 import 'package:hive/hive.dart';
 
 //Singleton
-class HiveSettingsRepository {
-  static final HiveSettingsRepository _instance =
-      HiveSettingsRepository._internal();
-
-  factory HiveSettingsRepository() => _instance;
-  HiveSettingsRepository._internal();
+class HiveSettingsService {
 
   final String _settingsBoxName = 'settings';
 

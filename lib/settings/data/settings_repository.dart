@@ -1,29 +1,32 @@
-import 'package:mamba/settings/data/firebase_settings_repository.dart';
-import 'package:mamba/settings/data/hive_settings_repository.dart';
+import 'package:mamba/settings/data/firebase_settings_service.dart';
+import 'package:mamba/settings/data/hive_settings_service.dart';
 
 class SettingsRepository {
-  final FirebaseSettingsRepository _firebaseRepo;
-  final HiveSettingsRepository _hiveRepo;
+  final FirebaseSettingsService _firebaseService;
+  final HiveSettingsService _hiveService;
 
-  SettingsRepository(this._firebaseRepo, this._hiveRepo);
+  //SettingsRepository(this._firebaseRepo, this._hiveRepo);
+
+  SettingsRepository({
+    FirebaseSettingsService? firebaseService,
+    HiveSettingsService? hiveService,
+  })  : _firebaseService = firebaseService ?? FirebaseSettingsService(),
+        _hiveService = hiveService ?? HiveSettingsService();
 
   // Check App Version
   Future<List<bool>> checkAppVersion() async {
-    return _firebaseRepo.checkAppVersion();
+    return _firebaseService.checkAppVersion();
   }
 
   // Setter/Getter Whats New Boolean
-  Future<void> setWhatsNewStatus(bool whatsNew) async {
-    return await _hiveRepo.setWhatsNewStatus(whatsNew);
-  }
+  Future<void> setWhatsNewStatus(bool whatsNew) async {}
 
   Future<bool> getWhatsNewStatus() async {
-    return await _hiveRepo.getWhatsNewStatus();
+    return await _hiveService.getWhatsNewStatus();
   }
 
   // Get Product Update HTML
   Future<String> getProductUpdatesHTML() async {
-    return _firebaseRepo.getProductUpdatesHTML();
+    return _firebaseService.getProductUpdatesHTML();
   }
-
 }
