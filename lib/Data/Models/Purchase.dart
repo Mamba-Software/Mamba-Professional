@@ -35,6 +35,7 @@ class Purchase {
   bool? isRecurrencyActive = true;
   List<String>? groupPurchases = [];
   String? purchaseGroupId = '';
+  String? subscriptionStripe = '';
 
   Purchase({
     this.id,
@@ -54,6 +55,7 @@ class Purchase {
     this.isRecurrencyActive,
     this.groupPurchases,
     this.purchaseGroupId,
+    this.subscriptionStripe,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +141,10 @@ class Purchase {
         .containsKey('purchaseGroupId')) {
       purchaseGroupId = documentSnapshot.get("purchaseGroupId");
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('subscriptionStripe')) {
+      subscriptionStripe = documentSnapshot.get("subscriptionStripe");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -161,6 +167,7 @@ class Purchase {
     isRecurrencyActive = purchase.isRecurrencyActive;
     groupPurchases = purchase.groupPurchases;
     purchaseGroupId = purchase.purchaseGroupId;
+    subscriptionStripe = purchase.subscriptionStripe;
   }
 
   // Set Basic Data

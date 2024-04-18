@@ -23,24 +23,25 @@ class Bono {
   String? purchaseId;
   String? brandId;
   bool? isRecurrent = false;
+  String? priceId;
 
-  Bono({
-    this.id,
-    this.title,
-    this.description,
-    this.price,
-    this.sessions,
-    this.isActive,
-    this.compras,
-    this.color,
-    this.imageUrl,
-    this.isDegradate,
-    this.opacity,
-    this.condition,
-    this.purchaseId,
-    this.brandId,
-    this.isRecurrent,
-  });
+  Bono(
+      {this.id,
+      this.title,
+      this.description,
+      this.price,
+      this.sessions,
+      this.isActive,
+      this.compras,
+      this.color,
+      this.imageUrl,
+      this.isDegradate,
+      this.opacity,
+      this.condition,
+      this.purchaseId,
+      this.brandId,
+      this.isRecurrent,
+      this.priceId});
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -112,6 +113,10 @@ class Bono {
         .containsKey('isRecurrent')) {
       isRecurrent = documentSnapshot.get("isRecurrent");
     }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('priceId')) {
+      priceId = documentSnapshot.get("priceId");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -132,6 +137,7 @@ class Bono {
     purchaseId = bono.purchaseId;
     brandId = bono.brandId;
     isRecurrent = bono.isRecurrent;
+    priceId = bono.priceId;
   }
 
   // Set Basic Data

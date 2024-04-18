@@ -120,6 +120,14 @@ class Brand {
       baseLocation = documentSnapshot.get("baseLocation").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('city')) {
+      city = documentSnapshot.get("city").toString();
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
+        .containsKey('zipCode')) {
+      zipCode = documentSnapshot.get("zipCode").toString();
+    }
+    if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('numClients')) {
       numClients = documentSnapshot.get("numClients");
     }
@@ -176,6 +184,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('gracePeriod')) {
       gracePeriod = documentSnapshot.get("gracePeriod");
+    } else {
+      gracePeriod = 6;
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('maxCanWeek')) {
@@ -184,6 +194,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('paymentTerms')) {
       paymentTerms = documentSnapshot.get("paymentTerms");
+    } else {
+      paymentTerms = 2;
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('stripeAccountId')) {
@@ -195,11 +207,13 @@ class Brand {
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('balance')) {
-      balance = documentSnapshot.get("balance");
+      balance = double.parse(documentSnapshot.get("balance").toString());
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('stripeActivated')) {
       stripeActivated = documentSnapshot.get("stripeActivated");
+    } else {
+      stripeActivated = false;
     }
   }
 
@@ -220,6 +234,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('paymentTerms')) {
       paymentTerms = documentSnapshot.get("paymentTerms");
+    } else {
+      paymentTerms = 2;
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('stripeAccountId')) {
@@ -232,6 +248,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('stripeActivated')) {
       stripeActivated = documentSnapshot.get("stripeActivated");
+    } else {
+      stripeActivated = false;
     }
   }
 

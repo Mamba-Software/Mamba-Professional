@@ -3440,6 +3440,10 @@
   "@seeSubscriptionPayWall": {
     "description": "seeSubscriptionPayWall message"
   },
+  "cancelSubscriptionPayWall": "Para cancelar tu suscripción, abre la aplicación Google Play Store en tu dispositivo. Toca el icono del menú (☰) y selecciona 'Suscripciones'. Encuentra la suscripción que deseas cancelar y tócala. Luego, toca 'Cancelar suscripción' y sigue las instrucciones en pantalla para completar el proceso de cancelación. Para más ayuda, visita el Centro de Ayuda de Google Play.",
+  "@cancelSubscriptionPayWall": {
+    "description": "seeSubscriptionPayWall message"
+  },
   "noPromotions": "No hay promociones",
   "@noPromotions": {
     "description": "noPromotions message"
@@ -3847,9 +3851,160 @@
   "@stripeAccountText": {
     "description": "stripeAccountText message"
   },
-  "stripeAccountDescription": "Permite que tus clientes paguen tus tarifas directamente desde la aplicación con su tarjeta. Los cobros se automatizan, recibiendo el dinero en tu banco en 3 días laborales.\n\nTodo bajo una comisión del 3.42% por transacción (2.42% para Stripe y 1% para Mamba). Stripe es la plataforma líder en el sector de pago online, todas las transacciones y pagos son conforme a los términos y condiciones de Stripe",
+  "stripeAccountDescription": "Permite que tus clientes paguen tus tarifas directamente desde la aplicación. Automatitza los cobros y recibe el dinero directamente en tu banco.",
   "@stripeAccountDescription": {
     "description": "stripeAccountDescription message"
+  },
+  "stripePaymentMethodDescription": "Facilita el proceso de pago ofreciendo métodos rápidos y sencillos para abonar tus tarifas.",
+  "@stripePaymentMethodDescription": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeBankTransfer": "Transferencias Automáticas",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripeBankTransferDesc": "Tus ingresos se transferirán directa y automáticamente a tu cuenta bancaria de manera recurrente.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeBankTransferDaily": "Cierre Diario",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripeBankTransferDailyDesc": "Transferencia diaria de ingresos al cerrar la jornada.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeBankTransferTransit": "Periodo de Tránsito",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripeBankTransferTransitDesc": "De 1 a 3 días basado en la entidad bancaria.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripePlatform": "Colaboración con Stripe",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripePlatformDesc": "Obtén una solución segura y confiable que te libera para crecer y mejorar la experiencia de compra de tus clientes.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripePlatformLeader": "Lider Indiscutible",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripePlatformLeaderDesc": "Principal referente global en la industria de pagos online.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripePlatformSecurity": "Solución Segura",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripePlatformSecurityDesc": "Reputación impecable en cuanto a seguridad y fiabilidad.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripePlatformIntegrado": "Integración Total",
+  "@stripeBankTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripePlatformIntegradoDesc": "Integrada plenamente en Mamba, para una experiencia sencilla.",
+  "@stripeBankTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeComissions": "Comisiones",
+  "@stripeComissions": {
+    "description": "stripeAccountText message"
+  },
+  "stripeComissionsDesc": "Stripe define las las tarifas por sus servicios. Mamba añade lo necesario para mantener nuestra plataforma sostenible.",
+  "@stripeComissionsDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeComissionsPayment": "Por Transacción",
+  "@stripeComissionsPayment": {
+    "description": "stripeAccountText message"
+  },
+  "stripeComissionsPaymentDesc": "1,5 % + 0,25 € para tarjetas estándar del Espacio Económico Europeo.",
+  "@stripeComissionsPaymentDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeComissionsTransfer": "Por Transferencia",
+  "@stripeComissionsTransfer": {
+    "description": "stripeAccountText message"
+  },
+  "stripeComissionsTransferDesc": "0,25 % + 0,10 € por transferencia enviada.",
+  "@stripeComissionsTransferDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeComissionsMamba": "Servicio y Gestión",
+  "@stripeComissionsMamba": {
+    "description": "stripeAccountText message"
+  },
+  "stripeComissionsMambaDesc": "1% por transacción realizada dentro de la plataforma.",
+  "@stripeComissionsMambaDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeSummary": "Resumen",
+  "@stripeSummary": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeYourAccount": "Cuenta de Stripe",
+  "@stripeYourAccount": {
+    "description": "stripeAccountText message"
+  },
+  "stripeYourAccountDesc": "Prellenaremos tu cuenta de Stripe con estos datos. Es importante que coincidan. Solo deberás añadir tu teléfono y cuenta bancaria para finalizar.",
+  "@stripeYourAccountDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripePhoneNumber": "Número de Teléfono",
+  "@stripePhoneNumber": {
+    "description": "stripeAccountText message"
+  },
+  "stripePhoneNumberDesc": "Recibirás un códgio de verificación.",
+  "@stripePhoneNumberDesc": {
+    "description": "stripeAccountText message"
+  },
+  "stripeBankAccount": "Cuenta Bancaria",
+  "@stripeBankAccount": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeBankAccountDesc": "Recibirás los ingresos de tus tarifas.",
+  "@stripeBankAccountDesc": {
+    "description": "stripeAccountDescription message"
+  },
+  "crearCuentaStripe": "Crear cuenta de Stripe",
+  "@connectToStripe": {
+    "description": "stripeAccountDescription message"
+  },
+  "completarCuentaStripe": "Completar cuenta de Stripe",
+  "@completarCuentaStripe": {
+    "description": "stripeAccountDescription message"
+  },
+  "editarCuentaStripe": "Editar cuenta de Stripe",
+  "@editarCuentaStripe": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeAccountDeactivate": "¿Seguro que quieres desactivar los pagos desde la aplicación?",
+  "@stripeAccountText": {
+    "description": "stripeAccountText message"
+  },
+  "stripeAccountDeactivateDesc": "Tus clientes ya no podrán pagar las tarifas directamente desde la aplicación; los pagos y cobros dejarán de ser automatizados, y todas las suscripciones activas serán canceladas.\n\nSelecciona editar para revisar las condiciones o ver tu perfil de Stripe.",
+  "@stripeAccountDescription": {
+    "description": "stripeAccountDescription message"
+  },
+  "stripeConnecting": "Conectando con Stripe...",
+  "@stripeConnecting": {
+    "description": "stripeAccountText message"
+  },
+  "stripeConnectionSuccessfull": "Conexión con Stripe finalizada correctamente...",
+  "@stripeConnectionSuccessfull": {
+    "description": "stripeAccountText message"
+  },  
+  "stripeError": "Problema de comunicación con Stripe. Vuelve a intentarlo, por favor.",
+  "@stripeError": {
+    "description": "stripeAccountDescription message"
   }
-
 }

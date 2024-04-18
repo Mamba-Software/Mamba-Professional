@@ -291,6 +291,11 @@ class _PurchasePageState extends State<PurchasePage> {
     purchase.isRecurrent = tempPurchase.isRecurrent ?? false;
     purchase.isRecurrencyActive = tempPurchase.isRecurrencyActive ?? false;
     purchase.purchaseGroupId = tempPurchase.purchaseGroupId ?? '';
+    purchase.subscriptionStripe = '';
+    if (tempPurchase.subscriptionStripe != null &&
+        tempPurchase.subscriptionStripe != '') {
+      purchase.subscriptionStripe = tempPurchase.subscriptionStripe;
+    }
     await checkRecurrency();
     setBonoConditions(bonoSelected);
   }
@@ -3494,7 +3499,30 @@ class _PurchasePageState extends State<PurchasePage> {
                                           0.15,
                                       child: CupertinoSwitch(
                                         value: true,
-                                        onChanged: (bool newVal) {
+                                        onChanged: (bool newVal) async {
+                                          /*
+                                          var result = await showDialog(
+                                              context: context,
+                                              builder: (_) {
+                                                return CancelMembresiaConfirmationDialog(
+                                                  text: AppLocalizations.of(
+                                                          context)!
+                                                      .cancelRequestConfirmation,
+                                                  brand: widget.brand,
+                                                );
+                                              });
+                                          if (result) {
+                                            //TODO CANCEL SUSCRIPTION
+                                            _purchaseDataService
+                                                .updatePurchasePaymentRecurrency(
+                                                    purchase.id!,
+                                                    false,
+                                                    purchase.paymentMethod!);
+                                            setState(() {
+                                              purchase.isRecurrencyActive =
+                                                  false;
+                                            });
+                                          }*/
                                           setState(() {
                                             purchase.isRecurrencyActive = false;
                                           });

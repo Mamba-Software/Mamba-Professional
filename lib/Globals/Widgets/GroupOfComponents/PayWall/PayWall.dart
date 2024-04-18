@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -221,6 +223,8 @@ class _PayWallState extends State<PayWall> {
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  Platform.isAndroid ? cancelSubscriptionText() : Container(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 ],
               ),
             ),
@@ -288,7 +292,7 @@ class _PayWallState extends State<PayWall> {
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                        children: [                          
                           for (int i = 0; i < subscriptionList.length; ++i)
                             generateOneSubscription(i),
                         ],
@@ -497,6 +501,13 @@ class _PayWallState extends State<PayWall> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget cancelSubscriptionText() {
+    return Text(
+      AppLocalizations.of(context)!.cancelSubscriptionPayWall,
+      style: Theme.of(context).textTheme.bodySmall,
     );
   }
 
@@ -926,22 +937,22 @@ class _PayWallState extends State<PayWall> {
             child: ElevatedButton(
               onPressed: () => launchEmail(),
               style: ElevatedButton.styleFrom(
-                  elevation: 4,
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  surfaceTintColor: Theme.of(context).colorScheme.background,
-                  fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
-                      MediaQuery.of(context).size.height * 0.06),
-                  side: BorderSide(
-                      width: 1.0,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .background), // This might need adjustment
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(30),
-                    ),
+                elevation: 4,
+                backgroundColor: Theme.of(context).colorScheme.background,
+                surfaceTintColor: Theme.of(context).colorScheme.background,
+                fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
+                    MediaQuery.of(context).size.height * 0.06),
+                side: BorderSide(
+                    width: 1.0,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .background), // This might need adjustment
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(30),
                   ),
                 ),
+              ),
               child: Text(
                 AppLocalizations.of(context)!.getInTouch,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(

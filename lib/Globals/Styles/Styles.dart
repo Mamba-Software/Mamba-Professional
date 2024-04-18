@@ -5,10 +5,9 @@ class Styles {
 
   // Colors for Theme
   static const Color mainColor = Color(0xFFF4AD1F);
+  
   static const Color mainColorTrans = Color(0x33F4AD1F);
-
   static const Color accent = Color(0xFF200758);
-
   static const Color red = Colors.red;
 
   // New Theme
@@ -20,7 +19,7 @@ class Styles {
   static const Color white = Color(0xFFFFFFFF);
   static const Color lightGrey = Color(0xFFF5F5F5);
   static const Color darkerGrey = Color(0xFFDEDEDE);
-  static const Color grey = Color(0xFF808080);
+  static const Color grey = Color(0xFF808080);  
   
   // Text Style
   static TextStyle purpleTextStyle = const TextStyle(color: Colors.white, fontSize: 18);

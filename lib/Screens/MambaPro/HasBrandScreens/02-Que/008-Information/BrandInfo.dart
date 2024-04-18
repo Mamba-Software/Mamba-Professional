@@ -24,6 +24,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularIm
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditStripeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/profileImage.dart';
@@ -33,7 +34,10 @@ import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotificat
 import 'package:mamba_castelldefels/Stripe/Data/data_repository/stripe_connect_repository.dart';
 import 'package:mamba_castelldefels/Stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba_castelldefels/Stripe/models/user_stripe_model.dart';
-import 'package:mamba_castelldefels/Stripe/views/onboarding_webview.dart';
+import 'package:mamba_castelldefels/Stripe/views/StripeOnboarding.dart';
+import 'package:mamba_castelldefels/Stripe/views/StripeWebView.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../../Globals/Widgets/Components/CupertinoSelect/SelectOtherDialog.dart';
 
@@ -122,10 +126,6 @@ class _BrandInfoState extends State<BrandInfo>
   bool ShowTextExpired = true;
   final _topSnackBar = TopSnackBarDef();
 
-  // Stripe Read More
-  bool readMore = false;
-  int? lines;
-
   // App Bar and Scroll View
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
@@ -151,7 +151,6 @@ class _BrandInfoState extends State<BrandInfo>
               }),
       );
     canEdit = currentUser.brandRole < 2 ? true : false;
-    lines = 3;
     initBrand();
   }
 
@@ -1659,7 +1658,7 @@ class _BrandInfoState extends State<BrandInfo>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
-                      children: [                        
+                      children: [
                         ///CONEXION CON STRIPE
                         stripeActivatedGlobal ? conectionStripe() : Container(),
 
@@ -1944,7 +1943,7 @@ class _BrandInfoState extends State<BrandInfo>
                           ],
                         ),
                         SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.03),                      
+                            height: MediaQuery.of(context).size.height * 0.03),
                       ],
                     ),
                   ),
@@ -2591,25 +2590,12 @@ class _BrandInfoState extends State<BrandInfo>
                   width: MediaQuery.of(context).size.width * 0.1,
                   child: CupertinoSwitch(
                     value: isStripeActive,
-                    onChanged: canEdit
+                    onChanged: canEdit && currentBrand.adminID == currentUser.id
                         ? (bool newVal) async {
-                            if (newVal) {
-                              context
-                                  .read<StripeConnectCubit>()
-                                  .getLink(currentBrand);
-
-                              var result = await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => OnboardingWebView()),
-                              );
-                              /*
-                              if (result != null) {
-                                currentBrand.isVerified = result.isVerified;
-                                currentBrand.stripeAccountId =
-                                    result.stripeAccountId;
-                                currentBrand.stripeActivated = true;
-                                isStripeActive = true;
-                              }*/
+                            if (newVal) {                              
+                              // Show Stripe Onboarding
+                              await navigateToStripeOnboarding(false, false);
+                              // Check If Sripe Is Activated
                               currentBrand.stripeAccountId =
                                   await _brandDataService
                                       .getBrandStripeAccount(currentBrand.id!);
@@ -2617,20 +2603,16 @@ class _BrandInfoState extends State<BrandInfo>
                                 isStripeActive = true;
                               }
                             } else {
-                              if (isStripeActive && !currentBrand.isVerified) {
-                                context
-                                    .read<StripeConnectCubit>()
-                                    .getLink(currentBrand);
-
-                                var result = await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          OnboardingWebView()),
-                                );
+                              if (isStripeActive && !currentBrand.isVerified) {                                
+                                // Show Stripe Onboarding
+                                var result = await navigateToStripeOnboarding(
+                                    true, false);
+                                // Check Result
                                 if (result != null &&
                                     result is UserStripeModel) {
                                   currentBrand = currentBrand;
                                 }
+                                // Check If Sripe Is Activated
                                 currentBrand.stripeAccountId =
                                     await _brandDataService
                                         .getBrandStripeAccount(
@@ -2639,7 +2621,18 @@ class _BrandInfoState extends State<BrandInfo>
                                   isStripeActive = true;
                                 }
                               } else {
-                                isStripeActive = newVal;
+                                // Edit or Desactive
+                                var deactivateStripe = await showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return const EditStripeDialog();
+                                  },
+                                );
+                                if (deactivateStripe == true) {
+                                  isStripeActive = newVal;                                  
+                                } else if (deactivateStripe == false) {
+                                  await navigateToStripeOnboarding(true, true);
+                                }
                               }
                             }
                             setState(() {});
@@ -2662,60 +2655,28 @@ class _BrandInfoState extends State<BrandInfo>
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Expanded(
-              child: TextButton(
-                onPressed: () async {
-                  setState(() {
-                    readMore = !readMore;
-                    if (readMore) {
-                      lines = null;
-                    } else {
-                      lines = 3;
-                    }
-                  });
-                },
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Theme.of(context)
-                      .colorScheme
-                      .background
-                      .withOpacity(0.2)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0),
-                    ),
-                  ),
-                  padding: MaterialStateProperty.all(EdgeInsets.zero),
-                ),
-                child: RichText(
-                  textAlign: TextAlign.left,
-                  maxLines: lines,
-                  overflow:
-                      readMore ? TextOverflow.visible : TextOverflow.ellipsis,
-                  text: TextSpan(
-                    style: Theme.of(context).textTheme.bodySmall,
-                    children: [
-                      TextSpan(
-                        text:
-                            "${AppLocalizations.of(context)!.stripeAccountDescription}. ",
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      TextSpan(
-                        text: !readMore
-                            ? AppLocalizations.of(context)!.readMore
-                            : AppLocalizations.of(context)!.readLess,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(decoration: TextDecoration.underline),
-                      ),
-                    ],
-                  ),
-                ),
+              child: Text(
+                AppLocalizations.of(context)!.stripeAccountDescription,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.left,
               ),
             ),
           ],
         ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.03),
       ],
+    );
+  }
+
+  dynamic navigateToStripeOnboarding(bool isStarted, bool isFinished) async {
+    return Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => StripeOnboarding(
+          isStarted: isStarted,
+          isFinished: isFinished,
+        ),
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 // Constants that are final and will NEVER change.
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Constants {
   // App Name
@@ -73,6 +74,13 @@ class Constants {
   static String mambaProfesionalGif = "assets/animations/graph.gif";
   static String mobileProDark = "assets/animations/mambaMobileBlack.gif";
   static String mobileProLight = "assets/animations/mambaMobileWhite.gif";
+  // Lottie
+  static String stripeOnboardingOne = "assets/animations/stripeOnboardingOne.json";
+  static String stripeOnboardingTwo = "assets/animations/stripeOnboardingTwo.json";
+  static String stripeOnboardingThree = "assets/animations/stripeOnboardingThree.json";
+  static String stripeOnboardingFour = "assets/animations/stripeOnboardingFour.json";
+  static String stripeOnboardingFive = "assets/animations/stripeOnboardingFive.json";
+  static String stripeOnboardingSix = "assets/animations/stripeOnboardingSix.json";
 
   // Emojis
   static String relaxedEmojiImage = "assets/images/relaxedEmojiImage.png";
@@ -89,8 +97,9 @@ class Constants {
       .where('isAdmin', isEqualTo: false);
   static get brandQuery => FirebaseFirestore.instance.collection('Brands');
   static get bonosCollection => 'TestBonos';
-  static get baseUrl =>
-      'https://europe-west1-mamba-fitness-dev.cloudfunctions.net/stripeApi';
+  static get baseUrl => dotenv.env['URLSTRIPE'];
+  /*static get baseUrl =>
+      'https://europe-west1-mamba-fitness-dev.cloudfunctions.net/stripeApi';*/
 
   static get merchantDisplayName => 'Mamba Software SL';
 }

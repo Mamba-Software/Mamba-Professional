@@ -16,7 +16,7 @@ class SelectOtherDialog extends StatefulWidget {
 class _SelectOtherDialogState extends State<SelectOtherDialog> {
   // Initial Vars
   int pickedDays = 0;
-  int daysMax = 7;
+  int daysMax = 8;
 
   @override
   void initState() {
