@@ -135,6 +135,7 @@ dev_dependencies:
   flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.7.1
 
 # run: flutter clean && flutter pub get && flutter pub run flutter_native_splash:create
 flutter_native_splash:

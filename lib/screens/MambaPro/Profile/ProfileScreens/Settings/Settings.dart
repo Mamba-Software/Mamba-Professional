@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/views/login.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/constants/constants.dart';
@@ -410,19 +412,11 @@ class _SettingsState extends State<Settings> {
                         });
                         Purchases.logOut();
                         Future.delayed(const Duration(seconds: 1), () async {
-                          _userDataService
-                              .signOut()
-                              .then((value) => Navigator.pushAndRemoveUntil(
-                                    context,
-                                    CupertinoPageRoute<void>(
-                                      builder: (context) => const Login(),
-                                      settings:
-                                          const RouteSettings(name: 'Login'),
-                                    ),
-                                    (_) => false,
-                                  ));
+                          BlocProvider.of<AuthBloc>(context)
+                              .add(AuthLogoutRequested());
                         });
                         try {
+                          //TODO FOR GOOGLE AND APPLE
                           final googleSignIn = GoogleSignIn();
                           await googleSignIn.signOut();
                         } catch (e) {

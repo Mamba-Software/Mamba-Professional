@@ -21,7 +21,6 @@ class AuthLoading extends AuthState {
 }
 
 class AuthNotLoged extends AuthState {
-
   const AuthNotLoged();
 
   @override
@@ -29,7 +28,6 @@ class AuthNotLoged extends AuthState {
 }
 
 class AuthLoaded extends AuthState {
-
   const AuthLoaded();
 
   @override
@@ -37,21 +35,16 @@ class AuthLoaded extends AuthState {
 }
 
 class AuthRegistered extends AuthState {
-
   final String email;
-  const AuthRegistered({
-    required this.email
-  });
+  const AuthRegistered({required this.email});
 
   @override
   List<Object?> get props => [email];
 }
-class AuthCorrectForget extends AuthState {
 
+class AuthCorrectForget extends AuthState {
   final String email;
-  const AuthCorrectForget({
-    required this.email
-  });
+  const AuthCorrectForget({required this.email});
 
   @override
   List<Object?> get props => [email];
@@ -67,7 +60,6 @@ class AuthError extends AuthState {
 }
 
 class AuthMaintenance extends AuthState {
-
   const AuthMaintenance();
 
   @override
@@ -75,7 +67,6 @@ class AuthMaintenance extends AuthState {
 }
 
 class AuthAdmin extends AuthState {
-
   const AuthAdmin();
 
   @override
@@ -83,7 +74,6 @@ class AuthAdmin extends AuthState {
 }
 
 class AuthUserBrand extends AuthState {
-
   final Brand brand;
 
   const AuthUserBrand(this.brand);
@@ -93,7 +83,6 @@ class AuthUserBrand extends AuthState {
 }
 
 class AuthUserNoBrand extends AuthState {
-
   const AuthUserNoBrand();
 
   @override
@@ -101,7 +90,6 @@ class AuthUserNoBrand extends AuthState {
 }
 
 class AuthNewUser extends AuthState {
-
   const AuthNewUser();
 
   @override
@@ -109,7 +97,6 @@ class AuthNewUser extends AuthState {
 }
 
 class AuthLogOut extends AuthState {
-
   const AuthLogOut();
 
   @override

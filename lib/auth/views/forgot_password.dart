@@ -94,7 +94,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                   TextSpan(
                     text: context.l10n.login,
-                    style: context.textTheme. titleSmall,
+                    style: context.textTheme.titleSmall,
                   ),
                 ],
               ),
@@ -142,7 +142,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               type: SnackbarType.success,
               message: context.l10n.validatePassword,
             );
-            context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);            
+            context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
             Future.delayed(
               Duration(seconds: (snackbarDefaultDuration + 0.5).toInt()),
               () async {

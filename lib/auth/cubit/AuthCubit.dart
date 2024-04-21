@@ -5,7 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
+import 'package:mamba/auth/models/exceptions.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -17,7 +19,10 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 part 'AuthState.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(const AuthInitial());
+  AuthCubit(this._authBloc) : super(const AuthInitial());
+
+  final AuthBloc _authBloc;
+  StreamSubscription? authBlocSubscription;
 
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
@@ -26,57 +31,67 @@ class AuthCubit extends Cubit<AuthState> {
 
   String email = "";
 
-  void generalSignIn(AuthProviderEnum provider, BuildContext context,
-      [String? email, String? password]) {
-    emit(AuthLoading(provider));
-    switch (provider) {
-      case AuthProviderEnum.normal:
-        _signIn(email!, password!);
-        break;
-      case AuthProviderEnum.google:
-        _signInWithGoogle(context);
-        break;
-      case AuthProviderEnum.apple:
-        _signInWithApple(context);
-        break;
-      case AuthProviderEnum.register:
-        // TODO: Handle this case.
-        break;
-      case AuthProviderEnum.forgot:
-        // TODO: Handle this case.
-        break;
-    }
-  }
-
-  void _signIn(String email, String password) async {
-    int result = await _userDataService.signIn(email.trim(), password);
-    if (result == 0) {
-      User? user = await _userDataService.getCurrentUser();
-      bool? isTrainer;
-      try {
-        isTrainer = await _userDataService.checkIfUserIsTrainer(user!.uid);
-        if (isTrainer != null && isTrainer == false) {
-          await _userDataService.signOut();
-          mixpanel!.track('mamba_login_wrong_app_error');
-          emit(const AuthError(AuthErrorEnum.wrongAppUser));
-        } else {
-          mixpanel!.track('mamba_login_completed');
-          emit(const AuthLoaded());
-        }
-      } catch (e) {
-        emit(const AuthError(AuthErrorEnum.loginError));
+  Future<void> generalSignIn(AuthProviderEnum provider, BuildContext context,
+      [String? email, String? password]) async {
+    try {
+      print('ARRIVE HERE');
+      emit(AuthLoading(provider));
+      switch (provider) {
+        case AuthProviderEnum.normal:
+          if (email == null) {
+            emit(const AuthError(AuthErrorEnum.loginError));
+          } else if (password == null) {
+            emit(const AuthError(AuthErrorEnum.loginError));
+          } else {
+            await _authBloc.logInWithCredentials(
+              email: email.trim(),
+              password: password,
+              provider: provider,
+            );
+          }
+          break;
+        case AuthProviderEnum.google:
+          await _authBloc.logInWithCredentials(
+            email: null,
+            password: null,
+            provider: provider,
+          );
+          break;
+        case AuthProviderEnum.apple:
+          await _authBloc.logInWithCredentials(
+            email: null,
+            password: null,
+            provider: provider,
+          );
+          break;
+        case AuthProviderEnum.register:
+          // TODO: Handle this case.
+          break;
+        case AuthProviderEnum.forgot:
+          // TODO: Handle this case.
+          break;
       }
-    } else if (result == -1) {
-      mixpanel!.track('mamba_login_notfound_error');
-      //email = emailTemp;
-      emit(const AuthError(AuthErrorEnum.loginError));
-    } else if (result == -2) {
+      await _authBloc.checkUserType(checkTrainer: true);
+      mixpanel!.track('mamba_login_completed');
+      emit(const AuthLoaded());
+    } on EmailNotVerified {
       mixpanel!.track('mamba_login_validate_email_error');
       emit(const AuthError(AuthErrorEnum.validateError));
+    } on EmailNotValid {
+      emit(const AuthError(AuthErrorEnum.loginError));
+    } on WrongCredentials {
+      mixpanel!.track('mamba_login_notfound_error');
+      emit(const AuthError(AuthErrorEnum.loginError));
+    } on RegisterError {
+      emit(const AuthError(AuthErrorEnum.registerError));
+    } on WrongAppUser {
+      emit(const AuthError(AuthErrorEnum.wrongAppUser));
+    } on Exception {
+      emit(const AuthError(AuthErrorEnum.loginError));
     }
   }
 
-  void _signInWithGoogle(BuildContext context) async {
+  void _signInWithGoogle_old(BuildContext context) async {
     try {
       final user = await googleSignIn.signIn();
       if (user == null) {
@@ -125,7 +140,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  void _signInWithApple(BuildContext context) async {
+  void _signInWithApple_old(BuildContext context) async {
     try {
       final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -335,7 +350,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> resendVerificationEmail(String email) async {
-    await _userDataService.resendEmail(email);    
+    await _userDataService.resendEmail(email);
   }
 
   void _sendMixPanelDataUsers() {

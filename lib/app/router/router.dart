@@ -7,7 +7,8 @@ import 'package:mamba/home/views/home.dart';
 import 'package:mamba/user/onboarding/OnboardingScreen.dart';
 
 class AppRouter {
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
@@ -18,7 +19,7 @@ class AppRouter {
       Login.route,
       OnboardingScreen.route,
       Admin.route,
-    ], 
+    ],
     errorBuilder: (context, state) {
       debugPrint('Navigation error: ${state.error}');
       debugPrint('Missing state: ${state.matchedLocation}');

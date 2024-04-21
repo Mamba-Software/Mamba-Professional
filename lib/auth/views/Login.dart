@@ -24,6 +24,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Login Page. This allow the User to get Logged In or to Register a new account.
 class Login extends StatefulWidget {
   static String routeName = 'login';
+
   static GoRoute route = GoRoute(
     name: routeName,
     path: "/login",
@@ -31,8 +32,10 @@ class Login extends StatefulWidget {
     /*
     pageBuilder: CustomTransitionPage(
       
-    ),
-    */ 
+    
+
+  static var routeweb;),
+    */
     routes: [
       Register.route,
       ForgotPassword.route,
@@ -40,6 +43,13 @@ class Login extends StatefulWidget {
   );
 
   const Login({super.key});
+
+  static Route routeDir() {
+    return MaterialPageRoute<void>(
+      builder: (_) => const Login(),
+      settings: const RouteSettings(name: 'Login'),
+    );
+  }
 
   @override
   _LoginState createState() => _LoginState();
@@ -236,7 +246,6 @@ class _LoginState extends State<Login> with PlatformMixin {
                   TextSpan(
                     text: context.l10n.register,
                     style: context.textTheme.titleSmall,
-                        
                   ),
                 ],
               ),

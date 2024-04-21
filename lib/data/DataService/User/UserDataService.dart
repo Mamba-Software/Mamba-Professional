@@ -19,8 +19,6 @@ class UserDataService {
   Future<User?> getCurrentUser() => _firebase.getCurrentUser();
   Future<String?> getUserUIDWithEmail(String email) =>
       _firebase.getUserUIDWithEmail(email);
-  Future<int> signIn(String email, String password) =>
-      _firebase.signIn(email, password);
   Future<void> signOut() => _firebase.signOut();
   Future<int> resetPassword(String email) => _firebase.resetPassword(email);
   Future<int> resendEmail(String email) => _firebase.resendEmail(email);

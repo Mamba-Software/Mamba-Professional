@@ -55,31 +55,6 @@ class UserFirebaseCalls {
     }
   }
 
-  Future<int> signIn(String email, String password) async {
-    bool error = false;
-    UserCredential? authResult;
-    try {
-      authResult = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-    } catch (e) {
-      error = true;
-    }
-    if (error) return -1;
-    if (authResult == null) {
-      return -1;
-    }
-    if (authResult.user != null) {
-      if (flavor != Flavor.development &&
-          authResult.user!.emailVerified == false) {
-        return -2;
-      } else {
-        return 0;
-      }
-    } else {
-      return 0;
-    }
-  }
-
   Future<void> signOut() async {
     return await _auth.signOut();
   }

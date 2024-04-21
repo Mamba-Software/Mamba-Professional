@@ -8,6 +8,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mamba/analytics/data/analytics_repository.dart';
 import 'package:mamba/app/router/router.dart';
+import 'package:mamba/auth/bloc/auth_bloc.dart';
+import 'package:mamba/auth/data/auth_repository.dart';
+import 'package:mamba/auth/data/firebase_auth_repository.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -30,6 +33,7 @@ import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/views/snackbar_manager.dart';
 import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
+import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:mamba/user/data/firebase_user_repository.dart';
 import 'package:mamba/user/data/user_repository.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -91,7 +95,7 @@ class Bootstrap with PlatformMixin {
         // For Path Url Strategy in Web
         usePathUrlStrategy();
         // Run App
-        runApp(const App());
+        runApp(App());
       },
       (error, stackTrace) {
         if (flavor != Flavor.development) {
@@ -105,9 +109,16 @@ class Bootstrap with PlatformMixin {
 
 // Handle App Level Repositories and Blocs
 class App extends StatelessWidget {
-  const App({super.key});
+  App({super.key});
+
+  final UserRepository userRepository = FirebaseUserRepository();
+  final AuthRepository authRepository = FirebaseAuthRepository();
+
   @override
   Widget build(BuildContext context) {
+    final userBloc = UserBloc(userRepository: userRepository);
+    final authBloc =
+        AuthBloc(authRepository: authRepository, userBloc: userBloc);
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AnalyticsRepository>(
@@ -115,20 +126,18 @@ class App extends StatelessWidget {
             isRelease: flavor != Flavor.development || flavor != Flavor.staging,
           ),
         ),
-        RepositoryProvider<UserRepository>(
-          create: (context) => UserRepository(
-            FirebaseUserRepository(),
-          ),
-        ),
+        RepositoryProvider<UserRepository>(create: (context) => userRepository),
         RepositoryProvider<SettingsRepository>(
-          create: (context) => SettingsRepository(),          
+          create: (context) => SettingsRepository(),
         ),
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider<AuthBloc>(create: (_) => authBloc),
+          BlocProvider<UserBloc>(create: (_) => userBloc),
           // Refactor Done
           BlocProvider<AuthCubit>(
-            create: (context) => AuthCubit(),
+            create: (context) => AuthCubit(BlocProvider.of<AuthBloc>(context)),
             lazy: false,
           ),
           BlocProvider<ThemeManager>(
