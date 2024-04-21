@@ -1262,20 +1262,7 @@ class _Trainers extends State<Trainers> {
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                GestureDetector(
-                                    onTap: () {
-                                      TopSnackBarDef().showSnackBarBottom(
-                                          context,
-                                          AppLocalizations.of(context)!
-                                              .betaFeature,
-                                          5);
-                                    },
-                                    child: const BetaBadge()),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.02,
-                                ),
+                              children: [                                
                                 Text(
                                     "${AppLocalizations.of(context)!.add} ${AppLocalizations.of(context)!.staff}",
                                     style: Theme.of(context)

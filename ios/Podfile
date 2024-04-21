@@ -31,10 +31,15 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
+  # GitHub Issue  
+  # https://github.com/firebase/flutterfire/issues/12429
+  $FirebaseSDKVersion = '10.22.0'
+  pod 'BoringSSL-GRPC', '0.0.24'
+  
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   #target 'RunnerTests' do
   #  inherit! :search_paths
-  # end
+  #end
 end
 
 post_install do |installer|

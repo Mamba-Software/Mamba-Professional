@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/commons/widgets/Components/Badges/NewBadge.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -22,8 +23,6 @@ import 'package:mamba/app/style/AppColors.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba/commons/widgets/Components/Badges/BetaBadge.dart';
-import 'package:mamba/commons/widgets/Components/Badges/SoonBadge.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
@@ -2124,15 +2123,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                       height:
                                           MediaQuery.of(context).size.height *
                                               0.01),
-                                  GestureDetector(
-                                      onTap: () {
-                                        _topSnackBar.showSnackBarBottom(
-                                            context,
-                                            AppLocalizations.of(context)!
-                                                .betaFeature,
-                                            5);
-                                      },
-                                      child: const BetaBadge())
+                                  const NewBadge(),
                                 ],
                               ),
                               // Apple
@@ -2206,15 +2197,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                       height:
                                           MediaQuery.of(context).size.height *
                                               0.01),
-                                  GestureDetector(
-                                      onTap: () {
-                                        _topSnackBar.showSnackBarBottom(
-                                            context,
-                                            AppLocalizations.of(context)!
-                                                .soonFeature,
-                                            5);
-                                      },
-                                      child: const SoonBadge()),
+                                  const NewBadge(),
                                 ],
                               ),
                               // Google Pay
@@ -2288,15 +2271,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                       height:
                                           MediaQuery.of(context).size.height *
                                               0.01),
-                                  GestureDetector(
-                                      onTap: () {
-                                        _topSnackBar.showSnackBarBottom(
-                                            context,
-                                            AppLocalizations.of(context)!
-                                                .soonFeature,
-                                            5);
-                                      },
-                                      child: const SoonBadge()),
+                                  const NewBadge(),
                                 ],
                               ),
                             ],
