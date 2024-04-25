@@ -10,7 +10,8 @@ import 'package:mamba/analytics/data/analytics_repository.dart';
 import 'package:mamba/app/router/router.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
-import 'package:mamba/auth/data/firebase_auth_repository.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
+import 'package:mamba/brand/data/brand_repository.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -112,13 +113,17 @@ class App extends StatelessWidget {
   App({super.key});
 
   final UserRepository userRepository = FirebaseUserRepository();
-  final AuthRepository authRepository = FirebaseAuthRepository();
+  final BrandRepository brandRepository = BrandRepository();
+  final AuthRepository authRepository = AuthRepository();
 
   @override
   Widget build(BuildContext context) {
     final userBloc = UserBloc(userRepository: userRepository);
+    final brandBloc =
+        BrandBloc(brandRepository: brandRepository, userBloc: userBloc);
     final authBloc =
         AuthBloc(authRepository: authRepository, userBloc: userBloc);
+
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AnalyticsRepository>(
@@ -135,6 +140,7 @@ class App extends StatelessWidget {
         providers: [
           BlocProvider<AuthBloc>(create: (_) => authBloc),
           BlocProvider<UserBloc>(create: (_) => userBloc),
+          BlocProvider<BrandBloc>(create: (_) => brandBloc),
           // Refactor Done
           BlocProvider<AuthCubit>(
             create: (context) => AuthCubit(BlocProvider.of<AuthBloc>(context)),

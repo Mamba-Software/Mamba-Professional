@@ -4,7 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
+import 'package:mamba/auth/views/Login.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -20,18 +22,18 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/Bran
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
+import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 class HomePage extends StatelessWidget {
-  
   static String routeName = '/';
   static GoRoute route = GoRoute(
     name: routeName,
     path: '/',
     builder: (BuildContext context, GoRouterState state) => HomePage(),
   );
-  
+
   @override
   Widget build(BuildContext context) {
     return const HomePageBody();
@@ -194,11 +196,11 @@ class _HomePageBodyState extends State<HomePageBody> {
   // Gets the user info from firebase.
   void getUserAndBrand() async {
     // Get User Main Data
-    currentUser.setBasicData =
-        await _userDataService.getUserDetails(currentUser.id!);
+    /* currentUser.setBasicData = await _userDataService
+        .getUserDetails(BlocProvider.of<UserBloc>(context).state.user.id!);
     // Get User Brand
-    List<Brand> brands =
-        await _brandDataService.getAllBrandsFromUser(currentUser.id!);
+    List<Brand> brands = await _brandDataService.getAllBrandsFromUser(
+        BlocProvider.of<UserBloc>(context).state.user.id!);
     currentUser.setBrandList = brands;
     if (currentUser.brandsList.isNotEmpty) {
       // Setting the Brand to the User
@@ -218,7 +220,7 @@ class _HomePageBodyState extends State<HomePageBody> {
       }
       mixpanel!.getPeople().set("Brands Roles", [role]);
       setBrandActive();
-    }
+    } */
     setState(() {
       isLoading = false;
     });
@@ -243,40 +245,58 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? Scaffold(
-            backgroundColor: AppColors.black,
-            body: LoadingView(
-              hasLogo: false,
-              isSmall: true,
-              color: AppColors.white,
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthBloc, AuthStateS>(
+          listener: (context, state) {
+            switch (state.status) {
+              case AuthStatus.unauthenticated:
+                context.goNamed(Login.routeName);
+                break;
+              case AuthStatus.authenticated:
+                break;
+              case AuthStatus.unknown:
+                break;
+            }
+          },
+        ),
+      ],
+      child: isLoading
+          ? Scaffold(
+              backgroundColor: AppColors.black,
+              body: LoadingView(
+                hasLogo: false,
+                isSmall: true,
+                color: AppColors.white,
+              ),
+            )
+          : BlocSelector<AuthCubit, AuthState, AuthState>(
+              selector: (state) {
+                return state;
+              },
+              builder: (context, state) {
+                if (state is AuthUserBrand) {
+                  return !brandIsActive
+                      ? currentUser.id == currentBrand.adminID
+                          ? PayWall(
+                              brandId: currentBrand.id!,
+                              comesFromInitPage: true)
+                          : const BrandScreen()
+                      : const BrandScreen();
+                } else if (state is AuthUserNoBrand) {
+                  return const NoBrandScreen();
+                } else {
+                  return Scaffold(
+                    backgroundColor: AppColors.black,
+                    body: LoadingView(
+                      hasLogo: false,
+                      isSmall: true,
+                      color: AppColors.white,
+                    ),
+                  );
+                }
+              },
             ),
-          )
-        : BlocSelector<AuthCubit, AuthState, AuthState>(
-            selector: (state) {
-              return state;
-            },
-            builder: (context, state) {
-              if (state is AuthUserBrand) {
-                return !brandIsActive
-                    ? currentUser.id == currentBrand.adminID
-                        ? PayWall(
-                            brandId: currentBrand.id!, comesFromInitPage: true)
-                        : const BrandScreen()
-                    : const BrandScreen();
-              } else if (state is AuthUserNoBrand) {
-                return const NoBrandScreen();
-              } else {
-                return Scaffold(
-                  backgroundColor: AppColors.black,
-                  body: LoadingView(
-                    hasLogo: false,
-                    isSmall: true,
-                    color: AppColors.white,
-                  ),
-                );
-              }
-            },
-          ); // The method to build widget based on AuthState
+    ); // The method to build widget based on AuthState
   }
 }

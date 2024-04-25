@@ -47,22 +47,32 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     context.read<AuthCubit>().checkAndGetUserDetails(context);
     return BlocListener<AuthBloc, AuthStateS>(
-      listener: (context, state) {
-        switch (state.status) {
-          case AuthStatus.authenticated:
-            context.goNamed(Login.routeName);
-            /*if (checkIfAppIsActive(context)) {
+        listener: (context, state) {
+          switch (state.status) {
+            case AuthStatus.authenticated:
+              //context.goNamed(HomePage.routeName); //NOT WORKING
+              context.goNamed(HomePage.routeName);
+
+              /*if (checkIfAppIsActive(context)) {
               userAutenticatedRedirection(context: context, userId: state.user.id);
             }*/
-            break;
-          case AuthStatus.unauthenticated:
-            context.goNamed(Login.routeName);
-            break;
-          case AuthStatus.unknown:
-            break;
-        }
-      },
-      child: BlocConsumer<AuthCubit, AuthState>(
+              break;
+            case AuthStatus.unauthenticated:
+              context.goNamed(Login.routeName);
+              break;
+            case AuthStatus.unknown:
+              break;
+          }
+        },
+        child: Scaffold(
+          appBar: null,
+          body: SplashScreenView(
+            isMaintenance: false,
+            //isMaintenance: state is AuthMaintenance ? true : false,
+          ),
+        )
+
+        /*BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthNotLoged) {
             context.goNamed(Login.routeName);
@@ -85,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           );
         },
-      ),
-    );
+      ),*/
+        );
   }
 }

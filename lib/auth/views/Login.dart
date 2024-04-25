@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
 import 'package:mamba/auth/views/forgot_password.dart';
@@ -15,6 +16,7 @@ import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/home/views/home.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
@@ -294,79 +296,97 @@ class _LoginState extends State<Login> with PlatformMixin {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLogin(
-      child: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state is AuthError) {
-            switch (state.error) {
-              case AuthErrorEnum.wrongAppUser:
-                CustomSnackbar snackbar = CustomSnackbar(
-                  type: SnackbarType.error,
-                  message:
-                      "${context.l10n.wrongAppUser} ${context.l10n.wrongAppUserBody}",
-                  onAccept: () async {
-                    if (isWeb) {
-                      if (!await launchUrl(Uri.parse(clients))) {
-                        throw 'Could not launch $termsAndConditions';
-                      }
-                    } else {
-                      LaunchApp.openApp(
-                        androidPackageName: 'com.mamba.mambaprofessionalapp',
-                        iosUrlScheme: "mamba-professional",
-                        appStoreLink:
-                            "https://apps.apple.com/us/app/mamba-professional/id1642701679",
-                        openStore: true,
-                      );
-                    }
-                  },
-                  actionText: context.l10n.open,
-                );
-                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthBloc, AuthStateS>(
+          listener: (context, state) {
+            switch (state.status) {
+              case AuthStatus.unauthenticated:
+                context.goNamed(Login.routeName);
                 break;
-              case AuthErrorEnum.loginError:
-                CustomSnackbar snackbar = CustomSnackbar(
-                  type: SnackbarType.error,
-                  message: context.l10n.loginError,
-                );
-                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+              case AuthStatus.authenticated:
+                context.goNamed(HomePage.routeName);
                 break;
-              case AuthErrorEnum.validateError:
-                CustomSnackbar snackbar = CustomSnackbar(
-                  type: SnackbarType.error,
-                  message: context.l10n.validateError,
-                  onAccept: () => context
-                      .read<AuthCubit>()
-                      .resendVerificationEmail(emailController.text.trim()),
-                  actionText: "${context.l10n.resend} ${context.l10n.email}",
-                );
-                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
-                break;
-              case AuthErrorEnum.registerError:
-                CustomSnackbar snackbar = CustomSnackbar(
-                  type: SnackbarType.error,
-                  message: context.l10n.registerError,
-                );
-                context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
-                break;
-              default:
+              case AuthStatus.unknown:
                 break;
             }
-          }
-          if (state is AuthRegistered) {
-            AuthRegistered castedState = state;
-            emailController.text = castedState.email;
-          }
-          if (state is AuthCorrectForget) {
-            AuthCorrectForget castedState = state;
-            emailController.text = castedState.email;
-          }
-          if (state is AuthLoaded) {
-            context.goNamed(SplashScreen.routeName);
-          }
-        },
-        builder: (context, state) {
-          return loginForm(state);
-        },
+          },
+        ),
+      ],
+      child: ResponsiveLogin(
+        child: BlocConsumer<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state is AuthError) {
+              switch (state.error) {
+                case AuthErrorEnum.wrongAppUser:
+                  CustomSnackbar snackbar = CustomSnackbar(
+                    type: SnackbarType.error,
+                    message:
+                        "${context.l10n.wrongAppUser} ${context.l10n.wrongAppUserBody}",
+                    onAccept: () async {
+                      if (isWeb) {
+                        if (!await launchUrl(Uri.parse(clients))) {
+                          throw 'Could not launch $termsAndConditions';
+                        }
+                      } else {
+                        LaunchApp.openApp(
+                          androidPackageName: 'com.mamba.mambaprofessionalapp',
+                          iosUrlScheme: "mamba-professional",
+                          appStoreLink:
+                              "https://apps.apple.com/us/app/mamba-professional/id1642701679",
+                          openStore: true,
+                        );
+                      }
+                    },
+                    actionText: context.l10n.open,
+                  );
+                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+                  break;
+                case AuthErrorEnum.loginError:
+                  CustomSnackbar snackbar = CustomSnackbar(
+                    type: SnackbarType.error,
+                    message: context.l10n.loginError,
+                  );
+                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+                  break;
+                case AuthErrorEnum.validateError:
+                  CustomSnackbar snackbar = CustomSnackbar(
+                    type: SnackbarType.error,
+                    message: context.l10n.validateError,
+                    onAccept: () => context
+                        .read<AuthCubit>()
+                        .resendVerificationEmail(emailController.text.trim()),
+                    actionText: "${context.l10n.resend} ${context.l10n.email}",
+                  );
+                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+                  break;
+                case AuthErrorEnum.registerError:
+                  CustomSnackbar snackbar = CustomSnackbar(
+                    type: SnackbarType.error,
+                    message: context.l10n.registerError,
+                  );
+                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+                  break;
+                default:
+                  break;
+              }
+            }
+            if (state is AuthRegistered) {
+              AuthRegistered castedState = state;
+              emailController.text = castedState.email;
+            }
+            if (state is AuthCorrectForget) {
+              AuthCorrectForget castedState = state;
+              emailController.text = castedState.email;
+            }
+            if (state is AuthLoaded) {
+              context.goNamed(SplashScreen.routeName);
+            }
+          },
+          builder: (context, state) {
+            return loginForm(state);
+          },
+        ),
       ),
     );
   }

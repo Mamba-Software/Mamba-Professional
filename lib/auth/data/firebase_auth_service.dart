@@ -5,12 +5,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/auth/models/auth_user.dart';
 import 'package:mamba/auth/models/exceptions.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/user/models/users/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-class FirebaseAuthRepository implements AuthRepository {
+class FirebaseAuthService {
   // Firebase Instances
   static final auth.FirebaseAuth _firebaseAuth = auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -126,7 +127,6 @@ class FirebaseAuthRepository implements AuthRepository {
     }
   }
 
-  @override
   Future<void> logOut() async {
     try {
       await _firebaseAuth.signOut();
@@ -135,7 +135,6 @@ class FirebaseAuthRepository implements AuthRepository {
     }
   }
 
-  @override
   Stream<AuthUser> get authUser {
     return _firebaseAuth.userChanges().asyncMap((firebaseUser) async {
       try {
@@ -143,6 +142,7 @@ class FirebaseAuthRepository implements AuthRepository {
             (flavor != Flavor.development && !firebaseUser.emailVerified)) {
           return AuthUser.empty;
         } else {
+          brandIsActive = true; //TODO BORRAR
           if (await checkUserType(checkTrainer: true)) {
             // Assuming 'isTrainer' is a field in your user document
             return firebaseUser.toAuthUser; // Continue if the user is a Trainer
@@ -157,13 +157,11 @@ class FirebaseAuthRepository implements AuthRepository {
     });
   }
 
-  @override
   Future<void> resetPassword({required String email}) {
     // TODO: implement resetPassword
     throw UnimplementedError();
   }
 
-  @override
   Future<void> registerUser(
       {required Usuario user,
       required String password,
@@ -173,7 +171,6 @@ class FirebaseAuthRepository implements AuthRepository {
     throw UnimplementedError();
   }
 
-  @override
   Future<bool> checkUserType({required bool checkTrainer}) async {
     bool isTrainer = false;
 
