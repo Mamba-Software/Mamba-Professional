@@ -27,8 +27,6 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cub
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/views/popup_manager.dart';
-import 'package:mamba/settings/data/firebase_settings_service.dart';
-import 'package:mamba/settings/data/hive_settings_service.dart';
 import 'package:mamba/settings/data/settings_repository.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/views/snackbar_manager.dart';
