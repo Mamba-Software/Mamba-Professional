@@ -26,12 +26,19 @@ dependencies:
     sdk: flutter
   intl: ^0.18.1
   flutter_rounded_date_picker: ^3.0.4
+  
+  firebase_core: ^2.24.2
+  firebase_crashlytics: ^3.4.18
+  firebase_analytics: ^10.8.9
+  firebase_messaging: ^14.7.19
   firebase_core_platform_interface: ^5.0.0
-  firebase_core: ^2.22.0
-  firebase_auth: ^4.14.0
-  firebase_storage: ^11.5.1
-  cloud_firestore: ^4.13.1
-  cloud_functions: ^4.5.4
+  firebase_auth: ^4.17.8
+  firebase_storage: ^11.7.1
+  cloud_firestore: ^4.17.2
+  cloud_functions: ^4.7.3
+  cloud_functions_web: ^4.9.3
+  firebase_dynamic_links: ^5.4.3
+  flutter_firebase_chat_core: ^1.5.1
   provider: ^6.1.1
   flutter_spinkit: "^5.0.0"
   http: ^0.13.3
@@ -46,25 +53,19 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   preload_page_view: ^0.2.0
   cached_network_image: ^3.3.1
-  flutter_native_splash: ^2.3.5
-  firebase_messaging: ^14.7.4
+  flutter_native_splash: ^2.3.5  
   flutter_local_notifications: ^16.1.0
   rename: ^3.0.1
   url_launcher: ^6.0.17
-  auto_size_text: ^3.0.0
-  flutter_firebase_chat_core: ^1.6.7
+  auto_size_text: ^3.0.0  
   flutter_chat_ui: ^1.5.3
   file_picker: ^6.1.1
   mime: ^1.0.1
   resize: ^1.0.0
   carousel_slider: ^4.0.0
-  flutter_image_compress: ^2.1.0
-  firebase_dynamic_links: ^5.4.4
+  flutter_image_compress: ^2.1.0  
   share_plus: ^7.2.1
   store_redirect: ^2.0.1
-  firebase_crashlytics: ^3.4.4
-  firebase_analytics: ^10.7.0
-  firebase_app_check: ^0.2.1+8
   shimmer: ^3.0.0
   lazy_load_scrollview: 1.3.0
   google_maps_flutter: ^2.2.6

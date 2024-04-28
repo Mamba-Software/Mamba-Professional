@@ -101,6 +101,8 @@ class Bootstrap with PlatformMixin {
           // Firebase Crashlytics on Explicitly Caught Exceptions
           FirebaseCrashlytics.instance.recordError(error, stackTrace);
         }
+        print("Error:");
+        print(error);
       },
     );
   }
