@@ -7,10 +7,9 @@ import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/Login.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
-import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/home/views/no_brand_screen.dart';
@@ -33,16 +32,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const HomePageBody();
-    /*
     return MultiBlocProvider(
-      providers: const [        
-        // Add BlocProviders here when needed
-
+      providers: [
+        BlocProvider<HomeNavigationManager>(
+          create: (context) => HomeNavigationManager(),
+        ),
       ],
       child: const HomePageBody(),
     );
-    */
   }
 }
 
@@ -219,22 +216,27 @@ class _HomePageBodyState extends State<HomePageBody> {
           },
         ),
       ],
-      child: BlocSelector<AuthCubit, AuthState, AuthState>(
-              selector: (state) {
-                return state;
-              },
-              builder: (context, state) {
-                if (state is AuthUserBrand) {
-                  return !brandIsActive
-                      ? currentUser.id == currentBrand.adminID
-                          ? PayWall(
-                              brandId: currentBrand.id!,
-                              comesFromInitPage: true)
-                          : const BrandScreen()
-                      : const BrandScreen();
-                }
-              },
-            ),
+      child: BlocBuilder<AuthCubit, AuthState>(
+        builder: (context, state) {
+          if (state is AuthUserBrand) {
+            return !brandIsActive && currentUser.id == currentBrand.adminID
+                ? PayWall(
+                    brandId: currentBrand.id!,
+                    comesFromInitPage: true,
+                  )
+                : BrandScreen();
+          }
+          if (state is AuthUserNoBrand) {
+            return const NoBrandScreen();
+          } else {
+            return LoadingView(
+              hasLogo: false,
+              isSmall: true,
+              color: AppColors.white,
+            );
+          }
+        },
+      ),
     );
   }
 }

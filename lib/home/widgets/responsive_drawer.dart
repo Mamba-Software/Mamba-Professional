@@ -6,7 +6,7 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
-import 'package:mamba/home/models/MambaProUtils.dart';
+import 'package:mamba/home/widgets/body.dart';
 import 'package:mamba/home/widgets/footer.dart';
 import 'package:mamba/home/widgets/header.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,132 +18,16 @@ class ResponsiveDrawer extends StatelessWidget with PlatformMixin {
 
   ResponsiveDrawer({super.key, required this.child});
 
-  final _mambaProUtils = MambaProUtils();
-
-  Widget listTilePro(BuildContext context, int pageIndexVar,
-      [bool isFavourite = false]) {
-    return ListTile(
-      leading: _mambaProUtils.iconSelectorListView(context, pageIndexVar),
-      title: _mambaProUtils.titlePageSelectorListView(context, pageIndexVar),
-      onTap: () => {
-        Navigator.pop(context),
-        setBrandActive(),
-        /*
-        setState(() {
-          pageIndex = pageIndexVar;
-        }),
-        */
-      },
-    );
-  }
-
-  Widget buildBrandListOptions(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.04),
-          child: Text(
-            context.l10n.management,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.left,
-          ),
-        ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        listTilePro(context, 10),
-        listTilePro(context, 18),
-        listTilePro(context, 9),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.04),
-          child: Text(
-            context.l10n.yourBrand,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.left,
-          ),
-        ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        listTilePro(context, 5),
-        listTilePro(context, 2),
-        listTilePro(context, 1),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.04),
-          child: Text(
-            context.l10n.information,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.left,
-          ),
-        ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        listTilePro(context, 8),
-        listTilePro(context, 7),
-        listTilePro(context, 11),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: mambaProScaffoldKey,
-      drawer: Drawer(
-        surfaceTintColor: Theme.of(context).primaryColorDark,
-        backgroundColor: Theme.of(context).primaryColorDark,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(0.0),
-            bottomRight: Radius.circular(0.0),
-          ),
-        ),
-        child: Column(
-          children: [
-            // Header
-            const Header(),
-            const Divider(
-              color: AppColors.grey,
-              thickness: 0,
-              height: 1,
-            ),
-            // Brand List Options
-            Expanded(
-              child: ListView(
-                physics: const ClampingScrollPhysics(),
-                // Remove padding
-                padding: EdgeInsets.zero,
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                  // Brand Options
-                  buildBrandListOptions(context),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                ],
-              ),
-            ),
-            // Payment
-            const Divider(
-              color: AppColors.grey,
-              thickness: 0,
-              height: 1,
-            ),
-            const Footer(),
-          ],
-        ),
-      ),
-      body: child,
-    );
-
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         if (context.isMobile) {
           return Scaffold(
             key: mambaProScaffoldKey,
             drawer: Drawer(
-              surfaceTintColor: Theme.of(context).primaryColorDark,
-              backgroundColor: Theme.of(context).primaryColorDark,
+              surfaceTintColor: context.theme.scaffoldBackgroundColor,
+              backgroundColor: context.theme.scaffoldBackgroundColor,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(0.0),
@@ -153,35 +37,25 @@ class ResponsiveDrawer extends StatelessWidget with PlatformMixin {
               child: Column(
                 children: [
                   // Header
-                  const Header(),
+                  Header(
+                    height: context.height * 0.25,
+                  ),
                   const Divider(
                     color: AppColors.grey,
                     thickness: 0,
                     height: 1,
                   ),
-                  // Brand List Options
-                  Expanded(
-                    child: ListView(
-                      physics: const ClampingScrollPhysics(),
-                      // Remove padding
-                      padding: EdgeInsets.zero,
-                      children: [
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.02),
-                        // Brand Options
-                        buildBrandListOptions(context),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.05),
-                      ],
-                    ),
-                  ),
-                  // Payment
+                  // Body
+                  const Body(),
+                  // Footer
                   const Divider(
                     color: AppColors.grey,
                     thickness: 0,
                     height: 1,
                   ),
-                  const Footer(),
+                  Footer(
+                    height: context.height * 0.1,
+                  ),
                 ],
               ),
             ),
@@ -189,41 +63,8 @@ class ResponsiveDrawer extends StatelessWidget with PlatformMixin {
           );
         } else if (context.isTablet) {
           return Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-            ),
-            extendBodyBehindAppBar: true,
-            body: Container(
-              decoration: BoxDecoration(
-                color: context.theme.scaffoldBackgroundColor,
-                image: DecorationImage(
-                  opacity: 1,
-                  colorFilter: ColorFilter.mode(
-                    context.colorScheme.secondary.withOpacity(0.25),
-                    BlendMode.dstATop,
-                  ),
-                  image:
-                      AssetImage(Assets.mambaCover), // Specify your image path
-                  fit: BoxFit
-                      .fitHeight, // Cover the entire widget with the image
-                ),
-              ),
-              child: ListView(
-                children: [
-                  const CustomAppBar(
-                    height: kToolbarHeight,
-                  ),
-                  Center(
-                    child: Container(
-                      margin: const EdgeInsets.all(30),
-                      constraints: const BoxConstraints(maxWidth: 500),
-                      child: child,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            key: mambaProScaffoldKey,
+            body: child,
           );
         } else {
           return Scaffold(

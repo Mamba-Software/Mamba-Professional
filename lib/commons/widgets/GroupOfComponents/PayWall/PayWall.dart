@@ -337,7 +337,7 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
                   Navigator.pushAndRemoveUntil(
                     context,
                     CupertinoPageRoute<void>(
-                      builder: (context) => const BrandScreen(),
+                      builder: (context) => BrandScreen(),
                       settings: const RouteSettings(name: 'BrandScreen'),
                     ),
                     (_) => false,

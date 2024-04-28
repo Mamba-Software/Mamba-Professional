@@ -9,9 +9,13 @@ import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 class Footer extends StatelessWidget with PlatformMixin {
-  const Footer({
-    super.key,
-  });
+  
+  double height;
+
+  Footer({
+    Key? key,
+    required this.height,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class Footer extends StatelessWidget with PlatformMixin {
                 state.subscription.endDate!.toDate());
             return suscriptionState.subscription.subscriptionId == "7DAYSTRIAL"
                 ? Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
+                    height: height,
                     padding: const EdgeInsets.only(left: 4.0),
                     child: ListTile(
                         title: Text(context.l10n.freeTrial,
@@ -58,7 +62,7 @@ class Footer extends StatelessWidget with PlatformMixin {
                             }),
                   )
                 : Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
+                    height: height,
                     padding: const EdgeInsets.only(left: 4.0),
                     child: ListTile(
                         title: Text(context.l10n.monthlyPlan,
@@ -84,7 +88,7 @@ class Footer extends StatelessWidget with PlatformMixin {
                   );
           case BrandSuscriptionLoadedFalse:
             return Container(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: height,
               padding: const EdgeInsets.only(left: 4.0),
               child: ListTile(
                   title: Text(context.l10n.chooseYourPlan,
@@ -113,24 +117,6 @@ class Footer extends StatelessWidget with PlatformMixin {
         }
       },
     );
-  }
-
-  Future<void> navigateToSubscriptionsScreen(BuildContext context) async {
-    //mixpanel!.track('brand_membership_requests_view');
-    var result = await Navigator.push(
-        context,
-        CupertinoPageRoute<bool?>(
-          builder: (context) => PayWall(
-            brandId: currentBrand.id!,
-          ),
-        ));
-    if (result == null || result == true) {
-      /*
-      setState(() {
-        isLoading = true;
-      });
-      */
-    }
   }
   
 }

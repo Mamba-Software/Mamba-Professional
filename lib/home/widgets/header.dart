@@ -1,7 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
@@ -10,14 +13,18 @@ import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 
-class Header extends StatelessWidget with PlatformMixin {  
+class Header extends StatelessWidget with PlatformMixin {
+  double height;
 
-  const Header({super.key,});
+  Header({
+    Key? key,
+    required this.height,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.25,
+      height: height,
       width: double.infinity,
       decoration: const BoxDecoration(
         color: AppColors.darkGrey,
@@ -33,8 +40,8 @@ class Header extends StatelessWidget with PlatformMixin {
             )),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.25,
-            width: MediaQuery.of(context).size.width,
+            height: height,
+            width: context.width,
             decoration: BoxDecoration(
               color: Colors.white,
               gradient: LinearGradient(
@@ -60,23 +67,23 @@ class Header extends StatelessWidget with PlatformMixin {
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.03,
-                  vertical: MediaQuery.of(context).size.width * 0.05),
+                  horizontal: context.width * 0.03,
+                  vertical: context.width * 0.05),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   CircularImage(
-                    size: MediaQuery.of(context).size.width * 0.15,
+                    size: context.width * 0.15,
                     image: currentBrand.logoUrl,
                     borderWidth: 0.5,
                     color: AppColors.white,
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.03,
+                    width: context.width * 0.03,
                   ),
                   Expanded(
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.15,
+                      height: context.width * 0.15,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,9 +91,9 @@ class Header extends StatelessWidget with PlatformMixin {
                           Flexible(
                             child: Text(
                               currentBrand.name!,
-                              style: Theme.of(context)
+                              style: context
                                   .textTheme
-                                  .displayLarge
+                                  .headlineMedium
                                   ?.copyWith(color: AppColors.white),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -103,7 +110,9 @@ class Header extends StatelessWidget with PlatformMixin {
                                     returnBrandRoleString(context),
                                     textAlign: TextAlign.left,
                                     style:
-                                        Theme.of(context).textTheme.bodySmall,
+                                        context.textTheme.bodyMedium!.copyWith(
+                                      color: AppColors.white,
+                                    ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -138,7 +147,7 @@ class Header extends StatelessWidget with PlatformMixin {
                                     const SizedBox(width: 4),
                                     Text(
                                       context.l10n.invite,
-                                      style: Theme.of(context)
+                                      style: context
                                           .textTheme
                                           .bodyMedium!
                                           .copyWith(color: AppColors.white),
@@ -161,7 +170,7 @@ class Header extends StatelessWidget with PlatformMixin {
     );
   }
 
-   // Navigate to Bonos Request Screen
+  // Navigate to Bonos Request Screen
   void navigateToRolesInformationModal(BuildContext context) async {
     mixpanel!.track('drawer_trainer_roles_info');
     showModalBottomSheet<bool?>(
@@ -199,23 +208,21 @@ class Header extends StatelessWidget with PlatformMixin {
     );
   }
 
-
   String returnBrandRoleString(BuildContext context) {
-      switch (currentUser.brandRole) {
-        case 1:
-          if (currentBrand.adminID == currentUser.id) {
-            return StringUtils()
-                .toCapitalized(context.l10n.paySubscriptionDesc.split(" ")[2]);
-          } else {
-            return context.l10n.owner;
-          }
-        case 2:
-          return context.l10n.administrador;
-        case 3:
-          return context.l10n.trainer;
-        default:
-          return context.l10n.trainer;
-      }
+    switch (currentUser.brandRole) {
+      case 1:
+        if (currentBrand.adminID == currentUser.id) {
+          return StringUtils()
+              .toCapitalized(context.l10n.paySubscriptionDesc.split(" ")[2]);
+        } else {
+          return context.l10n.owner;
+        }
+      case 2:
+        return context.l10n.administrador;
+      case 3:
+        return context.l10n.trainer;
+      default:
+        return context.l10n.trainer;
     }
-
+  }
 }
