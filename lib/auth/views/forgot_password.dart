@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
@@ -17,8 +18,11 @@ class ForgotPassword extends StatefulWidget {
   static GoRoute route = GoRoute(
     name: routeName,
     path: 'password',
-    builder: (BuildContext context, GoRouterState state) =>
-        const ForgotPassword(),
+    pageBuilder: (BuildContext context, GoRouterState state) =>
+        CustomTransitions.instance.customTransitionPage(
+      state: state,
+      child: const ForgotPassword(),
+    ),
   );
 
   const ForgotPassword({super.key});

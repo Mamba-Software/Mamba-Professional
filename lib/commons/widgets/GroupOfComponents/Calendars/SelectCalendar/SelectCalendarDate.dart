@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -23,7 +23,8 @@ class SelectCalendarDate extends StatefulWidget {
   _SelectCalendarDateState createState() => _SelectCalendarDateState();
 }
 
-class _SelectCalendarDateState extends State<SelectCalendarDate> with PlatformMixin {
+class _SelectCalendarDateState extends State<SelectCalendarDate>
+    with PlatformMixin {
   final ScrollController _controller =
       ScrollController(initialScrollOffset: 50 * 3);
   final DateRangePickerController _dateRangePickerController =
@@ -722,9 +723,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> with PlatformMi
             child: Center(
               child: Padding(
                 padding: EdgeInsets.only(
-                    bottom: isIOS
-                        ? MediaQuery.of(context).size.height * 0.01
-                        : 0),
+                    bottom:
+                        isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
                 child: Text(
                   context.l10n.confirm,
                   style: Theme.of(context)

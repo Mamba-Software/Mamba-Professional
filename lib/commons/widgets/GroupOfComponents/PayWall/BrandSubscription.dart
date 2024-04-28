@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';

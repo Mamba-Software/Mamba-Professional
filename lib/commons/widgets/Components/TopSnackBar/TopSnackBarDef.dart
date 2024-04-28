@@ -1,7 +1,7 @@
 //TopSnackBar Class is used to send a snack bar message
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
 class TopSnackBarDef {

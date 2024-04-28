@@ -18,7 +18,7 @@ import 'package:mamba/events/crud_events/views/mobile/AddorEdtiEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
 import 'package:mamba/events/cubit/BrandEventsCubit.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
@@ -54,7 +54,8 @@ class BrandCalendarWidget extends StatefulWidget {
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
 }
 
-class _BrandCalendarWidgetState extends State<BrandCalendarWidget> with PlatformMixin {
+class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
+    with PlatformMixin {
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;

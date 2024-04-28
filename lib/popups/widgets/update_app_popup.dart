@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 class UpdateAppPopup {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 
 class RolesInfo extends StatelessWidget {
   const RolesInfo({super.key});

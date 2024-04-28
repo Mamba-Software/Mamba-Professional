@@ -12,7 +12,7 @@ import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/commons/widgets/Components/Badges/BetaBadge.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
@@ -40,7 +40,7 @@ class BonosPro extends StatefulWidget {
   _BonosProState createState() => _BonosProState();
 }
 
-class _BonosProState extends State<BonosPro> with PlatformMixin{
+class _BonosProState extends State<BonosPro> with PlatformMixin {
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;

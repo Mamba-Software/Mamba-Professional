@@ -15,7 +15,7 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
@@ -25,14 +25,14 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../../auth/splash/SplashScreen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  
   static String routeName = '/onboarding';
   static GoRoute route = GoRoute(
     name: routeName,
     path: '/onboarding',
-    builder: (BuildContext context, GoRouterState state) => const OnboardingScreen(),
+    builder: (BuildContext context, GoRouterState state) =>
+        const OnboardingScreen(),
   );
-  
+
   const OnboardingScreen({super.key});
 
   @override

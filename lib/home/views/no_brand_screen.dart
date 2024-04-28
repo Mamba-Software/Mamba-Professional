@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba/brand/CreateBrand/widgets/buildWidgetsNoBrandScreen.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.

@@ -10,7 +10,7 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/Models/Condition.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';

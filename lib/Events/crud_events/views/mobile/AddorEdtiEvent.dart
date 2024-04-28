@@ -7,7 +7,7 @@ import 'package:mamba/events/crud_events/views/mobile/DateTimePage.dart';
 import 'package:mamba/events/crud_events/views/mobile/InformationPage.dart';
 import 'package:mamba/events/crud_events/views/mobile/MembersPage.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';

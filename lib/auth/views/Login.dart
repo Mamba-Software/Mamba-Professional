@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
@@ -30,14 +31,11 @@ class Login extends StatefulWidget {
   static GoRoute route = GoRoute(
     name: routeName,
     path: "/login",
-    builder: (BuildContext context, GoRouterState state) => const Login(),
-    /*
-    pageBuilder: CustomTransitionPage(
-      
-    
-
-  static var routeweb;),
-    */
+    pageBuilder: (BuildContext context, GoRouterState state) =>
+        CustomTransitions.instance.customTransitionPage(
+      state: state,
+      child: const Login(),
+    ),
     routes: [
       Register.route,
       ForgotPassword.route,

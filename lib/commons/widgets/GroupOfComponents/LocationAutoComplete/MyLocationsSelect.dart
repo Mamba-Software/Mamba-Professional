@@ -9,7 +9,7 @@ import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:uuid/uuid.dart';
@@ -24,7 +24,8 @@ class MyLocationsSelect extends StatefulWidget {
   _MyLocationsSelectState createState() => _MyLocationsSelectState();
 }
 
-class _MyLocationsSelectState extends State<MyLocationsSelect> with PlatformMixin{
+class _MyLocationsSelectState extends State<MyLocationsSelect>
+    with PlatformMixin {
   // Acceso a Base de Datos
   final _locationDataService = LocationDataService();
   // Google APIS
