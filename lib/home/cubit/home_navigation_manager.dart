@@ -24,6 +24,20 @@ class HomeNavigationManager extends Cubit<HomeNavigationManagerState> {
           ),
         );
 
+  HomeNavigationPage get page => state.page;
+  
+  int get pageIndex => state.pageIndex;
+
+  void jumpToIndex(int pageIndex) {    
+    HomeNavigationPage page = HomeNavigationPage.values[pageIndex];
+    emit(
+      HomeNavigationManagerState(
+        page: page,
+        pageIndex: pageIndex,
+      ),
+    );
+  }
+  
   void jumpToPage(HomeNavigationPage page) {
     int pageIndex = HomeNavigationPage.values.indexWhere((element) => page == element);
     emit(

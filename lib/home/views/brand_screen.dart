@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/events/Calendar/views/BrandCalendarWidget.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
-import 'package:mamba/home/widgets/responsive_drawer.dart';
+import 'package:mamba/home/widgets/responsive_menu.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/BrandSubscription.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
@@ -48,7 +48,7 @@ class _BrandScreenState extends State<BrandScreen> {
         // Close Drawer
         Navigator.of(context).pop();
       },
-      child: ResponsiveDrawer(
+      child: ResponsiveMenu(
         child: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
