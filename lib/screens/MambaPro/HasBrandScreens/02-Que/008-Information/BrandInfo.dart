@@ -40,14 +40,11 @@ import 'package:mamba/stripe/views/StripeOnboarding.dart';
 class BrandInfo extends StatefulWidget {
   Locale? locale;
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
-  BrandInfo(
-      {super.key,
-      this.locale,
-      required this.brandId,
-      required this.pinned,
-      required this.pinnedChanged});
+  BrandInfo({
+    super.key,
+    this.locale,
+    required this.brandId,
+  });
 
   @override
   _BrandInfoState createState() => _BrandInfoState();

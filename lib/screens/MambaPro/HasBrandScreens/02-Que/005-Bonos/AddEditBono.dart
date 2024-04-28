@@ -21,7 +21,6 @@ import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
-import 'package:mamba/commons/utils/MediaQuery/MediaQuery.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/SelectBrandImages.dart';
 import 'package:provider/provider.dart';
 
@@ -48,9 +47,6 @@ class _AddEditBonoState extends State<AddEditBono>
     with SingleTickerProviderStateMixin {
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
-
-  //Utils MediaQuery
-  var umq = MediaQueryUtils();
 
   double _currentSliderValue = 100;
 

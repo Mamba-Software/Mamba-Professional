@@ -15,16 +15,13 @@ import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/home/views/no_brand_screen.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
-import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
-import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:notification_permissions/notification_permissions.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 
 class HomePage extends StatelessWidget {
   static String routeName = '/';
@@ -59,20 +56,12 @@ class HomePageBody extends StatefulWidget {
 }
 
 class _HomePageBodyState extends State<HomePageBody> {
-  // Screen Dimensions
-  double safeAreaHeight = 0;
-  double safeAreaWidth = 0;
-
   // Acceso a Base de Datos
-  final _userDataService = UserDataService();
-  final _brandDataService = BrandDataService();
   final _settingsDataService = SettingsDataService();
   // Boolean Loading
   bool isLoading = false;
   bool hasBrand = false;
   bool isActive = false;
-  // Boolean hasSeenStartUpDialog
-  bool hasSeenStartUpDialog = false;
   // Notifications
   LocalNotificationService localNotificationService =
       LocalNotificationService();
@@ -122,7 +111,9 @@ class _HomePageBodyState extends State<HomePageBody> {
     // Setting default open to Brand Calendar
     pageIndex = 10;
     // Getting User Information
-    getUserAndBrand();
+    setState(() {
+      isLoading = false;
+    });
     // Check If App Update
     context.read<PopupsCubit>().checkIfAppUpdate();
     // On StartUp Dialogs
@@ -193,39 +184,6 @@ class _HomePageBodyState extends State<HomePageBody> {
     }
   }
 
-  // Gets the user info from firebase.
-  void getUserAndBrand() async {
-    // Get User Main Data
-    /* currentUser.setBasicData = await _userDataService
-        .getUserDetails(BlocProvider.of<UserBloc>(context).state.user.id!);
-    // Get User Brand
-    List<Brand> brands = await _brandDataService.getAllBrandsFromUser(
-        BlocProvider.of<UserBloc>(context).state.user.id!);
-    currentUser.setBrandList = brands;
-    if (currentUser.brandsList.isNotEmpty) {
-      // Setting the Brand to the User
-      hasBrand = true;
-      Brand brand = currentUser.brandsList[0];
-      currentBrand.setBasicData =
-          await _brandDataService.getBrandDetails(brand.id!);
-      currentBrand.setUserList =
-          await _brandDataService.getBrandUsers(brand.id!);
-
-      // Get Role in Brand
-      int role =
-          await _brandDataService.getUserBrandRole(brand.id!, currentUser.id!);
-      currentUser.setBrandRole = role;
-      if (currentUser.id == currentBrand.adminID) {
-        Purchases.logIn(currentBrand.id!);
-      }
-      mixpanel!.getPeople().set("Brands Roles", [role]);
-      setBrandActive();
-    } */
-    setState(() {
-      isLoading = false;
-    });
-  }
-
   // listenNotifications if User Taps on Notifications
   Future<void> handleAndlistenNotifications(BuildContext context) async {
     // Did Launch the App
@@ -261,16 +219,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           },
         ),
       ],
-      child: isLoading
-          ? Scaffold(
-              backgroundColor: AppColors.black,
-              body: LoadingView(
-                hasLogo: false,
-                isSmall: true,
-                color: AppColors.white,
-              ),
-            )
-          : BlocSelector<AuthCubit, AuthState, AuthState>(
+      child: BlocSelector<AuthCubit, AuthState, AuthState>(
               selector: (state) {
                 return state;
               },
@@ -283,20 +232,9 @@ class _HomePageBodyState extends State<HomePageBody> {
                               comesFromInitPage: true)
                           : const BrandScreen()
                       : const BrandScreen();
-                } else if (state is AuthUserNoBrand) {
-                  return const NoBrandScreen();
-                } else {
-                  return Scaffold(
-                    backgroundColor: AppColors.black,
-                    body: LoadingView(
-                      hasLogo: false,
-                      isSmall: true,
-                      color: AppColors.white,
-                    ),
-                  );
                 }
               },
             ),
-    ); // The method to build widget based on AuthState
+    );
   }
 }

@@ -32,15 +32,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 class Trainers extends StatefulWidget {
   String brandId;
   int numTrainers;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
-  Trainers(
-      {super.key,
-      required this.brandId,
-      required this.numTrainers,
-      required this.pinned,
-      required this.pinnedChanged});
+  Trainers({
+    super.key,
+    required this.brandId,
+    required this.numTrainers,
+  });
 
   @override
   _Trainers createState() => _Trainers();

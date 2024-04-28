@@ -33,15 +33,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 class Clients extends StatefulWidget {
   String brandId;
   int numClients;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
-  Clients(
-      {super.key,
-      required this.brandId,
-      required this.numClients,
-      required this.pinned,
-      required this.pinnedChanged});
+  Clients({
+    super.key,
+    required this.brandId,
+    required this.numClients,
+  });
 
   @override
   _Clients createState() => _Clients();

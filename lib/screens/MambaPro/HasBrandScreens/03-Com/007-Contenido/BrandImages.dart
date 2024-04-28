@@ -22,15 +22,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BrandImages extends StatefulWidget {
+  
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
   BrandImages(
       {super.key,
-      required this.brandId,
-      required this.pinned,
-      required this.pinnedChanged});
+      required this.brandId,});
 
   @override
   _BrandImagesState createState() => _BrandImagesState();

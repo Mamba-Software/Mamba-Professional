@@ -27,14 +27,11 @@ import 'package:mamba/commons/managers/language_manager.dart';
 
 class BonosPro extends StatefulWidget {
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
-  BonosPro(
-      {super.key,
-      required this.brandId,
-      required this.pinned,
-      required this.pinnedChanged});
+  BonosPro({
+    super.key,
+    required this.brandId,
+  });
 
   @override
   _BonosProState createState() => _BonosProState();

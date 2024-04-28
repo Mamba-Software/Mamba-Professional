@@ -19,14 +19,12 @@ import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription
 class BrandSubscription extends StatefulWidget {
   Locale? locale;
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
-  BrandSubscription(
-      {super.key,
-      this.locale,
-      required this.brandId,
-      required this.pinned,
-      required this.pinnedChanged});
+  
+  BrandSubscription({
+    super.key,
+    this.locale,
+    required this.brandId,
+  });
 
   @override
   _BrandInfoState createState() => _BrandInfoState();

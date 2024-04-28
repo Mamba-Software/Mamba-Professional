@@ -38,17 +38,13 @@ class BrandCalendarWidget extends StatefulWidget {
   DateTime? dateTime;
   CalendarView? calendarView;
   bool? onlyView;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
   BrandCalendarWidget(
       {super.key,
       required this.brandId,
       this.dateTime,
       this.calendarView,
-      this.onlyView,
-      required this.pinned,
-      required this.pinnedChanged});
+      this.onlyView,});
 
   @override
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();

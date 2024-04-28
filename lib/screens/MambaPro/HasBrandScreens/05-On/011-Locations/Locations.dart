@@ -25,15 +25,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:uuid/uuid.dart';
 
 class Locations extends StatefulWidget {
+  
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
   Locations(
       {super.key,
-      required this.brandId,
-      required this.pinned,
-      required this.pinnedChanged});
+      required this.brandId,});
 
   @override
   _LocationsState createState() => _LocationsState();
