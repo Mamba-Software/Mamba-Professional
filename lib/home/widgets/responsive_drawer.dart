@@ -37,24 +37,33 @@ class ResponsiveDrawer extends StatelessWidget with PlatformMixin {
               child: Column(
                 children: [
                   // Header
-                  Header(
-                    height: context.height * 0.25,
+                  Column(
+                    children: [
+                      Header(
+                        height: context.height * 0.25,
+                      ),
+                      const Divider(
+                        color: AppColors.grey,
+                        thickness: 0,
+                        height: 1,
+                      ),
+                    ],
                   ),
-                  const Divider(
-                    color: AppColors.grey,
-                    thickness: 0,
-                    height: 1,
-                  ),
+
                   // Body
                   const Body(),
                   // Footer
-                  const Divider(
-                    color: AppColors.grey,
-                    thickness: 0,
-                    height: 1,
-                  ),
-                  Footer(
-                    height: context.height * 0.1,
+                  Column(
+                    children: [
+                      const Divider(
+                        color: AppColors.grey,
+                        thickness: 0,
+                        height: 1,
+                      ),
+                      Footer(
+                        height: context.height * 0.1,
+                      ),
+                    ],
                   ),
                 ],
               ),
