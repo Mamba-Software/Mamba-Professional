@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 Widget locationLoading(BuildContext context) {

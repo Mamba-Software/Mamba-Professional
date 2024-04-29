@@ -35,15 +35,14 @@ String? timeZoneName;
 
 // Page Controller Mamba Professional
 int pageIndex = 10;
-
-bool isExecuted = false; // Initialize the flag as a member variable.
+// Key Scaffold Mamba Pro
+final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
 
 // Analytics Mix Panel
 Mixpanel? mixpanel;
 
-// Key Scaffold Mamba Pro
-final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
-
+// Chat Things
+bool isExecuted = false; // Initialize the flag as a member variable.
 // Dynamic Links Path
 var dynamicLinkBrandId;
 
@@ -57,7 +56,7 @@ bool setBrandActive() {
       brandIsActive = false;
     }
   }
-  //Se trata de una antigua suscripción
+  // Se trata de una antigua suscripción
   else if (currentBrand.endDatePay != null) {
     if (DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0) {
       brandIsActive = true;

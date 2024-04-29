@@ -10,7 +10,7 @@ import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
@@ -25,15 +25,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:uuid/uuid.dart';
 
 class Locations extends StatefulWidget {
+  
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
   Locations(
       {super.key,
-      required this.brandId,
-      required this.pinned,
-      required this.pinnedChanged});
+      required this.brandId,});
 
   @override
   _LocationsState createState() => _LocationsState();

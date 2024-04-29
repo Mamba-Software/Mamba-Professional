@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CustomCalendarView.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 

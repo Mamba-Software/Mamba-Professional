@@ -12,7 +12,7 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
@@ -35,16 +35,13 @@ import 'package:mamba/commons/managers/language_manager.dart';
 
 class Stats extends StatefulWidget {
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
   int? initIndex;
 
-  Stats(
-      {super.key,
-      required this.brandId,
-      required this.pinned,
-      required this.pinnedChanged,
-      this.initIndex});
+  Stats({
+    super.key,
+    required this.brandId,
+    this.initIndex,
+  });
 
   @override
   _StatsState createState() => _StatsState();
@@ -556,29 +553,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                                   ?.openDrawer()),
                         ),
                       ),
-                      actions: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              right: MediaQuery.of(context).size.width * 0.01),
-                          child: IconButton(
-                            icon: Icon(
-                              widget.pinned
-                                  ? Icons.push_pin
-                                  : Icons.push_pin_outlined,
-                              color: widget.pinned
-                                  ? AppColors.red
-                                  : AppColors.white.withOpacity(0.5),
-                              size: MediaQuery.of(context).size.width * 0.06,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                widget.pinned = !widget.pinned;
-                              });
-                              widget.pinnedChanged(widget.pinned);
-                            },
-                          ),
-                        ),
-                      ],
                     ),
                     SliverPersistentHeader(
                       delegate: _SliverAppBarDelegateSecond(

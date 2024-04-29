@@ -9,7 +9,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/Loc
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/AddressSearch.dart';
 import 'package:maps_launcher/maps_launcher.dart';
@@ -38,7 +38,8 @@ class LocationImageTile extends StatefulWidget {
   _LocationImageTileState createState() => _LocationImageTileState();
 }
 
-class _LocationImageTileState extends State<LocationImageTile> with PlatformMixin {
+class _LocationImageTileState extends State<LocationImageTile>
+    with PlatformMixin {
   // Boolean Loading
   bool isLoading = true;
   // Acceso a Base de Datos

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/app/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 
 // Loading View Widget which displays a Circular Progress indicator with the Mamba "M" inside.
 class SplashScreenView extends StatefulWidget {

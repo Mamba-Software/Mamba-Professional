@@ -13,7 +13,7 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';

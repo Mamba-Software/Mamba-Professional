@@ -6,7 +6,7 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';

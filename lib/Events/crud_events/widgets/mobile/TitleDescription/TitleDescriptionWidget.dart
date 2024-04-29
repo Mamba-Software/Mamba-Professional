@@ -4,7 +4,7 @@ import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 
 class TitleDescriptionWidget extends StatefulWidget {
   const TitleDescriptionWidget({super.key});

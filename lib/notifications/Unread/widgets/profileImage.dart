@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 
 Widget profileImage(BuildContext context) {

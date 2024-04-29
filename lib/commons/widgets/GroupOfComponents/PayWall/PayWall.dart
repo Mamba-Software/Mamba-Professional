@@ -22,7 +22,7 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Subscription.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
@@ -344,7 +344,7 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
                   Navigator.pushAndRemoveUntil(
                     context,
                     CupertinoPageRoute<void>(
-                      builder: (context) => const BrandScreen(),
+                      builder: (context) => BrandScreen(),
                       settings: const RouteSettings(name: 'BrandScreen'),
                     ),
                     (_) => false,

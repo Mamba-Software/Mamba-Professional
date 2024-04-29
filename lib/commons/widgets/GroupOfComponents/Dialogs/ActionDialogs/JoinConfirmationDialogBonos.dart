@@ -9,7 +9,7 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Condition.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';

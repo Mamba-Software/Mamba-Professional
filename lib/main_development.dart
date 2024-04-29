@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:mamba/app/bootstrap.dart';
-import 'package:mamba/app/firebase/firebase_options_development.dart';
+import 'package:mamba/commons/firebase/firebase_options_development.dart';
 import 'package:mamba/commons/constants/constants.dart';
 
 Future<void> main() async {

@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/commons/widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 TextEditingController startTimeController = TextEditingController();

@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'package:mamba/app/styles/AppColors.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

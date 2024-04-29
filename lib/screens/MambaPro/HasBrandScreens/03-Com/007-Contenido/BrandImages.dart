@@ -8,7 +8,7 @@ import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/data/Models/ImageObject.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Images/ImageUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
@@ -22,15 +22,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BrandImages extends StatefulWidget {
+  
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
   BrandImages(
       {super.key,
-      required this.brandId,
-      required this.pinned,
-      required this.pinnedChanged});
+      required this.brandId,});
 
   @override
   _BrandImagesState createState() => _BrandImagesState();

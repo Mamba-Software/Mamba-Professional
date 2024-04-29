@@ -11,7 +11,7 @@ import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/user/chat/Chat.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/commons/widgets/Components/Badges/BetaBadge.dart';
@@ -33,15 +33,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 class Clients extends StatefulWidget {
   String brandId;
   int numClients;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
-  Clients(
-      {super.key,
-      required this.brandId,
-      required this.numClients,
-      required this.pinned,
-      required this.pinnedChanged});
+  Clients({
+    super.key,
+    required this.brandId,
+    required this.numClients,
+  });
 
   @override
   _Clients createState() => _Clients();

@@ -13,7 +13,7 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Badges/BetaBadge.dart';
@@ -40,14 +40,11 @@ import 'package:mamba/stripe/views/StripeOnboarding.dart';
 class BrandInfo extends StatefulWidget {
   Locale? locale;
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
-  BrandInfo(
-      {super.key,
-      this.locale,
-      required this.brandId,
-      required this.pinned,
-      required this.pinnedChanged});
+  BrandInfo({
+    super.key,
+    this.locale,
+    required this.brandId,
+  });
 
   @override
   _BrandInfoState createState() => _BrandInfoState();

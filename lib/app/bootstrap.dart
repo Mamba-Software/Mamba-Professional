@@ -3,43 +3,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mamba/analytics/data/analytics_repository.dart';
-import 'package:mamba/app/router/router.dart';
-import 'package:mamba/auth/bloc/auth_bloc.dart';
-import 'package:mamba/auth/data/auth_repository.dart';
-import 'package:mamba/brand/bloc/brand_bloc.dart';
-import 'package:mamba/brand/data/brand_repository.dart';
-import 'package:mamba/commons/managers/theme_manager.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/app/app.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
-import 'package:mamba/auth/cubit/AuthCubit.dart';
-import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba/events/cubit/BrandEventsCubit.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
-import 'package:mamba/popups/cubit/popups_cubit.dart';
-import 'package:mamba/popups/views/popup_manager.dart';
-import 'package:mamba/settings/data/firebase_settings_service.dart';
-import 'package:mamba/settings/data/hive_settings_service.dart';
-import 'package:mamba/settings/data/settings_repository.dart';
-import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
-import 'package:mamba/snackbar/views/snackbar_manager.dart';
-import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
-import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
-import 'package:mamba/user/bloc/user_bloc.dart';
-import 'package:mamba/user/data/firebase_user_repository.dart';
-import 'package:mamba/user/data/user_repository.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
@@ -103,6 +76,8 @@ class Bootstrap with PlatformMixin {
           // Firebase Crashlytics on Explicitly Caught Exceptions
           FirebaseCrashlytics.instance.recordError(error, stackTrace);
         }
+        print("Error:");
+        print(error);
       },
     );
   }

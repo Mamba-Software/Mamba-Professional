@@ -12,7 +12,7 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/user/chat/Chat.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Badges/BetaBadge.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
@@ -32,15 +32,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 class Trainers extends StatefulWidget {
   String brandId;
   int numTrainers;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
-  Trainers(
-      {super.key,
-      required this.brandId,
-      required this.numTrainers,
-      required this.pinned,
-      required this.pinnedChanged});
+  Trainers({
+    super.key,
+    required this.brandId,
+    required this.numTrainers,
+  });
 
   @override
   _Trainers createState() => _Trainers();

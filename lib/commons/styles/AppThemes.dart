@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba/app/styles/AppColors.dart';
-import 'package:mamba/app/styles/AppThemeData.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppThemeData.dart';
 import 'package:mamba/commons/constants/constants.dart';
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.

@@ -18,7 +18,7 @@ import 'package:mamba/events/crud_events/views/mobile/AddorEdtiEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
 import 'package:mamba/events/cubit/BrandEventsCubit.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
@@ -38,23 +38,20 @@ class BrandCalendarWidget extends StatefulWidget {
   DateTime? dateTime;
   CalendarView? calendarView;
   bool? onlyView;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
   BrandCalendarWidget(
       {super.key,
       required this.brandId,
       this.dateTime,
       this.calendarView,
-      this.onlyView,
-      required this.pinned,
-      required this.pinnedChanged});
+      this.onlyView,});
 
   @override
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
 }
 
-class _BrandCalendarWidgetState extends State<BrandCalendarWidget> with PlatformMixin {
+class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
+    with PlatformMixin {
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;

@@ -22,6 +22,8 @@ class SettingsRepository {
   Future<void> setWhatsNewStatus(bool whatsNew) async {}
 
   Future<bool> getWhatsNewStatus() async {
+    // To Do: Remove This
+    return true;
     return await _hiveService.getWhatsNewStatus();
   }
 

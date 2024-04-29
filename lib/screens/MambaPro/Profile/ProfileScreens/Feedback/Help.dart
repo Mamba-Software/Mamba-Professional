@@ -4,7 +4,7 @@ import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/data/DataService/FeedBack/FeedbackDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/app/styles/AppColors.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'ReportBug.dart';

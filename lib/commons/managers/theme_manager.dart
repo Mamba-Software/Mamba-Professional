@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba/app/styles/AppThemes.dart';
+import 'package:mamba/commons/styles/AppThemes.dart';
 import 'package:mamba/commons/mixins/platform.dart'; // Ensure correct path
 
 class ThemeState extends Equatable {
@@ -29,10 +29,11 @@ class ThemeManager extends Cubit<ThemeState> with PlatformMixin {
           ),
         );
 
-  bool get isDarkMode => state.isDarkMode;  
+  bool get isDarkMode => state.isDarkMode;
 
   void toggleTheme(bool isDark) {
-    ThemeData themeData = isDark ? appThemes.darkTheme() : appThemes.lightTheme();
+    ThemeData themeData =
+        isDark ? appThemes.darkTheme() : appThemes.lightTheme();
     emit(
       ThemeState(
         isDarkMode: isDark,
@@ -42,7 +43,9 @@ class ThemeManager extends Cubit<ThemeState> with PlatformMixin {
   }
 
   void personalizeAccentColor(Color highlightColor) {
-    ThemeData themeData = state.isDarkMode ? appThemes.darkTheme(highlightColor) : appThemes.lightTheme(highlightColor);
+    ThemeData themeData = state.isDarkMode
+        ? appThemes.darkTheme(highlightColor)
+        : appThemes.lightTheme(highlightColor);
     emit(
       ThemeState(
         isDarkMode: state.isDarkMode,
@@ -62,5 +65,4 @@ class ThemeManager extends Cubit<ThemeState> with PlatformMixin {
     }    
   }
   */
-  
 }
