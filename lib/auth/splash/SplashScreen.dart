@@ -115,8 +115,8 @@ class _SplashScreenState extends State<SplashScreen> {
       if (hasBrand) {
         Future.delayed(delayedRedirectionTime, () {
           // Assuming you are using go_router and context.goNamed is available
-          context.goNamed(OnboardingScreen
-              .routeName); // Replace 'onboarding' with your route name
+          /* context.goNamed(OnboardingScreen
+              .routeName);*/ // Replace 'onboarding' with your route name
         });
       } else {
         Future.delayed(delayedRedirectionTime, () {

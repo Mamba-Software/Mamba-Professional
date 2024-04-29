@@ -30,7 +30,6 @@ import 'package:mamba/user/data/firebase_user_repository.dart';
 import 'package:mamba/user/data/user_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 class App extends StatelessWidget {
   App({super.key});
 
@@ -43,8 +42,10 @@ class App extends StatelessWidget {
     final userBloc = UserBloc(userRepository: userRepository);
     final brandBloc =
         BrandBloc(brandRepository: brandRepository, userBloc: userBloc);
-    final authBloc =
-        AuthBloc(authRepository: authRepository, userBloc: userBloc);
+    final authBloc = AuthBloc(
+        authRepository: authRepository,
+        userBloc: userBloc,
+        brandBloc: brandBloc);
 
     return MultiRepositoryProvider(
       providers: [
@@ -94,16 +95,15 @@ class App extends StatelessWidget {
             create: (context) => CrudEventCubit(),
           ),
           BlocProvider<UnreadNotChatsCubit>(
-            create: (context) => UnreadNotChatsCubit(context.read<AuthCubit>()),
+            create: (context) => UnreadNotChatsCubit(userBloc),
             lazy: false,
           ),
           BlocProvider<BrandEventsCubit>(
-            create: (context) => BrandEventsCubit(context.read<AuthCubit>()),
+            create: (context) => BrandEventsCubit(brandBloc),
             lazy: false,
           ),
           BlocProvider<BrandSuscriptionCubit>(
-            create: (context) =>
-                BrandSuscriptionCubit(context.read<AuthCubit>()),
+            create: (context) => BrandSuscriptionCubit(brandBloc),
             lazy: false,
           ),
           BlocProvider(
