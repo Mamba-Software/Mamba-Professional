@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -17,13 +18,13 @@ part 'BrandSuscriptionState.dart';
 
 class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState>
     with PlatformMixin {
-  BrandSuscriptionCubit(final cubitAuth)
+  BrandSuscriptionCubit(final BrandBloc brandBloc)
       : super(const BrandSuscriptionInitial()) {
     try {
       initialize();
-      cubitAuth.stream.distinct().listen((state) {
+      brandBloc.stream.distinct().listen((state) {
         // Handle the state change
-        if (state is AuthUserBrand) {
+        if (state.brand.id != null && state.brand.id != '') {
           // Listen to Subscription Change
           getBrandSubscriptionStream(currentBrand.id!).listen(
             (querySnapshot) async {

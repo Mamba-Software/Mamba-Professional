@@ -13,4 +13,8 @@ class BrandRepository {
   Stream<Brand> getBrandStream({required String uid}) {
     return _firebaseService.geBrandStream(uid: uid);
   }
+
+  Future<bool> hasBrand({required String userId}) {
+    return _firebaseService.hasBrand(userId: userId);
+  }
 }

@@ -34,6 +34,8 @@ class Brand {
   int? gracePeriod;
   int? maxCanWeek;
   int? paymentTerms;
+  bool brandActive = false;
+  bool avoidPayWall = false;
 
   //STRIPE
   String? stripeAccountId;
@@ -85,6 +87,8 @@ class Brand {
     this.isVerified = false,
     this.balance,
     this.stripeActivated,
+    this.brandActive = false,
+    this.avoidPayWall = false,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -288,6 +292,8 @@ class Brand {
     stripeAccountId = brand.stripeAccountId;
     balance = brand.balance;
     stripeActivated = brand.stripeActivated;
+    brandActive = brand.brandActive;
+    avoidPayWall = brand.avoidPayWall;
   }
 
   // Requests

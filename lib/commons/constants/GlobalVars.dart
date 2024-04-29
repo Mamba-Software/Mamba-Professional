@@ -48,7 +48,7 @@ final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
 var dynamicLinkBrandId;
 
 //JMF 18042023 REVENUECAT
-void setBrandActive() {
+bool setBrandActive() {
   //Se trata de revenueCat
   if (currentBrand.subscription != null) {
     if (currentBrand.subscription?['brandIsActive'] == true) {
@@ -67,6 +67,7 @@ void setBrandActive() {
   } else {
     brandIsActive = false;
   }
+  return true;
 }
 
 Future<void> navigateToPayWall(BuildContext context,

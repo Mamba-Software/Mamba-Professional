@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
@@ -11,10 +12,11 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 part 'BrandEventsState.dart';
 
 class BrandEventsCubit extends Cubit<BrandEventsState> {
-  BrandEventsCubit(final cubitAuth) : super(const BrandEventsInitial()) {
-    cubitAuth.stream.distinct().listen((state) async {
+  BrandEventsCubit(final BrandBloc brandBloc)
+      : super(const BrandEventsInitial()) {
+    brandBloc.stream.distinct().listen((state) async {
       // Handle the state change
-      if (state is AuthUserBrand) {
+      if (state.brand.id != null && state.brand.id != '') {
         if (isStreamActive) _subscription.cancel();
         // Set the State to Loading
         emit(const BrandEventsLoading());

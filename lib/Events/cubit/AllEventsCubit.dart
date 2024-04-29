@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Usuario.dart';
@@ -15,16 +16,16 @@ class AllEventsCubit extends Cubit<List<Event>> {
   late StreamSubscription<QuerySnapshot> _streamAllEvents;
   bool isStreamActive = false;
 
-  AllEventsCubit(final cubitAuth) : super([]) {
+  AllEventsCubit(final BrandBloc brandBloc) : super([]) {
     emit([]);
     Stream<QuerySnapshot> getBrandEventsStream(String brandId) {
       return _eventDataService.getBrandEventsStream(currentBrand.id!);
     }
 
     try {
-      cubitAuth.stream.distinct().listen((state) {
+      brandBloc.stream.distinct().listen((state) {
         // Handle the state change
-        if (state is AuthUserBrand) {
+        if (state.brand.id != null && state.brand.id != '') {
           if (isStreamActive) _streamAllEvents.cancel();
           isStreamActive = true;
           _streamAllEvents = getBrandEventsStream(currentBrand.id!)

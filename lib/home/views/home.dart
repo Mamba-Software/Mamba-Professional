@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/Login.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -270,21 +271,25 @@ class _HomePageBodyState extends State<HomePageBody> {
                 color: AppColors.white,
               ),
             )
-          : BlocSelector<AuthCubit, AuthState, AuthState>(
+          : BlocSelector<BrandBloc, BrandState, BrandState>(
               selector: (state) {
                 return state;
               },
               builder: (context, state) {
-                if (state is AuthUserBrand) {
-                  return !brandIsActive
-                      ? currentUser.id == currentBrand.adminID
-                          ? PayWall(
-                              brandId: currentBrand.id!,
-                              comesFromInitPage: true)
-                          : const BrandScreen()
-                      : const BrandScreen();
-                } else if (state is AuthUserNoBrand) {
-                  return const NoBrandScreen();
+                if (state.brand.id != null && state.brand.id! != '') {
+                  if (state.brand.id == 'none') {
+                    return const NoBrandScreen();
+                  } else if (!state.brand.brandActive &&
+                      currentUser.id == currentBrand.adminID) {
+                    if (state.brand.avoidPayWall) {
+                      return const BrandScreen();
+                    } else {
+                      return PayWall(
+                          brandId: currentBrand.id!, comesFromInitPage: true);
+                    }
+                  } else {
+                    return const BrandScreen();
+                  }
                 } else {
                   return Scaffold(
                     backgroundColor: AppColors.black,
@@ -295,6 +300,18 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ),
                   );
                 }
+                /*if (state is AuthUserBrand) {
+                  return !brandIsActive
+                      ? currentUser.id == currentBrand.adminID
+                          ? PayWall(
+                              brandId: currentBrand.id!,
+                              comesFromInitPage: true)
+                          : const BrandScreen()
+                      : const BrandScreen();
+                } else if (state is AuthUserNoBrand) {
+                  return const NoBrandScreen();
+                } else {}
+              },*/
               },
             ),
     ); // The method to build widget based on AuthState

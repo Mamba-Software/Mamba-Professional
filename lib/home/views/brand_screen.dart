@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
@@ -35,6 +36,13 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
 class BrandScreen extends StatefulWidget {
+  static String routeName = '/brand';
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: '/brand',
+    builder: (BuildContext context, GoRouterState state) => const BrandScreen(),
+  );
+
   const BrandScreen({super.key});
 
   @override

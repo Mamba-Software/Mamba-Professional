@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/auth/models/auth_user.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:mamba/user/models/users/user.dart';
 
@@ -13,9 +14,13 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
-  AuthBloc({required AuthRepository authRepository, required UserBloc userBloc})
+  AuthBloc(
+      {required AuthRepository authRepository,
+      required UserBloc userBloc,
+      required BrandBloc brandBloc})
       : _authRepository = authRepository,
         _userBloc = userBloc,
+        _brandBloc = brandBloc,
         super(const AuthStateS.unknown()) {
     debugPrint('auth');
     on<AuthUserChanged>(_onUserChanged);
@@ -26,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
   }
 
   final UserBloc _userBloc;
+  final BrandBloc _brandBloc;
   //final AnalyticsRepository _analyticsRepository;
   final AuthRepository _authRepository;
   late StreamSubscription<AuthUser> _userSubscription;
@@ -41,9 +47,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
     if (event.user == AuthUser.empty) {
       emit(const AuthStateS.unauthenticated());
       _userBloc.resetUser();
+      _brandBloc.resetBrand();
     } else {
-      emit(AuthStateS.authenticated(event.user));
-      _userBloc.initUser(userId: event.user.id);
+      if (event.user.error) {
+        _authRepository.logOut();
+        emit(const AuthStateS.unauthenticated());
+        _userBloc.resetUser();
+        _brandBloc.resetBrand();
+      } else {
+        emit(AuthStateS.authenticated(event.user));
+        _userBloc.initUser(userId: event.user.id);
+      }
     }
   }
 

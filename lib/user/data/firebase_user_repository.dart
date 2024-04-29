@@ -91,9 +91,15 @@ class FirebaseUserRepository implements UserRepository {
   }
 
   @override
-  Future<bool> hasToCompleteProfile({required String uid}) {
-    // TODO: implement hasToCompleteProfile
-    throw UnimplementedError();
+  Future<bool> hasToCompleteProfile({required String uid}) async {
+    final DocumentSnapshot doc = await _usersCollection.doc(uid).get();
+    if (doc.exists &&
+        doc.data() != null &&
+        (doc.data()! as Map).containsKey('isFirst')) {
+      return doc['isFirst'] as bool;
+    } else {
+      return true;
+    }
   }
 
   @override

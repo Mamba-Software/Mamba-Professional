@@ -19,6 +19,7 @@ class UserBloc extends Cubit<UserState> {
     required UserRepository userRepository,
     //required ActivityRepository activityRepository, TODO
   })  : userId = '',
+        brandId = '',
         //_analyticsRepository = analyticsRepository,
         _userRepository = userRepository,
         //_activityRepository = activityRepository,
@@ -30,6 +31,7 @@ class UserBloc extends Cubit<UserState> {
   final _brandDataService = BrandDataService();
   //final ActivityRepository _activityRepository;
   String userId;
+  String brandId;
   StreamSubscription<Usuario>? _userSubscription;
   //StreamSubscription<List<GroupPreview>>? _groupsSubscription;
   //StreamSubscription<List<ActivityPreview>>? _activitiesSubscription;
@@ -41,38 +43,25 @@ class UserBloc extends Cubit<UserState> {
         if (state.user != user && user != AuthUser.empty) {
           List<Brand> brands =
               await _brandDataService.getAllBrandsFromUser(userId);
-          user.brandID = brands[0].id!;
+          if (brands.isNotEmpty) {
+            user.brandID = brands[0].id!;
+            currentUser.setBrandList = brands;
+            getBrandUser(userId, user.brandID!);
+          } else {
+            user.brandID = 'none';
+          }
+          currentUser.setBasicData =
+              await _userDataService.getUserDetails(userId);
+
+          brandId = user.brandID!;
           emit(state.copyWith(user: user));
         }
       },
     );
   }
 
-  void getUserAndBrand(String userId) async {
-    // Get User Main Data
-    currentUser.setBasicData = await _userDataService.getUserDetails(userId);
-    // Get User Brand
-    List<Brand> brands = await _brandDataService.getAllBrandsFromUser(userId);
-    currentUser.setBrandList = brands;
-    if (currentUser.brandsList.isNotEmpty) {
-      // Setting the Brand to the User
-      hasBrand = true;
-      Brand brand = currentUser.brandsList[0];
-      currentBrand.setBasicData =
-          await _brandDataService.getBrandDetails(brand.id!);
-      currentBrand.setUserList =
-          await _brandDataService.getBrandUsers(brand.id!);
-
-      // Get Role in Brand
-      int role =
-          await _brandDataService.getUserBrandRole(brand.id!, currentUser.id!);
-      currentUser.setBrandRole = role;
-      if (currentUser.id == currentBrand.adminID) {
-        Purchases.logIn(currentBrand.id!);
-      }
-      mixpanel!.getPeople().set("Brands Roles", [role]);
-      setBrandActive();
-    }
+  Future<void> getBrandUser(String userId, String brandId) async {
+    // Get Role in Brand
   }
 
   void resetUser() {

@@ -10,6 +10,8 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/auth/splash/SplashScreenView.dart';
 import 'package:mamba/admin/Admin.dart';
 import 'package:mamba/home/views/home.dart';
+import 'package:mamba/user/data/user_repository.dart';
+import 'package:mamba/brand/data/brand_repository.dart';
 
 class SplashScreen extends StatefulWidget {
   static String routeName = '/splash';
@@ -30,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
   // Data Base Access
   final _libraryDataService = LibraryDataService();
 
-  static const delayedRedirectionTime = Duration(milliseconds: 300);
+  static const delayedRedirectionTime = Duration(milliseconds: 3000);
 
   @override
   initState() {
@@ -51,7 +53,10 @@ class _SplashScreenState extends State<SplashScreen> {
           switch (state.status) {
             case AuthStatus.authenticated:
               //context.goNamed(HomePage.routeName); //NOT WORKING
-              context.goNamed(HomePage.routeName);
+              userAutenticatedRedirection(
+                context: context,
+                userId: state.user.id,
+              );
 
               /*if (checkIfAppIsActive(context)) {
               userAutenticatedRedirection(context: context, userId: state.user.id);
@@ -97,5 +102,37 @@ class _SplashScreenState extends State<SplashScreen> {
         },
       ),*/
         );
+  }
+
+  Future<void> userAutenticatedRedirection({
+    required BuildContext context,
+    required String userId,
+  }) async {
+    final hasToCompleteProfile =
+        await RepositoryProvider.of<UserRepository>(context)
+            .hasToCompleteProfile(uid: userId);
+    if (hasToCompleteProfile) {
+      final hasBrand = await RepositoryProvider.of<BrandRepository>(context)
+          .hasBrand(userId: userId);
+      if (hasBrand) {
+        Future.delayed(delayedRedirectionTime, () {
+          // Assuming you are using go_router and context.goNamed is available
+          context.goNamed(OnboardingScreen
+              .routeName); // Replace 'onboarding' with your route name
+        });
+      } else {
+        Future.delayed(delayedRedirectionTime, () {
+          // Assuming you are using go_router and context.goNamed is available
+          context.goNamed(
+              HomePage.routeName); // Replace 'onboarding' with your route name
+        });
+      }
+    } else {
+      Future.delayed(delayedRedirectionTime, () {
+        // Assuming you are using go_router and context.goNamed is available
+        context.goNamed(
+            HomePage.routeName); // Replace 'onboarding' with your route name
+      });
+    }
   }
 }

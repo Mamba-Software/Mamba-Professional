@@ -73,7 +73,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
       await _authBloc.checkUserType(checkTrainer: true);
       mixpanel!.track('mamba_login_completed');
-      emit(const AuthLoaded());
+      emit(const AuthInitial());
     } on EmailNotVerified {
       mixpanel!.track('mamba_login_validate_email_error');
       emit(const AuthError(AuthErrorEnum.validateError));
@@ -88,113 +88,6 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthError(AuthErrorEnum.wrongAppUser));
     } on Exception {
       emit(const AuthError(AuthErrorEnum.loginError));
-    }
-  }
-
-  void _signInWithGoogle_old(BuildContext context) async {
-    try {
-      final user = await googleSignIn.signIn();
-      if (user == null) {
-        emit(const AuthError(AuthErrorEnum.loginError));
-      } else {
-        final googleAuth = await user.authentication;
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-        UserCredential authResult =
-            await FirebaseAuth.instance.signInWithCredential(credential);
-        bool userExists =
-            await _userDataService.checkIfUserExists(authResult.user!.uid);
-        if (userExists) {
-          // Check it is no Trainer
-          bool? isTrainer;
-          try {
-            isTrainer = await _userDataService
-                .checkIfUserIsTrainer(authResult.user!.uid);
-            if (isTrainer != null && isTrainer == false) {
-              await _userDataService.signOut();
-              await googleSignIn.signOut();
-              emit(const AuthError(AuthErrorEnum.wrongAppUser));
-            } else {
-              mixpanel!.track('mamba_google_login_completed');
-              emit(const AuthLoaded());
-            }
-          } catch (e) {
-            emit(const AuthError(AuthErrorEnum.loginError));
-          }
-        } else {
-          // Create an account and a user for this new person from google
-          bool result = await _userDataService.addUserGoogleOrApple(
-              authResult, Localizations.localeOf(context).languageCode);
-          if (result) {
-            mixpanel!.track('mamba_google_register_completed');
-            emit(const AuthLoaded());
-          } else {
-            emit(const AuthError(AuthErrorEnum.loginError));
-          }
-        }
-      }
-    } catch (e) {
-      emit(const AuthError(AuthErrorEnum.registerError));
-    }
-  }
-
-  void _signInWithApple_old(BuildContext context) async {
-    try {
-      final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-      );
-      final oAuthProvider = OAuthProvider('apple.com');
-      final oAuthCredential = oAuthProvider.credential(
-        idToken: credential.identityToken,
-        accessToken: credential.authorizationCode,
-      );
-      UserCredential authResult =
-          await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
-      String? fullName;
-      if (credential.givenName != null && credential.familyName != null) {
-        fullName = '${credential.givenName} ${credential.familyName}';
-      }
-      if (fullName != null) {
-        await authResult.user!.updateDisplayName(fullName);
-        await authResult.user!.reload();
-      }
-      bool userExists =
-          await _userDataService.checkIfUserExists(authResult.user!.uid);
-      if (userExists) {
-        // Check it is no Trainer
-        bool? isTrainer;
-        try {
-          isTrainer =
-              await _userDataService.checkIfUserIsTrainer(authResult.user!.uid);
-          if (isTrainer != null && isTrainer == false) {
-            await _userDataService.signOut();
-            emit(const AuthError(AuthErrorEnum.wrongAppUser));
-          } else {
-            mixpanel!.track('mamba_apple_login_completed');
-            emit(const AuthLoaded());
-          }
-        } catch (e) {
-          emit(const AuthError(AuthErrorEnum.loginError));
-        }
-      } else {
-        // Create an account and a user for this new person from Apple
-        bool result = await _userDataService.addUserGoogleOrApple(
-            authResult, Localizations.localeOf(context).languageCode);
-        if (result) {
-          mixpanel!.track('mamba_apple_register_completed');
-          emit(const AuthLoaded());
-        } else {
-          emit(const AuthError(AuthErrorEnum.loginError));
-        }
-      }
-    } catch (e) {
-      print(e.toString());
-      emit(const AuthError(AuthErrorEnum.registerError));
     }
   }
 
@@ -238,12 +131,13 @@ class AuthCubit extends Cubit<AuthState> {
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.unfocus();
         }
-        var result = await _userDataService.resetPassword(email);
-        if (result == 1) {
+        try {
+          await _authBloc.resetPassword(email: email);
           emit(AuthCorrectForget(email: email));
-        } else {
+        } on ResetPasswordFailure {
           emit(const AuthError(AuthErrorEnum.forgotLoginError));
         }
+        //var result = await _userDataService.resetPassword(email);
       } else {
         emit(const AuthError(AuthErrorEnum.forgotValidateEmailError));
       }
@@ -261,7 +155,7 @@ class AuthCubit extends Cubit<AuthState> {
       var result = await _settingsDataService.checkIfIsMaintenance();
       if (result) {
         await Future.delayed(const Duration(milliseconds: 1500));
-        emit(const AuthMaintenance());
+        //AuthMaintenance
       } else {
         // 2.1 User is logged in.
         // 3. We are in PROD or STG. We checked if email has been verified.
@@ -288,27 +182,27 @@ class AuthCubit extends Cubit<AuthState> {
           });
           // 7. Travel to Corresponding Screen
           if (currentUser.isAdmin!) {
-            emit(const AuthAdmin());
+            //AuthAdmin
           } else {
             if (!(currentUser.isFirst!)) {
               _sendMixPanelDataUsers();
               if (hasBrand) {
-                emit(AuthUserBrand(currentBrand));
+                // emit(AuthUserBrand(currentBrand));
               } else {
-                emit(const AuthUserNoBrand());
+                // emit(const AuthUserNoBrand());
               }
             } else {
-              emit(const AuthNewUser());
+              //emit(const AuthNewUser());
             }
           }
         } else {
           // 3.1.2 Email has NOT been verified. Go back to Login.
-          emit(const AuthNotLoged());
+          //emit(const AuthNotLoged());
         }
       }
     } else {
       // 2.2 User is logged NOT in. We travel to the Login
-      emit(const AuthNotLoged());
+      //emit(const AuthNotLoged());
     }
   }
 
@@ -319,7 +213,7 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       _userDataService.signOut();
       await Future.delayed(const Duration(seconds: 1));
-      emit(const AuthNotLoged());
+      //emit(const AuthNotLoged());
     }
 
     // Set App Locale To User Preferred Language - TO Do once user cubit is implemented
@@ -381,7 +275,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void logOut() {
-    emit(const AuthLogOut());
+    //emit(const AuthLogOut());
   }
 
   bool checkIfIsLoading(AuthProviderEnum provider) {

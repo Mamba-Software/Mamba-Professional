@@ -3,7 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
@@ -38,7 +41,7 @@ class PayWall extends StatefulWidget {
   _PayWallState createState() => _PayWallState();
 }
 
-class _PayWallState extends State<PayWall> with PlatformMixin{
+class _PayWallState extends State<PayWall> with PlatformMixin {
   // App Bar and Scroll View
   ScrollController _scrollController = ScrollController();
   bool appBarExpanded = false;
@@ -334,6 +337,10 @@ class _PayWallState extends State<PayWall> with PlatformMixin{
                 mixpanel!.track('brand_leaves_paywallscreen');
                 if (widget.comesFromInitPage != null &&
                     widget.comesFromInitPage == true) {
+                  BlocProvider.of<BrandBloc>(context).avoidPayWall();
+                  setState(() {});
+                  //context.goNamed(BrandScreen.routeName);
+                  /*
                   Navigator.pushAndRemoveUntil(
                     context,
                     CupertinoPageRoute<void>(
@@ -341,7 +348,7 @@ class _PayWallState extends State<PayWall> with PlatformMixin{
                       settings: const RouteSettings(name: 'BrandScreen'),
                     ),
                     (_) => false,
-                  );
+                  );*/
                 } else {
                   Navigator.pop(context);
                 }
