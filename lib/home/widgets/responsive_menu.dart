@@ -39,17 +39,7 @@ class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
                     // Standard Size of a Drawer in Flutter
                     width: 304,
                   ),
-                  Divider(
-                    color: context.theme.dividerColor,
-                    thickness: 1,
-                    height: 1,
-                  ),
                   const Body(),
-                  Divider(
-                    color: context.theme.dividerColor,
-                    thickness: 1,
-                    height: 1,
-                  ),
                   Footer(
                     height: context.height * 0.1,
                     // Standard Size of a Drawer in Flutter
@@ -62,39 +52,38 @@ class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
           );
         } else {
           return Scaffold(
-            backgroundColor: Colors.red,
             body: Row(
+              mainAxisSize: MainAxisSize.max,
               children: [
                 SizedBox(
-                  width: context.width * 0.2,
-                  child: NavigationRail(
-                    extended: true,
-                    useIndicator: true,
-                    backgroundColor: context.theme.scaffoldBackgroundColor,
-                    minWidth: context.width * 0.3,
-                    minExtendedWidth: context.width * 0.3,
-                    elevation: 4,
-                    selectedIndex:
-                        context.read<HomeNavigationManager>().pageIndex,
-                    onDestinationSelected: (int index) {
-                      context.read<HomeNavigationManager>().jumpToIndex(index);
-                    },
-                    indicatorColor: context.colorScheme.secondary,
-                    indicatorShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(borderRadiusSmall))),
-                    selectedLabelTextStyle: context.textTheme.bodyMedium,
-                    unselectedLabelTextStyle: context.textTheme.labelMedium,
-                    leading: Header(
-                      height: context.height * 0.25,
-                      width: context.width * 0.2,
-                    ),
-                    destinations: returnDestinations(context),
-                    trailing: Footer(
-                      height: context.height * 0.1,
-                      // Standard Size of a Drawer in Flutter
-                      width: 304,
-                    ),
+                  width: 304,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: NavigationRail(
+                          extended: true,
+                          backgroundColor:
+                              context.theme.scaffoldBackgroundColor,
+                          minExtendedWidth: 304,
+                          selectedIndex:
+                              context.read<HomeNavigationManager>().pageIndex,
+                          onDestinationSelected: (int index) {
+                            context
+                                .read<HomeNavigationManager>()
+                                .jumpToIndex(index);
+                          },
+                          leading: Header(
+                            height: 200,
+                            width: 304,
+                          ),
+                          destinations: returnDestinations(context),
+                        ),
+                      ),
+                      Footer(
+                        height: 80,
+                        width: 304,
+                      ),
+                    ],
                   ),
                 ),
                 VerticalDivider(

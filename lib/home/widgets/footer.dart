@@ -35,73 +35,92 @@ class Footer extends StatelessWidget with PlatformMixin {
               fontWeight: FontWeight.bold,
             );
             TextStyle labelStyle = context.textTheme.labelMedium!;
-            return suscriptionState.subscription.subscriptionId == "7DAYSTRIAL"
-                ? Container(
-                    height: height,
-                    padding: const EdgeInsets.only(left: 4.0),
-                    child: Center(
-                      child: ListTile(
-                        title: Text(
-                          context.l10n.freeTrial,
-                          style: titleStyle,
-                          textAlign: TextAlign.left,
+            return Column(
+              children: [
+                Divider(
+                  color: context.theme.dividerColor,
+                  thickness: 1,
+                  height: 1,
+                ),
+                suscriptionState.subscription.subscriptionId == "7DAYSTRIAL"
+                    ? Container(
+                        height: height,
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Center(
+                          child: ListTile(
+                            title: Text(
+                              context.l10n.freeTrial,
+                              style: titleStyle,
+                              textAlign: TextAlign.left,
+                            ),
+                            subtitle: Text(
+                              context.l10n
+                                  .freeTrialDaysLeft(difference.toString()),
+                              style: labelStyle,
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                            ),
+                            onTap: () => context
+                                .read<HomeNavigationManager>()
+                                .jumpToPage(HomeNavigationPage.PLAN),
+                          ),
                         ),
-                        subtitle: Text(
-                          context.l10n.freeTrialDaysLeft(difference.toString()),
-                          style: labelStyle,
-                          maxLines: 1,
-                          textAlign: TextAlign.left,
+                      )
+                    : Container(
+                        height: height,
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Center(
+                          child: ListTile(
+                            title: Text(
+                              context.l10n.monthlyPlan,
+                              style: titleStyle,
+                              textAlign: TextAlign.left,
+                            ),
+                            subtitle: Text(
+                              context.l10n
+                                  .monthlyPlanDayRenewal(date.toString()),
+                              style: labelStyle,
+                              textAlign: TextAlign.left,
+                            ),
+                            onTap: () => context
+                                .read<HomeNavigationManager>()
+                                .jumpToPage(HomeNavigationPage.PLAN),
+                          ),
                         ),
-                        onTap: () => context
-                            .read<HomeNavigationManager>()
-                            .jumpToPage(HomeNavigationPage.PLAN),
                       ),
-                    ),
-                  )
-                : Container(
-                    height: height,
-                    padding: const EdgeInsets.only(left: 4.0),
-                    child: Center(
-                      child: ListTile(
-                        title: Text(
-                          context.l10n.monthlyPlan,
-                          style: titleStyle,
-                          textAlign: TextAlign.left,
-                        ),
-                        subtitle: Text(
-                          context.l10n.monthlyPlanDayRenewal(date.toString()),
-                          style: labelStyle,
-                          textAlign: TextAlign.left,
-                        ),
-                        onTap: () => context
-                            .read<HomeNavigationManager>()
-                            .jumpToPage(HomeNavigationPage.PLAN),
-                      ),
-                    ),
-                  );
+              ],
+            );
           case BrandSuscriptionLoadedFalse:
             TextStyle titleStyle = context.textTheme.bodyLarge!.copyWith(
               fontWeight: FontWeight.bold,
             );
             TextStyle labelStyle = context.textTheme.labelMedium!;
-            return Container(
-              height: height,
-              padding: const EdgeInsets.only(left: 4.0),
-              child: Center(
-                child: ListTile(
-                  title: Text(context.l10n.chooseYourPlan,
-                      style: titleStyle,
-                      textAlign: TextAlign.left),
-                  subtitle: Text(
-                    context.l10n.chooseYourPlanDesc,
-                    style: labelStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                  onTap: () => context
-                      .read<HomeNavigationManager>()
-                      .jumpToPage(HomeNavigationPage.PLAN),
+            return Column(
+              children: [
+                Divider(
+                  color: context.theme.dividerColor,
+                  thickness: 1,
+                  height: 1,
                 ),
-              ),
+                Container(
+                  height: height,
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: Center(
+                    child: ListTile(
+                      title: Text(context.l10n.chooseYourPlan,
+                          style: titleStyle, textAlign: TextAlign.left),
+                      subtitle: Text(
+                        context.l10n.chooseYourPlanDesc,
+                        style: labelStyle,
+                        textAlign: TextAlign.left,
+                      ),
+                      onTap: () => context
+                          .read<HomeNavigationManager>()
+                          .jumpToPage(HomeNavigationPage.PLAN),
+                    ),
+                  ),
+                ),
+              ],
             );
           default:
             return Container();

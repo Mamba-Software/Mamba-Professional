@@ -24,10 +24,10 @@ class BrandScreen extends StatefulWidget {
 }
 
 class _BrandScreenState extends State<BrandScreen> {
-  final _pageController = PageController();  
+  final _pageController = PageController();
 
   @override
-  void initState() {    
+  void initState() {
     super.initState();
   }
 
@@ -36,17 +36,21 @@ class _BrandScreenState extends State<BrandScreen> {
     _pageController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<HomeNavigationManager, HomeNavigationManagerState>(
       listener: (BuildContext context, state) {
         // Jump To Correct Home Page
         setState(() {
-          _pageController.jumpToPage(state.pageIndex);  
-        });        
-        // Close Drawer
-        Navigator.of(context).pop();
+          _pageController.jumpToPage(state.pageIndex);
+        });
+        print("navigationDrawerKey.currentState!.isDrawerOpen");
+        print(navigationDrawerKey.currentState!.isDrawerOpen);
+        if (navigationDrawerKey.currentState!.isDrawerOpen) {
+          // Close Drawer
+          Navigator.of(context).pop();
+        }
       },
       child: ResponsiveMenu(
         child: PageView(
