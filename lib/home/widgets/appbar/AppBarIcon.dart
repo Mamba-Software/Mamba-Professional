@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/mixins/platform.dart';
-import 'package:mamba/commons/styles/AppColors.dart';
 
 class AppBarIcon extends StatelessWidget with PlatformMixin {
   IconData icon;

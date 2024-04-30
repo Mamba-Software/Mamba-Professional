@@ -23,7 +23,7 @@ Widget unreadNotifications(BuildContext context) {
           child: Icon(
             Icons.notifications,
             color: AppColors.white,
-            size: iconSizeBig,
+            size: iconSize,
           ),
         ),
       ),

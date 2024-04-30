@@ -15,7 +15,7 @@ Widget askSupport(BuildContext context) {
       child: Icon(
         Icons.help_outline_outlined,
         color: AppColors.white,
-        size: iconSizeBig,
+        size: iconSize,
       ),
     ),
   );

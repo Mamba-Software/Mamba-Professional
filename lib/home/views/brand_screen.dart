@@ -24,7 +24,7 @@ class BrandScreen extends StatefulWidget {
 }
 
 class _BrandScreenState extends State<BrandScreen> {
-  final _pageController = PageController();
+  final _pageController = PageController(initialPage: 1);
 
   @override
   void initState() {

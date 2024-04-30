@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +13,9 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
+import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
@@ -214,6 +218,533 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
     return activeStaff;
   }
 
+  FlexibleSpaceBar returnFlexibleSpaceBar(
+      double height, BrandPurchasesLoaded state) {
+    final brandPurchasesCubit = context.read<BrandPurchasesCubit>();
+    BrandPurchasesLoaded loadedState = state;
+    List<bool> filterByPurchaseStatus = loadedState.filterByPurchaseStatus;
+    List<bool> filterByActivePurchases = loadedState.filterByActivePurchases;
+    List<bool> allFilters = filterByPurchaseStatus + filterByActivePurchases;
+
+    return FlexibleSpaceBar(
+      background: Container(
+        color: AppColors.darkGrey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: height / 2),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    context.l10n.payments,
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          color: AppColors.white,
+                        ),
+                  ),
+                  ClipOval(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Material(
+                        color: allFilters.contains(false)
+                            ? AppColors.white
+                            : Colors.transparent, // Button color
+                        child: InkWell(
+                          splashColor: Theme.of(context)
+                              .colorScheme
+                              .background, // Splash color
+                          onTap: () async {
+                            await showModalBottomSheet<int?>(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20),
+                                ),
+                              ),
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              builder: (BuildContext context) {
+                                return StatefulBuilder(
+                                  builder: (BuildContext context,
+                                      StateSetter setState) {
+                                    final PageController pageController =
+                                        PageController(initialPage: 0);
+                                    ValueNotifier<int> currentPage =
+                                        ValueNotifier(0);
+                                    ValueNotifier<bool> isTypePurchase =
+                                        ValueNotifier(true);
+                                    return FractionallySizedBox(
+                                      heightFactor: 0.33,
+                                      child: SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.5,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.02),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              ValueListenableBuilder<int>(
+                                                valueListenable: currentPage,
+                                                builder:
+                                                    (context, value, child) {
+                                                  return ListTile(
+                                                    title: Text(
+                                                        context.l10n.filterBy,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodySmall,
+                                                        textAlign:
+                                                            TextAlign.left),
+                                                    trailing: TextButton(
+                                                        child: Text(
+                                                            context.l10n.clear,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodySmall),
+                                                        onPressed: () {
+                                                          filterByPurchaseStatus =
+                                                              [
+                                                            true,
+                                                            true,
+                                                            true
+                                                          ];
+                                                          filterByActivePurchases =
+                                                              [true, true];
+                                                          brandPurchasesCubit.filterBy(
+                                                              filterByPurchaseStatus,
+                                                              filterByActivePurchases);
+                                                          Navigator.pop(
+                                                              context);
+                                                        }),
+                                                    dense: true,
+                                                    onTap: value == 0
+                                                        ? null
+                                                        : () {
+                                                            pageController
+                                                                .previousPage(
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                              curve:
+                                                                  Curves.ease,
+                                                            );
+                                                          },
+                                                  );
+                                                },
+                                              ),
+                                              SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.21,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                child: PageView(
+                                                  physics:
+                                                      const NeverScrollableScrollPhysics(),
+                                                  controller: pageController,
+                                                  onPageChanged: (int page) {
+                                                    currentPage.value = page;
+                                                  },
+                                                  children: <Widget>[
+                                                    Column(
+                                                      children: [
+                                                        ListTile(
+                                                          onTap: () {
+                                                            isTypePurchase
+                                                                .value = true;
+                                                            pageController
+                                                                .nextPage(
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                              curve:
+                                                                  Curves.ease,
+                                                            );
+                                                          },
+                                                          title: Text(
+                                                              context
+                                                                  .l10n.state,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodyLarge,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left),
+                                                          subtitle: Text(
+                                                              returnFilteredStatusString(
+                                                                  filterByPurchaseStatus),
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodySmall,
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left),
+                                                          trailing: SizedBox(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.15,
+                                                            child: Center(
+                                                                child: Icon(
+                                                                    Icons
+                                                                        .arrow_forward_ios,
+                                                                    size: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.04,
+                                                                    color: AppColors
+                                                                        .grey)),
+                                                          ),
+                                                        ),
+                                                        ListTile(
+                                                          onTap: () {
+                                                            isTypePurchase
+                                                                .value = false;
+                                                            pageController
+                                                                .nextPage(
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                              curve:
+                                                                  Curves.ease,
+                                                            );
+                                                          },
+                                                          title: Text(
+                                                              context.l10n
+                                                                  .activeRates,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodyLarge,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left),
+                                                          subtitle: Text(
+                                                              returnFilteredActiveBonosString(
+                                                                  filterByActivePurchases),
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodySmall,
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left),
+                                                          trailing: SizedBox(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.15,
+                                                            child: Center(
+                                                                child: Icon(
+                                                                    Icons
+                                                                        .arrow_forward_ios,
+                                                                    size: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.04,
+                                                                    color: AppColors
+                                                                        .grey)),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    ValueListenableBuilder<
+                                                        bool>(
+                                                      valueListenable:
+                                                          isTypePurchase,
+                                                      builder: (context, value,
+                                                          child) {
+                                                        return value
+                                                            ? Column(
+                                                                children: [
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      // Check if the Only True
+                                                                      var filterActive =
+                                                                          List.from(
+                                                                              filterByPurchaseStatus);
+                                                                      filterActive.retainWhere((element) =>
+                                                                          element ==
+                                                                          true);
+                                                                      if (!(filterActive.length ==
+                                                                              1 &&
+                                                                          filterByPurchaseStatus[
+                                                                              0])) {
+                                                                        filterByPurchaseStatus[0] =
+                                                                            !filterByPurchaseStatus[0];
+                                                                        brandPurchasesCubit.filterBy(
+                                                                            filterByPurchaseStatus,
+                                                                            filterByActivePurchases);
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      }
+                                                                    },
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .verfied,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyLarge,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    trailing: filterByPurchaseStatus[
+                                                                            0]
+                                                                        ? SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                          )
+                                                                        : SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      // Check if the Only True
+                                                                      var filterActive =
+                                                                          List.from(
+                                                                              filterByPurchaseStatus);
+                                                                      filterActive.retainWhere((element) =>
+                                                                          element ==
+                                                                          true);
+                                                                      if (!(filterActive.length ==
+                                                                              1 &&
+                                                                          filterByPurchaseStatus[
+                                                                              1])) {
+                                                                        filterByPurchaseStatus[1] =
+                                                                            !filterByPurchaseStatus[1];
+                                                                        brandPurchasesCubit.filterBy(
+                                                                            filterByPurchaseStatus,
+                                                                            filterByActivePurchases);
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      }
+                                                                    },
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .unverfied,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyLarge,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    trailing: filterByPurchaseStatus[
+                                                                            1]
+                                                                        ? SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                          )
+                                                                        : SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      // Check if the Only True
+                                                                      var filterActive =
+                                                                          List.from(
+                                                                              filterByPurchaseStatus);
+                                                                      filterActive.retainWhere((element) =>
+                                                                          element ==
+                                                                          true);
+                                                                      if (!(filterActive.length ==
+                                                                              1 &&
+                                                                          filterByPurchaseStatus[
+                                                                              2])) {
+                                                                        filterByPurchaseStatus[2] =
+                                                                            !filterByPurchaseStatus[2];
+                                                                        brandPurchasesCubit.filterBy(
+                                                                            filterByPurchaseStatus,
+                                                                            filterByActivePurchases);
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      }
+                                                                    },
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .toConfirm,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyLarge,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    trailing: filterByPurchaseStatus[
+                                                                            2]
+                                                                        ? SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                          )
+                                                                        : SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Column(
+                                                                children: [
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      // Check if the Only True
+                                                                      var filterActive =
+                                                                          List.from(
+                                                                              filterByActivePurchases);
+                                                                      filterActive.retainWhere((element) =>
+                                                                          element ==
+                                                                          true);
+                                                                      if (!(filterActive.length ==
+                                                                              1 &&
+                                                                          filterByActivePurchases[
+                                                                              0])) {
+                                                                        filterByActivePurchases[0] =
+                                                                            !filterByActivePurchases[0];
+                                                                        brandPurchasesCubit.filterBy(
+                                                                            filterByPurchaseStatus,
+                                                                            filterByActivePurchases);
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      }
+                                                                    },
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .yes,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyLarge,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    trailing: filterByActivePurchases[
+                                                                            0]
+                                                                        ? SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                          )
+                                                                        : SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      // Check if the Only True
+                                                                      var filterActive =
+                                                                          List.from(
+                                                                              filterByActivePurchases);
+                                                                      filterActive.retainWhere((element) =>
+                                                                          element ==
+                                                                          true);
+                                                                      if (!(filterActive.length ==
+                                                                              1 &&
+                                                                          filterByActivePurchases[
+                                                                              1])) {
+                                                                        filterByActivePurchases[1] =
+                                                                            !filterByActivePurchases[1];
+                                                                        brandPurchasesCubit.filterBy(
+                                                                            filterByPurchaseStatus,
+                                                                            filterByActivePurchases);
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      }
+                                                                    },
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .no,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyLarge,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    trailing: filterByActivePurchases[
+                                                                            1]
+                                                                        ? SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                          )
+                                                                        : SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          child: Icon(
+                            Icons.filter_list,
+                            color: allFilters.contains(false)
+                                ? AppColors.darkGrey
+                                : AppColors.white,
+                            size: iconSize,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      titlePadding: EdgeInsets.zero,
+      //centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BrandPurchasesCubit, BrandPurchasesState>(
@@ -221,463 +752,30 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
         switch (state.runtimeType) {
           case BrandPurchasesLoaded:
             // Handles Loaded State
-            final brandPurchasesCubit = context.read<BrandPurchasesCubit>();
             BrandPurchasesLoaded loadedState = state as BrandPurchasesLoaded;
-            DateTime startDate = loadedState.startDate;
-            DateTime endDate = loadedState.endDate;
-            DateTime dateJoinedBrand = loadedState.dateJoinedBrand;
-            List<bool> filterByPurchaseStatus =
-                loadedState.filterByPurchaseStatus;
-            List<bool> filterByActivePurchases =
-                loadedState.filterByActivePurchases;
-            List<bool> allFilters =
-                filterByPurchaseStatus + filterByActivePurchases;
+            // Handle Dates for Filtering of Date
+            DateTime startDate =
+                DateTime.now().subtract(const Duration(days: 7));
+            DateTime endDate = DateTime.now();
+            DateTime dateJoinedBrand = DateTime(
+                int.parse(currentBrand.dateJoined!.split("-")[2]),
+                int.parse(currentBrand.dateJoined!.split("-")[1]),
+                int.parse(currentBrand.dateJoined!.split("-")[0]),
+                0,
+                0);
             return Scaffold(
               backgroundColor: Colors.transparent,
               body: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
-                  SliverAppBar(
-                    surfaceTintColor: AppColors.darkGrey,
-                    backgroundColor: AppColors.darkGrey,
-                    expandedHeight: MediaQuery.of(context).size.height * 0.14,
-                    systemOverlayStyle: SystemUiOverlayStyle.light,
-                    elevation: 0,
-                    floating: true,
-                    pinned: true,
-                    title: AnimatedOpacity(
-                        opacity: appBarExpanded ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Text(context.l10n.payments,
-                            style: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle
-                                ?.copyWith(
-                                  color: AppColors.white,
-                                ))),
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: Container(
-                        color: AppColors.darkGrey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.05,
-                                  right: MediaQuery.of(context).size.width *
-                                      0.025),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    context.l10n.payments,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge
-                                        ?.copyWith(
-                                          color: AppColors.white,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.08,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.40,
-                                  ),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.width *
-                                        0.09,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.09,
-                                    child: ClipOval(
-                                      child: Material(
-                                        color: allFilters.contains(false)
-                                            ? AppColors.white
-                                            : Colors
-                                                .transparent, // Button color
-                                        child: InkWell(
-                                          splashColor: Theme.of(context)
-                                              .colorScheme
-                                              .background, // Splash color
-                                          onTap: () async {
-                                            await showModalBottomSheet<int?>(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.vertical(
-                                                  top: Radius.circular(20),
-                                                ),
-                                              ),
-                                              clipBehavior:
-                                                  Clip.antiAliasWithSaveLayer,
-                                              builder: (BuildContext context) {
-                                                return StatefulBuilder(
-                                                  builder: (BuildContext
-                                                          context,
-                                                      StateSetter setState) {
-                                                    final PageController
-                                                        pageController =
-                                                        PageController(
-                                                            initialPage: 0);
-                                                    ValueNotifier<int>
-                                                        currentPage =
-                                                        ValueNotifier(0);
-                                                    ValueNotifier<bool>
-                                                        isTypePurchase =
-                                                        ValueNotifier(true);
-                                                    return FractionallySizedBox(
-                                                      heightFactor: 0.33,
-                                                      child: SizedBox(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height *
-                                                            0.5,
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        child: Padding(
-                                                          padding: EdgeInsets
-                                                              .all(MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.02),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              ValueListenableBuilder<
-                                                                  int>(
-                                                                valueListenable:
-                                                                    currentPage,
-                                                                builder:
-                                                                    (context,
-                                                                        value,
-                                                                        child) {
-                                                                  return ListTile(
-                                                                    title: Text(
-                                                                        context
-                                                                            .l10n
-                                                                            .filterBy,
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .bodySmall,
-                                                                        textAlign:
-                                                                            TextAlign.left),
-                                                                    trailing: TextButton(
-                                                                        child: Text(context.l10n.clear, style: Theme.of(context).textTheme.bodySmall),
-                                                                        onPressed: () {
-                                                                          filterByPurchaseStatus =
-                                                                              [
-                                                                            true,
-                                                                            true,
-                                                                            true
-                                                                          ];
-                                                                          filterByActivePurchases =
-                                                                              [
-                                                                            true,
-                                                                            true
-                                                                          ];
-                                                                          brandPurchasesCubit.filterBy(
-                                                                              filterByPurchaseStatus,
-                                                                              filterByActivePurchases);
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        }),
-                                                                    dense: true,
-                                                                    onTap: value ==
-                                                                            0
-                                                                        ? null
-                                                                        : () {
-                                                                            pageController.previousPage(
-                                                                              duration: const Duration(milliseconds: 500),
-                                                                              curve: Curves.ease,
-                                                                            );
-                                                                          },
-                                                                  );
-                                                                },
-                                                              ),
-                                                              SizedBox(
-                                                                height: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .height *
-                                                                    0.21,
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                child: PageView(
-                                                                  physics:
-                                                                      const NeverScrollableScrollPhysics(),
-                                                                  controller:
-                                                                      pageController,
-                                                                  onPageChanged:
-                                                                      (int
-                                                                          page) {
-                                                                    currentPage
-                                                                            .value =
-                                                                        page;
-                                                                  },
-                                                                  children: <Widget>[
-                                                                    Column(
-                                                                      children: [
-                                                                        ListTile(
-                                                                          onTap:
-                                                                              () {
-                                                                            isTypePurchase.value =
-                                                                                true;
-                                                                            pageController.nextPage(
-                                                                              duration: const Duration(milliseconds: 500),
-                                                                              curve: Curves.ease,
-                                                                            );
-                                                                          },
-                                                                          title: Text(
-                                                                              context.l10n.state,
-                                                                              style: Theme.of(context).textTheme.bodyLarge,
-                                                                              textAlign: TextAlign.left),
-                                                                          subtitle: Text(
-                                                                              returnFilteredStatusString(filterByPurchaseStatus),
-                                                                              style: Theme.of(context).textTheme.bodySmall,
-                                                                              maxLines: 1,
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              textAlign: TextAlign.left),
-                                                                          trailing:
-                                                                              SizedBox(
-                                                                            width:
-                                                                                MediaQuery.of(context).size.width * 0.15,
-                                                                            child:
-                                                                                Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
-                                                                          ),
-                                                                        ),
-                                                                        ListTile(
-                                                                          onTap:
-                                                                              () {
-                                                                            isTypePurchase.value =
-                                                                                false;
-                                                                            pageController.nextPage(
-                                                                              duration: const Duration(milliseconds: 500),
-                                                                              curve: Curves.ease,
-                                                                            );
-                                                                          },
-                                                                          title: Text(
-                                                                              context.l10n.activeRates,
-                                                                              style: Theme.of(context).textTheme.bodyLarge,
-                                                                              textAlign: TextAlign.left),
-                                                                          subtitle: Text(
-                                                                              returnFilteredActiveBonosString(filterByActivePurchases),
-                                                                              style: Theme.of(context).textTheme.bodySmall,
-                                                                              maxLines: 1,
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              textAlign: TextAlign.left),
-                                                                          trailing:
-                                                                              SizedBox(
-                                                                            width:
-                                                                                MediaQuery.of(context).size.width * 0.15,
-                                                                            child:
-                                                                                Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    ValueListenableBuilder<
-                                                                        bool>(
-                                                                      valueListenable:
-                                                                          isTypePurchase,
-                                                                      builder: (context,
-                                                                          value,
-                                                                          child) {
-                                                                        return value
-                                                                            ? Column(
-                                                                                children: [
-                                                                                  ListTile(
-                                                                                    onTap: () {
-                                                                                      // Check if the Only True
-                                                                                      var filterActive = List.from(filterByPurchaseStatus);
-                                                                                      filterActive.retainWhere((element) => element == true);
-                                                                                      if (!(filterActive.length == 1 && filterByPurchaseStatus[0])) {
-                                                                                        filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
-                                                                                        brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
-                                                                                        Navigator.pop(context);
-                                                                                      }
-                                                                                    },
-                                                                                    title: Text(context.l10n.verfied, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                    trailing: filterByPurchaseStatus[0]
-                                                                                        ? SizedBox(
-                                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                                            child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                          )
-                                                                                        : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                                  ),
-                                                                                  ListTile(
-                                                                                    onTap: () {
-                                                                                      // Check if the Only True
-                                                                                      var filterActive = List.from(filterByPurchaseStatus);
-                                                                                      filterActive.retainWhere((element) => element == true);
-                                                                                      if (!(filterActive.length == 1 && filterByPurchaseStatus[1])) {
-                                                                                        filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
-                                                                                        brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
-                                                                                        Navigator.pop(context);
-                                                                                      }
-                                                                                    },
-                                                                                    title: Text(context.l10n.unverfied, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                    trailing: filterByPurchaseStatus[1]
-                                                                                        ? SizedBox(
-                                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                                            child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                          )
-                                                                                        : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                                  ),
-                                                                                  ListTile(
-                                                                                    onTap: () {
-                                                                                      // Check if the Only True
-                                                                                      var filterActive = List.from(filterByPurchaseStatus);
-                                                                                      filterActive.retainWhere((element) => element == true);
-                                                                                      if (!(filterActive.length == 1 && filterByPurchaseStatus[2])) {
-                                                                                        filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
-                                                                                        brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
-                                                                                        Navigator.pop(context);
-                                                                                      }
-                                                                                    },
-                                                                                    title: Text(context.l10n.toConfirm, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                    trailing: filterByPurchaseStatus[2]
-                                                                                        ? SizedBox(
-                                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                                            child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                          )
-                                                                                        : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                                  ),
-                                                                                ],
-                                                                              )
-                                                                            : Column(
-                                                                                children: [
-                                                                                  ListTile(
-                                                                                    onTap: () {
-                                                                                      // Check if the Only True
-                                                                                      var filterActive = List.from(filterByActivePurchases);
-                                                                                      filterActive.retainWhere((element) => element == true);
-                                                                                      if (!(filterActive.length == 1 && filterByActivePurchases[0])) {
-                                                                                        filterByActivePurchases[0] = !filterByActivePurchases[0];
-                                                                                        brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
-                                                                                        Navigator.pop(context);
-                                                                                      }
-                                                                                    },
-                                                                                    title: Text(context.l10n.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                    trailing: filterByActivePurchases[0]
-                                                                                        ? SizedBox(
-                                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                                            child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                          )
-                                                                                        : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                                  ),
-                                                                                  ListTile(
-                                                                                    onTap: () {
-                                                                                      // Check if the Only True
-                                                                                      var filterActive = List.from(filterByActivePurchases);
-                                                                                      filterActive.retainWhere((element) => element == true);
-                                                                                      if (!(filterActive.length == 1 && filterByActivePurchases[1])) {
-                                                                                        filterByActivePurchases[1] = !filterByActivePurchases[1];
-                                                                                        brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
-                                                                                        Navigator.pop(context);
-                                                                                      }
-                                                                                    },
-                                                                                    title: Text(context.l10n.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                    trailing: filterByActivePurchases[1]
-                                                                                        ? SizedBox(
-                                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                                            child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                          )
-                                                                                        : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                                  ),
-                                                                                ],
-                                                                              );
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.09,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.09,
-                                              child: Icon(
-                                                Icons.filter_list,
-                                                color:
-                                                    allFilters.contains(false)
-                                                        ? AppColors.darkGrey
-                                                        : AppColors.white,
-                                                size: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.07,
-                                              )),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      titlePadding: EdgeInsets.zero,
-                      //centerTitle: true,
+                  ResponsiveSliverAppBar(
+                    height: context.height * 0.14,
+                    title: context.l10n.payments,
+                    appBarExpanded: appBarExpanded,
+                    flexibleSpace: returnFlexibleSpaceBar(
+                      context.height * 0.14,
+                      loadedState,
                     ),
-                    centerTitle: false,
-                    leading: Builder(
-                      builder: (BuildContext innerContext) => Padding(
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.02),
-                        child: IconButton(
-                            icon: Icon(
-                              Icons.menu,
-                              color: AppColors.white,
-                              size: MediaQuery.of(context).size.height * 0.04,
-                            ),
-                            onPressed: () =>
-                                navigationDrawerKey.currentState?.openDrawer()),
-                      ),
-                    ),
-                    actions: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          askSupport(context),
-                          unreadNotifications(context),
-                          unreadChats(context),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.025),
-                          profileImage(context),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.03),
-                        ],
-                      ),
-                    ],
                   ),
                   SliverPersistentHeader(
                     delegate: _SliverAppBarDelegateSecond(
@@ -689,11 +787,8 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.04,
-                                  right:
-                                      MediaQuery.of(context).size.width * 0.04),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment:
@@ -702,17 +797,11 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                   Row(
                                     children: [
                                       Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.09,
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                0.09,
-                                        margin: EdgeInsets.only(
-                                            right: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.02),
+                                        width: iconSizeBig,
+                                        height: iconSizeBig,
+                                        margin: const EdgeInsets.only(
+                                          right: 8,
+                                        ),
                                         decoration: BoxDecoration(
                                           color: AppColors.lightGrey
                                               .withOpacity(0.1),
@@ -733,10 +822,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                 : FontAwesomeIcons
                                                     .arrowUpShortWide,
                                             color: AppColors.white,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.04,
+                                            size: iconSizeSmall,
                                           ),
                                           onPressed: () async {
                                             context
@@ -756,7 +842,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                 BorderRadius.circular(10),
                                           ),
                                           padding: const EdgeInsets.only(
-                                              left: 16.0, right: 10.0),
+                                              left: 16.0, right: 16.0),
                                         ),
                                         onPressed: () => _show(
                                             context,
@@ -793,12 +879,10 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                   ),
                                   Text(
                                     '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(
-                                            color: AppColors.white,
-                                            fontWeight: FontWeight.bold),
+                                    style:
+                                        context.textTheme.titleSmall!.copyWith(
+                                      color: AppColors.white,
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -880,469 +964,11 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
               ),
             );
           default:
-            // Handle all other states aka Loading or Initial
-            DateTime startDate =
-                DateTime.now().subtract(const Duration(days: 7));
-            DateTime endDate = DateTime.now();
-            DateTime dateJoinedBrand = DateTime(
-                int.parse(currentBrand.dateJoined!.split("-")[2]),
-                int.parse(currentBrand.dateJoined!.split("-")[1]),
-                int.parse(currentBrand.dateJoined!.split("-")[0]),
-                0,
-                0);
-            // Handles Loaded State
-            List<bool> allFilters = [];
             return Scaffold(
-              backgroundColor: Colors.transparent,
-              body: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  SliverAppBar(
-                    surfaceTintColor: AppColors.darkGrey,
-                    backgroundColor: AppColors.darkGrey,
-                    expandedHeight: MediaQuery.of(context).size.height * 0.14,
-                    systemOverlayStyle: SystemUiOverlayStyle.light,
-                    elevation: 0,
-                    floating: true,
-                    pinned: true,
-                    title: AnimatedOpacity(
-                        opacity: appBarExpanded ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Text(context.l10n.payments,
-                            style: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle
-                                ?.copyWith(
-                                  color: AppColors.white,
-                                ))),
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: Container(
-                        color: AppColors.darkGrey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.05,
-                                  right: MediaQuery.of(context).size.width *
-                                      0.025),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    context.l10n.payments,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge
-                                        ?.copyWith(
-                                          color: AppColors.white,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.08,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.40,
-                                  ),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.width *
-                                        0.09,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.09,
-                                    child: ClipOval(
-                                      child: Material(
-                                        color:
-                                            Colors.transparent, // Button color
-                                        child: InkWell(
-                                          splashColor: Theme.of(context)
-                                              .colorScheme
-                                              .background, // Splash color
-                                          onTap: null,
-                                          child: SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.09,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.09,
-                                              child: Icon(
-                                                Icons.filter_list,
-                                                color:
-                                                    allFilters.contains(false)
-                                                        ? AppColors.darkGrey
-                                                        : AppColors.white,
-                                                size: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.07,
-                                              )),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      titlePadding: EdgeInsets.zero,
-                      //centerTitle: true,
-                    ),
-                    centerTitle: false,
-                    leading: Builder(
-                      builder: (BuildContext innerContext) => Padding(
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.02),
-                        child: IconButton(
-                            icon: Icon(
-                              Icons.menu,
-                              color: AppColors.white,
-                              size: MediaQuery.of(context).size.height * 0.04,
-                            ),
-                            onPressed: () =>
-                                navigationDrawerKey.currentState?.openDrawer()),
-                      ),
-                    ),
-                    actions: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          unreadNotifications(context),
-                          unreadChats(context),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.03),
-                          GestureDetector(
-                            onTap: () => navigateToProfileScreen(context),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.width * 0.08,
-                              child: Center(
-                                child: CircularImage(
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.08,
-                                  image: currentUser.imageUrl,
-                                  color: AppColors.grey,
-                                  borderWidth: 0.5,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                    ],
-                  ),
-                  SliverPersistentHeader(
-                    delegate: _SliverAppBarDelegateSecond(
-                      Container(
-                        height: (MediaQuery.of(context).size.height * 0.07) + 1,
-                        color: AppColors.darkGrey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.04,
-                                  right:
-                                      MediaQuery.of(context).size.width * 0.04),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.09,
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                0.09,
-                                        margin: EdgeInsets.only(
-                                            right: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.02),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.lightGrey
-                                              .withOpacity(0.1),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: IconButton(
-                                          splashRadius: 20,
-                                          splashColor: Theme.of(context)
-                                              .colorScheme
-                                              .background, // Splash color
-                                          padding:
-                                              const EdgeInsets.only(right: 2),
-                                          alignment: Alignment.center,
-                                          icon: Icon(
-                                            FontAwesomeIcons.arrowDownWideShort,
-                                            color: AppColors.white,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.04,
-                                          ),
-                                          onPressed: null,
-                                        ),
-                                      ),
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          backgroundColor: AppColors.lightGrey
-                                              .withOpacity(0.1),
-                                          shape: RoundedRectangleBorder(
-                                            // add this
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          padding: const EdgeInsets.only(
-                                              left: 16.0, right: 10.0),
-                                        ),
-                                        onPressed: () => _show(
-                                            context,
-                                            startDate,
-                                            endDate,
-                                            dateJoinedBrand),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              returnCorrectText(
-                                                  context,
-                                                  startDate,
-                                                  endDate,
-                                                  dateJoinedBrand,
-                                                  true),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium!
-                                                  .copyWith(
-                                                      color: AppColors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                            ),
-                                            const Icon(
-                                                Icons
-                                                    .keyboard_arrow_down_outlined,
-                                                color: AppColors.white)
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(
-                                            color: AppColors.white,
-                                            fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.01,
-                            ),
-                            Container(
-                              color: AppColors.grey,
-                              height: 1.0,
-                            ),
-                          ],
-                        ),
-                      ),
-                      (MediaQuery.of(context).size.height * 0.07) + 1,
-                    ),
-                    pinned: true,
-                  ),
-                  const SliverToBoxAdapter(child: SizedBox(height: 5)),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        return Container(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          padding: EdgeInsets.symmetric(
-                              horizontal:
-                                  MediaQuery.of(context).size.width * 0.04,
-                              vertical:
-                                  MediaQuery.of(context).size.width * 0.03),
-                          child: Row(
-                            children: [
-                              Shimmer.fromColors(
-                                baseColor: AppColors.grey,
-                                highlightColor: AppColors.grey.withOpacity(0.5),
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.15,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.15,
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.grey,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                  width: MediaQuery.of(context).size.width *
-                                      0.04), // adjust this value as needed
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    /// USER
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Shimmer.fromColors(
-                                          baseColor: AppColors.grey,
-                                          highlightColor:
-                                              AppColors.grey.withOpacity(0.5),
-                                          child: Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.25,
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(5.0),
-                                              ),
-                                              color: AppColors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                        Shimmer.fromColors(
-                                          baseColor: AppColors.grey,
-                                          highlightColor:
-                                              AppColors.grey.withOpacity(0.5),
-                                          child: Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.15,
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(5.0),
-                                              ),
-                                              color: AppColors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.012),
-
-                                    /// BONO
-                                    Shimmer.fromColors(
-                                      baseColor: AppColors.grey,
-                                      highlightColor:
-                                          AppColors.grey.withOpacity(0.5),
-                                      child: Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.015,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.45,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0),
-                                          ),
-                                          color: AppColors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.012),
-
-                                    /// DETAILS
-                                    Shimmer.fromColors(
-                                      baseColor: AppColors.grey,
-                                      highlightColor:
-                                          AppColors.grey.withOpacity(0.5),
-                                      child: Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.015,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.55,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0),
-                                          ),
-                                          color: AppColors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.012),
-
-                                    /// DATE
-                                    Shimmer.fromColors(
-                                      baseColor: AppColors.grey,
-                                      highlightColor:
-                                          AppColors.grey.withOpacity(0.5),
-                                      child: Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.013,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.25,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0),
-                                          ),
-                                          color: AppColors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      childCount: 10, // 1000 list items
-                    ),
-                  ),
-                  const SliverToBoxAdapter(child: SizedBox(height: 10)),
-                ],
-              ),
-            );
+                backgroundColor: Colors.transparent,
+                body: LoadingView(
+                  isSmall: true,
+                ));
         }
       },
     );

@@ -72,13 +72,7 @@ class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
                 ),
                 VerticalDivider(
                     color: context.theme.dividerColor, thickness: 1, width: 1),
-                Expanded(
-                    child: Column(
-                  children: [
-                    const DesktopAppBar(),
-                    Expanded(child: child),
-                  ],
-                )),
+                Expanded(child: child),
               ],
             ),
           );

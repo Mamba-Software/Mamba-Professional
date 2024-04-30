@@ -30,8 +30,9 @@ double body2 = 12; // Secondary body text
 double body3 = 10; // Tertiary body text
 
 // Icon Sizes
-double iconSizeBig = 35;
+double iconSizeBig = 30;
 double iconSize = 25;
+double iconSizeSmall = 15;
 
 // Border Radius
 double borderRadiusSmall = 5;

@@ -23,7 +23,7 @@ Widget unreadChats(BuildContext context) {
           child: Icon(
             Icons.chat,
             color: AppColors.white,
-            size: iconSizeBig,
+            size: iconSize,
           ),
         ),
       ),
