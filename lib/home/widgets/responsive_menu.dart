@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/home/mixin/home_tile_mixin.dart';
-import 'package:mamba/home/models/home_navigation_page.dart';
-import 'package:mamba/home/widgets/body.dart';
-import 'package:mamba/home/widgets/footer.dart';
-import 'package:mamba/home/widgets/header.dart';
+import 'package:mamba/home/widgets/appbar/DesktopAppBar.dart';
+import 'package:mamba/home/widgets/drawer/body.dart';
+import 'package:mamba/home/widgets/drawer/footer.dart';
+import 'package:mamba/home/widgets/drawer/header.dart';
 
 // ignore: must_be_immutable
 class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
@@ -75,7 +72,13 @@ class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
                 ),
                 VerticalDivider(
                     color: context.theme.dividerColor, thickness: 1, width: 1),
-                Expanded(child: child),
+                Expanded(
+                    child: Column(
+                  children: [
+                    const DesktopAppBar(),
+                    Expanded(child: child),
+                  ],
+                )),
               ],
             ),
           );
