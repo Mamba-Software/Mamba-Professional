@@ -3,7 +3,7 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/home/models/home_navigation_page.dart';
-import 'package:mamba/home/widgets/drawer/body_tile.dart';
+import 'package:mamba/home/widgets/body_tile.dart';
 
 class Body extends StatelessWidget with PlatformMixin {
   const Body({

@@ -6,7 +6,7 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/home/mixin/home_tile_mixin.dart';
 import 'package:mamba/home/models/home_navigation_page.dart';
-import 'package:mamba/home/widgets/drawer/body.dart';
+import 'package:mamba/home/widgets/body.dart';
 import 'package:mamba/home/widgets/footer.dart';
 import 'package:mamba/home/widgets/header.dart';
 
@@ -59,28 +59,15 @@ class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
                   width: 304,
                   child: Column(
                     children: [
-                      Expanded(
-                        child: NavigationRail(
-                          extended: true,
-                          backgroundColor:
-                              context.theme.scaffoldBackgroundColor,
-                          minExtendedWidth: 304,
-                          selectedIndex:
-                              context.read<HomeNavigationManager>().pageIndex,
-                          onDestinationSelected: (int index) {
-                            context
-                                .read<HomeNavigationManager>()
-                                .jumpToIndex(index);
-                          },
-                          leading: Header(
-                            height: 200,
-                            width: 304,
-                          ),
-                          destinations: returnDestinations(context),
-                        ),
+                      Header(
+                        height: 250,
+                        // Standard Size of a Drawer in Flutter
+                        width: 304,
                       ),
+                      const Body(),
                       Footer(
                         height: 80,
+                        // Standard Size of a Drawer in Flutter
                         width: 304,
                       ),
                     ],
@@ -95,55 +82,5 @@ class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
         }
       },
     );
-  }
-
-  List<NavigationRailDestination> returnDestinations(BuildContext context) {
-    return <NavigationRailDestination>[
-      NavigationRailDestination(
-        icon: returnLeadingIcon(context, HomeNavigationPage.BOOKINGS),
-        selectedIcon: returnSelectedIcon(context, HomeNavigationPage.BOOKINGS),
-        label: returnTextWidget(context, HomeNavigationPage.BOOKINGS),
-      ),
-      NavigationRailDestination(
-        icon: returnLeadingIcon(context, HomeNavigationPage.PAYMENTS),
-        selectedIcon: returnSelectedIcon(context, HomeNavigationPage.PAYMENTS),
-        label: returnTextWidget(context, HomeNavigationPage.PAYMENTS),
-      ),
-      NavigationRailDestination(
-        icon: returnLeadingIcon(context, HomeNavigationPage.STATS),
-        selectedIcon: returnSelectedIcon(context, HomeNavigationPage.STATS),
-        label: returnTextWidget(context, HomeNavigationPage.STATS),
-      ),
-      NavigationRailDestination(
-        icon: returnLeadingIcon(context, HomeNavigationPage.RATES),
-        selectedIcon: returnSelectedIcon(context, HomeNavigationPage.RATES),
-        label: returnTextWidget(context, HomeNavigationPage.RATES),
-      ),
-      NavigationRailDestination(
-        icon: returnLeadingIcon(context, HomeNavigationPage.CLIENTS),
-        selectedIcon: returnSelectedIcon(context, HomeNavigationPage.CLIENTS),
-        label: returnTextWidget(context, HomeNavigationPage.CLIENTS),
-      ),
-      NavigationRailDestination(
-        icon: returnLeadingIcon(context, HomeNavigationPage.STAFF),
-        selectedIcon: returnSelectedIcon(context, HomeNavigationPage.STAFF),
-        label: returnTextWidget(context, HomeNavigationPage.STAFF),
-      ),
-      NavigationRailDestination(
-        icon: returnLeadingIcon(context, HomeNavigationPage.INFO),
-        selectedIcon: returnSelectedIcon(context, HomeNavigationPage.INFO),
-        label: returnTextWidget(context, HomeNavigationPage.INFO),
-      ),
-      NavigationRailDestination(
-        icon: returnLeadingIcon(context, HomeNavigationPage.IMAGES),
-        selectedIcon: returnSelectedIcon(context, HomeNavigationPage.IMAGES),
-        label: returnTextWidget(context, HomeNavigationPage.IMAGES),
-      ),
-      NavigationRailDestination(
-        icon: returnLeadingIcon(context, HomeNavigationPage.LOCATIONS),
-        selectedIcon: returnSelectedIcon(context, HomeNavigationPage.LOCATIONS),
-        label: returnTextWidget(context, HomeNavigationPage.LOCATIONS),
-      ),
-    ];
   }
 }
