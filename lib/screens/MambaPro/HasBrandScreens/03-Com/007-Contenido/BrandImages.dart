@@ -15,6 +15,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/De
 import 'package:mamba/commons/widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/FavouriteConfirmationDialog.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
@@ -22,12 +23,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BrandImages extends StatefulWidget {
-  
   String brandId;
 
-  BrandImages(
-      {super.key,
-      required this.brandId,});
+  BrandImages({
+    super.key,
+    required this.brandId,
+  });
 
   @override
   _BrandImagesState createState() => _BrandImagesState();
@@ -338,7 +339,7 @@ class _BrandImagesState extends State<BrandImages>
                             size: MediaQuery.of(context).size.height * 0.04,
                           ),
                           onPressed: () =>
-                              mambaProScaffoldKey.currentState?.openDrawer()),
+                              navigationDrawerKey.currentState?.openDrawer()),
                     ),
                   ),
                   actions: [

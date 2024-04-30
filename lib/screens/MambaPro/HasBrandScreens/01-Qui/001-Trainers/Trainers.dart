@@ -9,6 +9,7 @@ import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/user/chat/Chat.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -872,7 +873,7 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                       size: MediaQuery.of(context).size.height * 0.04,
                     ),
                     onPressed: () =>
-                        mambaProScaffoldKey.currentState?.openDrawer()),
+                        navigationDrawerKey.currentState?.openDrawer()),
               ),
             ),
             actions: [

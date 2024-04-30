@@ -12,6 +12,7 @@ import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
@@ -490,7 +491,7 @@ class _BrandInfoState extends State<BrandInfo>
                       size: MediaQuery.of(context).size.height * 0.04,
                     ),
                     onPressed: () =>
-                        mambaProScaffoldKey.currentState?.openDrawer()),
+                        navigationDrawerKey.currentState?.openDrawer()),
               ),
             ),
             actions: [
@@ -1995,7 +1996,6 @@ class _BrandInfoState extends State<BrandInfo>
                                                 setState(() {
                                                   isLoading = true;
                                                 });
-                                                pageIndex = 10;
                                                 NotificationService()
                                                     .userLeavesBrand(
                                                         currentUser.id!,

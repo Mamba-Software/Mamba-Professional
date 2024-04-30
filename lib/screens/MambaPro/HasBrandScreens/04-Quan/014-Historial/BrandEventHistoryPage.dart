@@ -10,6 +10,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
@@ -210,7 +211,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                       size: MediaQuery.of(context).size.height * 0.04,
                     ),
                     onPressed: () =>
-                        mambaProScaffoldKey.currentState?.openDrawer()),
+                        navigationDrawerKey.currentState?.openDrawer()),
               ),
             ),
             actions: [

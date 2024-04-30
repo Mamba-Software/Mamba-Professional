@@ -8,6 +8,7 @@ import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/user/chat/Chat.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -781,7 +782,7 @@ class _Clients extends State<Clients> with PlatformMixin {
                         size: MediaQuery.of(context).size.height * 0.04,
                       ),
                       onPressed: () =>
-                          mambaProScaffoldKey.currentState?.openDrawer()),
+                          navigationDrawerKey.currentState?.openDrawer()),
                 ),
               ),
               actions: [

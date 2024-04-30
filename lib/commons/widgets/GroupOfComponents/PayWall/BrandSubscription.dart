@@ -9,6 +9,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
@@ -19,7 +20,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription
 class BrandSubscription extends StatefulWidget {
   Locale? locale;
   String brandId;
-  
+
   BrandSubscription({
     super.key,
     this.locale,
@@ -166,7 +167,7 @@ class _BrandInfoState extends State<BrandSubscription>
                       size: MediaQuery.of(context).size.height * 0.04,
                     ),
                     onPressed: () =>
-                        mambaProScaffoldKey.currentState?.openDrawer()),
+                        navigationDrawerKey.currentState?.openDrawer()),
               ),
             ),
             actions: [

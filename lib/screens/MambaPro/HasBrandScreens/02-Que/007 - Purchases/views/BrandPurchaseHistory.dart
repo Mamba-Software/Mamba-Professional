@@ -11,6 +11,7 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
@@ -659,7 +660,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                               size: MediaQuery.of(context).size.height * 0.04,
                             ),
                             onPressed: () =>
-                                mambaProScaffoldKey.currentState?.openDrawer()),
+                                navigationDrawerKey.currentState?.openDrawer()),
                       ),
                     ),
                     actions: [
@@ -1006,7 +1007,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                               size: MediaQuery.of(context).size.height * 0.04,
                             ),
                             onPressed: () =>
-                                mambaProScaffoldKey.currentState?.openDrawer()),
+                                navigationDrawerKey.currentState?.openDrawer()),
                       ),
                     ),
                     actions: [

@@ -18,6 +18,7 @@ import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Location/LocationImageTile.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
@@ -25,12 +26,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:uuid/uuid.dart';
 
 class Locations extends StatefulWidget {
-  
   String brandId;
 
-  Locations(
-      {super.key,
-      required this.brandId,});
+  Locations({
+    super.key,
+    required this.brandId,
+  });
 
   @override
   _LocationsState createState() => _LocationsState();
@@ -363,7 +364,7 @@ class _LocationsState extends State<Locations> with PlatformMixin {
                       size: MediaQuery.of(context).size.height * 0.04,
                     ),
                     onPressed: () =>
-                        mambaProScaffoldKey.currentState?.openDrawer()),
+                        navigationDrawerKey.currentState?.openDrawer()),
               ),
             ),
             actions: [

@@ -27,6 +27,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsStats/Sess
 import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsStats/TimeOffer.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
@@ -345,7 +346,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                                 color: AppColors.white,
                                 size: MediaQuery.of(context).size.height * 0.04,
                               ),
-                              onPressed: () => mambaProScaffoldKey.currentState
+                              onPressed: () => navigationDrawerKey.currentState
                                   ?.openDrawer()),
                         ),
                       ),
@@ -549,7 +550,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                                 color: AppColors.white,
                                 size: MediaQuery.of(context).size.height * 0.04,
                               ),
-                              onPressed: () => mambaProScaffoldKey.currentState
+                              onPressed: () => navigationDrawerKey.currentState
                                   ?.openDrawer()),
                         ),
                       ),

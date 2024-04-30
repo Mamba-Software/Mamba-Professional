@@ -25,6 +25,7 @@ import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
@@ -39,12 +40,13 @@ class BrandCalendarWidget extends StatefulWidget {
   CalendarView? calendarView;
   bool? onlyView;
 
-  BrandCalendarWidget(
-      {super.key,
-      required this.brandId,
-      this.dateTime,
-      this.calendarView,
-      this.onlyView,});
+  BrandCalendarWidget({
+    super.key,
+    required this.brandId,
+    this.dateTime,
+    this.calendarView,
+    this.onlyView,
+  });
 
   @override
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
@@ -1837,7 +1839,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                         size: MediaQuery.of(context).size.height * 0.04,
                       ),
                       onPressed: () =>
-                          mambaProScaffoldKey.currentState?.openDrawer()),
+                          navigationDrawerKey.currentState?.openDrawer()),
                 ),
               ),
               actions: [

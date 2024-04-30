@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/home/mixin/home_tile_mixin.dart';
 import 'package:mamba/home/models/home_navigation_page.dart';
 import 'package:mamba/home/widgets/drawer/body.dart';
-import 'package:mamba/home/widgets/drawer/footer.dart';
-import 'package:mamba/home/widgets/drawer/header.dart';
+import 'package:mamba/home/widgets/footer.dart';
+import 'package:mamba/home/widgets/header.dart';
 
 // ignore: must_be_immutable
 class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
@@ -20,9 +20,9 @@ class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        if (context.isMobile) {
+        if (context.isMobile || context.isTablet) {
           return Scaffold(
-            key: mambaProScaffoldKey,
+            key: navigationDrawerKey,
             drawer: Drawer(
               surfaceTintColor: context.theme.scaffoldBackgroundColor,
               backgroundColor: context.theme.scaffoldBackgroundColor,
@@ -36,20 +36,24 @@ class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
                 children: [
                   Header(
                     height: context.height * 0.25,
+                    // Standard Size of a Drawer in Flutter
+                    width: 304,
                   ),
-                  const Divider(
-                    color: AppColors.grey,
+                  Divider(
+                    color: context.theme.dividerColor,
                     thickness: 1,
                     height: 1,
                   ),
                   const Body(),
-                  const Divider(
-                    color: AppColors.grey,
+                  Divider(
+                    color: context.theme.dividerColor,
                     thickness: 1,
                     height: 1,
                   ),
                   Footer(
                     height: context.height * 0.1,
+                    // Standard Size of a Drawer in Flutter
+                    width: 304,
                   ),
                 ],
               ),
@@ -58,27 +62,43 @@ class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
           );
         } else {
           return Scaffold(
+            backgroundColor: Colors.red,
             body: Row(
               children: [
                 SizedBox(
                   width: context.width * 0.2,
                   child: NavigationRail(
-                    minWidth: context.width * 0.2,
+                    extended: true,
+                    useIndicator: true,
+                    backgroundColor: context.theme.scaffoldBackgroundColor,
+                    minWidth: context.width * 0.3,
                     minExtendedWidth: context.width * 0.3,
-                    selectedIndex: 1,
+                    elevation: 4,
+                    selectedIndex:
+                        context.read<HomeNavigationManager>().pageIndex,
                     onDestinationSelected: (int index) {
                       context.read<HomeNavigationManager>().jumpToIndex(index);
                     },
+                    indicatorColor: context.colorScheme.secondary,
+                    indicatorShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(borderRadiusSmall))),
+                    selectedLabelTextStyle: context.textTheme.bodyMedium,
+                    unselectedLabelTextStyle: context.textTheme.labelMedium,
                     leading: Header(
                       height: context.height * 0.25,
+                      width: context.width * 0.2,
                     ),
                     destinations: returnDestinations(context),
                     trailing: Footer(
                       height: context.height * 0.1,
+                      // Standard Size of a Drawer in Flutter
+                      width: 304,
                     ),
                   ),
                 ),
-                const VerticalDivider(thickness: 1, width: 1),
+                VerticalDivider(
+                    color: context.theme.dividerColor, thickness: 1, width: 1),
                 Expanded(child: child),
               ],
             ),
