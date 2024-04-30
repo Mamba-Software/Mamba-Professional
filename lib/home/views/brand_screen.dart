@@ -44,10 +44,8 @@ class _BrandScreenState extends State<BrandScreen> {
         // Jump To Correct Home Page
         setState(() {
           _pageController.jumpToPage(state.pageIndex);
-        });
-        print("navigationDrawerKey.currentState!.isDrawerOpen");
-        print(navigationDrawerKey.currentState!.isDrawerOpen);
-        if (navigationDrawerKey.currentState!.isDrawerOpen) {
+        });        
+        if (navigationDrawerKey.currentState != null && navigationDrawerKey.currentState!.isDrawerOpen) {
           // Close Drawer
           Navigator.of(context).pop();
         }
