@@ -125,7 +125,8 @@ class _BrandInfoState extends State<BrandSubscription>
             flexibleSpace: returnFlexibleSpaceBar(
               context.height * 0.15,
             ),
-          ),BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
+          ),
+          BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
               builder: (context, state) {
             switch (state.runtimeType) {
               case BrandSuscriptionInitial:
