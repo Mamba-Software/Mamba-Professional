@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/user/chat/Chat.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -210,6 +212,31 @@ class _Clients extends State<Clients> with PlatformMixin {
     getBrandLink();
   }
 
+  FlexibleSpaceBar returnFlexibleSpaceBar(double height) {
+    return FlexibleSpaceBar(
+      background: Container(
+        color: AppColors.darkGrey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                context.l10n.stats,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: AppColors.white,
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      titlePadding: EdgeInsets.zero,
+      //centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ClientSessionsCubit, ClientsSessionsState>(
@@ -236,6 +263,7 @@ class _Clients extends State<Clients> with PlatformMixin {
         body: CustomScrollView(
           controller: _scrollController,
           slivers: [
+            
             SliverAppBar(
               surfaceTintColor: AppColors.darkGrey,
               backgroundColor: AppColors.darkGrey,
@@ -799,6 +827,7 @@ class _Clients extends State<Clients> with PlatformMixin {
                 ),
               ],
             ),
+            
             const SliverToBoxAdapter(child: SizedBox(height: 10)),
             state is ClientsSessionsLoaded
                 ? state.allUsers.isNotEmpty

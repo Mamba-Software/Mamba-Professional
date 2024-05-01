@@ -242,21 +242,20 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                 children: [
                   Text(
                     context.l10n.payments,
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           color: AppColors.white,
                         ),
                   ),
-                  ClipOval(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                  SizedBox(
+                    height: iconSizeBig,
+                    width: iconSizeBig,
+                    child: ClipOval(
                       child: Material(
                         color: allFilters.contains(false)
                             ? AppColors.white
                             : Colors.transparent, // Button color
                         child: InkWell(
-                          splashColor: Theme.of(context)
-                              .colorScheme
-                              .background, // Splash color
+                          splashColor: AppColors.white.withOpacity(0.2), // Splash color
                           onTap: () async {
                             await showModalBottomSheet<int?>(
                               context: context,
@@ -723,13 +722,16 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                               },
                             );
                           },
-                          child: Icon(
-                            Icons.filter_list,
-                            color: allFilters.contains(false)
-                                ? AppColors.darkGrey
-                                : AppColors.white,
-                            size: iconSize,
-                          ),
+                          child: SizedBox(
+                              width: iconSizeBig,
+                              height: iconSizeBig,
+                              child: Icon(
+                                Icons.filter_list,
+                                color: allFilters.contains(false)
+                                    ? AppColors.darkGrey
+                                    : AppColors.white,
+                                size: iconSize,
+                              )),
                         ),
                       ),
                     ),
@@ -780,7 +782,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                   SliverPersistentHeader(
                     delegate: _SliverAppBarDelegateSecond(
                       Container(
-                        height: (MediaQuery.of(context).size.height * 0.07) + 1,
+                        height: (context.height * 0.07) + 1,
                         color: AppColors.darkGrey,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -880,7 +882,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                   Text(
                                     '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
                                     style:
-                                        context.textTheme.titleSmall!.copyWith(
+                                        context.textTheme.bodyMedium!.copyWith(
                                       color: AppColors.white,
                                     ),
                                     textAlign: TextAlign.center,
@@ -898,7 +900,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                           ],
                         ),
                       ),
-                      (MediaQuery.of(context).size.height * 0.07) + 1,
+                      (context.height * 0.07) + 1,
                     ),
                     pinned: true,
                   ),

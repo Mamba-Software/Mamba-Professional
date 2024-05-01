@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'dart:io';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -16,6 +17,7 @@ import 'package:mamba/commons/widgets/Components/Images/FullScreenImageCarousel.
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/FavouriteConfirmationDialog.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
@@ -238,6 +240,41 @@ class _BrandImagesState extends State<BrandImages>
     scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
   }
 
+  FlexibleSpaceBar returnFlexibleSpaceBar(double height) {
+    return FlexibleSpaceBar(
+      background: Container(
+        color: AppColors.darkGrey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    context.l10n.photos,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: AppColors.white,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              color: AppColors.grey,
+              height: 1.0,
+            ),
+          ],
+        ),
+      ),
+      titlePadding: EdgeInsets.zero,
+      //centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
@@ -249,114 +286,13 @@ class _BrandImagesState extends State<BrandImages>
             CustomScrollView(
               controller: _scrollController,
               slivers: [
-                SliverAppBar(
-                  surfaceTintColor: AppColors.darkGrey,
-                  backgroundColor: AppColors.darkGrey,
-                  expandedHeight: MediaQuery.of(context).size.height * 0.15,
-                  systemOverlayStyle: SystemUiOverlayStyle.light,
-                  elevation: 4,
-                  floating: false,
-                  pinned: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Container(
-                      color: AppColors.darkGrey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                right:
-                                    MediaQuery.of(context).size.width * 0.025),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  context.l10n.photos,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displayLarge
-                                      ?.copyWith(
-                                        color: AppColors.white,
-                                      ),
-                                ),
-                                FittedBox(
-                                  fit: BoxFit.fitHeight,
-                                  child: SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.08,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.11,
-                                    child: TextButton(
-                                      onPressed: null,
-                                      child: Icon(
-                                        Icons.filter_list,
-                                        color: AppColors.darkGrey,
-                                        size:
-                                            MediaQuery.of(context).size.width *
-                                                0.07,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.01,
-                          ),
-                          Container(
-                            color: AppColors.grey,
-                            height: 1.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                    titlePadding: EdgeInsets.zero,
-                    //centerTitle: true,
+                ResponsiveSliverAppBar(
+                  height: context.height * 0.15,
+                  title: context.l10n.photos,
+                  appBarExpanded: appBarExpanded,
+                  flexibleSpace: returnFlexibleSpaceBar(
+                    context.height * 0.14,
                   ),
-                  title: AnimatedOpacity(
-                      opacity: appBarExpanded ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 200),
-                      child: Text(context.l10n.photos,
-                          style: Theme.of(context)
-                              .appBarTheme
-                              .titleTextStyle
-                              ?.copyWith(
-                                color: AppColors.white,
-                              ))),
-                  centerTitle: false,
-                  leading: Builder(
-                    builder: (BuildContext innerContext) => Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.02),
-                      child: IconButton(
-                          icon: Icon(
-                            Icons.menu,
-                            color: AppColors.white,
-                            size: MediaQuery.of(context).size.height * 0.04,
-                          ),
-                          onPressed: () =>
-                              navigationDrawerKey.currentState?.openDrawer()),
-                    ),
-                  ),
-                  actions: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        askSupport(context),
-                        unreadNotifications(context),
-                        unreadChats(context),
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.025),
-                        profileImage(context),
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.03),
-                      ],
-                    ),
-                  ],
                 ),
                 isLoading
                     ? SliverFillRemaining(

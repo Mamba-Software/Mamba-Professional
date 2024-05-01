@@ -21,8 +21,7 @@ class AppBarIcon extends StatelessWidget with PlatformMixin {
       onTap: () => onTap,
       hoverColor: color.withOpacity(0.2),
       splashColor: color.withOpacity(0.2),
-      borderRadius:
-          BorderRadius.circular(24), // Optional: customize the splash radius
+      borderRadius: BorderRadius.circular(24), 
       child: Padding(
         padding: const EdgeInsets.all(8), // Control the space around the icon
         child: Icon(

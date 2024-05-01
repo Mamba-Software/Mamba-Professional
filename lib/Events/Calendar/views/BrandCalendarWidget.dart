@@ -27,6 +27,7 @@ import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
@@ -1343,6 +1344,95 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
     return filteredMembers.substring(0, filteredMembers.length - 2);
   }
 
+  FlexibleSpaceBar returnFlexibleSpaceBar(double height) {
+    return FlexibleSpaceBar(
+      background: Container(
+        height: height,
+        color: AppColors.darkGrey,
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildTitleFromDate(displayDateTimeStart,
+                          displayDateTimeEnd, middleMonthDate),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              mixpanel!.track('brand_calendar_today');
+                              setState(() {
+                                //_controller.selectedDate = DateTime.now();
+                                _controller.displayDate = DateTime.now()
+                                    .subtract(const Duration(hours: 1));
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: AppColors.white,
+                            ),
+                            child: Text(context.l10n.todayString,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: AppColors.white),
+                                textAlign: TextAlign.center),
+                          ),
+                          SizedBox(
+                            height: iconSizeBig,
+                            width: iconSizeBig,
+                            child: ClipOval(
+                              child: Material(
+                                color: hasFilter
+                                    ? AppColors.white
+                                    : Colors.transparent, // Button color
+                                child: InkWell(
+                                  splashColor: AppColors.white.withOpacity(0.2), // Splash color
+                                  onTap: () => onTapFilterIcon,
+                                  child: SizedBox(
+                                    width: iconSizeBig,
+                                    height: iconSizeBig,
+                                    child: Icon(
+                                      Icons.filter_list,
+                                      color: hasFilter
+                                          ? AppColors.darkGrey
+                                          : AppColors.white,
+                                      size: iconSize,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                Container(
+                  color: AppColors.grey,
+                  height: 1.0,
+                ),
+              ],
+            ),
+            const LinearProgressIndicatorWidget(),
+          ],
+        ),
+      ),
+      titlePadding: EdgeInsets.zero,
+      //centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1352,130 +1442,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
           physics: const NeverScrollableScrollPhysics(),
           controller: _scrollController,
           slivers: [
-            
-            SliverAppBar(
-              surfaceTintColor: AppColors.darkGrey,
-              backgroundColor: AppColors.darkGrey,
-              expandedHeight: MediaQuery.of(context).size.height * 0.15,
-              systemOverlayStyle: SystemUiOverlayStyle.light,
-              elevation: 4,
-              floating: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  height: MediaQuery.of(context).size.height * 0.15,
-                  color: AppColors.darkGrey,
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                _buildTitleFromDate(displayDateTimeStart,
-                                    displayDateTimeEnd, middleMonthDate),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    TextButton(
-                                      onPressed: () {
-                                        mixpanel!.track('brand_calendar_today');
-                                        setState(() {
-                                          //_controller.selectedDate = DateTime.now();
-                                          _controller.displayDate =
-                                              DateTime.now().subtract(
-                                                  const Duration(hours: 1));
-                                        });
-                                      },
-                                      style: TextButton.styleFrom(
-                                        foregroundColor: AppColors.white,
-                                      ),
-                                      child: Text(context.l10n.todayString,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge
-                                              ?.copyWith(
-                                                  color: AppColors.white),
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    SizedBox(
-                                      height: iconSize,
-                                      width: iconSize,
-                                      child: ClipOval(
-                                        child: Material(
-                                          color: hasFilter
-                                              ? AppColors.white
-                                              : Colors
-                                                  .transparent, // Button color
-                                          child: InkWell(
-                                            splashColor: Theme.of(context)
-                                                .colorScheme
-                                                .background, // Splash color
-                                            onTap: () => onTapFilterIcon,
-                                            child: SizedBox(
-                                              width: iconSize,
-                                              height: iconSize,
-                                              child: Icon(
-                                                Icons.filter_list,
-                                                color: hasFilter
-                                                    ? AppColors.darkGrey
-                                                    : AppColors.white,
-                                                size: iconSize,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.01),
-                          Container(
-                            color: AppColors.grey,
-                            height: 1.0,
-                          ),
-                        ],
-                      ),
-                      const LinearProgressIndicatorWidget(),
-                    ],
-                  ),
-                ),
-                titlePadding: EdgeInsets.zero,
-                //centerTitle: true,
-              ),
-              centerTitle: false,
-              leading: Builder(
-                builder: (BuildContext innerContext) => IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: AppColors.white,
-                      size: iconSize,
-                    ),
-                    onPressed: () =>
-                        navigationDrawerKey.currentState?.openDrawer()),
-              ),
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    askSupport(context),
-                    unreadNotifications(context),
-                    unreadChats(context),
-                    profileImage(context),
-                  ],
-                ),
-              ],
+            ResponsiveSliverAppBar(
+              height: context.height * 0.15,
+              title: context.l10n.bookings,
+              appBarExpanded: appBarExpanded,
+              flexibleSpace: returnFlexibleSpaceBar(context.height * 0.15),
             ),
             BlocBuilder<BrandEventsCubit, BrandEventsState>(
               builder: (context, state) {
