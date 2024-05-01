@@ -225,7 +225,7 @@ class _Clients extends State<Clients> with PlatformMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -804,9 +804,7 @@ class _Clients extends State<Clients> with PlatformMixin {
                 ],
               ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
+            
             Container(
               color: AppColors.grey,
               height: 1.0,
