@@ -3841,7 +3841,7 @@ const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.ge
 
 const purchasesRef = db.collection('Purchases');
 const snapshot = await purchasesRef
-  .where('directPurchase', '==', false)
+  //.where('directPurchase', '==', false)
   .where('isRecurrencyActive', '==', true)
   .where('isRecurrent', '==', true)
   .get();
