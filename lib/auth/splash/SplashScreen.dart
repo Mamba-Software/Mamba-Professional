@@ -46,6 +46,17 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     context.read<AuthCubit>().checkAndGetUserDetails(context);
+    final authBloc = context.read<AuthBloc>();
+
+    // Verifica el estado actual inmediatamente al construir el widget
+    final currentState = authBloc.state;
+    if (currentState.status == AuthStatus.authenticated) {
+      userAutenticatedRedirection(
+        context: context,
+        userId: currentState.user.id,
+      );
+    }
+
     return BlocListener<AuthBloc, AuthStateS>(
         listener: (context, state) {
           switch (state.status) {
@@ -114,6 +125,7 @@ class _SplashScreenState extends State<SplashScreen> {
           .hasBrand(userId: userId);
       if (hasBrand) {
         Future.delayed(delayedRedirectionTime, () {
+          context.goNamed(HomePage.routeName);
           // Assuming you are using go_router and context.goNamed is available
           /* context.goNamed(OnboardingScreen
               .routeName);*/ // Replace 'onboarding' with your route name

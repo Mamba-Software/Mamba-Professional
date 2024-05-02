@@ -9,7 +9,7 @@ import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/data/DataService/Promotions/PromotionsDataService.dart';
-import 'package:mamba/data/Models/Subscription.dart';
+import '../../../../../subscription/models/Subscription.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/commons/styles/AppColors.dart';

@@ -118,6 +118,57 @@ class _HomePageBodyState extends State<HomePageBody> {
     launchOnStartUpDialogs();
   }
 
+  Future<void> firstFunction() async {
+    isLoading = true;
+    // Handle LocalNotificationsService
+    localNotificationService.initialize();
+    handleAndlistenNotifications(context);
+    // Firebase Cloud Messaging Notifications
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        print("App in Terminated State Notification Trigger HomePage");
+        String route = message.data["route"];
+        // Handling OnClickNotification Firebase Messaging Notification
+        localNotificationService.onClickedNotification(context, route);
+      }
+    });
+    // If App in Foreground.
+    FirebaseMessaging.onMessage.listen((message) {
+      print("App in Foreground Notification Trigger HomePage");
+      ReceivedNotification notif = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        title: message.notification!.title,
+        body: message.notification!.body,
+        payload: message.data["route"],
+      );
+      localNotificationService.showNotification(notif);
+    });
+    // If App in Background, Tap on Notification to be Opened
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("App in Background Notification Trigger HomePage");
+      String route = message.data["route"];
+      // Handling OnClickNotification Firebase Messaging Notification
+      localNotificationService.onClickedNotification(context, route);
+    });
+    // Listen Dynamic Link Foreground / Background State
+    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+      dynamicLinkBrandId = dynamicLinkData.link.queryParameters['id'];
+      checkBrandInvite();
+    }).onError((error) {
+      print(error.toString());
+    });
+    // Setting default open to Brand Calendar
+    pageIndex = 10;
+    // Getting User Information
+    setState(() {
+      isLoading = false;
+    });
+    // Check If App Update
+    context.read<PopupsCubit>().checkIfAppUpdate();
+    // On StartUp Dialogs
+    launchOnStartUpDialogs();
+  }
+
   // On StartUp Dialogs
   Future<void> launchOnStartUpDialogs() async {
     //Stripe

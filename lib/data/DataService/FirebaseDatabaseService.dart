@@ -11,7 +11,7 @@ import 'package:mamba/data/Models/Condition.dart';
 import 'package:mamba/data/Models/ImageObject.dart';
 import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba/data/Models/Promotion.dart';
-import 'package:mamba/data/Models/Subscription.dart';
+import '../../../subscription/models/Subscription.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/data/Models/Brand.dart';
@@ -144,7 +144,7 @@ class FirebaseDatabaseService {
       return false;
     }
   }
-  
+
   Future<bool> checkIfIsMaintenance() async {
     // Get Minimum and Max Version from Settings Collection
     DocumentSnapshot<Map<String, dynamic>> documentSnapshot =

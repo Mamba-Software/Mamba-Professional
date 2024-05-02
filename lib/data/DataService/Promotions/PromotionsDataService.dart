@@ -1,6 +1,6 @@
 import 'package:mamba/data/DataService/FirebaseDatabaseService.dart';
 import 'package:mamba/data/Models/Promotion.dart';
-import 'package:mamba/data/Models/Subscription.dart';
+import '../../../../subscription/models/Subscription.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class PromotionsDataService {

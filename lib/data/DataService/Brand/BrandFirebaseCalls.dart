@@ -10,7 +10,7 @@ import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Condition.dart';
 import 'package:mamba/data/Models/ImageObject.dart';
 import 'package:mamba/data/Models/Purchase.dart';
-import 'package:mamba/data/Models/Subscription.dart';
+import '../../../../subscription/models/Subscription.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/data/Models/Brand.dart';

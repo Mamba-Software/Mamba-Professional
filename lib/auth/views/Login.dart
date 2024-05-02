@@ -307,8 +307,7 @@ class _LoginState extends State<Login> with PlatformMixin {
                 context.goNamed(Login.routeName);
                 break;
               case AuthStatus.authenticated:
-                context.goNamed(HomePage.routeName);
-
+                context.goNamed(SplashScreen.routeName);
                 break;
               case AuthStatus.unknown:
                 break;

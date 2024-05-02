@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mamba/auth/bloc/auth_bloc.dart';
+import 'package:mamba/auth/views/Login.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
@@ -51,15 +53,32 @@ class _BrandScreenState extends State<BrandScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<HomeNavigationManager, HomeNavigationManagerState>(
-      listener: (BuildContext context, state) {
-        // Jump To Correct Home Page
-        setState(() {
-          _pageController.jumpToPage(state.pageIndex);
-        });
-        // Close Drawer
-        Navigator.of(context).pop();
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthBloc, AuthStateS>(
+          listener: (context, state) {
+            switch (state.status) {
+              case AuthStatus.unauthenticated:
+                context.goNamed(Login.routeName);
+                break;
+              case AuthStatus.authenticated:
+                break;
+              case AuthStatus.unknown:
+                break;
+            }
+          },
+        ),
+        BlocListener<HomeNavigationManager, HomeNavigationManagerState>(
+          listener: (BuildContext context, state) {
+            // Jump To Correct Home Page
+            setState(() {
+              _pageController.jumpToPage(state.pageIndex);
+            });
+            // Close Drawer
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
       child: ResponsiveMenu(
         child: PageView(
           controller: _pageController,
