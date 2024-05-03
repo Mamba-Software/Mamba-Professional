@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
@@ -22,7 +23,7 @@ Widget unreadChats(BuildContext context) {
           child: Icon(
             Icons.chat,
             color: AppColors.white,
-            size: MediaQuery.of(context).size.width * 0.06,
+            size: iconSize,
           ),
         ),
       ),

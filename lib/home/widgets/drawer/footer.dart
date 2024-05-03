@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
@@ -9,10 +10,12 @@ import 'package:mamba/home/models/home_navigation_page.dart';
 
 class Footer extends StatelessWidget with PlatformMixin {
   double height;
+  double width;
 
   Footer({
     Key? key,
     required this.height,
+    required this.width,
   }) : super(key: key);
 
   @override
@@ -28,78 +31,96 @@ class Footer extends StatelessWidget with PlatformMixin {
                 .inDays;
             String date = DateTimeUtils().formatDateTimeToStringDDMMYY(
                 state.subscription.endDate!.toDate());
-            return suscriptionState.subscription.subscriptionId == "7DAYSTRIAL"
-                ? Container(
-                    height: height,
-                    padding: const EdgeInsets.only(left: 4.0),
-                    child: Center(
-                      child: ListTile(
-                        title: Text(context.l10n.freeTrial,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left),
-                        subtitle: FittedBox(
-                          fit: BoxFit.contain,
-                          child: Text(
-                            context.l10n
-                                .freeTrialDaysLeft(difference.toString()),
-                            style: Theme.of(context).textTheme.bodySmall,
-                            maxLines: 1,
-                            textAlign: TextAlign.left,
+            TextStyle titleStyle = context.textTheme.bodyLarge!.copyWith(
+              fontWeight: FontWeight.bold,
+            );
+            TextStyle labelStyle = context.textTheme.labelMedium!;
+            return Column(
+              children: [
+                Divider(
+                  color: context.theme.dividerColor,
+                  thickness: 1,
+                  height: 1,
+                ),
+                suscriptionState.subscription.subscriptionId == "7DAYSTRIAL"
+                    ? Container(
+                        height: height,
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Center(
+                          child: ListTile(
+                            title: Text(
+                              context.l10n.freeTrial,
+                              style: titleStyle,
+                              textAlign: TextAlign.left,
+                            ),
+                            subtitle: Text(
+                              context.l10n
+                                  .freeTrialDaysLeft(difference.toString()),
+                              style: labelStyle,
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                            ),
+                            onTap: () => context
+                                .read<HomeNavigationManager>()
+                                .jumpToPage(HomeNavigationPage.PLAN),
                           ),
                         ),
-                        onTap: () => context
-                            .read<HomeNavigationManager>()
-                            .jumpToPage(HomeNavigationPage.PLAN),
-                      ),
-                    ),
-                  )
-                : Container(
-                    height: height,
-                    padding: const EdgeInsets.only(left: 4.0),
-                    child: Center(
-                      child: ListTile(
-                        title: Text(context.l10n.monthlyPlan,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left),
-                        subtitle: Text(
-                          context.l10n.monthlyPlanDayRenewal(date.toString()),
-                          style: Theme.of(context).textTheme.bodySmall,
-                          textAlign: TextAlign.left,
+                      )
+                    : Container(
+                        height: height,
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Center(
+                          child: ListTile(
+                            title: Text(
+                              context.l10n.monthlyPlan,
+                              style: titleStyle,
+                              textAlign: TextAlign.left,
+                            ),
+                            subtitle: Text(
+                              context.l10n
+                                  .monthlyPlanDayRenewal(date.toString()),
+                              style: labelStyle,
+                              textAlign: TextAlign.left,
+                            ),
+                            onTap: () => context
+                                .read<HomeNavigationManager>()
+                                .jumpToPage(HomeNavigationPage.PLAN),
+                          ),
                         ),
-                        onTap: () => context
-                            .read<HomeNavigationManager>()
-                            .jumpToPage(HomeNavigationPage.PLAN),
                       ),
-                    ),
-                  );
+              ],
+            );
           case BrandSuscriptionLoadedFalse:
-            return Container(
-              height: height,
-              padding: const EdgeInsets.only(left: 4.0),
-              child: Center(
-                child: ListTile(
-                  title: Text(context.l10n.chooseYourPlan,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.left),
-                  subtitle: Text(
-                    context.l10n.chooseYourPlanDesc,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    textAlign: TextAlign.left,
-                  ),
-                  onTap: () => context
-                      .read<HomeNavigationManager>()
-                      .jumpToPage(HomeNavigationPage.PLAN),
+            TextStyle titleStyle = context.textTheme.bodyLarge!.copyWith(
+              fontWeight: FontWeight.bold,
+            );
+            TextStyle labelStyle = context.textTheme.labelMedium!;
+            return Column(
+              children: [
+                Divider(
+                  color: context.theme.dividerColor,
+                  thickness: 1,
+                  height: 1,
                 ),
-              ),
+                Container(
+                  height: height,
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: Center(
+                    child: ListTile(
+                      title: Text(context.l10n.chooseYourPlan,
+                          style: titleStyle, textAlign: TextAlign.left),
+                      subtitle: Text(
+                        context.l10n.chooseYourPlanDesc,
+                        style: labelStyle,
+                        textAlign: TextAlign.left,
+                      ),
+                      onTap: () => context
+                          .read<HomeNavigationManager>()
+                          .jumpToPage(HomeNavigationPage.PLAN),
+                    ),
+                  ),
+                ),
+              ],
             );
           default:
             return Container();

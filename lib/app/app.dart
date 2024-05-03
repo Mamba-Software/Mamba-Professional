@@ -167,7 +167,8 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
         builder: (context, language) {
           return MaterialApp.router(
             title: appName,
-            debugShowCheckedModeBanner: flavor == Flavor.development,
+            //debugShowCheckedModeBanner: flavor == Flavor.development,
+            debugShowCheckedModeBanner: false,
             theme: theme.themeData,
             locale: language.locale,
             supportedLocales: AppLocalizations.supportedLocales,

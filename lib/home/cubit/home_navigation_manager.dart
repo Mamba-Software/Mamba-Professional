@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/home/models/home_navigation_page.dart';
+
+final GlobalKey<ScaffoldState> navigationDrawerKey = GlobalKey<ScaffoldState>();
 
 class HomeNavigationManagerState extends Equatable {
   final HomeNavigationPage page;
@@ -16,6 +19,7 @@ class HomeNavigationManagerState extends Equatable {
 }
 
 class HomeNavigationManager extends Cubit<HomeNavigationManagerState> {
+  
   HomeNavigationManager()
       : super(
           const HomeNavigationManagerState(

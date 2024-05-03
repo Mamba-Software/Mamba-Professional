@@ -3,12 +3,15 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
@@ -19,7 +22,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription
 class BrandSubscription extends StatefulWidget {
   Locale? locale;
   String brandId;
-  
+
   BrandSubscription({
     super.key,
     this.locale,
@@ -70,6 +73,42 @@ class _BrandInfoState extends State<BrandSubscription>
     canSubscribe = currentUser.id == currentBrand.adminID;
   }
 
+  FlexibleSpaceBar returnFlexibleSpaceBar(double height) {
+    return FlexibleSpaceBar(
+      background: Container(
+        color: AppColors.darkGrey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    StringUtils()
+                        .toCapitalized(context.l10n.yourPlan.split(" ")[1]),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: AppColors.white,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              color: AppColors.grey,
+              height: 1.0,
+            ),
+          ],
+        ),
+      ),
+      titlePadding: EdgeInsets.zero,
+      //centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,110 +117,14 @@ class _BrandInfoState extends State<BrandSubscription>
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          SliverAppBar(
-            surfaceTintColor: AppColors.darkGrey,
-            backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height * 0.15,
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-            elevation: 4,
-            floating: false,
-            //snap: true,
-            pinned: true,
-            title: AnimatedOpacity(
-                opacity: appBarExpanded ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 200),
-                child: Text(
-                    StringUtils()
-                        .toCapitalized(context.l10n.yourPlan.split(" ")[1]),
-                    style:
-                        Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
-                              color: AppColors.white,
-                            ))),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                color: AppColors.darkGrey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.05,
-                          right: MediaQuery.of(context).size.width * 0.025),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            StringUtils().toCapitalized(
-                                context.l10n.yourPlan.split(" ")[1]),
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge
-                                ?.copyWith(
-                                  color: AppColors.white,
-                                ),
-                          ),
-                          FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.08,
-                              width: MediaQuery.of(context).size.width * 0.11,
-                              child: TextButton(
-                                onPressed: null,
-                                child: Icon(
-                                  Icons.filter_list,
-                                  color: AppColors.darkGrey,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.07,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.01,
-                    ),
-                    Container(
-                      color: AppColors.grey,
-                      height: 1.0,
-                    ),
-                  ],
-                ),
-              ),
-              titlePadding: EdgeInsets.zero,
-              //centerTitle: true,
+          ResponsiveSliverAppBar(
+            height: context.height * 0.15,
+            title: StringUtils()
+                .toCapitalized(context.l10n.yourPlan.split(" ")[1]),
+            appBarExpanded: appBarExpanded,
+            flexibleSpace: returnFlexibleSpaceBar(
+              context.height * 0.15,
             ),
-            centerTitle: false,
-            leading: Builder(
-              builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.02),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: AppColors.white,
-                      size: MediaQuery.of(context).size.height * 0.04,
-                    ),
-                    onPressed: () =>
-                        mambaProScaffoldKey.currentState?.openDrawer()),
-              ),
-            ),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  askSupport(context),
-                  unreadNotifications(context),
-                  unreadChats(context),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                  profileImage(context),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                ],
-              ),
-            ],
           ),
           BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
               builder: (context, state) {

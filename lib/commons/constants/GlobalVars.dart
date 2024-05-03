@@ -33,11 +33,6 @@ Position? currentPosition;
 String? currentAddress;
 String? timeZoneName;
 
-// Page Controller Mamba Professional
-int pageIndex = 10;
-// Key Scaffold Mamba Pro
-final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
-
 // Analytics Mix Panel
 Mixpanel? mixpanel;
 

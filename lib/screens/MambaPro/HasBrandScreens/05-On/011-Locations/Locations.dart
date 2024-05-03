@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
@@ -18,6 +19,8 @@ import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Location/LocationImageTile.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
@@ -25,12 +28,12 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:uuid/uuid.dart';
 
 class Locations extends StatefulWidget {
-  
   String brandId;
 
-  Locations(
-      {super.key,
-      required this.brandId,});
+  Locations({
+    super.key,
+    required this.brandId,
+  });
 
   @override
   _LocationsState createState() => _LocationsState();
@@ -272,6 +275,41 @@ class _LocationsState extends State<Locations> with PlatformMixin {
     getAllLocations();
   }
 
+  FlexibleSpaceBar returnFlexibleSpaceBar(double height) {
+    return FlexibleSpaceBar(
+      background: Container(
+        color: AppColors.darkGrey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    context.l10n.locations,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: AppColors.white,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              color: AppColors.grey,
+              height: 1.0,
+            ),
+          ],
+        ),
+      ),
+      titlePadding: EdgeInsets.zero,
+      //centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -279,106 +317,13 @@ class _LocationsState extends State<Locations> with PlatformMixin {
         physics: const NeverScrollableScrollPhysics(),
         controller: _scrollController,
         slivers: [
-          SliverAppBar(
-            surfaceTintColor: AppColors.darkGrey,
-            backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height * 0.15,
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-            elevation: 4,
-            floating: false,
-            pinned: true,
-            //snap: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                color: AppColors.darkGrey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.05,
-                          right: MediaQuery.of(context).size.width * 0.05),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            context.l10n.locations,
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge
-                                ?.copyWith(
-                                  color: AppColors.white,
-                                ),
-                          ),
-                          FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.08,
-                              child: IconButton(
-                                onPressed: null,
-                                alignment: Alignment.centerRight,
-                                padding: EdgeInsets.zero,
-                                icon: Icon(
-                                  Icons.add_location_alt_outlined,
-                                  color: Colors.transparent,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.08,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.01,
-                    ),
-                    Container(
-                      color: AppColors.grey,
-                      height: 1.0,
-                    ),
-                  ],
-                ),
-              ),
-              titlePadding: EdgeInsets.zero,
-              //centerTitle: true,
+          ResponsiveSliverAppBar(
+            height: context.height * 0.15,
+            title: context.l10n.locations,
+            appBarExpanded: appBarExpanded,
+            flexibleSpace: returnFlexibleSpaceBar(
+              context.height * 0.15,
             ),
-            title: appBarExpanded
-                ? Text(
-                    context.l10n.locations,
-                    style: Theme.of(context).appBarTheme.titleTextStyle,
-                  )
-                : Container(),
-            centerTitle: false,
-            leading: Builder(
-              builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.02),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: AppColors.white,
-                      size: MediaQuery.of(context).size.height * 0.04,
-                    ),
-                    onPressed: () =>
-                        mambaProScaffoldKey.currentState?.openDrawer()),
-              ),
-            ),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  askSupport(context),
-                  unreadNotifications(context),
-                  unreadChats(context),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                  profileImage(context),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                ],
-              ),
-            ],
           ),
           isLoading
               ? SliverFillRemaining(

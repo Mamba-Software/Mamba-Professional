@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba/commons/constants/constants.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/user/chat/Chat.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -209,6 +213,610 @@ class _Clients extends State<Clients> with PlatformMixin {
     getBrandLink();
   }
 
+  FlexibleSpaceBar returnFlexibleSpaceBar(
+      double height, ClientsSessionsState state) {
+    return FlexibleSpaceBar(
+      background: Container(
+        height: height,
+        width: double.infinity,
+        color: AppColors.darkGrey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  searchClicked == false
+                      ? Text(
+                          context.l10n.clients,
+                          style: context.textTheme.headlineMedium?.copyWith(
+                            color: AppColors.white,
+                          ),
+                        )
+                      : Expanded(
+                          child: TextField(
+                            autofocus: true,
+                            controller: searchController,
+                            onChanged: (value) {
+                              query = value;
+                              filterSearchResults(query, state, false);
+                            },
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: AppColors.white),
+                            textAlign: TextAlign.left,
+                            decoration: InputDecoration(
+                              hintStyle: Theme.of(context).textTheme.bodySmall,
+                              hintText: context.l10n.search,
+                              enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: AppColors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0))),
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: AppColors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0))),
+                              border: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: AppColors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0))),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  mixpanel!.track('brand_clients_search_clean');
+                                  searchController.clear();
+                                  query = "";
+                                  filterSearchResults(query, state, false);
+                                },
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.only(left: 8),
+                            ),
+                          ),
+                        ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Material(
+                          color: Colors.transparent,
+                          child: IconButton(
+                            onPressed: () {
+                              if (searchClicked == false) {
+                                mixpanel!.track('brand_clients_search_button');
+                              } else {
+                                mixpanel!.track('brand_clients_search_close');
+                              }
+                              setState(() {
+                                searchClicked = !searchClicked;
+                                if (searchClicked == false) {
+                                  searchController.clear();
+                                  query = "";
+                                  filterSearchResults(query, state, false);
+                                }
+                              });
+                            },
+                            splashRadius: 20,
+                            splashColor: AppColors.white
+                                .withOpacity(0.2), // Splash color
+                            padding: EdgeInsets.zero,
+                            alignment: Alignment.center,
+                            icon: Icon(
+                              searchClicked == false
+                                  ? Icons.search_outlined
+                                  : Icons.close_outlined,
+                              color: AppColors.white,
+                              size: iconSize,
+                            ),
+                          ),
+                        ),
+                        ClipOval(
+                          child: Material(
+                            color: hasOrder || hasFilter
+                                ? AppColors.white
+                                : Colors.transparent, // Button color
+                            child: InkWell(
+                              splashColor: AppColors.white
+                                  .withOpacity(0.2), // Splash color
+                              onTap: () async {
+                                mixpanel!.track('brand_clients_filter_button');
+                                await showModalBottomSheet<int?>(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20),
+                                    ),
+                                  ),
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  builder: (BuildContext context) {
+                                    // Page View Controller
+                                    final PageController pageController =
+                                        PageController(initialPage: 0);
+                                    int currentPage = 0;
+                                    bool isFilterBy = true;
+                                    // Widget
+                                    return StatefulBuilder(
+                                      builder: (BuildContext context,
+                                          StateSetter setStateBottom) {
+                                        return FractionallySizedBox(
+                                          heightFactor: 0.4,
+                                          child: SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.5,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.02),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  ListTile(
+                                                    title: Text(
+                                                        isFilterBy == false
+                                                            ? context
+                                                                .l10n.orderBy
+                                                            : context
+                                                                .l10n.filterBy,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodySmall,
+                                                        textAlign:
+                                                            TextAlign.left),
+                                                    trailing: TextButton(
+                                                        child: Text(
+                                                            context.l10n.clear,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodySmall),
+                                                        onPressed: () {
+                                                          mixpanel!.track(
+                                                              'brand_clients_filter_clean');
+                                                          setStateBottom(() {
+                                                            //searchController.clear();
+                                                            filterByClients = [
+                                                              true,
+                                                              true
+                                                            ];
+                                                            orderBySessions = [
+                                                              false,
+                                                              false
+                                                            ];
+                                                            hasOrder = false;
+                                                            hasFilter = false;
+                                                            filterSearchResults(
+                                                                query,
+                                                                state,
+                                                                true);
+                                                          });
+                                                        }),
+                                                    dense: true,
+                                                    onTap: currentPage == 0
+                                                        ? null
+                                                        : () {
+                                                            mixpanel!.track(
+                                                                'brand_clients_filter_back');
+                                                            pageController
+                                                                .previousPage(
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                              curve:
+                                                                  Curves.ease,
+                                                            );
+                                                          },
+                                                  ),
+                                                  SizedBox(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.25,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                    child: PageView(
+                                                      physics:
+                                                          const NeverScrollableScrollPhysics(),
+                                                      controller:
+                                                          pageController,
+                                                      onPageChanged:
+                                                          (int page) {
+                                                        setStateBottom(() {
+                                                          currentPage = page;
+                                                        });
+                                                      },
+                                                      children: <Widget>[
+                                                        Column(
+                                                          children: [
+                                                            ListTile(
+                                                              onTap: () {
+                                                                setStateBottom(
+                                                                    () {
+                                                                  isFilterBy =
+                                                                      true;
+                                                                });
+                                                                mixpanel!.track(
+                                                                    'brand_clients_filter_active');
+                                                                pageController
+                                                                    .nextPage(
+                                                                  duration: const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                                  curve: Curves
+                                                                      .ease,
+                                                                );
+                                                              },
+                                                              title: Text(
+                                                                  "${context.l10n.active} ${context.l10n.lastNDays(30.toString())}",
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodyLarge,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              subtitle: Text(
+                                                                  returnFilteredActiveClientsString(),
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodySmall,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left),
+                                                              trailing:
+                                                                  SizedBox(
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.15,
+                                                                child: Center(
+                                                                    child: Icon(
+                                                                        Icons
+                                                                            .arrow_forward_ios,
+                                                                        size: MediaQuery.of(context).size.width *
+                                                                            0.04,
+                                                                        color: AppColors
+                                                                            .grey)),
+                                                              ),
+                                                            ),
+                                                            state is ClientsSessionsLoaded &&
+                                                                    state
+                                                                        .finished
+                                                                ? ListTile(
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .orderBy,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodySmall,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    dense: true,
+                                                                    onTap: currentPage ==
+                                                                            0
+                                                                        ? null
+                                                                        : () {
+                                                                            mixpanel!.track('brand_clients_filter_back');
+                                                                            pageController.previousPage(
+                                                                              duration: const Duration(milliseconds: 500),
+                                                                              curve: Curves.ease,
+                                                                            );
+                                                                          },
+                                                                  )
+                                                                : Container(),
+                                                            state is ClientsSessionsLoaded &&
+                                                                    state
+                                                                        .finished
+                                                                ? ListTile(
+                                                                    onTap: () {
+                                                                      setStateBottom(
+                                                                          () {
+                                                                        isFilterBy =
+                                                                            false;
+                                                                      });
+                                                                      mixpanel!
+                                                                          .track(
+                                                                              'brand_clients_order_active');
+                                                                      pageController
+                                                                          .nextPage(
+                                                                        duration:
+                                                                            const Duration(milliseconds: 500),
+                                                                        curve: Curves
+                                                                            .ease,
+                                                                      );
+                                                                    },
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .orderBySessions,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyLarge,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    subtitle: Text(
+                                                                        returnFilteredOrderClientsString(),
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodySmall,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    trailing:
+                                                                        SizedBox(
+                                                                      width: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.15,
+                                                                      child: Center(
+                                                                          child: Icon(
+                                                                              Icons.arrow_forward_ios,
+                                                                              size: MediaQuery.of(context).size.width * 0.04,
+                                                                              color: AppColors.grey)),
+                                                                    ),
+                                                                  )
+                                                                : Container(),
+                                                          ],
+                                                        ),
+                                                        isFilterBy
+                                                            ? Column(
+                                                                children: [
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      setStateBottom(
+                                                                          () {
+                                                                        // Check if the Only True
+                                                                        var filterActive =
+                                                                            List.from(filterByClients);
+                                                                        filterActive.retainWhere((element) =>
+                                                                            element ==
+                                                                            true);
+                                                                        if (!(filterActive.length ==
+                                                                                1 &&
+                                                                            filterByClients[0])) {
+                                                                          //searchController.clear();
+                                                                          filterByClients[0] =
+                                                                              !filterByClients[0];
+                                                                          mixpanel!.track(
+                                                                              'brand_clients_filter_active',
+                                                                              properties: {
+                                                                                'Values': [
+                                                                                  filterByClients[0] ? 'Yes' : ' ',
+                                                                                  filterByClients[1] ? 'No' : ' '
+                                                                                ]
+                                                                              });
+                                                                          hasFilter =
+                                                                              true;
+                                                                          filterSearchResults(
+                                                                              query,
+                                                                              state,
+                                                                              true);
+                                                                        }
+                                                                      });
+                                                                    },
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .yes,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyLarge,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    trailing: filterByClients[
+                                                                            0]
+                                                                        ? SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                          )
+                                                                        : SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      setStateBottom(
+                                                                          () {
+                                                                        // Check if the Only True
+                                                                        var filterActive =
+                                                                            List.from(filterByClients);
+                                                                        filterActive.retainWhere((element) =>
+                                                                            element ==
+                                                                            true);
+                                                                        if (!(filterActive.length ==
+                                                                                1 &&
+                                                                            filterByClients[1])) {
+                                                                          //searchController.clear();
+                                                                          filterByClients[1] =
+                                                                              !filterByClients[1];
+                                                                          hasFilter =
+                                                                              true;
+                                                                          mixpanel!.track(
+                                                                              'brand_clients_filter_active',
+                                                                              properties: {
+                                                                                'Values': [
+                                                                                  filterByClients[0] ? 'Yes' : ' ',
+                                                                                  filterByClients[1] ? 'No' : ' '
+                                                                                ]
+                                                                              });
+                                                                          filterSearchResults(
+                                                                              query,
+                                                                              state,
+                                                                              true);
+                                                                        }
+                                                                      });
+                                                                    },
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .no,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyLarge,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    trailing: filterByClients[
+                                                                            1]
+                                                                        ? SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                          )
+                                                                        : SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Column(
+                                                                children: [
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      setStateBottom(
+                                                                          () {
+                                                                        //searchController.clear();
+                                                                        orderBySessions[0] =
+                                                                            !orderBySessions[0];
+                                                                        orderBySessions[1] =
+                                                                            false;
+                                                                        hasOrder =
+                                                                            true;
+                                                                        filterSearchResults(
+                                                                            query,
+                                                                            state,
+                                                                            true);
+                                                                      });
+                                                                    },
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .orderBySessionsMoreToLess,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyLarge,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    trailing: orderBySessions[
+                                                                            0]
+                                                                        ? SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                          )
+                                                                        : SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      setStateBottom(
+                                                                          () {
+                                                                        orderBySessions[1] =
+                                                                            !orderBySessions[1];
+                                                                        orderBySessions[0] =
+                                                                            false;
+                                                                        hasOrder =
+                                                                            true;
+                                                                        filterSearchResults(
+                                                                            query,
+                                                                            state,
+                                                                            true);
+                                                                      });
+                                                                    },
+                                                                    title: Text(
+                                                                        context
+                                                                            .l10n
+                                                                            .orderBySessionsLessToMore,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyLarge,
+                                                                        textAlign:
+                                                                            TextAlign.left),
+                                                                    trailing: orderBySessions[
+                                                                            1]
+                                                                        ? SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                          )
+                                                                        : SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                              child: SizedBox(
+                                  width: iconSizeBig,
+                                  height: iconSizeBig,
+                                  child: Icon(
+                                    Icons.filter_list,
+                                    color: hasOrder || hasFilter
+                                        ? AppColors.darkGrey
+                                        : AppColors.white,
+                                    size: iconSize,
+                                  )),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            
+            Container(
+              color: AppColors.grey,
+              height: 1.0,
+            ),
+          ],
+        ),
+      ),
+      titlePadding: EdgeInsets.zero,
+      //centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ClientSessionsCubit, ClientsSessionsState>(
@@ -235,568 +843,14 @@ class _Clients extends State<Clients> with PlatformMixin {
         body: CustomScrollView(
           controller: _scrollController,
           slivers: [
-            SliverAppBar(
-              surfaceTintColor: AppColors.darkGrey,
-              backgroundColor: AppColors.darkGrey,
-              expandedHeight: MediaQuery.of(context).size.height * 0.15,
-              systemOverlayStyle: SystemUiOverlayStyle.light,
-              elevation: 4,
-              floating: true,
-              pinned: true,
-              snap: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: double.infinity,
-                  color: AppColors.darkGrey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.05,
-                            right: MediaQuery.of(context).size.width * 0.03),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            searchClicked == false
-                                ? Text(
-                                    context.l10n.clients,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge
-                                        ?.copyWith(
-                                          color: AppColors.white,
-                                        ),
-                                  )
-                                : SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.65,
-                                    child: TextField(
-                                      autofocus: true,
-                                      controller: searchController,
-                                      onChanged: (value) {
-                                        query = value;
-                                        filterSearchResults(
-                                            query, state, false);
-                                      },
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(color: AppColors.white),
-                                      textAlign: TextAlign.left,
-                                      decoration: InputDecoration(
-                                        hintStyle: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall,
-                                        hintText: context.l10n.search,
-                                        enabledBorder: const OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: AppColors.grey),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0))),
-                                        focusedBorder: const OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: AppColors.grey),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0))),
-                                        border: const OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: AppColors.grey),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0))),
-                                        suffixIcon: IconButton(
-                                          onPressed: () {
-                                            mixpanel!.track(
-                                                'brand_clients_search_clean');
-                                            searchController.clear();
-                                            query = "";
-                                            filterSearchResults(
-                                                query, state, false);
-                                          },
-                                          icon: const Icon(
-                                            Icons.delete_outline,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                        contentPadding: EdgeInsets.only(
-                                            left: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.04),
-                                      ),
-                                    ),
-                                  ),
-                            FittedBox(
-                              fit: BoxFit.fitWidth,
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.23,
-                                /*
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.green, width: 1.0),
-                                color: Colors.transparent,
-                              ),
-                               */
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Material(
-                                      color: Colors.transparent,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          if (searchClicked == false) {
-                                            mixpanel!.track(
-                                                'brand_clients_search_button');
-                                          } else {
-                                            mixpanel!.track(
-                                                'brand_clients_search_close');
-                                          }
-                                          setState(() {
-                                            searchClicked = !searchClicked;
-                                            if (searchClicked == false) {
-                                              searchController.clear();
-                                              query = "";
-                                              filterSearchResults(
-                                                  query, state, false);
-                                            }
-                                          });
-                                        },
-                                        splashRadius: 20,
-                                        splashColor: Theme.of(context)
-                                            .colorScheme
-                                            .background, // Splash color
-                                        padding: EdgeInsets.zero,
-                                        alignment: Alignment.center,
-                                        icon: Icon(
-                                          searchClicked == false
-                                              ? Icons.search_outlined
-                                              : Icons.close_outlined,
-                                          color: AppColors.white,
-                                          size: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.07,
-                                        ),
-                                      ),
-                                    ),
-                                    ClipOval(
-                                      child: Material(
-                                        color: hasOrder || hasFilter
-                                            ? AppColors.white
-                                            : Colors
-                                                .transparent, // Button color
-                                        child: InkWell(
-                                          splashColor: Theme.of(context)
-                                              .colorScheme
-                                              .background, // Splash color
-                                          onTap: () async {
-                                            mixpanel!.track(
-                                                'brand_clients_filter_button');
-                                            await showModalBottomSheet<int?>(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.vertical(
-                                                  top: Radius.circular(20),
-                                                ),
-                                              ),
-                                              clipBehavior:
-                                                  Clip.antiAliasWithSaveLayer,
-                                              builder: (BuildContext context) {
-                                                // Page View Controller
-                                                final PageController
-                                                    pageController =
-                                                    PageController(
-                                                        initialPage: 0);
-                                                int currentPage = 0;
-                                                bool isFilterBy = true;
-                                                // Widget
-                                                return StatefulBuilder(
-                                                  builder:
-                                                      (BuildContext context,
-                                                          StateSetter
-                                                              setStateBottom) {
-                                                    return FractionallySizedBox(
-                                                      heightFactor: 0.4,
-                                                      child: SizedBox(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height *
-                                                            0.5,
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        child: Padding(
-                                                          padding: EdgeInsets
-                                                              .all(MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.02),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              ListTile(
-                                                                title: Text(
-                                                                    isFilterBy ==
-                                                                            false
-                                                                        ? context
-                                                                            .l10n
-                                                                            .orderBy
-                                                                        : context
-                                                                            .l10n
-                                                                            .filterBy,
-                                                                    style: Theme.of(
-                                                                            context)
-                                                                        .textTheme
-                                                                        .bodySmall,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .left),
-                                                                trailing:
-                                                                    TextButton(
-                                                                        child: Text(
-                                                                            context
-                                                                                .l10n.clear,
-                                                                            style: Theme.of(context)
-                                                                                .textTheme
-                                                                                .bodySmall),
-                                                                        onPressed:
-                                                                            () {
-                                                                          mixpanel!
-                                                                              .track('brand_clients_filter_clean');
-                                                                          setStateBottom(
-                                                                              () {
-                                                                            //searchController.clear();
-                                                                            filterByClients =
-                                                                                [
-                                                                              true,
-                                                                              true
-                                                                            ];
-                                                                            orderBySessions =
-                                                                                [
-                                                                              false,
-                                                                              false
-                                                                            ];
-                                                                            hasOrder =
-                                                                                false;
-                                                                            hasFilter =
-                                                                                false;
-                                                                            filterSearchResults(
-                                                                                query,
-                                                                                state,
-                                                                                true);
-                                                                          });
-                                                                        }),
-                                                                dense: true,
-                                                                onTap:
-                                                                    currentPage ==
-                                                                            0
-                                                                        ? null
-                                                                        : () {
-                                                                            mixpanel!.track('brand_clients_filter_back');
-                                                                            pageController.previousPage(
-                                                                              duration: const Duration(milliseconds: 500),
-                                                                              curve: Curves.ease,
-                                                                            );
-                                                                          },
-                                                              ),
-                                                              SizedBox(
-                                                                height: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .height *
-                                                                    0.25,
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                child: PageView(
-                                                                  physics:
-                                                                      const NeverScrollableScrollPhysics(),
-                                                                  controller:
-                                                                      pageController,
-                                                                  onPageChanged:
-                                                                      (int
-                                                                          page) {
-                                                                    setStateBottom(
-                                                                        () {
-                                                                      currentPage =
-                                                                          page;
-                                                                    });
-                                                                  },
-                                                                  children: <Widget>[
-                                                                    Column(
-                                                                      children: [
-                                                                        ListTile(
-                                                                          onTap:
-                                                                              () {
-                                                                            setStateBottom(() {
-                                                                              isFilterBy = true;
-                                                                            });
-                                                                            mixpanel!.track('brand_clients_filter_active');
-                                                                            pageController.nextPage(
-                                                                              duration: const Duration(milliseconds: 500),
-                                                                              curve: Curves.ease,
-                                                                            );
-                                                                          },
-                                                                          title: Text(
-                                                                              "${context.l10n.active} ${context.l10n.lastNDays(30.toString())}",
-                                                                              style: Theme.of(context).textTheme.bodyLarge,
-                                                                              textAlign: TextAlign.left),
-                                                                          subtitle: Text(
-                                                                              returnFilteredActiveClientsString(),
-                                                                              style: Theme.of(context).textTheme.bodySmall,
-                                                                              textAlign: TextAlign.left),
-                                                                          trailing:
-                                                                              SizedBox(
-                                                                            width:
-                                                                                MediaQuery.of(context).size.width * 0.15,
-                                                                            child:
-                                                                                Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
-                                                                          ),
-                                                                        ),
-                                                                        state is ClientsSessionsLoaded &&
-                                                                                state.finished
-                                                                            ? ListTile(
-                                                                                title: Text(context.l10n.orderBy, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.left),
-                                                                                dense: true,
-                                                                                onTap: currentPage == 0
-                                                                                    ? null
-                                                                                    : () {
-                                                                                        mixpanel!.track('brand_clients_filter_back');
-                                                                                        pageController.previousPage(
-                                                                                          duration: const Duration(milliseconds: 500),
-                                                                                          curve: Curves.ease,
-                                                                                        );
-                                                                                      },
-                                                                              )
-                                                                            : Container(),
-                                                                        state is ClientsSessionsLoaded &&
-                                                                                state.finished
-                                                                            ? ListTile(
-                                                                                onTap: () {
-                                                                                  setStateBottom(() {
-                                                                                    isFilterBy = false;
-                                                                                  });
-                                                                                  mixpanel!.track('brand_clients_order_active');
-                                                                                  pageController.nextPage(
-                                                                                    duration: const Duration(milliseconds: 500),
-                                                                                    curve: Curves.ease,
-                                                                                  );
-                                                                                },
-                                                                                title: Text(context.l10n.orderBySessions, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                subtitle: Text(returnFilteredOrderClientsString(), style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.left),
-                                                                                trailing: SizedBox(
-                                                                                  width: MediaQuery.of(context).size.width * 0.15,
-                                                                                  child: Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
-                                                                                ),
-                                                                              )
-                                                                            : Container(),
-                                                                      ],
-                                                                    ),
-                                                                    isFilterBy
-                                                                        ? Column(
-                                                                            children: [
-                                                                              ListTile(
-                                                                                onTap: () {
-                                                                                  setStateBottom(() {
-                                                                                    // Check if the Only True
-                                                                                    var filterActive = List.from(filterByClients);
-                                                                                    filterActive.retainWhere((element) => element == true);
-                                                                                    if (!(filterActive.length == 1 && filterByClients[0])) {
-                                                                                      //searchController.clear();
-                                                                                      filterByClients[0] = !filterByClients[0];
-                                                                                      mixpanel!.track('brand_clients_filter_active', properties: {
-                                                                                        'Values': [
-                                                                                          filterByClients[0] ? 'Yes' : ' ',
-                                                                                          filterByClients[1] ? 'No' : ' '
-                                                                                        ]
-                                                                                      });
-                                                                                      hasFilter = true;
-                                                                                      filterSearchResults(query, state, true);
-                                                                                    }
-                                                                                  });
-                                                                                },
-                                                                                title: Text(context.l10n.yes, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                trailing: filterByClients[0]
-                                                                                    ? SizedBox(
-                                                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                                                        child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                      )
-                                                                                    : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                              ),
-                                                                              ListTile(
-                                                                                onTap: () {
-                                                                                  setStateBottom(() {
-                                                                                    // Check if the Only True
-                                                                                    var filterActive = List.from(filterByClients);
-                                                                                    filterActive.retainWhere((element) => element == true);
-                                                                                    if (!(filterActive.length == 1 && filterByClients[1])) {
-                                                                                      //searchController.clear();
-                                                                                      filterByClients[1] = !filterByClients[1];
-                                                                                      hasFilter = true;
-                                                                                      mixpanel!.track('brand_clients_filter_active', properties: {
-                                                                                        'Values': [
-                                                                                          filterByClients[0] ? 'Yes' : ' ',
-                                                                                          filterByClients[1] ? 'No' : ' '
-                                                                                        ]
-                                                                                      });
-                                                                                      filterSearchResults(query, state, true);
-                                                                                    }
-                                                                                  });
-                                                                                },
-                                                                                title: Text(context.l10n.no, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                trailing: filterByClients[1]
-                                                                                    ? SizedBox(
-                                                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                                                        child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                      )
-                                                                                    : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                              ),
-                                                                            ],
-                                                                          )
-                                                                        : Column(
-                                                                            children: [
-                                                                              ListTile(
-                                                                                onTap: () {
-                                                                                  setStateBottom(() {
-                                                                                    //searchController.clear();
-                                                                                    orderBySessions[0] = !orderBySessions[0];
-                                                                                    orderBySessions[1] = false;
-                                                                                    hasOrder = true;
-                                                                                    filterSearchResults(query, state, true);
-                                                                                  });
-                                                                                },
-                                                                                title: Text(context.l10n.orderBySessionsMoreToLess, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                trailing: orderBySessions[0]
-                                                                                    ? SizedBox(
-                                                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                                                        child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                      )
-                                                                                    : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                              ),
-                                                                              ListTile(
-                                                                                onTap: () {
-                                                                                  setStateBottom(() {
-                                                                                    orderBySessions[1] = !orderBySessions[1];
-                                                                                    orderBySessions[0] = false;
-                                                                                    hasOrder = true;
-                                                                                    filterSearchResults(query, state, true);
-                                                                                  });
-                                                                                },
-                                                                                title: Text(context.l10n.orderBySessionsLessToMore, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                trailing: orderBySessions[1]
-                                                                                    ? SizedBox(
-                                                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                                                        child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                      )
-                                                                                    : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.09,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.09,
-                                              child: Icon(
-                                                Icons.filter_list,
-                                                color: hasOrder || hasFilter
-                                                    ? AppColors.darkGrey
-                                                    : AppColors.white,
-                                                size: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.07,
-                                              )),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      Container(
-                        color: AppColors.grey,
-                        height: 1.0,
-                      ),
-                    ],
-                  ),
-                ),
-                titlePadding: EdgeInsets.zero,
-                //centerTitle: true,
+            ResponsiveSliverAppBar(
+              height: context.height * 0.15,
+              title: context.l10n.clients,
+              appBarExpanded: appBarExpanded || searchClicked,
+              flexibleSpace: returnFlexibleSpaceBar(
+                context.height * 0.15,
+                state,
               ),
-              title: AnimatedOpacity(
-                  opacity: appBarExpanded || searchClicked ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: Text(context.l10n.clients,
-                      style: Theme.of(context)
-                          .appBarTheme
-                          .titleTextStyle
-                          ?.copyWith(
-                            color: AppColors.white,
-                          ))),
-              centerTitle: false,
-              leading: Builder(
-                builder: (BuildContext innerContext) => Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.02),
-                  child: IconButton(
-                      icon: Icon(
-                        Icons.menu,
-                        color: AppColors.white,
-                        size: MediaQuery.of(context).size.height * 0.04,
-                      ),
-                      onPressed: () =>
-                          mambaProScaffoldKey.currentState?.openDrawer()),
-                ),
-              ),
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    askSupport(context),
-                    unreadNotifications(context),
-                    unreadChats(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                    profileImage(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  ],
-                ),
-              ],
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 10)),
             state is ClientsSessionsLoaded

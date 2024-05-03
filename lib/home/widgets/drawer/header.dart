@@ -15,17 +15,19 @@ import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/Sha
 
 class Header extends StatelessWidget with PlatformMixin {
   double height;
+  double width;
 
   Header({
     Key? key,
     required this.height,
+    required this.width,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: height,
-      width: double.infinity,
+      width: width,
       decoration: const BoxDecoration(
         color: AppColors.darkGrey,
       ),
@@ -34,14 +36,15 @@ class Header extends StatelessWidget with PlatformMixin {
         children: [
           Container(
             decoration: BoxDecoration(
-                image: DecorationImage(
-              fit: BoxFit.cover,
-              image: CachedNetworkImageProvider(currentBrand.baseImage!),
-            )),
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: CachedNetworkImageProvider(currentBrand.baseImage!),
+              ),
+            ),
           ),
           Container(
             height: height,
-            width: context.width,
+            width: width,
             decoration: BoxDecoration(
               color: Colors.white,
               gradient: LinearGradient(
@@ -65,104 +68,113 @@ class Header extends StatelessWidget with PlatformMixin {
                 ],
               ),
             ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: context.width * 0.03,
-                  vertical: context.width * 0.05),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  CircularImage(
-                    size: context.width * 0.15,
-                    image: currentBrand.logoUrl,
-                    borderWidth: 0.5,
-                    color: AppColors.white,
-                  ),
-                  SizedBox(
-                    width: context.width * 0.03,
-                  ),
-                  Expanded(
-                    child: SizedBox(
-                      height: context.width * 0.15,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              currentBrand.name!,
-                              style: context
-                                  .textTheme
-                                  .headlineMedium
-                                  ?.copyWith(color: AppColors.white),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(width * 0.05),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      CircularImage(
+                        size: width * 0.2,
+                        image: currentBrand.logoUrl,
+                        borderWidth: 0.5,
+                        color: AppColors.white,
+                      ),
+                      SizedBox(
+                        width: width * 0.05,
+                      ),
+                      Expanded(
+                        child: SizedBox(
+                          height: width * 0.2,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Flexible(
-                                child: GestureDetector(
-                                  onTap: () => navigateToRolesInformationModal,
-                                  child: Text(
-                                    returnBrandRoleString(context),
-                                    textAlign: TextAlign.left,
-                                    style:
-                                        context.textTheme.bodyMedium!.copyWith(
-                                      color: AppColors.white,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                child: Text(
+                                  currentBrand.name!,
+                                  style: context.textTheme.headlineMedium
+                                      ?.copyWith(color: AppColors.white),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor:
-                                      AppColors.white.withOpacity(0.3),
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8.0),
-                                  shape: RoundedRectangleBorder(
-                                    // add this
-                                    borderRadius: BorderRadius.circular(10),
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: GestureDetector(
+                                      onTap: () =>
+                                          navigateToRolesInformationModal,
+                                      child: Text(
+                                        returnBrandRoleString(context),
+                                        textAlign: TextAlign.left,
+                                        style: context.textTheme.bodyMedium!
+                                            .copyWith(
+                                          color: AppColors.white,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
                                   ),
-                                  minimumSize: const Size(30, 20),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                onPressed: () => navigateShareBrandLink,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.qr_code,
-                                      color: AppColors.white,
-                                      size: 14,
+                                  const SizedBox(width: 8),
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: context
+                                          .colorScheme.secondary
+                                          .withOpacity(0.3),
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, right: 8.0),
+                                      shape: RoundedRectangleBorder(
+                                        // add this
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      minimumSize: const Size(30, 30),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
                                     ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      context.l10n.invite,
-                                      style: context
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(color: AppColors.white),
+                                    onPressed: () => navigateShareBrandLink,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.qr_code,
+                                          color: context.colorScheme.secondary,
+                                          size: 14,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          context.l10n.invite,
+                                          style: context.textTheme.bodyMedium!
+                                              .copyWith(
+                                            color:
+                                                context.colorScheme.secondary,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )
+                                  )
+                                ],
+                              ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Divider(
+                  color: context.theme.dividerColor,
+                  thickness: 1,
+                  height: 1,
+                ),
+              ],
             ),
           ),
         ],

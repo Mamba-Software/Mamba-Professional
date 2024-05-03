@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -25,6 +26,8 @@ import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
@@ -39,12 +42,13 @@ class BrandCalendarWidget extends StatefulWidget {
   CalendarView? calendarView;
   bool? onlyView;
 
-  BrandCalendarWidget(
-      {super.key,
-      required this.brandId,
-      this.dateTime,
-      this.calendarView,
-      this.onlyView,});
+  BrandCalendarWidget({
+    super.key,
+    required this.brandId,
+    this.dateTime,
+    this.calendarView,
+    this.onlyView,
+  });
 
   @override
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
@@ -303,9 +307,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
       case CalendarView.schedule:
         return Text(
           "${context.l10n.schedule} ",
-          style: Theme.of(context)
-              .textTheme
-              .displayLarge
+          style: context.textTheme.headlineMedium
               ?.copyWith(color: AppColors.white),
         );
       case CalendarView.day:
@@ -323,7 +325,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                     ).format(dateTimeStart)).substring(0, 3)} ",
                 style: Theme.of(context)
                     .textTheme
-                    .displayLarge
+                    .headlineMedium
                     ?.copyWith(color: AppColors.white),
               )
             : Text(
@@ -337,7 +339,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                 ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
-                    .displayLarge
+                    .headlineMedium
                     ?.copyWith(color: AppColors.white),
               );
       case CalendarView.week:
@@ -355,7 +357,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                 ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
-                    .displayLarge
+                    .headlineMedium
                     ?.copyWith(color: AppColors.white),
               )
             : Text(
@@ -371,7 +373,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                 ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
-                    .displayLarge
+                    .headlineMedium
                     ?.copyWith(color: AppColors.white),
               );
       case CalendarView.month:
@@ -384,7 +386,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
           ).format(middleMonthDate)),
           style: Theme.of(context)
               .textTheme
-              .displayLarge
+              .headlineMedium
               ?.copyWith(color: AppColors.white),
         );
       default:
@@ -402,7 +404,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                 ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
-                    .displayLarge
+                    .headlineMedium
                     ?.copyWith(color: AppColors.white),
               )
             : Text(
@@ -418,7 +420,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                 ).format(dateTimeStart))} ",
                 style: Theme.of(context)
                     .textTheme
-                    .displayLarge
+                    .headlineMedium
                     ?.copyWith(color: AppColors.white),
               );
     }
@@ -434,7 +436,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
         value: selectedValue,
         style: Theme.of(context)
             .textTheme
-            .displayLarge
+            .headlineMedium
             ?.copyWith(color: AppColors.white),
         underline: Container(color: Colors.transparent),
         isExpanded: false,
@@ -448,9 +450,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                   _buildTitleText(displayDateTimeStart, displayDateTimeEnd,
                       middleMonthDate),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.015),
-                  FaIcon(FontAwesomeIcons.chevronDown,
-                      size: MediaQuery.of(context).size.width * 0.03,
-                      color: AppColors.white),
+                  FaIcon(
+                    FontAwesomeIcons.chevronDown,
+                    size: iconSizeSmall,
+                    color: AppColors.white,
+                  ),
                 ],
               ),
             );
@@ -1340,6 +1344,95 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
     return filteredMembers.substring(0, filteredMembers.length - 2);
   }
 
+  FlexibleSpaceBar returnFlexibleSpaceBar(double height) {
+    return FlexibleSpaceBar(
+      background: Container(
+        height: height,
+        color: AppColors.darkGrey,
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildTitleFromDate(displayDateTimeStart,
+                          displayDateTimeEnd, middleMonthDate),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              mixpanel!.track('brand_calendar_today');
+                              setState(() {
+                                //_controller.selectedDate = DateTime.now();
+                                _controller.displayDate = DateTime.now()
+                                    .subtract(const Duration(hours: 1));
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: AppColors.white,
+                            ),
+                            child: Text(context.l10n.todayString,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: AppColors.white),
+                                textAlign: TextAlign.center),
+                          ),
+                          SizedBox(
+                            height: iconSizeBig,
+                            width: iconSizeBig,
+                            child: ClipOval(
+                              child: Material(
+                                color: hasFilter
+                                    ? AppColors.white
+                                    : Colors.transparent, // Button color
+                                child: InkWell(
+                                  splashColor: AppColors.white.withOpacity(0.2), // Splash color
+                                  onTap: () => onTapFilterIcon,
+                                  child: SizedBox(
+                                    width: iconSizeBig,
+                                    height: iconSizeBig,
+                                    child: Icon(
+                                      Icons.filter_list,
+                                      color: hasFilter
+                                          ? AppColors.darkGrey
+                                          : AppColors.white,
+                                      size: iconSize,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                Container(
+                  color: AppColors.grey,
+                  height: 1.0,
+                ),
+              ],
+            ),
+            const LinearProgressIndicatorWidget(),
+          ],
+        ),
+      ),
+      titlePadding: EdgeInsets.zero,
+      //centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1349,510 +1442,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
           physics: const NeverScrollableScrollPhysics(),
           controller: _scrollController,
           slivers: [
-            SliverAppBar(
-              surfaceTintColor: AppColors.darkGrey,
-              backgroundColor: AppColors.darkGrey,
-              expandedHeight: MediaQuery.of(context).size.height * 0.15,
-              systemOverlayStyle: SystemUiOverlayStyle.light,
-              elevation: 4,
-              floating: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  height: MediaQuery.of(context).size.height * 0.15,
-                  color: AppColors.darkGrey,
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                right:
-                                    MediaQuery.of(context).size.width * 0.025,
-                                bottom:
-                                    MediaQuery.of(context).size.height * 0.01),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                _buildTitleFromDate(displayDateTimeStart,
-                                    displayDateTimeEnd, middleMonthDate),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    TextButton(
-                                      onPressed: () {
-                                        mixpanel!.track('brand_calendar_today');
-                                        setState(() {
-                                          //_controller.selectedDate = DateTime.now();
-                                          _controller.displayDate =
-                                              DateTime.now().subtract(
-                                                  const Duration(hours: 1));
-                                        });
-                                      },
-                                      style: TextButton.styleFrom(
-                                        foregroundColor: AppColors.white,
-                                      ),
-                                      child: Text(context.l10n.todayString,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge
-                                              ?.copyWith(
-                                                  color: AppColors.white),
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.width *
-                                              0.09,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.09,
-                                      child: ClipOval(
-                                        child: Material(
-                                          color: hasFilter
-                                              ? AppColors.white
-                                              : Colors
-                                                  .transparent, // Button color
-                                          child: InkWell(
-                                            splashColor: Theme.of(context)
-                                                .colorScheme
-                                                .background, // Splash color
-                                            onTap: () async {
-                                              await showModalBottomSheet<int?>(
-                                                context: context,
-                                                isScrollControlled: true,
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.vertical(
-                                                    top: Radius.circular(20),
-                                                  ),
-                                                ),
-                                                clipBehavior:
-                                                    Clip.antiAliasWithSaveLayer,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  // Page View Controller
-                                                  final PageController
-                                                      pageController =
-                                                      PageController(
-                                                          initialPage: 0);
-                                                  int currentPage = 0;
-                                                  bool isTypeEvent = true;
-                                                  List<Usuario>
-                                                      selectedTrainersBottom =
-                                                      List.from(
-                                                          selectedTrainers);
-                                                  // Widget
-                                                  return StatefulBuilder(
-                                                    builder: (BuildContext
-                                                            context,
-                                                        StateSetter
-                                                            setStateBottom) {
-                                                      return FractionallySizedBox(
-                                                        heightFactor: 0.33,
-                                                        child: SizedBox(
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .height *
-                                                              0.5,
-                                                          width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width,
-                                                          child: Padding(
-                                                            padding: EdgeInsets
-                                                                .all(MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width *
-                                                                    0.02),
-                                                            child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                ListTile(
-                                                                  title: Text(
-                                                                      context
-                                                                          .l10n
-                                                                          .filterBy,
-                                                                      style: Theme.of(
-                                                                              context)
-                                                                          .textTheme
-                                                                          .bodySmall,
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .left),
-                                                                  trailing:
-                                                                      TextButton(
-                                                                          child: Text(
-                                                                              context.l10n.clear,
-                                                                              style: Theme.of(context).textTheme.bodySmall),
-                                                                          onPressed: () {
-                                                                            setStateBottom(() {
-                                                                              filterByCalendar = [
-                                                                                true,
-                                                                                true
-                                                                              ];
-                                                                              selectedTrainers = List.from(_brandTrainers);
-                                                                            });
-                                                                            // Navigator Pop
-                                                                            Navigator.pop(context);
-                                                                          }),
-                                                                  dense: true,
-                                                                  onTap:
-                                                                      currentPage ==
-                                                                              0
-                                                                          ? null
-                                                                          : () {
-                                                                              pageController.previousPage(
-                                                                                duration: const Duration(milliseconds: 500),
-                                                                                curve: Curves.ease,
-                                                                              );
-                                                                            },
-                                                                ),
-                                                                SizedBox(
-                                                                  height: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .height *
-                                                                      0.21,
-                                                                  width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                                  child:
-                                                                      PageView(
-                                                                    physics:
-                                                                        const NeverScrollableScrollPhysics(),
-                                                                    controller:
-                                                                        pageController,
-                                                                    onPageChanged:
-                                                                        (int
-                                                                            page) {
-                                                                      setStateBottom(
-                                                                          () {
-                                                                        currentPage =
-                                                                            page;
-                                                                      });
-                                                                    },
-                                                                    children: <Widget>[
-                                                                      Column(
-                                                                        children: [
-                                                                          ListTile(
-                                                                            onTap:
-                                                                                () {
-                                                                              setStateBottom(() {
-                                                                                isTypeEvent = true;
-                                                                              });
-                                                                              pageController.nextPage(
-                                                                                duration: const Duration(milliseconds: 500),
-                                                                                curve: Curves.ease,
-                                                                              );
-                                                                            },
-                                                                            title: Text("${context.l10n.typeProfile.split(" ")[0]} ${context.l10n.typeProfile.split(" ")[1]} ${context.l10n.events.toLowerCase()}",
-                                                                                style: Theme.of(context).textTheme.bodyLarge,
-                                                                                textAlign: TextAlign.left),
-                                                                            subtitle: Text(returnFilteredRolesString(),
-                                                                                style: Theme.of(context).textTheme.bodySmall,
-                                                                                textAlign: TextAlign.left),
-                                                                            trailing:
-                                                                                SizedBox(
-                                                                              width: MediaQuery.of(context).size.width * 0.15,
-                                                                              child: Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
-                                                                            ),
-                                                                          ),
-                                                                          ListTile(
-                                                                            onTap:
-                                                                                () {
-                                                                              setStateBottom(() {
-                                                                                isTypeEvent = false;
-                                                                              });
-                                                                              pageController.nextPage(
-                                                                                duration: const Duration(milliseconds: 500),
-                                                                                curve: Curves.ease,
-                                                                              );
-                                                                            },
-                                                                            title: Text(context.l10n.trainers,
-                                                                                style: Theme.of(context).textTheme.bodyLarge,
-                                                                                textAlign: TextAlign.left),
-                                                                            subtitle:
-                                                                                Text(
-                                                                              returnFilteredStaffMembersString(),
-                                                                              style: Theme.of(context).textTheme.bodySmall,
-                                                                              textAlign: TextAlign.left,
-                                                                              maxLines: 1,
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                            ),
-                                                                            trailing:
-                                                                                SizedBox(
-                                                                              width: MediaQuery.of(context).size.width * 0.15,
-                                                                              child: Center(child: Icon(Icons.arrow_forward_ios, size: MediaQuery.of(context).size.width * 0.04, color: AppColors.grey)),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      isTypeEvent
-                                                                          ? Column(
-                                                                              children: [
-                                                                                ListTile(
-                                                                                  onTap: () {
-                                                                                    // Check if the Only True
-                                                                                    var filterActive = List.from(filterByCalendar);
-                                                                                    filterActive.retainWhere((element) => element == true);
-                                                                                    if (!(filterActive.length == 1 && filterByCalendar[0])) {
-                                                                                      filterByCalendar[0] = !filterByCalendar[0];
-                                                                                      // Navigator Pop
-                                                                                      Navigator.pop(context);
-                                                                                    }
-                                                                                  },
-                                                                                  title: Text(context.l10n.groupEvent, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                  trailing: filterByCalendar[0]
-                                                                                      ? SizedBox(
-                                                                                          width: MediaQuery.of(context).size.width * 0.15,
-                                                                                          child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                        )
-                                                                                      : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                                ),
-                                                                                ListTile(
-                                                                                  onTap: () {
-                                                                                    // Check if the Only True
-                                                                                    var filterActive = List.from(filterByCalendar);
-                                                                                    filterActive.retainWhere((element) => element == true);
-                                                                                    if (!(filterActive.length == 1 && filterByCalendar[1])) {
-                                                                                      filterByCalendar[1] = !filterByCalendar[1];
-                                                                                      // Navigator Pop
-                                                                                      Navigator.pop(context);
-                                                                                    }
-                                                                                  },
-                                                                                  title: Text(context.l10n.privateEvent, style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.left),
-                                                                                  trailing: filterByCalendar[1]
-                                                                                      ? SizedBox(
-                                                                                          width: MediaQuery.of(context).size.width * 0.15,
-                                                                                          child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
-                                                                                        )
-                                                                                      : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                                ),
-                                                                              ],
-                                                                            )
-                                                                          : Container(
-                                                                              height: MediaQuery.of(context).size.height * 0.21,
-                                                                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
-                                                                              child: GridView.builder(
-                                                                                  shrinkWrap: true,
-                                                                                  physics: const ClampingScrollPhysics(),
-                                                                                  scrollDirection: Axis.vertical,
-                                                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                    crossAxisCount: 2,
-                                                                                    childAspectRatio: 3.5,
-                                                                                    crossAxisSpacing: 15,
-                                                                                    mainAxisSpacing: 15.0,
-                                                                                  ),
-                                                                                  itemCount: _brandTrainers.length,
-                                                                                  itemBuilder: (context, int index) {
-                                                                                    var trainer = _brandTrainers[index];
-                                                                                    return GestureDetector(
-                                                                                      onTap: () {
-                                                                                        setStateBottom(() {
-                                                                                          if (selectedTrainersBottom.contains(trainer)) {
-                                                                                            if (selectedTrainersBottom.length > 1) {
-                                                                                              selectedTrainersBottom.remove(trainer);
-                                                                                              selectedTrainers.remove(trainer);
-                                                                                              // Navigator Pop
-                                                                                              Navigator.pop(context);
-                                                                                            }
-                                                                                          } else {
-                                                                                            selectedTrainersBottom.add(trainer);
-                                                                                            selectedTrainers.add(trainer);
-                                                                                            // Navigator Pop
-                                                                                            Navigator.pop(context);
-                                                                                          }
-                                                                                        });
-                                                                                      },
-                                                                                      child: Container(
-                                                                                        margin: const EdgeInsets.only(right: 5),
-                                                                                        child: Row(
-                                                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                                                          children: [
-                                                                                            CircularImage(
-                                                                                              size: MediaQuery.of(context).size.width * 0.1,
-                                                                                              image: trainer.imageUrl,
-                                                                                              color: Theme.of(context).primaryColor,
-                                                                                              borderWidth: 1.0,
-                                                                                            ),
-                                                                                            const SizedBox(width: 8),
-                                                                                            Flexible(
-                                                                                              child: Text(
-                                                                                                "${trainer.firstName!} ${trainer.lastName![0]}.",
-                                                                                                style: Theme.of(context).textTheme.bodyLarge,
-                                                                                                overflow: TextOverflow.fade,
-                                                                                                maxLines: 1,
-                                                                                                softWrap: false,
-                                                                                              ),
-                                                                                            ),
-                                                                                            const SizedBox(width: 8),
-                                                                                            SizedBox(
-                                                                                              height: MediaQuery.of(context).size.width * 0.06,
-                                                                                              width: MediaQuery.of(context).size.width * 0.06,
-                                                                                              child: MaterialButton(
-                                                                                                elevation: 4,
-                                                                                                color: selectedTrainersBottom.contains(trainer) ? context.colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
-                                                                                                textColor: selectedTrainersBottom.contains(trainer) ? context.colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
-                                                                                                padding: EdgeInsets.zero,
-                                                                                                shape: const CircleBorder(),
-                                                                                                onPressed: () {
-                                                                                                  setStateBottom(() {
-                                                                                                    if (selectedTrainersBottom.contains(trainer)) {
-                                                                                                      if (selectedTrainersBottom.length > 1) {
-                                                                                                        selectedTrainersBottom.remove(trainer);
-                                                                                                        selectedTrainers.remove(trainer);
-                                                                                                        // Navigator Pop
-                                                                                                        Navigator.pop(context);
-                                                                                                      }
-                                                                                                    } else {
-                                                                                                      selectedTrainersBottom.add(trainer);
-                                                                                                      selectedTrainers.add(trainer);
-                                                                                                      // Navigator Pop
-                                                                                                      Navigator.pop(context);
-                                                                                                    }
-                                                                                                  });
-                                                                                                },
-                                                                                                child: selectedTrainersBottom.contains(trainer)
-                                                                                                    ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width * 0.04)
-                                                                                                    : SizedBox(
-                                                                                                        height: MediaQuery.of(context).size.width * 0.03,
-                                                                                                        width: MediaQuery.of(context).size.width * 0.03,
-                                                                                                      ),
-                                                                                              ),
-                                                                                            )
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                    );
-                                                                                  }),
-                                                                            ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                              ).whenComplete(() {
-                                                setState(() {
-                                                  // Filter By Type Of Events
-                                                  if (filterByCalendar[0] &&
-                                                      filterByCalendar[1]) {
-                                                    // Group/Private Selected
-                                                    hasFilter = false;
-                                                    filterEventsNumber = 0;
-                                                  } else if (filterByCalendar[
-                                                      0]) {
-                                                    // Group Selected
-                                                    filterEventsNumber = 1;
-                                                    hasFilter = true;
-                                                  } else if (filterByCalendar[
-                                                      1]) {
-                                                    // Private Selected
-                                                    filterEventsNumber = 2;
-                                                    hasFilter = true;
-                                                  }
-                                                  // Filter By Staff Members
-                                                  if (filterByCalendar[0] &&
-                                                      filterByCalendar[1]) {
-                                                    if (selectedTrainers
-                                                            .length ==
-                                                        _brandTrainers.length) {
-                                                      hasFilter = false;
-                                                    } else {
-                                                      hasFilter = true;
-                                                    }
-                                                  }
-                                                });
-                                              });
-                                            },
-                                            child: SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.09,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.09,
-                                                child: Icon(
-                                                  Icons.filter_list,
-                                                  color: hasFilter
-                                                      ? AppColors.darkGrey
-                                                      : AppColors.white,
-                                                  size: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.07,
-                                                )),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.01),
-                          Container(
-                            color: AppColors.grey,
-                            height: 1.0,
-                          ),
-                        ],
-                      ),
-                      const LinearProgressIndicatorWidget(),
-                    ],
-                  ),
-                ),
-                titlePadding: EdgeInsets.zero,
-                //centerTitle: true,
-              ),
-              centerTitle: false,
-              leading: Builder(
-                builder: (BuildContext innerContext) => Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.02),
-                  child: IconButton(
-                      icon: Icon(
-                        Icons.menu,
-                        color: AppColors.white,
-                        size: MediaQuery.of(context).size.height * 0.04,
-                      ),
-                      onPressed: () =>
-                          mambaProScaffoldKey.currentState?.openDrawer()),
-                ),
-              ),
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    askSupport(context),
-                    unreadNotifications(context),
-                    unreadChats(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                    profileImage(context),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  ],
-                ),
-              ],
+            ResponsiveSliverAppBar(
+              height: context.height * 0.15,
+              title: context.l10n.bookings,
+              appBarExpanded: appBarExpanded,
+              flexibleSpace: returnFlexibleSpaceBar(context.height * 0.15),
             ),
             BlocBuilder<BrandEventsCubit, BrandEventsState>(
               builder: (context, state) {
@@ -2044,7 +1638,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                                           .scaffoldBackgroundColor,
                                       monthTextStyle: Theme.of(context)
                                           .textTheme
-                                          .displayLarge,
+                                          .headlineMedium,
                                     )),
                                 scheduleViewMonthHeaderBuilder: (BuildContext
                                         buildContext,
@@ -2074,7 +1668,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                                           ).format(details.date)),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .displayLarge
+                                              .headlineMedium
                                               ?.copyWith(
                                                   fontWeight: FontWeight.w500),
                                           textAlign: TextAlign.left,
@@ -2556,6 +2150,437 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
       _controller.view = CalendarView.day;
       selectedValue = '1';
     } else if (_controller.view == CalendarView.schedule) {}
+  }
+
+  void onTapFilterIcon(CalendarTapDetails details) async {
+    await showModalBottomSheet<int?>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        // Page View Controller
+        final PageController pageController = PageController(initialPage: 0);
+        int currentPage = 0;
+        bool isTypeEvent = true;
+        List<Usuario> selectedTrainersBottom = List.from(selectedTrainers);
+        // Widget
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setStateBottom) {
+            return FractionallySizedBox(
+              heightFactor: 0.33,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        title: Text(context.l10n.filterBy,
+                            style: Theme.of(context).textTheme.bodySmall,
+                            textAlign: TextAlign.left),
+                        trailing: TextButton(
+                            child: Text(context.l10n.clear,
+                                style: Theme.of(context).textTheme.bodySmall),
+                            onPressed: () {
+                              setStateBottom(() {
+                                filterByCalendar = [true, true];
+                                selectedTrainers = List.from(_brandTrainers);
+                              });
+                              // Navigator Pop
+                              Navigator.pop(context);
+                            }),
+                        dense: true,
+                        onTap: currentPage == 0
+                            ? null
+                            : () {
+                                pageController.previousPage(
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.ease,
+                                );
+                              },
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.21,
+                        width: MediaQuery.of(context).size.width,
+                        child: PageView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: pageController,
+                          onPageChanged: (int page) {
+                            setStateBottom(() {
+                              currentPage = page;
+                            });
+                          },
+                          children: <Widget>[
+                            Column(
+                              children: [
+                                ListTile(
+                                  onTap: () {
+                                    setStateBottom(() {
+                                      isTypeEvent = true;
+                                    });
+                                    pageController.nextPage(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                    );
+                                  },
+                                  title: Text(
+                                      "${context.l10n.typeProfile.split(" ")[0]} ${context.l10n.typeProfile.split(" ")[1]} ${context.l10n.events.toLowerCase()}",
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                      textAlign: TextAlign.left),
+                                  subtitle: Text(returnFilteredRolesString(),
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                      textAlign: TextAlign.left),
+                                  trailing: SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.15,
+                                    child: Center(
+                                        child: Icon(Icons.arrow_forward_ios,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.04,
+                                            color: AppColors.grey)),
+                                  ),
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setStateBottom(() {
+                                      isTypeEvent = false;
+                                    });
+                                    pageController.nextPage(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                    );
+                                  },
+                                  title: Text(context.l10n.trainers,
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                      textAlign: TextAlign.left),
+                                  subtitle: Text(
+                                    returnFilteredStaffMembersString(),
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  trailing: SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.15,
+                                    child: Center(
+                                        child: Icon(Icons.arrow_forward_ios,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.04,
+                                            color: AppColors.grey)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            isTypeEvent
+                                ? Column(
+                                    children: [
+                                      ListTile(
+                                        onTap: () {
+                                          // Check if the Only True
+                                          var filterActive =
+                                              List.from(filterByCalendar);
+                                          filterActive.retainWhere(
+                                              (element) => element == true);
+                                          if (!(filterActive.length == 1 &&
+                                              filterByCalendar[0])) {
+                                            filterByCalendar[0] =
+                                                !filterByCalendar[0];
+                                            // Navigator Pop
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                        title: Text(context.l10n.groupEvent,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge,
+                                            textAlign: TextAlign.left),
+                                        trailing: filterByCalendar[0]
+                                            ? SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15,
+                                                child: Center(
+                                                    child: Icon(Icons.check,
+                                                        size: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.08,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary)),
+                                              )
+                                            : SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15),
+                                      ),
+                                      ListTile(
+                                        onTap: () {
+                                          // Check if the Only True
+                                          var filterActive =
+                                              List.from(filterByCalendar);
+                                          filterActive.retainWhere(
+                                              (element) => element == true);
+                                          if (!(filterActive.length == 1 &&
+                                              filterByCalendar[1])) {
+                                            filterByCalendar[1] =
+                                                !filterByCalendar[1];
+                                            // Navigator Pop
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                        title: Text(context.l10n.privateEvent,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge,
+                                            textAlign: TextAlign.left),
+                                        trailing: filterByCalendar[1]
+                                            ? SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15,
+                                                child: Center(
+                                                    child: Icon(Icons.check,
+                                                        size: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.08,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary)),
+                                              )
+                                            : SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15),
+                                      ),
+                                    ],
+                                  )
+                                : Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.21,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal:
+                                            MediaQuery.of(context).size.width *
+                                                0.04),
+                                    child: GridView.builder(
+                                        shrinkWrap: true,
+                                        physics: const ClampingScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          childAspectRatio: 3.5,
+                                          crossAxisSpacing: 15,
+                                          mainAxisSpacing: 15.0,
+                                        ),
+                                        itemCount: _brandTrainers.length,
+                                        itemBuilder: (context, int index) {
+                                          var trainer = _brandTrainers[index];
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setStateBottom(() {
+                                                if (selectedTrainersBottom
+                                                    .contains(trainer)) {
+                                                  if (selectedTrainersBottom
+                                                          .length >
+                                                      1) {
+                                                    selectedTrainersBottom
+                                                        .remove(trainer);
+                                                    selectedTrainers
+                                                        .remove(trainer);
+                                                    // Navigator Pop
+                                                    Navigator.pop(context);
+                                                  }
+                                                } else {
+                                                  selectedTrainersBottom
+                                                      .add(trainer);
+                                                  selectedTrainers.add(trainer);
+                                                  // Navigator Pop
+                                                  Navigator.pop(context);
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              margin: const EdgeInsets.only(
+                                                  right: 5),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  CircularImage(
+                                                    size: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.1,
+                                                    image: trainer.imageUrl,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                    borderWidth: 1.0,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Flexible(
+                                                    child: Text(
+                                                      "${trainer.firstName!} ${trainer.lastName![0]}.",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyLarge,
+                                                      overflow:
+                                                          TextOverflow.fade,
+                                                      maxLines: 1,
+                                                      softWrap: false,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  SizedBox(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.06,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.06,
+                                                    child: MaterialButton(
+                                                      elevation: 4,
+                                                      color: selectedTrainersBottom
+                                                              .contains(trainer)
+                                                          ? context.colorScheme
+                                                              .secondary
+                                                          : Theme.of(context)
+                                                              .scaffoldBackgroundColor,
+                                                      textColor: selectedTrainersBottom
+                                                              .contains(trainer)
+                                                          ? context.colorScheme
+                                                              .secondary
+                                                          : Theme.of(context)
+                                                              .scaffoldBackgroundColor,
+                                                      padding: EdgeInsets.zero,
+                                                      shape:
+                                                          const CircleBorder(),
+                                                      onPressed: () {
+                                                        setStateBottom(() {
+                                                          if (selectedTrainersBottom
+                                                              .contains(
+                                                                  trainer)) {
+                                                            if (selectedTrainersBottom
+                                                                    .length >
+                                                                1) {
+                                                              selectedTrainersBottom
+                                                                  .remove(
+                                                                      trainer);
+                                                              selectedTrainers
+                                                                  .remove(
+                                                                      trainer);
+                                                              // Navigator Pop
+                                                              Navigator.pop(
+                                                                  context);
+                                                            }
+                                                          } else {
+                                                            selectedTrainersBottom
+                                                                .add(trainer);
+                                                            selectedTrainers
+                                                                .add(trainer);
+                                                            // Navigator Pop
+                                                            Navigator.pop(
+                                                                context);
+                                                          }
+                                                        });
+                                                      },
+                                                      child: selectedTrainersBottom
+                                                              .contains(trainer)
+                                                          ? Icon(Icons.check,
+                                                              color: AppColors
+                                                                  .white,
+                                                              size: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.04)
+                                                          : SizedBox(
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.03,
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.03,
+                                                            ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    ).whenComplete(() {
+      setState(() {
+        // Filter By Type Of Events
+        if (filterByCalendar[0] && filterByCalendar[1]) {
+          // Group/Private Selected
+          hasFilter = false;
+          filterEventsNumber = 0;
+        } else if (filterByCalendar[0]) {
+          // Group Selected
+          filterEventsNumber = 1;
+          hasFilter = true;
+        } else if (filterByCalendar[1]) {
+          // Private Selected
+          filterEventsNumber = 2;
+          hasFilter = true;
+        }
+        // Filter By Staff Members
+        if (filterByCalendar[0] && filterByCalendar[1]) {
+          if (selectedTrainers.length == _brandTrainers.length) {
+            hasFilter = false;
+          } else {
+            hasFilter = true;
+          }
+        }
+      });
+    });
   }
 
   void onLongPressCalendar(CalendarLongPressDetails details) async {

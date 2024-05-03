@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 
 Widget askSupport(BuildContext context) {
@@ -14,7 +15,7 @@ Widget askSupport(BuildContext context) {
       child: Icon(
         Icons.help_outline_outlined,
         color: AppColors.white,
-        size: MediaQuery.of(context).size.width * 0.06,
+        size: iconSize,
       ),
     ),
   );

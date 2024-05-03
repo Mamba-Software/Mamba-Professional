@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Brand.dart';
@@ -27,10 +28,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsStats/Sess
 import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsStats/TimeOffer.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
-import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
-import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
-import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
-import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
+import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 
 class Stats extends StatefulWidget {
@@ -264,6 +262,31 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         .toList();
   }
 
+  FlexibleSpaceBar returnFlexibleSpaceBar(double height) {
+    return FlexibleSpaceBar(
+      background: Container(
+        color: AppColors.darkGrey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                context.l10n.stats,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: AppColors.white,
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      titlePadding: EdgeInsets.zero,
+      //centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isFirstBuild) {
@@ -283,97 +306,18 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    SliverAppBar(
-                      surfaceTintColor: AppColors.darkGrey,
-                      backgroundColor: AppColors.darkGrey,
-                      expandedHeight: MediaQuery.of(context).size.height * 0.13,
-                      systemOverlayStyle: SystemUiOverlayStyle.light,
-                      elevation: 0,
-                      floating: false,
-                      pinned: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Container(
-                          color: AppColors.darkGrey,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: MediaQuery.of(context).size.width *
-                                        0.05,
-                                    right: MediaQuery.of(context).size.width *
-                                        0.025),
-                                child: Text(
-                                  context.l10n.stats,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displayLarge
-                                      ?.copyWith(
-                                        color: AppColors.white,
-                                      ),
-                                ),
-                              ),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.015,
-                              ),
-                            ],
-                          ),
-                        ),
-                        titlePadding: EdgeInsets.zero,
-                        //centerTitle: true,
-                      ),
-                      title: AnimatedOpacity(
-                          opacity: appBarExpanded ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: Text(context.l10n.stats,
-                              style: Theme.of(context)
-                                  .appBarTheme
-                                  .titleTextStyle
-                                  ?.copyWith(
-                                    color: AppColors.white,
-                                  ))),
-                      centerTitle: false,
-                      leading: Builder(
-                        builder: (BuildContext innerContext) => Padding(
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.02),
-                          child: IconButton(
-                              icon: Icon(
-                                Icons.menu,
-                                color: AppColors.white,
-                                size: MediaQuery.of(context).size.height * 0.04,
-                              ),
-                              onPressed: () => mambaProScaffoldKey.currentState
-                                  ?.openDrawer()),
-                        ),
-                      ),
-                      actions: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            askSupport(context),
-                            unreadNotifications(context),
-                            unreadChats(context),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.025),
-                            profileImage(context),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.03),
-                          ],
-                        ),
-                      ],
+                    ResponsiveSliverAppBar(
+                      height: context.height * 0.13,
+                      title: context.l10n.stats,
+                      appBarExpanded: appBarExpanded,
+                      flexibleSpace:
+                          returnFlexibleSpaceBar(context.height * 0.13),
                     ),
                     SliverPersistentHeader(
                       delegate: _SliverAppBarDelegateSecond(
                         Container(
-                          height: MediaQuery.of(context).size.height * 0.06,
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.04,
-                              right: MediaQuery.of(context).size.width * 0.04),
+                          height: context.height * 0.13 / 2,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           color: AppColors.darkGrey,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -411,18 +355,15 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                               ),
                               Text(
                                 '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: AppColors.white,
-                                        fontWeight: FontWeight.bold),
+                                style: context.textTheme.bodyMedium!.copyWith(
+                                  color: AppColors.white,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
                           ),
                         ),
-                        MediaQuery.of(context).size.height * 0.06,
+                        context.height * 0.13 / 2,
                       ),
                       pinned: true,
                     ),
@@ -430,7 +371,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                       delegate: _SliverAppBarDelegate(
                         TabBar(
                           indicatorWeight: 3,
-                          indicatorColor: AppColors.grey,
+                          indicatorColor: AppColors.white,
                           labelColor: AppColors.white,
                           unselectedLabelColor: AppColors.white,
                           labelStyle: Theme.of(context).textTheme.bodyMedium,
@@ -485,90 +426,24 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    SliverAppBar(
-                      surfaceTintColor: AppColors.darkGrey,
-                      backgroundColor: AppColors.darkGrey,
-                      expandedHeight: MediaQuery.of(context).size.height * 0.13,
-                      systemOverlayStyle: SystemUiOverlayStyle.light,
-                      floating: true,
-                      pinned: true,
-                      snap: true,
-                      forceElevated: false,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Container(
-                          color: AppColors.darkGrey,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: MediaQuery.of(context).size.width *
-                                        0.05,
-                                    right: MediaQuery.of(context).size.width *
-                                        0.025),
-                                child: Text(
-                                  context.l10n.stats,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displayLarge
-                                      ?.copyWith(
-                                        color: AppColors.white,
-                                      ),
-                                ),
-                              ),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.015,
-                              ),
-                            ],
-                          ),
-                        ),
-                        titlePadding: EdgeInsets.zero,
-                        //centerTitle: true,
-                      ),
-                      title: appBarExpanded
-                          ? Text(
-                              context.l10n.stats,
-                              style: Theme.of(context)
-                                  .appBarTheme
-                                  .titleTextStyle
-                                  ?.copyWith(
-                                    color: AppColors.white,
-                                  ),
-                            )
-                          : Container(),
-                      centerTitle: true,
-                      leading: Builder(
-                        builder: (BuildContext innerContext) => Padding(
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.02),
-                          child: IconButton(
-                              icon: Icon(
-                                Icons.menu,
-                                color: AppColors.white,
-                                size: MediaQuery.of(context).size.height * 0.04,
-                              ),
-                              onPressed: () => mambaProScaffoldKey.currentState
-                                  ?.openDrawer()),
-                        ),
-                      ),
+                    ResponsiveSliverAppBar(
+                      height: context.height * 0.13,
+                      title: context.l10n.stats,
+                      appBarExpanded: appBarExpanded,
+                      flexibleSpace:
+                          returnFlexibleSpaceBar(context.height * 0.15),
                     ),
                     SliverPersistentHeader(
                       delegate: _SliverAppBarDelegateSecond(
                         Container(
-                          height: MediaQuery.of(context).size.height * 0.06,
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.04,
-                              right: MediaQuery.of(context).size.width * 0.04),
+                          height: context.height * 0.13 / 2,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           color: AppColors.darkGrey,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TextButton(
                                 style: TextButton.styleFrom(
-                                  foregroundColor:
-                                      Theme.of(context).primaryColor,
                                   backgroundColor:
                                       AppColors.lightGrey.withOpacity(0.1),
                                   shape: RoundedRectangleBorder(
@@ -600,18 +475,15 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                               ),
                               Text(
                                 '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: AppColors.white,
-                                        fontWeight: FontWeight.bold),
+                                style: context.textTheme.bodyMedium!.copyWith(
+                                  color: AppColors.white,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
                           ),
                         ),
-                        MediaQuery.of(context).size.height * 0.06,
+                        context.height * 0.13 / 2,
                       ),
                       pinned: true,
                     ),

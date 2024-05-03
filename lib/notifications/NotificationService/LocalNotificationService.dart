@@ -229,10 +229,10 @@ class LocalNotificationService {
         break;
       case "Notifications":
         await Navigator.of(context)
-            .pushNamed("Notifications", arguments: pageIndex);
+            .pushNamed("Notifications", arguments: 10);
         break;
       case "Chat":
-        await Navigator.of(context).pushNamed("Chat", arguments: pageIndex);
+        await Navigator.of(context).pushNamed("Chat", arguments: 10);
         break;
       case "BrandPage":
         break;

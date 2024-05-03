@@ -14,24 +14,22 @@ class Body extends StatelessWidget with PlatformMixin {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView(
-        physics: const ClampingScrollPhysics(),        
+        physics: const ClampingScrollPhysics(),
         padding: EdgeInsets.zero,
         children: [
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),          
+          const SizedBox(height: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.04),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   context.l10n.management,
-                  style: context.textTheme.bodyLarge,
+                  style: context.textTheme.labelLarge,
                   textAlign: TextAlign.left,
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              const SizedBox(height: 4),
               const BodyTile(
                 page: HomeNavigationPage.BOOKINGS,
               ),
@@ -41,17 +39,16 @@ class Body extends StatelessWidget with PlatformMixin {
               const BodyTile(
                 page: HomeNavigationPage.STATS,
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              const SizedBox(height: 4),
               Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.04),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   context.l10n.yourBrand,
-                  style: context.textTheme.bodyLarge,
+                  style: context.textTheme.labelLarge,
                   textAlign: TextAlign.left,
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              const SizedBox(height: 4),
               const BodyTile(
                 page: HomeNavigationPage.RATES,
               ),
@@ -61,20 +58,17 @@ class Body extends StatelessWidget with PlatformMixin {
               const BodyTile(
                 page: HomeNavigationPage.STAFF,
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              const SizedBox(height: 4),
               Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.04),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   context.l10n.information,
-                  style: context.textTheme.bodyLarge,
+                  style: context.textTheme.labelLarge,
                   textAlign: TextAlign.left,
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-              const BodyTile(
-                page: HomeNavigationPage.INFO
-              ),
+              const SizedBox(height: 4),
+              const BodyTile(page: HomeNavigationPage.INFO),
               const BodyTile(
                 page: HomeNavigationPage.IMAGES,
               ),
@@ -83,7 +77,7 @@ class Body extends StatelessWidget with PlatformMixin {
               ),
             ],
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+          const SizedBox(height: 16),
         ],
       ),
     );
