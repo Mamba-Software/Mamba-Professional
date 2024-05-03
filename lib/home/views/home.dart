@@ -163,8 +163,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     }).onError((error) {
       print(error.toString());
     });
-    // Setting default open to Brand Calendar
-    pageIndex = 10;
+
     // Getting User Information
     setState(() {
       isLoading = false;

@@ -94,8 +94,11 @@ class _BrandScreenState extends State<BrandScreen> {
             setState(() {
               _pageController.jumpToPage(state.pageIndex);
             });
-            // Close Drawer
-            Navigator.of(context).pop();
+            if (navigationDrawerKey.currentState != null &&
+                navigationDrawerKey.currentState!.isDrawerOpen) {
+              // Close Drawer
+              Navigator.of(context).pop();
+            }
           },
         ),
       ],
