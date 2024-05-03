@@ -8,7 +8,7 @@ class SubscriptionState extends Equatable {
   @override
   List<Object> get props => [subscription];
 
-  SubscriptionState copyWith({Subscription? user}) {
+  SubscriptionState copyWith({Subscription? subsription}) {
     return SubscriptionState(
       subscription: subscription ?? this.subscription,
     );

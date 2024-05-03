@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/views/Login.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
@@ -25,6 +26,7 @@ import 'package:mamba/screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locat
 
 class BrandScreen extends StatefulWidget {
   static String routeName = '/brand';
+
   static GoRoute route = GoRoute(
     name: routeName,
     path: '/brand',
@@ -43,6 +45,17 @@ class _BrandScreenState extends State<BrandScreen> {
   @override
   void initState() {
     super.initState();
+    paywallFunc();
+  }
+
+  Future<void> paywallFunc() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final currentState = context.read<BrandSuscriptionCubit>().state;
+      if (currentState is BrandSuscriptionLoadedFalse) {
+        await navigateToPayWall(context, true);
+      }
+    });
+    return;
   }
 
   @override
@@ -65,6 +78,13 @@ class _BrandScreenState extends State<BrandScreen> {
                 break;
               case AuthStatus.unknown:
                 break;
+            }
+          },
+        ),
+        BlocListener<BrandSuscriptionCubit, BrandSuscriptionState>(
+          listener: (context, state) async {
+            if (state is BrandSuscriptionLoadedFalse) {
+              await navigateToPayWall(context);
             }
           },
         ),

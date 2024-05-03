@@ -16,7 +16,7 @@ import 'package:mamba/data/Models/Purchase.dart';
 import 'dart:io';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import '../../../subscription/models/Subscription.dart';
+import 'package:mamba/data/Models/Subscription.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/data/Models/Usuario.dart';

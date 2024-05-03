@@ -10,7 +10,7 @@ import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Suscription/SuscriptionDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import '../../../../../../subscription/models/Subscription.dart';
+import 'package:mamba/data/Models/Subscription.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:equatable/equatable.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';

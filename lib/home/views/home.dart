@@ -114,6 +114,14 @@ class _HomePageBodyState extends State<HomePageBody> {
     });
     // Check If App Update
     context.read<PopupsCubit>().checkIfAppUpdate();
+
+    final currentState = context.read<BrandBloc>().state;
+    if (currentState.brand.id != null && currentState.brand.id != '') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.goNamed(BrandScreen.routeName);
+      });
+    }
+
     // On StartUp Dialogs
     launchOnStartUpDialogs();
   }
@@ -252,6 +260,14 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   @override
   Widget build(BuildContext context) {
+    final brandBloc = context.read<BrandBloc>();
+
+    // Verifica el estado actual inmediatamente al construir el widget
+    final currentState = brandBloc.state;
+    if (currentState.brand.id != null && currentState.brand.id! != '') {
+      context.goNamed(BrandScreen.routeName);
+    }
+
     return MultiBlocListener(
       listeners: [
         BlocListener<AuthBloc, AuthStateS>(
@@ -267,17 +283,24 @@ class _HomePageBodyState extends State<HomePageBody> {
             }
           },
         ),
+        BlocListener<BrandBloc, BrandState>(
+          listener: (context, state) {
+            if (state.brand.id != null && state.brand.id! != '') {
+              context.goNamed(BrandScreen.routeName);
+            }
+          },
+        ),
       ],
-      child: isLoading
-          ? Scaffold(
-              backgroundColor: AppColors.black,
-              body: LoadingView(
-                hasLogo: false,
-                isSmall: true,
-                color: AppColors.white,
-              ),
-            )
-          : BlocSelector<BrandBloc, BrandState, BrandState>(
+      child: Scaffold(
+        backgroundColor: AppColors.black,
+        body: LoadingView(
+          hasLogo: false,
+          isSmall: true,
+          color: AppColors.white,
+        ),
+      ),
+    );
+    /* BlocSelector<BrandBloc, BrandState, BrandState>(
               selector: (state) {
                 return state;
               },
@@ -287,9 +310,9 @@ class _HomePageBodyState extends State<HomePageBody> {
                     return const NoBrandScreen();
                   } else if (!state.brand.brandActive &&
                       currentUser.id == currentBrand.adminID) {
-                    if (state.brand.avoidPayWall) {
-                      return const BrandScreen();
-                    } else {
+
+                      
+ else {
                       return PayWall(
                           brandId: currentBrand.id!, comesFromInitPage: true);
                     }
@@ -320,6 +343,6 @@ class _HomePageBodyState extends State<HomePageBody> {
               },*/
               },
             ),
-    ); // The method to build widget based on AuthState
+    ); */ // The method to build widget based on AuthState
   }
 }

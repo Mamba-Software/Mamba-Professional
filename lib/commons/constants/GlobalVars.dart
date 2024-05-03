@@ -66,7 +66,7 @@ bool setBrandActive() {
   } else {
     brandIsActive = false;
   }
-  return true;
+  return brandIsActive;
 }
 
 Future<void> navigateToPayWall(BuildContext context,
@@ -91,7 +91,10 @@ Future<void> navigateToPayWall(BuildContext context,
           },
         ),
       ).whenComplete(() {
-        Navigator.pop(context);
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
+        // Navigator.pop(context);
       });
     } else {
       await Navigator.push(

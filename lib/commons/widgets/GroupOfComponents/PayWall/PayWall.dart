@@ -13,13 +13,13 @@ import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';
+import 'package:mamba/data/Models/Subscription.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Promotions/PromotionsDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import '../../../../../subscription/models/Subscription.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
@@ -337,10 +337,10 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
                 mixpanel!.track('brand_leaves_paywallscreen');
                 if (widget.comesFromInitPage != null &&
                     widget.comesFromInitPage == true) {
-                  BlocProvider.of<BrandBloc>(context).avoidPayWall();
-                  setState(() {});
+                  // BlocProvider.of<BrandBloc>(context).avoidPayWall();
+                  // setState(() {});
                   //context.goNamed(BrandScreen.routeName);
-                  /*
+
                   Navigator.pushAndRemoveUntil(
                     context,
                     CupertinoPageRoute<void>(
@@ -348,7 +348,7 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
                       settings: const RouteSettings(name: 'BrandScreen'),
                     ),
                     (_) => false,
-                  );*/
+                  );
                 } else {
                   Navigator.pop(context);
                 }

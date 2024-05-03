@@ -1,5 +1,5 @@
 import 'package:mamba/data/DataService/Suscription/SuscriptionFirebaseCalls.dart';
-import '../../../../subscription/models/Subscription.dart';
+import 'package:mamba/data/Models/Subscription.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class SuscriptionDataService {

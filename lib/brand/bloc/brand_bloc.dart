@@ -45,7 +45,6 @@ class BrandBloc extends Cubit<BrandState> {
   void avoidPayWall() {
     Brand brand = new Brand();
     brand = state.brand;
-    brand.avoidPayWall = true;
     emit(state.copyWith(brand: brand));
   }
 

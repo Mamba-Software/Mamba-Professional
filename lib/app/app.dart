@@ -18,6 +18,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/cubit/BrandEventsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/views/popup_manager.dart';
 import 'package:mamba/settings/data/settings_repository.dart';
@@ -64,6 +65,9 @@ class App extends StatelessWidget {
           BlocProvider<AuthBloc>(create: (_) => authBloc),
           BlocProvider<UserBloc>(create: (_) => userBloc),
           BlocProvider<BrandBloc>(create: (_) => brandBloc),
+          BlocProvider<HomeNavigationManager>(
+            create: (context) => HomeNavigationManager(),
+          ),
           // Refactor Done
           BlocProvider<AuthCubit>(
             create: (context) => AuthCubit(BlocProvider.of<AuthBloc>(context)),

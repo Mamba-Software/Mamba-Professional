@@ -149,7 +149,6 @@ class FirebaseAuthService {
             (flavor != Flavor.development && !firebaseUser.emailVerified)) {
           return AuthUser.empty;
         } else {
-          brandIsActive = true; //TODO BORRAR
           if (await checkUserType(checkTrainer: true)) {
             if (await checkIfUserExists(userId: firebaseUser.uid)) {
               // Assuming 'isTrainer' is a field in your user document
