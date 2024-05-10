@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/home/models/home_navigation_page.dart';
 
 final GlobalKey<ScaffoldState> navigationDrawerKey = GlobalKey<ScaffoldState>();
@@ -18,8 +19,8 @@ class HomeNavigationManagerState extends Equatable {
   List<Object> get props => [page, pageIndex];
 }
 
-class HomeNavigationManager extends Cubit<HomeNavigationManagerState> {
-  
+class HomeNavigationManager extends Cubit<HomeNavigationManagerState>
+    with PlatformMixin {
   HomeNavigationManager()
       : super(
           const HomeNavigationManagerState(
@@ -29,10 +30,10 @@ class HomeNavigationManager extends Cubit<HomeNavigationManagerState> {
         );
 
   HomeNavigationPage get page => state.page;
-  
+
   int get pageIndex => state.pageIndex;
 
-  void jumpToIndex(int pageIndex) {    
+  void jumpToIndex(int pageIndex) {
     HomeNavigationPage page = HomeNavigationPage.values[pageIndex];
     emit(
       HomeNavigationManagerState(
@@ -41,7 +42,7 @@ class HomeNavigationManager extends Cubit<HomeNavigationManagerState> {
       ),
     );
   }
-  
+
   void jumpToPage(HomeNavigationPage page) {
     int pageIndex = HomeNavigationPage.values.indexWhere((element) => page == element);
     emit(
@@ -50,5 +51,13 @@ class HomeNavigationManager extends Cubit<HomeNavigationManagerState> {
         pageIndex: pageIndex,
       ),
     );
+  }
+
+  bool isWebSupported(HomeNavigationPage page) {
+    List<HomeNavigationPage> webSupported = [HomeNavigationPage.BOOKINGS];
+    if (isWeb == false || webSupported.contains(page)) {
+      return true;
+    }   
+    return false;
   }
 }

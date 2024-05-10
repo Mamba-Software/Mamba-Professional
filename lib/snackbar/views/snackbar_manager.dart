@@ -39,6 +39,8 @@ class SnackbarManager extends StatelessWidget {
     GlobalKey<NavigatorState> navigatorKey,
     CustomSnackbar snackbar, [
     VoidCallback? onAccept,
+    Color? color,
+    IconData? icon,
   ]) {
     // Use navigatorKey to obtain the OverlayState
     OverlayState? overlayState = navigatorKey.currentState?.overlay;
@@ -58,6 +60,8 @@ class SnackbarManager extends StatelessWidget {
           maxWidth: getMaxWidth(context),
           snackbar: snackbar,
           onAccept: onAccept,
+          color: color,
+          icon: icon,
         ),
       ),
     );
@@ -86,6 +90,8 @@ class SnackbarManager extends StatelessWidget {
               navigatorKey,
               snackbar,
               snackbar.onAccept,
+              snackbar.color,
+              snackbar.icon,
             );
           }
         }

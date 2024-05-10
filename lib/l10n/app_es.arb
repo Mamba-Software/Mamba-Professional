@@ -911,5 +911,6 @@
   "stripeAccountDeactivateDesc": "Tus clientes ya no podrán pagar las tarifas directamente desde la aplicación; los pagos y cobros dejarán de ser automatizados, y todas las suscripciones activas serán canceladas.\n\nSelecciona editar para revisar las condiciones o ver tu perfil de Stripe.",
   "stripeConnecting": "Conectando con Stripe...",
   "stripeConnectionSuccessfull": "Conexión con Stripe finalizada correctamente...",
-  "stripeError": "Problema de comunicación con Stripe. Vuelve a intentarlo, por favor."
+  "stripeError": "Problema de comunicación con Stripe. Vuelve a intentarlo, por favor.",
+  "mobileOnly": "Disponible únicamente en versión móvil. Estamos esforzándonos para darte la experiencia completa muy pronto."
 }

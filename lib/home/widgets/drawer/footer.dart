@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
@@ -9,122 +10,116 @@ import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/home/models/home_navigation_page.dart';
 
 class Footer extends StatelessWidget with PlatformMixin {
-  double height;
-  double width;
-
-  Footer({
-    Key? key,
-    required this.height,
-    required this.width,
-  }) : super(key: key);
+  const Footer({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
       builder: (context, state) {
-        switch (state.runtimeType) {
-          case BrandSuscriptionLoadedTrue:
-            final suscriptionState = state as BrandSuscriptionLoadedTrue;
-            int difference = state.subscription.endDate!
-                .toDate()
-                .difference(DateTime.now())
-                .inDays;
-            String date = DateTimeUtils().formatDateTimeToStringDDMMYY(
-                state.subscription.endDate!.toDate());
-            TextStyle titleStyle = context.textTheme.bodyLarge!.copyWith(
-              fontWeight: FontWeight.bold,
-            );
-            TextStyle labelStyle = context.textTheme.labelMedium!;
+        // Sizes and Colours Used for Table and Mobile
+        double height = context.height * 0.1;
+        Color dividerColor = context.theme.dividerColor;
+        Color backgroundColor = context.colorScheme.background;
+        // Text Styles
+        TextStyle titleStyle = context.textTheme.titleMedium!;
+        TextStyle labelStyle = context.textTheme.labelMedium!;
+        // Variables Based on the Bloc State
+        String title, subtitle;
+        Function onTap;
+        if (state is BrandSuscriptionLoadedTrue) {
+          int difference = DateTime.now()
+              .difference(state.subscription.endDate!.toDate())
+              .inDays;
+          String date = DateTimeUtils().formatDateTimeToStringDDMMYY(
+              state.subscription.endDate!.toDate());
+          if (state.subscription.subscriptionId == "7DAYSTRIAL") {
+            title = context.l10n.freeTrial;
+            subtitle = context.l10n.freeTrialDaysLeft(difference.toString());
+          } else {
+            title = context.l10n.monthlyPlan;
+            subtitle = context.l10n.monthlyPlanDayRenewal(date);
+          }
+          onTap = () => context
+              .read<HomeNavigationManager>()
+              .jumpToPage(HomeNavigationPage.PLAN);
+        } else if (state is BrandSuscriptionLoadedFalse) {
+          title = context.l10n.chooseYourPlan;
+          subtitle = context.l10n.chooseYourPlanDesc;
+          onTap = () => context
+              .read<HomeNavigationManager>()
+              .jumpToPage(HomeNavigationPage.PLAN);
+        } else {
+          // Return an empty container in case no relevant state is present
+          return Container();
+        }
+
+        // Common Widget structure used in all states
+        return Builder(builder: (context) {
+          if (context.isMobile || context.isTablet) {
             return Column(
               children: [
                 Divider(
-                  color: context.theme.dividerColor,
-                  thickness: 1,
-                  height: 1,
-                ),
-                suscriptionState.subscription.subscriptionId == "7DAYSTRIAL"
-                    ? Container(
-                        height: height,
-                        padding: const EdgeInsets.only(left: 4.0),
-                        child: Center(
-                          child: ListTile(
-                            title: Text(
-                              context.l10n.freeTrial,
-                              style: titleStyle,
-                              textAlign: TextAlign.left,
-                            ),
-                            subtitle: Text(
-                              context.l10n
-                                  .freeTrialDaysLeft(difference.toString()),
-                              style: labelStyle,
-                              maxLines: 1,
-                              textAlign: TextAlign.left,
-                            ),
-                            onTap: () => context
-                                .read<HomeNavigationManager>()
-                                .jumpToPage(HomeNavigationPage.PLAN),
-                          ),
-                        ),
-                      )
-                    : Container(
-                        height: height,
-                        padding: const EdgeInsets.only(left: 4.0),
-                        child: Center(
-                          child: ListTile(
-                            title: Text(
-                              context.l10n.monthlyPlan,
-                              style: titleStyle,
-                              textAlign: TextAlign.left,
-                            ),
-                            subtitle: Text(
-                              context.l10n
-                                  .monthlyPlanDayRenewal(date.toString()),
-                              style: labelStyle,
-                              textAlign: TextAlign.left,
-                            ),
-                            onTap: () => context
-                                .read<HomeNavigationManager>()
-                                .jumpToPage(HomeNavigationPage.PLAN),
-                          ),
-                        ),
-                      ),
-              ],
-            );
-          case BrandSuscriptionLoadedFalse:
-            TextStyle titleStyle = context.textTheme.bodyLarge!.copyWith(
-              fontWeight: FontWeight.bold,
-            );
-            TextStyle labelStyle = context.textTheme.labelMedium!;
-            return Column(
-              children: [
-                Divider(
-                  color: context.theme.dividerColor,
+                  color: dividerColor,
                   thickness: 1,
                   height: 1,
                 ),
                 Container(
                   height: height,
-                  padding: const EdgeInsets.only(left: 4.0),
+                  color: backgroundColor,
+                  padding: EdgeInsets.all(defaultPaddingSmall),
                   child: Center(
                     child: ListTile(
-                      title: Text(context.l10n.chooseYourPlan,
-                          style: titleStyle, textAlign: TextAlign.left),
+                      title: Text(
+                        title,
+                        style: titleStyle,
+                        textAlign: TextAlign.left,
+                      ),
                       subtitle: Text(
-                        context.l10n.chooseYourPlanDesc,
+                        subtitle,
                         style: labelStyle,
                         textAlign: TextAlign.left,
                       ),
-                      onTap: () => context
-                          .read<HomeNavigationManager>()
-                          .jumpToPage(HomeNavigationPage.PLAN),
+                      onTap: () => onTap,
                     ),
                   ),
                 ),
               ],
             );
-          default:
-            return Container();
-        }
+          } else {
+            labelStyle = context.textTheme.labelLarge!;
+            return Column(
+              children: [
+                Divider(
+                  color: dividerColor,
+                  thickness: 1,
+                  height: 1,
+                ),
+                Container(
+                  height: height,
+                  color: backgroundColor,
+                  padding: EdgeInsets.all(defaultPaddingSmall),
+                  child: Center(
+                    child: ListTile(
+                      title: Text(
+                        title,
+                        style: titleStyle,
+                        textAlign: TextAlign.left,
+                      ),
+                      subtitle: Text(
+                        subtitle,
+                        style: labelStyle,
+                        textAlign: TextAlign.left,
+                      ),
+                      onTap: () => onTap,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+        });
       },
     );
   }

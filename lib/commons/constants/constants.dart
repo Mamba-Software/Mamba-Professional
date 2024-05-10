@@ -39,8 +39,13 @@ double borderRadiusSmall = 5;
 double borderRadiusMedium = 10;
 double borderRadiusBig = 20;
 
-// Snackbar
+// Padding
+double defaultPadding = 16;
+double defaultPaddingSmall = 8;
+
+// Duration
 int snackbarDefaultDuration = 5;
+int animationDefaultDuration = 200;
 
 // App
 var androidGooglePlayUrl =

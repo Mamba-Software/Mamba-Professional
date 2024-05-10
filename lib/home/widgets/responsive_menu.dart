@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/constants/assets.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
+import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
-import 'package:mamba/home/mixin/home_tile_mixin.dart';
-import 'package:mamba/home/widgets/appbar/DesktopAppBar.dart';
-import 'package:mamba/home/widgets/drawer/body.dart';
-import 'package:mamba/home/widgets/drawer/footer.dart';
-import 'package:mamba/home/widgets/drawer/header.dart';
+import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
+import 'package:mamba/home/widgets/drawer/side_menu.dart';
 
 // ignore: must_be_immutable
-class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
+class ResponsiveMenu extends StatelessWidget {
   final Widget child;
 
   ResponsiveMenu({super.key, required this.child});
@@ -20,59 +21,119 @@ class ResponsiveMenu extends StatelessWidget with HomeTileMixin {
         if (context.isMobile || context.isTablet) {
           return Scaffold(
             key: navigationDrawerKey,
-            drawer: Drawer(
-              surfaceTintColor: context.theme.scaffoldBackgroundColor,
-              backgroundColor: context.theme.scaffoldBackgroundColor,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(0.0),
-                  bottomRight: Radius.circular(0.0),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Header(
-                    height: context.height * 0.25,
-                    // Standard Size of a Drawer in Flutter
-                    width: 304,
-                  ),
-                  const Body(),
-                  Footer(
-                    height: context.height * 0.1,
-                    // Standard Size of a Drawer in Flutter
-                    width: 304,
-                  ),
-                ],
-              ),
-            ),
+            drawer: const SideMenu(),
             body: child,
           );
         } else {
           return Scaffold(
+            appBar: AppBar(
+              foregroundColor: context.colorScheme.background,
+              backgroundColor: context.colorScheme.background,
+              toolbarHeight: kToolbarHeight,
+              title: Container(
+                height: kToolbarHeight,
+                width: context.width / 6,
+                padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.primary,
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage(
+                            Assets.mambaLogoIcon,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: defaultPaddingSmall),
+                    Text(
+                      appName,
+                      style: context.textTheme.headlineLarge,
+                    ),
+                  ],
+                ),
+              ),
+              centerTitle: false,
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    AppBarIcon(
+                      icon: Icons.help_outline_outlined,
+                      iconSize: iconSize,
+                      color: context.colorScheme.onBackground,
+                      onTap: () => navigateToMainFeedbackScreen(context),
+                    ),
+                    AppBarIcon(
+                      icon: Icons.notifications,
+                      iconSize: iconSize,
+                      color: context.colorScheme.onBackground,
+                      onTap: () => navigateToNotificationsScreen(context),
+                    ),
+                    AppBarIcon(
+                      icon: Icons.chat,
+                      iconSize: iconSize,
+                      color: context.colorScheme.onBackground,
+                      onTap: () => navigateToChatScreen(context),
+                    ),
+                    InkWell(
+                      onTap: () => navigateToProfileScreen(context),
+                      hoverColor:
+                          context.colorScheme.onBackground.withOpacity(0.2),
+                      splashColor:
+                          context.colorScheme.onBackground.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(
+                        24,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(
+                          8,
+                        ),
+                        child: SizedBox(
+                          height: iconSize,
+                          child: Center(
+                            child: CircularImage(
+                              size: iconSize,
+                              image: currentUser.imageUrl,
+                              color: context.theme.primaryColor,
+                              borderWidth: 1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8)
+                  ],
+                ),
+              ],
+            ),
             body: Row(
               mainAxisSize: MainAxisSize.max,
               children: [
-                SizedBox(
-                  width: 304,
-                  child: Column(
+                const Expanded(
+                  flex: 1,
+                  child: SideMenu(),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: Row(
                     children: [
-                      Header(
-                        height: 250,
-                        // Standard Size of a Drawer in Flutter
-                        width: 304,
+                      VerticalDivider(
+                        color: context.theme.dividerColor,
+                        thickness: 1,
+                        width: 1,
                       ),
-                      const Body(),
-                      Footer(
-                        height: 80,
-                        // Standard Size of a Drawer in Flutter
-                        width: 304,
+                      Expanded(
+                        child: child,
                       ),
                     ],
                   ),
                 ),
-                VerticalDivider(
-                    color: context.theme.dividerColor, thickness: 1, width: 1),
-                Expanded(child: child),
               ],
             ),
           );
