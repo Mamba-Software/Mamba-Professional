@@ -20,7 +20,7 @@
             "name": "production",
             "request": "launch",            
             "type": "dart",
-            "flutterMode": "release",
+            "flutterMode": "debug",
             "program": "lib/main_production.dart",
             "args": ["--flavor", "production", "--target", "lib/main_production.dart"]
         },

@@ -52,6 +52,7 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
   final _promotionDataService = PromotionsDataService();
   final _settingsDataService = SettingsDataService();
   String? brandId = '';
+  String typePlan = 'Bronce';
 
   //PayWall
   bool seePromotions = true;
@@ -78,6 +79,7 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
 
   Future<void> getSubscriptions() async {
     List<Subscription> subscriptionListAux = [];
+    String keyword = '';
     subscriptionList.clear();
     if (currentBrand.subscription == null) {
       if (subscritionPromo.id == null) {
@@ -100,7 +102,22 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
       String monthFree = await _settingsDataService.checkMonthOffer();
       Brand brand = await _brandDataService.getBrandDetails(currentBrand.id!);
       Offerings offerings = await Purchases.getOfferings();
-      if (offerings.current != null && offerings.current?.monthly != null) {
+
+      if (typePlan == 'Bronce') {
+        keyword = 'mamba-sub';
+      }
+      if (typePlan == 'Plata') {
+        keyword = 'mamba-silver';
+      }
+      if (typePlan == 'Oro') {
+        keyword = 'mamba-gold';
+      }
+
+      String key = offerings.all.keys.firstWhere((k) => k.contains(keyword));
+
+      setOffer(offerings.all[key]);
+
+      /* if (offerings.current != null && offerings.current?.monthly != null) {
         if (offerings.current?.monthly?.storeProduct != null) {
           Subscription subMonth = Subscription.fromOfferingAllData(
               offerings.current?.monthly!.storeProduct,
@@ -118,7 +135,7 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
 
           subscriptionList.add(subMonth);
         }
-      }
+      }*/
       if (offerings.current != null && offerings.current?.annual != null) {
         print(offerings.current?.annual!.storeProduct);
         //print(offerings.current?.annual!.storeProduct);
@@ -138,6 +155,43 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
       loadingPromotions = false;
       seePromotions = false;
     });
+  }
+
+  void setOffer(Offering? offering) {
+    if (offering != null) {
+      if (offering.monthly != null) {
+        if (offering.monthly?.storeProduct != null) {
+          Subscription subMonth = Subscription.fromOfferingAllData(
+              offering.monthly!.storeProduct,
+              context.l10n.perMonth,
+              offering.monthly!);
+
+          subscriptionList.add(subMonth);
+        }
+      }
+      if (offering.threeMonth != null) {
+        Subscription subMonth = Subscription.fromOfferingAllData(
+            offering.threeMonth!.storeProduct,
+            '/trimestre',
+            offering.threeMonth!);
+
+        subscriptionList.add(subMonth);
+      }
+
+      if (offering.sixMonth != null) {
+        Subscription subMonth = Subscription.fromOfferingAllData(
+            offering.sixMonth!.storeProduct, '/semestre', offering.sixMonth!);
+
+        subscriptionList.add(subMonth);
+      }
+
+      if (offering.annual != null) {
+        Subscription subMonth = Subscription.fromOfferingAllData(
+            offering.annual!.storeProduct, '/año', offering.annual!);
+
+        subscriptionList.add(subMonth);
+      }
+    }
   }
 
   Future<void> getPromotion([bool fromSeeSubsc = false]) async {
@@ -212,6 +266,8 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   containerJoin(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  listPlans(),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   getAll(),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -430,6 +486,67 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
     );
   }
 
+  Widget listPlans() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        subscriptionPlan('Bronce'),
+        subscriptionPlan('Plata'),
+        subscriptionPlan('Oro')
+      ],
+    );
+  }
+
+  Widget subscriptionPlan(String text) {
+    return GestureDetector(
+      onTap: () {
+        typePlan = text;
+        loadingPromotions = false;
+        seePromotions = true;
+        subscriptionList.clear();
+        setState(() {});
+      },
+      child: Material(
+        elevation: 4,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: text == typePlan
+                ? context.theme.colorScheme.secondary
+                : Theme.of(context).dialogBackgroundColor.withOpacity(0.3),
+            //color: AppColors.darkGrey.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          width: MediaQuery.of(context).size.width * 0.25,
+          height: MediaQuery.of(context).size.height * 0.10,
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: MediaQuery.of(context).size.width * 0.05),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  Text(
+                    text,
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                        fontWeight: FontWeight.normal,
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 15),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget getAll() {
     return Center(
       child: Padding(
@@ -593,9 +710,7 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
                     color: context.colorScheme.secondary,
                     width: 1,
                   ),
-                  color: index == subscriptionList.length - 1
-                      ? context.colorScheme.secondary
-                      : null,
+                  color: context.colorScheme.secondary,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 width: MediaQuery.of(context).size.width * 0.90,

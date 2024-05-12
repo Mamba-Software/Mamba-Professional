@@ -3,14 +3,13 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 //Singleton
 class FirebaseSettingsService {
-
   static final _settingsCollection =
       FirebaseFirestore.instance.collection('Settings');
 
   Future<List<bool>> checkAppVersion() async {
     // Get Current Build Number
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    final int buildNumber = int.parse(packageInfo.buildNumber);
+    final int buildNumber = int.parse("25"); //TODO DELTE
     // Get Minimum and Max Version from Settings Collection
     DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _settingsCollection.doc("MinimumAppVersion").get();
