@@ -49,6 +49,7 @@ int animationDefaultDuration = 200;
 
 // Desktop Sizes
 double sideMenuWidth = 304;
+double collapsedSideMenuWidth = 80;
 double desktopAppBarHeight = 70;
 double desktopFooterHeight = 70;
 

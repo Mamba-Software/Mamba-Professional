@@ -18,10 +18,10 @@ class AppBarIcon extends StatelessWidget with PlatformMixin {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onTap,
+      onTap: () => onTap(),
       hoverColor: color.withOpacity(0.10),
       splashColor: color.withOpacity(0.10),
-      borderRadius: BorderRadius.circular(24), 
+      borderRadius: BorderRadius.circular(24),
       child: Padding(
         padding: const EdgeInsets.all(8), // Control the space around the icon
         child: Icon(

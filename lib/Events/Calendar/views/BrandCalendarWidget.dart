@@ -2100,12 +2100,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                                 minimumSize: const Size(80, 45),
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
-                              child: SizedBox(
-                                child: Text(
-                                  context.l10n.todayString,
-                                  style: context.textTheme.bodyLarge,
-                                  textAlign: TextAlign.center,
-                                ),
+                              child: Text(
+                                context.l10n.todayString,
+                                style: context.textTheme.bodyLarge,
+                                textAlign: TextAlign.center,
                               ),
                             ),
                             SizedBox(width: defaultPadding),

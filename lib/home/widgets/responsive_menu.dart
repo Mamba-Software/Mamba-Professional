@@ -9,7 +9,7 @@ import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/home/models/home_navigation_page.dart';
 import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
-import 'package:mamba/home/widgets/drawer/side_menu.dart';
+import 'package:mamba/home/widgets/side_menu/side_menu.dart';
 
 // ignore: must_be_immutable
 class ResponsiveMenu extends StatelessWidget {

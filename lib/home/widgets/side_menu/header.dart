@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
@@ -7,11 +8,15 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
+import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/home/mixin/brand_role_mixin.dart';
 import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 
 class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
+  final double width;
+  
   const Header({
+    required this.width,
     super.key,
   });
 
@@ -22,7 +27,7 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
         if (context.isMobile || context.isTablet) {
           // Sizes and Colours Used for Table and Mobile
           double height = context.height * 0.25;
-          double width = 304;
+          double width = sideMenuWidth;
           Color dividerColor = context.theme.dividerColor;
           Color backgroundColor = context.colorScheme.background;
           // Header Widget
@@ -188,43 +193,66 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
         } else {
           return Column(
             children: [
-              Container(
-                height: desktopAppBarHeight,
-                width: 304,
-                padding: EdgeInsets.symmetric(horizontal: defaultPaddingSmall),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    AppBarIcon(
-                      icon: Icons.menu,
-                      iconSize: iconSize,
-                      color: context.colorScheme.onBackground,
-                      onTap: () {
-                        print("openDrawer");
-                      },
-                    ),
-                    SizedBox(width: defaultPaddingSmall),
-                    Container(
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.primary,
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage(
-                            Assets.mambaLogoIcon,
+              width == sideMenuWidth
+                  ? Container(
+                      height: desktopAppBarHeight,
+                      width: sideMenuWidth,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: defaultPaddingSmall),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(width: 10),
+                          AppBarIcon(
+                            icon: Icons.menu,
+                            iconSize: iconSize,
+                            color: context.colorScheme.onBackground,
+                            onTap: () => context
+                                .read<HomeNavigationManager>()
+                                .toogleDesktopSideMenu(),
                           ),
-                        ),
+                          SizedBox(width: defaultPaddingSmall),
+                          Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              color: context.colorScheme.primary,
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  Assets.mambaLogoIcon,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: defaultPaddingSmall),
+                          Text(
+                            appName,
+                            style: context.textTheme.headlineLarge,
+                          ),
+                        ],
+                      ),
+                    )
+                  : Container(
+                      height: desktopAppBarHeight,
+                      width: collapsedSideMenuWidth,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: defaultPaddingSmall),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          AppBarIcon(
+                            icon: Icons.menu,
+                            iconSize: iconSize,
+                            color: context.colorScheme.onBackground,
+                            onTap: () => context
+                                .read<HomeNavigationManager>()
+                                .toogleDesktopSideMenu(),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(width: defaultPaddingSmall),
-                    Text(
-                      appName,
-                      style: context.textTheme.headlineLarge,
-                    ),
-                  ],
-                ),
-              ),
               Divider(
                 color: context.theme.dividerColor,
                 thickness: 1,
