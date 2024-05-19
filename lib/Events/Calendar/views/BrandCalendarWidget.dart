@@ -33,17 +33,13 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
-class BrandCalendarWidget extends StatefulWidget {
+class BrandCalendarWidget extends StatefulWidget with PlatformMixin {
   String brandId;
-  DateTime? dateTime;
-  CalendarView? calendarView;
   bool? onlyView;
 
   BrandCalendarWidget({
     super.key,
     required this.brandId,
-    this.dateTime,
-    this.calendarView,
     this.onlyView,
   });
 
@@ -104,6 +100,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
   int filterEventsNumber = 0;
   List<bool> filterByCalendar = [true, true];
 
+  //  Heights
+  double viewHeaderHeight = 50;
+
+  // Selected Event Id
+  String? selectedEventId;
+
   @override
   void initState() {
     super.initState();
@@ -118,27 +120,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
               }),
       );
     isLoading = true;
-    initAppBarDateTitle();
     getUserBrandDetails();
   }
 
-  // Init App Bar Title
-  initAppBarDateTitle() {
-    // Initial Date Time
-    if (widget.dateTime == null) {
-      DateTime now = DateTime.now();
-      int currentDay = now.weekday;
-      displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
-      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
-    } else {
-      DateTime dateTime = widget.dateTime!;
-      int currentDay = dateTime.weekday;
-      displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
-      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
-    }
-  }
-
   Future<void> initCalendar() async {
+    // Initial Date Time
+    DateTime now = DateTime.now();
+    int currentDay = now.weekday;
+    displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
+    displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
     // Initial Calendar View
     selectedValue = '2';
     _controller.view = CalendarView.week;
@@ -172,21 +162,16 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
     // Expanded Height of AppBar
     double expandedHeight = MediaQuery.of(context).size.height * 0.15 +
         MediaQuery.of(context).padding.top;
-    // View Header Height Calendar
-    double viewHeaderHeight = 50;
-    // We're using TargetPlatform to determine the type of device
-    switch (Theme.of(context).platform) {
-      case TargetPlatform.android:
-        //adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight - bottomNavigationBarHeight;
-        adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
-        break;
-      case TargetPlatform.iOS:
-        adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
-        break;
-      default:
-        adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
-        break;
+    if (context.isDesktop) {
+      expandedHeight = desktopAppBarHeight + MediaQuery.of(context).padding.top;
     }
+    // View Header Height Calendar
+    viewHeaderHeight = 50;
+    if (context.isDesktop) {
+      viewHeaderHeight = 70;
+    }
+    // We're using TargetPlatform to determine the type of device
+    adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
     // Diferencia de Hores
     double difference = _endHour! - _startHour!;
     difference = _startHour! != 0 ? difference + 1 : difference;
@@ -269,6 +254,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
   }
 
   Future<void> navigateToEventScreen(String eventId, bool isCompleted) async {
+    setState(() {
+      selectedEventId = eventId;
+    });
+    /*
     mixpanel!.track('brand_calendar_event_view', properties: {
       'Calendar View': _controller.view.toString(),
       'isCompleted': isCompleted
@@ -296,6 +285,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
         }
       }
     }
+    */
   }
 
   Widget _buildTitleText(
@@ -2206,357 +2196,451 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                           BrandEventsLoaded loadedState =
                               state as BrandEventsLoaded;
                           return SliverFillRemaining(
-                              child: GestureDetector(
-                            onScaleStart:
-                                (ScaleStartDetails scaleStartDetails) {
-                              _baseTimeSlotViewScale = _timeSlotViewScale;
-                            },
-                            onScaleUpdate: _controller.view ==
-                                        CalendarView.week ||
-                                    _controller.view == CalendarView.day
-                                ? (ScaleUpdateDetails scaleUpdateDetails) {
-                                    // don't update the UI if the scale didn't change
-                                    if (scaleUpdateDetails.scale == 1.0) {
-                                      return;
-                                    }
-                                    setState(() {
-                                      _timeSlotViewScale =
-                                          (_baseTimeSlotViewScale *
-                                                  scaleUpdateDetails.scale)
-                                              .clamp(1, 4);
-                                      _timeSlotViewZoom = _timeSlotViewScale *
-                                          _baseTimeSlotViewZoom;
-                                    });
-                                  }
-                                : null,
-                            onScaleEnd: (ScaleEndDetails scaleEndDetails) {
-                              _userDataService.updateUserZoomScale(
-                                  widget.brandId,
-                                  currentUser.id!,
-                                  _timeSlotViewScale);
-                            },
-                            child: Stack(
-                              alignment: Alignment.bottomRight,
+                            child: Row(
                               children: [
-                                SfCalendarTheme(
-                                  data: SfCalendarThemeData(
-                                    brightness: Brightness.dark,
-                                    backgroundColor: Theme.of(context)
-                                        .scaffoldBackgroundColor,
-                                    todayHighlightColor:
-                                        Theme.of(context).primaryColor,
-                                    todayBackgroundColor: Theme.of(context)
-                                        .scaffoldBackgroundColor,
-                                  ),
-                                  child: SfCalendar(
-                                    // Controller
-                                    controller: _controller,
-                                    blackoutDates: [dateJoined],
-                                    blackoutDatesTextStyle: Theme.of(context)
-                                        .textTheme
-                                        .displaySmall
-                                        ?.copyWith(
-                                            color:
+                                Expanded(
+                                  flex: 3,
+                                  child: GestureDetector(
+                                    onScaleStart:
+                                        (ScaleStartDetails scaleStartDetails) {
+                                      _baseTimeSlotViewScale =
+                                          _timeSlotViewScale;
+                                    },
+                                    onScaleUpdate: _controller.view ==
+                                                CalendarView.week ||
+                                            _controller.view == CalendarView.day
+                                        ? (ScaleUpdateDetails
+                                            scaleUpdateDetails) {
+                                            // don't update the UI if the scale didn't change
+                                            if (scaleUpdateDetails.scale ==
+                                                1.0) {
+                                              return;
+                                            }
+                                            setState(() {
+                                              _timeSlotViewScale =
+                                                  (_baseTimeSlotViewScale *
+                                                          scaleUpdateDetails
+                                                              .scale)
+                                                      .clamp(1, 4);
+                                              _timeSlotViewZoom =
+                                                  _timeSlotViewScale *
+                                                      _baseTimeSlotViewZoom;
+                                            });
+                                          }
+                                        : null,
+                                    onScaleEnd:
+                                        (ScaleEndDetails scaleEndDetails) {
+                                      _userDataService.updateUserZoomScale(
+                                          widget.brandId,
+                                          currentUser.id!,
+                                          _timeSlotViewScale);
+                                    },
+                                    child: Stack(
+                                      alignment: Alignment.bottomRight,
+                                      children: [
+                                        SfCalendarTheme(
+                                          data: SfCalendarThemeData(
+                                            brightness: Brightness.dark,
+                                            backgroundColor: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            todayHighlightColor:
                                                 Theme.of(context).primaryColor,
-                                            fontWeight: FontWeight.w600),
-                                    // Data
-                                    minDate: dateJoined,
-                                    dataSource: _getCalendarDataSource(
-                                        loadedState.brandEventsList),
-                                    specialRegions: _getTimeRegions(),
-                                    // Config
-                                    cellEndPadding: 0,
-                                    firstDayOfWeek: 1,
-                                    showCurrentTimeIndicator: true,
-                                    cellBorderColor: AppColors.grey,
-                                    todayTextStyle: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                            color: Theme.of(context)
-                                                .primaryColorDark),
-                                    // Style
-                                    selectionDecoration:
-                                        _controller.view == CalendarView.month
-                                            ? BoxDecoration(
-                                                color: Colors.transparent,
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: Colors.transparent),
-                                              )
-                                            : BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary
-                                                    .withOpacity(0.08),
-                                                border: Border.all(
-                                                    width: 1,
+                                            todayBackgroundColor:
+                                                Theme.of(context)
+                                                    .scaffoldBackgroundColor,
+                                          ),
+                                          child: SfCalendar(
+                                            // Controller
+                                            controller: _controller,
+                                            blackoutDates: [dateJoined],
+                                            blackoutDatesTextStyle:
+                                                Theme.of(context)
+                                                    .textTheme
+                                                    .displaySmall
+                                                    ?.copyWith(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                            // Data
+                                            minDate: dateJoined,
+                                            dataSource: _getCalendarDataSource(
+                                                loadedState.brandEventsList),
+                                            specialRegions: _getTimeRegions(),
+                                            // Config
+                                            cellEndPadding: 0,
+                                            firstDayOfWeek: 1,
+                                            showCurrentTimeIndicator: true,
+                                            cellBorderColor: AppColors.grey,
+                                            todayTextStyle: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                    color: Theme.of(context)
+                                                        .primaryColorDark),
+                                            // Style
+                                            selectionDecoration: _controller
+                                                        .view ==
+                                                    CalendarView.month
+                                                ? BoxDecoration(
+                                                    color: Colors.transparent,
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color:
+                                                            Colors.transparent),
+                                                  )
+                                                : BoxDecoration(
                                                     color: Theme.of(context)
                                                         .colorScheme
-                                                        .secondary),
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                  Radius.circular(5.0),
-                                                ),
-                                              ),
-                                    headerHeight: 0,
-                                    headerStyle: CalendarHeaderStyle(
-                                      textAlign: TextAlign.center,
-                                      backgroundColor: Colors.transparent,
-                                      textStyle: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge
-                                          ?.copyWith(color: Colors.transparent),
-                                    ),
-                                    viewHeaderHeight: 50,
-                                    viewHeaderStyle: ViewHeaderStyle(
-                                      backgroundColor: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                      dateTextStyle: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                      dayTextStyle: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(fontSize: 10),
-                                    ),
-                                    // Time Slot View Settings
-                                    timeSlotViewSettings: TimeSlotViewSettings(
-                                      timeIntervalHeight: _timeSlotViewZoom,
-                                      timeIntervalWidth: 60,
-                                      startHour: _startHour! != 0
-                                          ? _startHour! - 1
-                                          : _startHour!,
-                                      endHour: _endHour! != 24
-                                          ? _endHour! + 1
-                                          : _endHour!,
-                                      timeFormat: 'HH:mm',
-                                      dayFormat: 'EE',
-                                      dateFormat: 'd',
-                                      timeRulerSize: 50,
-                                      //nonWorkingDays: _controller.view == CalendarView.week && isThreeDays ? [DateTime.friday, DateTime.saturday, DateTime.sunday] : nonWorkDays,
-                                      nonWorkingDays: nonWorkDays,
-                                      minimumAppointmentDuration:
-                                          const Duration(minutes: 30),
-                                      timeTextStyle: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    ),
-                                    // Monthly View
-                                    monthViewSettings: MonthViewSettings(
-                                      appointmentDisplayCount: 4,
-                                      numberOfWeeksInView: 6,
-                                      showTrailingAndLeadingDates: true,
-                                      appointmentDisplayMode:
-                                          MonthAppointmentDisplayMode
-                                              .appointment,
-                                      monthCellStyle: MonthCellStyle(
-                                        textStyle: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge,
-                                        trailingDatesTextStyle:
-                                            Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.copyWith(
-                                                    color: AppColors.grey),
-                                        leadingDatesTextStyle: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge
-                                            ?.copyWith(color: AppColors.grey),
-                                      ),
-                                    ),
-                                    // Schedule View
-                                    scheduleViewSettings: ScheduleViewSettings(
-                                        hideEmptyScheduleWeek: true,
-                                        appointmentItemHeight:
-                                            MediaQuery.of(context).size.height *
-                                                0.12,
-                                        appointmentTextStyle: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium,
-                                        dayHeaderSettings: DayHeaderSettings(
-                                          dateTextStyle: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium,
-                                          dayTextStyle: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(fontSize: 10),
-                                        ),
-                                        weekHeaderSettings: WeekHeaderSettings(
-                                          startDateFormat: 'd',
-                                          endDateFormat: 'd MMMM',
-                                          textAlign: TextAlign.start,
-                                          backgroundColor: Theme.of(context)
-                                              .scaffoldBackgroundColor,
-                                          weekTextStyle: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall,
-                                        ),
-                                        monthHeaderSettings:
-                                            MonthHeaderSettings(
-                                          monthFormat: 'MMMM yyyy',
-                                          height: 70,
-                                          textAlign: TextAlign.start,
-                                          backgroundColor: Theme.of(context)
-                                              .scaffoldBackgroundColor,
-                                          monthTextStyle: Theme.of(context)
-                                              .textTheme
-                                              .headlineMedium,
-                                        )),
-                                    scheduleViewMonthHeaderBuilder:
-                                        (BuildContext buildContext,
-                                            ScheduleViewMonthHeaderDetails
-                                                details) {
-                                      return Container(
-                                        color: Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.03,
-                                            horizontal: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.05),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              StringUtils()
-                                                  .toCapitalized(DateFormat(
-                                                'MMMM yyyy',
-                                                Localizations.localeOf(context)
-                                                    .languageCode,
-                                              ).format(details.date)),
-                                              style: Theme.of(context)
+                                                        .secondary
+                                                        .withOpacity(0.08),
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(5.0),
+                                                    ),
+                                                  ),
+                                            headerHeight: 0,
+                                            headerStyle: CalendarHeaderStyle(
+                                              textAlign: TextAlign.center,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              textStyle: Theme.of(context)
                                                   .textTheme
-                                                  .headlineMedium
+                                                  .bodyLarge
                                                   ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                              textAlign: TextAlign.left,
+                                                      color:
+                                                          Colors.transparent),
                                             ),
-                                          ],
+                                            viewHeaderHeight: viewHeaderHeight,
+                                            viewHeaderStyle: ViewHeaderStyle(
+                                              backgroundColor: Theme.of(context)
+                                                  .scaffoldBackgroundColor,
+                                              dateTextStyle: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium,
+                                              dayTextStyle: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(fontSize: 10),
+                                            ),
+                                            // Time Slot View Settings
+                                            timeSlotViewSettings:
+                                                TimeSlotViewSettings(
+                                              timeIntervalHeight:
+                                                  _timeSlotViewZoom,
+                                              timeIntervalWidth: 60,
+                                              startHour: _startHour! != 0
+                                                  ? _startHour! - 1
+                                                  : _startHour!,
+                                              endHour: _endHour! != 24
+                                                  ? _endHour! + 1
+                                                  : _endHour!,
+                                              timeFormat: 'HH:mm',
+                                              dayFormat: 'EE',
+                                              dateFormat: 'd',
+                                              timeRulerSize: 50,
+                                              //nonWorkingDays: _controller.view == CalendarView.week && isThreeDays ? [DateTime.friday, DateTime.saturday, DateTime.sunday] : nonWorkDays,
+                                              nonWorkingDays: nonWorkDays,
+                                              minimumAppointmentDuration:
+                                                  const Duration(minutes: 30),
+                                              timeTextStyle: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium,
+                                            ),
+                                            // Monthly View
+                                            monthViewSettings:
+                                                MonthViewSettings(
+                                              appointmentDisplayCount: 4,
+                                              numberOfWeeksInView: 6,
+                                              showTrailingAndLeadingDates: true,
+                                              appointmentDisplayMode:
+                                                  MonthAppointmentDisplayMode
+                                                      .appointment,
+                                              monthCellStyle: MonthCellStyle(
+                                                textStyle: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge,
+                                                trailingDatesTextStyle:
+                                                    Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.copyWith(
+                                                            color:
+                                                                AppColors.grey),
+                                                leadingDatesTextStyle:
+                                                    Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.copyWith(
+                                                            color:
+                                                                AppColors.grey),
+                                              ),
+                                            ),
+                                            // Schedule View
+                                            scheduleViewSettings:
+                                                ScheduleViewSettings(
+                                                    hideEmptyScheduleWeek: true,
+                                                    appointmentItemHeight:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.12,
+                                                    appointmentTextStyle:
+                                                        Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium,
+                                                    dayHeaderSettings:
+                                                        DayHeaderSettings(
+                                                      dateTextStyle:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .bodyMedium,
+                                                      dayTextStyle:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .bodyMedium
+                                                              ?.copyWith(
+                                                                  fontSize: 10),
+                                                    ),
+                                                    weekHeaderSettings:
+                                                        WeekHeaderSettings(
+                                                      startDateFormat: 'd',
+                                                      endDateFormat: 'd MMMM',
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      backgroundColor: Theme.of(
+                                                              context)
+                                                          .scaffoldBackgroundColor,
+                                                      weekTextStyle:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .bodySmall,
+                                                    ),
+                                                    monthHeaderSettings:
+                                                        MonthHeaderSettings(
+                                                      monthFormat: 'MMMM yyyy',
+                                                      height: 70,
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      backgroundColor: Theme.of(
+                                                              context)
+                                                          .scaffoldBackgroundColor,
+                                                      monthTextStyle:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .headlineMedium,
+                                                    )),
+                                            scheduleViewMonthHeaderBuilder:
+                                                (BuildContext buildContext,
+                                                    ScheduleViewMonthHeaderDetails
+                                                        details) {
+                                              return Container(
+                                                color: Theme.of(context)
+                                                    .scaffoldBackgroundColor,
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.03,
+                                                    horizontal:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.05),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      StringUtils()
+                                                          .toCapitalized(
+                                                              DateFormat(
+                                                        'MMMM yyyy',
+                                                        Localizations.localeOf(
+                                                                context)
+                                                            .languageCode,
+                                                      ).format(details.date)),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headlineMedium
+                                                          ?.copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                      textAlign: TextAlign.left,
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                            onViewChanged: (ViewChangedDetails
+                                                viewChangedDetails) async {
+                                              Future.delayed(Duration.zero,
+                                                  () async {
+                                                setState(() {
+                                                  int indexMiddleMonthDate =
+                                                      ((viewChangedDetails
+                                                                  .visibleDates
+                                                                  .length -
+                                                              1) ~/
+                                                          2);
+                                                  middleMonthDate =
+                                                      viewChangedDetails
+                                                              .visibleDates[
+                                                          indexMiddleMonthDate];
+                                                  displayDateTimeStart =
+                                                      viewChangedDetails
+                                                          .visibleDates[0];
+                                                  displayDateTimeEnd =
+                                                      viewChangedDetails
+                                                              .visibleDates[
+                                                          viewChangedDetails
+                                                                  .visibleDates
+                                                                  .length -
+                                                              1];
+                                                });
+                                              });
+                                              List<Event> eventsList =
+                                                  loadedState.brandEventsList;
+                                              if (eventsList.isNotEmpty) {
+                                                var startDateLastEvent =
+                                                    DateTime(
+                                                  int.parse(
+                                                      eventsList.first.year!),
+                                                  int.parse(
+                                                      eventsList.first.month!),
+                                                  int.parse(
+                                                      eventsList.first.day!),
+                                                  int.parse(
+                                                      eventsList.first.hour!),
+                                                  int.parse(
+                                                      eventsList.first.minute!),
+                                                );
+                                                if (viewChangedDetails
+                                                        .visibleDates[0]
+                                                        .difference(
+                                                            startDateLastEvent)
+                                                        .inDays <
+                                                    60) {
+                                                  context
+                                                      .read<BrandEventsCubit>()
+                                                      .getMoreBrandEvents(
+                                                          eventsList.first.id!,
+                                                          _brandTrainers);
+                                                }
+                                              }
+                                            },
+                                            onTap: onTapCalendar,
+                                            appointmentTextStyle:
+                                                Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!,
+                                            appointmentBuilder:
+                                                (BuildContext context,
+                                                    CalendarAppointmentDetails
+                                                        details) {
+                                              return _buildEventContainer(
+                                                  details,
+                                                  loadedState.brandEventsList);
+                                            },
+                                          ),
                                         ),
-                                      );
-                                    },
-                                    onViewChanged: (ViewChangedDetails
-                                        viewChangedDetails) async {
-                                      Future.delayed(Duration.zero, () async {
-                                        setState(() {
-                                          int indexMiddleMonthDate =
-                                              ((viewChangedDetails
-                                                          .visibleDates.length -
-                                                      1) ~/
-                                                  2);
-                                          middleMonthDate =
-                                              viewChangedDetails.visibleDates[
-                                                  indexMiddleMonthDate];
-                                          displayDateTimeStart =
-                                              viewChangedDetails
-                                                  .visibleDates[0];
-                                          displayDateTimeEnd =
-                                              viewChangedDetails.visibleDates[
-                                                  viewChangedDetails
-                                                          .visibleDates.length -
-                                                      1];
-                                        });
-                                      });
-                                      List<Event> eventsList =
-                                          loadedState.brandEventsList;
-                                      if (eventsList.isNotEmpty) {
-                                        var startDateLastEvent = DateTime(
-                                          int.parse(eventsList.first.year!),
-                                          int.parse(eventsList.first.month!),
-                                          int.parse(eventsList.first.day!),
-                                          int.parse(eventsList.first.hour!),
-                                          int.parse(eventsList.first.minute!),
-                                        );
-                                        if (viewChangedDetails.visibleDates[0]
-                                                .difference(startDateLastEvent)
-                                                .inDays <
-                                            60) {
-                                          context
-                                              .read<BrandEventsCubit>()
-                                              .getMoreBrandEvents(
-                                                  eventsList.first.id!,
-                                                  _brandTrainers);
-                                        }
-                                      }
-                                    },
-                                    onTap: onTapCalendar,
-                                    appointmentTextStyle:
-                                        Theme.of(context).textTheme.bodyMedium!,
-                                    appointmentBuilder: (BuildContext context,
-                                        CalendarAppointmentDetails details) {
-                                      return _buildEventContainer(
-                                          details, loadedState.brandEventsList);
-                                    },
+                                        _controller.view == CalendarView.week ||
+                                                _controller.view ==
+                                                    CalendarView.day
+                                            ? Padding(
+                                                padding: isAndroid
+                                                    ? EdgeInsets.symmetric(
+                                                        vertical: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.02,
+                                                        horizontal:
+                                                            MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.045)
+                                                    : EdgeInsets.symmetric(
+                                                        vertical: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.06,
+                                                        horizontal:
+                                                            MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.04),
+                                                child: Material(
+                                                  elevation: 4,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.0115),
+                                                    decoration: BoxDecoration(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .background,
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .all(
+                                                        Radius.circular(10),
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                        "Zoom: ${(_timeSlotViewScale * 100).toStringAsFixed(0)} %",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodySmall
+                                                            ?.copyWith(
+                                                                fontSize: 11),
+                                                        textAlign:
+                                                            TextAlign.center),
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                _controller.view == CalendarView.week ||
-                                        _controller.view == CalendarView.day
-                                    ? Padding(
-                                        padding: isAndroid
-                                            ? EdgeInsets.symmetric(
-                                                vertical: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.02,
-                                                horizontal:
-                                                    MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        0.045)
-                                            : EdgeInsets.symmetric(
-                                                vertical: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.06,
-                                                horizontal:
-                                                    MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        0.04),
-                                        child: Material(
-                                          elevation: 4,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: Container(
-                                            padding: EdgeInsets.all(
-                                                MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.0115),
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .background,
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                Radius.circular(10),
+                                selectedEventId != null
+                                    ? Expanded(
+                                        child: Row(
+                                          children: [
+                                            VerticalDivider(
+                                              indent: desktopAppBarHeight,
+                                              color: context.theme.dividerColor,
+                                              thickness: 1,
+                                              width: 1,
+                                            ),
+                                            Expanded(
+                                              child: EventPage(
+                                                eventId: selectedEventId!,
                                               ),
                                             ),
-                                            child: Text(
-                                                "Zoom: ${(_timeSlotViewScale * 100).toStringAsFixed(0)} %",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodySmall
-                                                    ?.copyWith(fontSize: 11),
-                                                textAlign: TextAlign.center),
-                                          ),
+                                          ],
                                         ),
                                       )
                                     : Container(),
                               ],
                             ),
-                          ));
+                          );
                         } else {
                           // Handle all other states aka Loading or Initial
                           return SliverFillRemaining(
@@ -2718,7 +2802,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
           startHourWS - 1, 0, 0),
       endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
           startHourWS, startMinWS, 0),
-      color: Colors.grey.withOpacity(0.3),
+      color: Colors.grey.withOpacity(0.15),
       recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));
     // Hora Inactiva Nit
@@ -2732,25 +2816,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
           endHourWS, endMinWS, 0),
       endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
           endHourWS + 1, 0, 0),
-      color: Colors.grey.withOpacity(0.3),
+      color: Colors.grey.withOpacity(0.15),
       recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));
     return regions;
-  }
-
-  Color getColor(Set<MaterialState> states) {
-    if (states.contains(MaterialState.selected)) {
-      return Theme.of(context).colorScheme.secondary;
-    } else {
-      return Colors.transparent;
-    }
-  }
-
-  Widget timeRegionBuilder(
-      BuildContext context, TimeRegionDetails timeRegionDetails) {
-    return Container(
-      color: const Color(0x40B5B5B5),
-    );
   }
 
   AppointmentDataSource _getCalendarDataSource(List<Event> eventsList) {

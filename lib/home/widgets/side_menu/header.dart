@@ -202,7 +202,7 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 12),
                           AppBarIcon(
                             icon: Icons.menu,
                             iconSize: iconSize,

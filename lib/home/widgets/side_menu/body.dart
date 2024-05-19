@@ -367,7 +367,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 returnTextWidget(context, page),
-                if (webSupported == null) const OnlyMobileBadge(),
+                if (context.isDesktop && webSupported == null) const OnlyMobileBadge(),
               ],
             ),
             onTap: () {
