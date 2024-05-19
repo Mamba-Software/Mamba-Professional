@@ -123,7 +123,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                             shape: RoundedRectangleBorder(
                               // add this
                               borderRadius:
-                                  BorderRadius.circular(defaultPaddingSmall),
+                                  BorderRadius.circular(borderRadiusSmall),
                             ),
                             minimumSize: const Size(30, 30),
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,

@@ -14,7 +14,7 @@ class AppThemes {
     Color primaryColorLight = AppColors.grey;
     Color invertedPrimaryColor = AppColors.white;
     Color disabledColor = AppColors.grey;
-    Color dividerColor = AppColors.lightGrey;
+    Color dividerColor = Colors.black12;
     Color backgroundColor = AppColors.white;
     Color scaffoldBackgroundColor = AppColors.lightGrey;
     Color successColor = AppColors.green;

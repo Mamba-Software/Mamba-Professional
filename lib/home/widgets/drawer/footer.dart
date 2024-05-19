@@ -19,7 +19,7 @@ class Footer extends StatelessWidget with PlatformMixin {
     return BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
       builder: (context, state) {
         // Sizes and Colours Used for Table and Mobile
-        double height = kToolbarHeight*1.5;
+        double height = desktopFooterHeight;
         Color dividerColor = context.theme.dividerColor;
         Color backgroundColor = context.colorScheme.background;
         // Text Styles
@@ -58,7 +58,7 @@ class Footer extends StatelessWidget with PlatformMixin {
         // Common Widget structure used in all states
         return Builder(builder: (context) {
           if (context.isMobile || context.isTablet) {
-            height = context.height*0.1;
+            height = context.height * 0.1;
             return Column(
               children: [
                 Divider(

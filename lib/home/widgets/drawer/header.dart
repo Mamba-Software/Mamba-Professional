@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/home/mixin/brand_role_mixin.dart';
+import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 
 class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
   const Header({
@@ -184,7 +186,52 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
             ),
           );
         } else {
-          return Container();
+          return Column(
+            children: [
+              Container(
+                height: desktopAppBarHeight,
+                width: 304,
+                padding: EdgeInsets.symmetric(horizontal: defaultPaddingSmall),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    AppBarIcon(
+                      icon: Icons.menu,
+                      iconSize: iconSize,
+                      color: context.colorScheme.onBackground,
+                      onTap: () {
+                        print("openDrawer");
+                      },
+                    ),
+                    SizedBox(width: defaultPaddingSmall),
+                    Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.primary,
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage(
+                            Assets.mambaLogoIcon,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: defaultPaddingSmall),
+                    Text(
+                      appName,
+                      style: context.textTheme.headlineLarge,
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                color: context.theme.dividerColor,
+                thickness: 1,
+                height: 1,
+              ),
+            ],
+          );
         }
       },
     );

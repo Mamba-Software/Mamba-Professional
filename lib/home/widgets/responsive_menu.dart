@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/models/home_navigation_page.dart';
 import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 import 'package:mamba/home/widgets/drawer/side_menu.dart';
 
@@ -26,117 +29,26 @@ class ResponsiveMenu extends StatelessWidget {
           );
         } else {
           return Scaffold(
-            appBar: AppBar(              
-              foregroundColor: context.colorScheme.background,
-              backgroundColor: context.colorScheme.background,
-              toolbarHeight: kToolbarHeight,
-              title: Container(
-                height: kToolbarHeight,
-                width: 304,
-                padding: EdgeInsets.symmetric(horizontal: defaultPaddingSmall),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    AppBarIcon(
-                      icon: Icons.menu,
-                      iconSize: iconSize,
-                      color: context.colorScheme.onBackground,
-                      onTap: () {
-                        print("openDrawer");
-                      },
-                    ),
-                    SizedBox(width: defaultPaddingSmall),
-                    Container(
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.primary,
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage(
-                            Assets.mambaLogoIcon,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: defaultPaddingSmall),
-                    Text(
-                      appName,
-                      style: context.textTheme.headlineLarge,
-                    ),
-                  ],
-                ),
-              ),
-              centerTitle: false,
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    AppBarIcon(
-                      icon: Icons.help_outline_outlined,
-                      iconSize: iconSize,
-                      color: context.colorScheme.onBackground,
-                      onTap: () => navigateToMainFeedbackScreen(context),
-                    ),
-                    AppBarIcon(
-                      icon: Icons.notifications,
-                      iconSize: iconSize,
-                      color: context.colorScheme.onBackground,
-                      onTap: () => navigateToNotificationsScreen(context),
-                    ),
-                    AppBarIcon(
-                      icon: Icons.chat,
-                      iconSize: iconSize,
-                      color: context.colorScheme.onBackground,
-                      onTap: () => navigateToChatScreen(context),
-                    ),
-                    InkWell(
-                      onTap: () => navigateToProfileScreen(context),
-                      hoverColor:
-                          context.colorScheme.onBackground.withOpacity(0.2),
-                      splashColor:
-                          context.colorScheme.onBackground.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(
-                        24,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(
-                          8,
-                        ),
-                        child: SizedBox(
-                          height: iconSize,
-                          child: Center(
-                            child: CircularImage(
-                              size: iconSize,
-                              image: currentUser.imageUrl,
-                              color: context.theme.primaryColor,
-                              borderWidth: 1,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: defaultPaddingSmall)
-                  ],
-                ),
-              ],
-            ),
             body: Row(
               mainAxisSize: MainAxisSize.max,
               children: [
                 const SideMenu(),
                 Expanded(
-                  child: Row(
-                    children: [
-                      VerticalDivider(
-                        color: context.theme.dividerColor,
-                        thickness: 1,
-                        width: 1,
-                      ),
-                      Expanded(
-                        child: child,
-                      ),
-                    ],
+                  child: Container(
+                    color: context.colorScheme.background,
+                    child: Row(
+                      children: [
+                        VerticalDivider(
+                          indent: desktopAppBarHeight,
+                          color: context.theme.dividerColor,
+                          thickness: 1,
+                          width: 1,
+                        ),
+                        Expanded(
+                          child: child,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

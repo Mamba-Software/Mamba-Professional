@@ -47,6 +47,10 @@ double defaultPaddingSmall = 8;
 int snackbarDefaultDuration = 5;
 int animationDefaultDuration = 200;
 
+// Desktop Sizes
+double desktopAppBarHeight = 70;
+double desktopFooterHeight = 70;
+
 // App
 var androidGooglePlayUrl =
     "https://play.google.com/store/apps/details?id=com.mamba.mambaprofessionalapp";
