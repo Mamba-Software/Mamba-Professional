@@ -26,17 +26,26 @@ class ResponsiveMenu extends StatelessWidget {
           );
         } else {
           return Scaffold(
-            appBar: AppBar(
+            appBar: AppBar(              
               foregroundColor: context.colorScheme.background,
               backgroundColor: context.colorScheme.background,
               toolbarHeight: kToolbarHeight,
               title: Container(
                 height: kToolbarHeight,
-                width: context.width / 6,
-                padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                width: 304,
+                padding: EdgeInsets.symmetric(horizontal: defaultPaddingSmall),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    AppBarIcon(
+                      icon: Icons.menu,
+                      iconSize: iconSize,
+                      color: context.colorScheme.onBackground,
+                      onTap: () {
+                        print("openDrawer");
+                      },
+                    ),
+                    SizedBox(width: defaultPaddingSmall),
                     Container(
                       height: 30,
                       width: 30,
@@ -107,7 +116,7 @@ class ResponsiveMenu extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8)
+                    SizedBox(width: defaultPaddingSmall)
                   ],
                 ),
               ],
@@ -115,12 +124,8 @@ class ResponsiveMenu extends StatelessWidget {
             body: Row(
               mainAxisSize: MainAxisSize.max,
               children: [
-                const Expanded(
-                  flex: 1,
-                  child: SideMenu(),
-                ),
+                const SideMenu(),
                 Expanded(
-                  flex: 5,
                   child: Row(
                     children: [
                       VerticalDivider(

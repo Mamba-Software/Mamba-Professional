@@ -13,6 +13,7 @@ class SideMenu extends StatelessWidget with PlatformMixin {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: 304,
       backgroundColor: context.colorScheme.background,
       surfaceTintColor: context.colorScheme.background,      
       shape: const RoundedRectangleBorder(

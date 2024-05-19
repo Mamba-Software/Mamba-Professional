@@ -19,7 +19,7 @@ class Footer extends StatelessWidget with PlatformMixin {
     return BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
       builder: (context, state) {
         // Sizes and Colours Used for Table and Mobile
-        double height = context.height * 0.1;
+        double height = kToolbarHeight*1.5;
         Color dividerColor = context.theme.dividerColor;
         Color backgroundColor = context.colorScheme.background;
         // Text Styles
@@ -58,6 +58,7 @@ class Footer extends StatelessWidget with PlatformMixin {
         // Common Widget structure used in all states
         return Builder(builder: (context) {
           if (context.isMobile || context.isTablet) {
+            height = context.height*0.1;
             return Column(
               children: [
                 Divider(
@@ -69,20 +70,18 @@ class Footer extends StatelessWidget with PlatformMixin {
                   height: height,
                   color: backgroundColor,
                   padding: EdgeInsets.all(defaultPaddingSmall),
-                  child: Center(
-                    child: ListTile(
-                      title: Text(
-                        title,
-                        style: titleStyle,
-                        textAlign: TextAlign.left,
-                      ),
-                      subtitle: Text(
-                        subtitle,
-                        style: labelStyle,
-                        textAlign: TextAlign.left,
-                      ),
-                      onTap: () => onTap,
+                  child: ListTile(
+                    title: Text(
+                      title,
+                      style: titleStyle,
+                      textAlign: TextAlign.left,
                     ),
+                    subtitle: Text(
+                      subtitle,
+                      style: labelStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                    onTap: () => onTap,
                   ),
                 ),
               ],
