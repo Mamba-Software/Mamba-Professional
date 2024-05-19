@@ -659,8 +659,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
     }
   }
 
-  Widget _buildDropDownDesktop(
-      DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
+  Widget _buildDropDownDesktop() {
     double dropdownWidth = 250;
     final List<String> items = ['0', '1', '2', '3'];
 
@@ -2139,42 +2138,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>
                                 onTap: () {},
                               ),
                               SizedBox(width: defaultPadding),
-                              TextButton(
-                                onPressed: () {
-                                  mixpanel!.track('brand_calendar_today');
-                                  setState(() {
-                                    //_controller.selectedDate = DateTime.now();
-                                    _controller.displayDate = DateTime.now()
-                                        .subtract(const Duration(hours: 1));
-                                  });
-                                },
-                                style: TextButton.styleFrom(
-                                  backgroundColor:
-                                      context.colorScheme.background,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: defaultPadding,
-                                      vertical: defaultPaddingSmall),
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      color: context.theme.dividerColor,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      borderRadiusSmall,
-                                    ),
-                                  ),
-                                  minimumSize: const Size(80, 45),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                child: SizedBox(
-                                  child: Text(
-                                    context.l10n.todayString,
-                                    style: context.textTheme.bodyLarge,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
+                              _buildDropDownDesktop(),
                               SizedBox(width: defaultPadding),
                               AppBarIcon(
                                 icon: Icons.help_outline_outlined,

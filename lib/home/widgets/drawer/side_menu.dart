@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/home/widgets/drawer/body.dart';
@@ -13,7 +14,7 @@ class SideMenu extends StatelessWidget with PlatformMixin {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: 304,
+      width: sideMenuWidth,
       backgroundColor: context.colorScheme.background,
       surfaceTintColor: context.colorScheme.background,      
       shape: const RoundedRectangleBorder(
