@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba/events/Calendar/views/BrandCalendarWidget.dart';
+import 'package:mamba/events/calendar/views/calendar.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/home/widgets/responsive_menu.dart';
@@ -56,7 +56,7 @@ class _BrandScreenState extends State<BrandScreen> {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             // Gestión
-            BrandCalendarWidget(
+            Calendar(
               brandId: currentBrand.id!,
             ),
             BrandPurchaseHistory(

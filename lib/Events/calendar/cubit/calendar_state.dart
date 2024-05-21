@@ -1,24 +1,24 @@
-part of 'CalendarFunctionCubit.dart';
+part of 'calendar_cubit.dart';
 
-abstract class CalendarFunctionState extends Equatable {
-  const CalendarFunctionState();
+abstract class CalendarState extends Equatable {
+  const CalendarState();
 }
 
-class CalendarFunctionInitial extends CalendarFunctionState {
-  const CalendarFunctionInitial();
+class CalendarInitial extends CalendarState {
+  const CalendarInitial();
 
   @override
   List<Object?> get props => [];
 }
 
-class CalendarFunctionLoading extends CalendarFunctionState {
-  const CalendarFunctionLoading();
+class CalendarLoading extends CalendarState {
+  const CalendarLoading();
 
   @override
   List<Object?> get props => [];
 }
 
-class CalendarFunctionLoaded extends CalendarFunctionState {
+class CalendarLoaded extends CalendarState {
   final String selectedValue;
   final List<String> items;
   final bool canEdit;
@@ -43,7 +43,7 @@ class CalendarFunctionLoaded extends CalendarFunctionState {
   final DateTime? calendarDateTime;
   final CalendarView? calendarView;
 
-  const CalendarFunctionLoaded({
+  const CalendarLoaded({
     required this.selectedValue,
     required this.items,
     required this.canEdit,
@@ -98,9 +98,9 @@ class CalendarFunctionLoaded extends CalendarFunctionState {
 }
 
 
-class CalendarFunctionError extends CalendarFunctionState {
+class CalendarError extends CalendarState {
   final String message;
-  const CalendarFunctionError(this.message);
+  const CalendarError(this.message);
 
   @override
   List<Object?> get props => [message];

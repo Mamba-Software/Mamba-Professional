@@ -12,11 +12,10 @@ import 'package:mamba/data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-part 'CalendarFunctionState.dart';
+part 'calendar_state.dart';
 
-class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
+class CalendarCubit extends Cubit<CalendarState> {
   // App Bar and Scroll View
-  ScrollController? _scrollController;
   bool appBarExpanded = false;
   String selectedValue = '2';
   var items = ['0', '1', '2', '3', '4', '5', '6'];
@@ -31,7 +30,6 @@ class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
   List<Usuario> _brandTrainers = [];
   List<Usuario> selectedTrainers = [];
   // Sesions Controller
-  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final CalendarController _controller = CalendarController();
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
   // Dies de la semana que el entrenador no treballa
@@ -59,12 +57,12 @@ class CalendarFunctionCubit extends Cubit<CalendarFunctionState> {
   DateTime? calendarDateTime;
   CalendarView? calendarView;
 
-  CalendarFunctionCubit(context, brandId)
-      : super(const CalendarFunctionInitial()) {
-    emit(const CalendarFunctionLoading());
+  CalendarCubit(context, brandId)
+      : super(const CalendarInitial()) {
+    emit(const CalendarLoading());
     initAppBarDateTitle();
     getUserBrandDetails(context, brandId);
-    emit(CalendarFunctionLoaded(
+    emit(CalendarLoaded(
       selectedValue: selectedValue,
       items: items,
       canEdit: canEdit,

@@ -260,7 +260,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                         onPressed: () => {},
                         child: Padding(
                           padding:
-                              EdgeInsets.symmetric(vertical: defaultPaddingSmall),
+                              EdgeInsets.symmetric(vertical: defaultPaddingSmall+5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
@@ -268,7 +268,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                               Icon(
                                 Icons.qr_code,
                                 color: context.colorScheme.secondary,
-                                size: iconSizeBig,
+                                size: iconSize,
                               ),
                             ],
                           ),
@@ -454,7 +454,11 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                     child: Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: defaultPaddingSmall),
-                      child: returnLeadingIcon(context, page, iconSizeBig),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 5),
+                        child: returnLeadingIcon(context, page, iconSize),
+                      ),
                     ),
                   ),
                 );
