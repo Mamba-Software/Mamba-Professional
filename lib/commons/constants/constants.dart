@@ -18,7 +18,7 @@ String mainFontFamily = "UberMove";
 String displayFontFamily = "UberMove";
 
 // Date Formats
-String month_year_date = "MMMM yyyy";
+String month_year_dateformat = "MMMM yyyy";
 
 // Text Sizes
 double display1 = 30; // For large, expressive text

@@ -30,7 +30,7 @@ import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:mamba/commons/extensions/context.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
@@ -1488,22 +1488,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         showCurrentTimeIndicator: true,
         cellBorderColor: AppColors.grey,
         todayTextStyle: context.textTheme.bodyLarge
-            ?.copyWith(color: context.colorScheme.onPrimary),
-        // Style
-        selectionDecoration: _controller.view == CalendarView.month
-            ? BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(width: 1, color: Colors.transparent),
-              )
-            : BoxDecoration(
-                color:
-                    Theme.of(context).colorScheme.secondary.withOpacity(0.08),
-                border: Border.all(
-                    width: 1, color: Theme.of(context).colorScheme.secondary),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(5.0),
-                ),
-              ),
+            ?.copyWith(color: context.colorScheme.onPrimary),        
         // Header
         headerHeight: 0,
         // View Header
@@ -1559,7 +1544,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
             weekTextStyle: Theme.of(context).textTheme.bodySmall,
           ),
           monthHeaderSettings: MonthHeaderSettings(
-            monthFormat: 'MMMM yyyy',
+            monthFormat: month_year_dateformat,
             height: 70,
             textAlign: TextAlign.start,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -1568,26 +1553,35 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         ),
         scheduleViewMonthHeaderBuilder: (BuildContext buildContext,
             ScheduleViewMonthHeaderDetails details) {
-          return Container(
-            padding: EdgeInsets.all(defaultPadding),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  toCapitalized(
-                    DateFormat(
-                      month_year_date,
-                      context.languageCode,
-                    ).format(details.date),
-                  ),
-                  style: context.textTheme.titleLarge,
-                  textAlign: TextAlign.left,
-                ),
-              ],
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+            child: Text(
+              toCapitalized(
+                DateFormat(
+                  month_year_dateformat,
+                  context.languageCode,
+                ).format(details.date),
+              ),
+              style: context.textTheme.titleLarge,
+              textAlign: TextAlign.left,
             ),
           );
         },
+        // Style
+        selectionDecoration: _controller.view == CalendarView.month
+            ? BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(width: 1, color: Colors.transparent),
+              )
+            : BoxDecoration(
+                color:
+                    Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                border: Border.all(
+                    width: 1, color: Theme.of(context).colorScheme.secondary),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5.0),
+                ),
+              ),
         onViewChanged: (ViewChangedDetails viewChangedDetails) async {
           await onhandleViewChanged(viewChangedDetails, state);
         },
