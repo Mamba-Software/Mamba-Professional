@@ -8,16 +8,16 @@ import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-part 'BrandEventsState.dart';
+part 'event_state.dart';
 
-class BrandEventsCubit extends Cubit<BrandEventsState> {
-  BrandEventsCubit(final cubitAuth) : super(const BrandEventsInitial()) {
+class EventsCubit extends Cubit<EventsState> {
+  EventsCubit(final cubitAuth) : super(const EventsInitial()) {
     cubitAuth.stream.distinct().listen((state) async {
       // Handle the state change
       if (state is AuthUserBrand) {
         if (isStreamActive) _subscription.cancel();
         // Set the State to Loading
-        emit(const BrandEventsLoading());
+        emit(const EventsLoading());
 
         isStreamActive = true;
         _brandTrainers =
@@ -87,16 +87,16 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
             return aDate.compareTo(bDate);
           });
           // Emit a new state with the list of `Events`.
-          emit(BrandEventsLoaded(finalList));
+          emit(EventsLoaded(finalList));
         },
         onError: (e) {
           print("Brand Events Error$e");
-          emit(BrandEventsError(e.toString()));
+          emit(EventsError(e.toString()));
         },
       );
     } catch (e) {
       print("Brand Events Error$e");
-      emit(BrandEventsError(e.toString()));
+      emit(EventsError(e.toString()));
     }
   }
 
@@ -143,10 +143,10 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         );
         return aDate.compareTo(bDate);
       });
-      emit(BrandEventsLoaded(finalList));
+      emit(EventsLoaded(finalList));
     } catch (e) {
       print("More Brand Events Error$e");
-      emit(BrandEventsError(e.toString()));
+      emit(EventsError(e.toString()));
     }
   }
 
@@ -191,11 +191,11 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         );
         return aDate.compareTo(bDate);
       });
-      emit(BrandEventsLoaded(finalList));
+      emit(EventsLoaded(finalList));
       print("Event $eventId Successfully Updated");
     } catch (e) {
       print("Delete Brand Event Error$e");
-      emit(BrandEventsError(e.toString()));
+      emit(EventsError(e.toString()));
     }
   }
 
@@ -224,11 +224,11 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         );
         return aDate.compareTo(bDate);
       });
-      emit(BrandEventsLoaded(finalList));
+      emit(EventsLoaded(finalList));
       print("Event $eventId Successfully Deleted");
     } catch (e) {
       print("Delete Brand Event Error$e");
-      emit(BrandEventsError(e.toString()));
+      emit(EventsError(e.toString()));
     }
   }
 

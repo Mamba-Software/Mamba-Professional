@@ -7,6 +7,9 @@ import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/Login.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
+import 'package:mamba/calendar/cubit/calendar_cubit.dart';
+import 'package:mamba/events/cubit/events_cubit.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
@@ -20,6 +23,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/Bran
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
+import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 
 class HomePage extends StatelessWidget {
@@ -36,6 +40,13 @@ class HomePage extends StatelessWidget {
       providers: [
         BlocProvider<HomeNavigationManager>(
           create: (context) => HomeNavigationManager(),
+        ),
+        BlocProvider<CalendarCubit>(
+          create: (context) => CalendarCubit(
+            userBloc: context.read<UserBloc>(),
+            brandBloc: context.read<BrandBloc>(),
+            eventBloc: context.read<EventsCubit>(),
+          ),
         ),
       ],
       child: const HomePageBody(),

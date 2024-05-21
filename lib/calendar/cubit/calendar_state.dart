@@ -19,10 +19,13 @@ class CalendarLoading extends CalendarState {
 }
 
 class CalendarLoaded extends CalendarState {
+  final Brand brand;
+  
+  
   final String selectedValue;
   final List<String> items;
   final bool canEdit;
-  final Brand brand;
+  
   final List<Usuario> brandTrainers;
   final List<Usuario> selectedTrainers;
   final CalendarController controller;
@@ -95,13 +98,4 @@ class CalendarLoaded extends CalendarState {
     calendarDateTime,
     calendarView,
   ];
-}
-
-
-class CalendarError extends CalendarState {
-  final String message;
-  const CalendarError(this.message);
-
-  @override
-  List<Object?> get props => [message];
 }

@@ -18,7 +18,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/events/crud_events/views/mobile/AddorEdtiEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
-import 'package:mamba/events/cubit/BrandEventsCubit.dart';
+import 'package:mamba/events/cubit/events_cubit.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
@@ -62,8 +62,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   String selectedValue = '2';
   var items = ['0', '1', '2', '3', '4', '5', '6'];
 
-  // SnackBar Error
-  final _topSnackBar = TopSnackBarDef();
+ 
 
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
@@ -74,45 +73,45 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   bool isLoading = true;
   bool canEdit = false;
 
-  // Boolean Loading
+  // Brand
   Brand _brand = Brand();
-  List<Usuario> _brandTrainers = [];
-  List<Usuario> selectedTrainers = [];
+  // Descansos
+  DateTime dateJoined = DateTime.now();  
 
   // Calendar Controller
   final CalendarController _controller = CalendarController();
-  // Dial Open / Add More Session
-  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
 
   // Horari
-  List<int> nonWorkDays = [];
   double? _startHour;
-  double? _endHour;
-
-  // Zoom Gesture Detector
-  double _timeSlotViewZoom = -1;
-  double _baseTimeSlotViewZoom = -1;
-  double _timeSlotViewScale = 1;
-  double _baseTimeSlotViewScale = 1;
-
-  // Descansos
-  DateTime dateJoined = DateTime.now();
-
+  double? _endHour;  
   // Selecte Date Time
   DateTime displayDateTimeStart = DateTime.now();
   DateTime displayDateTimeEnd = DateTime.now();
   DateTime middleMonthDate = DateTime.now();
 
+  // Zoom Gesture Detector
+  double _timeSlotViewZoom = -1;
+  double _baseTimeSlotViewZoom = -1;
+  double _timeSlotViewScale = 1;
+  double _baseTimeSlotViewScale = 1;  
+
+  // Dial Open / Add More Session
+  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
+
   // Filters
   bool hasFilter = false;
   int filterEventsNumber = 0;
-  List<bool> filterByCalendar = [true, true];
+  List<bool> filterByCalendar = [true, true];  
+  List<Usuario> _brandTrainers = [];
+  List<Usuario> selectedTrainers = [];
 
   //  Heights
   double viewHeaderHeight = 50;
 
   // Selected Event Id
   String? selectedEventId;
+   // SnackBar Error
+  final _topSnackBar = TopSnackBarDef();
 
   @override
   void initState() {
@@ -147,7 +146,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     }
     // Get Brand Events
     await context
-        .read<BrandEventsCubit>()
+        .read<EventsCubit>()
         .getInitialBrandEvents(_brandTrainers);
     // Define If Can Edit
     if (currentUser.brandRole < 3) {
@@ -556,7 +555,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 
   Future<void> onhandleViewChanged(
-      ViewChangedDetails viewChangedDetails, BrandEventsLoaded state) async {
+      ViewChangedDetails viewChangedDetails, EventsLoaded state) async {
     Future.delayed(Duration.zero, () async {
       setState(() {
         int indexMiddleMonthDate =
@@ -581,7 +580,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
               .inDays <
           60) {
         context
-            .read<BrandEventsCubit>()
+            .read<EventsCubit>()
             .getMoreBrandEvents(eventsList.first.id!, _brandTrainers);
       }
     }
@@ -1063,9 +1062,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BrandEventsCubit, BrandEventsState>(
+    return BlocBuilder<EventsCubit, EventsState>(
       builder: (context, state) {
-        if (isLoading == false && state is BrandEventsLoaded) {
+        if (isLoading == false && state is EventsLoaded) {
           return Scaffold(
             body: CustomScrollView(
               physics: const NeverScrollableScrollPhysics(),
@@ -1436,7 +1435,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   // WIDGETS
 
-  Widget calendarWidget(BrandEventsLoaded state) {
+  Widget calendarWidget(EventsLoaded state) {
     return SfCalendarTheme(
       data: SfCalendarThemeData(
         // Background Colors
@@ -1504,7 +1503,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
           dateFormat: 'd',
           timeRulerSize: 50,
           //nonWorkingDays: _controller.view == CalendarView.week && isThreeDays ? [DateTime.friday, DateTime.saturday, DateTime.sunday] : nonWorkDays,
-          nonWorkingDays: nonWorkDays,
+          nonWorkingDays: [],
           minimumAppointmentDuration: const Duration(minutes: 30),
           timeTextStyle: Theme.of(context).textTheme.bodyMedium,
         ),
@@ -1736,6 +1735,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         : Container();
   }
 
+  
+  
   Widget _buildTitleText(
       DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     switch (_controller.view) {

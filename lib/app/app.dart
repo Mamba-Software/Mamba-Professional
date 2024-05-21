@@ -14,7 +14,7 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba/events/cubit/BrandEventsCubit.dart';
+import 'package:mamba/events/cubit/events_cubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
@@ -95,8 +95,8 @@ class App extends StatelessWidget {
             create: (context) => UnreadNotChatsCubit(context.read<AuthCubit>()),
             lazy: false,
           ),
-          BlocProvider<BrandEventsCubit>(
-            create: (context) => BrandEventsCubit(context.read<AuthCubit>()),
+          BlocProvider<EventsCubit>(
+            create: (context) => EventsCubit(context.read<AuthCubit>()),
             lazy: false,
           ),
           BlocProvider<BrandSuscriptionCubit>(
