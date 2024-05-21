@@ -115,6 +115,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
   @override
   void initState() {
     super.initState();
+    // Scroll Controller for Mobile App Bar
     _scrollController = ScrollController()
       ..addListener(
         () => _isAppBarExpanded
@@ -125,31 +126,31 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
                 appBarExpanded = false;
               }),
       );
-    isLoading = true;
-    getUserBrandDetails();
+    // Start Getting Information  
+    getUserBrandEventDetails();
   }
 
   // DATA
 
-  void getUserBrandDetails() async {
+  void getUserBrandEventDetails() async {
     // Get Brand Details
     _brand = await _brandDataService.getBrandDetails(widget.brandId);
     // Get Brand Trainers
     _brandTrainers = await _brandDataService.getBrandTrainers(widget.brandId);
-    // Get Brand Events
-    await context.read<BrandEventsCubit>().getInitialBrandEvents(_brandTrainers);
     selectedTrainers = List.from(_brandTrainers);
     // Get Events Per Trainer
     for (Usuario trainer in _brandTrainers) {
       trainer.setEventsList =
           await _eventDataService.getUserEvents(trainer.id!);
     }
+    // Get Brand Events
+    await context.read<BrandEventsCubit>().getInitialBrandEvents(_brandTrainers);       
     // Define If Can Edit
     if (currentUser.brandRole < 3) {
       canEdit = true;
     } else {
       canEdit = false;
-    }
+    }    
     // Logic To Initialize Calendar
     initCalendar();
   }
