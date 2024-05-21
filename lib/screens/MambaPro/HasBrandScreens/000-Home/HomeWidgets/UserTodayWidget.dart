@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/user/chat/ChatCore.dart';

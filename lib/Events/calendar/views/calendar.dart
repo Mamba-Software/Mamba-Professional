@@ -7,7 +7,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
+import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
+import 'package:mamba/commons/mixins/string.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -28,11 +30,11 @@ import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
-class Calendar extends StatefulWidget with PlatformMixin {
+class Calendar extends StatefulWidget {
   String brandId;
   bool? onlyView;
 
@@ -46,7 +48,7 @@ class Calendar extends StatefulWidget with PlatformMixin {
   _CalendarState createState() => _CalendarState();
 }
 
-class _CalendarState extends State<Calendar> with PlatformMixin {
+class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
@@ -126,7 +128,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
                 appBarExpanded = false;
               }),
       );
-    // Start Getting Information  
+    // Start Getting Information
     getUserBrandEventDetails();
   }
 
@@ -144,13 +146,15 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
           await _eventDataService.getUserEvents(trainer.id!);
     }
     // Get Brand Events
-    await context.read<BrandEventsCubit>().getInitialBrandEvents(_brandTrainers);       
+    await context
+        .read<BrandEventsCubit>()
+        .getInitialBrandEvents(_brandTrainers);
     // Define If Can Edit
     if (currentUser.brandRole < 3) {
       canEdit = true;
     } else {
       canEdit = false;
-    }    
+    }
     // Logic To Initialize Calendar
     initCalendar();
   }
@@ -172,17 +176,17 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
     //setState(() {});
   }
 
-  // LOGIC  
+  // LOGIC
 
   // Calendar Initialiazation
-  
+
   Future<void> initCalendar() async {
     // Initial Date Time
     DateTime now = DateTime.now();
     int currentDay = now.weekday;
     displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
     displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
-    
+
     // Initial Calendar View
     selectedValue = '2';
     _controller.view = CalendarView.week;
@@ -193,13 +197,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
         double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour =
         double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
-    
+
     // Calcula el TimeSlotView per cadascuna
     _baseTimeSlotViewZoom = getScreenHeightDifference(context);
     _timeSlotViewScale = await _userDataService.getUserZoomScale(
         widget.brandId, currentUser.id!);
-    _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;    
-    
+    _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
+
     // Finish Is Loading
     setState(() {
       isLoading = false;
@@ -455,7 +459,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
     return AppointmentDataSource(tempAllAppointments);
   }
 
-  // Add Event / Navigate To Event Functions  
+  // Add Event / Navigate To Event Functions
 
   Future<void> _addEvent(DateTime dateTime, bool isPrivate) async {
     context.read<CrudEventCubit>().resetNewEvent();
@@ -524,9 +528,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
     }
     */
   }
-  
+
   // UI Interaction Functions
-  
+
   void onScaleStart(ScaleStartDetails scaleStartDetails) {
     _baseTimeSlotViewScale = _timeSlotViewScale;
   }
@@ -549,6 +553,38 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
   void onScaleEnd(ScaleEndDetails scaleEndDetails) {
     _userDataService.updateUserZoomScale(
         widget.brandId, currentUser.id!, _timeSlotViewScale);
+  }
+
+  Future<void> onhandleViewChanged(
+      ViewChangedDetails viewChangedDetails, BrandEventsLoaded state) async {
+    Future.delayed(Duration.zero, () async {
+      setState(() {
+        int indexMiddleMonthDate =
+            ((viewChangedDetails.visibleDates.length - 1) ~/ 2);
+        middleMonthDate = viewChangedDetails.visibleDates[indexMiddleMonthDate];
+        displayDateTimeStart = viewChangedDetails.visibleDates[0];
+        displayDateTimeEnd = viewChangedDetails
+            .visibleDates[viewChangedDetails.visibleDates.length - 1];
+      });
+    });
+    List<Event> eventsList = state.brandEventsList;
+    if (eventsList.isNotEmpty) {
+      var startDateLastEvent = DateTime(
+        int.parse(eventsList.first.year!),
+        int.parse(eventsList.first.month!),
+        int.parse(eventsList.first.day!),
+        int.parse(eventsList.first.hour!),
+        int.parse(eventsList.first.minute!),
+      );
+      if (viewChangedDetails.visibleDates[0]
+              .difference(startDateLastEvent)
+              .inDays <
+          60) {
+        context
+            .read<BrandEventsCubit>()
+            .getMoreBrandEvents(eventsList.first.id!, _brandTrainers);
+      }
+    }
   }
 
   void onTapCalendar(CalendarTapDetails details) async {
@@ -1400,37 +1436,59 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
 
   // WIDGETS
 
-  Widget calendarWidget(BrandEventsLoaded loadedState) {
+  Widget calendarWidget(BrandEventsLoaded state) {
     return SfCalendarTheme(
       data: SfCalendarThemeData(
-        brightness: Brightness.dark,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        todayHighlightColor: Theme.of(context).primaryColor,
-        todayBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        // Background Colors
+        brightness: context.read<ThemeManager>().isDarkMode
+            ? Brightness.dark
+            : Brightness.light,
+        backgroundColor: context.theme.scaffoldBackgroundColor,
+        headerBackgroundColor: context.theme.scaffoldBackgroundColor,
+        agendaBackgroundColor: context.theme.scaffoldBackgroundColor,
+        cellBorderColor: Theme.of(context).dividerColor,
+        activeDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
+        todayBackgroundColor: context.theme.scaffoldBackgroundColor,
+        trailingDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
+        leadingDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
+        selectionBorderColor: context.colorScheme.primary,
+        todayHighlightColor: context.colorScheme.primary,
+        viewHeaderBackgroundColor: context.colorScheme.background,
+        weekNumberBackgroundColor: context.colorScheme.background,
+        allDayPanelColor: context.theme.scaffoldBackgroundColor,
+        // Text Styles
+        todayTextStyle: context.textTheme.bodyLarge,
+        agendaDayTextStyle: context.textTheme.bodyLarge,
+        agendaDateTextStyle: context.textTheme.bodyLarge,
+        headerTextStyle: context.textTheme.bodyLarge,
+        viewHeaderDateTextStyle: context.textTheme.bodyLarge,
+        viewHeaderDayTextStyle: context.textTheme.bodyLarge,
+        timeTextStyle: context.textTheme.bodyLarge,
+        activeDatesTextStyle: context.textTheme.bodyLarge,
+        trailingDatesTextStyle: context.textTheme.bodyLarge,
+        leadingDatesTextStyle: context.textTheme.bodyLarge,
+        blackoutDatesTextStyle: context.textTheme.bodyLarge,
+        displayNameTextStyle: context.textTheme.bodyLarge,
+        weekNumberTextStyle: context.textTheme.bodyLarge,
+        timeIndicatorTextStyle: context.textTheme.bodyLarge,
       ),
       child: SfCalendar(
         // Controller
         controller: _controller,
+        // Blackout Dates
         blackoutDates: [dateJoined],
-        blackoutDatesTextStyle: Theme.of(context)
-            .textTheme
-            .displaySmall
-            ?.copyWith(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.w600),
+        blackoutDatesTextStyle: context.textTheme.titleMedium,
         // Data
         minDate: dateJoined,
-        dataSource: _getCalendarDataSource(loadedState.brandEventsList),
+        dataSource: _getCalendarDataSource(state.brandEventsList),
         specialRegions: _getTimeRegions(),
         // Config
         cellEndPadding: 0,
         firstDayOfWeek: 1,
         showCurrentTimeIndicator: true,
         cellBorderColor: AppColors.grey,
-        todayTextStyle: Theme.of(context)
-            .textTheme
-            .bodyMedium
-            ?.copyWith(color: Theme.of(context).primaryColorDark),
+        todayTextStyle: context.textTheme.bodyLarge
+            ?.copyWith(color: context.colorScheme.onPrimary),
         // Style
         selectionDecoration: _controller.view == CalendarView.month
             ? BoxDecoration(
@@ -1446,22 +1504,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
                   Radius.circular(5.0),
                 ),
               ),
+        // Header
         headerHeight: 0,
-        headerStyle: CalendarHeaderStyle(
-          textAlign: TextAlign.center,
-          backgroundColor: Colors.transparent,
-          textStyle: Theme.of(context)
-              .textTheme
-              .bodyLarge
-              ?.copyWith(color: Colors.transparent),
-        ),
+        // View Header
         viewHeaderHeight: viewHeaderHeight,
-        viewHeaderStyle: ViewHeaderStyle(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          dateTextStyle: Theme.of(context).textTheme.bodyMedium,
-          dayTextStyle:
-              Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 10),
-        ),
         // Time Slot View Settings
         timeSlotViewSettings: TimeSlotViewSettings(
           timeIntervalHeight: _timeSlotViewZoom,
@@ -1495,52 +1541,47 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
                 ?.copyWith(color: AppColors.grey),
           ),
         ),
-        // Schedule View
+        // Agenda / Schedule View
         scheduleViewSettings: ScheduleViewSettings(
-            hideEmptyScheduleWeek: true,
-            appointmentItemHeight: MediaQuery.of(context).size.height * 0.12,
-            appointmentTextStyle: Theme.of(context).textTheme.bodyMedium,
-            dayHeaderSettings: DayHeaderSettings(
-              dateTextStyle: Theme.of(context).textTheme.bodyMedium,
-              dayTextStyle: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(fontSize: 10),
-            ),
-            weekHeaderSettings: WeekHeaderSettings(
-              startDateFormat: 'd',
-              endDateFormat: 'd MMMM',
-              textAlign: TextAlign.start,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              weekTextStyle: Theme.of(context).textTheme.bodySmall,
-            ),
-            monthHeaderSettings: MonthHeaderSettings(
-              monthFormat: 'MMMM yyyy',
-              height: 70,
-              textAlign: TextAlign.start,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              monthTextStyle: Theme.of(context).textTheme.headlineMedium,
-            )),
+          hideEmptyScheduleWeek: true,
+          appointmentItemHeight: MediaQuery.of(context).size.height * 0.12,
+          appointmentTextStyle: Theme.of(context).textTheme.bodyMedium,
+          dayHeaderSettings: DayHeaderSettings(
+            dateTextStyle: Theme.of(context).textTheme.bodyMedium,
+            dayTextStyle:
+                Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 10),
+          ),
+          weekHeaderSettings: WeekHeaderSettings(
+            startDateFormat: 'd',
+            endDateFormat: 'd MMMM',
+            textAlign: TextAlign.start,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            weekTextStyle: Theme.of(context).textTheme.bodySmall,
+          ),
+          monthHeaderSettings: MonthHeaderSettings(
+            monthFormat: 'MMMM yyyy',
+            height: 70,
+            textAlign: TextAlign.start,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            monthTextStyle: Theme.of(context).textTheme.headlineMedium,
+          ),
+        ),
         scheduleViewMonthHeaderBuilder: (BuildContext buildContext,
             ScheduleViewMonthHeaderDetails details) {
           return Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            padding: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.width * 0.03,
-                horizontal: MediaQuery.of(context).size.width * 0.05),
+            padding: EdgeInsets.all(defaultPadding),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  StringUtils().toCapitalized(DateFormat(
-                    'MMMM yyyy',
-                    Localizations.localeOf(context).languageCode,
-                  ).format(details.date)),
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium
-                      ?.copyWith(fontWeight: FontWeight.w500),
+                  toCapitalized(
+                    DateFormat(
+                      month_year_date,
+                      context.languageCode,
+                    ).format(details.date),
+                  ),
+                  style: context.textTheme.titleLarge,
                   textAlign: TextAlign.left,
                 ),
               ],
@@ -1548,41 +1589,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin {
           );
         },
         onViewChanged: (ViewChangedDetails viewChangedDetails) async {
-          Future.delayed(Duration.zero, () async {
-            setState(() {
-              int indexMiddleMonthDate =
-                  ((viewChangedDetails.visibleDates.length - 1) ~/ 2);
-              middleMonthDate =
-                  viewChangedDetails.visibleDates[indexMiddleMonthDate];
-              displayDateTimeStart = viewChangedDetails.visibleDates[0];
-              displayDateTimeEnd = viewChangedDetails
-                  .visibleDates[viewChangedDetails.visibleDates.length - 1];
-            });
-          });
-          List<Event> eventsList = loadedState.brandEventsList;
-          if (eventsList.isNotEmpty) {
-            var startDateLastEvent = DateTime(
-              int.parse(eventsList.first.year!),
-              int.parse(eventsList.first.month!),
-              int.parse(eventsList.first.day!),
-              int.parse(eventsList.first.hour!),
-              int.parse(eventsList.first.minute!),
-            );
-            if (viewChangedDetails.visibleDates[0]
-                    .difference(startDateLastEvent)
-                    .inDays <
-                60) {
-              context
-                  .read<BrandEventsCubit>()
-                  .getMoreBrandEvents(eventsList.first.id!, _brandTrainers);
-            }
-          }
+          await onhandleViewChanged(viewChangedDetails, state);
         },
         onTap: onTapCalendar,
         appointmentTextStyle: Theme.of(context).textTheme.bodyMedium!,
         appointmentBuilder:
             (BuildContext context, CalendarAppointmentDetails details) {
-          return _buildEventContainer(details, loadedState.brandEventsList);
+          return _buildEventContainer(details, state.brandEventsList);
         },
       ),
     );

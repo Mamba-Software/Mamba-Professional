@@ -5,7 +5,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
@@ -14,7 +14,7 @@ import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 
 class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
   final double width;
-  
+
   const Header({
     required this.width,
     super.key,

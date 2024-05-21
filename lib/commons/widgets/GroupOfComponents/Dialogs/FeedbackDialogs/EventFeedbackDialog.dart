@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';

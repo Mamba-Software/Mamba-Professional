@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba/auth/widgets/custom_appbar.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -11,7 +11,7 @@ import '../../commons/constants/constants.dart';
 class ResponsiveLogin extends StatelessWidget with PlatformMixin {
   final Widget child;
 
-  const ResponsiveLogin({super.key, required this.child}); 
+  const ResponsiveLogin({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +112,7 @@ class ResponsiveLogin extends StatelessWidget with PlatformMixin {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Container(                                  
+                                Container(
                                   constraints:
                                       const BoxConstraints(maxWidth: 400),
                                   child: child,

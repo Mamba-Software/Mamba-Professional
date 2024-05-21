@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/auth/splash/SplashScreen.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/data/Models/Brand.dart';

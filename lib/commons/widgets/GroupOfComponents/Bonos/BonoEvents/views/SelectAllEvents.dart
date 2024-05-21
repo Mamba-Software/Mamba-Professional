@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Purchase.dart';

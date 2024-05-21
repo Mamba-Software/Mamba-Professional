@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:mamba/commons/extensions/context.dart';
 
-// Text Styles contains all the TextStyles used in the App.
-class StringUtils {
+mixin StringMixin {
+   
   String toCapitalized(String s) =>
       s.isNotEmpty ? '${s[0].toUpperCase()}${s.substring(1)}' : '';
 

@@ -9,7 +9,7 @@ import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 typedef DateCallBack = void Function(int pageIndex);

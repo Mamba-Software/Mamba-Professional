@@ -7,7 +7,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/SelectEventUsers/SelectClientsEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/SelectEventUsers/SelectTrainersEvent.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 Widget buildAddUserButton(
     BuildContext context, bool isTrainer, List<Usuario> brandUsersSelected) {

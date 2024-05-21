@@ -417,16 +417,21 @@ class UserFirebaseCalls {
   }
 
   Future<double> getUserZoomScale(String brandId, String userId) async {
-    DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
-        .collection(brands)
-        .doc(brandId)
-        .collection("Users")
-        .doc(userId)
-        .get();
-    if ((documentSnapshot.data() as Map<String, dynamic>)
-        .containsKey('zoomScale')) {
-      return documentSnapshot.get("zoomScale");
-    } else {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection("Users")
+          .doc(userId)
+          .get();
+      if ((documentSnapshot.data() as Map<String, dynamic>)
+          .containsKey('zoomScale')) {
+        int zoomScale = documentSnapshot.get("zoomScale");
+        return zoomScale.toDouble();
+      } else {
+        return 1.0;
+      }
+    } catch (e) {
       return 1.0;
     }
   }

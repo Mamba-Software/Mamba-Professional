@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';

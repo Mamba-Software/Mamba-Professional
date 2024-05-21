@@ -18,7 +18,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/ProfileView/ProfileUserV
 import 'package:mime/mime.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({

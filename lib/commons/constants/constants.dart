@@ -17,6 +17,9 @@ String standardLanguage = "es";
 String mainFontFamily = "UberMove";
 String displayFontFamily = "UberMove";
 
+// Date Formats
+String month_year_date = "MMMM yyyy";
+
 // Text Sizes
 double display1 = 30; // For large, expressive text
 double headline1 = 25; // Primary title, more prominent

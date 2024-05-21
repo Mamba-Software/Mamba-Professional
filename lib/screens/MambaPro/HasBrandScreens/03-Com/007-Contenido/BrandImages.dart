@@ -5,7 +5,7 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'dart:io';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/Models/ImageObject.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';

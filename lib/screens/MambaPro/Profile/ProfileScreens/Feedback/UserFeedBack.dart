@@ -9,7 +9,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:survey_kit/survey_kit.dart';
 
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';

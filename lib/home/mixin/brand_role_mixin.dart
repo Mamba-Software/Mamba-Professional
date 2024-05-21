@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 
-mixin BrandRoleMixin {  
-  
+mixin BrandRoleMixin {
 // Navigate to Bonos Request Screen
   void navigateToRolesInformationModal(BuildContext context) async {
     mixpanel!.track('drawer_trainer_roles_info');
@@ -21,7 +20,9 @@ mixin BrandRoleMixin {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
         return const FractionallySizedBox(
-            heightFactor: 0.935, child: RolesInfo(),);
+          heightFactor: 0.935,
+          child: RolesInfo(),
+        );
       },
     );
   }
@@ -43,7 +44,7 @@ mixin BrandRoleMixin {
         );
       },
     );
-  }  
+  }
 
   String returnBrandRoleString(BuildContext context) {
     switch (currentUser.brandRole) {
@@ -61,5 +62,5 @@ mixin BrandRoleMixin {
       default:
         return context.l10n.trainer;
     }
-  } 
+  }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -9,8 +8,8 @@ import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/brand/data/brand_repository.dart';
-import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
@@ -29,7 +28,6 @@ import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:mamba/user/data/firebase_user_repository.dart';
 import 'package:mamba/user/data/user_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class App extends StatelessWidget {
   App({super.key});

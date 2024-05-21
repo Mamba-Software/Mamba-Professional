@@ -5,7 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -304,57 +304,53 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                   searchClicked == false
                       ? Text(
                           context.l10n.staff,
-                          style: context
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(
-                                color: AppColors.white,
-                              ),
+                          style: context.textTheme.headlineMedium?.copyWith(
+                            color: AppColors.white,
+                          ),
                         )
                       : Expanded(
-                        child: TextField(
-                          autofocus: true,
-                          controller: searchController,
-                          onChanged: (value) {
-                            filterSearchResults(value);
-                          },
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: AppColors.white),
-                          textAlign: TextAlign.left,
-                          decoration: InputDecoration(
-                            hintStyle: Theme.of(context).textTheme.bodySmall,
-                            hintText: context.l10n.search,
-                            enabledBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: AppColors.grey),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0))),
-                            focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: AppColors.grey),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0))),
-                            border: const OutlineInputBorder(
-                                borderSide: BorderSide(color: AppColors.grey),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0))),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                mixpanel!
-                                    .track('brand_trainers_search_clean');
-                                searchController.clear();
-                                filterSearchResults("");
-                              },
-                              icon: const Icon(
-                                Icons.delete_outline,
-                                color: Colors.grey,
+                          child: TextField(
+                            autofocus: true,
+                            controller: searchController,
+                            onChanged: (value) {
+                              filterSearchResults(value);
+                            },
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: AppColors.white),
+                            textAlign: TextAlign.left,
+                            decoration: InputDecoration(
+                              hintStyle: Theme.of(context).textTheme.bodySmall,
+                              hintText: context.l10n.search,
+                              enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: AppColors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0))),
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: AppColors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0))),
+                              border: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: AppColors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0))),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  mixpanel!
+                                      .track('brand_trainers_search_clean');
+                                  searchController.clear();
+                                  filterSearchResults("");
+                                },
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.grey,
+                                ),
                               ),
+                              contentPadding: const EdgeInsets.only(left: 8),
                             ),
-                            contentPadding: const EdgeInsets.only(
-                                left: 8),
                           ),
                         ),
-                      ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Row(
@@ -365,11 +361,9 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                           child: IconButton(
                             onPressed: () {
                               if (searchClicked == false) {
-                                mixpanel!
-                                    .track('brand_trainers_search_button');
+                                mixpanel!.track('brand_trainers_search_button');
                               } else {
-                                mixpanel!
-                                    .track('brand_trainers_search_close');
+                                mixpanel!.track('brand_trainers_search_close');
                               }
                               setState(() {
                                 searchController.clear();
@@ -378,7 +372,8 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                               });
                             },
                             splashRadius: 20,
-                            splashColor: AppColors.white.withOpacity(0.2), // Splash color
+                            splashColor: AppColors.white
+                                .withOpacity(0.2), // Splash color
                             padding: EdgeInsets.zero,
                             alignment: Alignment.center,
                             icon: Icon(
@@ -400,8 +395,7 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                   .colorScheme
                                   .background, // Splash color
                               onTap: () async {
-                                mixpanel!
-                                    .track('brand_trainers_filter_button');
+                                mixpanel!.track('brand_trainers_filter_button');
                                 await showModalBottomSheet<int?>(
                                   context: context,
                                   isScrollControlled: true,
@@ -444,16 +438,14 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                   ListTile(
                                                     title: Text(
                                                         context.l10n.filterBy,
-                                                        style:
-                                                            Theme.of(context)
-                                                                .textTheme
-                                                                .bodySmall,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodySmall,
                                                         textAlign:
                                                             TextAlign.left),
                                                     trailing: TextButton(
                                                         child: Text(
-                                                            context
-                                                                .l10n.clear,
+                                                            context.l10n.clear,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -466,8 +458,7 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                 .clear();
                                                             filterSearchResults(
                                                                 "");
-                                                            filterByTrainers =
-                                                                [
+                                                            filterByTrainers = [
                                                               true,
                                                               true,
                                                               true,
@@ -568,8 +559,8 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                             .arrow_forward_ios,
                                                                         size: MediaQuery.of(context).size.width *
                                                                             0.04,
-                                                                        color:
-                                                                            AppColors.grey)),
+                                                                        color: AppColors
+                                                                            .grey)),
                                                               ),
                                                             ),
                                                             ListTile(
@@ -621,8 +612,8 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                             .arrow_forward_ios,
                                                                         size: MediaQuery.of(context).size.width *
                                                                             0.04,
-                                                                        color:
-                                                                            AppColors.grey)),
+                                                                        color: AppColors
+                                                                            .grey)),
                                                               ),
                                                             ),
                                                           ],
@@ -631,8 +622,7 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                             ? Column(
                                                                 children: [
                                                                   ListTile(
-                                                                    onTap:
-                                                                        () {
+                                                                    onTap: () {
                                                                       setStateBottom(
                                                                           () {
                                                                         // Check if the Only True
@@ -642,19 +632,24 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                         filterRoles.retainWhere((element) =>
                                                                             element ==
                                                                             true);
-                                                                        if (!(filterRoles.length == 1 &&
+                                                                        if (!(filterRoles.length ==
+                                                                                1 &&
                                                                             filterByTrainers[0])) {
-                                                                          searchController.clear();
-                                                                          filterSearchResults("");
+                                                                          searchController
+                                                                              .clear();
+                                                                          filterSearchResults(
+                                                                              "");
                                                                           filterByTrainers[0] =
                                                                               !filterByTrainers[0];
-                                                                          mixpanel!.track('brand_trainers_filter_roles', properties: {
-                                                                            'Values': [
-                                                                              filterByTrainers[0] ? 'Owner' : ' ',
-                                                                              filterByTrainers[1] ? 'Admin' : ' ',
-                                                                              filterByTrainers[2] ? 'Coach' : ' '
-                                                                            ]
-                                                                          });
+                                                                          mixpanel!.track(
+                                                                              'brand_trainers_filter_roles',
+                                                                              properties: {
+                                                                                'Values': [
+                                                                                  filterByTrainers[0] ? 'Owner' : ' ',
+                                                                                  filterByTrainers[1] ? 'Admin' : ' ',
+                                                                                  filterByTrainers[2] ? 'Coach' : ' '
+                                                                                ]
+                                                                              });
                                                                           filterByRolesAndActive();
                                                                         }
                                                                       });
@@ -671,15 +666,17 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                     trailing: filterByTrainers[
                                                                             0]
                                                                         ? SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                            child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
                                                                           )
                                                                         : SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
                                                                   ),
                                                                   ListTile(
-                                                                    onTap:
-                                                                        () {
+                                                                    onTap: () {
                                                                       setStateBottom(
                                                                           () {
                                                                         // Check if the Only True
@@ -689,19 +686,24 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                         filterRoles.retainWhere((element) =>
                                                                             element ==
                                                                             true);
-                                                                        if (!(filterRoles.length == 1 &&
+                                                                        if (!(filterRoles.length ==
+                                                                                1 &&
                                                                             filterByTrainers[1])) {
-                                                                          searchController.clear();
-                                                                          filterSearchResults("");
+                                                                          searchController
+                                                                              .clear();
+                                                                          filterSearchResults(
+                                                                              "");
                                                                           filterByTrainers[1] =
                                                                               !filterByTrainers[1];
-                                                                          mixpanel!.track('brand_trainers_filter_roles', properties: {
-                                                                            'Values': [
-                                                                              filterByTrainers[0] ? 'Owner' : ' ',
-                                                                              filterByTrainers[1] ? 'Admin' : ' ',
-                                                                              filterByTrainers[2] ? 'Coach' : ' '
-                                                                            ]
-                                                                          });
+                                                                          mixpanel!.track(
+                                                                              'brand_trainers_filter_roles',
+                                                                              properties: {
+                                                                                'Values': [
+                                                                                  filterByTrainers[0] ? 'Owner' : ' ',
+                                                                                  filterByTrainers[1] ? 'Admin' : ' ',
+                                                                                  filterByTrainers[2] ? 'Coach' : ' '
+                                                                                ]
+                                                                              });
                                                                           filterByRolesAndActive();
                                                                         }
                                                                       });
@@ -718,15 +720,17 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                     trailing: filterByTrainers[
                                                                             1]
                                                                         ? SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                            child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
                                                                           )
                                                                         : SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
                                                                   ),
                                                                   ListTile(
-                                                                    onTap:
-                                                                        () {
+                                                                    onTap: () {
                                                                       setStateBottom(
                                                                           () {
                                                                         // Check if the Only True
@@ -736,19 +740,24 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                         filterRoles.retainWhere((element) =>
                                                                             element ==
                                                                             true);
-                                                                        if (!(filterRoles.length == 1 &&
+                                                                        if (!(filterRoles.length ==
+                                                                                1 &&
                                                                             filterByTrainers[2])) {
-                                                                          searchController.clear();
-                                                                          filterSearchResults("");
+                                                                          searchController
+                                                                              .clear();
+                                                                          filterSearchResults(
+                                                                              "");
                                                                           filterByTrainers[2] =
                                                                               !filterByTrainers[2];
-                                                                          mixpanel!.track('brand_trainers_filter_roles', properties: {
-                                                                            'Values': [
-                                                                              filterByTrainers[0] ? 'Owner' : ' ',
-                                                                              filterByTrainers[1] ? 'Admin' : ' ',
-                                                                              filterByTrainers[2] ? 'Coach' : ' '
-                                                                            ]
-                                                                          });
+                                                                          mixpanel!.track(
+                                                                              'brand_trainers_filter_roles',
+                                                                              properties: {
+                                                                                'Values': [
+                                                                                  filterByTrainers[0] ? 'Owner' : ' ',
+                                                                                  filterByTrainers[1] ? 'Admin' : ' ',
+                                                                                  filterByTrainers[2] ? 'Coach' : ' '
+                                                                                ]
+                                                                              });
                                                                           filterByRolesAndActive();
                                                                         }
                                                                       });
@@ -765,19 +774,21 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                     trailing: filterByTrainers[
                                                                             2]
                                                                         ? SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                            child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
                                                                           )
                                                                         : SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
                                                                   ),
                                                                 ],
                                                               )
                                                             : Column(
                                                                 children: [
                                                                   ListTile(
-                                                                    onTap:
-                                                                        () {
+                                                                    onTap: () {
                                                                       setStateBottom(
                                                                           () {
                                                                         // Check if the Only True
@@ -786,18 +797,23 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                         filterActive.retainWhere((element) =>
                                                                             element ==
                                                                             true);
-                                                                        if (!(filterActive.length == 1 &&
+                                                                        if (!(filterActive.length ==
+                                                                                1 &&
                                                                             filterByTrainers[3])) {
-                                                                          searchController.clear();
-                                                                          filterSearchResults("");
+                                                                          searchController
+                                                                              .clear();
+                                                                          filterSearchResults(
+                                                                              "");
                                                                           filterByTrainers[3] =
                                                                               !filterByTrainers[3];
-                                                                          mixpanel!.track('brand_trainers_filter_active', properties: {
-                                                                            'Values': [
-                                                                              filterByTrainers[3] ? 'Yes' : ' ',
-                                                                              filterByTrainers[4] ? 'No' : ' '
-                                                                            ]
-                                                                          });
+                                                                          mixpanel!.track(
+                                                                              'brand_trainers_filter_active',
+                                                                              properties: {
+                                                                                'Values': [
+                                                                                  filterByTrainers[3] ? 'Yes' : ' ',
+                                                                                  filterByTrainers[4] ? 'No' : ' '
+                                                                                ]
+                                                                              });
                                                                           filterByRolesAndActive();
                                                                         }
                                                                       });
@@ -814,15 +830,17 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                     trailing: filterByTrainers[
                                                                             3]
                                                                         ? SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                            child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
                                                                           )
                                                                         : SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
                                                                   ),
                                                                   ListTile(
-                                                                    onTap:
-                                                                        () {
+                                                                    onTap: () {
                                                                       setStateBottom(
                                                                           () {
                                                                         // Check if the Only True
@@ -831,18 +849,23 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                         filterActive.retainWhere((element) =>
                                                                             element ==
                                                                             true);
-                                                                        if (!(filterActive.length == 1 &&
+                                                                        if (!(filterActive.length ==
+                                                                                1 &&
                                                                             filterByTrainers[4])) {
-                                                                          searchController.clear();
-                                                                          filterSearchResults("");
+                                                                          searchController
+                                                                              .clear();
+                                                                          filterSearchResults(
+                                                                              "");
                                                                           filterByTrainers[4] =
                                                                               !filterByTrainers[4];
-                                                                          mixpanel!.track('brand_trainers_filter_active', properties: {
-                                                                            'Values': [
-                                                                              filterByTrainers[3] ? 'Yes' : ' ',
-                                                                              filterByTrainers[4] ? 'No' : ' '
-                                                                            ]
-                                                                          });
+                                                                          mixpanel!.track(
+                                                                              'brand_trainers_filter_active',
+                                                                              properties: {
+                                                                                'Values': [
+                                                                                  filterByTrainers[3] ? 'Yes' : ' ',
+                                                                                  filterByTrainers[4] ? 'No' : ' '
+                                                                                ]
+                                                                              });
                                                                           filterByRolesAndActive();
                                                                         }
                                                                       });
@@ -859,11 +882,14 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                                                                     trailing: filterByTrainers[
                                                                             4]
                                                                         ? SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                            child: Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15,
+                                                                            child:
+                                                                                Center(child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.08, color: Theme.of(context).colorScheme.secondary)),
                                                                           )
                                                                         : SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.15),
                                                                   ),
                                                                 ],
                                                               ),
@@ -899,7 +925,6 @@ class _Trainers extends State<Trainers> with PlatformMixin {
                 ],
               ),
             ),
-            
             Container(
               color: AppColors.grey,
               height: 1.0,

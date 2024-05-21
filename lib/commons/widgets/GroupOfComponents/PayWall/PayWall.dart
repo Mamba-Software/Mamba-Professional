@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/mixins/platform.dart';

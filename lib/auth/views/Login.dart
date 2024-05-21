@@ -16,7 +16,7 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/home/views/home.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';

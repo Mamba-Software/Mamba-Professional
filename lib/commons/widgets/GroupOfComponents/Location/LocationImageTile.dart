@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';

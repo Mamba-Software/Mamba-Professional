@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba/auth/splash/SplashScreen.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Promotions/PromotionsDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
@@ -449,7 +449,8 @@ class _BrandInfoState extends State<BrandInfo>
             flexibleSpace: returnFlexibleSpaceBar(
               context.height * 0.15,
             ),
-          ),if (isLoading)
+          ),
+          if (isLoading)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Column(

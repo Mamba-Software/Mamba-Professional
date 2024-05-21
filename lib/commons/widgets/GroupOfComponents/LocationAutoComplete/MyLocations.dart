@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/data/DataService/Location/LocationDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -22,7 +22,7 @@ class MyLocations extends StatefulWidget {
   _MyLocationsState createState() => _MyLocationsState();
 }
 
-class _MyLocationsState extends State<MyLocations> with PlatformMixin{
+class _MyLocationsState extends State<MyLocations> with PlatformMixin {
   // Acceso a Base de Datos
   final _locationDataService = LocationDataService();
   // Google APIS

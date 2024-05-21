@@ -13,7 +13,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class BonosPurchased extends StatefulWidget {
   List<Purchase> purchases;

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';

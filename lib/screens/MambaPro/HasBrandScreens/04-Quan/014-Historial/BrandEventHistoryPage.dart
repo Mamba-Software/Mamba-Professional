@@ -12,7 +12,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Events/EventListTile.dar
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class BrandEventHistoryPage extends StatefulWidget {
   String brandId;

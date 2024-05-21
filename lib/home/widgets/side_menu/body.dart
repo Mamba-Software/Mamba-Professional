@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/widgets/Components/Badges/MobileBadge.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
@@ -244,8 +244,8 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: defaultPaddingSmall / 2),
+                      padding: EdgeInsets.symmetric(
+                          vertical: defaultPaddingSmall / 2),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
@@ -259,8 +259,8 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                         ),
                         onPressed: () => {},
                         child: Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: defaultPaddingSmall+5),
+                          padding: EdgeInsets.symmetric(
+                              vertical: defaultPaddingSmall + 5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
@@ -367,7 +367,8 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 returnTextWidget(context, page),
-                if (context.isDesktop && webSupported == null) const OnlyMobileBadge(),
+                if (context.isDesktop && webSupported == null)
+                  const OnlyMobileBadge(),
               ],
             ),
             onTap: () {
@@ -404,6 +405,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                   context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 }
               }
+
               if (state.isExtendedDesktop) {
                 return Padding(
                   padding: EdgeInsets.symmetric(
@@ -455,8 +457,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                       padding:
                           EdgeInsets.symmetric(vertical: defaultPaddingSmall),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 5),
                         child: returnLeadingIcon(context, page, iconSize),
                       ),
                     ),
