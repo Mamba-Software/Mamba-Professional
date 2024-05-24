@@ -1,4 +1,4 @@
-part of 'events_cubit.dart';
+part of 'events_bloc.dart';
 
 abstract class EventsState extends Equatable {
   const EventsState();

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/calendar/cubit/calendar_bloc.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
@@ -18,7 +19,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/events/crud_events/views/mobile/AddorEdtiEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
-import 'package:mamba/events/cubit/events_cubit.dart';
+import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
@@ -62,28 +63,22 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   String selectedValue = '2';
   var items = ['0', '1', '2', '3', '4', '5', '6'];
 
- 
-
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
-  final _brandDataService = BrandDataService();
   final _eventDataService = EventDataService();
 
   // Boolean Loading
   bool isLoading = true;
-  bool canEdit = false;
 
-  // Brand
-  Brand _brand = Brand();
   // Descansos
-  DateTime dateJoined = DateTime.now();  
+  DateTime dateJoined = DateTime.now();
 
   // Calendar Controller
   final CalendarController _controller = CalendarController();
 
   // Horari
-  double? _startHour;
-  double? _endHour;  
+  //double? _startHour;
+  //double? _endHour;
   // Selecte Date Time
   DateTime displayDateTimeStart = DateTime.now();
   DateTime displayDateTimeEnd = DateTime.now();
@@ -93,7 +88,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   double _timeSlotViewZoom = -1;
   double _baseTimeSlotViewZoom = -1;
   double _timeSlotViewScale = 1;
-  double _baseTimeSlotViewScale = 1;  
+  double _baseTimeSlotViewScale = 1;
 
   // Dial Open / Add More Session
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
@@ -101,7 +96,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   // Filters
   bool hasFilter = false;
   int filterEventsNumber = 0;
-  List<bool> filterByCalendar = [true, true];  
+  List<bool> filterByCalendar = [true, true];
   List<Usuario> _brandTrainers = [];
   List<Usuario> selectedTrainers = [];
 
@@ -110,7 +105,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   // Selected Event Id
   String? selectedEventId;
-   // SnackBar Error
+  // SnackBar Error
   final _topSnackBar = TopSnackBarDef();
 
   @override
@@ -120,42 +115,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     _scrollController = ScrollController()
       ..addListener(
         () => _isAppBarExpanded
-            ? setState(() {
-                appBarExpanded = true;
-              })
-            : setState(() {
-                appBarExpanded = false;
-              }),
+        ? setState(() {
+            appBarExpanded = true;
+          })
+        : setState(() {
+            appBarExpanded = false;
+          }),
       );
-    // Start Getting Information
-    getUserBrandEventDetails();
-  }
-
-  // DATA
-
-  void getUserBrandEventDetails() async {
-    // Get Brand Details
-    _brand = await _brandDataService.getBrandDetails(widget.brandId);
-    // Get Brand Trainers
-    _brandTrainers = await _brandDataService.getBrandTrainers(widget.brandId);
-    selectedTrainers = List.from(_brandTrainers);
-    // Get Events Per Trainer
-    for (Usuario trainer in _brandTrainers) {
-      trainer.setEventsList =
-          await _eventDataService.getUserEvents(trainer.id!);
-    }
-    // Get Brand Events
-    await context
-        .read<EventsCubit>()
-        .getInitialBrandEvents(_brandTrainers);
-    // Define If Can Edit
-    if (currentUser.brandRole < 3) {
-      canEdit = true;
-    } else {
-      canEdit = false;
-    }
-    // Logic To Initialize Calendar
-    initCalendar();
   }
 
   void getNewEventMemberDetails(Event event) async {
@@ -177,64 +143,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   // LOGIC
 
-  // Calendar Initialiazation
-
-  Future<void> initCalendar() async {
-    // Initial Date Time
-    DateTime now = DateTime.now();
-    int currentDay = now.weekday;
-    displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
-    displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
-
-    // Initial Calendar View
-    selectedValue = '2';
-    _controller.view = CalendarView.week;
-
-    // Date Joined Information
-    dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
-    _startHour =
-        double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
-    _endHour =
-        double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
-
-    // Calcula el TimeSlotView per cadascuna
-    _baseTimeSlotViewZoom = getScreenHeightDifference(context);
-    _timeSlotViewScale = await _userDataService.getUserZoomScale(
-        widget.brandId, currentUser.id!);
-    _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
-
-    // Finish Is Loading
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  double getScreenHeightDifference(BuildContext context) {
-    // The goal of this function is to calculate the height of each HOUR in the calendar. This is calculated depending on the numbers of avaiable hours (HORARI).
-    // Final result
-    double adjustedHeight;
-    // Full screen height
-    double screenHeight = MediaQuery.of(context).size.height;
-    // Expanded Height of AppBar
-    double expandedHeight = MediaQuery.of(context).size.height * 0.15 +
-        MediaQuery.of(context).padding.top;
-    if (context.isDesktop) {
-      expandedHeight = desktopAppBarHeight + MediaQuery.of(context).padding.top;
-    }
-    // View Header Height Calendar
-    viewHeaderHeight = 50;
-    if (context.isDesktop) {
-      viewHeaderHeight = 70;
-    }
-    // We're using TargetPlatform to determine the type of device
-    adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
-    // Diferencia de Hores
-    double difference = _endHour! - _startHour!;
-    difference = _startHour! != 0 ? difference + 1 : difference;
-    difference = _endHour! != 24 ? difference + 1 : difference;
-    return adjustedHeight / difference;
-  }
-
   Event getEvent(String eventId, List<Event> eventsList) {
     for (var i = 0; i < eventsList.length; i++) {
       Event temp = eventsList[i];
@@ -243,14 +151,14 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     return Event();
   }
 
-  List<TimeRegion> _getTimeRegions() {
+  List<TimeRegion> _getTimeRegions(Brand brand) {
     final List<TimeRegion> regions = <TimeRegion>[];
     // Breaks
-    for (var i = 2; i < _brand.workShift.length; i += 2) {
-      var start = _brand.workShift[i];
+    for (var i = 2; i < brand.workShift.length; i += 2) {
+      var start = brand.workShift[i];
       var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
       var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
-      var end = _brand.workShift[i + 1];
+      var end = brand.workShift[i + 1];
       var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
       var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
       DateTime inActiveHoursStart = DateTime(dateJoined.year, dateJoined.month,
@@ -267,9 +175,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     }
     // Hora Inactiva Matí
     var startHourWS =
-        int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+        int.parse(brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     var startMinWS =
-        int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[1]);
+        int.parse(brand.workShift[0].toStringAsFixed(2).split(".")[1]);
     regions.add(TimeRegion(
       enablePointerInteraction: false,
       startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
@@ -281,9 +189,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     ));
     // Hora Inactiva Nit
     var endHourWS =
-        int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+        int.parse(brand.workShift[1].toStringAsFixed(2).split(".")[0]);
     var endMinWS =
-        int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[1]);
+        int.parse(brand.workShift[1].toStringAsFixed(2).split(".")[1]);
     regions.add(TimeRegion(
       enablePointerInteraction: false,
       startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
@@ -530,6 +438,39 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   // UI Interaction Functions
 
+  double getScreenHeightDifference(double difference) {
+    // The goal of this function is to calculate the height of each HOUR in the calendar. This is calculated depending on the numbers of avaiable hours (HORARI).
+    // Final result
+    double adjustedHeight;
+    // Full screen height
+    double screenHeight = context.height;
+    // Expanded Height of AppBar
+    double expandedHeight = context.height * 0.15 +
+        MediaQuery.of(context).padding.top;
+    if (context.isDesktop) {
+      expandedHeight = desktopAppBarHeight + MediaQuery.of(context).padding.top;
+    }
+    // View Header Height Calendar
+    double viewHeaderHeight = 50;
+    if (context.isDesktop) {
+      viewHeaderHeight = 70;
+    }
+    // We're using TargetPlatform to determine the type of device
+    adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
+    return adjustedHeight / difference;
+  }
+
+  void onCalendarViewStart(double difference) {    
+    setState(() {
+      // Start Week View
+    _controller.view = CalendarView.week;
+    // Height per Bloc
+    _baseTimeSlotViewZoom = getScreenHeightDifference(difference);
+    //_timeSlotViewScale = await _userDataService.getUserZoomScale(
+    _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
+    });
+  }
+
   void onScaleStart(ScaleStartDetails scaleStartDetails) {
     _baseTimeSlotViewScale = _timeSlotViewScale;
   }
@@ -555,7 +496,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 
   Future<void> onhandleViewChanged(
-      ViewChangedDetails viewChangedDetails, EventsLoaded state) async {
+      ViewChangedDetails viewChangedDetails, List<Event> events) async {
     Future.delayed(Duration.zero, () async {
       setState(() {
         int indexMiddleMonthDate =
@@ -566,7 +507,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
             .visibleDates[viewChangedDetails.visibleDates.length - 1];
       });
     });
-    List<Event> eventsList = state.brandEventsList;
+    List<Event> eventsList = events;
     if (eventsList.isNotEmpty) {
       var startDateLastEvent = DateTime(
         int.parse(eventsList.first.year!),
@@ -580,7 +521,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
               .inDays <
           60) {
         context
-            .read<EventsCubit>()
+            .read<EventsBloc>()
             .getMoreBrandEvents(eventsList.first.id!, _brandTrainers);
       }
     }
@@ -1038,7 +979,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     });
   }
 
-  void onLongPressCalendar(CalendarLongPressDetails details) async {
+  void onLongPressCalendar(
+      CalendarLongPressDetails details, bool canEdit) async {
     // Action Depending on View
     if (_controller.view == CalendarView.day) {
       // Select the Date If Possible
@@ -1062,9 +1004,12 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EventsCubit, EventsState>(
+    return BlocConsumer<CalendarBloc, CalendarState>(
+      listener: (context, state) {
+        if (state is CalendarLoaded) onCalendarViewStart(state.difference);
+      },
       builder: (context, state) {
-        if (isLoading == false && state is EventsLoaded) {
+        if (isLoading == false && state is CalendarLoaded) {
           return Scaffold(
             body: CustomScrollView(
               physics: const NeverScrollableScrollPhysics(),
@@ -1266,7 +1211,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 ],
               ],
             ),
-            floatingActionButton: whichFloatingActionButton(),
+            floatingActionButton: whichFloatingActionButton(state.canEdit),
           );
         } else {
           return Scaffold(
@@ -1426,7 +1371,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 ),
               ],
             ),
-            floatingActionButton: whichFloatingActionButton(),
           );
         }
       },
@@ -1435,7 +1379,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   // WIDGETS
 
-  Widget calendarWidget(EventsLoaded state) {
+  Widget calendarWidget(CalendarLoaded state) {
     return SfCalendarTheme(
       data: SfCalendarThemeData(
         // Background Colors
@@ -1477,17 +1421,21 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         // Blackout Dates
         blackoutDates: [dateJoined],
         blackoutDatesTextStyle: context.textTheme.titleMedium,
+        showWeekNumber: false,
+        weekNumberStyle: WeekNumberStyle(
+          textStyle: context.textTheme.labelSmall,
+        ),
         // Data
         minDate: dateJoined,
-        dataSource: _getCalendarDataSource(state.brandEventsList),
-        specialRegions: _getTimeRegions(),
+        dataSource: _getCalendarDataSource(state.events),
+        specialRegions: _getTimeRegions(state.brand),
         // Config
         cellEndPadding: 0,
         firstDayOfWeek: 1,
         showCurrentTimeIndicator: true,
         cellBorderColor: AppColors.grey,
         todayTextStyle: context.textTheme.bodyLarge
-            ?.copyWith(color: context.colorScheme.onPrimary),        
+            ?.copyWith(color: context.colorScheme.onPrimary),
         // Header
         headerHeight: 0,
         // View Header
@@ -1496,8 +1444,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         timeSlotViewSettings: TimeSlotViewSettings(
           timeIntervalHeight: _timeSlotViewZoom,
           timeIntervalWidth: 60,
-          startHour: _startHour! != 0 ? _startHour! - 1 : _startHour!,
-          endHour: _endHour! != 24 ? _endHour! + 1 : _endHour!,
+          startHour:
+              state.startHour != 0 ? state.startHour - 1 : state.startHour,
+          endHour: state.endHour != 24 ? state.endHour + 1 : state.endHour,
           timeFormat: 'HH:mm',
           dayFormat: 'EE',
           dateFormat: 'd',
@@ -1582,13 +1531,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 ),
               ),
         onViewChanged: (ViewChangedDetails viewChangedDetails) async {
-          await onhandleViewChanged(viewChangedDetails, state);
+          await onhandleViewChanged(viewChangedDetails, state.events);
         },
         onTap: onTapCalendar,
         appointmentTextStyle: Theme.of(context).textTheme.bodyMedium!,
         appointmentBuilder:
             (BuildContext context, CalendarAppointmentDetails details) {
-          return _buildEventContainer(details, state.brandEventsList);
+          return _buildEventContainer(details, state.events);
         },
       ),
     );
@@ -1630,7 +1579,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         : Container();
   }
 
-  Widget whichFloatingActionButton() {
+  Widget whichFloatingActionButton(bool canEdit) {
     // TODO: Harcdoded
     canEdit = false;
     return canEdit
@@ -1735,8 +1684,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         : Container();
   }
 
-  
-  
   Widget _buildTitleText(
       DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     switch (_controller.view) {

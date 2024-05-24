@@ -6,10 +6,10 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/widgets/Components/Badges/MobileBadge.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/mixin/brand_role_mixin.dart';
 import 'package:mamba/home/mixin/home_tile_mixin.dart';
-import 'package:mamba/home/models/home_navigation_page.dart';
+import 'package:mamba/home/models/home_page.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
@@ -373,9 +373,9 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
             ),
             onTap: () {
               bool isWebSupported =
-                  context.read<HomeNavigationManager>().isWebSupported(page);
+                  context.read<HomeManager>().isWebSupported(page);
               if (isWebSupported) {
-                context.read<HomeNavigationManager>().jumpToPage(page);
+                context.read<HomeManager>().jumpToPage(page);
               } else {
                 CustomSnackbar snackbar = CustomSnackbar(
                   type: SnackbarType.information,
@@ -388,13 +388,13 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
             },
           );
         } else {
-          return BlocBuilder<HomeNavigationManager, HomeNavigationManagerState>(
-            builder: (BuildContext context, HomeNavigationManagerState state) {
+          return BlocBuilder<HomeManager, HomeManagerState>(
+            builder: (BuildContext context, HomeManagerState state) {
               void onTap() {
                 bool isWebSupported =
-                    context.read<HomeNavigationManager>().isWebSupported(page);
+                    context.read<HomeManager>().isWebSupported(page);
                 if (isWebSupported) {
-                  context.read<HomeNavigationManager>().jumpToPage(page);
+                  context.read<HomeManager>().jumpToPage(page);
                 } else {
                   CustomSnackbar snackbar = CustomSnackbar(
                     type: SnackbarType.information,

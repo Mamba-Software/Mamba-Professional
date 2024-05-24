@@ -8,11 +8,25 @@ import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-part 'event_state.dart';
+part 'events_state.dart';
 
-class EventsCubit extends Cubit<EventsState> {
-  EventsCubit(final cubitAuth) : super(const EventsInitial()) {
-    cubitAuth.stream.distinct().listen((state) async {
+class EventsBloc extends Cubit<EventsState> {
+  // Blocs
+  final AuthCubit authBloc;
+  // Variables
+  final _eventDataService = EventDataService();
+  final _brandDataService = BrandDataService();
+  final limit = 50;
+  List<Event> finishedEventsList = [];
+  List<Event> upcomingEventsList = [];
+  List<Usuario> _brandTrainers = [];
+  late StreamSubscription<QuerySnapshot> _subscription;
+  bool isStreamActive = false;
+
+  EventsBloc({
+    required this.authBloc,
+  }) : super(const EventsInitial()) {
+    authBloc.stream.distinct().listen((state) async {
       // Handle the state change
       if (state is AuthUserBrand) {
         if (isStreamActive) _subscription.cancel();
@@ -32,14 +46,13 @@ class EventsCubit extends Cubit<EventsState> {
     });
   }
 
-  final _eventDataService = EventDataService();
-  final _brandDataService = BrandDataService();
-  final limit = 50;
-  List<Event> finishedEventsList = [];
-  List<Event> upcomingEventsList = [];
-  List<Usuario> _brandTrainers = [];
-  late StreamSubscription<QuerySnapshot> _subscription;
-  bool isStreamActive = false;
+  List<Event> get eventsList {
+    if (state is EventsLoaded) {
+      EventsLoaded loadedState = state as EventsLoaded;
+      return loadedState.brandEventsList;
+    }
+    return [];
+  }
 
   Future<void> getInitialBrandEvents(List<Usuario> brandTrainers) async {
     try {
@@ -234,34 +247,9 @@ class EventsCubit extends Cubit<EventsState> {
 
   @override
   Future<void> close() {
-    //print('LO CIERRO');
     _subscription.cancel();
     return super.close();
   }
-
-  /*
-  TODO: FUTURE FILTER FERLO PER AQUI
-  Future<void> filterEvents(int filterSelection, List<Usuario> _selectedTrainers) async {
-    try {
-      print("Filtering Events ...");
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
-      /// Check Filter Selection for Type of Event
-      if (filterSelection == 0) {
-        // Show Both Private and Group Events
-      } else if(filterSelection == 1) {
-        // Show Only Group Events
-        finalList.removeWhere((element) => element.isPrivate == true);
-      } else if(filterSelection == 2) {
-        // Show Only Private Events
-        finalList.removeWhere((element) => element.isPrivate == false);
-      }
-      emit(BrandEventsLoaded(finalList));
-    } catch(e) {
-      print("Filter Brand Events Error"+e.toString());
-      emit(BrandEventsError(e.toString()));
-    }
-  }
-   */
 }
 
 List<Event> documentsToEvents(

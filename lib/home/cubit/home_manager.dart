@@ -2,16 +2,16 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/mixins/platform.dart';
-import 'package:mamba/home/models/home_navigation_page.dart';
+import 'package:mamba/home/models/home_page.dart';
 
 final GlobalKey<ScaffoldState> navigationDrawerKey = GlobalKey<ScaffoldState>();
 
-class HomeNavigationManagerState extends Equatable {
+class HomeManagerState extends Equatable {
   final HomeNavigationPage page;
   final int pageIndex;
   final bool isExtendedDesktop;
 
-  const HomeNavigationManagerState({
+  const HomeManagerState({
     required this.page,
     required this.pageIndex,
     required this.isExtendedDesktop,
@@ -21,11 +21,11 @@ class HomeNavigationManagerState extends Equatable {
   List<Object> get props => [page, pageIndex, isExtendedDesktop];
 }
 
-class HomeNavigationManager extends Cubit<HomeNavigationManagerState>
+class HomeManager extends Cubit<HomeManagerState>
     with PlatformMixin {
-  HomeNavigationManager()
+  HomeManager()
       : super(
-          const HomeNavigationManagerState(
+          const HomeManagerState(
             page: HomeNavigationPage.BOOKINGS,
             pageIndex: 0,
             isExtendedDesktop: true,
@@ -41,7 +41,7 @@ class HomeNavigationManager extends Cubit<HomeNavigationManagerState>
   void jumpToIndex(int pageIndex) {
     HomeNavigationPage page = HomeNavigationPage.values[pageIndex];
     emit(
-      HomeNavigationManagerState(
+      HomeManagerState(
         page: page,
         pageIndex: pageIndex,
         isExtendedDesktop: state.isExtendedDesktop,
@@ -53,7 +53,7 @@ class HomeNavigationManager extends Cubit<HomeNavigationManagerState>
     int pageIndex =
         HomeNavigationPage.values.indexWhere((element) => page == element);
     emit(
-      HomeNavigationManagerState(
+      HomeManagerState(
         page: page,
         pageIndex: pageIndex,
         isExtendedDesktop: state.isExtendedDesktop,
@@ -63,7 +63,7 @@ class HomeNavigationManager extends Cubit<HomeNavigationManagerState>
 
   void toogleDesktopSideMenu() {    
     emit(
-      HomeNavigationManagerState(
+      HomeManagerState(
         page: state.page,
         pageIndex: state.pageIndex,
         isExtendedDesktop: !state.isExtendedDesktop,

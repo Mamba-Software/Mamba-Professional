@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/widgets/side_menu/body.dart';
 import 'package:mamba/home/widgets/side_menu/footer.dart';
 import 'package:mamba/home/widgets/side_menu/header.dart';
@@ -20,7 +20,7 @@ class _SideMenuState extends State<SideMenu> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<HomeNavigationManager, HomeNavigationManagerState,
+    return BlocSelector<HomeManager, HomeManagerState,
         bool>(
       selector: (state) => state.isExtendedDesktop,
       builder: (BuildContext context, bool stateIsExtendedDesktop) {

@@ -1,4 +1,4 @@
-part of 'calendar_cubit.dart';
+part of 'calendar_bloc.dart';
 
 abstract class CalendarState extends Equatable {
   const CalendarState();
@@ -19,83 +19,57 @@ class CalendarLoading extends CalendarState {
 }
 
 class CalendarLoaded extends CalendarState {
-  final Brand brand;
-  
-  
-  final String selectedValue;
-  final List<String> items;
   final bool canEdit;
-  
-  final List<Usuario> brandTrainers;
-  final List<Usuario> selectedTrainers;
-  final CalendarController controller;
-  final List<int> nonWorkDays;
-  final double? startHour;
-  final double? endHour;
-  final double timeSlotViewZoom;
-  final double baseTimeSlotViewZoom;
-  final double timeSlotViewScale;
-  final double baseTimeSlotViewScale;
-  final DateTime dateJoined;
-  final DateTime displayDateTimeStart;
-  final DateTime displayDateTimeEnd;
-  final DateTime middleMonthDate;
-  final bool hasFilter;
-  final int filterEventsNumber;
-  final List<bool> filterByCalendar;
-  final DateTime? calendarDateTime;
-  final CalendarView? calendarView;
+  final Brand brand;
+  final List<Event> events;
+  final String displayDateTitle;
+  final CalendarView calendarView;
+  final double startHour;
+  final double endHour;
+  final double difference;
 
   const CalendarLoaded({
-    required this.selectedValue,
-    required this.items,
     required this.canEdit,
     required this.brand,
-    required this.brandTrainers,
-    required this.selectedTrainers,
-    required this.controller,
-    required this.nonWorkDays,
+    required this.events,
+    required this.displayDateTitle,
+    required this.calendarView,
     required this.startHour,
     required this.endHour,
-    required this.timeSlotViewZoom,
-    required this.baseTimeSlotViewZoom,
-    required this.timeSlotViewScale,
-    required this.baseTimeSlotViewScale,
-    required this.dateJoined,
-    required this.displayDateTimeStart,
-    required this.displayDateTimeEnd,
-    required this.middleMonthDate,
-    required this.hasFilter,
-    required this.filterEventsNumber,
-    required this.filterByCalendar,
-    required this.calendarDateTime,
-    required this.calendarView,
+    required this.difference,
   });
 
   @override
   List<Object?> get props => [
-    selectedValue,
-    items,
-    canEdit,
-    brand,
-    brandTrainers,
-    selectedTrainers,
-    controller,
-    nonWorkDays,
-    startHour,
-    endHour,
-    timeSlotViewZoom,
-    baseTimeSlotViewZoom,
-    timeSlotViewScale,
-    baseTimeSlotViewScale,
-    dateJoined,
-    displayDateTimeStart,
-    displayDateTimeEnd,
-    middleMonthDate,
-    hasFilter,
-    filterEventsNumber,
-    filterByCalendar,
-    calendarDateTime,
-    calendarView,
-  ];
+        canEdit,
+        brand,
+        events,
+        displayDateTitle,
+        calendarView,
+        startHour,
+        endHour,
+        difference,
+      ];
+
+  CalendarLoaded copyWith({
+    bool? canEdit,
+    Brand? brand,
+    List<Event>? events,
+    String? displayDateTitle,
+    CalendarView? calendarView,
+    double? startHour,
+    double? endHour,
+    double? difference,
+  }) {
+    return CalendarLoaded(
+      canEdit: canEdit ?? this.canEdit,
+      brand: brand ?? this.brand,
+      events: events ?? this.events,
+      displayDateTitle: displayDateTitle ?? this.displayDateTitle,
+      calendarView: calendarView ?? this.calendarView,
+      startHour: startHour ?? this.startHour,
+      endHour: endHour ?? this.endHour,
+      difference: difference ?? this.difference,
+    );
+  }
 }

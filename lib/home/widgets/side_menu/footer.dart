@@ -7,8 +7,8 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
-import 'package:mamba/home/models/home_navigation_page.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
+import 'package:mamba/home/models/home_page.dart';
 
 class Footer extends StatelessWidget with PlatformMixin {
   final double width;
@@ -46,13 +46,13 @@ class Footer extends StatelessWidget with PlatformMixin {
             subtitle = context.l10n.monthlyPlanDayRenewal(date);
           }
           onTap = () => context
-              .read<HomeNavigationManager>()
+              .read<HomeManager>()
               .jumpToPage(HomeNavigationPage.PLAN);
         } else if (state is BrandSuscriptionLoadedFalse) {
           title = context.l10n.chooseYourPlan;
           subtitle = context.l10n.chooseYourPlanDesc;
           onTap = () => context
-              .read<HomeNavigationManager>()
+              .read<HomeManager>()
               .jumpToPage(HomeNavigationPage.PLAN);
         } else {
           // Return an empty container in case no relevant state is present
@@ -172,7 +172,7 @@ class Footer extends StatelessWidget with PlatformMixin {
                         child: Icon(
                           Icons.corporate_fare,
                           color: context.colorScheme.primary,
-                          size: iconSizeBig,
+                          size: iconSizeBig-5,
                         ),
                       ),
                     ),

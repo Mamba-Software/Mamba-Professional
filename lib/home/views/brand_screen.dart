@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/widgets/responsive_menu.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/BrandSubscription.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
@@ -39,7 +39,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<HomeNavigationManager, HomeNavigationManagerState>(
+    return BlocListener<HomeManager, HomeManagerState>(
       listener: (BuildContext context, state) {
         // Jump To Correct Home Page
         setState(() {

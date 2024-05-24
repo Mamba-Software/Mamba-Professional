@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/home/models/home_navigation_page.dart';
+import 'package:mamba/home/models/home_page.dart';
 
 mixin HomeTileMixin {
   // Function to select the icon to load

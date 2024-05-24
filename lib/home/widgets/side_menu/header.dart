@@ -8,7 +8,7 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/mixin/brand_role_mixin.dart';
 import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 
@@ -208,7 +208,7 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                             iconSize: iconSize,
                             color: context.colorScheme.onBackground,
                             onTap: () => context
-                                .read<HomeNavigationManager>()
+                                .read<HomeManager>()
                                 .toogleDesktopSideMenu(),
                           ),
                           SizedBox(width: defaultPaddingSmall),
@@ -247,7 +247,7 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                             iconSize: iconSize,
                             color: context.colorScheme.onBackground,
                             onTap: () => context
-                                .read<HomeNavigationManager>()
+                                .read<HomeManager>()
                                 .toogleDesktopSideMenu(),
                           ),
                         ],

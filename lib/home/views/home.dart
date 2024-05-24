@@ -8,9 +8,9 @@ import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/Login.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
-import 'package:mamba/calendar/cubit/calendar_cubit.dart';
-import 'package:mamba/events/cubit/events_cubit.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/calendar/cubit/calendar_bloc.dart';
+import 'package:mamba/events/cubit/events_bloc.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
@@ -38,14 +38,15 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<HomeNavigationManager>(
-          create: (context) => HomeNavigationManager(),
+        BlocProvider<HomeManager>(
+          create: (context) => HomeManager(),
         ),
-        BlocProvider<CalendarCubit>(
-          create: (context) => CalendarCubit(
+        BlocProvider<CalendarBloc>(
+          create: (context) => CalendarBloc(
+            context: context,
             userBloc: context.read<UserBloc>(),
             brandBloc: context.read<BrandBloc>(),
-            eventBloc: context.read<EventsCubit>(),
+            eventBloc: context.read<EventsBloc>(),
           ),
         ),
       ],

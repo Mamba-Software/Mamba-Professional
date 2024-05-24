@@ -6,8 +6,8 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
-import 'package:mamba/home/models/home_navigation_page.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
+import 'package:mamba/home/models/home_page.dart';
 import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 import 'package:mamba/home/widgets/side_menu/side_menu.dart';
 
