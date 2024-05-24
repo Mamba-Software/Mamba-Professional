@@ -19,14 +19,20 @@ class CalendarLoading extends CalendarState {
 }
 
 class CalendarLoaded extends CalendarState {
+  // Main Vars
   final bool canEdit;
   final Brand brand;
   final List<Event> events;
+  // View Variables
   final String displayDateTitle;
   final CalendarView calendarView;
+  // Schedule Variables
   final double startHour;
   final double endHour;
-  final double difference;
+  final double difference;  
+  final List<TimeRegion> specialRegions;
+  // DataSource
+  final AppointmentDataSource dataSource;
 
   const CalendarLoaded({
     required this.canEdit,
@@ -37,6 +43,8 @@ class CalendarLoaded extends CalendarState {
     required this.startHour,
     required this.endHour,
     required this.difference,
+    required this.specialRegions,
+    required this.dataSource,
   });
 
   @override
@@ -49,6 +57,8 @@ class CalendarLoaded extends CalendarState {
         startHour,
         endHour,
         difference,
+        specialRegions,
+        dataSource,
       ];
 
   CalendarLoaded copyWith({
@@ -60,6 +70,8 @@ class CalendarLoaded extends CalendarState {
     double? startHour,
     double? endHour,
     double? difference,
+    List<TimeRegion>? specialRegions,
+    AppointmentDataSource? dataSource,
   }) {
     return CalendarLoaded(
       canEdit: canEdit ?? this.canEdit,
@@ -70,6 +82,8 @@ class CalendarLoaded extends CalendarState {
       startHour: startHour ?? this.startHour,
       endHour: endHour ?? this.endHour,
       difference: difference ?? this.difference,
+      specialRegions: specialRegions ?? this.specialRegions,
+      dataSource: dataSource ?? this.dataSource,
     );
   }
 }

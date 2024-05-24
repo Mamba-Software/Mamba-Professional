@@ -338,14 +338,18 @@ class _LoginState extends State<Login> with PlatformMixin {
                     },
                     actionText: context.l10n.open,
                   );
-                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+                  context
+                      .read<SnackbarCubit>()
+                      .enqueueSnackbarAction(snackbar);
                   break;
                 case AuthErrorEnum.loginError:
                   CustomSnackbar snackbar = CustomSnackbar(
                     type: SnackbarType.error,
                     message: context.l10n.loginError,
                   );
-                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+                  context
+                      .read<SnackbarCubit>()
+                      .enqueueSnackbarAction(snackbar);
                   break;
                 case AuthErrorEnum.validateError:
                   CustomSnackbar snackbar = CustomSnackbar(
@@ -356,14 +360,18 @@ class _LoginState extends State<Login> with PlatformMixin {
                         .resendVerificationEmail(emailController.text.trim()),
                     actionText: "${context.l10n.resend} ${context.l10n.email}",
                   );
-                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+                  context
+                      .read<SnackbarCubit>()
+                      .enqueueSnackbarAction(snackbar);
                   break;
                 case AuthErrorEnum.registerError:
                   CustomSnackbar snackbar = CustomSnackbar(
                     type: SnackbarType.error,
                     message: context.l10n.registerError,
                   );
-                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+                  context
+                      .read<SnackbarCubit>()
+                      .enqueueSnackbarAction(snackbar);
                   break;
                 default:
                   break;

@@ -96,8 +96,8 @@ class App extends StatelessWidget {
             lazy: false,
           ),
           BlocProvider<EventsBloc>(
-            create: (context) => EventsBloc(
-              authBloc: context.read<AuthCubit>()),
+            create: (context) =>
+                EventsBloc(authBloc: context.read<AuthCubit>()),
             lazy: false,
           ),
           BlocProvider<BrandSuscriptionCubit>(

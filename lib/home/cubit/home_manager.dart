@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/mixins/platform.dart';
-import 'package:mamba/home/models/home_page.dart';
+import 'package:mamba/home/models/home_nav_page.dart';
 
 final GlobalKey<ScaffoldState> navigationDrawerKey = GlobalKey<ScaffoldState>();
 

@@ -56,9 +56,7 @@ class _BrandScreenState extends State<BrandScreen> {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             // Gestión
-            Calendar(
-              brandId: currentBrand.id!,
-            ),
+            const Calendar(),
             BrandPurchaseHistory(
               brandId: currentBrand.id!,
             ),

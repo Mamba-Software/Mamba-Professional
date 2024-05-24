@@ -9,7 +9,7 @@ import 'package:mamba/commons/widgets/Components/Badges/MobileBadge.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/mixin/brand_role_mixin.dart';
 import 'package:mamba/home/mixin/home_tile_mixin.dart';
-import 'package:mamba/home/models/home_page.dart';
+import 'package:mamba/home/models/home_nav_page.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
@@ -402,7 +402,9 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                     icon: Icons.smartphone,
                     color: Colors.blue,
                   );
-                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+                  context
+                      .read<SnackbarCubit>()
+                      .enqueueSnackbarAction(snackbar);
                 }
               }
 

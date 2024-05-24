@@ -30,19 +30,17 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
+import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
+import 'package:mamba/snackbar/models/custom_snackbar.dart';
+import 'package:mamba/snackbar/models/snackbar_type.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 class Calendar extends StatefulWidget {
-  String brandId;
-  bool? onlyView;
-
-  Calendar({
+  const Calendar({
     super.key,
-    required this.brandId,
-    this.onlyView,
   });
 
   @override
@@ -59,27 +57,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
             (MediaQuery.of(context).size.height * 0.25 - kToolbarHeight);
   }
 
-  // DropDown Calendar View
-  String selectedValue = '2';
-  var items = ['0', '1', '2', '3', '4', '5', '6'];
-
-  // Acceso a Base de Datos
-  final _userDataService = UserDataService();
-  final _eventDataService = EventDataService();
-
-  // Boolean Loading
-  bool isLoading = true;
-
-  // Descansos
-  DateTime dateJoined = DateTime.now();
-
   // Calendar Controller
   final CalendarController _controller = CalendarController();
 
-  // Horari
-  //double? _startHour;
-  //double? _endHour;
-  // Selecte Date Time
   DateTime displayDateTimeStart = DateTime.now();
   DateTime displayDateTimeEnd = DateTime.now();
   DateTime middleMonthDate = DateTime.now();
@@ -92,21 +72,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   // Dial Open / Add More Session
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
-
-  // Filters
-  bool hasFilter = false;
-  int filterEventsNumber = 0;
-  List<bool> filterByCalendar = [true, true];
-  List<Usuario> _brandTrainers = [];
-  List<Usuario> selectedTrainers = [];
-
-  //  Heights
-  double viewHeaderHeight = 50;
-
-  // Selected Event Id
-  String? selectedEventId;
-  // SnackBar Error
-  final _topSnackBar = TopSnackBarDef();
+  // DropDown Calendar View
+  String selectedValue = '2';
+  var items = ['0', '1', '2', '3', '4', '5', '6'];
 
   @override
   void initState() {
@@ -115,255 +83,15 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     _scrollController = ScrollController()
       ..addListener(
         () => _isAppBarExpanded
-        ? setState(() {
-            appBarExpanded = true;
-          })
-        : setState(() {
-            appBarExpanded = false;
-          }),
+            ? setState(() {
+                appBarExpanded = true;
+              })
+            : setState(() {
+                appBarExpanded = false;
+              }),
       );
-  }
-
-  void getNewEventMemberDetails(Event event) async {
-    event.setUserList = await _eventDataService.getEventUsers(event.id!);
-    for (Usuario user in event.usersList) {
-      if (user.isTrainer == true) {
-        for (Usuario trainer in _brandTrainers) {
-          if (user.id == trainer.id) {
-            List<Event> oldEventList = trainer.eventsList;
-            oldEventList.add(event);
-            trainer.setEventsList = oldEventList;
-            break;
-          }
-        }
-      }
-    }
-    //setState(() {});
-  }
-
-  // LOGIC
-
-  Event getEvent(String eventId, List<Event> eventsList) {
-    for (var i = 0; i < eventsList.length; i++) {
-      Event temp = eventsList[i];
-      if (temp.id == eventId) return temp;
-    }
-    return Event();
-  }
-
-  List<TimeRegion> _getTimeRegions(Brand brand) {
-    final List<TimeRegion> regions = <TimeRegion>[];
-    // Breaks
-    for (var i = 2; i < brand.workShift.length; i += 2) {
-      var start = brand.workShift[i];
-      var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
-      var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
-      var end = brand.workShift[i + 1];
-      var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
-      var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
-      DateTime inActiveHoursStart = DateTime(dateJoined.year, dateJoined.month,
-          dateJoined.day - 7, startHour, startMin, 0);
-      DateTime inActiveHoursEnd = DateTime(dateJoined.year, dateJoined.month,
-          dateJoined.day - 7, endHour, endMin, 0);
-      regions.add(TimeRegion(
-        enablePointerInteraction: false,
-        startTime: inActiveHoursStart,
-        endTime: inActiveHoursEnd,
-        color: Colors.grey.withOpacity(0.3),
-        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
-      ));
-    }
-    // Hora Inactiva Matí
-    var startHourWS =
-        int.parse(brand.workShift[0].toStringAsFixed(2).split(".")[0]);
-    var startMinWS =
-        int.parse(brand.workShift[0].toStringAsFixed(2).split(".")[1]);
-    regions.add(TimeRegion(
-      enablePointerInteraction: false,
-      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
-          startHourWS - 1, 0, 0),
-      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
-          startHourWS, startMinWS, 0),
-      color: Colors.grey.withOpacity(0.15),
-      recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
-    ));
-    // Hora Inactiva Nit
-    var endHourWS =
-        int.parse(brand.workShift[1].toStringAsFixed(2).split(".")[0]);
-    var endMinWS =
-        int.parse(brand.workShift[1].toStringAsFixed(2).split(".")[1]);
-    regions.add(TimeRegion(
-      enablePointerInteraction: false,
-      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
-          endHourWS, endMinWS, 0),
-      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
-          endHourWS + 1, 0, 0),
-      color: Colors.grey.withOpacity(0.15),
-      recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
-    ));
-    return regions;
-  }
-
-  AppointmentDataSource _getCalendarDataSource(List<Event> eventsList) {
-    List<Appointment> tempAllAppointments = [];
-    List<String> selectedTrainersIDs = [];
-    for (var trainer in selectedTrainers) {
-      selectedTrainersIDs.add(trainer.id!);
-    }
-    for (var i = 0; i < eventsList.length; i++) {
-      var event = eventsList[i];
-      // Date Time
-      DateTime startDate = DateTime(
-        int.parse(event.year!),
-        int.parse(event.month!),
-        int.parse(event.day!),
-        int.parse(event.hour!),
-        int.parse(event.minute!),
-      );
-      var hour = event.duration.toString().split(".")[0];
-      var min = event.duration!.toStringAsFixed(2).split(".")[1];
-      var endDate = startDate
-          .add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
-      // Subject
-      String subject;
-      Color color = Colors.black;
-      if (event.isPrivate!) {
-        subject = "${event.numClients}";
-        if (endDate.isAfter(DateTime.now())) {
-          color = Colors.black;
-        } else {
-          color = Colors.black.withOpacity(0.7);
-        }
-      } else {
-        subject = "${event.numClients}/${event.maxMembers}";
-        // Colors
-        double numClients = double.parse(event.numClients.toString());
-        double maxMembers = double.parse(event.maxMembers.toString());
-        double bookedCapacity = numClients / maxMembers;
-        if (bookedCapacity <= 0.20) {
-          if (endDate.isAfter(DateTime.now())) {
-            color = Colors.green;
-          } else {
-            color = Colors.green.withOpacity(0.5);
-          }
-        } else if (bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
-          if (endDate.isAfter(DateTime.now())) {
-            color = const Color(0xFFA8C76C);
-          } else {
-            color = const Color(0xFFA8C76C).withOpacity(0.5);
-          }
-        } else if (bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
-          if (endDate.isAfter(DateTime.now())) {
-            color = const Color(0xFFECE014);
-          } else {
-            color = const Color(0xFFECE014).withOpacity(0.5);
-          }
-        } else if (bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
-          if (endDate.isAfter(DateTime.now())) {
-            color = Colors.orangeAccent;
-          } else {
-            color = Colors.orangeAccent.withOpacity(0.5);
-          }
-        } else if (bookedCapacity > 0.80 && bookedCapacity < 1) {
-          if (endDate.isAfter(DateTime.now())) {
-            color = Colors.deepOrangeAccent;
-          } else {
-            color = Colors.deepOrangeAccent.withOpacity(0.6);
-          }
-        } else if (bookedCapacity >= 1) {
-          if (endDate.isAfter(DateTime.now())) {
-            color = Colors.red;
-          } else {
-            color = Colors.red.withOpacity(0.6);
-          }
-        }
-      }
-      // Only If Selected Trainers
-      if (event.usersList.isNotEmpty) {
-        int index = event.usersList
-            .indexWhere((element) => selectedTrainersIDs.contains(element.id!));
-        if (index != -1) {
-          if (filterEventsNumber == 1) {
-            // Show Only Group Events
-            if (event.isPrivate == false) {
-              tempAllAppointments.add(Appointment(
-                id: event.id,
-                startTime: startDate,
-                endTime: endDate,
-                subject: subject,
-                color: color,
-                startTimeZone: '',
-                endTimeZone: '',
-              ));
-            }
-          } else if (filterEventsNumber == 2) {
-            // Show Only Group Events
-            if (event.isPrivate == true) {
-              tempAllAppointments.add(Appointment(
-                id: event.id,
-                startTime: startDate,
-                endTime: endDate,
-                subject: subject,
-                color: color,
-                startTimeZone: '',
-                endTimeZone: '',
-              ));
-            }
-          } else {
-            tempAllAppointments.add(Appointment(
-              id: event.id,
-              startTime: startDate,
-              endTime: endDate,
-              subject: subject,
-              color: color,
-              startTimeZone: '',
-              endTimeZone: '',
-            ));
-          }
-        }
-      } else {
-        getNewEventMemberDetails(event);
-        if (filterEventsNumber == 1) {
-          // Show Only Group Events
-          if (event.isPrivate == false) {
-            tempAllAppointments.add(Appointment(
-              id: event.id,
-              startTime: startDate,
-              endTime: endDate,
-              subject: subject,
-              color: color,
-              startTimeZone: '',
-              endTimeZone: '',
-            ));
-          }
-        } else if (filterEventsNumber == 2) {
-          // Show Only Group Events
-          if (event.isPrivate == true) {
-            tempAllAppointments.add(Appointment(
-              id: event.id,
-              startTime: startDate,
-              endTime: endDate,
-              subject: subject,
-              color: color,
-              startTimeZone: '',
-              endTimeZone: '',
-            ));
-          }
-        } else {
-          tempAllAppointments.add(Appointment(
-            id: event.id,
-            startTime: startDate,
-            endTime: endDate,
-            subject: subject,
-            color: color,
-            startTimeZone: '',
-            endTimeZone: '',
-          ));
-        }
-      }
-      //
-    }
-    return AppointmentDataSource(tempAllAppointments);
+    // Start Week View
+    _controller.view = CalendarView.week;
   }
 
   // Add Event / Navigate To Event Functions
@@ -402,51 +130,32 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 
   Future<void> navigateToEventScreen(String eventId, bool isCompleted) async {
-    setState(() {
-      selectedEventId = eventId;
-    });
-    /*
     mixpanel!.track('brand_calendar_event_view', properties: {
       'Calendar View': _controller.view.toString(),
       'isCompleted': isCompleted
     });
     // Navigate to Event Screen
-    var result = await Navigator.push(
-        context,
-        CupertinoPageRoute<bool?>(
-          builder: (context) => EventPage(
-            eventId: eventId,
-          ),
-        ));
-    if (result != null) {
-      if (result) {
-        if (isCompleted) {
-          // Event Has Been Updated
-          context
-              .read<BrandEventsCubit>()
-              .updateBrandEvent(eventId, _brandTrainers);
-        }
-      } else {
-        if (isCompleted) {
-          // Event Has Been Updated
-          context.read<BrandEventsCubit>().deleteBrandEvent(eventId);
-        }
-      }
-    }
-    */
+    await Navigator.push(
+      context,
+      CupertinoPageRoute<bool?>(
+        builder: (context) => EventPage(
+          eventId: eventId,
+        ),
+      ),
+    );
+    // TO DO: Asegurar el Update/Delete correcte que he borrat el codi
   }
 
-  // UI Interaction Functions
+////// UI Interaction Functions ////////////////////////////////////////////////////
 
-  double getScreenHeightDifference(double difference) {
+  void onCalendarStart(double difference) {
     // The goal of this function is to calculate the height of each HOUR in the calendar. This is calculated depending on the numbers of avaiable hours (HORARI).
-    // Final result
     double adjustedHeight;
     // Full screen height
     double screenHeight = context.height;
     // Expanded Height of AppBar
-    double expandedHeight = context.height * 0.15 +
-        MediaQuery.of(context).padding.top;
+    double expandedHeight =
+        context.height * 0.15 + MediaQuery.of(context).padding.top;
     if (context.isDesktop) {
       expandedHeight = desktopAppBarHeight + MediaQuery.of(context).padding.top;
     }
@@ -457,18 +166,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     }
     // We're using TargetPlatform to determine the type of device
     adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
-    return adjustedHeight / difference;
-  }
-
-  void onCalendarViewStart(double difference) {    
-    setState(() {
-      // Start Week View
-    _controller.view = CalendarView.week;
-    // Height per Bloc
-    _baseTimeSlotViewZoom = getScreenHeightDifference(difference);
-    //_timeSlotViewScale = await _userDataService.getUserZoomScale(
+    _baseTimeSlotViewZoom = adjustedHeight / difference;
+    // Setting the Height of each TimeSlot
     _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
-    });
   }
 
   void onScaleStart(ScaleStartDetails scaleStartDetails) {
@@ -491,11 +191,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 
   void onScaleEnd(ScaleEndDetails scaleEndDetails) {
-    _userDataService.updateUserZoomScale(
-        widget.brandId, currentUser.id!, _timeSlotViewScale);
+    context.read<CalendarBloc>().updateUserZoomScale(_timeSlotViewScale);
   }
 
-  Future<void> onhandleViewChanged(
+  Future<void> onViewChanged(
       ViewChangedDetails viewChangedDetails, List<Event> events) async {
     Future.delayed(Duration.zero, () async {
       setState(() {
@@ -520,9 +219,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
               .difference(startDateLastEvent)
               .inDays <
           60) {
-        context
-            .read<EventsBloc>()
-            .getMoreBrandEvents(eventsList.first.id!, _brandTrainers);
+        context.read<CalendarBloc>().getMoreBrandEvents(eventsList.first.id!);
       }
     }
   }
@@ -548,437 +245,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     } else if (_controller.view == CalendarView.schedule) {}
   }
 
-  void onTapFilterIcon(CalendarTapDetails details) async {
-    await showModalBottomSheet<int?>(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (BuildContext context) {
-        // Page View Controller
-        final PageController pageController = PageController(initialPage: 0);
-        int currentPage = 0;
-        bool isTypeEvent = true;
-        List<Usuario> selectedTrainersBottom = List.from(selectedTrainers);
-        // Widget
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setStateBottom) {
-            return FractionallySizedBox(
-              heightFactor: 0.33,
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.5,
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding:
-                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        title: Text(context.l10n.filterBy,
-                            style: Theme.of(context).textTheme.bodySmall,
-                            textAlign: TextAlign.left),
-                        trailing: TextButton(
-                            child: Text(context.l10n.clear,
-                                style: Theme.of(context).textTheme.bodySmall),
-                            onPressed: () {
-                              setStateBottom(() {
-                                filterByCalendar = [true, true];
-                                selectedTrainers = List.from(_brandTrainers);
-                              });
-                              // Navigator Pop
-                              Navigator.pop(context);
-                            }),
-                        dense: true,
-                        onTap: currentPage == 0
-                            ? null
-                            : () {
-                                pageController.previousPage(
-                                  duration: const Duration(milliseconds: 500),
-                                  curve: Curves.ease,
-                                );
-                              },
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.21,
-                        width: MediaQuery.of(context).size.width,
-                        child: PageView(
-                          physics: const NeverScrollableScrollPhysics(),
-                          controller: pageController,
-                          onPageChanged: (int page) {
-                            setStateBottom(() {
-                              currentPage = page;
-                            });
-                          },
-                          children: <Widget>[
-                            Column(
-                              children: [
-                                ListTile(
-                                  onTap: () {
-                                    setStateBottom(() {
-                                      isTypeEvent = true;
-                                    });
-                                    pageController.nextPage(
-                                      duration:
-                                          const Duration(milliseconds: 500),
-                                      curve: Curves.ease,
-                                    );
-                                  },
-                                  title: Text(
-                                      "${context.l10n.typeProfile.split(" ")[0]} ${context.l10n.typeProfile.split(" ")[1]} ${context.l10n.events.toLowerCase()}",
-                                      style:
-                                          Theme.of(context).textTheme.bodyLarge,
-                                      textAlign: TextAlign.left),
-                                  subtitle: Text(returnFilteredRolesString(),
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall,
-                                      textAlign: TextAlign.left),
-                                  trailing: SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.15,
-                                    child: Center(
-                                        child: Icon(Icons.arrow_forward_ios,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.04,
-                                            color: AppColors.grey)),
-                                  ),
-                                ),
-                                ListTile(
-                                  onTap: () {
-                                    setStateBottom(() {
-                                      isTypeEvent = false;
-                                    });
-                                    pageController.nextPage(
-                                      duration:
-                                          const Duration(milliseconds: 500),
-                                      curve: Curves.ease,
-                                    );
-                                  },
-                                  title: Text(context.l10n.trainers,
-                                      style:
-                                          Theme.of(context).textTheme.bodyLarge,
-                                      textAlign: TextAlign.left),
-                                  subtitle: Text(
-                                    returnFilteredStaffMembersString(),
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                    textAlign: TextAlign.left,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  trailing: SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.15,
-                                    child: Center(
-                                        child: Icon(Icons.arrow_forward_ios,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.04,
-                                            color: AppColors.grey)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            isTypeEvent
-                                ? Column(
-                                    children: [
-                                      ListTile(
-                                        onTap: () {
-                                          // Check if the Only True
-                                          var filterActive =
-                                              List.from(filterByCalendar);
-                                          filterActive.retainWhere(
-                                              (element) => element == true);
-                                          if (!(filterActive.length == 1 &&
-                                              filterByCalendar[0])) {
-                                            filterByCalendar[0] =
-                                                !filterByCalendar[0];
-                                            // Navigator Pop
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                        title: Text(context.l10n.groupEvent,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge,
-                                            textAlign: TextAlign.left),
-                                        trailing: filterByCalendar[0]
-                                            ? SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.15,
-                                                child: Center(
-                                                    child: Icon(Icons.check,
-                                                        size: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.08,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary)),
-                                              )
-                                            : SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.15),
-                                      ),
-                                      ListTile(
-                                        onTap: () {
-                                          // Check if the Only True
-                                          var filterActive =
-                                              List.from(filterByCalendar);
-                                          filterActive.retainWhere(
-                                              (element) => element == true);
-                                          if (!(filterActive.length == 1 &&
-                                              filterByCalendar[1])) {
-                                            filterByCalendar[1] =
-                                                !filterByCalendar[1];
-                                            // Navigator Pop
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                        title: Text(context.l10n.privateEvent,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge,
-                                            textAlign: TextAlign.left),
-                                        trailing: filterByCalendar[1]
-                                            ? SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.15,
-                                                child: Center(
-                                                    child: Icon(Icons.check,
-                                                        size: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.08,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary)),
-                                              )
-                                            : SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.15),
-                                      ),
-                                    ],
-                                  )
-                                : Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.21,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            MediaQuery.of(context).size.width *
-                                                0.04),
-                                    child: GridView.builder(
-                                        shrinkWrap: true,
-                                        physics: const ClampingScrollPhysics(),
-                                        scrollDirection: Axis.vertical,
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio: 3.5,
-                                          crossAxisSpacing: 15,
-                                          mainAxisSpacing: 15.0,
-                                        ),
-                                        itemCount: _brandTrainers.length,
-                                        itemBuilder: (context, int index) {
-                                          var trainer = _brandTrainers[index];
-                                          return GestureDetector(
-                                            onTap: () {
-                                              setStateBottom(() {
-                                                if (selectedTrainersBottom
-                                                    .contains(trainer)) {
-                                                  if (selectedTrainersBottom
-                                                          .length >
-                                                      1) {
-                                                    selectedTrainersBottom
-                                                        .remove(trainer);
-                                                    selectedTrainers
-                                                        .remove(trainer);
-                                                    // Navigator Pop
-                                                    Navigator.pop(context);
-                                                  }
-                                                } else {
-                                                  selectedTrainersBottom
-                                                      .add(trainer);
-                                                  selectedTrainers.add(trainer);
-                                                  // Navigator Pop
-                                                  Navigator.pop(context);
-                                                }
-                                              });
-                                            },
-                                            child: Container(
-                                              margin: const EdgeInsets.only(
-                                                  right: 5),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  CircularImage(
-                                                    size: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        0.1,
-                                                    image: trainer.imageUrl,
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                    borderWidth: 1.0,
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Flexible(
-                                                    child: Text(
-                                                      "${trainer.firstName!} ${trainer.lastName![0]}.",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyLarge,
-                                                      overflow:
-                                                          TextOverflow.fade,
-                                                      maxLines: 1,
-                                                      softWrap: false,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  SizedBox(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.06,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.06,
-                                                    child: MaterialButton(
-                                                      elevation: 4,
-                                                      color: selectedTrainersBottom
-                                                              .contains(trainer)
-                                                          ? context.colorScheme
-                                                              .secondary
-                                                          : Theme.of(context)
-                                                              .scaffoldBackgroundColor,
-                                                      textColor: selectedTrainersBottom
-                                                              .contains(trainer)
-                                                          ? context.colorScheme
-                                                              .secondary
-                                                          : Theme.of(context)
-                                                              .scaffoldBackgroundColor,
-                                                      padding: EdgeInsets.zero,
-                                                      shape:
-                                                          const CircleBorder(),
-                                                      onPressed: () {
-                                                        setStateBottom(() {
-                                                          if (selectedTrainersBottom
-                                                              .contains(
-                                                                  trainer)) {
-                                                            if (selectedTrainersBottom
-                                                                    .length >
-                                                                1) {
-                                                              selectedTrainersBottom
-                                                                  .remove(
-                                                                      trainer);
-                                                              selectedTrainers
-                                                                  .remove(
-                                                                      trainer);
-                                                              // Navigator Pop
-                                                              Navigator.pop(
-                                                                  context);
-                                                            }
-                                                          } else {
-                                                            selectedTrainersBottom
-                                                                .add(trainer);
-                                                            selectedTrainers
-                                                                .add(trainer);
-                                                            // Navigator Pop
-                                                            Navigator.pop(
-                                                                context);
-                                                          }
-                                                        });
-                                                      },
-                                                      child: selectedTrainersBottom
-                                                              .contains(trainer)
-                                                          ? Icon(Icons.check,
-                                                              color: AppColors
-                                                                  .white,
-                                                              size: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.04)
-                                                          : SizedBox(
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.03,
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.03,
-                                                            ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                  ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    ).whenComplete(() {
-      setState(() {
-        // Filter By Type Of Events
-        if (filterByCalendar[0] && filterByCalendar[1]) {
-          // Group/Private Selected
-          hasFilter = false;
-          filterEventsNumber = 0;
-        } else if (filterByCalendar[0]) {
-          // Group Selected
-          filterEventsNumber = 1;
-          hasFilter = true;
-        } else if (filterByCalendar[1]) {
-          // Private Selected
-          filterEventsNumber = 2;
-          hasFilter = true;
-        }
-        // Filter By Staff Members
-        if (filterByCalendar[0] && filterByCalendar[1]) {
-          if (selectedTrainers.length == _brandTrainers.length) {
-            hasFilter = false;
-          } else {
-            hasFilter = true;
-          }
-        }
-      });
-    });
-  }
-
   void onLongPressCalendar(
       CalendarLongPressDetails details, bool canEdit) async {
     // Action Depending on View
@@ -1002,14 +268,16 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     } else if (_controller.view == CalendarView.schedule) {}
   }
 
+////// UI Interaction Functions ////////////////////////////////////////////////////
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CalendarBloc, CalendarState>(
       listener: (context, state) {
-        if (state is CalendarLoaded) onCalendarViewStart(state.difference);
+        if (state is CalendarLoaded) onCalendarStart(state.difference);
       },
       builder: (context, state) {
-        if (isLoading == false && state is CalendarLoaded) {
+        if (state is CalendarLoaded) {
           return Scaffold(
             body: CustomScrollView(
               physics: const NeverScrollableScrollPhysics(),
@@ -1034,7 +302,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                         alignment: Alignment.bottomRight,
                         children: [
                           calendarWidget(state),
-                          zoomWidget(),
+                          //zoomWidget(),
                         ],
                       ),
                     ),
@@ -1184,10 +452,11 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                             alignment: Alignment.bottomRight,
                             children: [
                               calendarWidget(state),
-                              zoomWidget(),
+                              //zoomWidget(),
                             ],
                           ),
                         ),
+                        /*
                         if (selectedEventId != null)
                           Row(
                             children: [
@@ -1204,7 +473,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                 ),
                               ),
                             ],
-                          )
+                          ),
+                        */
                       ],
                     ),
                   ),
@@ -1380,6 +650,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   // WIDGETS
 
   Widget calendarWidget(CalendarLoaded state) {
+    // BrandDate Joined
+    DateTime dateJoined =
+        DateFormat('dd-MM-yyyy').parse(state.brand.dateJoined!);
     return SfCalendarTheme(
       data: SfCalendarThemeData(
         // Background Colors
@@ -1389,7 +662,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         backgroundColor: context.theme.scaffoldBackgroundColor,
         headerBackgroundColor: context.theme.scaffoldBackgroundColor,
         agendaBackgroundColor: context.theme.scaffoldBackgroundColor,
-        cellBorderColor: Theme.of(context).dividerColor,
+        cellBorderColor: context.theme.dividerColor,
         activeDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
         todayBackgroundColor: context.theme.scaffoldBackgroundColor,
         trailingDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
@@ -1427,8 +700,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         ),
         // Data
         minDate: dateJoined,
-        dataSource: _getCalendarDataSource(state.events),
-        specialRegions: _getTimeRegions(state.brand),
+        dataSource: state.dataSource,
+        specialRegions: state.specialRegions,
         // Config
         cellEndPadding: 0,
         firstDayOfWeek: 1,
@@ -1439,7 +712,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         // Header
         headerHeight: 0,
         // View Header
-        viewHeaderHeight: viewHeaderHeight,
+        viewHeaderHeight: context.isDesktop ? 70 : 50,
         // Time Slot View Settings
         timeSlotViewSettings: TimeSlotViewSettings(
           timeIntervalHeight: _timeSlotViewZoom,
@@ -1451,10 +724,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
           dayFormat: 'EE',
           dateFormat: 'd',
           timeRulerSize: 50,
-          //nonWorkingDays: _controller.view == CalendarView.week && isThreeDays ? [DateTime.friday, DateTime.saturday, DateTime.sunday] : nonWorkDays,
-          nonWorkingDays: [],
+          nonWorkingDays: const [],
           minimumAppointmentDuration: const Duration(minutes: 30),
-          timeTextStyle: Theme.of(context).textTheme.bodyMedium,
+          timeTextStyle: context.textTheme.bodyMedium,
         ),
         // Monthly View
         monthViewSettings: MonthViewSettings(
@@ -1463,44 +735,41 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
           showTrailingAndLeadingDates: true,
           appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
           monthCellStyle: MonthCellStyle(
-            textStyle: Theme.of(context).textTheme.bodyLarge,
-            trailingDatesTextStyle: Theme.of(context)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(color: AppColors.grey),
-            leadingDatesTextStyle: Theme.of(context)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(color: AppColors.grey),
+            textStyle: context.textTheme.bodyLarge,
+            trailingDatesTextStyle:
+                context.textTheme.bodyLarge?.copyWith(color: AppColors.grey),
+            leadingDatesTextStyle:
+                context.textTheme.bodyLarge?.copyWith(color: AppColors.grey),
           ),
         ),
-        // Agenda / Schedule View
+        // Schedule View
         scheduleViewSettings: ScheduleViewSettings(
           hideEmptyScheduleWeek: true,
           appointmentItemHeight: MediaQuery.of(context).size.height * 0.12,
-          appointmentTextStyle: Theme.of(context).textTheme.bodyMedium,
+          appointmentTextStyle: context.textTheme.bodyMedium,
           dayHeaderSettings: DayHeaderSettings(
-            dateTextStyle: Theme.of(context).textTheme.bodyMedium,
-            dayTextStyle:
-                Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 10),
+            dateTextStyle: context.textTheme.bodyMedium,
+            dayTextStyle: context.textTheme.bodySmall,
           ),
           weekHeaderSettings: WeekHeaderSettings(
             startDateFormat: 'd',
             endDateFormat: 'd MMMM',
             textAlign: TextAlign.start,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            weekTextStyle: Theme.of(context).textTheme.bodySmall,
+            backgroundColor: context.theme.scaffoldBackgroundColor,
+            weekTextStyle: context.textTheme.bodySmall,
           ),
           monthHeaderSettings: MonthHeaderSettings(
             monthFormat: month_year_dateformat,
             height: 70,
             textAlign: TextAlign.start,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            monthTextStyle: Theme.of(context).textTheme.headlineMedium,
+            backgroundColor: context.theme.scaffoldBackgroundColor,
+            monthTextStyle: context.textTheme.headlineMedium,
           ),
         ),
-        scheduleViewMonthHeaderBuilder: (BuildContext buildContext,
-            ScheduleViewMonthHeaderDetails details) {
+        scheduleViewMonthHeaderBuilder: (
+          BuildContext context,
+          ScheduleViewMonthHeaderDetails details,
+        ) {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: defaultPadding),
             child: Text(
@@ -1522,19 +791,20 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 border: Border.all(width: 1, color: Colors.transparent),
               )
             : BoxDecoration(
-                color:
-                    Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                color: context.colorScheme.secondary.withOpacity(0.08),
                 border: Border.all(
-                    width: 1, color: Theme.of(context).colorScheme.secondary),
+                  width: 1,
+                  color: context.colorScheme.secondary,
+                ),
                 borderRadius: const BorderRadius.all(
                   Radius.circular(5.0),
                 ),
               ),
-        onViewChanged: (ViewChangedDetails viewChangedDetails) async {
-          await onhandleViewChanged(viewChangedDetails, state.events);
+        onViewChanged: (ViewChangedDetails viewChangedDetails) {
+          onViewChanged(viewChangedDetails, state.events);
         },
         onTap: onTapCalendar,
-        appointmentTextStyle: Theme.of(context).textTheme.bodyMedium!,
+        appointmentTextStyle: context.textTheme.bodyMedium!,
         appointmentBuilder:
             (BuildContext context, CalendarAppointmentDetails details) {
           return _buildEventContainer(details, state.events);
@@ -1543,43 +813,41 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     );
   }
 
-  Widget zoomWidget() {
-    return _controller.view == CalendarView.week ||
-            _controller.view == CalendarView.day
-        ? Padding(
-            padding: isAndroid
-                ? EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.width * 0.02,
-                    horizontal: MediaQuery.of(context).size.width * 0.045)
-                : EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.width * 0.06,
-                    horizontal: MediaQuery.of(context).size.width * 0.04),
-            child: Material(
-              elevation: 4,
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                padding:
-                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.0115),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.background,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-                child: Text(
-                    "Zoom: ${(_timeSlotViewScale * 100).toStringAsFixed(0)} %",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(fontSize: 11),
-                    textAlign: TextAlign.center),
-              ),
-            ),
-          )
-        : Container();
-  }
-
   Widget whichFloatingActionButton(bool canEdit) {
+    Widget zoomWidget() {
+      return _controller.view == CalendarView.week ||
+              _controller.view == CalendarView.day
+          ? Padding(
+              padding: isAndroid
+                  ? EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.width * 0.02,
+                      horizontal: MediaQuery.of(context).size.width * 0.045)
+                  : EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.width * 0.06,
+                      horizontal: MediaQuery.of(context).size.width * 0.04),
+              child: Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  padding: EdgeInsets.all(
+                      MediaQuery.of(context).size.width * 0.0115),
+                  decoration: BoxDecoration(
+                    color: context.colorScheme.background,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                      "Zoom: ${(_timeSlotViewScale * 100).toStringAsFixed(0)} %",
+                      style:
+                          context.textTheme.bodySmall?.copyWith(fontSize: 11),
+                      textAlign: TextAlign.center),
+                ),
+              ),
+            )
+          : Container();
+    }
+
     // TODO: Harcdoded
     canEdit = false;
     return canEdit
@@ -1595,7 +863,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 animatedIcon: AnimatedIcons.add_event,
                 animationDuration: const Duration(milliseconds: 300),
                 foregroundColor: AppColors.white,
-                overlayColor: Theme.of(context).scaffoldBackgroundColor,
+                overlayColor: context.theme.scaffoldBackgroundColor,
                 overlayOpacity: 0.95,
                 spacing: MediaQuery.of(context).size.height * 0.02,
                 spaceBetweenChildren: MediaQuery.of(context).size.height * 0.02,
@@ -1606,7 +874,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                         Icons.groups,
                       ),
                       elevation: 10,
-                      backgroundColor: Theme.of(context).colorScheme.background,
+                      backgroundColor: context.colorScheme.background,
                       labelWidget: Container(
                         color: Colors.transparent,
                         padding: EdgeInsets.only(
@@ -1618,10 +886,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(context.l10n.groupEvent,
-                                style: Theme.of(context).textTheme.displaySmall,
+                                style: context.textTheme.displaySmall,
                                 textAlign: TextAlign.right),
                             Text(context.l10n.groupEventDesc,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: context.textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
                         ),
@@ -1635,8 +903,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                           }
                           _addEvent(eventDate!, false);
                         } else {
-                          _topSnackBar.showSnackBarTop(context,
-                              context.l10n.processOnWork, AppColors.red);
+                          CustomSnackbar snackbar = CustomSnackbar(
+                            type: SnackbarType.error,
+                            message: context.l10n.processOnWork,
+                          );
+                          context
+                              .read<SnackbarCubit>()
+                              .enqueueSnackbarAction(snackbar);
                         }
                       }),
                   SpeedDialChild(
@@ -1644,7 +917,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                         Icons.person,
                       ),
                       elevation: 10,
-                      backgroundColor: Theme.of(context).colorScheme.background,
+                      backgroundColor: context.colorScheme.background,
                       labelWidget: Container(
                         color: Colors.transparent,
                         padding: EdgeInsets.only(
@@ -1656,10 +929,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(context.l10n.privateEvent,
-                                style: Theme.of(context).textTheme.displaySmall,
+                                style: context.textTheme.displaySmall,
                                 textAlign: TextAlign.right),
                             Text(context.l10n.privateEventDesc,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: context.textTheme.bodyMedium,
                                 textAlign: TextAlign.right),
                           ],
                         ),
@@ -1673,8 +946,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                           }
                           _addEvent(eventDate!, true);
                         } else {
-                          _topSnackBar.showSnackBarTop(context,
-                              context.l10n.processOnWork, AppColors.red);
+                          CustomSnackbar snackbar = CustomSnackbar(
+                            type: SnackbarType.error,
+                            message: context.l10n.processOnWork,
+                          );
+                          context
+                              .read<SnackbarCubit>()
+                              .enqueueSnackbarAction(snackbar);
                         }
                       }),
                 ],
@@ -1706,9 +984,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                       'MMMM',
                       Localizations.localeOf(context).languageCode,
                     ).format(dateTimeStart)).substring(0, 3)} ",
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium
+                style: context.textTheme.headlineMedium
                     ?.copyWith(color: AppColors.white),
               )
             : Text(
@@ -1720,9 +996,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   'MMMM yyyy',
                   Localizations.localeOf(context).languageCode,
                 ).format(dateTimeStart))} ",
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium
+                style: context.textTheme.headlineMedium
                     ?.copyWith(color: AppColors.white),
               );
       case CalendarView.week:
@@ -1738,9 +1012,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   'MMMM',
                   Localizations.localeOf(context).languageCode,
                 ).format(dateTimeStart))} ",
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium
+                style: context.textTheme.headlineMedium
                     ?.copyWith(color: AppColors.white),
               )
             : Text(
@@ -1754,9 +1026,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   'MMMM yy',
                   Localizations.localeOf(context).languageCode,
                 ).format(dateTimeStart))} ",
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium
+                style: context.textTheme.headlineMedium
                     ?.copyWith(color: AppColors.white),
               );
       case CalendarView.month:
@@ -1767,9 +1037,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 : 'MMMM yyyy ',
             Localizations.localeOf(context).languageCode,
           ).format(middleMonthDate)),
-          style: Theme.of(context)
-              .textTheme
-              .headlineMedium
+          style: context.textTheme.headlineMedium
               ?.copyWith(color: AppColors.white),
         );
       default:
@@ -1785,9 +1053,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   'MMMM',
                   Localizations.localeOf(context).languageCode,
                 ).format(dateTimeStart))} ",
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium
+                style: context.textTheme.headlineMedium
                     ?.copyWith(color: AppColors.white),
               )
             : Text(
@@ -1801,15 +1067,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   'MMMM yyyy',
                   Localizations.localeOf(context).languageCode,
                 ).format(dateTimeStart))} ",
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium
+                style: context.textTheme.headlineMedium
                     ?.copyWith(color: AppColors.white),
               );
     }
   }
 
-  Widget _buildTitleFromDate(
+  Widget _buildDropDown(
       DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Container(
       color: AppColors.darkGrey,
@@ -1817,10 +1081,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
       child: DropdownButton2(
         // Initial Value
         value: selectedValue,
-        style: Theme.of(context)
-            .textTheme
-            .headlineMedium
-            ?.copyWith(color: AppColors.white),
+        style:
+            context.textTheme.headlineMedium?.copyWith(color: AppColors.white),
         underline: Container(color: Colors.transparent),
         isExpanded: false,
         // Array list of items
@@ -1856,16 +1118,16 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
                   leading: Icon(Icons.view_agenda_outlined,
                       size: MediaQuery.of(context).size.width * 0.06,
-                      color: Theme.of(context).primaryColor),
+                      color: context.colorScheme.primary),
                   title: Text(
                     context.l10n.schedule,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: context.textTheme.bodyLarge,
                   ),
                   trailing: FaIcon(
                     FontAwesomeIcons.check,
                     size: MediaQuery.of(context).size.width * 0.04,
                     color: selectedValue == '0'
-                        ? Theme.of(context).primaryColor
+                        ? context.colorScheme.primary
                         : Colors.transparent,
                   ),
                 ),
@@ -1882,16 +1144,16 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
                 leading: Icon(Icons.view_day_outlined,
                     size: MediaQuery.of(context).size.width * 0.06,
-                    color: Theme.of(context).primaryColor),
+                    color: context.colorScheme.primary),
                 title: Text(
                   context.l10n.day,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: context.textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
                   FontAwesomeIcons.check,
                   size: MediaQuery.of(context).size.width * 0.04,
                   color: selectedValue == '1'
-                      ? Theme.of(context).primaryColor
+                      ? context.colorScheme.primary
                       : Colors.transparent,
                 ),
               )),
@@ -1907,16 +1169,16 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
                 leading: Icon(Icons.calendar_view_week,
                     size: MediaQuery.of(context).size.width * 0.06,
-                    color: Theme.of(context).primaryColor),
+                    color: context.colorScheme.primary),
                 title: Text(
                   context.l10n.week,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: context.textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
                   FontAwesomeIcons.check,
                   size: MediaQuery.of(context).size.width * 0.04,
                   color: selectedValue == '2'
-                      ? Theme.of(context).primaryColor
+                      ? context.colorScheme.primary
                       : Colors.transparent,
                 ),
               )),
@@ -1932,16 +1194,16 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
                 leading: Icon(Icons.calendar_view_month,
                     size: MediaQuery.of(context).size.width * 0.06,
-                    color: Theme.of(context).primaryColor),
+                    color: context.colorScheme.primary),
                 title: Text(
                   context.l10n.month,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: context.textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
                   FontAwesomeIcons.check,
                   size: MediaQuery.of(context).size.width * 0.04,
                   color: selectedValue == '3'
-                      ? Theme.of(context).primaryColor
+                      ? context.colorScheme.primary
                       : Colors.transparent,
                 ),
               )),
@@ -1959,7 +1221,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
             maxHeight: MediaQuery.of(context).size.height * 0.3,
             width: MediaQuery.of(context).size.width * 0.5,
             decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
+              color: context.theme.scaffoldBackgroundColor,
               borderRadius: const BorderRadius.all(
                 Radius.circular(15),
               ),
@@ -2105,17 +1367,17 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 leading: Icon(
                   Icons.view_agenda_outlined,
                   size: iconSize,
-                  color: Theme.of(context).primaryColor,
+                  color: context.colorScheme.primary,
                 ),
                 title: Text(
                   context.l10n.schedule,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: context.textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
                   FontAwesomeIcons.check,
                   size: iconSizeSmall,
                   color: selectedValue == '0'
-                      ? Theme.of(context).primaryColor
+                      ? context.colorScheme.primary
                       : Colors.transparent,
                 ),
               ),
@@ -2131,16 +1393,16 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   borderRadius: BorderRadius.circular(borderRadiusSmall),
                 ),
                 leading: Icon(Icons.view_day_outlined,
-                    size: iconSize, color: Theme.of(context).primaryColor),
+                    size: iconSize, color: context.colorScheme.primary),
                 title: Text(
                   context.l10n.day,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: context.textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
                   FontAwesomeIcons.check,
                   size: iconSizeSmall,
                   color: selectedValue == '1'
-                      ? Theme.of(context).primaryColor
+                      ? context.colorScheme.primary
                       : Colors.transparent,
                 ),
               ),
@@ -2156,16 +1418,16 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   borderRadius: BorderRadius.circular(borderRadiusSmall),
                 ),
                 leading: Icon(Icons.calendar_view_week,
-                    size: iconSize, color: Theme.of(context).primaryColor),
+                    size: iconSize, color: context.colorScheme.primary),
                 title: Text(
                   context.l10n.week,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: context.textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
                   FontAwesomeIcons.check,
                   size: iconSizeSmall,
                   color: selectedValue == '2'
-                      ? Theme.of(context).primaryColor
+                      ? context.colorScheme.primary
                       : Colors.transparent,
                 ),
               ),
@@ -2181,16 +1443,16 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   borderRadius: BorderRadius.circular(borderRadiusSmall),
                 ),
                 leading: Icon(Icons.calendar_view_month,
-                    size: iconSize, color: Theme.of(context).primaryColor),
+                    size: iconSize, color: context.colorScheme.primary),
                 title: Text(
                   context.l10n.month,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: context.textTheme.bodyLarge,
                 ),
                 trailing: FaIcon(
                   FontAwesomeIcons.check,
                   size: iconSizeSmall,
                   color: selectedValue == '3'
-                      ? Theme.of(context).primaryColor
+                      ? context.colorScheme.primary
                       : Colors.transparent,
                 ),
               ),
@@ -2239,7 +1501,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     final Appointment appointment = details.appointments.first;
     final DateTime today = DateTime.now();
     bool isCompleted = appointment.endTime.isBefore(today);
-    final Event event = getEvent(appointment.id.toString(), eventsList);
+    final Event event = eventsList.firstWhere(
+      (event) => event.id == appointment.id.toString(),
+    );
     if (_controller.view == CalendarView.day) {
       return GestureDetector(
         onTap: () {
@@ -2266,7 +1530,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   Flexible(
                     child: Text(
                       event.title!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: context.textTheme.bodyMedium?.copyWith(
                           color: AppColors.white, fontWeight: FontWeight.w600),
                       textAlign: TextAlign.start,
                       softWrap: true,
@@ -2277,9 +1541,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                       margin: const EdgeInsets.only(top: 8),
                       child: Text(
                         "${appointment.subject} ${context.l10n.asistants.toLowerCase()}",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
+                        style: context.textTheme.bodyMedium
                             ?.copyWith(color: AppColors.white),
                         overflow: TextOverflow.fade,
                         maxLines: 1,
@@ -2295,13 +1557,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                 event.numFreeSessions == 1
                                     ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}"
                                     : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: AppColors.white,
-                                      fontStyle: FontStyle.italic,
-                                    ),
+                                style: context.textTheme.bodyMedium?.copyWith(
+                                  color: AppColors.white,
+                                  fontStyle: FontStyle.italic,
+                                ),
                                 overflow: TextOverflow.fade,
                                 maxLines: 1,
                                 softWrap: false,
@@ -2337,9 +1596,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                     const SizedBox(width: 4),
                                     Text(
                                       "${trainer.firstName!} ${trainer.lastName![0]}.",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
+                                      style: context.textTheme.bodyMedium
                                           ?.copyWith(
                                               color: AppColors.white,
                                               fontSize: 12),
@@ -2367,7 +1624,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   Flexible(
                     child: Text(
                       event.title!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: context.textTheme.bodyMedium?.copyWith(
                           color: AppColors.white, fontWeight: FontWeight.w600),
                       textAlign: TextAlign.start,
                       softWrap: true,
@@ -2376,9 +1633,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   Flexible(
                     child: Text(
                       "${appointment.subject} ${context.l10n.asistants.toLowerCase()}",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
+                      style: context.textTheme.bodyMedium
                           ?.copyWith(color: AppColors.white),
                       overflow: TextOverflow.fade,
                       maxLines: 1,
@@ -2396,13 +1651,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                   event.numFreeSessions == 1
                                       ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}  -  "
                                       : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}   -  ",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                        color: AppColors.white,
-                                        fontStyle: FontStyle.italic,
-                                      ),
+                                  style: context.textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.white,
+                                    fontStyle: FontStyle.italic,
+                                  ),
                                   overflow: TextOverflow.fade,
                                   maxLines: 1,
                                   softWrap: false,
@@ -2437,9 +1689,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                           const SizedBox(width: 4),
                                           Text(
                                             "${trainer.firstName!} ${trainer.lastName![0]}.",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium
+                                            style: context.textTheme.bodyMedium
                                                 ?.copyWith(
                                                     color: AppColors.white,
                                                     fontSize: 12),
@@ -2473,7 +1723,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                       softWrap: true,
                       overflow: TextOverflow.visible,
                       text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: context.textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             fontWeight: FontWeight.w600),
                         children: [
@@ -2482,17 +1732,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                               ? TextSpan(
                                   text:
                                       "   ${appointment.subject} ${context.l10n.asistants.toLowerCase()}   ",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
+                                  style: context.textTheme.bodyMedium
                                       ?.copyWith(color: AppColors.white),
                                 )
                               : TextSpan(
                                   text:
                                       "   ${appointment.subject} ${context.l10n.asistants.toLowerCase()}   ",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
+                                  style: context.textTheme.bodyMedium
                                       ?.copyWith(color: AppColors.white),
                                 ),
                         ],
@@ -2510,13 +1756,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                   event.numFreeSessions == 1
                                       ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}  -  "
                                       : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}   -  ",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                        color: AppColors.white,
-                                        fontStyle: FontStyle.italic,
-                                      ),
+                                  style: context.textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.white,
+                                    fontStyle: FontStyle.italic,
+                                  ),
                                   overflow: TextOverflow.fade,
                                   maxLines: 1,
                                   softWrap: false,
@@ -2551,12 +1794,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                           const SizedBox(width: 4),
                                           Text(
                                             "${trainer.firstName!} ${trainer.lastName![0]}.",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium
+                                            style: context.textTheme.bodyMedium
                                                 ?.copyWith(
-                                                  color: AppColors.white,
-                                                ),
+                                              color: AppColors.white,
+                                            ),
                                             overflow: TextOverflow.fade,
                                             maxLines: 1,
                                             softWrap: false,
@@ -2586,7 +1827,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                       softWrap: true,
                       overflow: TextOverflow.fade,
                       text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: context.textTheme.bodyMedium?.copyWith(
                             color: AppColors.white,
                             fontWeight: FontWeight.w600),
                         children: [
@@ -2595,17 +1836,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                               ? TextSpan(
                                   text:
                                       "   ${appointment.subject} ${context.l10n.asistants.toLowerCase()}   ",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
+                                  style: context.textTheme.bodyMedium
                                       ?.copyWith(color: AppColors.white),
                                 )
                               : TextSpan(
                                   text:
                                       "   ${appointment.subject} ${context.l10n.asistants.toLowerCase()}   ",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
+                                  style: context.textTheme.bodyMedium
                                       ?.copyWith(color: AppColors.white),
                                 ),
                         ],
@@ -2617,11 +1854,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                           event.numFreeSessions == 1
                               ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}"
                               : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}",
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: AppColors.white,
-                                    fontStyle: FontStyle.italic,
-                                  ),
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            color: AppColors.white,
+                            fontStyle: FontStyle.italic,
+                          ),
                           overflow: TextOverflow.fade,
                           maxLines: 1,
                           softWrap: false,
@@ -2689,19 +1925,17 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                     softWrap: true,
                     overflow: TextOverflow.clip,
                     text: TextSpan(
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                       children: [
                         TextSpan(text: "${event.title!}\n"),
                         TextSpan(
                           text: event.isPrivate!
                               ? "${appointment.subject} ${context.l10n.asistants.toLowerCase().substring(0, 4)}.\n"
                               : "${appointment.subject}\n",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
+                          style: context.textTheme.bodyMedium
                               ?.copyWith(color: AppColors.white),
                         ),
                         event.numFreeSessions != null &&
@@ -2710,13 +1944,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                 text: event.numFreeSessions == 1
                                     ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}\n"
                                     : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}\n",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                        color: AppColors.white,
-                                        fontStyle: FontStyle.italic,
-                                        fontSize: 11),
+                                style: context.textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.white,
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 11),
                               )
                             : const TextSpan(text: ""),
                       ],
@@ -2746,7 +1977,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
             Flexible(
               child: Text(
                 event.title!,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                style: context.textTheme.bodyMedium?.copyWith(
                     color: AppColors.white,
                     fontSize: 10,
                     fontWeight: FontWeight.w600),
@@ -2811,9 +2042,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                           Flexible(
                             child: Text(
                               event.title!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
+                              style: context.textTheme.bodyMedium
                                   ?.copyWith(fontWeight: FontWeight.w600),
                               overflow: TextOverflow.fade,
                               textAlign: TextAlign.start,
@@ -2830,16 +2059,14 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                 children: [
                                   Text(
                                     "${appointment.subject} ${context.l10n.asistants.toLowerCase()}",
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                                    style: context.textTheme.bodyMedium,
                                     overflow: TextOverflow.fade,
                                     maxLines: 1,
                                     softWrap: false,
                                   ),
                                   Text(
                                     "${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime)} - ${DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime)}",
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                                    style: context.textTheme.bodyMedium,
                                     overflow: TextOverflow.fade,
                                     maxLines: 1,
                                     softWrap: false,
@@ -2857,12 +2084,10 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                         event.numFreeSessions == 1
                                             ? "${event.numFreeSessions} ${context.l10n.potentialClient.toLowerCase()}  -  "
                                             : "${event.numFreeSessions} ${context.l10n.potentialClients.toLowerCase()}  -  ",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
+                                        style: context.textTheme.bodyMedium
                                             ?.copyWith(
-                                              fontStyle: FontStyle.italic,
-                                            ),
+                                          fontStyle: FontStyle.italic,
+                                        ),
                                         overflow: TextOverflow.fade,
                                         maxLines: 1,
                                         softWrap: false,
@@ -2902,9 +2127,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                                               .isNotEmpty
                                                       ? "${trainer.firstName!} ${trainer.lastName![0]}."
                                                       : trainer.firstName!,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium,
+                                                  style: context
+                                                      .textTheme.bodyMedium,
                                                   overflow: TextOverflow.fade,
                                                   maxLines: 1,
                                                   softWrap: false,
@@ -2934,34 +2158,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     return Container();
   }
 
-  String returnFilteredRolesString() {
-    String filteredEvents = "";
-    int cnt = 0;
-    if (filterByCalendar[0]) {
-      filteredEvents += "${context.l10n.groupEvent}, ";
-      cnt += 1;
-    }
-    if (filterByCalendar[1]) {
-      filteredEvents += "${context.l10n.privateEvent}, ";
-      cnt += 1;
-    }
-    if (cnt == 1) {
-      return filteredEvents.split(", ")[0];
-    }
-    if (cnt == 2) {
-      return "${filteredEvents.split(", ")[0]}, ${filteredEvents.split(", ")[1]}";
-    }
-    return filteredEvents;
-  }
-
-  String returnFilteredStaffMembersString() {
-    String filteredMembers = "";
-    for (Usuario trainer in selectedTrainers) {
-      filteredMembers += "${trainer.name!}, ";
-    }
-    return filteredMembers.substring(0, filteredMembers.length - 2);
-  }
-
   FlexibleSpaceBar returnFlexibleSpaceBar(double height) {
     return FlexibleSpaceBar(
       background: Container(
@@ -2980,8 +2176,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildTitleFromDate(displayDateTimeStart,
-                          displayDateTimeEnd, middleMonthDate),
+                      _buildDropDown(displayDateTimeStart, displayDateTimeEnd,
+                          middleMonthDate),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -2998,9 +2194,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                               foregroundColor: AppColors.white,
                             ),
                             child: Text(context.l10n.todayString,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
+                                style: context.textTheme.bodyLarge
                                     ?.copyWith(color: AppColors.white),
                                 textAlign: TextAlign.center),
                           ),
@@ -3009,19 +2203,19 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                             width: iconSizeBig,
                             child: ClipOval(
                               child: Material(
-                                color: hasFilter
+                                color: false
                                     ? AppColors.white
                                     : Colors.transparent, // Button color
                                 child: InkWell(
                                   splashColor: AppColors.white
                                       .withOpacity(0.2), // Splash color
-                                  onTap: () => onTapFilterIcon,
+                                  onTap: () {},
                                   child: SizedBox(
                                     width: iconSizeBig,
                                     height: iconSizeBig,
                                     child: Icon(
                                       Icons.filter_list,
-                                      color: hasFilter
+                                      color: false
                                           ? AppColors.darkGrey
                                           : AppColors.white,
                                       size: iconSize,
@@ -3053,8 +2247,462 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 }
 
-class AppointmentDataSource extends CalendarDataSource {
-  AppointmentDataSource(List<Appointment> source) {
-    appointments = source;
+/*
+FILTER CODE
+
+void onTapFilterIcon(CalendarTapDetails details) async {
+    await showModalBottomSheet<int?>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        // Page View Controller
+        final PageController pageController = PageController(initialPage: 0);
+        int currentPage = 0;
+        bool isTypeEvent = true;
+        List<Usuario> selectedTrainersBottom = List.from(selectedTrainers);
+        // Widget
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setStateBottom) {
+            return FractionallySizedBox(
+              heightFactor: 0.33,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        title: Text(context.l10n.filterBy,
+                            style: context.textTheme.bodySmall,
+                            textAlign: TextAlign.left),
+                        trailing: TextButton(
+                            child: Text(context.l10n.clear,
+                                style: context.textTheme.bodySmall),
+                            onPressed: () {
+                              setStateBottom(() {
+                                filterByCalendar = [true, true];
+                                selectedTrainers = List.from(_brandTrainers);
+                              });
+                              // Navigator Pop
+                              Navigator.pop(context);
+                            }),
+                        dense: true,
+                        onTap: currentPage == 0
+                            ? null
+                            : () {
+                                pageController.previousPage(
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.ease,
+                                );
+                              },
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.21,
+                        width: MediaQuery.of(context).size.width,
+                        child: PageView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: pageController,
+                          onPageChanged: (int page) {
+                            setStateBottom(() {
+                              currentPage = page;
+                            });
+                          },
+                          children: <Widget>[
+                            Column(
+                              children: [
+                                ListTile(
+                                  onTap: () {
+                                    setStateBottom(() {
+                                      isTypeEvent = true;
+                                    });
+                                    pageController.nextPage(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                    );
+                                  },
+                                  title: Text(
+                                      "${context.l10n.typeProfile.split(" ")[0]} ${context.l10n.typeProfile.split(" ")[1]} ${context.l10n.events.toLowerCase()}",
+                                      style: context.textTheme.bodyLarge,
+                                      textAlign: TextAlign.left),
+                                  subtitle: Text(returnFilteredRolesString(),
+                                      style: context.textTheme.bodySmall,
+                                      textAlign: TextAlign.left),
+                                  trailing: SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.15,
+                                    child: Center(
+                                        child: Icon(Icons.arrow_forward_ios,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.04,
+                                            color: AppColors.grey)),
+                                  ),
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setStateBottom(() {
+                                      isTypeEvent = false;
+                                    });
+                                    pageController.nextPage(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                    );
+                                  },
+                                  title: Text(context.l10n.trainers,
+                                      style: context.textTheme.bodyLarge,
+                                      textAlign: TextAlign.left),
+                                  subtitle: Text(
+                                    returnFilteredStaffMembersString(),
+                                    style: context.textTheme.bodySmall,
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  trailing: SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.15,
+                                    child: Center(
+                                        child: Icon(Icons.arrow_forward_ios,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.04,
+                                            color: AppColors.grey)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            isTypeEvent
+                                ? Column(
+                                    children: [
+                                      ListTile(
+                                        onTap: () {
+                                          // Check if the Only True
+                                          var filterActive =
+                                              List.from(filterByCalendar);
+                                          filterActive.retainWhere(
+                                              (element) => element == true);
+                                          if (!(filterActive.length == 1 &&
+                                              filterByCalendar[0])) {
+                                            filterByCalendar[0] =
+                                                !filterByCalendar[0];
+                                            // Navigator Pop
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                        title: Text(context.l10n.groupEvent,
+                                            style: context.textTheme.bodyLarge,
+                                            textAlign: TextAlign.left),
+                                        trailing: filterByCalendar[0]
+                                            ? SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15,
+                                                child: Center(
+                                                    child: Icon(Icons.check,
+                                                        size: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.08,
+                                                        color: context
+                                                            .colorScheme
+                                                            .secondary)),
+                                              )
+                                            : SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15),
+                                      ),
+                                      ListTile(
+                                        onTap: () {
+                                          // Check if the Only True
+                                          var filterActive =
+                                              List.from(filterByCalendar);
+                                          filterActive.retainWhere(
+                                              (element) => element == true);
+                                          if (!(filterActive.length == 1 &&
+                                              filterByCalendar[1])) {
+                                            filterByCalendar[1] =
+                                                !filterByCalendar[1];
+                                            // Navigator Pop
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                        title: Text(context.l10n.privateEvent,
+                                            style: context.textTheme.bodyLarge,
+                                            textAlign: TextAlign.left),
+                                        trailing: filterByCalendar[1]
+                                            ? SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15,
+                                                child: Center(
+                                                    child: Icon(Icons.check,
+                                                        size: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.08,
+                                                        color: context
+                                                            .colorScheme
+                                                            .secondary)),
+                                              )
+                                            : SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15),
+                                      ),
+                                    ],
+                                  )
+                                : Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.21,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal:
+                                            MediaQuery.of(context).size.width *
+                                                0.04),
+                                    child: GridView.builder(
+                                        shrinkWrap: true,
+                                        physics: const ClampingScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          childAspectRatio: 3.5,
+                                          crossAxisSpacing: 15,
+                                          mainAxisSpacing: 15.0,
+                                        ),
+                                        itemCount: _brandTrainers.length,
+                                        itemBuilder: (context, int index) {
+                                          var trainer = _brandTrainers[index];
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setStateBottom(() {
+                                                if (selectedTrainersBottom
+                                                    .contains(trainer)) {
+                                                  if (selectedTrainersBottom
+                                                          .length >
+                                                      1) {
+                                                    selectedTrainersBottom
+                                                        .remove(trainer);
+                                                    selectedTrainers
+                                                        .remove(trainer);
+                                                    // Navigator Pop
+                                                    Navigator.pop(context);
+                                                  }
+                                                } else {
+                                                  selectedTrainersBottom
+                                                      .add(trainer);
+                                                  selectedTrainers.add(trainer);
+                                                  // Navigator Pop
+                                                  Navigator.pop(context);
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              margin: const EdgeInsets.only(
+                                                  right: 5),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  CircularImage(
+                                                    size: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.1,
+                                                    image: trainer.imageUrl,
+                                                    color: context
+                                                        .colorScheme.primary,
+                                                    borderWidth: 1.0,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Flexible(
+                                                    child: Text(
+                                                      "${trainer.firstName!} ${trainer.lastName![0]}.",
+                                                      style: context
+                                                          .textTheme.bodyLarge,
+                                                      overflow:
+                                                          TextOverflow.fade,
+                                                      maxLines: 1,
+                                                      softWrap: false,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  SizedBox(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.06,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.06,
+                                                    child: MaterialButton(
+                                                      elevation: 4,
+                                                      color: selectedTrainersBottom
+                                                              .contains(trainer)
+                                                          ? context.colorScheme
+                                                              .secondary
+                                                          : context.theme
+                                                              .scaffoldBackgroundColor,
+                                                      textColor: selectedTrainersBottom
+                                                              .contains(trainer)
+                                                          ? context.colorScheme
+                                                              .secondary
+                                                          : context.theme
+                                                              .scaffoldBackgroundColor,
+                                                      padding: EdgeInsets.zero,
+                                                      shape:
+                                                          const CircleBorder(),
+                                                      onPressed: () {
+                                                        setStateBottom(() {
+                                                          if (selectedTrainersBottom
+                                                              .contains(
+                                                                  trainer)) {
+                                                            if (selectedTrainersBottom
+                                                                    .length >
+                                                                1) {
+                                                              selectedTrainersBottom
+                                                                  .remove(
+                                                                      trainer);
+                                                              selectedTrainers
+                                                                  .remove(
+                                                                      trainer);
+                                                              // Navigator Pop
+                                                              Navigator.pop(
+                                                                  context);
+                                                            }
+                                                          } else {
+                                                            selectedTrainersBottom
+                                                                .add(trainer);
+                                                            selectedTrainers
+                                                                .add(trainer);
+                                                            // Navigator Pop
+                                                            Navigator.pop(
+                                                                context);
+                                                          }
+                                                        });
+                                                      },
+                                                      child: selectedTrainersBottom
+                                                              .contains(trainer)
+                                                          ? Icon(Icons.check,
+                                                              color: AppColors
+                                                                  .white,
+                                                              size: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.04)
+                                                          : SizedBox(
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.03,
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.03,
+                                                            ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    ).whenComplete(() {
+      setState(() {
+        // Filter By Type Of Events
+        if (filterByCalendar[0] && filterByCalendar[1]) {
+          // Group/Private Selected
+          hasFilter = false;
+          filterEventsNumber = 0;
+        } else if (filterByCalendar[0]) {
+          // Group Selected
+          filterEventsNumber = 1;
+          hasFilter = true;
+        } else if (filterByCalendar[1]) {
+          // Private Selected
+          filterEventsNumber = 2;
+          hasFilter = true;
+        }
+        // Filter By Staff Members
+        if (filterByCalendar[0] && filterByCalendar[1]) {
+          if (selectedTrainers.length == _brandTrainers.length) {
+            hasFilter = false;
+          } else {
+            hasFilter = true;
+          }
+        }
+      });
+    });
   }
-}
+  
+   /* 
+  String returnFilteredRolesString() {
+    String filteredEvents = "";
+    int cnt = 0;
+    if (filterByCalendar[0]) {
+      filteredEvents += "${context.l10n.groupEvent}, ";
+      cnt += 1;
+    }
+    if (filterByCalendar[1]) {
+      filteredEvents += "${context.l10n.privateEvent}, ";
+      cnt += 1;
+    }
+    if (cnt == 1) {
+      return filteredEvents.split(", ")[0];
+    }
+    if (cnt == 2) {
+      return "${filteredEvents.split(", ")[0]}, ${filteredEvents.split(", ")[1]}";
+    }
+    return filteredEvents;
+  }
+ 
+
+  String returnFilteredStaffMembersString() {
+        String filteredMembers = "";
+    for (Usuario trainer in selectedTrainers) {
+      filteredMembers += "${trainer.name!}, ";
+    }
+    return filteredMembers.substring(0, filteredMembers.length - 2);
+  }
+
+  */
+  
+  
+  */

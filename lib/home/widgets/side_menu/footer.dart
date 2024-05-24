@@ -8,7 +8,7 @@ import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
-import 'package:mamba/home/models/home_page.dart';
+import 'package:mamba/home/models/home_nav_page.dart';
 
 class Footer extends StatelessWidget with PlatformMixin {
   final double width;

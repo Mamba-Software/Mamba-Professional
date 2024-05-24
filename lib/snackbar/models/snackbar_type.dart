@@ -2,5 +2,6 @@
 enum SnackbarType {
   error,
   success,
-  information,    
+  information,
+  custom    
 }
