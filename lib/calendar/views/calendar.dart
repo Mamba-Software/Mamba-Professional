@@ -6,6 +6,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
+import 'package:mamba/calendar/widgets/calendar_view_dropdown.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
@@ -60,10 +61,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   // Calendar Controller
   final CalendarController _controller = CalendarController();
 
-  DateTime displayDateTimeStart = DateTime.now();
-  DateTime displayDateTimeEnd = DateTime.now();
-  DateTime middleMonthDate = DateTime.now();
-
   // Zoom Gesture Detector
   double _timeSlotViewZoom = -1;
   double _baseTimeSlotViewZoom = -1;
@@ -90,8 +87,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 appBarExpanded = false;
               }),
       );
-    // Start Week View
-    _controller.view = CalendarView.week;
   }
 
   // Add Event / Navigate To Event Functions
@@ -146,9 +141,11 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     // TO DO: Asegurar el Update/Delete correcte que he borrat el codi
   }
 
-////// UI Interaction Functions ////////////////////////////////////////////////////
+  //// UI Interaction Functions ////////////////////////////////////////////////////
 
-  void onCalendarStart(double difference) {
+  void onCalendarStart(double difference, double userZoomScale) {
+    // Start Week View
+    _controller.view = CalendarView.week;
     // The goal of this function is to calculate the height of each HOUR in the calendar. This is calculated depending on the numbers of avaiable hours (HORARI).
     double adjustedHeight;
     // Full screen height
@@ -167,6 +164,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     // We're using TargetPlatform to determine the type of device
     adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
     _baseTimeSlotViewZoom = adjustedHeight / difference;
+    // Make User Call to Get Exact Scale
+    _timeSlotViewScale = userZoomScale;
     // Setting the Height of each TimeSlot
     _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
   }
@@ -194,34 +193,20 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     context.read<CalendarBloc>().updateUserZoomScale(_timeSlotViewScale);
   }
 
-  Future<void> onViewChanged(
-      ViewChangedDetails viewChangedDetails, List<Event> events) async {
-    Future.delayed(Duration.zero, () async {
-      setState(() {
-        int indexMiddleMonthDate =
-            ((viewChangedDetails.visibleDates.length - 1) ~/ 2);
-        middleMonthDate = viewChangedDetails.visibleDates[indexMiddleMonthDate];
-        displayDateTimeStart = viewChangedDetails.visibleDates[0];
-        displayDateTimeEnd = viewChangedDetails
-            .visibleDates[viewChangedDetails.visibleDates.length - 1];
-      });
-    });
-    List<Event> eventsList = events;
-    if (eventsList.isNotEmpty) {
-      var startDateLastEvent = DateTime(
-        int.parse(eventsList.first.year!),
-        int.parse(eventsList.first.month!),
-        int.parse(eventsList.first.day!),
-        int.parse(eventsList.first.hour!),
-        int.parse(eventsList.first.minute!),
-      );
-      if (viewChangedDetails.visibleDates[0]
-              .difference(startDateLastEvent)
-              .inDays <
-          60) {
-        context.read<CalendarBloc>().getMoreBrandEvents(eventsList.first.id!);
-      }
-    }
+  void onViewChanged(ViewChangedDetails viewChangedDetails) {
+    context.read<CalendarBloc>().onViewChanged(viewChangedDetails.visibleDates);
+  }
+
+  void onTapToday() {
+    _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
+  }
+
+  void onTapForward() {
+    _controller.forward!();
+  }
+
+  void onTapBackward() {
+    _controller.backward!();
   }
 
   void onTapCalendar(CalendarTapDetails details) async {
@@ -274,7 +259,12 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   Widget build(BuildContext context) {
     return BlocConsumer<CalendarBloc, CalendarState>(
       listener: (context, state) {
-        if (state is CalendarLoaded) onCalendarStart(state.difference);
+        if (state is CalendarLoaded) {
+          onCalendarStart(
+            state.difference,
+            state.timeSlotViewScale,
+          );
+        }
       },
       builder: (context, state) {
         if (state is CalendarLoaded) {
@@ -319,14 +309,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                           title: Row(
                             children: [
                               TextButton(
-                                onPressed: () {
-                                  mixpanel!.track('brand_calendar_today');
-                                  setState(() {
-                                    //_controller.selectedDate = DateTime.now();
-                                    _controller.displayDate = DateTime.now()
-                                        .subtract(const Duration(hours: 1));
-                                  });
-                                },
+                                onPressed: onTapToday,
                                 style: TextButton.styleFrom(
                                   backgroundColor:
                                       context.colorScheme.background,
@@ -357,17 +340,20 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                 icon: Icons.chevron_left,
                                 iconSize: iconSize,
                                 color: context.colorScheme.onBackground,
-                                onTap: () {},
+                                onTap: onTapBackward,
                               ),
                               AppBarIcon(
                                 icon: Icons.chevron_right,
                                 iconSize: iconSize,
                                 color: context.colorScheme.onBackground,
-                                onTap: () {},
+                                onTap: onTapForward,
                               ),
                               SizedBox(width: defaultPadding),
-                              _buildTitleTextDesktop(displayDateTimeStart,
-                                  displayDateTimeEnd, middleMonthDate),
+                              Text(
+                                state.calendarTitle,
+                                style: context.textTheme.bodyLarge
+                                    ?.copyWith(fontSize: headline1),
+                              ),
                             ],
                           ),
                           centerTitle: false,
@@ -382,7 +368,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                   onTap: () {},
                                 ),
                                 SizedBox(width: defaultPadding),
-                                _buildDropDownDesktop(),
+                                CalendarViewDropdown(
+                                  initialView: CalendarView.week,
+                                  onViewChanged: (CalendarView newView) {
+                                    // Handle view change
+                                    print('Selected view: $newView');
+                                  },
+                                ),
                                 SizedBox(width: defaultPadding),
                                 AppBarIcon(
                                   icon: Icons.help_outline_outlined,
@@ -510,14 +502,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                           title: Row(
                             children: [
                               TextButton(
-                                onPressed: () {
-                                  mixpanel!.track('brand_calendar_today');
-                                  setState(() {
-                                    //_controller.selectedDate = DateTime.now();
-                                    _controller.displayDate = DateTime.now()
-                                        .subtract(const Duration(hours: 1));
-                                  });
-                                },
+                                onPressed: onTapToday,
                                 style: TextButton.styleFrom(
                                   backgroundColor:
                                       context.colorScheme.background,
@@ -548,17 +533,20 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                 icon: Icons.chevron_left,
                                 iconSize: iconSize,
                                 color: context.colorScheme.onBackground,
-                                onTap: () {},
+                                onTap: onTapBackward,
                               ),
                               AppBarIcon(
                                 icon: Icons.chevron_right,
                                 iconSize: iconSize,
                                 color: context.colorScheme.onBackground,
-                                onTap: () {},
+                                onTap: onTapForward,
                               ),
                               SizedBox(width: defaultPadding),
-                              _buildTitleTextDesktop(displayDateTimeStart,
-                                  displayDateTimeEnd, middleMonthDate),
+                              Text(
+                                "state.calendarTitle",
+                                style: context.textTheme.bodyLarge
+                                    ?.copyWith(fontSize: headline1),
+                              ),
                             ],
                           ),
                           centerTitle: false,
@@ -573,7 +561,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                   onTap: () {},
                                 ),
                                 SizedBox(width: defaultPadding),
-                                _buildDropDownDesktop(),
+                                CalendarViewDropdown(
+                                  initialView: CalendarView.week,
+                                  onViewChanged: (CalendarView newView) {
+                                    // Handle view change
+                                    print('Selected view: $newView');
+                                  },
+                                ),
                                 SizedBox(width: defaultPadding),
                                 AppBarIcon(
                                   icon: Icons.help_outline_outlined,
@@ -800,9 +794,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   Radius.circular(5.0),
                 ),
               ),
-        onViewChanged: (ViewChangedDetails viewChangedDetails) {
-          onViewChanged(viewChangedDetails, state.events);
-        },
+        onViewChanged: onViewChanged,
         onTap: onTapCalendar,
         appointmentTextStyle: context.textTheme.bodyMedium!,
         appointmentBuilder:
@@ -962,119 +954,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         : Container();
   }
 
-  Widget _buildTitleText(
-      DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
-    switch (_controller.view) {
-      case CalendarView.schedule:
-        return Text(
-          "${context.l10n.schedule} ",
-          style: context.textTheme.headlineMedium
-              ?.copyWith(color: AppColors.white),
-        );
-      case CalendarView.day:
-        return dateTimeStart.year == DateTime.now().year
-            ? Text(
-                "${StringUtils().toCapitalized(DateFormat(
-                  'EEEE',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))}, ${StringUtils().toCapitalized(DateFormat(
-                  'dd',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} ${StringUtils().toCapitalized(DateFormat(
-                      'MMMM',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart)).substring(0, 3)} ",
-                style: context.textTheme.headlineMedium
-                    ?.copyWith(color: AppColors.white),
-              )
-            : Text(
-                //StringUtils().toCapitalized(DateFormat('EE', Localizations.localeOf(context).languageCode,).format(dateTimeStart))+" "+
-                "${StringUtils().toCapitalized(DateFormat(
-                  'dd',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} ${StringUtils().toCapitalized(DateFormat(
-                  'MMMM yyyy',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} ",
-                style: context.textTheme.headlineMedium
-                    ?.copyWith(color: AppColors.white),
-              );
-      case CalendarView.week:
-        return dateTimeStart.year == DateTime.now().year
-            ? Text(
-                "${StringUtils().toCapitalized(DateFormat(
-                  'dd',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
-                  'dd',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeEnd))} ${StringUtils().toCapitalized(DateFormat(
-                  'MMMM',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} ",
-                style: context.textTheme.headlineMedium
-                    ?.copyWith(color: AppColors.white),
-              )
-            : Text(
-                "${StringUtils().toCapitalized(DateFormat(
-                  'dd',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
-                  'dd',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeEnd))} ${StringUtils().toCapitalized(DateFormat(
-                  'MMMM yy',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} ",
-                style: context.textTheme.headlineMedium
-                    ?.copyWith(color: AppColors.white),
-              );
-      case CalendarView.month:
-        return Text(
-          StringUtils().toCapitalized(DateFormat(
-            middleMonthDate.year == DateTime.now().year
-                ? 'MMMM '
-                : 'MMMM yyyy ',
-            Localizations.localeOf(context).languageCode,
-          ).format(middleMonthDate)),
-          style: context.textTheme.headlineMedium
-              ?.copyWith(color: AppColors.white),
-        );
-      default:
-        return dateTimeStart.year == DateTime.now().year
-            ? Text(
-                "${StringUtils().toCapitalized(DateFormat(
-                  'dd',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
-                  'dd',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart.add(const Duration(days: 6))))} ${StringUtils().toCapitalized(DateFormat(
-                  'MMMM',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} ",
-                style: context.textTheme.headlineMedium
-                    ?.copyWith(color: AppColors.white),
-              )
-            : Text(
-                "${StringUtils().toCapitalized(DateFormat(
-                  'dd',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} - ${StringUtils().toCapitalized(DateFormat(
-                  'dd',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart.add(const Duration(days: 6))))} ${StringUtils().toCapitalized(DateFormat(
-                  'MMMM yyyy',
-                  Localizations.localeOf(context).languageCode,
-                ).format(dateTimeStart))} ",
-                style: context.textTheme.headlineMedium
-                    ?.copyWith(color: AppColors.white),
-              );
-    }
-  }
-
-  Widget _buildDropDown(
-      DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
+  Widget buildDropDown() {
     return Container(
       color: AppColors.darkGrey,
       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.00),
@@ -1092,8 +972,11 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
               alignment: Alignment.centerRight,
               child: Row(
                 children: [
-                  _buildTitleText(displayDateTimeStart, displayDateTimeEnd,
-                      middleMonthDate),
+                  Text(
+                    "state.calendarTitle",
+                    style: context.textTheme.headlineMedium
+                        ?.copyWith(color: AppColors.white),
+                  ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.015),
                   FaIcon(
                     FontAwesomeIcons.chevronDown,
@@ -1259,52 +1142,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         },
       ),
     );
-  }
-
-  Widget _buildTitleTextDesktop(
-      DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
-    TextStyle? textStyle =
-        context.textTheme.bodyLarge?.copyWith(fontSize: headline1);
-    String locale = Localizations.localeOf(context).languageCode;
-
-    String formatDate(DateTime date, String pattern) {
-      return StringUtils()
-          .toCapitalized(DateFormat(pattern, locale).format(date));
-    }
-
-    String formatDateRange(DateTime start, DateTime end, String pattern) {
-      return "${formatDate(start, pattern)} - ${formatDate(end, pattern)}";
-    }
-
-    switch (_controller.view) {
-      case CalendarView.schedule:
-        return Text(
-          "${context.l10n.schedule} ",
-          style: textStyle,
-        );
-      case CalendarView.day:
-        String dayTitle = dateTimeStart.year == DateTime.now().year
-            ? "${formatDate(dateTimeStart, 'EEEE')}, ${formatDate(dateTimeStart, 'dd')} ${formatDate(dateTimeStart, 'MMM')}"
-            : "${formatDate(dateTimeStart, 'dd')} ${formatDate(dateTimeStart, 'MMMM yyyy')}";
-        return Text(dayTitle, style: textStyle);
-      case CalendarView.week:
-        String weekTitle = dateTimeStart.year == DateTime.now().year
-            ? "${formatDateRange(dateTimeStart, dateTimeEnd, 'dd')} ${formatDate(dateTimeStart, 'MMMM')}"
-            : "${formatDateRange(dateTimeStart, dateTimeEnd, 'dd')} ${formatDate(dateTimeStart, 'MMMM yy')}";
-        return Text(weekTitle, style: textStyle);
-      case CalendarView.month:
-        String monthTitle = formatDate(
-            middleMonthDate,
-            middleMonthDate.year == DateTime.now().year
-                ? 'MMMM '
-                : 'MMMM yyyy ');
-        return Text(monthTitle, style: textStyle);
-      default:
-        String defaultTitle = dateTimeStart.year == DateTime.now().year
-            ? "${formatDateRange(dateTimeStart, dateTimeStart.add(const Duration(days: 6)), 'dd')} ${formatDate(dateTimeStart, 'MMMM')}"
-            : "${formatDateRange(dateTimeStart, dateTimeStart.add(const Duration(days: 6)), 'dd')} ${formatDate(dateTimeStart, 'MMMM yyyy')}";
-        return Text(defaultTitle, style: textStyle);
-    }
   }
 
   Widget _buildDropDownDesktop() {
@@ -2176,8 +2013,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildDropDown(displayDateTimeStart, displayDateTimeEnd,
-                          middleMonthDate),
+                      buildDropDown(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

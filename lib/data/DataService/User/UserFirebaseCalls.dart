@@ -426,7 +426,7 @@ class UserFirebaseCalls {
           .get();
       if ((documentSnapshot.data() as Map<String, dynamic>)
           .containsKey('zoomScale')) {
-        int zoomScale = documentSnapshot.get("zoomScale");
+        var zoomScale = documentSnapshot.get("zoomScale");
         return zoomScale.toDouble();
       } else {
         return 1.0;

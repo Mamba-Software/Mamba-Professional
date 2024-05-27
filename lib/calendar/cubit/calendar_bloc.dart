@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/calendar/models/appointment.dart';
+import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/extensions/context.dart';
+import 'package:mamba/commons/mixins/platform.dart';
+import 'package:mamba/commons/mixins/string.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
@@ -16,7 +20,7 @@ import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/events/cubit/events_bloc.dart';
 part 'calendar_state.dart';
 
-class CalendarBloc extends Cubit<CalendarState> {
+class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   // Blocs
   final BuildContext context;
   final UserBloc userBloc;
@@ -42,10 +46,8 @@ class CalendarBloc extends Cubit<CalendarState> {
   }
   // Brand Information (To be substituted by Brand CUBIT)
 
-  DateTime displayDateTimeStart = DateTime.now();
-  DateTime displayDateTimeEnd = DateTime.now();
-  DateTime middleMonthDate = DateTime.now();
-
+  // Calendar View
+  CalendarView calendarView = CalendarView.week;
   // Horari
   double _startHour = 8.0;
   double _endHour = 22.0;
@@ -74,8 +76,10 @@ class CalendarBloc extends Cubit<CalendarState> {
     // Initial Date Time
     DateTime now = DateTime.now();
     int currentDay = now.weekday;
-    displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
-    displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
+    DateTime startWeekDate = now.subtract(Duration(days: currentDay - 1));
+    DateTime endWeekDate = startWeekDate.add(const Duration(days: 6));
+    List<DateTime> visibleDates = [startWeekDate, endWeekDate];
+    String calendarTitle = getCalendarTitle(calendarView, visibleDates);
 
     // Date Joined Information
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
@@ -88,14 +92,23 @@ class CalendarBloc extends Cubit<CalendarState> {
     difference = _startHour != 0 ? difference + 1 : difference;
     difference = _endHour != 24 ? difference + 1 : difference;
 
+    // User Variables
+    double userZoomScale = 1.33;
+    if (context.isDesktop == false) {
+      await getUserZoomScale();
+    }
+
     // Emit New State
     emit(
       CalendarLoaded(
         canEdit: _checkUserCanEditCalendar(),
         brand: _brand,
         events: eventBloc.eventsList,
-        displayDateTitle: DateTime.now().toString(),
-        calendarView: CalendarView.week,
+        displayDate: DateTime.now(),
+        visibleDates: visibleDates,
+        calendarView: calendarView,
+        calendarTitle: calendarTitle,
+        timeSlotViewScale: userZoomScale,
         startHour: _startHour,
         endHour: _endHour,
         difference: difference,
@@ -105,8 +118,86 @@ class CalendarBloc extends Cubit<CalendarState> {
     );
   }
 
-  Future<void> getMoreBrandEvents(String eventId) async {
-   await eventBloc.getMoreBrandEvents(eventId, _brandTrainers);
+  // Called when the current visible date changes in [SfCalendar].
+  void onViewChanged(List<DateTime> visibleDates) {
+    // Update the Calendar Title;
+    String calendarTitle = getCalendarTitle(calendarView, visibleDates);
+    // Check if More Events should be Fetched
+    getMoreBrandEvents(visibleDates);
+    // Emit New State
+    emit(
+      (state as CalendarLoaded).copyWith(calendarTitle: calendarTitle),
+    );
+  }
+
+  String getCalendarTitle(
+      CalendarView calendarView, List<DateTime> visibleDates) {
+    String displayDateTitle;
+    DateTime dateTimeStart = visibleDates.first;
+    DateTime dateTimeEnd = visibleDates.last;
+    DateTime middleMonthDate = visibleDates[visibleDates.length ~/ 2];
+
+    final String locale = context.languageCode;
+
+    String formatDate(DateTime date, String pattern) {
+      return toCapitalized(DateFormat(pattern, locale).format(date));
+    }
+
+    String formatDateRange(DateTime start, DateTime end, String pattern) {
+      return "${formatDate(start, pattern)} - ${formatDate(end, pattern)}";
+    }
+
+    switch (calendarView) {
+      case CalendarView.schedule:
+        displayDateTitle = "${context.l10n.schedule} ";
+        break;
+      case CalendarView.day:
+        displayDateTitle = dateTimeStart.year == DateTime.now().year
+            ? "${formatDate(dateTimeStart, 'EEEE')}, ${formatDate(dateTimeStart, 'dd')} ${formatDate(dateTimeStart, 'MMM')}"
+            : "${formatDate(dateTimeStart, 'dd')} ${formatDate(dateTimeStart, 'MMMM yyyy')}";
+        break;
+      case CalendarView.week:
+        displayDateTitle = dateTimeStart.year == DateTime.now().year
+            ? "${formatDateRange(dateTimeStart, dateTimeEnd, 'dd')} ${formatDate(dateTimeStart, 'MMMM')}"
+            : "${formatDateRange(dateTimeStart, dateTimeEnd, 'dd')} ${formatDate(dateTimeStart, 'MMMM yy')}";
+        break;
+      case CalendarView.month:
+        displayDateTitle = formatDate(middleMonthDate,
+            middleMonthDate.year == DateTime.now().year ? 'MMMM' : 'MMMM yyyy');
+        break;
+      default:
+        displayDateTitle = dateTimeStart.year == DateTime.now().year
+            ? "${formatDateRange(dateTimeStart, dateTimeStart.add(const Duration(days: 6)), 'dd')} ${formatDate(dateTimeStart, 'MMMM')}"
+            : "${formatDateRange(dateTimeStart, dateTimeStart.add(const Duration(days: 6)), 'dd')} ${formatDate(dateTimeStart, 'MMMM yyyy')}";
+        break;
+    }
+
+    return displayDateTitle;
+  }
+
+  void getMoreBrandEvents(List<DateTime> visibleDates) async {
+    List<Event> eventsList = eventBloc.eventsList;
+    if (eventsList.isNotEmpty) {
+      var startDateLastEvent = DateTime(
+        int.parse(eventsList.first.year!),
+        int.parse(eventsList.first.month!),
+        int.parse(eventsList.first.day!),
+        int.parse(eventsList.first.hour!),
+        int.parse(eventsList.first.minute!),
+      );
+      DateTime firstVisibleDate = visibleDates.first;
+      int difference = firstVisibleDate.difference(startDateLastEvent).inDays;
+      if (difference < 60) {
+        await eventBloc.getMoreBrandEvents(eventsList.first.id!, _brandTrainers);
+      }
+    }
+  }
+
+  Future<double> getUserZoomScale() async {
+    return await _userDataService.getUserZoomScale(
+      brandBloc.brandId,
+      userBloc.userId,
+    );
   }
 
   void updateUserZoomScale(double timeSlotViewScale) {
