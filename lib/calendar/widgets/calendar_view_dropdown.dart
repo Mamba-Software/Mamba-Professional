@@ -47,6 +47,7 @@ class _CalendarViewDropdownState extends State<CalendarViewDropdown> {
       ),
       child: Center(
         child: DropdownButtonFormField<CalendarView>(
+          alignment: Alignment.bottomCenter,
           value: dropdownValue,
           icon: Icon(Icons.keyboard_arrow_down),
           decoration: InputDecoration(
