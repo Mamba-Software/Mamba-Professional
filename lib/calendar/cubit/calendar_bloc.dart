@@ -93,7 +93,7 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     difference = _endHour != 24 ? difference + 1 : difference;
 
     // User Variables
-    double userZoomScale = 1.33;
+    double userZoomScale = 1.50;
     if (context.isDesktop == false) {
       await getUserZoomScale();
     }

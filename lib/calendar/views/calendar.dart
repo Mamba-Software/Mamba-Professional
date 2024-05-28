@@ -1,9 +1,7 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
 import 'package:mamba/calendar/widgets/calendar_view_dropdown.dart';
@@ -12,22 +10,14 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/mixins/string.dart';
-import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba/data/DataService/Event/EventDataService.dart';
-import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/events/crud_events/views/mobile/AddorEdtiEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
-import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
-import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
-import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
-import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
@@ -35,8 +25,6 @@ import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 class Calendar extends StatefulWidget {
@@ -59,7 +47,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 
   // Calendar Controller
-  final CalendarController _controller = CalendarController();
+  final CalendarController _calendarController = CalendarController();
 
   // Zoom Gesture Detector
   double _timeSlotViewZoom = -1;
@@ -69,9 +57,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   // Dial Open / Add More Session
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
-  // DropDown Calendar View
-  String selectedValue = '2';
-  var items = ['0', '1', '2', '3', '4', '5', '6'];
 
   @override
   void initState() {
@@ -87,6 +72,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 appBarExpanded = false;
               }),
       );
+    // Start Week View
+    _calendarController.view = CalendarView.week;
   }
 
   // Add Event / Navigate To Event Functions
@@ -126,7 +113,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   Future<void> navigateToEventScreen(String eventId, bool isCompleted) async {
     mixpanel!.track('brand_calendar_event_view', properties: {
-      'Calendar View': _controller.view.toString(),
+      'Calendar View': _calendarController.view.toString(),
       'isCompleted': isCompleted
     });
     // Navigate to Event Screen
@@ -144,8 +131,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   //// UI Interaction Functions ////////////////////////////////////////////////////
 
   void onCalendarStart(double difference, double userZoomScale) {
-    // Start Week View
-    _controller.view = CalendarView.week;
     // The goal of this function is to calculate the height of each HOUR in the calendar. This is calculated depending on the numbers of avaiable hours (HORARI).
     double adjustedHeight;
     // Full screen height
@@ -165,7 +150,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
     _baseTimeSlotViewZoom = adjustedHeight / difference;
     // Make User Call to Get Exact Scale
-    _timeSlotViewScale = userZoomScale;
+    setState(() {      
+      _timeSlotViewScale = userZoomScale;
+    });
     // Setting the Height of each TimeSlot
     _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
   }
@@ -175,9 +162,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 
   void onScaleUpdate(ScaleUpdateDetails scaleUpdateDetails) {
-    if (_controller.view == CalendarView.week ||
-        _controller.view == CalendarView.day) {
-      // Don't update the UI if the scale didn't change
+    if (_calendarController.view == CalendarView.week ||
+        _calendarController.view == CalendarView.day) {
       if (scaleUpdateDetails.scale == 1.0) {
         return;
       }
@@ -193,64 +179,75 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     context.read<CalendarBloc>().updateUserZoomScale(_timeSlotViewScale);
   }
 
+  void onManualScaleUpdate(bool zoom) {
+    if (zoom) {
+      _timeSlotViewScale += 0.25;
+    } else {
+      _timeSlotViewScale -= 0.25;
+    }
+    setState(() {
+      _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
+    });
+    context.read<CalendarBloc>().updateUserZoomScale(_timeSlotViewScale);
+  }
+
   void onViewChanged(ViewChangedDetails viewChangedDetails) {
     context.read<CalendarBloc>().onViewChanged(viewChangedDetails.visibleDates);
   }
 
   void onTapToday() {
-    _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
+    _calendarController.displayDate =
+        DateTime.now().subtract(const Duration(hours: 1));
   }
 
   void onTapForward() {
-    _controller.forward!();
+    _calendarController.forward!();
   }
 
   void onTapBackward() {
-    _controller.backward!();
+    _calendarController.backward!();
   }
 
   void onTapCalendar(CalendarTapDetails details) async {
     // Action Depending on View
-    if (_controller.view == CalendarView.day) {
+    if (_calendarController.view == CalendarView.day) {
       // Select the Date If Possible
-      _controller.selectedDate = details.date;
-    } else if (_controller.view == CalendarView.week) {
+      _calendarController.selectedDate = details.date;
+    } else if (_calendarController.view == CalendarView.week) {
       // Select the Date If Possible
-      selectedValue = '1';
-      _controller.view = CalendarView.day;
-      _controller.selectedDate = details.date;
+      _calendarController.view = CalendarView.day;
+      _calendarController.selectedDate = details.date;
       setState(() {
-        _controller.displayDate =
+        _calendarController.displayDate =
             details.date!.subtract(const Duration(hours: 1));
       });
-    } else if (_controller.view == CalendarView.month) {
-      _controller.displayDate = details.date;
-      _controller.view = CalendarView.day;
-      selectedValue = '1';
-    } else if (_controller.view == CalendarView.schedule) {}
+    } else if (_calendarController.view == CalendarView.month) {
+      _calendarController.displayDate = details.date;
+      _calendarController.view = CalendarView.day;
+    } else if (_calendarController.view == CalendarView.schedule) {}
   }
 
   void onLongPressCalendar(
       CalendarLongPressDetails details, bool canEdit) async {
     // Action Depending on View
-    if (_controller.view == CalendarView.day) {
+    if (_calendarController.view == CalendarView.day) {
       // Select the Date If Possible
       if (details.date!.isAfter(DateTime.now()) && canEdit) {
         setState(() {
-          _controller.selectedDate = details.date;
+          _calendarController.selectedDate = details.date;
           isDialOpen.value = true;
         });
       }
-    } else if (_controller.view == CalendarView.week) {
+    } else if (_calendarController.view == CalendarView.week) {
       // Select the Date If Possible
       if (details.date!.isAfter(DateTime.now()) && canEdit) {
         setState(() {
-          _controller.selectedDate = details.date;
+          _calendarController.selectedDate = details.date;
           isDialOpen.value = true;
         });
       }
-    } else if (_controller.view == CalendarView.month) {
-    } else if (_controller.view == CalendarView.schedule) {}
+    } else if (_calendarController.view == CalendarView.month) {
+    } else if (_calendarController.view == CalendarView.schedule) {}
   }
 
 ////// UI Interaction Functions ////////////////////////////////////////////////////
@@ -369,11 +366,14 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                 ),
                                 SizedBox(width: defaultPadding),
                                 CalendarViewDropdown(
-                                  initialView: CalendarView.week,
+                                  view: _calendarController.view!,
                                   onViewChanged: (CalendarView newView) {
-                                    // Handle view change
-                                    print('Selected view: $newView');
+                                    setState(() {
+                                      _calendarController.view = newView;
+                                    });
                                   },
+                                  zoom: _timeSlotViewScale,
+                                  onZoomToogled: onManualScaleUpdate,
                                 ),
                                 SizedBox(width: defaultPadding),
                                 AppBarIcon(
@@ -562,11 +562,12 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                 ),
                                 SizedBox(width: defaultPadding),
                                 CalendarViewDropdown(
-                                  initialView: CalendarView.week,
+                                  view: CalendarView.week,
                                   onViewChanged: (CalendarView newView) {
-                                    // Handle view change
-                                    print('Selected view: $newView');
+                                    _calendarController.view = newView;
                                   },
+                                  zoom: _timeSlotViewScale,
+                                  onZoomToogled: onManualScaleUpdate,
                                 ),
                                 SizedBox(width: defaultPadding),
                                 AppBarIcon(
@@ -684,7 +685,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
       ),
       child: SfCalendar(
         // Controller
-        controller: _controller,
+        controller: _calendarController,
         // Blackout Dates
         blackoutDates: [dateJoined],
         blackoutDatesTextStyle: context.textTheme.titleMedium,
@@ -779,7 +780,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
           );
         },
         // Style
-        selectionDecoration: _controller.view == CalendarView.month
+        selectionDecoration: _calendarController.view == CalendarView.month
             ? BoxDecoration(
                 color: Colors.transparent,
                 border: Border.all(width: 1, color: Colors.transparent),
@@ -807,8 +808,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   Widget whichFloatingActionButton(bool canEdit) {
     Widget zoomWidget() {
-      return _controller.view == CalendarView.week ||
-              _controller.view == CalendarView.day
+      return _calendarController.view == CalendarView.week ||
+              _calendarController.view == CalendarView.day
           ? Padding(
               padding: isAndroid
                   ? EdgeInsets.symmetric(
@@ -890,8 +891,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                         if (context.read<CrudEventCubit>().state.isWorking >=
                             100) {
                           DateTime? eventDate = DateTime.now();
-                          if (_controller.selectedDate != null) {
-                            eventDate = _controller.selectedDate;
+                          if (_calendarController.selectedDate != null) {
+                            eventDate = _calendarController.selectedDate;
                           }
                           _addEvent(eventDate!, false);
                         } else {
@@ -933,8 +934,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                         if (context.read<CrudEventCubit>().state.isWorking >=
                             100) {
                           DateTime? eventDate = DateTime.now();
-                          if (_controller.selectedDate != null) {
-                            eventDate = _controller.selectedDate;
+                          if (_calendarController.selectedDate != null) {
+                            eventDate = _calendarController.selectedDate;
                           }
                           _addEvent(eventDate!, true);
                         } else {
@@ -954,385 +955,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         : Container();
   }
 
-  Widget buildDropDown() {
-    return Container(
-      color: AppColors.darkGrey,
-      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.00),
-      child: DropdownButton2(
-        // Initial Value
-        value: selectedValue,
-        style:
-            context.textTheme.headlineMedium?.copyWith(color: AppColors.white),
-        underline: Container(color: Colors.transparent),
-        isExpanded: false,
-        // Array list of items
-        selectedItemBuilder: (BuildContext context) {
-          return items.map((String item) {
-            return Container(
-              alignment: Alignment.centerRight,
-              child: Row(
-                children: [
-                  Text(
-                    "state.calendarTitle",
-                    style: context.textTheme.headlineMedium
-                        ?.copyWith(color: AppColors.white),
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.015),
-                  FaIcon(
-                    FontAwesomeIcons.chevronDown,
-                    size: iconSizeSmall,
-                    color: AppColors.white,
-                  ),
-                ],
-              ),
-            );
-          }).toList();
-        },
-        items: [
-          DropdownMenuItem(
-              value: '0',
-              child: Container(
-                constraints: BoxConstraints(
-                  minWidth: MediaQuery.of(context).size.width * 0.5,
-                ),
-                child: ListTile(
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
-                  leading: Icon(Icons.view_agenda_outlined,
-                      size: MediaQuery.of(context).size.width * 0.06,
-                      color: context.colorScheme.primary),
-                  title: Text(
-                    context.l10n.schedule,
-                    style: context.textTheme.bodyLarge,
-                  ),
-                  trailing: FaIcon(
-                    FontAwesomeIcons.check,
-                    size: MediaQuery.of(context).size.width * 0.04,
-                    color: selectedValue == '0'
-                        ? context.colorScheme.primary
-                        : Colors.transparent,
-                  ),
-                ),
-              )),
-          const DropdownMenuItem<Divider>(
-            enabled: false,
-            child: Divider(color: AppColors.grey, height: 2),
-          ),
-          DropdownMenuItem(
-              value: '1',
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.zero,
-                minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
-                leading: Icon(Icons.view_day_outlined,
-                    size: MediaQuery.of(context).size.width * 0.06,
-                    color: context.colorScheme.primary),
-                title: Text(
-                  context.l10n.day,
-                  style: context.textTheme.bodyLarge,
-                ),
-                trailing: FaIcon(
-                  FontAwesomeIcons.check,
-                  size: MediaQuery.of(context).size.width * 0.04,
-                  color: selectedValue == '1'
-                      ? context.colorScheme.primary
-                      : Colors.transparent,
-                ),
-              )),
-          const DropdownMenuItem<Divider>(
-            enabled: false,
-            child: Divider(color: AppColors.grey, height: 2),
-          ),
-          DropdownMenuItem(
-              value: '2',
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.zero,
-                minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
-                leading: Icon(Icons.calendar_view_week,
-                    size: MediaQuery.of(context).size.width * 0.06,
-                    color: context.colorScheme.primary),
-                title: Text(
-                  context.l10n.week,
-                  style: context.textTheme.bodyLarge,
-                ),
-                trailing: FaIcon(
-                  FontAwesomeIcons.check,
-                  size: MediaQuery.of(context).size.width * 0.04,
-                  color: selectedValue == '2'
-                      ? context.colorScheme.primary
-                      : Colors.transparent,
-                ),
-              )),
-          const DropdownMenuItem<Divider>(
-            enabled: false,
-            child: Divider(color: AppColors.grey, height: 2),
-          ),
-          DropdownMenuItem(
-              value: '3',
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.zero,
-                minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
-                leading: Icon(Icons.calendar_view_month,
-                    size: MediaQuery.of(context).size.width * 0.06,
-                    color: context.colorScheme.primary),
-                title: Text(
-                  context.l10n.month,
-                  style: context.textTheme.bodyLarge,
-                ),
-                trailing: FaIcon(
-                  FontAwesomeIcons.check,
-                  size: MediaQuery.of(context).size.width * 0.04,
-                  color: selectedValue == '3'
-                      ? context.colorScheme.primary
-                      : Colors.transparent,
-                ),
-              )),
-        ],
-        // Down Arrow Icon
-        iconStyleData: IconStyleData(
-          icon: const FaIcon(FontAwesomeIcons.chevronDown,
-              color: Colors.transparent),
-          iconSize: MediaQuery.of(context).size.width * 0.03,
-          iconEnabledColor: Colors.transparent,
-          iconDisabledColor: Colors.transparent,
-        ),
-        // Drop Down Style
-        dropdownStyleData: DropdownStyleData(
-            maxHeight: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width * 0.5,
-            decoration: BoxDecoration(
-              color: context.theme.scaffoldBackgroundColor,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(15),
-              ),
-            ),
-            offset: const Offset(0, 0),
-            elevation: 4),
-        menuItemStyleData: MenuItemStyleData(
-          height: 40,
-          customHeights: [
-            MediaQuery.of(context).size.height * 0.06,
-            8,
-            MediaQuery.of(context).size.height * 0.06,
-            8,
-            MediaQuery.of(context).size.height * 0.06,
-            8,
-            MediaQuery.of(context).size.height * 0.06,
-          ],
-          padding: const EdgeInsets.only(left: 14, right: 14),
-        ),
-        // After selecting the desired option,it will
-        // change button value to selected value
-        onChanged: (newValue) {
-          if (newValue == '0') {
-            _controller.view = CalendarView.schedule;
-          } else if (newValue == '1') {
-            _controller.view = CalendarView.day;
-          } else if (newValue == '2') {
-            _controller.view = CalendarView.week;
-          } else if (newValue == '3') {
-            _controller.view = CalendarView.month;
-          }
-          setState(() {
-            selectedValue = newValue.toString();
-          });
-        },
-      ),
-    );
-  }
-
-  Widget _buildDropDownDesktop() {
-    double dropdownWidth = 250;
-    final List<String> items = ['0', '1', '2', '3'];
-
-    final Map<String, String> itemLabels = {
-      '0': context.l10n.schedule,
-      '1': context.l10n.day,
-      '2': context.l10n.week,
-      '3': context.l10n.month,
-    };
-    return Container(
-      height: 45,
-      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-      decoration: BoxDecoration(
-        color: context.colorScheme.background,
-        border: Border.all(
-          width: 1,
-          color: context.theme.dividerColor,
-        ),
-        borderRadius: BorderRadius.circular(
-          borderRadiusSmall,
-        ),
-      ),
-      child: Center(
-        child: DropdownButton2(
-          // Initial Value
-          value: selectedValue,
-          style: context.textTheme.bodyLarge,
-          underline: Container(color: Colors.transparent),
-          isDense: true,
-          // Array list of items
-          selectedItemBuilder: (BuildContext context) {
-            return items.map((String item) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    itemLabels[item]!,
-                    style: context.textTheme.bodyLarge,
-                  ),
-                  SizedBox(width: defaultPaddingSmall),
-                ],
-              );
-            }).toList();
-          },
-          items: [
-            DropdownMenuItem(
-              value: '0',
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                splashColor: context.theme.scaffoldBackgroundColor,
-                hoverColor: Colors.red,
-                focusColor: context.theme.scaffoldBackgroundColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                leading: Icon(
-                  Icons.view_agenda_outlined,
-                  size: iconSize,
-                  color: context.colorScheme.primary,
-                ),
-                title: Text(
-                  context.l10n.schedule,
-                  style: context.textTheme.bodyLarge,
-                ),
-                trailing: FaIcon(
-                  FontAwesomeIcons.check,
-                  size: iconSizeSmall,
-                  color: selectedValue == '0'
-                      ? context.colorScheme.primary
-                      : Colors.transparent,
-                ),
-              ),
-            ),
-            DropdownMenuItem(
-              value: '1',
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                splashColor: context.theme.scaffoldBackgroundColor,
-                hoverColor: context.theme.scaffoldBackgroundColor,
-                focusColor: context.theme.scaffoldBackgroundColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadiusSmall),
-                ),
-                leading: Icon(Icons.view_day_outlined,
-                    size: iconSize, color: context.colorScheme.primary),
-                title: Text(
-                  context.l10n.day,
-                  style: context.textTheme.bodyLarge,
-                ),
-                trailing: FaIcon(
-                  FontAwesomeIcons.check,
-                  size: iconSizeSmall,
-                  color: selectedValue == '1'
-                      ? context.colorScheme.primary
-                      : Colors.transparent,
-                ),
-              ),
-            ),
-            DropdownMenuItem(
-              value: '2',
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                splashColor: context.theme.scaffoldBackgroundColor,
-                hoverColor: context.theme.scaffoldBackgroundColor,
-                focusColor: context.theme.scaffoldBackgroundColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadiusSmall),
-                ),
-                leading: Icon(Icons.calendar_view_week,
-                    size: iconSize, color: context.colorScheme.primary),
-                title: Text(
-                  context.l10n.week,
-                  style: context.textTheme.bodyLarge,
-                ),
-                trailing: FaIcon(
-                  FontAwesomeIcons.check,
-                  size: iconSizeSmall,
-                  color: selectedValue == '2'
-                      ? context.colorScheme.primary
-                      : Colors.transparent,
-                ),
-              ),
-            ),
-            DropdownMenuItem(
-              value: '3',
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                splashColor: context.theme.scaffoldBackgroundColor,
-                hoverColor: context.theme.scaffoldBackgroundColor,
-                focusColor: context.theme.scaffoldBackgroundColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadiusSmall),
-                ),
-                leading: Icon(Icons.calendar_view_month,
-                    size: iconSize, color: context.colorScheme.primary),
-                title: Text(
-                  context.l10n.month,
-                  style: context.textTheme.bodyLarge,
-                ),
-                trailing: FaIcon(
-                  FontAwesomeIcons.check,
-                  size: iconSizeSmall,
-                  color: selectedValue == '3'
-                      ? context.colorScheme.primary
-                      : Colors.transparent,
-                ),
-              ),
-            ),
-          ],
-          // Down Arrow Icon
-          iconStyleData: IconStyleData(
-            icon: const FaIcon(FontAwesomeIcons.chevronDown),
-            iconSize: iconSizeSmall,
-          ),
-          // Drop Down Style
-          dropdownStyleData: DropdownStyleData(
-            maxHeight: dropdownWidth,
-            width: dropdownWidth,
-            padding: EdgeInsets.all(defaultPaddingSmall),
-            decoration: BoxDecoration(
-              color: context.colorScheme.background,
-              borderRadius: BorderRadius.all(
-                Radius.circular(borderRadiusSmall),
-              ),
-            ),
-            offset: Offset(-defaultPadding, -defaultPadding),
-            elevation: 4,
-          ),
-          onChanged: (newValue) {
-            if (newValue == '0') {
-              _controller.view = CalendarView.schedule;
-            } else if (newValue == '1') {
-              _controller.view = CalendarView.day;
-            } else if (newValue == '2') {
-              _controller.view = CalendarView.week;
-            } else if (newValue == '3') {
-              _controller.view = CalendarView.month;
-            }
-            setState(() {
-              selectedValue = newValue.toString();
-            });
-          },
-        ),
-      ),
-    );
-  }
-
   Widget _buildEventContainer(
       CalendarAppointmentDetails details, List<Event> eventsList) {
     final Appointment appointment = details.appointments.first;
@@ -1341,7 +963,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     final Event event = eventsList.firstWhere(
       (event) => event.id == appointment.id.toString(),
     );
-    if (_controller.view == CalendarView.day) {
+    if (_calendarController.view == CalendarView.day) {
       return GestureDetector(
         onTap: () {
           navigateToEventScreen(appointment.id.toString(), isCompleted);
@@ -1733,7 +1355,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
           }),
         ),
       );
-    } else if (_controller.view == CalendarView.week) {
+    } else if (_calendarController.view == CalendarView.week) {
       return GestureDetector(
         onTap: () {
           navigateToEventScreen(appointment.id.toString(), isCompleted);
@@ -1796,7 +1418,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
           }),
         ),
       );
-    } else if (_controller.view == CalendarView.month) {
+    } else if (_calendarController.view == CalendarView.month) {
       return Container(
         height: details.bounds.height,
         width: details.bounds.width,
@@ -1826,7 +1448,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
           ],
         ),
       );
-    } else if (_controller.view == CalendarView.schedule) {
+    } else if (_calendarController.view == CalendarView.schedule) {
       return GestureDetector(
         onTap: () {
           navigateToEventScreen(appointment.id.toString(), isCompleted);
@@ -2013,7 +1635,11 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      buildDropDown(),
+                      Text(
+                        "state.calendarTitle",
+                        style: context.textTheme.headlineMedium
+                            ?.copyWith(color: AppColors.white),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -2021,8 +1647,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                             onPressed: () {
                               mixpanel!.track('brand_calendar_today');
                               setState(() {
-                                //_controller.selectedDate = DateTime.now();
-                                _controller.displayDate = DateTime.now()
+                                //_calendarController.selectedDate = DateTime.now();
+                                _calendarController.displayDate = DateTime.now()
                                     .subtract(const Duration(hours: 1));
                               });
                             },
