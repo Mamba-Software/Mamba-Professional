@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
+import 'package:mamba/calendar/widgets/calendar_action_button.dart';
 import 'package:mamba/calendar/widgets/calendar_view_dropdown.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
@@ -55,9 +56,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   double _timeSlotViewScale = 1;
   double _baseTimeSlotViewScale = 1;
 
-  // Dial Open / Add More Session
-  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
-
   @override
   void initState() {
     super.initState();
@@ -78,6 +76,22 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   // Add Event / Navigate To Event Functions
 
+  void onCreateEventTap(bool isPrivate) {
+    if (context.read<CrudEventCubit>().state.isWorking >= 100) {
+      DateTime? eventDate = DateTime.now();
+      if (_calendarController.selectedDate != null) {
+        eventDate = _calendarController.selectedDate;
+      }
+      _addEvent(eventDate!, isPrivate);
+    } else {
+      CustomSnackbar snackbar = CustomSnackbar(
+        type: SnackbarType.error,
+        message: context.l10n.processOnWork,
+      );
+      context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+    }
+  }
+
   Future<void> _addEvent(DateTime dateTime, bool isPrivate) async {
     context.read<CrudEventCubit>().resetNewEvent();
     context.read<CrudEventCubit>().createNewEvent(dateTime, isPrivate);
@@ -86,10 +100,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     } else {
       mixpanel!.track('brand_calendar_plan_event',
           properties: {'isPrivate': isPrivate});
-      // Date Time
-      DateTime eventDate = DateTime.now();
-      eventDate =
-          DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour);
       // Navigate to Add or Edit Event
       Navigator.push(
           context,
@@ -150,7 +160,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
     _baseTimeSlotViewZoom = adjustedHeight / difference;
     // Make User Call to Get Exact Scale
-    setState(() {      
+    setState(() {
       _timeSlotViewScale = userZoomScale;
     });
     // Setting the Height of each TimeSlot
@@ -191,7 +201,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     context.read<CalendarBloc>().updateUserZoomScale(_timeSlotViewScale);
   }
 
-  void onViewChanged(ViewChangedDetails viewChangedDetails) {
+  void onCalendarViewChanged(CalendarView newView) {
+    setState(() {
+      _calendarController.view = newView;
+    });
+  }
+
+  void onCalendarDateChanged(ViewChangedDetails viewChangedDetails) {
     context.read<CalendarBloc>().onViewChanged(viewChangedDetails.visibleDates);
   }
 
@@ -235,7 +251,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
       if (details.date!.isAfter(DateTime.now()) && canEdit) {
         setState(() {
           _calendarController.selectedDate = details.date;
-          isDialOpen.value = true;
+          //isDialOpen.value = true;
         });
       }
     } else if (_calendarController.view == CalendarView.week) {
@@ -243,7 +259,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
       if (details.date!.isAfter(DateTime.now()) && canEdit) {
         setState(() {
           _calendarController.selectedDate = details.date;
-          isDialOpen.value = true;
+          //isDialOpen.value = true;
         });
       }
     } else if (_calendarController.view == CalendarView.month) {
@@ -367,11 +383,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                 SizedBox(width: defaultPadding),
                                 CalendarViewDropdown(
                                   view: _calendarController.view!,
-                                  onViewChanged: (CalendarView newView) {
-                                    setState(() {
-                                      _calendarController.view = newView;
-                                    });
-                                  },
+                                  onViewChanged: onCalendarViewChanged,
                                   zoom: _timeSlotViewScale,
                                   onZoomToogled: onManualScaleUpdate,
                                 ),
@@ -473,7 +485,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 ],
               ],
             ),
-            floatingActionButton: whichFloatingActionButton(state.canEdit),
+            floatingActionButton: CalendarActionButton(
+              onCreateEventTap: onCreateEventTap,
+            ),
           );
         } else {
           return Scaffold(
@@ -563,9 +577,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                                 SizedBox(width: defaultPadding),
                                 CalendarViewDropdown(
                                   view: CalendarView.week,
-                                  onViewChanged: (CalendarView newView) {
-                                    _calendarController.view = newView;
-                                  },
+                                  onViewChanged: onCalendarViewChanged,
                                   zoom: _timeSlotViewScale,
                                   onZoomToogled: onManualScaleUpdate,
                                 ),
@@ -666,7 +678,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         todayHighlightColor: context.colorScheme.primary,
         viewHeaderBackgroundColor: context.colorScheme.background,
         weekNumberBackgroundColor: context.colorScheme.background,
-        allDayPanelColor: context.theme.scaffoldBackgroundColor,
+        allDayPanelColor: context.colorScheme.background,
         // Text Styles
         todayTextStyle: context.textTheme.bodyLarge,
         agendaDayTextStyle: context.textTheme.bodyLarge,
@@ -795,7 +807,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                   Radius.circular(5.0),
                 ),
               ),
-        onViewChanged: onViewChanged,
+        onViewChanged: onCalendarDateChanged,
         onTap: onTapCalendar,
         appointmentTextStyle: context.textTheme.bodyMedium!,
         appointmentBuilder:
@@ -807,6 +819,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 
   Widget whichFloatingActionButton(bool canEdit) {
+    return Container();
     Widget zoomWidget() {
       return _calendarController.view == CalendarView.week ||
               _calendarController.view == CalendarView.day
@@ -841,8 +854,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
           : Container();
     }
 
-    // TODO: Harcdoded
-    canEdit = false;
+    /*
     return canEdit
         ? Padding(
             padding: isAndroid
@@ -863,48 +875,49 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                 openCloseDial: isDialOpen,
                 children: [
                   SpeedDialChild(
-                      child: const Icon(
-                        Icons.groups,
+                    child: const Icon(
+                      Icons.groups,
+                    ),
+                    elevation: 10,
+                    backgroundColor: context.colorScheme.background,
+                    labelWidget: Container(
+                      color: Colors.transparent,
+                      padding: EdgeInsets.only(
+                          right: MediaQuery.of(context).size.width * 0.05),
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(context.l10n.groupEvent,
+                              style: context.textTheme.displaySmall,
+                              textAlign: TextAlign.right),
+                          Text(context.l10n.groupEventDesc,
+                              style: context.textTheme.bodyMedium,
+                              textAlign: TextAlign.right),
+                        ],
                       ),
-                      elevation: 10,
-                      backgroundColor: context.colorScheme.background,
-                      labelWidget: Container(
-                        color: Colors.transparent,
-                        padding: EdgeInsets.only(
-                            right: MediaQuery.of(context).size.width * 0.05),
-                        height: MediaQuery.of(context).size.height * 0.1,
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(context.l10n.groupEvent,
-                                style: context.textTheme.displaySmall,
-                                textAlign: TextAlign.right),
-                            Text(context.l10n.groupEventDesc,
-                                style: context.textTheme.bodyMedium,
-                                textAlign: TextAlign.right),
-                          ],
-                        ),
-                      ),
-                      onTap: () {
-                        if (context.read<CrudEventCubit>().state.isWorking >=
-                            100) {
-                          DateTime? eventDate = DateTime.now();
-                          if (_calendarController.selectedDate != null) {
-                            eventDate = _calendarController.selectedDate;
-                          }
-                          _addEvent(eventDate!, false);
-                        } else {
-                          CustomSnackbar snackbar = CustomSnackbar(
-                            type: SnackbarType.error,
-                            message: context.l10n.processOnWork,
-                          );
-                          context
-                              .read<SnackbarCubit>()
-                              .enqueueSnackbarAction(snackbar);
+                    ),
+                    onTap: () {
+                      if (context.read<CrudEventCubit>().state.isWorking >=
+                          100) {
+                        DateTime? eventDate = DateTime.now();
+                        if (_calendarController.selectedDate != null) {
+                          eventDate = _calendarController.selectedDate;
                         }
-                      }),
+                        _addEvent(eventDate!, false);
+                      } else {
+                        CustomSnackbar snackbar = CustomSnackbar(
+                          type: SnackbarType.error,
+                          message: context.l10n.processOnWork,
+                        );
+                        context
+                            .read<SnackbarCubit>()
+                            .enqueueSnackbarAction(snackbar);
+                      }
+                    },
+                  ),
                   SpeedDialChild(
                       child: const Icon(
                         Icons.person,
@@ -953,6 +966,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
             ),
           )
         : Container();
+        */
   }
 
   Widget _buildEventContainer(

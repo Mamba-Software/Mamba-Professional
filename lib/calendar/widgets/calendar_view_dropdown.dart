@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba/commons/constants/constants.dart';
@@ -48,6 +47,7 @@ class _CalendarViewDropdownState extends State<CalendarViewDropdown> {
   @override
   void didUpdateWidget(CalendarViewDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
+    dropdownValue = widget.view;
     zoomValue = widget.zoom;
     zoomValueMin = ((zoomValue * 100)-25); 
     zoomValueMax = ((zoomValue * 100)+25); 
