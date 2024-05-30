@@ -9,7 +9,7 @@ import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/stripe/models/user_stripe_model.dart';
 import 'package:mamba/stripe/views/StripeWebView.dart';

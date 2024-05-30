@@ -5,10 +5,6 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/settings/data/settings_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-extension AppLocalizationsX on BuildContext {
-  AppLocalizations get l10n => AppLocalizations.of(this)!;
-}
-
 class LanguageState extends Equatable {
   final Locale locale;
   const LanguageState(this.locale);

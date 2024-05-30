@@ -1,58 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
-import 'package:mamba/home/models/home_navigation_page.dart';
+import 'package:mamba/commons/extensions/context.dart';
+import 'package:mamba/home/models/home_nav_page.dart';
 
-mixin HomeTileMixin {  
-  
+mixin HomeTileMixin {
   // Function to select the icon to load
-  Widget returnLeadingIcon(BuildContext context, HomeNavigationPage page) {
+  Widget returnLeadingIcon(BuildContext context, HomeNavigationPage page,
+      [double? size]) {
     Color color = context.theme.primaryColor;
+    double iconSize = size ?? 20;
     switch (page) {
       case HomeNavigationPage.BOOKINGS:
         return Icon(
           Icons.calendar_month_outlined,
           color: color,
+          size: iconSize,
         );
       case HomeNavigationPage.PAYMENTS:
         return Icon(
           Icons.credit_card_outlined,
           color: color,
+          size: iconSize,
         );
       case HomeNavigationPage.STATS:
         return Icon(
           Icons.leaderboard_outlined,
           color: color,
+          size: iconSize,
         );
       case HomeNavigationPage.RATES:
         return Icon(
           Icons.confirmation_number_outlined,
           color: color,
+          size: iconSize,
         );
       case HomeNavigationPage.CLIENTS:
         return Icon(
           Icons.group_outlined,
           color: color,
+          size: iconSize,
         );
       case HomeNavigationPage.STAFF:
         return Icon(
           Icons.badge_outlined,
           color: color,
+          size: iconSize,
         );
       case HomeNavigationPage.INFO:
         return Icon(
           Icons.tune_outlined,
           color: color,
+          size: iconSize,
         );
       case HomeNavigationPage.IMAGES:
         return Icon(
           Icons.collections_outlined,
           color: color,
+          size: iconSize,
         );
       case HomeNavigationPage.LOCATIONS:
         return Icon(
           Icons.room_outlined,
           color: color,
+          size: iconSize,
         );
       case HomeNavigationPage.PLAN:
         return Container();
@@ -60,64 +70,13 @@ mixin HomeTileMixin {
   }
 
   // Function to select the icon to load
-  Widget returnSelectedIcon(BuildContext context, HomeNavigationPage page) {
-    Color color = context.theme.primaryColor;
-    switch (page) {
-      case HomeNavigationPage.BOOKINGS:
-        return Icon(
-          Icons.calendar_month_outlined,
-          color: color,
-        );
-      case HomeNavigationPage.PAYMENTS:
-        return Icon(
-          Icons.credit_card_outlined,
-          color: color,
-        );
-      case HomeNavigationPage.STATS:
-        return Icon(
-          Icons.leaderboard_outlined,
-          color: color,
-        );
-      case HomeNavigationPage.RATES:
-        return Icon(
-          Icons.confirmation_number_outlined,
-          color: color,
-        );
-      case HomeNavigationPage.CLIENTS:
-        return Icon(
-          Icons.group_outlined,
-          color: color,
-        );
-      case HomeNavigationPage.STAFF:
-        return Icon(
-          Icons.badge_outlined,
-          color: color,
-        );
-      case HomeNavigationPage.INFO:
-        return Icon(
-          Icons.tune_outlined,
-          color: color,
-        );
-      case HomeNavigationPage.IMAGES:
-        return Icon(
-          Icons.collections_outlined,
-          color: color,
-        );
-      case HomeNavigationPage.LOCATIONS:
-        return Icon(
-          Icons.room_outlined,
-          color: color,
-        );
-      case HomeNavigationPage.PLAN:
-        return Container();
-    }
-  }
-
-  // Function to select the icon to load
-  Widget returnTextWidget(BuildContext context, HomeNavigationPage page) {
+  Widget returnTextWidget(BuildContext context, HomeNavigationPage page,
+      [TextStyle? textStyle]) {
     Color color = context.theme.primaryColor;
     TextStyle style = context.textTheme.bodyLarge!.copyWith(color: color);
-
+    if (textStyle != null) {
+      style = textStyle.copyWith(color: color);
+    }
     switch (page) {
       case HomeNavigationPage.BOOKINGS:
         return Text(
@@ -168,5 +127,4 @@ mixin HomeTileMixin {
         return Container();
     }
   }
-
 }

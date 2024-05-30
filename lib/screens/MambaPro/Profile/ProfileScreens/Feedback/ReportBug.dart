@@ -7,7 +7,7 @@ import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 // Report a Bug Widget.
 class ReportBug extends StatefulWidget {

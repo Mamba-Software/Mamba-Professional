@@ -5,7 +5,7 @@ import 'package:mamba/events/crud_events/widgets/mobile/DateTime/DurationEvent/D
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class DurationEventSelector extends StatelessWidget {
   final Locale locale;

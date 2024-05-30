@@ -5,17 +5,21 @@ import 'package:mamba/snackbar/models/snackbar_type.dart';
 class CustomSnackbar extends Equatable {
   final SnackbarType type;
   final String message;        
+  final IconData? icon;
+  final Color? color;  
   final VoidCallback? onAccept;
   final String? actionText;
 
   const CustomSnackbar({
-    required this.type,
-    required this.message,        
+    required this.type, 
+    required this.message,  
+    this.icon, 
+    this.color,           
     this.onAccept,
     this.actionText,
   });
 
   @override
   List<Object?> get props =>
-      [type, message, onAccept, actionText];
+      [type, icon, color, message, onAccept, actionText];
 }

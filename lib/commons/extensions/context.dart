@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 extension BuildContextX on BuildContext {
+  
   // MediaQuery data
   MediaQueryData get mediaQuery => MediaQuery.of(this);
   // Existing size getter
@@ -22,7 +24,10 @@ extension BuildContextX on BuildContext {
   // Check if the device is a desktop (Assuming width >= 1200 is a desktop)
   bool get isDesktop => MediaQuery.of(this).size.width >= 1200;
 
-  // Managers
+  // App Localizations
+  AppLocalizations get l10n => AppLocalizations.of(this)!;
+  String get languageCode => Localizations.localeOf(this).languageCode;
+  
   
   
 }

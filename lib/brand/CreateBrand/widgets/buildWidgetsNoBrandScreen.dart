@@ -3,17 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/brand/CreateBrand/views/mobile/RegistrarMarca.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/QRCode/QRScanner.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba/screens/MambaPro/Profile/Profile.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 Widget buildUserPicture(
     BuildContext context, double safeAreaWidth, double safeAreaHeight) {

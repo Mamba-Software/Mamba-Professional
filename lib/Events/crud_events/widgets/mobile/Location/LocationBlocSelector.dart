@@ -6,7 +6,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/Location/LocationLoading.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/Location/LocationWidget.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class LocationBlocSelector extends StatelessWidget {
   const LocationBlocSelector({super.key});

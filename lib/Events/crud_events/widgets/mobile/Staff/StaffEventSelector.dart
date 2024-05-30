@@ -4,7 +4,7 @@ import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/Staff/staffEventWidget.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class StaffEventSelector extends StatelessWidget {
   const StaffEventSelector({super.key});

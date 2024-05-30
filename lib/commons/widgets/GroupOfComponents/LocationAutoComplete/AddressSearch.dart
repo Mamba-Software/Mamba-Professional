@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'LocationPlacesSearch.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class AddressSearch extends SearchDelegate<Suggestion> {
   LocationPlacesSearch? apiClient;

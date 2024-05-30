@@ -4,7 +4,7 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent_old.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 typedef DateCallBack = void Function(
     int pageIndex, DateTime? dateTime, CalendarView calendarView);

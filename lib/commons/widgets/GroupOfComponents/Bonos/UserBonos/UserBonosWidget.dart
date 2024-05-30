@@ -8,7 +8,7 @@ import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/data/Models/Condition.dart';
 import 'package:mamba/data/Models/Purchase.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';

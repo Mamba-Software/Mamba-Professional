@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -9,13 +8,13 @@ import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/brand/data/brand_repository.dart';
-import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba/events/cubit/BrandEventsCubit.dart';
+import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/home/cubit/home_navigation_manager.dart';
@@ -102,8 +101,9 @@ class App extends StatelessWidget {
             create: (context) => UnreadNotChatsCubit(userBloc),
             lazy: false,
           ),
-          BlocProvider<BrandEventsCubit>(
-            create: (context) => BrandEventsCubit(brandBloc),
+          BlocProvider<EventsBloc>(
+            create: (context) =>
+                EventsBloc(authBloc: context.read<AuthCubit>()),
             lazy: false,
           ),
           BlocProvider<BrandSuscriptionCubit>(

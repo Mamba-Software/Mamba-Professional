@@ -10,9 +10,9 @@ import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/events/Calendar/views/BrandCalendarWidget.dart';
+import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/widgets/responsive_menu.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/BrandSubscription.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
@@ -88,7 +88,7 @@ class _BrandScreenState extends State<BrandScreen> {
             }
           },
         ),
-        BlocListener<HomeNavigationManager, HomeNavigationManagerState>(
+        BlocListener<HomeManager, HomeManagerState>(
           listener: (BuildContext context, state) {
             // Jump To Correct Home Page
             setState(() {
@@ -108,9 +108,7 @@ class _BrandScreenState extends State<BrandScreen> {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             // Gestión
-            BrandCalendarWidget(
-              brandId: currentBrand.id!,
-            ),
+            const Calendar(),
             BrandPurchaseHistory(
               brandId: currentBrand.id!,
             ),

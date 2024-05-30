@@ -31,7 +31,7 @@ import 'package:mamba/data/Models/Location.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EventPage extends StatelessWidget {

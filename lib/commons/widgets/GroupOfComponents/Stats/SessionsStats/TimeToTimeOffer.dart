@@ -9,7 +9,7 @@ import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class TimeToTimeOffer extends StatefulWidget {
   List<Event> events;

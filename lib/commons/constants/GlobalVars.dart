@@ -1,7 +1,7 @@
 // This file contains all the Global Variabels used throgh the App.
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/LibraryModels/lColor.dart';
 import 'package:mamba/data/LibraryModels/lDegradate.dart';
 import 'package:mamba/data/Models/Brand.dart';
@@ -9,7 +9,6 @@ import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/user/chat/ChatCore.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/notifications/NotificationService/Notifications.dart';
 import 'package:mamba/screens/MambaPro/Profile/Profile.dart';
 import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';

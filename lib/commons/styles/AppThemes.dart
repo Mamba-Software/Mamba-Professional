@@ -14,6 +14,7 @@ class AppThemes {
     Color primaryColorLight = AppColors.grey;
     Color invertedPrimaryColor = AppColors.white;
     Color disabledColor = AppColors.grey;
+    Color dividerColor = Colors.black12;
     Color backgroundColor = AppColors.white;
     Color scaffoldBackgroundColor = AppColors.lightGrey;
     Color successColor = AppColors.green;
@@ -35,7 +36,7 @@ class AppThemes {
       // applyElevationOverlayColor: true -- A boolean that determines whether an overlay color will be applied to indicate elevation for dark themes. This is typically only applied in dark themes.
       // Hint / Divider / Disabled / Unselected
       hintColor: disabledColor,
-      dividerColor: disabledColor,
+      dividerColor: dividerColor,
       disabledColor: disabledColor,
       unselectedWidgetColor: disabledColor,
       // Highlight Colors
@@ -283,6 +284,7 @@ class AppThemes {
     Color primaryColorLight = AppColors.grey;
     Color invertedPrimaryColor = AppColors.black;
     Color disabledColor = AppColors.grey;
+    Color dividerColor = AppColors.lightGrey;
     Color backgroundColor = AppColors.darkGrey;
     Color scaffoldBackgroundColor = AppColors.darkerGrey;
     Color successColor = AppColors.green;
@@ -304,7 +306,7 @@ class AppThemes {
       applyElevationOverlayColor: true,
       // Hint / Divider / Disabled / Unselected
       hintColor: disabledColor,
-      dividerColor: disabledColor,
+      dividerColor: dividerColor,
       disabledColor: disabledColor,
       unselectedWidgetColor: disabledColor,
       // Highlight Colors

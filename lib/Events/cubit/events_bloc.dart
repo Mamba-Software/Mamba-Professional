@@ -2,24 +2,36 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
-import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-part 'BrandEventsState.dart';
+part 'events_state.dart';
 
-class BrandEventsCubit extends Cubit<BrandEventsState> {
-  BrandEventsCubit(final BrandBloc brandBloc)
-      : super(const BrandEventsInitial()) {
-    brandBloc.stream.distinct().listen((state) async {
+class EventsBloc extends Cubit<EventsState> {
+  // Blocs
+  final AuthCubit authBloc;
+  // Variables
+  final _eventDataService = EventDataService();
+  final _brandDataService = BrandDataService();
+  final limit = 50;
+  List<Event> finishedEventsList = [];
+  List<Event> upcomingEventsList = [];
+  List<Usuario> _brandTrainers = [];
+  late StreamSubscription<QuerySnapshot> _subscription;
+  bool isStreamActive = false;
+
+  EventsBloc({
+    required this.authBloc,
+  }) : super(const EventsInitial()) {
+    authBloc.stream.distinct().listen((state) async {
       // Handle the state change
-      if (state.brand.id != null && state.brand.id != '') {
+      if (state is AuthUserBrand) {
         if (isStreamActive) _subscription.cancel();
         // Set the State to Loading
-        emit(const BrandEventsLoading());
+        emit(const EventsLoading());
 
         isStreamActive = true;
         _brandTrainers =
@@ -34,14 +46,13 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
     });
   }
 
-  final _eventDataService = EventDataService();
-  final _brandDataService = BrandDataService();
-  final limit = 50;
-  List<Event> finishedEventsList = [];
-  List<Event> upcomingEventsList = [];
-  List<Usuario> _brandTrainers = [];
-  late StreamSubscription<QuerySnapshot> _subscription;
-  bool isStreamActive = false;
+  List<Event> get eventsList {
+    if (state is EventsLoaded) {
+      EventsLoaded loadedState = state as EventsLoaded;
+      return loadedState.brandEventsList;
+    }
+    return [];
+  }
 
   Future<void> getInitialBrandEvents(List<Usuario> brandTrainers) async {
     try {
@@ -89,16 +100,16 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
             return aDate.compareTo(bDate);
           });
           // Emit a new state with the list of `Events`.
-          emit(BrandEventsLoaded(finalList));
+          emit(EventsLoaded(finalList));
         },
         onError: (e) {
           print("Brand Events Error$e");
-          emit(BrandEventsError(e.toString()));
+          emit(EventsError(e.toString()));
         },
       );
     } catch (e) {
       print("Brand Events Error$e");
-      emit(BrandEventsError(e.toString()));
+      emit(EventsError(e.toString()));
     }
   }
 
@@ -145,10 +156,10 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         );
         return aDate.compareTo(bDate);
       });
-      emit(BrandEventsLoaded(finalList));
+      emit(EventsLoaded(finalList));
     } catch (e) {
       print("More Brand Events Error$e");
-      emit(BrandEventsError(e.toString()));
+      emit(EventsError(e.toString()));
     }
   }
 
@@ -193,11 +204,11 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         );
         return aDate.compareTo(bDate);
       });
-      emit(BrandEventsLoaded(finalList));
+      emit(EventsLoaded(finalList));
       print("Event $eventId Successfully Updated");
     } catch (e) {
       print("Delete Brand Event Error$e");
-      emit(BrandEventsError(e.toString()));
+      emit(EventsError(e.toString()));
     }
   }
 
@@ -226,44 +237,19 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         );
         return aDate.compareTo(bDate);
       });
-      emit(BrandEventsLoaded(finalList));
+      emit(EventsLoaded(finalList));
       print("Event $eventId Successfully Deleted");
     } catch (e) {
       print("Delete Brand Event Error$e");
-      emit(BrandEventsError(e.toString()));
+      emit(EventsError(e.toString()));
     }
   }
 
   @override
   Future<void> close() {
-    //print('LO CIERRO');
     _subscription.cancel();
     return super.close();
   }
-
-  /*
-  TODO: FUTURE FILTER FERLO PER AQUI
-  Future<void> filterEvents(int filterSelection, List<Usuario> _selectedTrainers) async {
-    try {
-      print("Filtering Events ...");
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
-      /// Check Filter Selection for Type of Event
-      if (filterSelection == 0) {
-        // Show Both Private and Group Events
-      } else if(filterSelection == 1) {
-        // Show Only Group Events
-        finalList.removeWhere((element) => element.isPrivate == true);
-      } else if(filterSelection == 2) {
-        // Show Only Private Events
-        finalList.removeWhere((element) => element.isPrivate == false);
-      }
-      emit(BrandEventsLoaded(finalList));
-    } catch(e) {
-      print("Filter Brand Events Error"+e.toString());
-      emit(BrandEventsError(e.toString()));
-    }
-  }
-   */
 }
 
 List<Event> documentsToEvents(

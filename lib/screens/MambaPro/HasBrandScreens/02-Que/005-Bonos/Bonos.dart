@@ -18,7 +18,7 @@ import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Bonos/BonosUtils.dart';
 import 'package:mamba/commons/widgets/Components/Badges/BetaBadge.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/BonoCard.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/profileImage.dart';
@@ -27,7 +27,7 @@ import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:provider/provider.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class BonosPro extends StatefulWidget {
   String brandId;

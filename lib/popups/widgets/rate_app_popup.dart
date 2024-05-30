@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class RateAppPopup {
   static void show({

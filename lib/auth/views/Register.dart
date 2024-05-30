@@ -10,7 +10,7 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
@@ -27,7 +27,7 @@ class Register extends StatefulWidget {
         CustomTransitions.instance.customTransitionPage(
       state: state,
       child: const Register(),
-    ),    
+    ),
   );
 
   const Register({super.key});
@@ -192,7 +192,7 @@ class _RegisterState extends State<Register> with PlatformMixin {
                   ),
                   TextSpan(
                     text: context.l10n.login,
-                    style: context.textTheme.titleSmall,                        
+                    style: context.textTheme.titleSmall,
                   ),
                 ],
               ),
@@ -240,7 +240,7 @@ class _RegisterState extends State<Register> with PlatformMixin {
               type: SnackbarType.success,
               message: context.l10n.validate,
             );
-            context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);            
+            context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
             Future.delayed(
               Duration(seconds: (snackbarDefaultDuration + 0.5).toInt()),
               () async {

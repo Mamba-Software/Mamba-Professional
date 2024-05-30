@@ -2,9 +2,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -228,8 +228,7 @@ class LocalNotificationService {
       case "SplashScreen":
         break;
       case "Notifications":
-        await Navigator.of(context)
-            .pushNamed("Notifications", arguments: 10);
+        await Navigator.of(context).pushNamed("Notifications", arguments: 10);
         break;
       case "Chat":
         await Navigator.of(context).pushNamed("Chat", arguments: 10);

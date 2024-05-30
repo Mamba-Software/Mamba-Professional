@@ -5,14 +5,14 @@ import 'package:intl/intl.dart';
 import 'package:mamba/auth/splash/SplashScreen.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/Promotions/PromotionsDataService.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/notifications/NotificationService/NotificationService.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
@@ -449,7 +449,8 @@ class _BrandInfoState extends State<BrandInfo>
             flexibleSpace: returnFlexibleSpaceBar(
               context.height * 0.15,
             ),
-          ),if (isLoading)
+          ),
+          if (isLoading)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Column(

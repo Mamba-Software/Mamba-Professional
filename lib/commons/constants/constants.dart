@@ -17,6 +17,9 @@ String standardLanguage = "es";
 String mainFontFamily = "UberMove";
 String displayFontFamily = "UberMove";
 
+// Date Formats
+String month_year_dateformat = "MMMM yyyy";
+
 // Text Sizes
 double display1 = 30; // For large, expressive text
 double headline1 = 25; // Primary title, more prominent
@@ -32,15 +35,28 @@ double body3 = 10; // Tertiary body text
 // Icon Sizes
 double iconSizeBig = 30;
 double iconSize = 25;
+double iconSizeMedium = 20;
 double iconSizeSmall = 15;
+double iconSizeExtraSmall = 10;
 
 // Border Radius
 double borderRadiusSmall = 5;
 double borderRadiusMedium = 10;
 double borderRadiusBig = 20;
 
-// Snackbar
+// Padding
+double defaultPadding = 16;
+double defaultPaddingSmall = 8;
+
+// Duration
 int snackbarDefaultDuration = 5;
+int animationDefaultDuration = 200;
+
+// Desktop Sizes
+double sideMenuWidth = 304;
+double collapsedSideMenuWidth = 80;
+double desktopAppBarHeight = 70;
+double desktopFooterHeight = 70;
 
 // App
 var androidGooglePlayUrl =

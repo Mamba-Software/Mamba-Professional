@@ -10,6 +10,8 @@ class CustomSnackbarView extends StatelessWidget {
   final double maxWidth;
   final CustomSnackbar snackbar;
   final VoidCallback? onAccept;
+  final Color? color;
+  final IconData? icon;
 
   const CustomSnackbarView({
     Key? key,
@@ -17,6 +19,8 @@ class CustomSnackbarView extends StatelessWidget {
     required this.maxWidth,
     required this.snackbar,
     this.onAccept,
+    this.color,
+    this.icon,
   }) : super(key: key);
 
   @override
@@ -26,11 +30,11 @@ class CustomSnackbarView extends StatelessWidget {
         constraints: BoxConstraints(maxWidth: maxWidth),
         padding: EdgeInsets.all(padding),
         decoration: BoxDecoration(
-          color: _getBackgroundColor(snackbar.type, context),
+          color: _getBackgroundColor(context),
           borderRadius: BorderRadius.circular(borderRadiusSmall),
           border: Border.all(
             width: 2,
-            color: _getColor(snackbar.type, context),
+            color: _getColor(context),
             style: BorderStyle.solid,
           ),
         ),
@@ -38,12 +42,12 @@ class CustomSnackbarView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _getIconForType(snackbar.type, context),
+            _getIconForType(context),
             const SizedBox(width: 10),
             Flexible(
               child: Text(
                 snackbar.message,
-                style: _getTextStyle(snackbar.type, context),
+                style: _getTextStyle(context),
                 softWrap: true,
                 overflow: TextOverflow.visible,
               ),
@@ -66,7 +70,7 @@ class CustomSnackbarView extends StatelessWidget {
             if (snackbar.onAccept == null && snackbar.actionText == null)
               const SizedBox(width: 10),
             CountdownIndicator(
-                foregroundColor: _getColor(snackbar.type, context),
+                foregroundColor: _getColor(context),
                 backgroundColor: snackbar.type == SnackbarType.information
                     ? context.theme.primaryColor
                     : AppColors.white,
@@ -79,12 +83,12 @@ class CustomSnackbarView extends StatelessWidget {
     );
   }
 
-  TextStyle? _getTextStyle(SnackbarType type, BuildContext context,
-      {bool isTitle = false}) {
+  TextStyle? _getTextStyle(BuildContext context, {bool isTitle = false}) {
     var textStyle = context.isDesktop
         ? context.textTheme.bodyLarge
         : context.textTheme.bodyMedium;
-    final color = (type == SnackbarType.error || type == SnackbarType.success)
+    final color = (snackbar.type == SnackbarType.error ||
+            snackbar.type == SnackbarType.success)
         ? Colors.white
         : context.colorScheme.primary;
     return isTitle
@@ -94,32 +98,42 @@ class CustomSnackbarView extends StatelessWidget {
           );
   }
 
-  Widget _getIconForType(SnackbarType type, BuildContext context) {
-    switch (type) {
+  Widget _getIconForType(BuildContext context) {
+    if (icon != null) {
+      return Icon(
+        icon!,
+        color: color,
+        size: iconSize,
+      );
+    }
+    switch (snackbar.type) {
       case SnackbarType.success:
-        return const Icon(
+        return Icon(
           Icons.check_circle,
           color: AppColors.white,
-          size: 20,
+          size: iconSize,
         );
       case SnackbarType.error:
-        return const Icon(
+        return Icon(
           Icons.error,
           color: AppColors.white,
-          size: 20,
+          size: iconSize,
         );
       case SnackbarType.information:
       default:
         return Icon(
           Icons.info,
           color: context.colorScheme.primary,
-          size: 20,
+          size: iconSize,
         );
     }
   }
 
-  Color _getColor(SnackbarType type, BuildContext context) {
-    switch (type) {
+  Color _getColor(BuildContext context) {
+    if (color != null) {
+      return color!;
+    }
+    switch (snackbar.type) {
       case SnackbarType.success:
         return AppColors.green;
       case SnackbarType.error:
@@ -129,17 +143,20 @@ class CustomSnackbarView extends StatelessWidget {
         return context.colorScheme.primary;
     }
   }
-}
 
-Color _getBackgroundColor(SnackbarType type, BuildContext context) {
-  switch (type) {
-    case SnackbarType.success:
-      return AppColors.ligtherGreen;
-    case SnackbarType.error:
-      return AppColors.ligtherRed;
-    case SnackbarType.information:
-    default:
-      return context.colorScheme.background;
+  Color _getBackgroundColor(BuildContext context) {
+    if (color != null) {
+      return color!.withOpacity(0.3);
+    }
+    switch (snackbar.type) {
+      case SnackbarType.success:
+        return AppColors.ligtherGreen;
+      case SnackbarType.error:
+        return AppColors.ligtherRed;
+      case SnackbarType.information:
+      default:
+        return context.colorScheme.background;
+    }
   }
 }
 

@@ -29,7 +29,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsStats/Time
 import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
-import 'package:mamba/commons/managers/language_manager.dart';
+import 'package:mamba/commons/extensions/context.dart';
 
 class Stats extends StatefulWidget {
   String brandId;
