@@ -258,19 +258,17 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                           ),
                         ),
                         onPressed: () => {},
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: defaultPaddingSmall + 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.qr_code,
-                                color: context.colorScheme.secondary,
-                                size: iconSize,
-                              ),
-                            ],
+                        child: Container(
+                          height: 46,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle
+                          ),
+                          child: Center(
+                            child: Icon(
+                                  Icons.qr_code,
+                                  color: context.colorScheme.secondary,
+                                  size: iconSize,
+                                ),
                           ),
                         ),
                       ),
@@ -402,9 +400,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                     icon: Icons.smartphone,
                     color: Colors.blue,
                   );
-                  context
-                      .read<SnackbarCubit>()
-                      .enqueueSnackbarAction(snackbar);
+                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 }
               }
 

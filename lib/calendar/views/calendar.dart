@@ -662,9 +662,9 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
         leadingDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
         selectionBorderColor: context.colorScheme.primary,
         todayHighlightColor: context.colorScheme.primary,
-        viewHeaderBackgroundColor: context.colorScheme.background,
+        viewHeaderBackgroundColor: _calendarController.view == CalendarView.day ? context.theme.scaffoldBackgroundColor : context.colorScheme.background,
         weekNumberBackgroundColor: context.colorScheme.background,
-        allDayPanelColor: context.colorScheme.background,
+        allDayPanelColor: context.theme.scaffoldBackgroundColor,
         // Text Styles
         todayTextStyle: context.textTheme.bodyLarge,
         agendaDayTextStyle: context.textTheme.bodyLarge,
