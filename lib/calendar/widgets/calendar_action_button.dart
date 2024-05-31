@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:mamba/calendar/widgets/zoom_display.dart';
+import 'package:mamba/calendar/widgets/zoom_display_widget.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class CalendarActionButton extends StatelessWidget {
   final double timeSlotViewScale;
@@ -32,7 +30,7 @@ class CalendarActionButton extends StatelessWidget {
                 onCreateEventTap: onCreateEventTap,                
               ),
               const SizedBox(height: 4),
-              ZoomDisplay(
+              ZoomDisplayWidget(
                 timeSlotViewScale: timeSlotViewScale,
                 calendarView: calendarView,
               ),

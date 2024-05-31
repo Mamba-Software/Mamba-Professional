@@ -3,11 +3,11 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class ZoomDisplay extends StatelessWidget {
+class ZoomDisplayWidget extends StatelessWidget {
   final double timeSlotViewScale;
   final CalendarView calendarView;
 
-  ZoomDisplay({
+  ZoomDisplayWidget({
     required this.timeSlotViewScale,
     required this.calendarView,
   });
