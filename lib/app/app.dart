@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mamba/Events/cubit/events_bloc.dart';
 import 'package:mamba/analytics/data/analytics_repository.dart';
 import 'package:mamba/app/router/router.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
@@ -14,10 +15,9 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
-import 'package:mamba/home/cubit/home_navigation_manager.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/views/popup_manager.dart';
 import 'package:mamba/settings/data/settings_repository.dart';
@@ -64,8 +64,8 @@ class App extends StatelessWidget {
           BlocProvider<AuthBloc>(create: (_) => authBloc),
           BlocProvider<UserBloc>(create: (_) => userBloc),
           BlocProvider<BrandBloc>(create: (_) => brandBloc),
-          BlocProvider<HomeNavigationManager>(
-            create: (context) => HomeNavigationManager(),
+          BlocProvider<HomeManager>(
+            create: (context) => HomeManager(),
           ),
           // Refactor Done
           BlocProvider<AuthCubit>(
@@ -102,8 +102,7 @@ class App extends StatelessWidget {
             lazy: false,
           ),
           BlocProvider<EventsBloc>(
-            create: (context) =>
-                EventsBloc(authBloc: context.read<AuthCubit>()),
+            create: (context) => EventsBloc(brandBloc: brandBloc),
             lazy: false,
           ),
           BlocProvider<BrandSuscriptionCubit>(

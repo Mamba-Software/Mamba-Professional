@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/Events/cubit/events_bloc.dart';
 import 'package:mamba/calendar/models/appointment.dart';
 import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -17,7 +18,6 @@ import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
-import 'package:mamba/events/cubit/events_bloc.dart';
 part 'calendar_state.dart';
 
 class CalendarBloc extends Cubit<CalendarState> with StringMixin {
@@ -188,7 +188,8 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
       DateTime firstVisibleDate = visibleDates.first;
       int difference = firstVisibleDate.difference(startDateLastEvent).inDays;
       if (difference < 60) {
-        await eventBloc.getMoreBrandEvents(eventsList.first.id!, _brandTrainers);
+        await eventBloc.getMoreBrandEvents(
+            eventsList.first.id!, _brandTrainers);
       }
     }
   }
