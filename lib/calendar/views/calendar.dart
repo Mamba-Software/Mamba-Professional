@@ -1,15 +1,12 @@
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
 import 'package:mamba/calendar/widgets/calendar_action_button.dart';
+import 'package:mamba/calendar/widgets/calendar_appbar.dart';
 import 'package:mamba/calendar/widgets/calendar_event_widget.dart';
-import 'package:mamba/calendar/widgets/calendar_view.dart';
-import 'package:mamba/calendar/widgets/calendar_view_dropdown.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
@@ -18,15 +15,10 @@ import 'package:mamba/commons/mixins/string.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba/events/crud_events/views/mobile/AddorEdtiEvent.dart';
-import 'package:mamba/events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
-import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
-import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/events/cubit/events_bloc.dart';
-import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
-import 'package:mamba/home/widgets/appbar/ResponsiveSliverAppBar.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
@@ -45,12 +37,7 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   // App Bar and Scroll View
   ScrollController? _scrollController;
-  bool appBarExpanded = false;
-  bool get _isAppBarExpanded {
-    return _scrollController!.hasClients &&
-        _scrollController!.offset >
-            (MediaQuery.of(context).size.height * 0.25 - kToolbarHeight);
-  }
+  bool appBarExpanded = false; 
 
   // Calendar Controller
   final CalendarController _calendarController = CalendarController();
@@ -74,9 +61,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
             : setState(() {
                 appBarExpanded = false;
               }),
-      );
-    // Start Week View
-    _calendarController.view = CalendarView.week;
+      );    
+  }
+
+  bool get _isAppBarExpanded {
+    return _scrollController!.hasClients &&
+        _scrollController!.offset >
+            (MediaQuery.of(context).size.height * 0.25 - kToolbarHeight);
   }
 
   // Add Event / Navigate To Event Functions
@@ -145,6 +136,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   //// UI Interaction Functions ////////////////////////////////////////////////////
 
   void onCalendarStart(double difference, double userZoomScale) {
+    // Start Week View
+    _calendarController.view = CalendarView.week;
     // The goal of this function is to calculate the height of each HOUR in the calendar. This is calculated depending on the numbers of avaiable hours (HORARI).
     double adjustedHeight;
     // Full screen height
@@ -270,18 +263,18 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     } else if (_calendarController.view == CalendarView.schedule) {}
   }
 
-////// UI Interaction Functions ////////////////////////////////////////////////////
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CalendarBloc, CalendarState>(
-      listener: (context, state) {
-        if (state is CalendarLoaded) {
-          onCalendarStart(
-            state.difference,
-            state.timeSlotViewScale,
-          );
-        }
+      listenWhen: (previous, current) {
+        return previous is CalendarLoading && current is CalendarLoaded;
+      },
+      listener: (context, state) {        
+        final loadedState = state as CalendarLoaded;
+        onCalendarStart(
+          loadedState.difference,
+          loadedState.timeSlotViewScale,
+        );
       },
       builder: (context, state) {
         if (state is CalendarLoaded) {
@@ -290,171 +283,23 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
               physics: const NeverScrollableScrollPhysics(),
               controller: _scrollController,
               slivers: [
-                if (context.isMobile || context.isTablet) ...[
-                  // Mobile / Table App Bar
-                  ResponsiveSliverAppBar(
-                    height: context.height * 0.15,
-                    title: context.l10n.bookings,
-                    appBarExpanded: appBarExpanded,
-                    flexibleSpace:
-                        returnFlexibleSpaceBar(context.height * 0.15),
-                  ),
-                  // Mobile Body
-                  SliverFillRemaining(
-                    child: GestureDetector(
-                      onScaleStart: onScaleStart,
-                      onScaleUpdate: onScaleUpdate,
-                      onScaleEnd: onScaleEnd,
-                      child: CalendarWidgetView(
-                        state: state,
-                        calendarController: _calendarController,
-                        timeSlotViewZoom: _timeSlotViewZoom,
-                        onCalendarDateChanged: onCalendarDateChanged,
-                        onTapCalendar: onTapCalendar,
-                        onCalendarEventTapped: navigateToEventScreen,
-                      ),
-                    ),
-                  )
-                ] else ...[
-                  // Desktop App Bar
-                  SliverToBoxAdapter(
-                    child: Column(
-                      children: [
-                        AppBar(
-                          foregroundColor: context.colorScheme.background,
-                          backgroundColor: context.colorScheme.background,
-                          toolbarHeight: desktopAppBarHeight,
-                          title: Row(
-                            children: [
-                              TextButton(
-                                onPressed: onTapToday,
-                                style: TextButton.styleFrom(
-                                  backgroundColor:
-                                      context.colorScheme.background,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: defaultPadding,
-                                      vertical: defaultPaddingSmall),
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      color: context.theme.dividerColor,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      borderRadiusSmall,
-                                    ),
-                                  ),
-                                  minimumSize: const Size(80, 45),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                child: Text(
-                                  context.l10n.todayString,
-                                  style: context.textTheme.bodyLarge,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              SizedBox(width: defaultPadding),
-                              AppBarIcon(
-                                icon: Icons.chevron_left,
-                                iconSize: iconSize,
-                                color: context.colorScheme.onBackground,
-                                onTap: onTapBackward,
-                              ),
-                              AppBarIcon(
-                                icon: Icons.chevron_right,
-                                iconSize: iconSize,
-                                color: context.colorScheme.onBackground,
-                                onTap: onTapForward,
-                              ),
-                              SizedBox(width: defaultPadding),
-                              Text(
-                                state.calendarTitle,
-                                style: context.textTheme.bodyLarge
-                                    ?.copyWith(fontSize: headline1),
-                              ),
-                            ],
-                          ),
-                          centerTitle: false,
-                          actions: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                AppBarIcon(
-                                  icon: Icons.filter_list,
-                                  iconSize: iconSize,
-                                  color: context.colorScheme.onBackground,
-                                  onTap: () {},
-                                ),
-                                SizedBox(width: defaultPadding),
-                                CalendarViewDropdown(
-                                  view: _calendarController.view!,
-                                  onViewChanged: onCalendarViewChanged,
-                                  zoom: _timeSlotViewScale,
-                                  onZoomToogled: onManualScaleUpdate,
-                                ),
-                                SizedBox(width: defaultPadding),
-                                AppBarIcon(
-                                  icon: Icons.help_outline_outlined,
-                                  iconSize: iconSize,
-                                  color: context.colorScheme.onBackground,
-                                  onTap: () =>
-                                      navigateToMainFeedbackScreen(context),
-                                ),
-                                AppBarIcon(
-                                  icon: Icons.notifications,
-                                  iconSize: iconSize,
-                                  color: context.colorScheme.onBackground,
-                                  onTap: () =>
-                                      navigateToNotificationsScreen(context),
-                                ),
-                                AppBarIcon(
-                                  icon: Icons.chat,
-                                  iconSize: iconSize,
-                                  color: context.colorScheme.onBackground,
-                                  onTap: () => navigateToChatScreen(context),
-                                ),
-                                InkWell(
-                                  onTap: () => navigateToProfileScreen(context),
-                                  hoverColor: context.colorScheme.onBackground
-                                      .withOpacity(0.2),
-                                  splashColor: context.colorScheme.onBackground
-                                      .withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(
-                                    24,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(
-                                      8,
-                                    ),
-                                    child: SizedBox(
-                                      height: iconSize,
-                                      child: Center(
-                                        child: CircularImage(
-                                          size: iconSize,
-                                          image: currentUser.imageUrl,
-                                          color: context.theme.primaryColor,
-                                          borderWidth: 1,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: defaultPadding)
-                              ],
-                            ),
-                          ],
-                        ),
-                        Divider(
-                          color: context.theme.dividerColor,
-                          thickness: 1,
-                          height: 1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Desktop Body
-                  SliverFillRemaining(
-                    child: CalendarWidgetView(
+                CalendarAppbar(
+                  title: state.calendarTitle,
+                  appBarExpanded: appBarExpanded,                  
+                  view: _calendarController.view!,
+                  timeSlotViewScale: _timeSlotViewScale,
+                  onTapToday: onTapToday,
+                  onTapForward: onTapForward,
+                  onTapBackward: onTapBackward,
+                  onCalendarViewChanged: onCalendarViewChanged,
+                  onManualScaleUpdate: onManualScaleUpdate,
+                ),
+                SliverFillRemaining(
+                  child: GestureDetector(
+                    onScaleStart: onScaleStart,
+                    onScaleUpdate: onScaleUpdate,
+                    onScaleEnd: onScaleEnd,
+                    child: CalendarViewWidget(
                       state: state,
                       calendarController: _calendarController,
                       timeSlotViewZoom: _timeSlotViewZoom,
@@ -463,7 +308,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
                       onCalendarEventTapped: navigateToEventScreen,
                     ),
                   ),
-                ],
+                )
               ],
             ),
             floatingActionButton: CalendarActionButton(
@@ -482,94 +327,206 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
     );
   }
 
-  FlexibleSpaceBar returnFlexibleSpaceBar(double height) {
-    return FlexibleSpaceBar(
-      background: Container(
-        height: height,
-        color: AppColors.darkGrey,
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "state.calendarTitle",
-                        style: context.textTheme.headlineMedium
-                            ?.copyWith(color: AppColors.white),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              mixpanel!.track('brand_calendar_today');
-                              setState(() {
-                                //_calendarController.selectedDate = DateTime.now();
-                                _calendarController.displayDate = DateTime.now()
-                                    .subtract(const Duration(hours: 1));
-                              });
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: AppColors.white,
-                            ),
-                            child: Text(context.l10n.todayString,
-                                style: context.textTheme.bodyLarge
-                                    ?.copyWith(color: AppColors.white),
-                                textAlign: TextAlign.center),
-                          ),
-                          SizedBox(
-                            height: iconSizeBig,
-                            width: iconSizeBig,
-                            child: ClipOval(
-                              child: Material(
-                                color: false
-                                    ? AppColors.white
-                                    : Colors.transparent, // Button color
-                                child: InkWell(
-                                  splashColor: AppColors.white
-                                      .withOpacity(0.2), // Splash color
-                                  onTap: () {},
-                                  child: SizedBox(
-                                    width: iconSizeBig,
-                                    height: iconSizeBig,
-                                    child: Icon(
-                                      Icons.filter_list,
-                                      color: false
-                                          ? AppColors.darkGrey
-                                          : AppColors.white,
-                                      size: iconSize,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                Container(
-                  color: AppColors.grey,
-                  height: 1.0,
-                ),
-              ],
-            ),
-            const LinearProgressIndicatorWidget(),
-          ],
-        ),
+}
+
+
+class CalendarViewWidget extends StatelessWidget with StringMixin {
+  final CalendarLoaded state;
+  final CalendarController calendarController;
+  final double timeSlotViewZoom;
+  final void Function(ViewChangedDetails) onCalendarDateChanged; // Corrected type
+  final void Function(CalendarTapDetails) onTapCalendar;
+  final Function(String) onCalendarEventTapped;
+
+  const CalendarViewWidget({
+    super.key,
+    required this.state,
+    required this.calendarController,
+    required this.timeSlotViewZoom,
+    required this.onCalendarDateChanged,
+    required this.onTapCalendar,
+    required this.onCalendarEventTapped,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SfCalendarTheme(
+      data: SfCalendarThemeData(
+        // Background Colors
+        brightness: context.read<ThemeManager>().isDarkMode
+            ? Brightness.dark
+            : Brightness.light,
+        backgroundColor: context.theme.scaffoldBackgroundColor,
+        headerBackgroundColor: context.theme.scaffoldBackgroundColor,
+        agendaBackgroundColor: context.theme.scaffoldBackgroundColor,
+        cellBorderColor: context.theme.dividerColor,
+        activeDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
+        todayBackgroundColor: context.theme.scaffoldBackgroundColor,
+        trailingDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
+        leadingDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
+        selectionBorderColor: context.colorScheme.primary,
+        todayHighlightColor: context.colorScheme.primary,
+        viewHeaderBackgroundColor: calendarController.view == CalendarView.day
+            ? context.theme.scaffoldBackgroundColor
+            : context.colorScheme.background,
+        weekNumberBackgroundColor: context.colorScheme.background,
+        allDayPanelColor: context.theme.scaffoldBackgroundColor,
+        // Text Styles
+        todayTextStyle: context.textTheme.bodyLarge,
+        agendaDayTextStyle: context.textTheme.bodyLarge,
+        agendaDateTextStyle: context.textTheme.bodyLarge,
+        headerTextStyle: context.textTheme.bodyLarge,
+        viewHeaderDateTextStyle: context.textTheme.bodyLarge,
+        viewHeaderDayTextStyle: context.textTheme.bodyLarge,
+        timeTextStyle: context.textTheme.bodyLarge,
+        activeDatesTextStyle: context.textTheme.bodyLarge,
+        trailingDatesTextStyle: context.textTheme.bodyLarge,
+        leadingDatesTextStyle: context.textTheme.bodyLarge,
+        blackoutDatesTextStyle: context.textTheme.bodyLarge,
+        displayNameTextStyle: context.textTheme.bodyLarge,
+        weekNumberTextStyle: context.textTheme.bodyLarge,
+        timeIndicatorTextStyle: context.textTheme.bodyLarge,
       ),
-      titlePadding: EdgeInsets.zero,
-      //centerTitle: true,
+      child: SfCalendar(
+        // Controller
+        controller: calendarController,
+        // Blackout Dates
+        blackoutDates: [
+          DateFormat('dd-MM-yyyy').parse(state.brand.dateJoined!)
+        ],
+        blackoutDatesTextStyle: context.textTheme.titleMedium,
+        showWeekNumber: false,
+        weekNumberStyle: WeekNumberStyle(
+          textStyle: context.textTheme.labelSmall,
+        ),
+        // Data
+        minDate: DateFormat('dd-MM-yyyy').parse(state.brand.dateJoined!),
+        dataSource: state.dataSource,
+        specialRegions: state.specialRegions,
+        // Config
+        cellEndPadding: 0,
+        firstDayOfWeek: 1,
+        showCurrentTimeIndicator: true,
+        cellBorderColor: AppColors.grey,
+        todayTextStyle: context.textTheme.bodyLarge
+            ?.copyWith(color: context.colorScheme.onPrimary),
+        // Header
+        headerHeight: 0,
+        // View Header
+        viewHeaderHeight: context.isDesktop ? 70 : 50,
+        // Time Slot View Settings
+        timeSlotViewSettings: TimeSlotViewSettings(
+          timeIntervalHeight: timeSlotViewZoom,
+          timeIntervalWidth: 60,
+          startHour:
+              state.startHour != 0 ? state.startHour - 1 : state.startHour,
+          endHour: state.endHour != 24 ? state.endHour + 1 : state.endHour,
+          timeFormat: 'HH:mm',
+          dayFormat: 'EE',
+          dateFormat: 'd',
+          timeRulerSize: 50,
+          nonWorkingDays: const [],
+          minimumAppointmentDuration: const Duration(minutes: 30),
+          timeTextStyle: context.textTheme.bodyMedium,
+        ),
+        // Monthly View
+        monthViewSettings: MonthViewSettings(
+          appointmentDisplayCount: 4,
+          numberOfWeeksInView: 6,
+          showTrailingAndLeadingDates: true,
+          appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+          monthCellStyle: MonthCellStyle(
+            textStyle: context.textTheme.bodyLarge,
+            trailingDatesTextStyle:
+                context.textTheme.bodyLarge?.copyWith(color: AppColors.grey),
+            leadingDatesTextStyle:
+                context.textTheme.bodyLarge?.copyWith(color: AppColors.grey),
+          ),
+        ),
+        // Schedule View
+        scheduleViewSettings: ScheduleViewSettings(
+          hideEmptyScheduleWeek: true,
+          appointmentItemHeight: MediaQuery.of(context).size.height * 0.12,
+          appointmentTextStyle: context.textTheme.bodyMedium,
+          dayHeaderSettings: DayHeaderSettings(
+            dateTextStyle: context.textTheme.bodyMedium,
+            dayTextStyle: context.textTheme.bodySmall,
+          ),
+          weekHeaderSettings: WeekHeaderSettings(
+            startDateFormat: 'd',
+            endDateFormat: 'd MMMM',
+            textAlign: TextAlign.start,
+            backgroundColor: context.theme.scaffoldBackgroundColor,
+            weekTextStyle: context.textTheme.bodySmall,
+          ),
+          monthHeaderSettings: MonthHeaderSettings(
+            monthFormat: month_year_dateformat,
+            height: 70,
+            textAlign: TextAlign.start,
+            backgroundColor: context.theme.scaffoldBackgroundColor,
+            monthTextStyle: context.textTheme.headlineMedium,
+          ),
+        ),
+        scheduleViewMonthHeaderBuilder: buildSchduleMonthHeaderWidget,
+        // Style
+        selectionDecoration: buildSelectionDecoration(context),
+        onViewChanged: onCalendarDateChanged,
+        onTap: onTapCalendar,
+        appointmentTextStyle: context.textTheme.bodyMedium!,
+        appointmentBuilder: buildEventWidget,
+      ),
+    );
+  }
+
+  Decoration buildSelectionDecoration(BuildContext context) {
+    return calendarController.view == CalendarView.month
+        ? BoxDecoration(
+            color: Colors.transparent,
+            border: Border.all(width: 1, color: Colors.transparent),
+          )
+        : BoxDecoration(
+            color: context.colorScheme.secondary.withOpacity(0.08),
+            border: Border.all(
+              width: 1,
+              color: context.colorScheme.secondary,
+            ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(5.0),
+            ),
+          );
+  }
+
+  Widget buildSchduleMonthHeaderWidget(
+      BuildContext context, ScheduleViewMonthHeaderDetails details) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+      child: Text(
+        toCapitalized(
+          DateFormat(
+            month_year_dateformat,
+            context.languageCode,
+          ).format(details.date),
+        ),
+        style: context.textTheme.titleLarge,
+        textAlign: TextAlign.left,
+      ),
+    );
+  }
+
+  Widget buildEventWidget(
+      BuildContext context, CalendarAppointmentDetails details) {
+    final appointment = details.appointments.first;
+    final eventsList = context.read<EventsBloc>().eventsList;
+    final event = eventsList.firstWhere(
+      (event) => event.id == appointment.id.toString(),
+    );
+    return CalendarEventWidget(
+      event: event,
+      appointment: appointment,
+      calendarView: calendarController.view!,
+      details: details,
+      onTap: () => onCalendarEventTapped(event.id!),
     );
   }
 }
+
