@@ -37,22 +37,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<HomeManager>(
-          create: (context) => HomeManager(),
-        ),
-        BlocProvider<CalendarBloc>(
-          create: (context) => CalendarBloc(
-            context: context,
-            userBloc: context.read<UserBloc>(),
-            brandBloc: context.read<BrandBloc>(),
-            eventBloc: context.read<EventsBloc>(),
-          ),
-        ),
-      ],
-      child: const HomePageBody(),
-    );
+    return const HomePageBody();
   }
 }
 
@@ -125,12 +110,14 @@ class _HomePageBodyState extends State<HomePageBody> {
     // Check If App Update
     context.read<PopupsCubit>().checkIfAppUpdate();
 
+    /*
+
     final currentState = context.read<BrandBloc>().state;
     if (currentState.brand.id != null && currentState.brand.id != '') {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         context.goNamed(BrandScreen.routeName);
       });
-    }
+    }*/
 
     // On StartUp Dialogs
     launchOnStartUpDialogs();

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
+import 'package:mamba/brand/data/brand_repository.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
@@ -26,6 +27,7 @@ class EventsBloc extends Cubit<EventsState> {
 
   EventsBloc({
     required this.brandBloc,
+    required BrandRepository brandRepository,
   }) : super(const EventsInitial()) {
     brandBloc.stream.distinct().listen((state) async {
       // Handle the state change

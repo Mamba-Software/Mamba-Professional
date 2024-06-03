@@ -22,15 +22,17 @@ part 'calendar_state.dart';
 
 class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   // Blocs
-  final BuildContext context;
   final UserBloc userBloc;
   final BrandBloc brandBloc;
   final EventsBloc eventBloc;
+
+  BuildContext? context;
 
   // Brand Information (To be substituted by Brand CUBIT)
   // All the information that we have here, should be taken from the Brand State
   Brand _brand = Brand();
   DateTime dateJoined = DateTime.now();
+
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
@@ -54,12 +56,25 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   double difference = 22.0;
 
   CalendarBloc({
-    required this.context,
     required this.userBloc,
     required this.brandBloc,
     required this.eventBloc,
   }) : super(const CalendarInitial()) {
-    _initialize();
+    //_initialize();
+    /*
+    eventBloc.stream.distinct().listen((state) async {
+      // Handle the state change
+      if (state is EventsLoaded) {
+        _initialize();
+      }
+    });*/
+  }
+
+  Future<void> initialize(var contextVar) async {
+    if (context == null) {
+      context = contextVar;
+      _initialize();
+    }
   }
 
   Future<void> _initialize() async {
@@ -94,7 +109,7 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
 
     // User Variables
     double userZoomScale = 1.50;
-    if (context.isDesktop == false) {
+    if (context!.isDesktop == false) {
       await getUserZoomScale();
     }
 
@@ -137,7 +152,7 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     DateTime dateTimeEnd = visibleDates.last;
     DateTime middleMonthDate = visibleDates[visibleDates.length ~/ 2];
 
-    final String locale = context.languageCode;
+    final String locale = context!.languageCode;
 
     String formatDate(DateTime date, String pattern) {
       return toCapitalized(DateFormat(pattern, locale).format(date));
@@ -149,7 +164,7 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
 
     switch (calendarView) {
       case CalendarView.schedule:
-        displayDateTitle = "${context.l10n.schedule} ";
+        displayDateTitle = "${context!.l10n.schedule} ";
         break;
       case CalendarView.day:
         displayDateTitle = dateTimeStart.year == DateTime.now().year

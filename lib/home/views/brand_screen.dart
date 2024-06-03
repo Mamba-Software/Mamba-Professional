@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/views/Login.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
@@ -45,6 +46,9 @@ class _BrandScreenState extends State<BrandScreen> {
   @override
   void initState() {
     super.initState();
+    if (context.read<BrandBloc>().brandId == '') {
+      context.goNamed(Login.routeName);
+    }
     paywallFunc();
   }
 

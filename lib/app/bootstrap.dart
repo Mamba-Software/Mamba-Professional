@@ -28,6 +28,7 @@ class Bootstrap with PlatformMixin {
         WidgetsFlutterBinding.ensureInitialized();
         // Initialize Hive
         await Hive.initFlutter();
+        await Hive.openBox('appBox');
         // Initialize Env Variables
         String envFileName = ".env.${flavor.name}";
         await dotenv.load(fileName: envFileName);

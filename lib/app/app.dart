@@ -9,6 +9,7 @@ import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/brand/data/brand_repository.dart';
+import 'package:mamba/calendar/cubit/calendar_bloc.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/constants/constants.dart';
@@ -42,6 +43,8 @@ class App extends StatelessWidget {
     final userBloc = UserBloc(userRepository: userRepository);
     final brandBloc =
         BrandBloc(brandRepository: brandRepository, userBloc: userBloc);
+    final eventBloc =
+        EventsBloc(brandRepository: brandRepository, brandBloc: brandBloc);
     final authBloc = AuthBloc(
         authRepository: authRepository,
         userBloc: userBloc,
@@ -64,8 +67,16 @@ class App extends StatelessWidget {
           BlocProvider<AuthBloc>(create: (_) => authBloc),
           BlocProvider<UserBloc>(create: (_) => userBloc),
           BlocProvider<BrandBloc>(create: (_) => brandBloc),
+          BlocProvider<EventsBloc>(create: (_) => eventBloc),
           BlocProvider<HomeManager>(
             create: (context) => HomeManager(),
+          ),
+          BlocProvider<CalendarBloc>(
+            create: (context) => CalendarBloc(
+              userBloc: userBloc,
+              brandBloc: brandBloc,
+              eventBloc: eventBloc,
+            ),
           ),
           // Refactor Done
           BlocProvider<AuthCubit>(
@@ -99,10 +110,6 @@ class App extends StatelessWidget {
           ),
           BlocProvider<UnreadNotChatsCubit>(
             create: (context) => UnreadNotChatsCubit(userBloc),
-            lazy: false,
-          ),
-          BlocProvider<EventsBloc>(
-            create: (context) => EventsBloc(brandBloc: brandBloc),
             lazy: false,
           ),
           BlocProvider<BrandSuscriptionCubit>(
