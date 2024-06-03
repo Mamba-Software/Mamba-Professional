@@ -248,30 +248,20 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                           vertical: defaultPaddingSmall / 2),
                       child: TextButton(
                         style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
                           backgroundColor:
                               context.colorScheme.secondary.withOpacity(0.3),
-                          shape: RoundedRectangleBorder(
-                            // add this
-                            borderRadius:
-                                BorderRadius.circular(borderRadiusSmall),
-                          ),
+                          padding: EdgeInsets.all(defaultPaddingSmall),
+                          shape:
+                              const CircleBorder(), // Changed to CircleBorder
+                          minimumSize:
+                              const Size(54, 54), // Adjust size as needed
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         onPressed: () => {},
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: defaultPaddingSmall + 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.qr_code,
-                                color: context.colorScheme.secondary,
-                                size: iconSize,
-                              ),
-                            ],
-                          ),
+                        child: Icon(
+                          Icons.qr_code,
+                          color: context.colorScheme.secondary,
+                          size: iconSize,
                         ),
                       ),
                     ),
@@ -402,9 +392,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                     icon: Icons.smartphone,
                     color: Colors.blue,
                   );
-                  context
-                      .read<SnackbarCubit>()
-                      .enqueueSnackbarAction(snackbar);
+                  context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 }
               }
 

@@ -13,7 +13,7 @@ class LinearProgressIndicatorWidget extends StatelessWidget {
       return state.isWorking;
     }, builder: (context, isWorking) {
       return SizedBox(
-        height: isWorking < 100 ? 2 : 0,
+        height: isWorking < 100 ? 1 : 0,
         child: LinearProgressIndicator(
           value: isWorking / 100,
           color: context.colorScheme.secondary,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
@@ -10,12 +11,14 @@ class CalendarViewDropdown extends StatefulWidget {
   final Function(CalendarView) onViewChanged;
   final double zoom;
   final Function(bool) onZoomToogled;
+  final Widget? selectedItemBuilder;
 
   CalendarViewDropdown({
     required this.view,
     required this.onViewChanged,
     required this.zoom,
     required this.onZoomToogled,
+    this.selectedItemBuilder,
   });
 
   @override
@@ -23,7 +26,7 @@ class CalendarViewDropdown extends StatefulWidget {
 }
 
 class _CalendarViewDropdownState extends State<CalendarViewDropdown> {
-  late CalendarView dropdownValue;  
+  late CalendarView dropdownValue;
   final List<CalendarView> items = [
     CalendarView.day,
     CalendarView.week,
@@ -40,8 +43,8 @@ class _CalendarViewDropdownState extends State<CalendarViewDropdown> {
     super.initState();
     dropdownValue = widget.view;
     zoomValue = widget.zoom;
-    zoomValueMin = ((zoomValue * 100)-25); 
-    zoomValueMax = ((zoomValue * 100)+25); 
+    zoomValueMin = ((zoomValue * 100) - 25);
+    zoomValueMax = ((zoomValue * 100) + 25);
   }
 
   @override
@@ -49,8 +52,8 @@ class _CalendarViewDropdownState extends State<CalendarViewDropdown> {
     super.didUpdateWidget(oldWidget);
     dropdownValue = widget.view;
     zoomValue = widget.zoom;
-    zoomValueMin = ((zoomValue * 100)-25); 
-    zoomValueMax = ((zoomValue * 100)+25); 
+    zoomValueMin = ((zoomValue * 100) - 25);
+    zoomValueMax = ((zoomValue * 100) + 25);
   }
 
   @override
@@ -60,7 +63,9 @@ class _CalendarViewDropdownState extends State<CalendarViewDropdown> {
       decoration: BoxDecoration(
         border: Border.all(
           width: 1,
-          color: context.theme.dividerColor,
+          color: widget.selectedItemBuilder != null
+              ? Colors.transparent
+              : context.theme.dividerColor,
         ),
         borderRadius: BorderRadius.circular(borderRadiusSmall),
       ),
@@ -72,8 +77,8 @@ class _CalendarViewDropdownState extends State<CalendarViewDropdown> {
           ...items.map((CalendarView item) {
             return DropdownMenuItem<CalendarView>(
               value: item,
-              alignment: Alignment.topCenter,
               child: ListTile(
+                visualDensity: VisualDensity.compact,
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: defaultPadding),
                 splashColor: context.theme.scaffoldBackgroundColor,
@@ -95,84 +100,113 @@ class _CalendarViewDropdownState extends State<CalendarViewDropdown> {
               ),
             );
           }),
-          DropdownMenuItem<Divider>(
-            enabled: false,
-            child: Divider(
-              color: context.theme.dividerColor,
-              height: 1,
-              thickness: 1,
+          if (widget.selectedItemBuilder == null) ...[
+            DropdownMenuItem<Divider>(
+              enabled: false,
+              child: Divider(
+                color: context.theme.dividerColor,
+                height: 1,
+                thickness: 1,
+              ),
             ),
-          ),
-          DropdownMenuItem(
-            enabled: zoomValueMax <= 400,
-            onTap: () => widget.onZoomToogled(true),
-            child: ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: defaultPadding),
-              splashColor: context.theme.scaffoldBackgroundColor,
-              hoverColor: context.theme.scaffoldBackgroundColor,
-              focusColor: context.theme.scaffoldBackgroundColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(borderRadiusSmall),
+            DropdownMenuItem(
+              enabled: zoomValueMax <= 400,
+              onTap: () => widget.onZoomToogled(true),
+              child: ListTile(
+                visualDensity: VisualDensity.compact,
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: defaultPadding),
+                splashColor: context.theme.scaffoldBackgroundColor,
+                hoverColor: context.theme.scaffoldBackgroundColor,
+                focusColor: context.theme.scaffoldBackgroundColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(borderRadiusSmall),
+                ),
+                leading: Icon(
+                  Icons.zoom_in_outlined,
+                  color: context.colorScheme.primary,
+                  size: iconSize,
+                ),
+                title: Text(
+                  "Zoom In",
+                  style: context.textTheme.bodyLarge,
+                  textAlign: TextAlign.start,
+                ),
+                trailing: zoomValueMax <= 400
+                    ? Text(
+                        "${zoomValueMax.toStringAsFixed(0)} %",
+                        style: context.textTheme.labelLarge,
+                        textAlign: TextAlign.end,
+                      )
+                    : null,
               ),
-              leading: Icon(
-                Icons.zoom_in_outlined,
-                color: context.colorScheme.primary,
-                size: iconSize,
-              ),
-              title: Text(
-                "Zoom In",
-                style: context.textTheme.bodyLarge,
-                textAlign: TextAlign.start,
-              ),
-              trailing: zoomValueMax <= 400 ? Text(
-                "${zoomValueMax.toStringAsFixed(0)} %",
-                style: context.textTheme.labelLarge,
-                textAlign: TextAlign.end,
-              ) : null,
             ),
-          ),
-          DropdownMenuItem(
-            enabled: zoomValueMin >= 100,
-            onTap: () => widget.onZoomToogled(false),
-            child: ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: defaultPadding),
-              splashColor: context.theme.scaffoldBackgroundColor,
-              hoverColor: context.theme.scaffoldBackgroundColor,
-              focusColor: context.theme.scaffoldBackgroundColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(borderRadiusSmall),
+            DropdownMenuItem(
+              enabled: zoomValueMin >= 100,
+              onTap: () => widget.onZoomToogled(false),
+              child: ListTile(
+                visualDensity: VisualDensity.compact,
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: defaultPadding),
+                splashColor: context.theme.scaffoldBackgroundColor,
+                hoverColor: context.theme.scaffoldBackgroundColor,
+                focusColor: context.theme.scaffoldBackgroundColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(borderRadiusSmall),
+                ),
+                leading: Icon(
+                  Icons.zoom_out_outlined,
+                  color: context.colorScheme.primary,
+                  size: iconSize,
+                ),
+                title: Text(
+                  "Zoom Out",
+                  style: context.textTheme.bodyLarge,
+                  textAlign: TextAlign.start,
+                ),
+                trailing: zoomValueMin >= 100
+                    ? Text(
+                        "${zoomValueMin.toStringAsFixed(0)} %",
+                        style: context.textTheme.labelLarge,
+                        textAlign: TextAlign.end,
+                      )
+                    : null,
               ),
-              leading: Icon(
-                Icons.zoom_out_outlined,
-                color: context.colorScheme.primary,
-                size: iconSize,
-              ),
-              title: Text(
-                "Zoom Out",
-                style: context.textTheme.bodyLarge,
-                textAlign: TextAlign.start,
-              ),
-              trailing: zoomValueMin >= 100 ? Text(
-                "${zoomValueMin.toStringAsFixed(0)} %",
-                style: context.textTheme.labelLarge,
-                textAlign: TextAlign.end,
-              ) : null,
             ),
-          ),
+          ]
         ],
-        menuItemStyleData: const MenuItemStyleData(
-          customHeights: [
-            45,
-            45,            
-            45,
-            45,
-            16,
-            45,
-            45,
-          ],
+        menuItemStyleData: MenuItemStyleData(
+          customHeights: widget.selectedItemBuilder == null
+              ? [
+                  45,
+                  45,
+                  45,
+                  45,
+                  16,
+                  45,
+                  45,
+                ]
+              : [
+                  45,
+                  45,
+                  45,
+                  45,
+                ],
           padding: EdgeInsets.zero,
         ),
         selectedItemBuilder: (BuildContext context) {
+          if (widget.selectedItemBuilder != null) {
+            return items.map<Widget>((CalendarView item) {
+              return Padding(
+                padding: EdgeInsets.only(right: defaultPaddingSmall),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [widget.selectedItemBuilder!],
+                ),
+              );
+            }).toList();
+          }
           return items.map<Widget>((CalendarView item) {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: defaultPadding),
@@ -201,7 +235,9 @@ class _CalendarViewDropdownState extends State<CalendarViewDropdown> {
             padding: EdgeInsets.only(right: defaultPadding),
             child: FaIcon(
               FontAwesomeIcons.chevronDown,
-              color: context.colorScheme.primary,
+              color: widget.selectedItemBuilder != null
+                  ? AppColors.white
+                  : context.colorScheme.primary,
               size: iconSizeExtraSmall,
             ),
           ),
