@@ -1,6 +1,6 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
@@ -37,7 +37,7 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   // App Bar and Scroll View
   ScrollController? _scrollController;
-  bool appBarExpanded = false; 
+  bool appBarExpanded = false;
 
   // Calendar Controller
   final CalendarController _calendarController = CalendarController();
@@ -61,7 +61,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
             : setState(() {
                 appBarExpanded = false;
               }),
-      );    
+      );
   }
 
   bool get _isAppBarExpanded {
@@ -149,7 +149,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
       expandedHeight = desktopAppBarHeight + MediaQuery.of(context).padding.top;
     }
     // View Header Height Calendar
-    double viewHeaderHeight = 50;
+    double viewHeaderHeight = 55;
     if (context.isDesktop) {
       viewHeaderHeight = 70;
     }
@@ -269,7 +269,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
       listenWhen: (previous, current) {
         return previous is CalendarLoading && current is CalendarLoaded;
       },
-      listener: (context, state) {        
+      listener: (context, state) {
         final loadedState = state as CalendarLoaded;
         onCalendarStart(
           loadedState.difference,
@@ -285,8 +285,8 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
               slivers: [
                 CalendarAppbar(
                   title: state.calendarTitle,
-                  appBarExpanded: appBarExpanded,                  
-                  view: _calendarController.view!,
+                  appBarExpanded: appBarExpanded,
+                  view: _calendarController.view ?? CalendarView.week,
                   timeSlotViewScale: _timeSlotViewScale,
                   onTapToday: onTapToday,
                   onTapForward: onTapForward,
@@ -313,7 +313,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
             ),
             floatingActionButton: CalendarActionButton(
               timeSlotViewScale: _timeSlotViewScale,
-              calendarView: _calendarController.view!,
+              calendarView: _calendarController.view ?? CalendarView.week,
               onCreateEventTap: onCreateEventTap,
             ),
           );
@@ -326,15 +326,13 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
       },
     );
   }
-
 }
-
 
 class CalendarViewWidget extends StatelessWidget with StringMixin {
   final CalendarLoaded state;
   final CalendarController calendarController;
   final double timeSlotViewZoom;
-  final void Function(ViewChangedDetails) onCalendarDateChanged; // Corrected type
+  final void Function(ViewChangedDetails) onCalendarDateChanged;
   final void Function(CalendarTapDetails) onTapCalendar;
   final Function(String) onCalendarEventTapped;
 
@@ -350,6 +348,14 @@ class CalendarViewWidget extends StatelessWidget with StringMixin {
 
   @override
   Widget build(BuildContext context) {
+    // Variables
+    DateTime dateJoined =
+        DateFormat('dd-MM-yyyy').parse(state.brand.dateJoined!);
+    // Sizes
+    double headerHeight = 0;
+    double viewHeaderHeight = context.isDesktop ? 70 : 55;
+    double timeRulerSize = 50;
+    double timeIntervalWidth = 60;
     return SfCalendarTheme(
       data: SfCalendarThemeData(
         // Background Colors
@@ -366,18 +372,23 @@ class CalendarViewWidget extends StatelessWidget with StringMixin {
         leadingDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
         selectionBorderColor: context.colorScheme.primary,
         todayHighlightColor: context.colorScheme.primary,
-        viewHeaderBackgroundColor: calendarController.view == CalendarView.day
+        viewHeaderBackgroundColor: context.isDesktop == false || calendarController.view == CalendarView.day
             ? context.theme.scaffoldBackgroundColor
             : context.colorScheme.background,
         weekNumberBackgroundColor: context.colorScheme.background,
         allDayPanelColor: context.theme.scaffoldBackgroundColor,
-        // Text Styles
+        // Main Text Styles
         todayTextStyle: context.textTheme.bodyLarge,
+        headerTextStyle: context.textTheme.bodyLarge,
+        viewHeaderDateTextStyle: context.isDesktop
+            ? context.textTheme.bodyLarge
+            : context.textTheme.bodyMedium,
+        viewHeaderDayTextStyle: context.isDesktop
+            ? context.textTheme.bodyLarge
+            : context.textTheme.bodyMedium,
         agendaDayTextStyle: context.textTheme.bodyLarge,
         agendaDateTextStyle: context.textTheme.bodyLarge,
-        headerTextStyle: context.textTheme.bodyLarge,
-        viewHeaderDateTextStyle: context.textTheme.bodyLarge,
-        viewHeaderDayTextStyle: context.textTheme.bodyLarge,
+        // Secondary Text Styles
         timeTextStyle: context.textTheme.bodyLarge,
         activeDatesTextStyle: context.textTheme.bodyLarge,
         trailingDatesTextStyle: context.textTheme.bodyLarge,
@@ -390,17 +401,18 @@ class CalendarViewWidget extends StatelessWidget with StringMixin {
       child: SfCalendar(
         // Controller
         controller: calendarController,
+        viewNavigationMode: context.isDesktop
+            ? ViewNavigationMode.none
+            : ViewNavigationMode.snap,
         // Blackout Dates
-        blackoutDates: [
-          DateFormat('dd-MM-yyyy').parse(state.brand.dateJoined!)
-        ],
+        blackoutDates: [dateJoined],
         blackoutDatesTextStyle: context.textTheme.titleMedium,
         showWeekNumber: false,
         weekNumberStyle: WeekNumberStyle(
           textStyle: context.textTheme.labelSmall,
         ),
         // Data
-        minDate: DateFormat('dd-MM-yyyy').parse(state.brand.dateJoined!),
+        minDate: dateJoined,
         dataSource: state.dataSource,
         specialRegions: state.specialRegions,
         // Config
@@ -411,20 +423,20 @@ class CalendarViewWidget extends StatelessWidget with StringMixin {
         todayTextStyle: context.textTheme.bodyLarge
             ?.copyWith(color: context.colorScheme.onPrimary),
         // Header
-        headerHeight: 0,
+        headerHeight: headerHeight,
         // View Header
-        viewHeaderHeight: context.isDesktop ? 70 : 50,
+        viewHeaderHeight: viewHeaderHeight,
         // Time Slot View Settings
         timeSlotViewSettings: TimeSlotViewSettings(
           timeIntervalHeight: timeSlotViewZoom,
-          timeIntervalWidth: 60,
+          timeIntervalWidth: timeIntervalWidth,
           startHour:
               state.startHour != 0 ? state.startHour - 1 : state.startHour,
           endHour: state.endHour != 24 ? state.endHour + 1 : state.endHour,
           timeFormat: 'HH:mm',
           dayFormat: 'EE',
           dateFormat: 'd',
-          timeRulerSize: 50,
+          timeRulerSize: timeRulerSize,
           nonWorkingDays: const [],
           minimumAppointmentDuration: const Duration(minutes: 30),
           timeTextStyle: context.textTheme.bodyMedium,
@@ -450,21 +462,18 @@ class CalendarViewWidget extends StatelessWidget with StringMixin {
           appointmentTextStyle: context.textTheme.bodyMedium,
           dayHeaderSettings: DayHeaderSettings(
             dateTextStyle: context.textTheme.bodyMedium,
-            dayTextStyle: context.textTheme.bodySmall,
+            dayTextStyle: context.textTheme.bodyMedium,
           ),
           weekHeaderSettings: WeekHeaderSettings(
             startDateFormat: 'd',
             endDateFormat: 'd MMMM',
             textAlign: TextAlign.start,
             backgroundColor: context.theme.scaffoldBackgroundColor,
-            weekTextStyle: context.textTheme.bodySmall,
+            weekTextStyle: context.textTheme.bodyMedium,
           ),
           monthHeaderSettings: MonthHeaderSettings(
-            monthFormat: month_year_dateformat,
-            height: 70,
-            textAlign: TextAlign.start,
+            height: 50,
             backgroundColor: context.theme.scaffoldBackgroundColor,
-            monthTextStyle: context.textTheme.headlineMedium,
           ),
         ),
         scheduleViewMonthHeaderBuilder: buildSchduleMonthHeaderWidget,
@@ -498,18 +507,25 @@ class CalendarViewWidget extends StatelessWidget with StringMixin {
 
   Widget buildSchduleMonthHeaderWidget(
       BuildContext context, ScheduleViewMonthHeaderDetails details) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-      child: Text(
-        toCapitalized(
-          DateFormat(
-            month_year_dateformat,
-            context.languageCode,
-          ).format(details.date),
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+          child: Text(
+            toCapitalized(
+              DateFormat(
+                month_year_dateformat,
+                context.languageCode,
+              ).format(details.date),
+            ),
+            style: context.textTheme.titleLarge,
+            textAlign: TextAlign.left,
+          ),
         ),
-        style: context.textTheme.titleLarge,
-        textAlign: TextAlign.left,
-      ),
+      ],
     );
   }
 
@@ -529,4 +545,3 @@ class CalendarViewWidget extends StatelessWidget with StringMixin {
     );
   }
 }
-
