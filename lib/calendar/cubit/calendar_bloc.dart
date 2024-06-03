@@ -134,7 +134,7 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   }
 
   // Called when the current visible date changes in [SfCalendar].
-  void onViewChanged(List<DateTime> visibleDates) {
+  void onViewChanged(CalendarView calendarView, List<DateTime> visibleDates) {
     // Update the Calendar Title;
     String calendarTitle = getCalendarTitle(calendarView, visibleDates);
     // Check if More Events should be Fetched
@@ -146,7 +146,9 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   }
 
   String getCalendarTitle(
-      CalendarView calendarView, List<DateTime> visibleDates) {
+    CalendarView calendarView,
+    List<DateTime> visibleDates,
+  ) {
     String displayDateTitle;
     DateTime dateTimeStart = visibleDates.first;
     DateTime dateTimeEnd = visibleDates.last;
@@ -186,7 +188,7 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
             : "${formatDateRange(dateTimeStart, dateTimeStart.add(const Duration(days: 6)), 'dd')} ${formatDate(dateTimeStart, 'MMMM yyyy')}";
         break;
     }
-
+    
     return displayDateTitle;
   }
 
