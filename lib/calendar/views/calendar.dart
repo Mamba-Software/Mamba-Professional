@@ -205,7 +205,17 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 
   void onCalendarDateChanged(ViewChangedDetails viewChangedDetails) {
-    context.read<CalendarBloc>().onViewChanged(viewChangedDetails.visibleDates);
+    // Check if clicked on 1 day specific
+    print(viewChangedDetails.visibleDates);
+    print(_calendarController.view!);
+    if ( _calendarController.view == CalendarView.day || viewChangedDetails.visibleDates.length == 1) {
+      print("click on a day");
+    }
+    // Update the Right Title
+    context.read<CalendarBloc>().onViewChanged(
+          _calendarController.view!,
+          viewChangedDetails.visibleDates,
+        );
   }
 
   void onTapToday() {
@@ -372,7 +382,8 @@ class CalendarViewWidget extends StatelessWidget with StringMixin {
         leadingDatesBackgroundColor: context.theme.scaffoldBackgroundColor,
         selectionBorderColor: context.colorScheme.primary,
         todayHighlightColor: context.colorScheme.primary,
-        viewHeaderBackgroundColor: context.isDesktop == false || calendarController.view == CalendarView.day
+        viewHeaderBackgroundColor: context.isDesktop == false ||
+                calendarController.view == CalendarView.day
             ? context.theme.scaffoldBackgroundColor
             : context.colorScheme.background,
         weekNumberBackgroundColor: context.colorScheme.background,
