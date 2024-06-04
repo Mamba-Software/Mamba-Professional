@@ -29,6 +29,7 @@ class EventsBloc extends Cubit<EventsState> {
     required this.brandBloc,
     required BrandRepository brandRepository,
   }) : super(const EventsInitial()) {
+    emit(const EventsLoading());
     brandBloc.stream.distinct().listen((state) async {
       // Handle the state change
       if (state.brand.id != null) {

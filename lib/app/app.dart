@@ -10,6 +10,7 @@ import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/brand/data/brand_repository.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
+import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/constants/constants.dart';
@@ -50,6 +51,13 @@ class App extends StatelessWidget {
         userBloc: userBloc,
         brandBloc: brandBloc);
 
+    final calendarBloc = CalendarBloc(
+      userBloc: userBloc,
+      brandBloc: brandBloc,
+      eventBloc: eventBloc,
+      isDesktop: context.isDesktop,
+    );
+
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AnalyticsRepository>(
@@ -71,13 +79,7 @@ class App extends StatelessWidget {
           BlocProvider<HomeManager>(
             create: (context) => HomeManager(),
           ),
-          BlocProvider<CalendarBloc>(
-            create: (context) => CalendarBloc(
-              userBloc: userBloc,
-              brandBloc: brandBloc,
-              eventBloc: eventBloc,
-            ),
-          ),
+          BlocProvider<CalendarBloc>(create: (_) => calendarBloc),
           // Refactor Done
           BlocProvider<AuthCubit>(
             create: (context) => AuthCubit(BlocProvider.of<AuthBloc>(context)),
