@@ -53,7 +53,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBJGhXnhABaxLui_kZeJG49GVlN9iRVyi4',
+    apiKey: 'AIzaSyDWCBS1a-48hOlL8fdRwxeva7h3_NiBA7s',
     appId: '1:1075297360172:web:bc20aa9bc31b96e53c3489',
     messagingSenderId: '1075297360172',
     projectId: 'mamba-fitness-dev',
