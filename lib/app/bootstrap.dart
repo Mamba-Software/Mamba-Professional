@@ -78,6 +78,7 @@ class Bootstrap with PlatformMixin {
         }
         print("Error:");
         print(error);
+        print(stackTrace);        
       },
     );
   }

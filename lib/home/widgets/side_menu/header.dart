@@ -120,7 +120,8 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                           child: Text(
                                             currentUser.name!,
                                             textAlign: TextAlign.left,
-                                            style: context.textTheme.bodyMedium!,
+                                            style:
+                                                context.textTheme.bodyMedium!,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
@@ -180,11 +181,11 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                         Text(
                                           returnBrandRoleString(context),
                                           textAlign: TextAlign.left,
-                                          style:
-                                              context.textTheme.labelMedium!,
+                                          style: context.textTheme.labelMedium!,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                        ),],
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -242,7 +243,7 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                           Flexible(
                             child: Text(
                               currentBrand.name!,
-                              style: context.textTheme.headlineMedium?.copyWith(fontSize: headline1),
+                              style: context.textTheme.headlineMedium?.copyWith(fontSize: 22.5),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),

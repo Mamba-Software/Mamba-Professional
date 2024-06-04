@@ -34,7 +34,7 @@ class CustomSnackbarView extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadiusSmall),
           border: Border.all(
             width: 2,
-            color: _getColor(context),
+            color: _getForegroundColor(context),
             style: BorderStyle.solid,
           ),
         ),
@@ -70,12 +70,12 @@ class CustomSnackbarView extends StatelessWidget {
             if (snackbar.onAccept == null && snackbar.actionText == null)
               const SizedBox(width: 10),
             CountdownIndicator(
-                foregroundColor: _getColor(context),
-                backgroundColor: snackbar.type == SnackbarType.information
-                    ? context.theme.primaryColor
-                    : AppColors.white,
-                snackbar: snackbar,
-                duration: Duration(seconds: snackbarDefaultDuration)),
+              textColor: _getTextColor(context),
+              foregroundColor: _getForegroundColor(context),
+              backgroundColor: _getBackgroundColor(context),
+              snackbar: snackbar,
+              duration: Duration(seconds: snackbarDefaultDuration),
+            ),
             const SizedBox(width: 5),
           ],
         ),
@@ -99,27 +99,31 @@ class CustomSnackbarView extends StatelessWidget {
   }
 
   Widget _getIconForType(BuildContext context) {
-    if (icon != null) {
-      return Icon(
-        icon!,
-        color: color,
-        size: iconSize,
-      );
-    }
     switch (snackbar.type) {
       case SnackbarType.success:
         return Icon(
           Icons.check_circle,
-          color: AppColors.white,
+          color: _getTextColor(context),
           size: iconSize,
         );
       case SnackbarType.error:
         return Icon(
           Icons.error,
-          color: AppColors.white,
+          color: _getTextColor(context),
           size: iconSize,
         );
       case SnackbarType.information:
+        return Icon(
+          Icons.info,
+          color: _getTextColor(context),
+          size: iconSize,
+        );
+      case SnackbarType.custom:
+        return Icon(
+          icon!,
+          color: _getTextColor(context),
+          size: iconSize,
+        );
       default:
         return Icon(
           Icons.info,
@@ -129,38 +133,66 @@ class CustomSnackbarView extends StatelessWidget {
     }
   }
 
-  Color _getColor(BuildContext context) {
-    if (color != null) {
-      return color!;
+  Color _getTextColor(BuildContext context) {
+    // Text and Foreground for Countdown
+    switch (snackbar.type) {
+      case SnackbarType.success:
+        return AppColors.white;
+      case SnackbarType.error:
+        return AppColors.white;
+      case SnackbarType.information:
+        return context.colorScheme.primary;
+      case SnackbarType.custom:
+        return color!;
+      default:
+        return context.colorScheme.primary;
     }
+  }
+
+  Color _getForegroundColor(BuildContext context) {
+    // Border and Background for CountDow
     switch (snackbar.type) {
       case SnackbarType.success:
         return AppColors.green;
       case SnackbarType.error:
         return AppColors.red;
       case SnackbarType.information:
+        return context.colorScheme.primary;
+      case SnackbarType.custom:
+        return color!;
       default:
         return context.colorScheme.primary;
     }
   }
 
   Color _getBackgroundColor(BuildContext context) {
-    if (color != null) {
-      return color!.withOpacity(0.3);
-    }
+    // Background of Snackbar
     switch (snackbar.type) {
       case SnackbarType.success:
         return AppColors.ligtherGreen;
       case SnackbarType.error:
         return AppColors.ligtherRed;
       case SnackbarType.information:
+        return context.colorScheme.background;
+      case SnackbarType.success:
+        return _lightenColor(color!);
       default:
         return context.colorScheme.background;
     }
   }
+
+  // Function to lighten a color
+  Color _lightenColor(Color color, [double amount = 0.35]) {
+    assert(amount >= 0 && amount <= 1, 'Amount should be between 0 and 1');
+    final hsl = HSLColor.fromColor(color);
+    final hslLight =
+        hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+    return hslLight.toColor();
+  }
 }
 
 class CountdownIndicator extends StatelessWidget {
+  final Color textColor;
   final Color foregroundColor;
   final Color backgroundColor;
   final Duration duration;
@@ -168,6 +200,7 @@ class CountdownIndicator extends StatelessWidget {
 
   const CountdownIndicator({
     Key? key,
+    required this.textColor,
     required this.foregroundColor,
     required this.backgroundColor,
     required this.snackbar,

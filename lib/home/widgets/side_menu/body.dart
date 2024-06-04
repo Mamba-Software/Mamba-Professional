@@ -373,7 +373,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                 context.read<HomeManager>().jumpToPage(page);
               } else {
                 CustomSnackbar snackbar = CustomSnackbar(
-                  type: SnackbarType.information,
+                  type: SnackbarType.custom,
                   message: context.l10n.mobileOnly,
                   icon: Icons.smartphone,
                   color: Colors.blue,
@@ -392,7 +392,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                   context.read<HomeManager>().jumpToPage(page);
                 } else {
                   CustomSnackbar snackbar = CustomSnackbar(
-                    type: SnackbarType.information,
+                    type: SnackbarType.custom,
                     message: context.l10n.mobileOnly,
                     icon: Icons.smartphone,
                     color: Colors.blue,

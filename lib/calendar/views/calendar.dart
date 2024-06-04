@@ -205,12 +205,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 
   void onCalendarDateChanged(ViewChangedDetails viewChangedDetails) {
-    // Check if clicked on 1 day specific
-    print(viewChangedDetails.visibleDates);
-    print(_calendarController.view!);
-    if ( _calendarController.view == CalendarView.day || viewChangedDetails.visibleDates.length == 1) {
-      print("click on a day");
-    }
     // Update the Right Title
     context.read<CalendarBloc>().onViewChanged(
           _calendarController.view!,
