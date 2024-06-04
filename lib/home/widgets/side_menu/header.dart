@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -7,6 +8,7 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/mixin/brand_role_mixin.dart';
@@ -80,20 +82,25 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            CircularImage(
-                              size: width * 0.2,
-                              image: currentBrand.logoUrl,
-                              borderWidth: 1,
-                              color: dividerColor,
+                            SizedBox(
+                              height: width * 0.22,
+                              child: Center(
+                                child: CircularImage(
+                                  size: width * 0.2,
+                                  image: currentBrand.logoUrl,
+                                  borderWidth: 1,
+                                  color: dividerColor,
+                                ),
+                              ),
                             ),
                             SizedBox(
                               width: width * 0.05,
                             ),
                             Expanded(
                               child: SizedBox(
-                                height: width * 0.2,
+                                height: width * 0.3,
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Flexible(
@@ -110,17 +117,12 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                           MainAxisAlignment.start,
                                       children: [
                                         Flexible(
-                                          child: GestureDetector(
-                                            onTap: () =>
-                                                navigateToRolesInformationModal,
-                                            child: Text(
-                                              returnBrandRoleString(context),
-                                              textAlign: TextAlign.left,
-                                              style:
-                                                  context.textTheme.bodyMedium!,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
+                                          child: Text(
+                                            currentUser.name!,
+                                            textAlign: TextAlign.left,
+                                            style: context.textTheme.bodyMedium!,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
                                         SizedBox(width: defaultPaddingSmall),
@@ -151,8 +153,7 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                             children: [
                                               Icon(
                                                 Icons.qr_code,
-                                                color: context
-                                                    .colorScheme.secondary,
+                                                color: AppColors.onMambaDark,
                                                 size: iconSizeSmall,
                                               ),
                                               SizedBox(
@@ -163,14 +164,27 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                                 style: context
                                                     .textTheme.bodyMedium!
                                                     .copyWith(
-                                                  color: context
-                                                      .colorScheme.secondary,
+                                                  color: AppColors.onMambaDark,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         )
                                       ],
+                                    ),
+                                    SizedBox(height: defaultPaddingSmall / 2),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          returnBrandRoleString(context),
+                                          textAlign: TextAlign.left,
+                                          style:
+                                              context.textTheme.labelMedium!,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),],
                                     ),
                                   ],
                                 ),
@@ -219,16 +233,19 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                               color: context.colorScheme.primary,
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                image: AssetImage(
-                                  Assets.mambaLogoIcon,
-                                ),
+                                image: CachedNetworkImageProvider(
+                                    currentBrand.baseImage!),
                               ),
                             ),
                           ),
                           SizedBox(width: defaultPaddingSmall),
-                          Text(
-                            appName,
-                            style: context.textTheme.headlineLarge,
+                          Flexible(
+                            child: Text(
+                              currentBrand.name!,
+                              style: context.textTheme.headlineMedium?.copyWith(fontSize: headline1),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       ),

@@ -5,6 +5,7 @@ import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
+import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Badges/MobileBadge.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/mixin/brand_role_mixin.dart';
@@ -112,7 +113,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            currentBrand.name!,
+                            currentUser.name!,
                             style: context.textTheme.labelLarge!.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -121,7 +122,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                           TextButton(
                             style: TextButton.styleFrom(
                               backgroundColor: context.colorScheme.secondary
-                                  .withOpacity(0.3),
+                                  .withOpacity(0.25),
                               padding: EdgeInsets.symmetric(
                                   horizontal: defaultPaddingSmall),
                               shape: RoundedRectangleBorder(
@@ -129,26 +130,30 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                 borderRadius:
                                     BorderRadius.circular(borderRadiusSmall),
                               ),
-                              minimumSize: const Size(30, 30),
+                              minimumSize: const Size(40, 30),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                             onPressed: () => {},
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
                                   Icons.qr_code,
-                                  color: context.colorScheme.secondary,
+                                  color: AppColors.onMambaDark,
                                   size: iconSizeSmall,
                                 ),
                                 SizedBox(
                                   width: defaultPaddingSmall,
                                 ),
-                                Text(
-                                  context.l10n.invite,
-                                  style: context.textTheme.bodyMedium!.copyWith(
-                                    color: context.colorScheme.secondary,
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 1.0),
+                                  child: Text(
+                                    context.l10n.invite,
+                                    style: context.textTheme.bodyMedium!.copyWith(
+                                      color: AppColors.onMambaDark,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -249,7 +254,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                       child: TextButton(
                         style: TextButton.styleFrom(
                           backgroundColor:
-                              context.colorScheme.secondary.withOpacity(0.3),
+                              context.colorScheme.secondary.withOpacity(0.25),
                           padding: EdgeInsets.all(defaultPaddingSmall),
                           shape:
                               const CircleBorder(), // Changed to CircleBorder
@@ -260,7 +265,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                         onPressed: () => {},
                         child: Icon(
                           Icons.qr_code,
-                          color: context.colorScheme.secondary,
+                          color: AppColors.onMambaDark,
                           size: iconSize,
                         ),
                       ),
