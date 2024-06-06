@@ -40,7 +40,7 @@ class CalendarMain extends StatelessWidget {
 
         context.read<CalendarBloc>().setVariables(displayDateTitleAux, locale);
 
-        return Calendar();
+        return const Calendar();
       },
     );
   }
