@@ -34,7 +34,7 @@ class ResponsiveEvent extends StatelessWidget with PlatformMixin {
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius:
-                      BorderRadius.circular(8.0), // Adjust the radius as needed
+                      BorderRadius.circular(2.0), // Adjust the radius as needed
                 ),
                 child: Padding(
                     padding: EdgeInsets.all(defaultPadding), child: child)),
