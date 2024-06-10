@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
-import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Badges/MobileBadge.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/mixin/brand_role_mixin.dart';
@@ -96,6 +94,9 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
           ),
         );
       } else {
+        // Variables
+        Color buttonColor =
+            isWeb ? context.theme.disabledColor : context.colorScheme.secondary;
         // Header Widget
         if (width == sideMenuWidth) {
           return Expanded(
@@ -121,8 +122,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                           ),
                           TextButton(
                             style: TextButton.styleFrom(
-                              backgroundColor: context.colorScheme.secondary
-                                  .withOpacity(0.25),
+                              backgroundColor: buttonColor.withOpacity(0.25),
                               padding: EdgeInsets.symmetric(
                                   horizontal: defaultPaddingSmall),
                               shape: RoundedRectangleBorder(
@@ -133,7 +133,8 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                               minimumSize: const Size(40, 30),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
-                            onPressed: () => {},
+                            onPressed: () =>
+                                              navigateShareBrandLink(context),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,7 +142,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                               children: [
                                 Icon(
                                   Icons.qr_code,
-                                  color: context.colorScheme.secondary,
+                                  color: buttonColor,
                                   size: iconSizeSmall,
                                 ),
                                 SizedBox(
@@ -153,7 +154,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                     context.l10n.invite,
                                     style:
                                         context.textTheme.bodyMedium!.copyWith(
-                                      color: context.colorScheme.secondary,
+                                      color: buttonColor,
                                     ),
                                   ),
                                 ),
@@ -162,15 +163,12 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                           )
                         ],
                       ),
-                      GestureDetector(
-                        onTap: () => navigateToRolesInformationModal,
-                        child: Text(
-                          returnBrandRoleString(context),
-                          textAlign: TextAlign.left,
-                          style: context.textTheme.labelLarge!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                      Text(
+                        returnBrandRoleString(context),
+                        textAlign: TextAlign.left,
+                        style: context.textTheme.labelLarge!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -338,7 +336,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
   }
 }
 
-class BodyTile extends StatelessWidget with HomeTileMixin {
+class BodyTile extends StatelessWidget with HomeTileMixin, PlatformMixin {
   final HomeNavigationPage page;
   final bool? webSupported;
 
@@ -363,7 +361,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 returnTextWidget(context, page),
-                if (webSupported == null) const OnlyMobileBadge(),
+                if (webSupported == null && isWeb) const OnlyMobileBadge(),
               ],
             ),
             onTap: () {
@@ -422,7 +420,8 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                           context.textTheme.bodyLarge!
                               .copyWith(fontSize: title1),
                         ),
-                        if (webSupported == null) const OnlyMobileBadge(),
+                        if (webSupported == null && isWeb)
+                          const OnlyMobileBadge(),
                       ],
                     ),
                     selected: state.page == page,

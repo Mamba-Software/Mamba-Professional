@@ -6,9 +6,13 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
+import 'package:mamba/commons/widgets/Components/Badges/MobileBadge.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/models/home_nav_page.dart';
+import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
+import 'package:mamba/snackbar/models/custom_snackbar.dart';
+import 'package:mamba/snackbar/models/snackbar_type.dart';
 
 class Footer extends StatelessWidget with PlatformMixin {
   final double width;
@@ -31,7 +35,23 @@ class Footer extends StatelessWidget with PlatformMixin {
         TextStyle labelStyle = context.textTheme.labelMedium!;
         // Variables Based on the Bloc State
         String title, subtitle;
-        Function onTap;
+        onTap() {
+          bool isWebSupported = context
+              .read<HomeManager>()
+              .isWebSupported(HomeNavigationPage.PLAN);
+          if (isWebSupported) {
+            context.read<HomeManager>().jumpToPage(HomeNavigationPage.PLAN);
+          } else {
+            CustomSnackbar snackbar = CustomSnackbar(
+              type: SnackbarType.custom,
+              message: context.l10n.mobileOnly,
+              icon: Icons.smartphone,
+              color: Colors.blue,
+            );
+            context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+          }
+        }
+
         if (state is BrandSuscriptionLoadedTrue) {
           int difference = DateTime.now()
               .difference(state.subscription.endDate!.toDate())
@@ -45,15 +65,9 @@ class Footer extends StatelessWidget with PlatformMixin {
             title = context.l10n.monthlyPlan;
             subtitle = context.l10n.monthlyPlanDayRenewal(date);
           }
-          onTap = () => context
-              .read<HomeManager>()
-              .jumpToPage(HomeNavigationPage.PLAN);
         } else if (state is BrandSuscriptionLoadedFalse) {
           title = context.l10n.chooseYourPlan;
           subtitle = context.l10n.chooseYourPlanDesc;
-          onTap = () => context
-              .read<HomeManager>()
-              .jumpToPage(HomeNavigationPage.PLAN);
         } else {
           // Return an empty container in case no relevant state is present
           return Container();
@@ -71,7 +85,7 @@ class Footer extends StatelessWidget with PlatformMixin {
                   height: 1,
                 ),
                 TextButton(
-                  onPressed: () => onTap,
+                  onPressed: () => onTap(),
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.all(defaultPadding),
                     backgroundColor: context.colorScheme.background,
@@ -87,10 +101,15 @@ class Footer extends StatelessWidget with PlatformMixin {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
-                          style: titleStyle,
-                          textAlign: TextAlign.left,
+                        Row(
+                          children: [
+                            Text(
+                              title,
+                              style: titleStyle,
+                              textAlign: TextAlign.left,
+                            ),
+                            if (isWeb) const OnlyMobileBadge(),
+                          ],
                         ),
                         Text(
                           subtitle,
@@ -115,7 +134,7 @@ class Footer extends StatelessWidget with PlatformMixin {
                     height: 1,
                   ),
                   TextButton(
-                    onPressed: () => onTap,
+                    onPressed: () => onTap(),
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.all(defaultPadding),
                       backgroundColor: context.colorScheme.background,
@@ -131,10 +150,15 @@ class Footer extends StatelessWidget with PlatformMixin {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            title,
-                            style: titleStyle,
-                            textAlign: TextAlign.left,
+                          Row(
+                            children: [
+                              Text(
+                                title,
+                                style: titleStyle,
+                                textAlign: TextAlign.left,
+                              ),
+                              if (isWeb) const OnlyMobileBadge(),
+                            ],
                           ),
                           Text(
                             subtitle,
@@ -172,7 +196,7 @@ class Footer extends StatelessWidget with PlatformMixin {
                         child: Icon(
                           Icons.corporate_fare,
                           color: context.colorScheme.primary,
-                          size: iconSizeBig-5,
+                          size: iconSizeBig - 5,
                         ),
                       ),
                     ),

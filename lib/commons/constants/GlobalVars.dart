@@ -1,11 +1,17 @@
 // This file contains all the Global Variabels used throgh the App.
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/LibraryModels/lColor.dart';
 import 'package:mamba/data/LibraryModels/lDegradate.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Usuario.dart';
+import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
+import 'package:mamba/snackbar/models/custom_snackbar.dart';
+import 'package:mamba/snackbar/models/snackbar_type.dart';
 import 'package:mamba/user/chat/ChatCore.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
@@ -39,8 +45,6 @@ Mixpanel? mixpanel;
 bool isExecuted = false; // Initialize the flag as a member variable.
 // Dynamic Links Path
 var dynamicLinkBrandId;
-
-
 
 //JMF 18042023 REVENUECAT
 void setBrandActive() {
@@ -124,27 +128,60 @@ void navigateToProfileScreen(BuildContext context) {
 
 // Navigate to Notifications Screen
 Future<void> navigateToNotificationsScreen(BuildContext context) async {
-  Navigator.push(
+  if (kIsWeb) {
+    CustomSnackbar snackbar = CustomSnackbar(
+      type: SnackbarType.custom,
+      message: context.l10n.mobileOnly,
+      icon: Icons.smartphone,
+      color: Colors.blue,
+    );
+    context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+  } else {
+    Navigator.push(
       context,
       CupertinoPageRoute<void>(
         builder: (context) => const Notifications(),
-      ));
+      ),
+    );
+  }
 }
 
 // Navigate to Notifications Screen
 Future<void> navigateToChatScreen(BuildContext context) async {
-  Navigator.push(
+  if (kIsWeb) {
+    CustomSnackbar snackbar = CustomSnackbar(
+      type: SnackbarType.custom,
+      message: context.l10n.mobileOnly,
+      icon: Icons.smartphone,
+      color: Colors.blue,
+    );
+    context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+  } else {
+    Navigator.push(
       context,
       CupertinoPageRoute<void>(
         builder: (context) => const ChatCore(),
-      ));
+      ),
+    );
+  }
 }
 
 // Navigate to Feedback Screen
 void navigateToMainFeedbackScreen(BuildContext context) {
-  Navigator.push(
+  if (kIsWeb) {
+    CustomSnackbar snackbar = CustomSnackbar(
+      type: SnackbarType.custom,
+      message: context.l10n.mobileOnly,
+      icon: Icons.smartphone,
+      color: Colors.blue,
+    );
+    context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+  } else {
+    Navigator.push(
       context,
       CupertinoPageRoute<void>(
         builder: (context) => const FeedBack(),
-      ));
+      ),
+    );
+  }
 }

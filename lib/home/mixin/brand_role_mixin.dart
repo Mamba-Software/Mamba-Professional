@@ -1,9 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
+import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
+import 'package:mamba/snackbar/models/custom_snackbar.dart';
+import 'package:mamba/snackbar/models/snackbar_type.dart';
+import 'package:provider/provider.dart';
 
 mixin BrandRoleMixin {
 // Navigate to Bonos Request Screen
@@ -28,22 +33,32 @@ mixin BrandRoleMixin {
   }
 
   Future<void> navigateShareBrandLink(BuildContext context) async {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+    if (kIsWeb) {
+      CustomSnackbar snackbar = CustomSnackbar(
+        type: SnackbarType.custom,
+        message: context.l10n.mobileOnly,
+        icon: Icons.smartphone,
+        color: Colors.blue,
+      );
+      context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
+    } else {
+      showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
         ),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (BuildContext context) {
-        return const FractionallySizedBox(
-          heightFactor: 0.8,
-          child: ShareBrandLink(),
-        );
-      },
-    );
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        builder: (BuildContext context) {
+          return const FractionallySizedBox(
+            heightFactor: 0.8,
+            child: ShareBrandLink(),
+          );
+        },
+      );
+    }
   }
 
   String returnBrandRoleString(BuildContext context) {

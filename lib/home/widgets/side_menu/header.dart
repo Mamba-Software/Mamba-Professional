@@ -32,6 +32,10 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
           double width = sideMenuWidth;
           Color dividerColor = context.theme.dividerColor;
           Color backgroundColor = context.colorScheme.background;
+          // Variables
+          Color buttonColor = isWeb
+              ? context.theme.disabledColor
+              : context.colorScheme.secondary;
           // Header Widget
           return SizedBox(
             height: height,
@@ -129,9 +133,8 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                         SizedBox(width: defaultPaddingSmall),
                                         TextButton(
                                           style: TextButton.styleFrom(
-                                            backgroundColor: context
-                                                .colorScheme.secondary
-                                                .withOpacity(0.3),
+                                            backgroundColor:
+                                                buttonColor.withOpacity(0.3),
                                             padding: EdgeInsets.symmetric(
                                                 horizontal:
                                                     defaultPaddingSmall),
@@ -141,12 +144,13 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                                   BorderRadius.circular(
                                                       defaultPaddingSmall),
                                             ),
-                                            minimumSize: const Size(30, 30),
+                                            minimumSize:
+                                                Size(30, isWeb ? 30 : 25),
                                             tapTargetSize: MaterialTapTargetSize
                                                 .shrinkWrap,
                                           ),
                                           onPressed: () =>
-                                              navigateShareBrandLink,
+                                              navigateShareBrandLink(context),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -154,7 +158,7 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                             children: [
                                               Icon(
                                                 Icons.qr_code,
-                                                color: context.colorScheme.secondary,
+                                                color: buttonColor,
                                                 size: iconSizeSmall,
                                               ),
                                               SizedBox(
@@ -165,7 +169,7 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                                 style: context
                                                     .textTheme.bodyMedium!
                                                     .copyWith(
-                                                  color: context.colorScheme.secondary,
+                                                  color: buttonColor,
                                                 ),
                                               ),
                                             ],
@@ -243,7 +247,8 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                           Flexible(
                             child: Text(
                               currentBrand.name!,
-                              style: context.textTheme.headlineMedium?.copyWith(fontSize: 22.5),
+                              style: context.textTheme.headlineMedium
+                                  ?.copyWith(fontSize: 22.5),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
