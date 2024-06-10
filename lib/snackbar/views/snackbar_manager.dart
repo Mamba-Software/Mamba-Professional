@@ -25,9 +25,7 @@ class SnackbarManager extends StatelessWidget {
   }
 
   double getPadding(BuildContext context) {
-    if (context.isMobile) {
-      return 5.0;
-    } else if (context.isTablet) {
+    if (context.isMobile || context.isTablet ) {    
       return 8.0;
     } else {
       return 10;

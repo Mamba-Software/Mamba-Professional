@@ -87,10 +87,7 @@ class CustomSnackbarView extends StatelessWidget {
     var textStyle = context.isDesktop
         ? context.textTheme.bodyLarge
         : context.textTheme.bodyMedium;
-    final color = (snackbar.type == SnackbarType.error ||
-            snackbar.type == SnackbarType.success)
-        ? Colors.white
-        : context.colorScheme.primary;
+    final color = _getTextColor(context);
     return isTitle
         ? context.textTheme.titleLarge?.copyWith(color: color)
         : textStyle?.copyWith(
@@ -103,31 +100,31 @@ class CustomSnackbarView extends StatelessWidget {
       case SnackbarType.success:
         return Icon(
           Icons.check_circle,
-          color: _getTextColor(context),
+          color: _getForegroundColor(context),
           size: iconSize,
         );
       case SnackbarType.error:
         return Icon(
           Icons.error,
-          color: _getTextColor(context),
+          color: _getForegroundColor(context),
           size: iconSize,
         );
       case SnackbarType.information:
         return Icon(
           Icons.info,
-          color: _getTextColor(context),
+          color: _getForegroundColor(context),
           size: iconSize,
         );
       case SnackbarType.custom:
         return Icon(
           icon!,
-          color: _getTextColor(context),
+          color: _getForegroundColor(context),
           size: iconSize,
         );
       default:
         return Icon(
           Icons.info,
-          color: context.colorScheme.primary,
+          color: _getForegroundColor(context),
           size: iconSize,
         );
     }
@@ -137,13 +134,13 @@ class CustomSnackbarView extends StatelessWidget {
     // Text and Foreground for Countdown
     switch (snackbar.type) {
       case SnackbarType.success:
-        return AppColors.white;
+        return getContrastColor(_lightenColor(AppColors.green));
       case SnackbarType.error:
-        return AppColors.white;
+        return getContrastColor(_lightenColor(AppColors.red));
       case SnackbarType.information:
         return context.colorScheme.primary;
       case SnackbarType.custom:
-        return color!;
+        return getContrastColor(color!);
       default:
         return context.colorScheme.primary;
     }
@@ -169,12 +166,12 @@ class CustomSnackbarView extends StatelessWidget {
     // Background of Snackbar
     switch (snackbar.type) {
       case SnackbarType.success:
-        return AppColors.ligtherGreen;
+        return _lightenColor(AppColors.green);
       case SnackbarType.error:
-        return AppColors.ligtherRed;
+        return _lightenColor(Colors.red);
       case SnackbarType.information:
         return context.colorScheme.background;
-      case SnackbarType.success:
+      case SnackbarType.custom:
         return _lightenColor(color!);
       default:
         return context.colorScheme.background;
@@ -188,6 +185,16 @@ class CustomSnackbarView extends StatelessWidget {
     final hslLight =
         hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
     return hslLight.toColor();
+  }
+
+  Color getContrastColor(Color backgroundColor) {
+    // Calculate the luminance of the background color
+    double luminance = (0.299 * backgroundColor.red +
+            0.587 * backgroundColor.green +
+            0.114 * backgroundColor.blue) /
+        255;
+    // Return black or white based on the luminance
+    return luminance > 0.4 ? AppColors.black : AppColors.white;
   }
 }
 
@@ -221,15 +228,12 @@ class CountdownIndicator extends StatelessWidget {
             child: CircularProgressIndicator(
               value: value,
               strokeWidth: 1.5,
-              backgroundColor: snackbar.type == SnackbarType.information
-                  ? context.theme.scaffoldBackgroundColor
-                  : foregroundColor,
+              backgroundColor: foregroundColor,
               valueColor: AlwaysStoppedAnimation<Color>(backgroundColor),
             ),
           ),
           Text("${(value * duration.inSeconds).ceil()}",
-              style: context.textTheme.bodyMedium
-                  ?.copyWith(color: backgroundColor)),
+              style: context.textTheme.bodyMedium?.copyWith(color: textColor)),
         ],
       ),
     );

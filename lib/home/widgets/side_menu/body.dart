@@ -151,7 +151,8 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                   padding: const EdgeInsets.only(top: 1.0),
                                   child: Text(
                                     context.l10n.invite,
-                                    style: context.textTheme.bodyMedium!.copyWith(
+                                    style:
+                                        context.textTheme.bodyMedium!.copyWith(
                                       color: context.colorScheme.secondary,
                                     ),
                                   ),
@@ -362,8 +363,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 returnTextWidget(context, page),
-                if (context.isDesktop && webSupported == null)
-                  const OnlyMobileBadge(),
+                if (webSupported == null) const OnlyMobileBadge(),
               ],
             ),
             onTap: () {
