@@ -4,11 +4,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/Login.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
+import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/views/brand_screen.dart';
@@ -23,6 +25,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/Bran
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
+import 'package:mamba/user/Profile/Profile.dart';
 import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 
@@ -31,16 +34,21 @@ class HomePage extends StatelessWidget {
   static GoRoute route = GoRoute(
     name: routeName,
     path: '/',
-    builder: (BuildContext context, GoRouterState state) => HomePage(),
+    pageBuilder: (BuildContext context, GoRouterState state) =>
+        CustomTransitions.instance.customTransitionPage(
+      state: state,
+      child: HomePage(),
+    ),
+    routes: [
+      Profile.route,
+      Calendar.route,
+    ],
   );
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider<HomeManager>(
-          create: (context) => HomeManager(),
-        ),
+      providers: [        
         BlocProvider<CalendarBloc>(
           create: (context) => CalendarBloc(
             context: context,

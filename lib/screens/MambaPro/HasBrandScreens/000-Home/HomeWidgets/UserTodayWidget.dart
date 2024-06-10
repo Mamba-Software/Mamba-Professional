@@ -17,7 +17,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/Calendars/BrandEventCard
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
-import 'package:mamba/screens/MambaPro/Profile/Profile.dart';
+import 'package:mamba/user/profile/Profile.dart';
 
 class UserTodayWidget extends StatefulWidget {
   ValueChanged<bool?> onClicked;

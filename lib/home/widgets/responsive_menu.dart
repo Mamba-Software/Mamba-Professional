@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
-import 'package:mamba/home/models/home_nav_page.dart';
-import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
 import 'package:mamba/home/widgets/side_menu/side_menu.dart';
 
-// ignore: must_be_immutable
 class ResponsiveMenu extends StatelessWidget {
   final Widget child;
 

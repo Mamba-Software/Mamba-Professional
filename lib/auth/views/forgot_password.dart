@@ -8,7 +8,6 @@ import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/auth/widgets/signin_button.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';

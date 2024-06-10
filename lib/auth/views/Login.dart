@@ -1,5 +1,4 @@
 import 'package:external_app_launcher/external_app_launcher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +15,6 @@ import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/home/views/home.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
@@ -43,13 +41,6 @@ class Login extends StatefulWidget {
   );
 
   const Login({super.key});
-
-  static Route routeDir() {
-    return MaterialPageRoute<void>(
-      builder: (_) => const Login(),
-      settings: const RouteSettings(name: 'Login'),
-    );
-  }
 
   @override
   _LoginState createState() => _LoginState();

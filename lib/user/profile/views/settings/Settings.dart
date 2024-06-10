@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/views/login.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
@@ -18,8 +20,8 @@ import 'package:mamba/commons/utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
-import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Settings/SettingsLanguage.dart';
+import 'package:mamba/user/profile/views/Feedback/Help.dart';
+import 'package:mamba/user/profile/views/Settings/SettingsLanguage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -31,7 +33,21 @@ import 'SettingsTheme.dart';
 import 'SettingsYourData.dart';
 
 class Settings extends StatefulWidget {
+  
+  static String routeName = 'setings';
+  
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: 'setings',
+    pageBuilder: (BuildContext context, GoRouterState state) =>
+        CustomTransitions.instance.customTransitionPage(
+      state: state,
+      child: const Settings(),
+    ),
+  );
+  
   const Settings({super.key});
+  
   @override
   _SettingsState createState() => _SettingsState();
 }

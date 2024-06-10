@@ -17,6 +17,7 @@ import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
+import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/popups/views/popup_manager.dart';
 import 'package:mamba/settings/data/settings_repository.dart';
@@ -81,6 +82,9 @@ class App extends StatelessWidget {
           ),
           BlocProvider<SnackbarCubit>(
             create: (context) => SnackbarCubit(),
+          ),
+          BlocProvider<HomeManager>(
+            create: (context) => HomeManager(),
           ),
           // To Be Refactored
           BlocProvider<ClientSessionsCubit>(

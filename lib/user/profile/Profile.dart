@@ -1,8 +1,8 @@
-import 'dart:io';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,15 +21,32 @@ import 'package:mamba/commons/widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsMade.dart';
-import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
-import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
-import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Settings/SettingsYourData.dart';
+import 'package:mamba/home/widgets/responsive_menu.dart';
+import 'package:mamba/user/profile/views/Feedback/Help.dart';
+import 'package:mamba/user/profile/views/settings/Settings.dart';
+import 'package:mamba/user/profile/views/settings/SettingsYourData.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 // Profile Page
 class Profile extends StatefulWidget {
+  
+  static String routeName = 'profile';
+
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: "profile",
+    pageBuilder: (BuildContext context, GoRouterState state) =>
+        CustomTransitions.instance.customTransitionPage(
+      state: state,
+      child: const Profile(),
+    ),
+    routes: [
+      Settings.route,
+    ],
+  );
+  
   const Profile({super.key});
 
   @override
@@ -1074,146 +1091,148 @@ class _ProfileState extends State<Profile> with PlatformMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-        elevation: 0,
-        backgroundColor: AppColors.black,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                buildTopCurvedContainer(),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.12,
-                        width: MediaQuery.of(context).size.width * 0.12,
-                        child: MaterialButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          elevation: 4,
-                          color: AppColors.white,
-                          textColor: AppColors.black,
-                          padding: EdgeInsets.zero,
-                          shape: const CircleBorder(),
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: AppColors.black,
-                            size: MediaQuery.of(context).size.height * 0.035,
+    return ResponsiveMenu(
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
+          elevation: 0,
+          backgroundColor: AppColors.black,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+        ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  buildTopCurvedContainer(),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.12,
+                          width: MediaQuery.of(context).size.width * 0.12,
+                          child: MaterialButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            elevation: 4,
+                            color: AppColors.white,
+                            textColor: AppColors.black,
+                            padding: EdgeInsets.zero,
+                            shape: const CircleBorder(),
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: AppColors.black,
+                              size: MediaQuery.of(context).size.height * 0.035,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.12,
-                        width: MediaQuery.of(context).size.width * 0.12,
-                        child: MaterialButton(
-                          onPressed: navigateToSettingsScreen,
-                          elevation: 4,
-                          color: AppColors.white,
-                          textColor: AppColors.black,
-                          padding: EdgeInsets.zero,
-                          shape: const CircleBorder(),
-                          child: Icon(
-                            Icons.settings_outlined,
-                            color: AppColors.black,
-                            size: MediaQuery.of(context).size.height * 0.035,
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.12,
+                          width: MediaQuery.of(context).size.width * 0.12,
+                          child: MaterialButton(
+                            onPressed: navigateToSettingsScreen,
+                            elevation: 4,
+                            color: AppColors.white,
+                            textColor: AppColors.black,
+                            padding: EdgeInsets.zero,
+                            shape: const CircleBorder(),
+                            child: Icon(
+                              Icons.settings_outlined,
+                              color: AppColors.black,
+                              size: MediaQuery.of(context).size.height * 0.035,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.26,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Material(
-                          elevation: 4,
-                          shape: const CircleBorder(),
-                          child: buildUserPicture()),
-                      const SizedBox(height: 12),
-                      buildUserTitle(),
-                    ],
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.26,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Material(
+                            elevation: 4,
+                            shape: const CircleBorder(),
+                            child: buildUserPicture()),
+                        const SizedBox(height: 12),
+                        buildUserTitle(),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-            buildUserStatsEvent(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-            buildUserProgressWidget(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-            buildContainersWidget(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.008),
-            Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                CarouselSlider(
-                  items: buildProfileCarousel,
-                  carouselController: _controller,
-                  options: CarouselOptions(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    autoPlay: false,
-                    initialPage: _current,
-                    viewportFraction: 1,
-                    enlargeCenterPage: false,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _current = index;
-                      });
-                    },
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+              buildUserStatsEvent(),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+              buildUserProgressWidget(),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              buildContainersWidget(),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.008),
+              Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  CarouselSlider(
+                    items: buildProfileCarousel,
+                    carouselController: _controller,
+                    options: CarouselOptions(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      autoPlay: false,
+                      initialPage: _current,
+                      viewportFraction: 1,
+                      enlargeCenterPage: false,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          _current = index;
+                        });
+                      },
+                    ),
                   ),
-                ),
-                Positioned(
-                  bottom: isAndroid
-                      ? MediaQuery.of(context).size.height * 0.03
-                      : MediaQuery.of(context).size.height * 0.06,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: buildProfileCarousel.asMap().entries.map((entry) {
-                      return GestureDetector(
-                        onTap: () => _controller.animateToPage(entry.key),
-                        child: Container(
-                          width: 8.0,
-                          height: 8.0,
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 4.0),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: (Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black)
-                                  .withOpacity(
-                                      _current == entry.key ? 0.9 : 0.4)),
-                        ),
-                      );
-                    }).toList(),
+                  Positioned(
+                    bottom: isAndroid
+                        ? MediaQuery.of(context).size.height * 0.03
+                        : MediaQuery.of(context).size.height * 0.06,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: buildProfileCarousel.asMap().entries.map((entry) {
+                        return GestureDetector(
+                          onTap: () => _controller.animateToPage(entry.key),
+                          child: Container(
+                            width: 8.0,
+                            height: 8.0,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 4.0),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: (Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black)
+                                    .withOpacity(
+                                        _current == entry.key ? 0.9 : 0.4)),
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-          ],
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+            ],
+          ),
         ),
       ),
     );

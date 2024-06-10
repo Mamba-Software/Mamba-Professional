@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
 import 'package:mamba/calendar/widgets/calendar_action_button.dart';
 import 'package:mamba/calendar/widgets/calendar_appbar.dart';
@@ -26,6 +28,19 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
 class Calendar extends StatefulWidget {
+  static String routeName = 'calendar';
+
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: "calendar",
+    pageBuilder: (BuildContext context, GoRouterState state) =>
+        CustomTransitions.instance.customTransitionPage(
+      state: state,
+      child: const Calendar(),
+    ),
+    routes: const [],
+  );
+
   const Calendar({
     super.key,
   });

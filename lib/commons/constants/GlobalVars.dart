@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/LibraryModels/lColor.dart';
 import 'package:mamba/data/LibraryModels/lDegradate.dart';
@@ -16,8 +17,8 @@ import 'package:mamba/user/chat/ChatCore.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/notifications/NotificationService/Notifications.dart';
-import 'package:mamba/screens/MambaPro/Profile/Profile.dart';
-import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
+import 'package:mamba/user/profile/Profile.dart';
+import 'package:mamba/user/profile/views/Feedback/Help.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 List<lColor> currentColors = [];
@@ -118,12 +119,7 @@ Future<void> navigateToPayWall(BuildContext context,
 
 // Navigate to Notifications Screen
 void navigateToProfileScreen(BuildContext context) {
-  Navigator.push(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => const Profile(),
-        settings: const RouteSettings(name: 'Profile'),
-      ));
+  context.goNamed(Profile.routeName);
 }
 
 // Navigate to Notifications Screen
