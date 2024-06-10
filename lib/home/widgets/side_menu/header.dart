@@ -154,7 +154,7 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                             children: [
                                               Icon(
                                                 Icons.qr_code,
-                                                color: AppColors.onMambaDark,
+                                                color: context.colorScheme.secondary,
                                                 size: iconSizeSmall,
                                               ),
                                               SizedBox(
@@ -165,7 +165,7 @@ class Header extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                                 style: context
                                                     .textTheme.bodyMedium!
                                                     .copyWith(
-                                                  color: AppColors.onMambaDark,
+                                                  color: context.colorScheme.secondary,
                                                 ),
                                               ),
                                             ],

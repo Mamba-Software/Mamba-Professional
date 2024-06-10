@@ -141,7 +141,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                               children: [
                                 Icon(
                                   Icons.qr_code,
-                                  color: AppColors.onMambaDark,
+                                  color: context.colorScheme.secondary,
                                   size: iconSizeSmall,
                                 ),
                                 SizedBox(
@@ -152,7 +152,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                   child: Text(
                                     context.l10n.invite,
                                     style: context.textTheme.bodyMedium!.copyWith(
-                                      color: AppColors.onMambaDark,
+                                      color: context.colorScheme.secondary,
                                     ),
                                   ),
                                 ),
@@ -265,7 +265,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                         onPressed: () => {},
                         child: Icon(
                           Icons.qr_code,
-                          color: AppColors.onMambaDark,
+                          color: context.colorScheme.secondary,
                           size: iconSize,
                         ),
                       ),
