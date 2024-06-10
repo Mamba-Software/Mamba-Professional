@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mamba/commons/mixins/color.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/styles/AppThemeData.dart';
 import 'package:mamba/commons/constants/constants.dart';
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
-class AppThemes {
+class AppThemes with ColorMixin {
   ThemeData lightTheme([Color? specificHighlghtColor]) {
     // Define Colors
     Color brandColor = specificHighlghtColor ?? AppColors.mamba;
-    Color complementaryColor = specificHighlghtColor ?? AppColors.mamba;
+    Color complementaryColor = specificHighlghtColor != null ? complementaryMonochromaticColor(specificHighlghtColor) : AppColors.mamba;
     Color primaryColor = AppColors.black;
     Color primaryColorDark = AppColors.darkerGrey;
     Color primaryColorLight = AppColors.grey;
@@ -281,7 +282,7 @@ class AppThemes {
   ThemeData darkTheme([Color? specificHighlghtColor]) {
     // Define Colors
     Color brandColor = specificHighlghtColor ?? AppColors.mamba;
-    Color complementaryColor = specificHighlghtColor ?? AppColors.mambaComplimentary;
+    Color complementaryColor = specificHighlghtColor != null ? complementaryMonochromaticColor(specificHighlghtColor) : AppColors.mamba;
     Color primaryColor = AppColors.white;
     Color primaryColorDark = AppColors.lightGrey;
     Color primaryColorLight = AppColors.grey;
