@@ -50,23 +50,10 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
   Widget build(BuildContext context) {
     return isTrainer == false
         ? Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             body: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.007,
-                  width: MediaQuery.of(context).size.width * 0.15,
-                  decoration: const BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(5),
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Row(

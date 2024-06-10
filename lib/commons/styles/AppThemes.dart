@@ -10,7 +10,9 @@ class AppThemes with ColorMixin {
   ThemeData lightTheme([Color? specificHighlghtColor]) {
     // Define Colors
     Color brandColor = specificHighlghtColor ?? AppColors.mamba;
-    Color complementaryColor = specificHighlghtColor != null ? complementaryMonochromaticColor(specificHighlghtColor) : AppColors.mambaComplimentary;
+    Color complementaryColor = specificHighlghtColor != null
+        ? complementaryMonochromaticColor(specificHighlghtColor)
+        : AppColors.mambaComplimentary;
     Color primaryColor = AppColors.black;
     Color primaryColorDark = AppColors.darkerGrey;
     Color primaryColorLight = AppColors.grey;
@@ -43,7 +45,7 @@ class AppThemes with ColorMixin {
       unselectedWidgetColor: disabledColor,
       // Highlight Colors
       highlightColor: complementaryColor,
-      indicatorColor: primaryColor,      
+      indicatorColor: primaryColor,
       // Button Colors
       splashColor: primaryColor.withOpacity(0.5),
       shadowColor: primaryColor.withOpacity(0.5),
@@ -187,13 +189,15 @@ class AppThemes with ColorMixin {
         modalElevation: 4,
         showDragHandle: true,
         dragHandleColor: disabledColor,
-        modalBarrierColor: AppColors.lightGrey,
-        modalBackgroundColor: AppColors.white,
-        backgroundColor: AppColors.lightGrey,
-        surfaceTintColor: AppColors.lightGrey,
+        modalBackgroundColor: scaffoldBackgroundColor,
+        backgroundColor: scaffoldBackgroundColor,
+        surfaceTintColor: scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(borderRadiusSmall)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(
+              borderRadiusSmall,
+            ),
+          ),
         ),
         clipBehavior: Clip.antiAlias,
       ),
@@ -282,7 +286,9 @@ class AppThemes with ColorMixin {
   ThemeData darkTheme([Color? specificHighlghtColor]) {
     // Define Colors
     Color brandColor = specificHighlghtColor ?? AppColors.mamba;
-    Color complementaryColor = specificHighlghtColor != null ? complementaryMonochromaticColor(specificHighlghtColor) : AppColors.mambaComplimentary;
+    Color complementaryColor = specificHighlghtColor != null
+        ? complementaryMonochromaticColor(specificHighlghtColor)
+        : AppColors.mambaComplimentary;
     Color primaryColor = AppColors.white;
     Color primaryColorDark = AppColors.lightGrey;
     Color primaryColorLight = AppColors.grey;
@@ -335,7 +341,7 @@ class AppThemes with ColorMixin {
         onSurface: primaryColor,
         onBackground: primaryColor,
         onError: AppColors.white,
-        brightness: Brightness.light,        
+        brightness: Brightness.light,
       ),
       // Text Theme
       textTheme: TextTheme(
@@ -460,10 +466,9 @@ class AppThemes with ColorMixin {
         modalElevation: 4,
         showDragHandle: true,
         dragHandleColor: disabledColor,
-        modalBarrierColor: AppColors.lightGrey,
-        modalBackgroundColor: AppColors.white,
-        backgroundColor: AppColors.lightGrey,
-        surfaceTintColor: AppColors.lightGrey,
+        modalBackgroundColor: scaffoldBackgroundColor,
+        backgroundColor: scaffoldBackgroundColor,
+        surfaceTintColor: scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius:
               BorderRadius.vertical(top: Radius.circular(borderRadiusSmall)),
