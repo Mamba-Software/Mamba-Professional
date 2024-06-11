@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba/Events/crud_events/widgets/responsiveEvent.dart';
 import 'package:mamba/data/Models/Location.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
@@ -19,17 +18,15 @@ class LocationBlocSelector extends StatelessWidget {
         selector: (state) {
       return state.newEvent.location!;
     }, builder: (context, locationCubit) {
-      return ResponsiveEvent(
-        child: Column(
-          children: [
-            titleEventWidget(context, context.l10n.location),
-            locationCubit.id == null
-                ? locationLoading(context)
-                : LocationWidget(
-                    location: locationCubit,
-                  ),
-          ],
-        ),
+      return Column(
+        children: [
+          titleEventWidget(context, context.l10n.location),
+          locationCubit.id == null
+              ? locationLoading(context)
+              : LocationWidget(
+                  location: locationCubit,
+                ),
+        ],
       );
     });
   }

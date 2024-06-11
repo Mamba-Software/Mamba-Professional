@@ -19,23 +19,18 @@ class InformationPage extends StatelessWidget {
       return state.isLoaded;
     }, builder: (context, isLoaded) {
       if (isLoaded) {
-        return Container(
-          margin: kIsWeb
-              ? const EdgeInsets.symmetric(horizontal: 50)
-              : const EdgeInsets.symmetric(horizontal: 0),
-          child: Column(
-            children: [
-              const TitleDescriptionBlocSelector(),
-              const LocationBlocSelector(),
-              dividerAddEditEvent(context, context.l10n.location, true),
-              const EventBonosBlocSelector(),
-              /*
-              dividerAddEditEvent(
-                  context, context.l10n.bonos, true),
-                  */
-              SizedBox(height: MediaQuery.of(context).size.height * 0.15),
-            ],
-          ),
+        return Column(
+          children: [
+            const TitleDescriptionBlocSelector(),
+            const LocationBlocSelector(),
+            dividerAddEditEvent(context, context.l10n.location, true),
+            const EventBonosBlocSelector(),
+            /*
+            dividerAddEditEvent(
+                context, context.l10n.bonos, true),
+                */
+            SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+          ],
         );
       } else {
         return Padding(

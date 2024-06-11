@@ -18,72 +18,46 @@ Widget durationEventWidget(
   durationController.text = StringUtils().durationToString(durationDouble);
   var hour = duration.split(".")[0];
   var min = duration.split(".")[1];
-  return kIsWeb
-      ? Column(
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Icon(
-                  Icons.timer_outlined,
-                  color: AppColors.grey,
-                  size: iconSizeBig,
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                Flexible(
-                  child: Text(
-                    durationDouble.toString(),
-                    style: isBeforeEdit
-                        ? Theme.of(context).textTheme.bodyMedium
-                        : Theme.of(context).textTheme.bodySmall,
-                    textAlign: TextAlign.start,
+  return Column(
+    children: [
+      Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Icon(
+            Icons.timer_outlined,
+            color: AppColors.grey,
+            size: MediaQuery.of(context).size.width * 0.06,
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+          Flexible(
+            child: GestureDetector(
+                onTap: () {
+                  if (isBeforeEdit) {
+                    selectDuration(context, duration);
+                  }
+                },
+                child: TextFormField(
+                  controller: durationController,
+                  readOnly: true,
+                  enabled: false,
+                  style: isBeforeEdit
+                      ? Theme.of(context).textTheme.bodyMedium
+                      : Theme.of(context).textTheme.bodySmall,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
                   ),
-                ),
-              ],
-            ),
-          ],
-        )
-      : Column(
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Icon(
-                  Icons.timer_outlined,
-                  color: AppColors.grey,
-                  size: MediaQuery.of(context).size.width * 0.06,
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                Flexible(
-                  child: GestureDetector(
-                      onTap: () {
-                        if (isBeforeEdit) {
-                          selectDuration(context, duration);
-                        }
-                      },
-                      child: TextFormField(
-                        controller: durationController,
-                        readOnly: true,
-                        enabled: false,
-                        style: isBeforeEdit
-                            ? Theme.of(context).textTheme.bodyMedium
-                            : Theme.of(context).textTheme.bodySmall,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                        ),
-                        textAlign: TextAlign.start,
-                      )),
-                ),
-              ],
-            ),
-          ],
-        );
+                  textAlign: TextAlign.start,
+                )),
+          ),
+        ],
+      ),
+    ],
+  );
 }
 
 Future selectDuration(BuildContext context, String duration) async {

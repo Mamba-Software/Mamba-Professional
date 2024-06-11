@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba/Events/crud_events/widgets/responsiveEvent.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarOneDate.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
@@ -21,86 +20,45 @@ Widget dateEventWidget(BuildContext context, DateTime startDate,
       DateFormat('EEEE d/M/y', locale.languageCode).format(startDate);
   startDateController.text =
       StringUtils().toCapitalized(startDateController.text);
-  return kIsWeb
-      ? ResponsiveEvent(
-          child: Column(
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_today_outlined,
-                  color: AppColors.grey,
-                  size: iconSizeBig,
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                Flexible(
-                  child: GestureDetector(
-                      onTap: () {
-                        if (isBeforeEdit) {
-                          showDate(context);
-                        }
-                      },
-                      child: TextFormField(
-                        controller: startDateController,
-                        readOnly: true,
-                        enabled: false,
-                        style: isBeforeEdit
-                            ? Theme.of(context).textTheme.bodyMedium
-                            : Theme.of(context).textTheme.bodySmall,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                        ),
-                        textAlign: TextAlign.start,
-                      )),
-                ),
-              ],
-            ),
-            //SizedBox(height: MediaQuery.of(context).size.width * 0.01),
-          ],
-        ))
-      : Column(
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_today_outlined,
-                  color: AppColors.grey,
-                  size: MediaQuery.of(context).size.width * 0.06,
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                Flexible(
-                  child: GestureDetector(
-                      onTap: () {
-                        if (isBeforeEdit) {
-                          selectDate(context, startDate);
-                        }
-                      },
-                      child: TextFormField(
-                        controller: startDateController,
-                        readOnly: true,
-                        enabled: false,
-                        style: isBeforeEdit
-                            ? Theme.of(context).textTheme.bodyMedium
-                            : Theme.of(context).textTheme.bodySmall,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                        ),
-                        textAlign: TextAlign.start,
-                      )),
-                ),
-              ],
-            ),
-            SizedBox(height: MediaQuery.of(context).size.width * 0.01),
-          ],
-        );
+  return Column(
+    children: [
+      Row(
+        children: [
+          Icon(
+            Icons.calendar_today_outlined,
+            color: AppColors.grey,
+            size: MediaQuery.of(context).size.width * 0.06,
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+          Flexible(
+            child: GestureDetector(
+                onTap: () {
+                  if (isBeforeEdit) {
+                    selectDate(context, startDate);
+                  }
+                },
+                child: TextFormField(
+                  controller: startDateController,
+                  readOnly: true,
+                  enabled: false,
+                  style: isBeforeEdit
+                      ? Theme.of(context).textTheme.bodyMedium
+                      : Theme.of(context).textTheme.bodySmall,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                  ),
+                  textAlign: TextAlign.start,
+                )),
+          ),
+        ],
+      ),
+      SizedBox(height: MediaQuery.of(context).size.width * 0.01),
+    ],
+  );
 }
 
 void showDate(BuildContext context) async {

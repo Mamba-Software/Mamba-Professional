@@ -45,6 +45,7 @@ double borderRadiusMedium = 10;
 double borderRadiusBig = 20;
 
 // Padding
+double defaultPaddingBig = 64;
 double defaultPadding = 16;
 double defaultPaddingSmall = 8;
 

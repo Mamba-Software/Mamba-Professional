@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba/Events/crud_events/widgets/responsiveEvent.dart';
 import 'package:mamba/data/Models/Bono.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
@@ -21,13 +20,11 @@ class EventBonosBlocSelector extends StatelessWidget {
       Map<Bono, bool> newEventBonos = Map.from(state.newEvent.eventBonos!);
       return newEventBonos;
     }, builder: (context, eventBonosMap) {
-      return ResponsiveEvent(
-        child: Column(
-          children: [
-            titleEventWidget(context, context.l10n.rates),
-            eventBonosWidget(context, eventBonosMap),
-          ],
-        ),
+      return Column(
+        children: [
+          titleEventWidget(context, context.l10n.rates),
+          eventBonosWidget(context, eventBonosMap),
+        ],
       );
     });
   }
