@@ -143,11 +143,9 @@ class _HomePageBodyState extends State<HomePageBody> {
     print("Checking if invited into Brand...");
     checkBrandInvite();
     // Check Notification Permissions
-    print("Checking Notification Permissions...");
     var notificationString =
         await PermisionsService().checkUserNotificationsPermision();
-    if (notificationString == "Provisional" ||
-        notificationString == "Unknown") {
+    if (notificationString == "Provisional" || notificationString == "Unknown") {
       mixpanel!.track('notifications_permission_ask');
       PermissionStatus permission =
           await PermisionsService().askUserNotificationsPermision();

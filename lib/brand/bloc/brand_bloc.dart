@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba/brand/data/brand_repository.dart';
@@ -9,7 +8,6 @@ import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-
 part 'brand_state.dart';
 
 class BrandBloc extends Cubit<BrandState> {
@@ -23,10 +21,8 @@ class BrandBloc extends Cubit<BrandState> {
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
 
-  
   String get getBrandId => brandId;
 
-  
   void initBrand({required String brandId, required String userId}) {
     this.brandId = brandId;
     this.userId = userId;
@@ -81,6 +77,7 @@ class BrandBloc extends Cubit<BrandState> {
   })  : _brandRepository = brandRepository,
         super(BrandState(brand: Brand())) {
     // Assuming Brand.empty() is a valid initializer for an empty Brand
+    print("hola Joel");
 
     // Listen to changes in the UserBloc
     userBlocSubscription = userBloc.stream.listen((userState) {

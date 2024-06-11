@@ -40,10 +40,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userBloc = UserBloc(userRepository: userRepository);
-    final brandBloc =
-        BrandBloc(brandRepository: brandRepository, userBloc: userBloc);
-    final authBloc =
-        AuthBloc(authRepository: authRepository, userBloc: userBloc);
+    final brandBloc = BrandBloc(brandRepository: brandRepository, userBloc: userBloc);
+    final authBloc = AuthBloc(authRepository: authRepository, userBloc: userBloc);
 
     return MultiRepositoryProvider(
       providers: [

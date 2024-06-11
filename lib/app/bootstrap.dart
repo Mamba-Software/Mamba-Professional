@@ -51,10 +51,11 @@ class Bootstrap with PlatformMixin {
 
         // Initialise TimeZone
         timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
-        // Firebase Messaging Back Ground Message Handler
-        FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
-        // Firebase Dynamic Links
+
         if (isWeb == false) {
+          // Firebase Messaging Back Ground Message Handler
+          FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
+          // Firebase Dynamic Links
           await DynamicLinkUtils().retrieveDynamicLink();
         }
 
@@ -78,7 +79,7 @@ class Bootstrap with PlatformMixin {
         }
         print("Error:");
         print(error);
-        print(stackTrace);        
+        print(stackTrace);
       },
     );
   }
