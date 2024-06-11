@@ -1,6 +1,7 @@
 // Flutter Libs
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -17,9 +18,7 @@ import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba/data/Models/Usuario.dart';
-import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
-import 'package:mamba/screens/MambaPro/HasBrandScreens/02-Que/007%20-%20Purchases/views/BrandPurchaseHistory.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Notifications extends StatefulWidget {
@@ -315,39 +314,27 @@ class _NotificationsState extends State<Notifications> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Row(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.01,
-            ),
-            Text(
-              context.l10n.notificationsBottomNav,
-              style: Theme.of(context).textTheme.displaySmall,
-              textAlign: TextAlign.center,
-            ),
-          ],
+        title: Text(
+          context.l10n.notificationsBottomNav,
+          textAlign: TextAlign.center,
         ),
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            size: MediaQuery.of(context).size.width * 0.06,
+            size: iconSize,
           ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        centerTitle: false,
+        centerTitle: true,
         actions: [
-          TextButton.icon(
-            icon: Icon(
+          TextButton(
+            child: Icon(
               Icons.mark_email_read_outlined,
-              color: Theme.of(context).primaryColor,
-              size: MediaQuery.of(context).size.width * 0.05,
-            ),
-            label: Text(
-              context.l10n.markAsRead,
-              style: Theme.of(context).textTheme.bodyMedium,
+              color: context.colorScheme.primary,
+              size: iconSize,
             ),
             onPressed: () async {
               mixpanel!.track('user_notifications_all_read');
@@ -358,9 +345,6 @@ class _NotificationsState extends State<Notifications> {
               }
               await _userDataService.markALLNotificationAsRead(currentUser.id!);
             },
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.03,
           ),
         ],
       ),
@@ -459,7 +443,7 @@ class _NotificationsState extends State<Notifications> {
               })
           : RefreshIndicator(
               displacement: MediaQuery.of(context).size.height * 0.05,
-              color: Theme.of(context).colorScheme.secondary,
+              color: context.colorScheme.secondary,
               onRefresh: () {
                 return Future.delayed(
                   const Duration(seconds: 1),
@@ -516,7 +500,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               context.l10n.wellcomeToMAMBA,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: context.textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -527,15 +511,12 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   context.l10n.onlyImportantNotifications,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: context.textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 10),
+                  style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -551,7 +532,6 @@ class _NotificationsState extends State<Notifications> {
         }
       case "UserCreatesBrand_User":
         {
-          // Name and Image
           return ListTile(
             leading: CircularImage(
               size: MediaQuery.of(context).size.width * 0.15,
@@ -561,7 +541,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               context.l10n.userCreatesBrandUser(brand.name!),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: context.textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -572,15 +552,12 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   context.l10n.userCreatesBrandUserSubtitle,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: context.textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 10),
+                  style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -605,7 +582,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               context.l10n.userJoinsBrandBrand(user.name!, brand.name!),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: context.textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -617,15 +594,12 @@ class _NotificationsState extends State<Notifications> {
                 Text(
                   context.l10n
                       .userJoinsBrandBrandSubtitle(notification.parameters[3]),
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: context.textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 10),
+                  style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -650,7 +624,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               context.l10n.userLeavesBrandBrand(user.name!, brand.name!),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: context.textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -662,15 +636,12 @@ class _NotificationsState extends State<Notifications> {
                 Text(
                   context.l10n
                       .userLeavesBrandBrandSubtitle(notification.parameters[3]),
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: context.textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 10),
+                  style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -695,7 +666,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               context.l10n.userSendRequestToBrandBrand(user.name!),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: context.textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -707,15 +678,12 @@ class _NotificationsState extends State<Notifications> {
                 Text(
                   context.l10n.userSendRequestToBrandBrandSubtitle(
                       notification.parameters[3]),
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: context.textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 10),
+                  style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -740,7 +708,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               context.l10n.userCancelRequestToBrandBrand(user.name!),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: context.textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -751,15 +719,12 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   context.l10n.userCancelRequestToBrandBrandSubtitle,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: context.textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 10),
+                  style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -785,7 +750,7 @@ class _NotificationsState extends State<Notifications> {
               ),
               title: Text(
                 context.l10n.userJoinEventBrand(user.name!, event.title!),
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                style: context.textTheme.bodyLarge?.copyWith(
                     fontWeight: notification.isRead!
                         ? FontWeight.normal
                         : FontWeight.bold),
@@ -798,15 +763,12 @@ class _NotificationsState extends State<Notifications> {
                     context.l10n.userJoinEventBrandSubtitle(
                         event.numClients.toString(),
                         event.maxMembers.toString()),
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: context.textTheme.bodySmall,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
                     time.toUpperCase(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 10),
+                    style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                   ),
                 ],
               ),
@@ -831,7 +793,7 @@ class _NotificationsState extends State<Notifications> {
               ),
               title: Text(
                 context.l10n.userJoinEventBrand(user.name!, event.title!),
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                style: context.textTheme.bodyLarge?.copyWith(
                     fontWeight: notification.isRead!
                         ? FontWeight.normal
                         : FontWeight.bold),
@@ -842,10 +804,7 @@ class _NotificationsState extends State<Notifications> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
                     time.toUpperCase(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 10),
+                    style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                   ),
                 ],
               ),
@@ -865,7 +824,7 @@ class _NotificationsState extends State<Notifications> {
               ),
               title: Text(
                 context.l10n.userLeavesEventBrand(user.name!, event.title!),
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                style: context.textTheme.bodyLarge?.copyWith(
                     fontWeight: notification.isRead!
                         ? FontWeight.normal
                         : FontWeight.bold),
@@ -878,15 +837,12 @@ class _NotificationsState extends State<Notifications> {
                     context.l10n.userLeavesEventBrandSubtitle(
                         event.numClients.toString(),
                         event.maxMembers.toString()),
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: context.textTheme.bodySmall,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
                     time.toUpperCase(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 10),
+                    style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                   ),
                 ],
               ),
@@ -911,7 +867,7 @@ class _NotificationsState extends State<Notifications> {
               ),
               title: Text(
                 context.l10n.userLeavesEventBrand(user.name!, event.title!),
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                style: context.textTheme.bodyLarge?.copyWith(
                     fontWeight: notification.isRead!
                         ? FontWeight.normal
                         : FontWeight.bold),
@@ -922,10 +878,7 @@ class _NotificationsState extends State<Notifications> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
                     time.toUpperCase(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 10),
+                    style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                   ),
                 ],
               ),
@@ -944,7 +897,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               context.l10n.userSendsBonoRequestBrand(user.name!),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: context.textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -956,15 +909,12 @@ class _NotificationsState extends State<Notifications> {
                 Text(
                   context.l10n.userSendsBonoRequestSubtitleBrand(
                       bono.title!.toUpperCase()),
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: context.textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 10),
+                  style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -989,7 +939,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               context.l10n.userCancelsBonoRequestBrand(user.name!),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: context.textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -1001,15 +951,12 @@ class _NotificationsState extends State<Notifications> {
                 Text(
                   context.l10n.userCancelsBonoRequestSubtitleBrand(
                       bono.title!.toUpperCase()),
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: context.textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 10),
+                  style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -1035,7 +982,7 @@ class _NotificationsState extends State<Notifications> {
             title: Text(
               context.l10n
                   .userBuysBonoTrainer(user.name!, bono.title!.toUpperCase()),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: context.textTheme.bodyLarge?.copyWith(
                   fontWeight: notification.isRead!
                       ? FontWeight.normal
                       : FontWeight.bold),
@@ -1046,15 +993,12 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   context.l10n.userBuysBonoTrainerSubtitle,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: context.textTheme.bodySmall,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 10),
+                  style: context.textTheme.bodyMedium?.copyWith(fontSize: 10),
                 ),
               ],
             ),

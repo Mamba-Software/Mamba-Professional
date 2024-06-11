@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppThemeData {
-  
   static TextStyle textStyle(
     Color color,
     double fontSize,
@@ -13,7 +12,7 @@ class AppThemeData {
       fontSize: fontSize,
       fontWeight: fontWeight,
       fontFamily: fontFamily,
-      overflow: TextOverflow.ellipsis,
+      overflow: TextOverflow.visible,
     );
   }
 
@@ -25,7 +24,8 @@ class AppThemeData {
   }
 
   static MaterialStateProperty<Color?> controlColorProperty(Color color) {
-    return MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+    return MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
       if (states.contains(MaterialState.disabled)) {
         return null;
       }
@@ -35,5 +35,4 @@ class AppThemeData {
       return null;
     });
   }
-
 }

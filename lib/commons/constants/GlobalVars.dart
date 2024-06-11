@@ -119,7 +119,7 @@ Future<void> navigateToPayWall(BuildContext context,
 
 // Navigate to Notifications Screen
 void navigateToProfileScreen(BuildContext context) {
-  context.goNamed(Profile.routeName);
+  context.pushNamed(Profile.routeName);
 }
 
 // Navigate to Notifications Screen

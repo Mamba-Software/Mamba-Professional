@@ -8,6 +8,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/data/DataService/Room/RoomDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -392,15 +393,13 @@ class _ChatPageState extends State<ChatPage> {
               leading: IconButton(
                 icon: Icon(
                   Icons.arrow_back,
-                  size: MediaQuery.of(context).size.width * 0.06,
+                  size: iconSize,
                 ),
                 onPressed: () {
                   Navigator.pop(context, hasSentMessage);
                 },
               ),
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              leadingWidth: MediaQuery.of(context).size.width * 0.07,
-              toolbarHeight: MediaQuery.of(context).size.height * 0.08,
+              backgroundColor: context.colorScheme.background,
               title: Row(
                 children: [
                   GestureDetector(
@@ -410,46 +409,17 @@ class _ChatPageState extends State<ChatPage> {
                       color: Theme.of(context).colorScheme.secondary,
                       borderWidth: 0.1,
                     ),
-                    onTap: () {
-                      widget.room.type.toString() != "RoomType.group"
-                          ? Navigator.push(
-                              context,
-                              CupertinoPageRoute<void>(
-                                  builder: (context) => ProfileViewUser(
-                                        userID: userId.id!,
-                                        viewOnly: false,
-                                        comesFromChat: true,
-                                        blockedChanged: (boolean) {
-                                          blockedUser = !blockedUser;
-                                          setState(() {});
-                                        },
-                                      )))
-                          : null;
-                    },
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.03,
+                    width: defaultPadding,
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.60,
                     child: Row(
                       children: [
-                        Flexible(
-                          child: TextField(
-                            enabled: false,
-                            decoration: InputDecoration(
-                              hintStyle:
-                                  Theme.of(context).appBarTheme.titleTextStyle,
-                              hintText:
-                                  noMessages ? nameRoom : widget.room.name,
-                              contentPadding: const EdgeInsets.all(0),
-                              isDense: true,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                            ),
-                          ),
+                        Text(
+                          noMessages ? nameRoom : widget.room.name!,
+                          style: context.textTheme.titleLarge,
                         ),
                       ],
                     ),
@@ -478,7 +448,7 @@ class _ChatPageState extends State<ChatPage> {
                             backgroundColor:
                                 Theme.of(context).scaffoldBackgroundColor,
                             inputBackgroundColor:
-                                Theme.of(context).scaffoldBackgroundColor,
+                                context.colorScheme.background,
                             inputTextStyle:
                                 Theme.of(context).textTheme.bodyMedium!,
                             inputTextColor: Theme.of(context).primaryColor,
