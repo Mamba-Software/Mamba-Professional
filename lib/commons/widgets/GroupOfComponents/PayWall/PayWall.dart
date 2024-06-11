@@ -20,7 +20,6 @@ import 'package:mamba/data/Models/Subscription.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
-import 'package:mamba/commons/widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba/commons/widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/data/Models/RequestToBrand.dart';
@@ -910,9 +909,11 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TitleHeadline1(
-            text: context.l10n.anyDoubt,
-          ),
+          Text(
+              context.l10n.anyDoubt,
+              style: context.textTheme.headlineMedium,
+              textAlign: TextAlign.center,
+            ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           Padding(
             padding: EdgeInsets.symmetric(

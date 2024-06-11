@@ -119,7 +119,13 @@ Future<void> navigateToPayWall(BuildContext context,
 
 // Navigate to Notifications Screen
 void navigateToProfileScreen(BuildContext context) {
-  context.pushNamed(Profile.routeName);
+  //context.pushNamed(Profile.routeName);
+  Navigator.push(
+    context,
+    CupertinoPageRoute<void>(
+      builder: (context) => const Profile(),
+    ),
+  );
 }
 
 // Navigate to Notifications Screen
