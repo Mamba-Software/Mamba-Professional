@@ -754,6 +754,7 @@ class UserFirebaseCalls {
           'isTrainer': isTrainer,
         },
       );
+      
       await _firestore.collection(users).doc(result.data['userId']).set({
         "name": null,
         "firstName": null,

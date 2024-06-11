@@ -51,7 +51,7 @@ class SnackbarManager extends StatelessWidget {
     late OverlayEntry overlayEntry;
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        bottom: 50,
+        bottom: context.isDesktop ? 50 : 30,
         width: context.width,
         child: CustomSnackbarView(          
           padding: getPadding(context),
