@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
 import 'package:mamba/home/widgets/appbar/AppBarIcon.dart';
@@ -12,7 +13,7 @@ import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class CalendarAppbar extends StatelessWidget {
+class CalendarAppbar extends StatelessWidget with PlatformMixin {
   // App Bar
   final String title;
   final bool appBarExpanded;
@@ -51,7 +52,7 @@ class CalendarAppbar extends StatelessWidget {
       double toolbarHeight = context.height * 0.15;
       // Colors
       Color backgroundColor = AppColors.darkGrey;
-      Color foregroundColor = AppColors.white;
+      Color foregroundColor = AppColors.white;      
       Color dividerColor = AppColors.grey;
       // Styles
       TextStyle titleTextStyle =
@@ -175,19 +176,19 @@ class CalendarAppbar extends StatelessWidget {
               AppBarIcon(
                 icon: Icons.help_outline_outlined,
                 iconSize: iconSize,
-                color: foregroundColor,
+                color: isWeb ? dividerColor : foregroundColor,
                 onTap: () => navigateToMainFeedbackScreen(context),
               ),
               AppBarIcon(
                 icon: Icons.notifications,
                 iconSize: iconSize,
-                color: foregroundColor,
+                color: isWeb ? dividerColor : foregroundColor,
                 onTap: () => navigateToNotificationsScreen(context),
               ),
               AppBarIcon(
                 icon: Icons.chat,
                 iconSize: iconSize,
-                color: foregroundColor,
+                color: isWeb ? dividerColor : foregroundColor,
                 onTap: () => navigateToChatScreen(context),
               ),
               InkWell(
@@ -227,6 +228,8 @@ class CalendarAppbar extends StatelessWidget {
       // Colors
       Color foregroundColor = context.colorScheme.onBackground;
       Color backgroundColor = context.colorScheme.background;
+      Color dividerColor = context.theme.dividerColor;
+      
       // Styles
       TextStyle titleTextStyle =
           context.textTheme.bodyLarge!.copyWith(fontSize: headline1);
@@ -307,19 +310,19 @@ class CalendarAppbar extends StatelessWidget {
                     AppBarIcon(
                       icon: Icons.help_outline_outlined,
                       iconSize: iconSize,
-                      color: foregroundColor,
+                      color: isWeb ? dividerColor : foregroundColor,
                       onTap: () => navigateToMainFeedbackScreen(context),
                     ),
                     AppBarIcon(
                       icon: Icons.notifications,
                       iconSize: iconSize,
-                      color: foregroundColor,
+                      color: isWeb ? dividerColor : foregroundColor,
                       onTap: () => navigateToNotificationsScreen(context),
                     ),
                     AppBarIcon(
                       icon: Icons.chat,
                       iconSize: iconSize,
-                      color: foregroundColor,
+                      color: isWeb ? dividerColor : foregroundColor,
                       onTap: () => navigateToChatScreen(context),
                     ),
                     InkWell(

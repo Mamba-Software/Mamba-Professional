@@ -5,6 +5,7 @@ class AppColors {
 
   // Accent Color
   static const Color mamba = Color(0xFFF4AD1F);
+  static const Color mambaComplimentary = Color(0xFFD6920A);
   
   // Primary Colors
   static const Color black = Color(0xFF000000);

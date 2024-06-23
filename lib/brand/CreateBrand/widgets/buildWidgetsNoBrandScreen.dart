@@ -12,7 +12,7 @@ import 'package:mamba/commons/widgets/GroupOfComponents/QRCode/QRScanner.dart';
 import 'package:mamba/notifications/Unread/widgets/askSupport.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba/notifications/Unread/widgets/unreadNotifications.dart';
-import 'package:mamba/screens/MambaPro/Profile/Profile.dart';
+import 'package:mamba/user/profile/Profile.dart';
 import 'package:mamba/commons/extensions/context.dart';
 
 Widget buildUserPicture(

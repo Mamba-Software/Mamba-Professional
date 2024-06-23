@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/widgets/Components/Badges/MobileBadge.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
@@ -95,6 +94,9 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
           ),
         );
       } else {
+        // Variables
+        Color buttonColor =
+            isWeb ? context.theme.disabledColor : context.colorScheme.secondary;
         // Header Widget
         if (width == sideMenuWidth) {
           return Expanded(
@@ -112,7 +114,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            currentBrand.name!,
+                            currentUser.name!,
                             style: context.textTheme.labelLarge!.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -120,8 +122,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                           ),
                           TextButton(
                             style: TextButton.styleFrom(
-                              backgroundColor: context.colorScheme.secondary
-                                  .withOpacity(0.3),
+                              backgroundColor: buttonColor.withOpacity(0.25),
                               padding: EdgeInsets.symmetric(
                                   horizontal: defaultPaddingSmall),
                               shape: RoundedRectangleBorder(
@@ -129,26 +130,32 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                                 borderRadius:
                                     BorderRadius.circular(borderRadiusSmall),
                               ),
-                              minimumSize: const Size(30, 30),
+                              minimumSize: const Size(40, 30),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
-                            onPressed: () => {},
+                            onPressed: () =>
+                                              navigateShareBrandLink(context),
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
                                   Icons.qr_code,
-                                  color: context.colorScheme.secondary,
+                                  color: buttonColor,
                                   size: iconSizeSmall,
                                 ),
                                 SizedBox(
                                   width: defaultPaddingSmall,
                                 ),
-                                Text(
-                                  context.l10n.invite,
-                                  style: context.textTheme.bodyMedium!.copyWith(
-                                    color: context.colorScheme.secondary,
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 1.0),
+                                  child: Text(
+                                    context.l10n.invite,
+                                    style:
+                                        context.textTheme.bodyMedium!.copyWith(
+                                      color: buttonColor,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -156,15 +163,12 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                           )
                         ],
                       ),
-                      GestureDetector(
-                        onTap: () => navigateToRolesInformationModal,
-                        child: Text(
-                          returnBrandRoleString(context),
-                          textAlign: TextAlign.left,
-                          style: context.textTheme.labelLarge!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                      Text(
+                        returnBrandRoleString(context),
+                        textAlign: TextAlign.left,
+                        style: context.textTheme.labelLarge!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -249,7 +253,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
                       child: TextButton(
                         style: TextButton.styleFrom(
                           backgroundColor:
-                              context.colorScheme.secondary.withOpacity(0.3),
+                              context.colorScheme.secondary.withOpacity(0.25),
                           padding: EdgeInsets.all(defaultPaddingSmall),
                           shape:
                               const CircleBorder(), // Changed to CircleBorder
@@ -332,7 +336,7 @@ class Body extends StatelessWidget with PlatformMixin, BrandRoleMixin {
   }
 }
 
-class BodyTile extends StatelessWidget with HomeTileMixin {
+class BodyTile extends StatelessWidget with HomeTileMixin, PlatformMixin {
   final HomeNavigationPage page;
   final bool? webSupported;
 
@@ -357,8 +361,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 returnTextWidget(context, page),
-                if (context.isDesktop && webSupported == null)
-                  const OnlyMobileBadge(),
+                if (webSupported == null && isWeb) const OnlyMobileBadge(),
               ],
             ),
             onTap: () {
@@ -368,7 +371,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                 context.read<HomeManager>().jumpToPage(page);
               } else {
                 CustomSnackbar snackbar = CustomSnackbar(
-                  type: SnackbarType.information,
+                  type: SnackbarType.custom,
                   message: context.l10n.mobileOnly,
                   icon: Icons.smartphone,
                   color: Colors.blue,
@@ -387,7 +390,7 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                   context.read<HomeManager>().jumpToPage(page);
                 } else {
                   CustomSnackbar snackbar = CustomSnackbar(
-                    type: SnackbarType.information,
+                    type: SnackbarType.custom,
                     message: context.l10n.mobileOnly,
                     icon: Icons.smartphone,
                     color: Colors.blue,
@@ -417,7 +420,8 @@ class BodyTile extends StatelessWidget with HomeTileMixin {
                           context.textTheme.bodyLarge!
                               .copyWith(fontSize: title1),
                         ),
-                        if (webSupported == null) const OnlyMobileBadge(),
+                        if (webSupported == null && isWeb)
+                          const OnlyMobileBadge(),
                       ],
                     ),
                     selected: state.page == page,

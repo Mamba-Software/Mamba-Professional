@@ -57,7 +57,6 @@ class App extends StatelessWidget {
       eventBloc: eventBloc,
       isDesktop: context.isDesktop,
     );
-
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AnalyticsRepository>(
@@ -100,6 +99,9 @@ class App extends StatelessWidget {
           ),
           BlocProvider<SnackbarCubit>(
             create: (context) => SnackbarCubit(),
+          ),
+          BlocProvider<HomeManager>(
+            create: (context) => HomeManager(),
           ),
           // To Be Refactored
           BlocProvider<ClientSessionsCubit>(

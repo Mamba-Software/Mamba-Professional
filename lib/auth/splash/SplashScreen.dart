@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/login.dart';
@@ -12,12 +13,15 @@ import 'package:mamba/user/data/user_repository.dart';
 import 'package:mamba/brand/data/brand_repository.dart';
 
 class SplashScreen extends StatefulWidget {
-  static String routeName = '/splash';
+  static String routeName = '/loading';
   static GoRoute route = GoRoute(
     name: routeName,
-    path: '/splash',
-    builder: (BuildContext context, GoRouterState state) =>
-        const SplashScreen(),
+    path: '/loading',
+    pageBuilder: (BuildContext context, GoRouterState state) =>
+        CustomTransitions.instance.customTransitionPage(
+      state: state,
+      child: const SplashScreen(),
+    ),
   );
 
   const SplashScreen({super.key});
@@ -70,6 +74,7 @@ class _SplashScreenState extends State<SplashScreen> {
               /*if (checkIfAppIsActive(context)) {
               userAutenticatedRedirection(context: context, userId: state.user.id);
             }*/
+
               break;
             case AuthStatus.unauthenticated:
               context.goNamed(Login.routeName);

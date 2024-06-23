@@ -53,7 +53,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY',
+    apiKey: 'AIzaSyCnOl8HKFgrpvbGkFIgyZl9qB4tCOmJKSk',
     appId: '1:331547241606:web:0861373eba57dd997d3507',
     messagingSenderId: '331547241606',
     projectId: 'mamba-style',

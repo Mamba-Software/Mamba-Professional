@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
@@ -20,7 +19,7 @@ class _OnlyMobileBadgeState extends State<OnlyMobileBadge> {
     return GestureDetector(
       onTap: () {
         CustomSnackbar snackbar = CustomSnackbar(
-          type: SnackbarType.information,
+          type: SnackbarType.custom,
           message: context.l10n.mobileOnly,
           icon: Icons.smartphone,
           color: Colors.blue,

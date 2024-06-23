@@ -13,12 +13,12 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: '/splash',
+    initialLocation: '/loading',
     routes: [
-      HomePage.route,
       SplashScreen.route,
       Login.route,
       OnboardingScreen.route,
+      HomePage.route,      
       Admin.route,
       BrandScreen.route,
     ],

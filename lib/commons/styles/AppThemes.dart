@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mamba/commons/mixins/color.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/styles/AppThemeData.dart';
 import 'package:mamba/commons/constants/constants.dart';
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
-class AppThemes {
+class AppThemes with ColorMixin {
   ThemeData lightTheme([Color? specificHighlghtColor]) {
     // Define Colors
-    Color highlightColor = specificHighlghtColor ?? AppColors.mamba;
+    Color brandColor = specificHighlghtColor ?? AppColors.mamba;
+    Color complementaryColor = specificHighlghtColor != null
+        ? complementaryMonochromaticColor(specificHighlghtColor)
+        : AppColors.mambaComplimentary;
     Color primaryColor = AppColors.black;
     Color primaryColorDark = AppColors.darkerGrey;
     Color primaryColorLight = AppColors.grey;
@@ -40,8 +44,8 @@ class AppThemes {
       disabledColor: disabledColor,
       unselectedWidgetColor: disabledColor,
       // Highlight Colors
-      highlightColor: highlightColor,
-      indicatorColor: highlightColor,
+      highlightColor: complementaryColor,
+      indicatorColor: primaryColor,
       // Button Colors
       splashColor: primaryColor.withOpacity(0.5),
       shadowColor: primaryColor.withOpacity(0.5),
@@ -50,7 +54,8 @@ class AppThemes {
       // Color Scheme
       colorScheme: ColorScheme(
         primary: primaryColor,
-        secondary: highlightColor,
+        secondary: complementaryColor,
+        tertiary: brandColor,
         surface: backgroundColor,
         background: backgroundColor,
         error: errorColor,
@@ -184,22 +189,24 @@ class AppThemes {
         modalElevation: 4,
         showDragHandle: true,
         dragHandleColor: disabledColor,
-        modalBarrierColor: AppColors.lightGrey,
-        modalBackgroundColor: AppColors.white,
-        backgroundColor: AppColors.lightGrey,
-        surfaceTintColor: AppColors.lightGrey,
+        modalBackgroundColor: scaffoldBackgroundColor,
+        backgroundColor: scaffoldBackgroundColor,
+        surfaceTintColor: scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(borderRadiusSmall)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(
+              borderRadiusSmall,
+            ),
+          ),
         ),
         clipBehavior: Clip.antiAlias,
       ),
       // Your other theme configurations
       textSelectionTheme: TextSelectionThemeData(
         selectionColor:
-            highlightColor.withOpacity(0.5), // Color for text selection
+            complementaryColor.withOpacity(0.5), // Color for text selection
         selectionHandleColor:
-            highlightColor, // Color for the handles used to adjust the selection
+            complementaryColor, // Color for the handles used to adjust the selection
         // Color for the cursor
       ),
       // Input Decoration Theme
@@ -259,26 +266,29 @@ class AppThemes {
         disabledElevation: 0.0,
         highlightElevation: 12.0,
         foregroundColor: AppColors.white,
-        backgroundColor: highlightColor,
+        backgroundColor: complementaryColor,
         shape: const StadiumBorder(),
       ),
       // CheckBox, Radio, Switch
       checkboxTheme: CheckboxThemeData(
-        fillColor: AppThemeData.controlColorProperty(highlightColor),
+        fillColor: AppThemeData.controlColorProperty(complementaryColor),
       ),
       radioTheme: RadioThemeData(
-        fillColor: AppThemeData.controlColorProperty(highlightColor),
+        fillColor: AppThemeData.controlColorProperty(complementaryColor),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: AppThemeData.controlColorProperty(highlightColor),
-        trackColor: AppThemeData.controlColorProperty(highlightColor),
+        thumbColor: AppThemeData.controlColorProperty(complementaryColor),
+        trackColor: AppThemeData.controlColorProperty(complementaryColor),
       ),
     );
   }
 
   ThemeData darkTheme([Color? specificHighlghtColor]) {
     // Define Colors
-    Color highlightColor = specificHighlghtColor ?? AppColors.mamba;
+    Color brandColor = specificHighlghtColor ?? AppColors.mamba;
+    Color complementaryColor = specificHighlghtColor != null
+        ? complementaryMonochromaticColor(specificHighlghtColor)
+        : AppColors.mambaComplimentary;
     Color primaryColor = AppColors.white;
     Color primaryColorDark = AppColors.lightGrey;
     Color primaryColorLight = AppColors.grey;
@@ -310,8 +320,8 @@ class AppThemes {
       disabledColor: disabledColor,
       unselectedWidgetColor: disabledColor,
       // Highlight Colors
-      highlightColor: highlightColor,
-      indicatorColor: highlightColor,
+      highlightColor: complementaryColor,
+      indicatorColor: primaryColor,
       // Button Colors
       splashColor: primaryColor.withOpacity(0.5),
       shadowColor: primaryColor.withOpacity(0.5),
@@ -320,12 +330,14 @@ class AppThemes {
       // Color Scheme
       colorScheme: ColorScheme(
         primary: primaryColor,
-        secondary: highlightColor,
+        secondary: complementaryColor,
+        tertiary: brandColor,
         surface: backgroundColor,
         background: backgroundColor,
         error: errorColor,
         onPrimary: invertedPrimaryColor,
         onSecondary: AppColors.white,
+        onTertiary: AppColors.white,
         onSurface: primaryColor,
         onBackground: primaryColor,
         onError: AppColors.white,
@@ -454,10 +466,9 @@ class AppThemes {
         modalElevation: 4,
         showDragHandle: true,
         dragHandleColor: disabledColor,
-        modalBarrierColor: AppColors.lightGrey,
-        modalBackgroundColor: AppColors.white,
-        backgroundColor: AppColors.lightGrey,
-        surfaceTintColor: AppColors.lightGrey,
+        modalBackgroundColor: scaffoldBackgroundColor,
+        backgroundColor: scaffoldBackgroundColor,
+        surfaceTintColor: scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius:
               BorderRadius.vertical(top: Radius.circular(borderRadiusSmall)),
@@ -467,9 +478,9 @@ class AppThemes {
       // Your other theme configurations
       textSelectionTheme: TextSelectionThemeData(
         selectionColor:
-            highlightColor.withOpacity(0.5), // Color for text selection
+            complementaryColor.withOpacity(0.5), // Color for text selection
         selectionHandleColor:
-            highlightColor, // Color for the handles used to adjust the selection
+            complementaryColor, // Color for the handles used to adjust the selection
         // Color for the cursor
       ),
       // Input Decoration Theme
@@ -529,19 +540,19 @@ class AppThemes {
         disabledElevation: 0.0,
         highlightElevation: 12.0,
         foregroundColor: AppColors.white,
-        backgroundColor: highlightColor,
+        backgroundColor: complementaryColor,
         shape: const StadiumBorder(),
       ),
       // CheckBox, Radio, Switch
       checkboxTheme: CheckboxThemeData(
-        fillColor: AppThemeData.controlColorProperty(highlightColor),
+        fillColor: AppThemeData.controlColorProperty(complementaryColor),
       ),
       radioTheme: RadioThemeData(
-        fillColor: AppThemeData.controlColorProperty(highlightColor),
+        fillColor: AppThemeData.controlColorProperty(complementaryColor),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: AppThemeData.controlColorProperty(highlightColor),
-        trackColor: AppThemeData.controlColorProperty(highlightColor),
+        thumbColor: AppThemeData.controlColorProperty(complementaryColor),
+        trackColor: AppThemeData.controlColorProperty(complementaryColor),
       ),
     );
   }

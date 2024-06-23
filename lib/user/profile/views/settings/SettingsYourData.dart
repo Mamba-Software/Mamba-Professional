@@ -10,7 +10,7 @@ import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
-import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Settings/SettingsEditPhotoPage.dart';
+import 'package:mamba/user/profile/views/Settings/SettingsEditPhotoPage.dart';
 
 // Tus Datos Widget.
 class SettingsYourData extends StatefulWidget {

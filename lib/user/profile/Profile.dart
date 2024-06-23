@@ -1,8 +1,8 @@
-import 'dart:io';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,19 +17,34 @@ import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/utils/Date/DateTimeUtils.dart';
 import 'package:mamba/commons/utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba/commons/utils/Strings/StringUtils.dart';
-import 'package:mamba/commons/widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsMade.dart';
-import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Feedback/Help.dart';
-import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
-import 'package:mamba/screens/MambaPro/Profile/ProfileScreens/Settings/SettingsYourData.dart';
+import 'package:mamba/home/widgets/responsive_menu.dart';
+import 'package:mamba/user/profile/views/Feedback/Help.dart';
+import 'package:mamba/user/profile/views/settings/Settings.dart';
+import 'package:mamba/user/profile/views/settings/SettingsYourData.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 // Profile Page
 class Profile extends StatefulWidget {
+  static String routeName = 'profile';
+
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: "profile",
+    pageBuilder: (BuildContext context, GoRouterState state) =>
+        CustomTransitions.instance.customTransitionPage(
+      state: state,
+      child: const Profile(),
+    ),
+    routes: [
+      Settings.route,
+    ],
+  );
+
   const Profile({super.key});
 
   @override
@@ -154,7 +169,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                       if (loadingProgress == null) return child;
                       return Center(
                         child: CircularProgressIndicator(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: context.colorScheme.secondary,
                           value: loadingProgress.expectedTotalBytes != null
                               ? loadingProgress.cumulativeBytesLoaded /
                                   loadingProgress.expectedTotalBytes!
@@ -222,17 +237,14 @@ class _ProfileState extends State<Profile> with PlatformMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(currentUser.name!,
-                  style: Theme.of(context)
-                      .textTheme
-                      .displayLarge
-                      ?.copyWith(fontSize: 25),
+                  style: context.textTheme.headlineLarge,
                   textAlign: TextAlign.center),
               const SizedBox(height: 6),
               Text(
                   context.l10n.joinedIn(DateTimeUtils()
                       .formatDateTimeToStringMMYYYY(dateJoined,
                           Localizations.localeOf(context).languageCode)),
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: context.textTheme.bodyMedium,
                   textAlign: TextAlign.center)
             ],
           )
@@ -306,7 +318,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
               children: [
                 Text(
                   context.l10n.stats,
-                  style: Theme.of(context).textTheme.displaySmall,
+                  style: context.textTheme.headlineMedium,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 SizedBox(
@@ -329,22 +341,18 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                             averageTime < 90
                                 ? Text(
                                     "${averageTime.toStringAsFixed(0)} ${context.l10n.minutesString.toLowerCase()}/${context.l10n.week.toLowerCase()}",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displaySmall,
+                                    style: context.textTheme.titleLarge,
                                   )
                                 : Text(
                                     "${(averageTime / 60).toStringAsFixed(1)} ${context.l10n.hoursString.toLowerCase()}/${context.l10n.week.toLowerCase()}",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displaySmall,
+                                    style: context.textTheme.titleLarge,
                                   ),
                             const SizedBox(height: 4),
                             Text(
                               currentUser.isTrainer!
                                   ? context.l10n.averageTimeWorked
                                   : context.l10n.averageTimeTrained,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: context.textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -371,14 +379,14 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                           children: [
                             Text(
                               "${totalTime.toStringAsFixed(0)} ${context.l10n.hoursString.toLowerCase()}",
-                              style: Theme.of(context).textTheme.displaySmall,
+                              style: context.textTheme.titleLarge,
                             ),
                             const SizedBox(height: 4),
                             Text(
                               currentUser.isTrainer!
                                   ? context.l10n.totalTimeWorked
                                   : context.l10n.totalTimeTrained,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: context.textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -405,12 +413,12 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                           children: [
                             Text(
                               "${totalEvents.length} ${context.l10n.sessions.toLowerCase()}",
-                              style: Theme.of(context).textTheme.displaySmall,
+                              style: context.textTheme.titleLarge,
                             ),
                             const SizedBox(height: 4),
                             Text(
                               context.l10n.sesionsCompleted,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: context.textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -433,7 +441,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                 children: [
                   Text(
                     context.l10n.stats,
-                    style: Theme.of(context).textTheme.displaySmall,
+                    style: context.textTheme.headlineMedium,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   SizedBox(
@@ -465,7 +473,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                               const SizedBox(height: 4),
                               Text(
                                 context.l10n.averageTimeTrained,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: context.textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -502,7 +510,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                               const SizedBox(height: 4),
                               Text(
                                 context.l10n.totalTimeTrained,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: context.textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -539,7 +547,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                               const SizedBox(height: 4),
                               Text(
                                 context.l10n.sesionsCompleted,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: context.textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -567,7 +575,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                   ? context.l10n.sesionsCompleted
                   : StringUtils()
                       .toCapitalized(context.l10n.myProgress.split(" ")[1]),
-              style: Theme.of(context).textTheme.displaySmall,
+              style: context.textTheme.headlineMedium,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             SizedBox(
@@ -584,12 +592,12 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
                           surfaceTintColor: MaterialStateProperty.all(
-                              Theme.of(context).colorScheme.background),
+                              context.colorScheme.background),
                           backgroundColor: MaterialStateProperty.all(
-                              Theme.of(context).colorScheme.background),
+                              context.colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(
-                              Theme.of(context).primaryColor.withOpacity(0.1)),
+                              context.theme.primaryColor.withOpacity(0.1)),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -602,20 +610,16 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                             width: 10.0,
                             decoration: BoxDecoration(
                                 color: isYearly
-                                    ? Theme.of(context)
-                                        .primaryColor
+                                    ? context.theme.primaryColor
                                         .withOpacity(0.2)
-                                    : Theme.of(context).primaryColor,
+                                    : context.theme.primaryColor,
                                 shape: BoxShape.circle),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             context.l10n.lastNMonths(6.toString()),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                    color: Theme.of(context).primaryColor),
+                            style: context.textTheme.bodyMedium
+                                ?.copyWith(color: context.theme.primaryColor),
                           ),
                         ],
                       ),
@@ -630,12 +634,12 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
                           surfaceTintColor: MaterialStateProperty.all(
-                              Theme.of(context).colorScheme.background),
+                              context.colorScheme.background),
                           backgroundColor: MaterialStateProperty.all(
-                              Theme.of(context).colorScheme.background),
+                              context.colorScheme.background),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(
-                              Theme.of(context).primaryColor.withOpacity(0.1)),
+                              context.theme.primaryColor.withOpacity(0.1)),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -648,20 +652,16 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                             width: 10.0,
                             decoration: BoxDecoration(
                                 color: isYearly == false
-                                    ? Theme.of(context)
-                                        .primaryColor
+                                    ? context.theme.primaryColor
                                         .withOpacity(0.2)
-                                    : Theme.of(context).primaryColor,
+                                    : context.theme.primaryColor,
                                 shape: BoxShape.circle),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             context.l10n.lastYear,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                    color: Theme.of(context).primaryColor),
+                            style: context.textTheme.bodyMedium
+                                ?.copyWith(color: context.theme.primaryColor),
                           ),
                         ],
                       ),
@@ -690,7 +690,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
             children: [
               Text(
                 context.l10n.myProgress,
-                style: Theme.of(context).textTheme.displaySmall,
+                style: context.textTheme.headlineMedium,
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               SizedBox(
@@ -707,16 +707,14 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                         style: ButtonStyle(
                             elevation: MaterialStateProperty.all(4),
                             surfaceTintColor: MaterialStateProperty.all(
-                                Theme.of(context).primaryColor),
+                                context.theme.primaryColor),
                             backgroundColor: MaterialStateProperty.all(
-                                Theme.of(context).primaryColor),
+                                context.theme.primaryColor),
                             animationDuration:
                                 const Duration(milliseconds: 100),
-                            overlayColor: MaterialStateProperty.all(
-                                Theme.of(context)
-                                    .colorScheme
-                                    .background
-                                    .withOpacity(0.2)),
+                            overlayColor: MaterialStateProperty.all(context
+                                .colorScheme.background
+                                .withOpacity(0.2)),
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -728,21 +726,16 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                               width: 10.0,
                               decoration: BoxDecoration(
                                   color: isYearly
-                                      ? Theme.of(context)
-                                          .primaryColorDark
+                                      ? context.theme.primaryColorDark
                                           .withOpacity(0.2)
-                                      : Theme.of(context).primaryColorDark,
+                                      : context.theme.primaryColorDark,
                                   shape: BoxShape.circle),
                             ),
                             const SizedBox(width: 8),
                             Text(
                               context.l10n.lastNMonths(6.toString()),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      color:
-                                          Theme.of(context).primaryColorDark),
+                              style: context.textTheme.bodyMedium?.copyWith(
+                                  color: context.theme.primaryColorDark),
                             ),
                           ],
                         ),
@@ -757,16 +750,14 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                         style: ButtonStyle(
                             elevation: MaterialStateProperty.all(4),
                             surfaceTintColor: MaterialStateProperty.all(
-                                Theme.of(context).primaryColor),
+                                context.theme.primaryColor),
                             backgroundColor: MaterialStateProperty.all(
-                                Theme.of(context).primaryColor),
+                                context.theme.primaryColor),
                             animationDuration:
                                 const Duration(milliseconds: 100),
-                            overlayColor: MaterialStateProperty.all(
-                                Theme.of(context)
-                                    .colorScheme
-                                    .background
-                                    .withOpacity(0.2)),
+                            overlayColor: MaterialStateProperty.all(context
+                                .colorScheme.background
+                                .withOpacity(0.2)),
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -778,21 +769,16 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                               width: 10.0,
                               decoration: BoxDecoration(
                                   color: isYearly == false
-                                      ? Theme.of(context)
-                                          .primaryColorDark
+                                      ? context.theme.primaryColorDark
                                           .withOpacity(0.2)
-                                      : Theme.of(context).primaryColorDark,
+                                      : context.theme.primaryColorDark,
                                   shape: BoxShape.circle),
                             ),
                             const SizedBox(width: 8),
                             Text(
                               context.l10n.lastYear,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      color:
-                                          Theme.of(context).primaryColorDark),
+                              style: context.textTheme.bodyMedium?.copyWith(
+                                  color: context.theme.primaryColorDark),
                             ),
                           ],
                         ),
@@ -839,7 +825,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.05),
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.background,
+                  color: context.colorScheme.background,
                   borderRadius: BorderRadius.circular(30)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -847,11 +833,11 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                 children: [
                   Icon(FontAwesomeIcons.person,
                       size: MediaQuery.of(context).size.width * 0.06,
-                      color: Theme.of(context).primaryColor),
+                      color: context.theme.primaryColor),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                   Text(
                     context.l10n.myData,
-                    style: Theme.of(context).textTheme.displaySmall,
+                    style: context.textTheme.headlineSmall,
                   ),
                 ],
               ),
@@ -871,23 +857,23 @@ class _ProfileState extends State<Profile> with PlatformMixin {
         height: MediaQuery.of(context).size.height * 0.06,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: context.theme.scaffoldBackgroundColor,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TitleHeadline1(
-              text: context.l10n.shareAppTitle,
+            Text(
+              context.l10n.shareAppTitle,
+              style: context.textTheme.headlineMedium,
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.0),
               child: Text(context.l10n.shareAppText,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(color: Theme.of(context).primaryColor),
+                  style: context.textTheme.bodyLarge!
+                      .copyWith(color: context.theme.primaryColor),
                   textAlign: TextAlign.center),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
@@ -900,14 +886,13 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 4,
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  backgroundColor: context.colorScheme.background,
+                  surfaceTintColor: context.colorScheme.background,
                   fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
                       MediaQuery.of(context).size.height * 0.06),
                   side: BorderSide(
                       width: 1.0,
-                      color: Theme.of(context)
-                          .colorScheme
+                      color: context.colorScheme
                           .background), // This might need adjustment
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
@@ -917,9 +902,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                 ),
                 child: Text(
                   context.l10n.shareApp,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
+                  style: context.textTheme.bodyLarge
                       ?.copyWith(fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
@@ -939,23 +922,22 @@ class _ProfileState extends State<Profile> with PlatformMixin {
       child: Container(
         height: MediaQuery.of(context).size.height * 0.06,
         width: double.infinity,
-        decoration:
-            BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
+        decoration: BoxDecoration(color: context.theme.scaffoldBackgroundColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TitleHeadline1(
-              text: context.l10n.giveFeedbackTitle,
+            Text(
+              context.l10n.giveFeedbackTitle,
+              style: context.textTheme.headlineMedium,
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.0),
               child: Text(context.l10n.giveFeedbackText,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(color: Theme.of(context).primaryColor),
+                  style: context.textTheme.bodyLarge!
+                      .copyWith(color: context.theme.primaryColor),
                   textAlign: TextAlign.center),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
@@ -968,14 +950,13 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 4,
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  backgroundColor: context.colorScheme.background,
+                  surfaceTintColor: context.colorScheme.background,
                   fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
                       MediaQuery.of(context).size.height * 0.06),
                   side: BorderSide(
                       width: 1.0,
-                      color: Theme.of(context)
-                          .colorScheme
+                      color: context.colorScheme
                           .background), // This might need adjustment
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
@@ -985,9 +966,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                 ),
                 child: Text(
                   context.l10n.giveFeedback,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
+                  style: context.textTheme.bodyLarge
                       ?.copyWith(fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
@@ -1007,23 +986,22 @@ class _ProfileState extends State<Profile> with PlatformMixin {
       child: Container(
         height: MediaQuery.of(context).size.height * 0.06,
         width: double.infinity,
-        decoration:
-            BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
+        decoration: BoxDecoration(color: context.theme.scaffoldBackgroundColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TitleHeadline1(
-              text: context.l10n.getInTouchTitle,
+            Text(
+              context.l10n.getInTouchTitle,
+              style: context.textTheme.headlineMedium,
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.0),
               child: Text(context.l10n.getInTouchTextDesc,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(color: Theme.of(context).primaryColor),
+                  style: context.textTheme.bodyLarge!
+                      .copyWith(color: context.theme.primaryColor),
                   textAlign: TextAlign.center),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
@@ -1033,14 +1011,13 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                 onPressed: () => launchEmail(),
                 style: ElevatedButton.styleFrom(
                   elevation: 4,
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  surfaceTintColor: Theme.of(context).colorScheme.background,
+                  backgroundColor: context.colorScheme.background,
+                  surfaceTintColor: context.colorScheme.background,
                   fixedSize: Size(MediaQuery.of(context).size.width * 0.35,
                       MediaQuery.of(context).size.height * 0.06),
                   side: BorderSide(
                       width: 1.0,
-                      color: Theme.of(context)
-                          .colorScheme
+                      color: context.colorScheme
                           .background), // This might need adjustment
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
@@ -1050,9 +1027,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                 ),
                 child: Text(
                   context.l10n.getInTouch,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
+                  style: context.textTheme.bodyLarge
                       ?.copyWith(fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
@@ -1074,146 +1049,149 @@ class _ProfileState extends State<Profile> with PlatformMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-        elevation: 0,
-        backgroundColor: AppColors.black,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                buildTopCurvedContainer(),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.12,
-                        width: MediaQuery.of(context).size.width * 0.12,
-                        child: MaterialButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          elevation: 4,
-                          color: AppColors.white,
-                          textColor: AppColors.black,
-                          padding: EdgeInsets.zero,
-                          shape: const CircleBorder(),
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: AppColors.black,
-                            size: MediaQuery.of(context).size.height * 0.035,
+    return ResponsiveMenu(
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
+          elevation: 0,
+          backgroundColor: AppColors.black,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+        ),
+        backgroundColor: context.theme.scaffoldBackgroundColor,
+        body: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  buildTopCurvedContainer(),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.12,
+                          width: MediaQuery.of(context).size.width * 0.12,
+                          child: MaterialButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            elevation: 4,
+                            color: AppColors.white,
+                            textColor: AppColors.black,
+                            padding: EdgeInsets.zero,
+                            shape: const CircleBorder(),
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: AppColors.black,
+                              size: MediaQuery.of(context).size.height * 0.035,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.12,
-                        width: MediaQuery.of(context).size.width * 0.12,
-                        child: MaterialButton(
-                          onPressed: navigateToSettingsScreen,
-                          elevation: 4,
-                          color: AppColors.white,
-                          textColor: AppColors.black,
-                          padding: EdgeInsets.zero,
-                          shape: const CircleBorder(),
-                          child: Icon(
-                            Icons.settings_outlined,
-                            color: AppColors.black,
-                            size: MediaQuery.of(context).size.height * 0.035,
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.12,
+                          width: MediaQuery.of(context).size.width * 0.12,
+                          child: MaterialButton(
+                            onPressed: navigateToSettingsScreen,
+                            elevation: 4,
+                            color: AppColors.white,
+                            textColor: AppColors.black,
+                            padding: EdgeInsets.zero,
+                            shape: const CircleBorder(),
+                            child: Icon(
+                              Icons.settings_outlined,
+                              color: AppColors.black,
+                              size: MediaQuery.of(context).size.height * 0.035,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.26,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Material(
-                          elevation: 4,
-                          shape: const CircleBorder(),
-                          child: buildUserPicture()),
-                      const SizedBox(height: 12),
-                      buildUserTitle(),
-                    ],
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.26,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Material(
+                            elevation: 4,
+                            shape: const CircleBorder(),
+                            child: buildUserPicture()),
+                        const SizedBox(height: 12),
+                        buildUserTitle(),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-            buildUserStatsEvent(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-            buildUserProgressWidget(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-            buildContainersWidget(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.008),
-            Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                CarouselSlider(
-                  items: buildProfileCarousel,
-                  carouselController: _controller,
-                  options: CarouselOptions(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    autoPlay: false,
-                    initialPage: _current,
-                    viewportFraction: 1,
-                    enlargeCenterPage: false,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _current = index;
-                      });
-                    },
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+              buildUserStatsEvent(),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+              buildUserProgressWidget(),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              buildContainersWidget(),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.008),
+              Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  CarouselSlider(
+                    items: buildProfileCarousel,
+                    carouselController: _controller,
+                    options: CarouselOptions(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      autoPlay: false,
+                      initialPage: _current,
+                      viewportFraction: 1,
+                      enlargeCenterPage: false,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          _current = index;
+                        });
+                      },
+                    ),
                   ),
-                ),
-                Positioned(
-                  bottom: isAndroid
-                      ? MediaQuery.of(context).size.height * 0.03
-                      : MediaQuery.of(context).size.height * 0.06,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: buildProfileCarousel.asMap().entries.map((entry) {
-                      return GestureDetector(
-                        onTap: () => _controller.animateToPage(entry.key),
-                        child: Container(
-                          width: 8.0,
-                          height: 8.0,
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 4.0),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: (Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black)
-                                  .withOpacity(
-                                      _current == entry.key ? 0.9 : 0.4)),
-                        ),
-                      );
-                    }).toList(),
+                  Positioned(
+                    bottom: isAndroid
+                        ? MediaQuery.of(context).size.height * 0.03
+                        : MediaQuery.of(context).size.height * 0.06,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children:
+                          buildProfileCarousel.asMap().entries.map((entry) {
+                        return GestureDetector(
+                          onTap: () => _controller.animateToPage(entry.key),
+                          child: Container(
+                            width: 8.0,
+                            height: 8.0,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 4.0),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
+                                    (context.theme.brightness == Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black)
+                                        .withOpacity(
+                                            _current == entry.key ? 0.9 : 0.4)),
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-          ],
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+            ],
+          ),
         ),
       ),
     );

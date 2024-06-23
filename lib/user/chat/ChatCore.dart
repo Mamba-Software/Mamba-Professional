@@ -108,7 +108,7 @@ class _ChatCoreState extends State<ChatCore> {
         return room.lastMessages[0].text;
       }
     } else {
-      return "";
+      return context.l10n.noMessages;
     }
   }
 
@@ -118,19 +118,10 @@ class _ChatCoreState extends State<ChatCore> {
       return Scaffold(
         appBar: AppBar(
             elevation: 0,
-            title: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.01,
-                ),
-                Text(
-                  context.l10n.chatBottomNav,
-                  style: Theme.of(context).textTheme.displaySmall,
-                  textAlign: TextAlign.center,
-                ),
-              ],
+            title: Text(
+              context.l10n.chatBottomNav,
             ),
-            centerTitle: false,
+            centerTitle: true,
             automaticallyImplyLeading: false,
             leading: IconButton(
               icon: Icon(
@@ -311,19 +302,10 @@ class _ChatCoreState extends State<ChatCore> {
       return Scaffold(
         appBar: AppBar(
             elevation: 0,
-            title: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.01,
-                ),
-                Text(
-                  context.l10n.chatBottomNav,
-                  style: Theme.of(context).textTheme.displaySmall,
-                  textAlign: TextAlign.center,
-                ),
-              ],
+            title: Text(
+              context.l10n.chatBottomNav,
             ),
-            centerTitle: false,
+            centerTitle: true,
             bottom: searchClicked
                 ? PreferredSize(
                     preferredSize: Size.fromHeight(
@@ -491,19 +473,10 @@ class _ChatCoreState extends State<ChatCore> {
     return Scaffold(
       appBar: AppBar(
           elevation: 0,
-          title: Row(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.01,
-              ),
-              Text(
-                context.l10n.chatBottomNav,
-                style: Theme.of(context).textTheme.displaySmall,
-                textAlign: TextAlign.center,
-              ),
-            ],
+          title: Text(
+            context.l10n.chatBottomNav,
           ),
-          centerTitle: false,
+          centerTitle: true,
           bottom: searchClicked
               ? PreferredSize(
                   preferredSize: Size.fromHeight(
@@ -763,52 +736,52 @@ class _ChatCoreState extends State<ChatCore> {
                                       MediaQuery.of(context).size.width * 0.03,
                                 ),
                                 Expanded(
-                                  child: Container(
-                                    color: Colors.transparent,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          room.name ?? '',
-                                          style: Theme.of(context)
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        room.name ?? '',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.005,
+                                      ),
+                                      TextField(
+                                        enabled: false,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: context
+                                              .theme.scaffoldBackgroundColor,
+                                          hintStyle: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge
+                                              .bodyMedium
                                               ?.copyWith(
-                                                  fontWeight: FontWeight.bold),
+                                                  color: Colors.grey.shade600,
+                                                  fontWeight: Read
+                                                      ? FontWeight.normal
+                                                      : FontWeight.bold,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
+                                          hintText: returnChatHintMessage(room),
+                                          contentPadding:
+                                              const EdgeInsets.all(0),
+                                          isDense: true,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
                                         ),
-                                        SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.005,
-                                        ),
-                                        TextField(
-                                          enabled: false,
-                                          decoration: InputDecoration(
-                                            hintStyle: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium
-                                                ?.copyWith(
-                                                    color: Colors.grey.shade600,
-                                                    fontWeight: Read
-                                                        ? FontWeight.normal
-                                                        : FontWeight.bold),
-                                            hintText:
-                                                returnChatHintMessage(room),
-                                            contentPadding:
-                                                const EdgeInsets.all(0),
-                                            isDense: true,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                          ),
-                                        ),
+                                      ),
 
-                                        // Text(widget.messageText,style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
-                                      ],
-                                    ),
+                                      // Text(widget.messageText,style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -909,53 +882,50 @@ class _ChatCoreState extends State<ChatCore> {
                                       MediaQuery.of(context).size.width * 0.03,
                                 ),
                                 Expanded(
-                                  child: Container(
-                                    color: Colors.transparent,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          room.name ?? '',
-                                          style: Theme.of(context)
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        room.name ?? '',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.005,
+                                      ),
+                                      TextField(
+                                        enabled: false,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: context
+                                              .theme.scaffoldBackgroundColor,
+                                          hintStyle: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge
+                                              .bodyMedium
                                               ?.copyWith(
-                                                  fontWeight: FontWeight.bold),
+                                                  color: Colors.grey.shade600,
+                                                  fontWeight: Read
+                                                      ? FontWeight.normal
+                                                      : FontWeight.bold),
+                                          hintText: returnChatHintMessage(room),
+                                          contentPadding:
+                                              const EdgeInsets.all(0),
+                                          isDense: true,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
                                         ),
-                                        SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.005,
-                                        ),
-                                        TextField(
-                                          enabled: false,
-                                          decoration: InputDecoration(
-                                            hintStyle: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium
-                                                ?.copyWith(
-                                                    color: Colors.grey.shade600,
-                                                    fontWeight: Read
-                                                        ? FontWeight.normal
-                                                        : FontWeight.bold),
-                                            hintText: room.lastMessages != null
-                                                ? "${room.lastMessages![0].author.firstName}..."
-                                                : 'test',
-                                            contentPadding:
-                                                const EdgeInsets.all(0),
-                                            isDense: true,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                          ),
-                                        ),
+                                      ),
 
-                                        // Text(widget.messageText,style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
-                                      ],
-                                    ),
+                                      // Text(widget.messageText,style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
+                                    ],
                                   ),
                                 ),
                               ],

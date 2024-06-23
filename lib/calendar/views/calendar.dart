@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/Events/cubit/events_bloc.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
@@ -47,6 +49,19 @@ class CalendarMain extends StatelessWidget {
 }
 
 class Calendar extends StatefulWidget {
+  static String routeName = 'calendar';
+
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: "calendar",
+    pageBuilder: (BuildContext context, GoRouterState state) =>
+        CustomTransitions.instance.customTransitionPage(
+      state: state,
+      child: const Calendar(),
+    ),
+    routes: const [],
+  );
+
   const Calendar({
     super.key,
   });
@@ -226,13 +241,6 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   }
 
   void onCalendarDateChanged(ViewChangedDetails viewChangedDetails) {
-    // Check if clicked on 1 day specific
-    print(viewChangedDetails.visibleDates);
-    print(_calendarController.view!);
-    if (_calendarController.view == CalendarView.day ||
-        viewChangedDetails.visibleDates.length == 1) {
-      print("click on a day");
-    }
     // Update the Right Title
     context.read<CalendarBloc>().onViewChanged(
           _calendarController.view!,

@@ -25,9 +25,7 @@ class SnackbarManager extends StatelessWidget {
   }
 
   double getPadding(BuildContext context) {
-    if (context.isMobile) {
-      return 5.0;
-    } else if (context.isTablet) {
+    if (context.isMobile || context.isTablet ) {    
       return 8.0;
     } else {
       return 10;
@@ -53,7 +51,7 @@ class SnackbarManager extends StatelessWidget {
     late OverlayEntry overlayEntry;
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        bottom: 50,
+        bottom: context.isDesktop ? 50 : 30,
         width: context.width,
         child: CustomSnackbarView(          
           padding: getPadding(context),
