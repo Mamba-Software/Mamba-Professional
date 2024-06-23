@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<CalendarBloc>(
-          create: (context) => CalendarBloc(
+          create: (context) => CalendarBloc(            
             isDesktop: kIsWeb,
             userBloc: context.read<UserBloc>(),
             brandBloc: context.read<BrandBloc>(),

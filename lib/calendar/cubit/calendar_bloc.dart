@@ -7,10 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/Events/cubit/events_bloc.dart';
 import 'package:mamba/calendar/models/appointment.dart';
-import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/commons/extensions/context.dart';
-import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/commons/mixins/string.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
@@ -67,33 +64,22 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     required this.brandBloc,
     required this.eventBloc,
   }) : super(const CalendarInitial()) {
+    
+    _initialize();
+    
     /*
-    brandBloc.stream.distinct().listen((state) async {
-      // Handle the state change
-      if (state.brand.id != null) {
-        _initialize();
-      }
-    });*/
-
     eventBlocSubscription = eventBloc.stream.listen((eventState) {
       if (eventState is EventsLoaded) {
-        _initialize(); // Assuming user has a brandId attribute
+        // Assuming user has a brandId attribute
+        _initialize(); 
       } else {
         resetCalendar();
       }
     });
-    //_initialize();
+    */
 
-    print('ENTER ON CALENDAR BLOC');
+    
 
-    /*
-
-    eventBloc.stream.distinct().listen((state) async {
-      // Handle the state change
-      if (state is EventsLoaded) {
-        _initialize();
-      }
-    });*/
   }
 
   void resetCalendar() {
@@ -101,11 +87,14 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     eventBlocSubscription = null;
   }
 
-  Future<void> setVariables(
-      String varDisplayDateTitle, String varLocale) async {
-    locale = varLocale;
-    displayDateTitleAux = varDisplayDateTitle;
-    //isDesktop = isDesktop2;
+  Future<void> _initialize() async {
+    // Emit Loading State
+    emit(const CalendarLoading());    
+
+    // TO DO: Remove this by using Brand Bloc
+    await getBrandInformation();
+    // TO DO: Remove this by using Brand Bloc
+
     // Initial Date Time
     DateTime now = DateTime.now();
     int currentDay = now.weekday;
@@ -124,6 +113,14 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     double difference = _endHour - _startHour;
     difference = _startHour != 0 ? difference + 1 : difference;
     difference = _endHour != 24 ? difference + 1 : difference;
+    
+    // Get Brand Events
+    await eventBloc.getInitialBrandEvents(_brandTrainers);
+
+    // User Variables
+    if (isDesktop == false) {
+      userZoomScale = await getUserZoomScale();
+    }
 
     // Emit New State
     emit(
@@ -143,23 +140,6 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
         dataSource: getCalendarDataSource(),
       ),
     );
-  }
-
-  Future<void> _initialize() async {
-    // Emit Loading State
-    emit(const CalendarLoading());
-
-    // TO DO: Remove this by using Brand Bloc
-    await getBrandInformation();
-    // TO DO: Remove this by using Brand Bloc
-
-    // Get Brand Events
-    await eventBloc.getInitialBrandEvents(_brandTrainers);
-
-    // User Variables
-    if (isDesktop == false) {
-      userZoomScale = await getUserZoomScale();
-    }
   }
 
   // Called when the current visible date changes in [SfCalendar].
