@@ -24,22 +24,21 @@ import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../../auth/splash/SplashScreen.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class Onboarding extends StatefulWidget {
   static String routeName = '/onboarding';
   static GoRoute route = GoRoute(
     name: routeName,
     path: '/onboarding',
-    builder: (BuildContext context, GoRouterState state) =>
-        const OnboardingScreen(),
+    builder: (BuildContext context, GoRouterState state) => const Onboarding(),
   );
 
-  const OnboardingScreen({super.key});
+  const Onboarding({super.key});
 
   @override
-  _OnboardingScreenState createState() => _OnboardingScreenState();
+  _OnboardingState createState() => _OnboardingState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingState extends State<Onboarding> {
   // Services
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();

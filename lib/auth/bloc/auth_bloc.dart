@@ -14,15 +14,14 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
-  AuthBloc(
-      {required AuthRepository authRepository,
-      required UserBloc userBloc,
-      required BrandBloc brandBloc})
-      : _authRepository = authRepository,
+  AuthBloc({
+    required AuthRepository authRepository,
+    required UserBloc userBloc,
+    required BrandBloc brandBloc,
+  })  : _authRepository = authRepository,
         _userBloc = userBloc,
         _brandBloc = brandBloc,
-        super(const AuthStateS.unknown()) {
-    debugPrint('auth');
+        super(const AuthStateS.unknown(),) {    
     on<AuthUserChanged>(_onUserChanged);
     on<AuthLogoutRequested>(_onLogoutRequested);
     _userSubscription = _authRepository.authUser.listen(

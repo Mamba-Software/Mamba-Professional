@@ -18,7 +18,6 @@ class BrandBloc extends Cubit<BrandState> {
   String userId = '';
   StreamSubscription<Brand>? _brandSubscription;
 
-  final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
 
   String get getBrandId => brandId;
@@ -70,8 +69,6 @@ class BrandBloc extends Cubit<BrandState> {
   })  : _brandRepository = brandRepository,
         super(BrandState(brand: Brand())) {
     // Assuming Brand.empty() is a valid initializer for an empty Brand
-    print("hola Joel");
-
     // Listen to changes in the UserBloc
     userBlocSubscription = userBloc.stream.listen((userState) {
       if (userState.user.id != '') {
@@ -80,18 +77,14 @@ class BrandBloc extends Cubit<BrandState> {
         } else {
           // Assuming there is a UserAuthenticated state
           initBrand(
-              brandId: userState.user.brandID!, userId: userState.user.id!);
+            brandId: userState.user.brandID!,
+            userId: userState.user.id!,
+          );
         } // Assuming user has a brandId attribute
       } else {
         resetBrand();
       }
     });
-
-    //final AnalyticsRepository _analyticsRepository;
-
-    //final ActivityRepository _activityRepository;
-    //StreamSubscription<List<GroupPreview>>? _groupsSubscription;
-    //StreamSubscription<List<ActivityPreview>>? _activitiesSubscription;
 
     @override
     Future<void> close() {

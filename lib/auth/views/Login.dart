@@ -10,19 +10,15 @@ import 'package:mamba/auth/views/forgot_password.dart';
 import 'package:mamba/auth/views/register.dart';
 import 'package:mamba/auth/splash/SplashScreen.dart';
 import 'package:mamba/auth/widgets/signin_button.dart';
-import 'package:mamba/brand/data/brand_repository.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:mamba/auth/widgets/responsive_login.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/home/views/home.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
-import 'package:mamba/user/data/user_repository.dart';
-import 'package:mamba/user/onboarding/OnboardingScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.

@@ -25,7 +25,6 @@ import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
-import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 

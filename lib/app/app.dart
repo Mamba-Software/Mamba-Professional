@@ -41,21 +41,27 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userBloc = UserBloc(userRepository: userRepository);
-    final brandBloc =
-        BrandBloc(brandRepository: brandRepository, userBloc: userBloc);
-    final eventBloc =
-        EventsBloc(brandRepository: brandRepository, brandBloc: brandBloc);
+    final userBloc = UserBloc(
+      userRepository: userRepository,
+    );
+    final brandBloc = BrandBloc(
+      brandRepository: brandRepository,
+      userBloc: userBloc,
+    );
+    final eventBloc = EventsBloc(
+      brandRepository: brandRepository,
+      brandBloc: brandBloc,
+    );
     final authBloc = AuthBloc(
-        authRepository: authRepository,
-        userBloc: userBloc,
-        brandBloc: brandBloc);
-
+      authRepository: authRepository,
+      userBloc: userBloc,
+      brandBloc: brandBloc,
+    );
     final calendarBloc = CalendarBloc(
+      isDesktop: context.isDesktop,
       userBloc: userBloc,
       brandBloc: brandBloc,
       eventBloc: eventBloc,
-      isDesktop: context.isDesktop,
     );
     return MultiRepositoryProvider(
       providers: [
@@ -64,22 +70,34 @@ class App extends StatelessWidget {
             isRelease: flavor != Flavor.development || flavor != Flavor.staging,
           ),
         ),
-        RepositoryProvider<UserRepository>(create: (context) => userRepository),
+        RepositoryProvider<UserRepository>(
+          create: (context) => userRepository,
+        ),
         RepositoryProvider<SettingsRepository>(
           create: (context) => SettingsRepository(),
         ),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<AuthBloc>(create: (_) => authBloc),
-          BlocProvider<UserBloc>(create: (_) => userBloc),
-          BlocProvider<BrandBloc>(create: (_) => brandBloc),
-          BlocProvider<EventsBloc>(create: (_) => eventBloc),
+          // Refactor Done
+          BlocProvider<AuthBloc>(
+            create: (_) => authBloc,
+          ),
+          BlocProvider<UserBloc>(
+            create: (_) => userBloc,
+          ),
+          BlocProvider<BrandBloc>(
+            create: (_) => brandBloc,
+          ),
+          BlocProvider<EventsBloc>(
+            create: (_) => eventBloc,
+          ),
           BlocProvider<HomeManager>(
             create: (context) => HomeManager(),
           ),
-          BlocProvider<CalendarBloc>(create: (_) => calendarBloc),
-          // Refactor Done
+          BlocProvider<CalendarBloc>(
+            create: (_) => calendarBloc,
+          ),          
           BlocProvider<AuthCubit>(
             create: (context) => AuthCubit(BlocProvider.of<AuthBloc>(context)),
             lazy: false,
@@ -125,7 +143,7 @@ class App extends StatelessWidget {
             lazy: false,
           ),
         ],
-        child: const AppView(), // Your AppView widget
+        child: const AppView(), 
       ),
     );
   }
@@ -190,11 +208,9 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
             ],
             builder: (context, child) {
               return PopupManager(
-                navigatorKey:
-                    AppRouter.navigatorKey, // Use the GoRouter navigatorKey
+                navigatorKey: AppRouter.navigatorKey, 
                 child: SnackbarManager(
-                  navigatorKey:
-                      AppRouter.navigatorKey, // Use the same navigatorKey
+                  navigatorKey: AppRouter.navigatorKey, 
                   child: child!,
                 ),
               );

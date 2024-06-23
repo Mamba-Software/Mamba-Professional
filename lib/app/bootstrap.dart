@@ -14,6 +14,7 @@ import 'package:mamba/notifications/NotificationService/LocalNotificationService
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_web_plugins/url_strategy.dart';
 
 class Bootstrap with PlatformMixin {

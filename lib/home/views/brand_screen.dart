@@ -7,10 +7,6 @@ import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/views/Login.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
-import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba/data/DataService/Event/EventDataService.dart';
-import 'package:mamba/data/DataService/Room/RoomDataService.dart';
-import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
@@ -98,9 +94,8 @@ class _BrandScreenState extends State<BrandScreen> {
             setState(() {
               _pageController.jumpToPage(state.pageIndex);
             });
-            if (navigationDrawerKey.currentState != null &&
-                navigationDrawerKey.currentState!.isDrawerOpen) {
-              // Close Drawer
+            // Close Drawer
+            if (navigationDrawerKey.currentState != null && navigationDrawerKey.currentState!.isDrawerOpen) {              
               Navigator.of(context).pop();
             }
           },
@@ -112,7 +107,7 @@ class _BrandScreenState extends State<BrandScreen> {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             // Gestión
-            const CalendarMain(),
+            const Calendar(),
             BrandPurchaseHistory(
               brandId: currentBrand.id!,
             ),

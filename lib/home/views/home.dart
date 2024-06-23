@@ -1,31 +1,26 @@
 // ignore_for_file: avoid_print
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/Events/cubit/events_bloc.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
-import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/Login.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
 import 'package:mamba/calendar/views/calendar.dart';
-import 'package:mamba/events/cubit/events_bloc.dart';
-import 'package:mamba/home/cubit/home_manager.dart';
-import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/home/views/no_brand_screen.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
-import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/user/Profile/Profile.dart';
 import 'package:mamba/user/bloc/user_bloc.dart';
@@ -50,10 +45,10 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [        
+      providers: [
         BlocProvider<CalendarBloc>(
           create: (context) => CalendarBloc(
-            context: context,
+            isDesktop: kIsWeb,
             userBloc: context.read<UserBloc>(),
             brandBloc: context.read<BrandBloc>(),
             eventBloc: context.read<EventsBloc>(),
@@ -62,7 +57,6 @@ class HomePage extends StatelessWidget {
       ],
       child: const HomePageBody(),
     );
-    return const HomePageBody();
   }
 }
 
@@ -134,66 +128,6 @@ class _HomePageBodyState extends State<HomePageBody> {
     });
     // Check If App Update
     context.read<PopupsCubit>().checkIfAppUpdate();
-
-    /*
-
-    final currentState = context.read<BrandBloc>().state;
-    if (currentState.brand.id != null && currentState.brand.id != '') {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.goNamed(BrandScreen.routeName);
-      });
-    }*/
-
-    // On StartUp Dialogs
-    launchOnStartUpDialogs();
-  }
-
-  Future<void> firstFunction() async {
-    isLoading = true;
-    // Handle LocalNotificationsService
-    localNotificationService.initialize();
-    handleAndlistenNotifications(context);
-    // Firebase Cloud Messaging Notifications
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
-      if (message != null) {
-        print("App in Terminated State Notification Trigger HomePage");
-        String route = message.data["route"];
-        // Handling OnClickNotification Firebase Messaging Notification
-        localNotificationService.onClickedNotification(context, route);
-      }
-    });
-    // If App in Foreground.
-    FirebaseMessaging.onMessage.listen((message) {
-      print("App in Foreground Notification Trigger HomePage");
-      ReceivedNotification notif = ReceivedNotification(
-        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        title: message.notification!.title,
-        body: message.notification!.body,
-        payload: message.data["route"],
-      );
-      localNotificationService.showNotification(notif);
-    });
-    // If App in Background, Tap on Notification to be Opened
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print("App in Background Notification Trigger HomePage");
-      String route = message.data["route"];
-      // Handling OnClickNotification Firebase Messaging Notification
-      localNotificationService.onClickedNotification(context, route);
-    });
-    // Listen Dynamic Link Foreground / Background State
-    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      dynamicLinkBrandId = dynamicLinkData.link.queryParameters['id'];
-      checkBrandInvite();
-    }).onError((error) {
-      print(error.toString());
-    });
-
-    // Getting User Information
-    setState(() {
-      isLoading = false;
-    });
-    // Check If App Update
-    context.read<PopupsCubit>().checkIfAppUpdate();
     // On StartUp Dialogs
     launchOnStartUpDialogs();
   }
@@ -208,7 +142,8 @@ class _HomePageBodyState extends State<HomePageBody> {
     // Check Notification Permissions
     var notificationString =
         await PermisionsService().checkUserNotificationsPermision();
-    if (notificationString == "Provisional" || notificationString == "Unknown") {
+    if (notificationString == "Provisional" ||
+        notificationString == "Unknown") {
       mixpanel!.track('notifications_permission_ask');
       PermissionStatus permission =
           await PermisionsService().askUserNotificationsPermision();
@@ -279,13 +214,15 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   @override
   Widget build(BuildContext context) {
-    final brandBloc = context.read<BrandBloc>();
+    
 
-    // Verifica el estado actual inmediatamente al construir el widget
+    /* Verifica el estado actual inmediatamente al construir el widget
+    final brandBloc = context.read<BrandBloc>();
     final currentState = brandBloc.state;
     if (currentState.brand.id != null && currentState.brand.id! != '') {
       context.goNamed(BrandScreen.routeName);
     }
+    */
 
     return MultiBlocListener(
       listeners: [
@@ -302,6 +239,7 @@ class _HomePageBodyState extends State<HomePageBody> {
             }
           },
         ),
+        /*
         BlocListener<BrandBloc, BrandState>(
           listener: (context, state) {
             if (state.brand.id != null && state.brand.id! != '') {
@@ -309,17 +247,8 @@ class _HomePageBodyState extends State<HomePageBody> {
             }
           },
         ),
-      ],
-      child: Scaffold(
-        backgroundColor: AppColors.black,
-        body: LoadingView(
-          hasLogo: false,
-          isSmall: true,
-          color: AppColors.white,
-        ),
-      ),
-    );
-    /* BlocSelector<BrandBloc, BrandState, BrandState>(
+
+/* BlocSelector<BrandBloc, BrandState, BrandState>(
               selector: (state) {
                 return state;
               },
@@ -363,5 +292,10 @@ class _HomePageBodyState extends State<HomePageBody> {
               },
             ),
     ); */ // The method to build widget based on AuthState
+
+        */
+      ],
+      child: const BrandScreen(),
+    );
   }
 }
