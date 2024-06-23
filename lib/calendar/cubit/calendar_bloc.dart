@@ -63,18 +63,19 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     required this.brandBloc,
     required this.eventBloc,
   }) : super(const CalendarInitial()) {
-    _initialize();
-
+    
+    _initialize(); 
+    
     /*
     eventBlocSubscription = eventBloc.stream.listen((eventState) {
       if (eventState is EventsLoaded) {
-        // Assuming user has a brandId attribute
         _initialize(); 
       } else {
         resetCalendar();
       }
     });
     */
+
   }
 
   void resetCalendar() {
@@ -87,7 +88,7 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     emit(const CalendarLoading());
 
     // TO DO: Remove this by using Brand Bloc
-    getBrandInformation();
+    await getBrandInformation();
     // TO DO: Remove this by using Brand Bloc
 
     print("aqui este");

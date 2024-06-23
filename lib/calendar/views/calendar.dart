@@ -293,6 +293,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
       */
       listener: (context, state) {
         if (state is CalendarLoaded) {
+          // ignore: unnecessary_cast
           final loadedState = state as CalendarLoaded;
           onCalendarStart(
             loadedState.difference,

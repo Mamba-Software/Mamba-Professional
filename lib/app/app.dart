@@ -83,6 +83,10 @@ class App extends StatelessWidget {
           BlocProvider<AuthBloc>(
             create: (_) => authBloc,
           ),
+          BlocProvider<AuthCubit>(
+            create: (context) => AuthCubit(BlocProvider.of<AuthBloc>(context)),
+            lazy: false,
+          ),
           BlocProvider<UserBloc>(
             create: (_) => userBloc,
           ),
@@ -97,10 +101,6 @@ class App extends StatelessWidget {
           ),
           BlocProvider<CalendarBloc>(
             create: (_) => calendarBloc,
-          ),          
-          BlocProvider<AuthCubit>(
-            create: (context) => AuthCubit(BlocProvider.of<AuthBloc>(context)),
-            lazy: false,
           ),
           BlocProvider<ThemeManager>(
             create: (context) => ThemeManager(),
@@ -117,9 +117,6 @@ class App extends StatelessWidget {
           ),
           BlocProvider<SnackbarCubit>(
             create: (context) => SnackbarCubit(),
-          ),
-          BlocProvider<HomeManager>(
-            create: (context) => HomeManager(),
           ),
           // To Be Refactored
           BlocProvider<ClientSessionsCubit>(

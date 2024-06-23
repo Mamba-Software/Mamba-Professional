@@ -64,17 +64,11 @@ class _SplashScreenState extends State<SplashScreen> {
     return BlocListener<AuthBloc, AuthStateS>(
         listener: (context, state) {
           switch (state.status) {
-            case AuthStatus.authenticated:
-              //context.goNamed(HomePage.routeName); //NOT WORKING
+            case AuthStatus.authenticated:              
               userAutenticatedRedirection(
                 context: context,
                 userId: state.user.id,
               );
-
-              /*if (checkIfAppIsActive(context)) {
-              userAutenticatedRedirection(context: context, userId: state.user.id);
-            }*/
-
               break;
             case AuthStatus.unauthenticated:
               context.goNamed(Login.routeName);
