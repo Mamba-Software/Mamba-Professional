@@ -32,7 +32,6 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   // All the information that we have here, should be taken from the Brand State
   Brand _brand = Brand();
   DateTime dateJoined = DateTime.now();
-
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
@@ -64,9 +63,8 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     required this.brandBloc,
     required this.eventBloc,
   }) : super(const CalendarInitial()) {
-    
     _initialize();
-    
+
     /*
     eventBlocSubscription = eventBloc.stream.listen((eventState) {
       if (eventState is EventsLoaded) {
@@ -77,9 +75,6 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
       }
     });
     */
-
-    
-
   }
 
   void resetCalendar() {
@@ -89,11 +84,13 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
 
   Future<void> _initialize() async {
     // Emit Loading State
-    emit(const CalendarLoading());    
+    emit(const CalendarLoading());
 
     // TO DO: Remove this by using Brand Bloc
-    await getBrandInformation();
+    getBrandInformation();
     // TO DO: Remove this by using Brand Bloc
+
+    print("aqui este");
 
     // Initial Date Time
     DateTime now = DateTime.now();
@@ -114,6 +111,8 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     difference = _startHour != 0 ? difference + 1 : difference;
     difference = _endHour != 24 ? difference + 1 : difference;
     
+    print("aqui este111");
+
     // Get Brand Events
     await eventBloc.getInitialBrandEvents(_brandTrainers);
 
@@ -122,6 +121,7 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
       userZoomScale = await getUserZoomScale();
     }
 
+    print("aqui estem");
     // Emit New State
     emit(
       CalendarLoaded(
@@ -142,7 +142,6 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     );
   }
 
-  // Called when the current visible date changes in [SfCalendar].
   void onViewChanged(CalendarView calendarView, List<DateTime> visibleDates) {
     // Update the Calendar Title;
     String calendarTitle = getCalendarTitle(calendarView, visibleDates);

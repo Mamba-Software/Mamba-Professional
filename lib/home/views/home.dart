@@ -1,16 +1,12 @@
 // ignore_for_file: avoid_print
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
-import 'package:mamba/Events/cubit/events_bloc.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/views/Login.dart';
-import 'package:mamba/brand/bloc/brand_bloc.dart';
-import 'package:mamba/calendar/cubit/calendar_bloc.dart';
 import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
@@ -18,12 +14,9 @@ import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/notifications/NotificationService/LocalNotificationService.dart';
 import 'package:mamba/commons/managers/PermisionsService.dart';
-import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
-import 'package:mamba/commons/widgets/loading/LoadingView.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/user/Profile/Profile.dart';
-import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 
 class HomePage extends StatelessWidget {
@@ -43,7 +36,9 @@ class HomePage extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
+    return const HomePageBody();
+    /*
     return MultiBlocProvider(
       providers: [
         BlocProvider<CalendarBloc>(
@@ -57,6 +52,7 @@ class HomePage extends StatelessWidget {
       ],
       child: const HomePageBody(),
     );
+    */
   }
 }
 
@@ -214,8 +210,6 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   @override
   Widget build(BuildContext context) {
-    
-
     /* Verifica el estado actual inmediatamente al construir el widget
     final brandBloc = context.read<BrandBloc>();
     final currentState = brandBloc.state;

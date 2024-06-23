@@ -286,15 +286,19 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CalendarBloc, CalendarState>(
+      /*
       listenWhen: (previous, current) {
         return previous is CalendarLoading && current is CalendarLoaded;
       },
+      */
       listener: (context, state) {
-        final loadedState = state as CalendarLoaded;
-        onCalendarStart(
-          loadedState.difference,
-          loadedState.timeSlotViewScale,
-        );
+        if (state is CalendarLoaded) {
+          final loadedState = state as CalendarLoaded;
+          onCalendarStart(
+            loadedState.difference,
+            loadedState.timeSlotViewScale,
+          );
+        }
       },
       builder: (context, state) {
         if (state is CalendarLoaded) {
