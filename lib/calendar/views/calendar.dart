@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
+import 'package:mamba/Events/cubit/events_bloc.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
 import 'package:mamba/calendar/widgets/calendar_action_button.dart';
 import 'package:mamba/calendar/widgets/calendar_appbar.dart';
@@ -20,12 +22,31 @@ import 'package:mamba/events/crud_events/views/mobile/AddorEdtiEvent.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 import 'package:mamba/commons/widgets/loading/LoadingView.dart';
-import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
 import 'package:mamba/snackbar/models/custom_snackbar.dart';
 import 'package:mamba/snackbar/models/snackbar_type.dart';
+import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+
+class CalendarMain extends StatelessWidget {
+  const CalendarMain({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        // Access context-specific values here
+        final displayDateTitleAux = context.l10n.schedule;
+        final locale = context.languageCode;
+
+        context.read<CalendarBloc>().setVariables(displayDateTitleAux, locale);
+
+        return const Calendar();
+      },
+    );
+  }
+}
 
 class Calendar extends StatefulWidget {
   static String routeName = 'calendar';

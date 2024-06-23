@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
+import 'package:mamba/Events/cubit/events_bloc.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/Login.dart';
@@ -13,6 +14,7 @@ import 'package:mamba/calendar/cubit/calendar_bloc.dart';
 import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
 import 'package:mamba/data/Models/Notifications/RecievedNotification.dart';
@@ -60,6 +62,7 @@ class HomePage extends StatelessWidget {
       ],
       child: const HomePageBody(),
     );
+    return const HomePageBody();
   }
 }
 
@@ -125,6 +128,66 @@ class _HomePageBodyState extends State<HomePageBody> {
     }).onError((error) {
       print(error.toString());
     });
+    // Getting User Information
+    setState(() {
+      isLoading = false;
+    });
+    // Check If App Update
+    context.read<PopupsCubit>().checkIfAppUpdate();
+
+    /*
+
+    final currentState = context.read<BrandBloc>().state;
+    if (currentState.brand.id != null && currentState.brand.id != '') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.goNamed(BrandScreen.routeName);
+      });
+    }*/
+
+    // On StartUp Dialogs
+    launchOnStartUpDialogs();
+  }
+
+  Future<void> firstFunction() async {
+    isLoading = true;
+    // Handle LocalNotificationsService
+    localNotificationService.initialize();
+    handleAndlistenNotifications(context);
+    // Firebase Cloud Messaging Notifications
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        print("App in Terminated State Notification Trigger HomePage");
+        String route = message.data["route"];
+        // Handling OnClickNotification Firebase Messaging Notification
+        localNotificationService.onClickedNotification(context, route);
+      }
+    });
+    // If App in Foreground.
+    FirebaseMessaging.onMessage.listen((message) {
+      print("App in Foreground Notification Trigger HomePage");
+      ReceivedNotification notif = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        title: message.notification!.title,
+        body: message.notification!.body,
+        payload: message.data["route"],
+      );
+      localNotificationService.showNotification(notif);
+    });
+    // If App in Background, Tap on Notification to be Opened
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("App in Background Notification Trigger HomePage");
+      String route = message.data["route"];
+      // Handling OnClickNotification Firebase Messaging Notification
+      localNotificationService.onClickedNotification(context, route);
+    });
+    // Listen Dynamic Link Foreground / Background State
+    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+      dynamicLinkBrandId = dynamicLinkData.link.queryParameters['id'];
+      checkBrandInvite();
+    }).onError((error) {
+      print(error.toString());
+    });
+
     // Getting User Information
     setState(() {
       isLoading = false;
@@ -216,6 +279,14 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   @override
   Widget build(BuildContext context) {
+    final brandBloc = context.read<BrandBloc>();
+
+    // Verifica el estado actual inmediatamente al construir el widget
+    final currentState = brandBloc.state;
+    if (currentState.brand.id != null && currentState.brand.id! != '') {
+      context.goNamed(BrandScreen.routeName);
+    }
+
     return MultiBlocListener(
       listeners: [
         BlocListener<AuthBloc, AuthStateS>(
@@ -231,28 +302,66 @@ class _HomePageBodyState extends State<HomePageBody> {
             }
           },
         ),
+        BlocListener<BrandBloc, BrandState>(
+          listener: (context, state) {
+            if (state.brand.id != null && state.brand.id! != '') {
+              context.goNamed(BrandScreen.routeName);
+            }
+          },
+        ),
       ],
-      child: BlocBuilder<AuthCubit, AuthState>(
-        builder: (context, state) {
-          if (state is AuthUserBrand) {
-            return !brandIsActive && currentUser.id == currentBrand.adminID
-                ? PayWall(
-                    brandId: currentBrand.id!,
-                    comesFromInitPage: true,
-                  )
-                : BrandScreen();
-          }
-          if (state is AuthUserNoBrand) {
-            return const NoBrandScreen();
-          } else {
-            return LoadingView(
-              hasLogo: false,
-              isSmall: true,
-              color: AppColors.white,
-            );
-          }
-        },
+      child: Scaffold(
+        backgroundColor: AppColors.black,
+        body: LoadingView(
+          hasLogo: false,
+          isSmall: true,
+          color: AppColors.white,
+        ),
       ),
     );
+    /* BlocSelector<BrandBloc, BrandState, BrandState>(
+              selector: (state) {
+                return state;
+              },
+              builder: (context, state) {
+                if (state.brand.id != null && state.brand.id! != '') {
+                  if (state.brand.id == 'none') {
+                    return const NoBrandScreen();
+                  } else if (!state.brand.brandActive &&
+                      currentUser.id == currentBrand.adminID) {
+
+                      
+ else {
+                      return PayWall(
+                          brandId: currentBrand.id!, comesFromInitPage: true);
+                    }
+                  } else {
+                    return const BrandScreen();
+                  }
+                } else {
+                  return Scaffold(
+                    backgroundColor: AppColors.black,
+                    body: LoadingView(
+                      hasLogo: false,
+                      isSmall: true,
+                      color: AppColors.white,
+                    ),
+                  );
+                }
+                /*if (state is AuthUserBrand) {
+                  return !brandIsActive
+                      ? currentUser.id == currentBrand.adminID
+                          ? PayWall(
+                              brandId: currentBrand.id!,
+                              comesFromInitPage: true)
+                          : const BrandScreen()
+                      : const BrandScreen();
+                } else if (state is AuthUserNoBrand) {
+                  return const NoBrandScreen();
+                } else {}
+              },*/
+              },
+            ),
+    ); */ // The method to build widget based on AuthState
   }
 }

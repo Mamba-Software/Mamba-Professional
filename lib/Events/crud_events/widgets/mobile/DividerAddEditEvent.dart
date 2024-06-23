@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/styles/AppColors.dart';
 
 /*
@@ -47,21 +49,44 @@ Widget dividerAddEditEvent(
 
 Widget titleEventWidget(BuildContext context, String eventField,
     [bool space = true]) {
-  return Padding(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+  return kIsWeb
+      ? Padding(
+          padding:
+              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Text(
-                eventField,
-                style: Theme.of(context).textTheme.displayLarge,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    eventField,
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayLarge
+                        ?.copyWith(fontSize: title1),
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
-      ));
+          ))
+      : Padding(
+          padding:
+              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    eventField,
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ),
+                ],
+              ),
+            ],
+          ));
 }

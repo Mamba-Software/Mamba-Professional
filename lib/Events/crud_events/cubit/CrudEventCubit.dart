@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -863,15 +864,35 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           varToChange.hour,
           varToChange.minute,
         );
-        event = state.newEvent.copyWith(
-            startDate: state.newEvent.startDate = startDate,
-            recurrent: updateRecurrency(
-                startDate,
-                state.newEvent.isRecurrent!,
-                state.newEvent.recurrent!.value!,
-                false,
-                state.newEvent.recurrent!.values!,
-                -1));
+        if (kIsWeb) {
+          //TODO END DATE
+          DateTime endDate = DateTime(
+            state.newEvent.startDate!.year,
+            state.newEvent.startDate!.month,
+            state.newEvent.startDate!.day,
+            varToChange.hour + state.newEvent.duration!,
+            varToChange.minute,
+          );
+          event = state.newEvent.copyWith(
+              startDate: state.newEvent.startDate = startDate,
+              recurrent: updateRecurrency(
+                  startDate,
+                  state.newEvent.isRecurrent!,
+                  state.newEvent.recurrent!.value!,
+                  false,
+                  state.newEvent.recurrent!.values!,
+                  -1));
+        } else {
+          event = state.newEvent.copyWith(
+              startDate: state.newEvent.startDate = startDate,
+              recurrent: updateRecurrency(
+                  startDate,
+                  state.newEvent.isRecurrent!,
+                  state.newEvent.recurrent!.value!,
+                  false,
+                  state.newEvent.recurrent!.values!,
+                  -1));
+        }
         validations[1] = _validateDateTimeDuration(event.startDate!,
             state.newEvent.duration!, state.isPrivate, state.isBeforeEdit);
         break;

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/auth/models/auth_user.dart';
@@ -17,6 +19,7 @@ class FirebaseAuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
+  final googleSignIn = GoogleSignIn();
 
   // Firebase collections
   String users = 'Users';
@@ -43,11 +46,9 @@ class FirebaseAuthService {
     throw UnimplementedError();
   }
 
-  @override
   Future<void> logInWithEmailAndPassword(
       {required String email, required String password}) async {
     bool emailVerified = true;
-    UserCredential? authResult;
     auth.UserCredential userCredential;
     try {
       userCredential = await _firebaseAuth.signInWithEmailAndPassword(
@@ -74,9 +75,7 @@ class FirebaseAuthService {
     if (!emailVerified) throw EmailNotVerified();
   }
 
-  @override
   Future<void> logInWithApple() async {
-    return;
     try {
       final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -105,10 +104,7 @@ class FirebaseAuthService {
     }
   }
 
-  @override
   Future<void> logInWithGoogle() async {
-    return;
-    final googleSignIn = GoogleSignIn();
     try {
       final user = await googleSignIn.signIn();
       if (user == null) {
@@ -127,9 +123,20 @@ class FirebaseAuthService {
     }
   }
 
+  Future<bool> checkIfUserExists({required String userId}) async {
+    var userDocRef = _firestore.collection(users).doc(userId);
+    var doc = await userDocRef.get();
+    if (!doc.exists) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   Future<void> logOut() async {
     try {
       await _firebaseAuth.signOut();
+      await googleSignIn.signOut();
     } on Exception {
       throw LogOutFailure();
     }
@@ -142,24 +149,42 @@ class FirebaseAuthService {
             (flavor != Flavor.development && !firebaseUser.emailVerified)) {
           return AuthUser.empty;
         } else {
-          brandIsActive = true; //TODO BORRAR
           if (await checkUserType(checkTrainer: true)) {
-            // Assuming 'isTrainer' is a field in your user document
-            return firebaseUser.toAuthUser; // Continue if the user is a Trainer
+            if (await checkIfUserExists(userId: firebaseUser.uid)) {
+              // Assuming 'isTrainer' is a field in your user document
+              return firebaseUser
+                  .toAuthUser(); // Continue if the user is a Trainer
+            } else {
+              return firebaseUser.toAuthUser(
+                  error:
+                      true); // Treat as 'empty' or handle differently if not a Trainer
+            }
           } else {
             return AuthUser
                 .empty; // Treat as 'empty' or handle differently if not a Trainer
           }
         }
       } catch (e) {
-        return AuthUser.empty;
+        return firebaseUser!.toAuthUser(error: true);
       }
     });
   }
 
-  Future<void> resetPassword({required String email}) {
-    // TODO: implement resetPassword
-    throw UnimplementedError();
+  Future<void> resetPassword({required String email}) async {
+    try {
+      final HttpsCallable callable =
+          FirebaseFunctions.instanceFor(region: 'europe-west1')
+              .httpsCallable('sendResetPasswordEmail');
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'email': email,
+          'isTrainer': true,
+        },
+      );
+      bool success = result.data['isSuccessful'];
+    } on Exception {
+      throw ResetPasswordFailure();
+    }
   }
 
   Future<void> registerUser(
@@ -190,7 +215,11 @@ class FirebaseAuthService {
 }
 
 extension on auth.User {
-  AuthUser get toAuthUser {
-    return AuthUser(id: uid, email: email ?? '');
+  AuthUser toAuthUser({bool error = false}) {
+    return AuthUser(
+        id: uid, // 'uid' is typically available on Firebase auth.User
+        email: email ?? '', // Safely handle null with a default empty string
+        error: error // Pass the error state as a parameter
+        );
   }
 }

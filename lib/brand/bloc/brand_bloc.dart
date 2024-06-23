@@ -29,38 +29,31 @@ class BrandBloc extends Cubit<BrandState> {
     _brandSubscription = _brandRepository.getBrandStream(uid: brandId).listen(
       (brand) async {
         if (state.brand != brand && brand != Brand()) {
-          getBrandUser(state.brand.id!, userId);
+          await getBrandUser(brand.id!, userId);
+          currentBrand.id = brand.id!;
+          currentBrand.setBasicData = brand;
+          currentBrand.brandActive = setBrandActive();
           emit(state.copyWith(brand: brand));
         }
       },
     );
   }
 
-  void getBrandUser(String brandId, String userId) async {
-    // Get User Main Data
-    currentUser.setBasicData = await _userDataService.getUserDetails(userId);
-    // Get User Brand
-    List<Brand> brands = await _brandDataService.getAllBrandsFromUser(userId);
-    currentUser.setBrandList = brands;
-    if (currentUser.brandsList.isNotEmpty) {
-      // Setting the Brand to the User
-      hasBrand = true;
-      Brand brand = currentUser.brandsList[0];
-      currentBrand.setBasicData =
-          await _brandDataService.getBrandDetails(brand.id!);
-      currentBrand.setUserList =
-          await _brandDataService.getBrandUsers(brand.id!);
+  void avoidPayWall() {
+    Brand brand = new Brand();
+    brand = state.brand;
+    emit(state.copyWith(brand: brand));
+  }
 
-      // Get Role in Brand
-      int role =
-          await _brandDataService.getUserBrandRole(brand.id!, currentUser.id!);
-      currentUser.setBrandRole = role;
-      if (currentUser.id == currentBrand.adminID) {
-        Purchases.logIn(currentBrand.id!);
-      }
-      mixpanel!.getPeople().set("Brands Roles", [role]);
-      setBrandActive();
+  Future<void> getBrandUser(String brandId, String userId) async {
+    currentBrand.setUserList = await _brandDataService.getBrandUsers(brandId);
+
+    int role = await _brandDataService.getUserBrandRole(brandId, userId);
+    currentUser.setBrandRole = role;
+    if (currentUser.id == currentBrand.adminID) {
+      Purchases.logIn(currentBrand.id!);
     }
+    mixpanel!.getPeople().set("Brands Roles", [role]);
   }
 
   void resetBrand() {
@@ -82,11 +75,13 @@ class BrandBloc extends Cubit<BrandState> {
     // Listen to changes in the UserBloc
     userBlocSubscription = userBloc.stream.listen((userState) {
       if (userState.user.id != '') {
-        // Assuming there is a UserAuthenticated state
-        initBrand(
-            brandId: userState.user.brandID!,
-            userId:
-                userState.user.id!); // Assuming user has a brandId attribute
+        if (userState.user.brandID == '') {
+          emit(state.copyWith(brand: Brand()));
+        } else {
+          // Assuming there is a UserAuthenticated state
+          initBrand(
+              brandId: userState.user.brandID!, userId: userState.user.id!);
+        } // Assuming user has a brandId attribute
       } else {
         resetBrand();
       }

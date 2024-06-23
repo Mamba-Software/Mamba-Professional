@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/cubit/AuthCubit.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
+import 'package:mamba/brand/data/brand_repository.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
@@ -12,7 +14,7 @@ part 'events_state.dart';
 
 class EventsBloc extends Cubit<EventsState> {
   // Blocs
-  final AuthCubit authBloc;
+  final BrandBloc brandBloc;
   // Variables
   final _eventDataService = EventDataService();
   final _brandDataService = BrandDataService();
@@ -24,18 +26,20 @@ class EventsBloc extends Cubit<EventsState> {
   bool isStreamActive = false;
 
   EventsBloc({
-    required this.authBloc,
+    required this.brandBloc,
+    required BrandRepository brandRepository,
   }) : super(const EventsInitial()) {
-    authBloc.stream.distinct().listen((state) async {
+    emit(const EventsLoading());
+    brandBloc.stream.distinct().listen((state) async {
       // Handle the state change
-      if (state is AuthUserBrand) {
+      if (state.brand.id != null) {
         if (isStreamActive) _subscription.cancel();
         // Set the State to Loading
         emit(const EventsLoading());
 
         isStreamActive = true;
         _brandTrainers =
-            await _brandDataService.getBrandTrainers(currentBrand.id!);
+            await _brandDataService.getBrandTrainers(state.brand.id!);
         getInitialBrandEvents(_brandTrainers);
       } else {
         if (isStreamActive) {

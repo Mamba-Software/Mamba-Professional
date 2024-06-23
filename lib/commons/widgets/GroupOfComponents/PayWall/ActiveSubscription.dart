@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba/data/Models/Subscription.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/data/Models/Subscription.dart';
 
 class ActiveSubscription extends StatefulWidget {
   Subscription subscription;

@@ -38,8 +38,7 @@ class AuthRepository {
   }
 
   Future<void> resetPassword({required String email}) {
-// TODO: implement authUser
-    throw UnimplementedError();
+    return _firebaseService.resetPassword(email: email);
   }
 
   Future<bool> existEmail({required String email}) {
@@ -53,8 +52,11 @@ class AuthRepository {
   }
 
   Future<bool> checkUserType({required bool checkTrainer}) {
-    // TODO: implement authUser
-    throw UnimplementedError();
+    return _firebaseService.checkUserType(checkTrainer: checkTrainer);
+  }
+
+  Future<bool> checkIfUserExists({required String userId}) async {
+    return _firebaseService.checkIfUserExists(userId: userId);
   }
 
   Future<void> registerUser({

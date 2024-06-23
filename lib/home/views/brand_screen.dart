@@ -2,6 +2,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mamba/auth/bloc/auth_bloc.dart';
+import 'package:mamba/auth/views/Login.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
+import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
+import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
+import 'package:mamba/data/DataService/Room/RoomDataService.dart';
+import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/home/cubit/home_manager.dart';
@@ -17,6 +26,14 @@ import 'package:mamba/screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/Bran
 import 'package:mamba/screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 
 class BrandScreen extends StatefulWidget {
+  static String routeName = '/brand';
+
+  static GoRoute route = GoRoute(
+    name: routeName,
+    path: '/brand',
+    builder: (BuildContext context, GoRouterState state) => const BrandScreen(),
+  );
+
   const BrandScreen({super.key});
 
   @override
@@ -29,6 +46,20 @@ class _BrandScreenState extends State<BrandScreen> {
   @override
   void initState() {
     super.initState();
+    if (context.read<BrandBloc>().brandId == '') {
+      context.goNamed(Login.routeName);
+    }
+    paywallFunc();
+  }
+
+  Future<void> paywallFunc() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final currentState = context.read<BrandSuscriptionCubit>().state;
+      if (currentState is BrandSuscriptionLoadedFalse) {
+        await navigateToPayWall(context, true);
+      }
+    });
+    return;
   }
 
   @override
@@ -39,24 +70,49 @@ class _BrandScreenState extends State<BrandScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<HomeManager, HomeManagerState>(
-      listener: (BuildContext context, state) {
-        // Jump To Correct Home Page
-        setState(() {
-          _pageController.jumpToPage(state.pageIndex);
-        });        
-        if (navigationDrawerKey.currentState != null && navigationDrawerKey.currentState!.isDrawerOpen) {
-          // Close Drawer
-          Navigator.of(context).pop();
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthBloc, AuthStateS>(
+          listener: (context, state) {
+            switch (state.status) {
+              case AuthStatus.unauthenticated:
+                context.goNamed(Login.routeName);
+                break;
+              case AuthStatus.authenticated:
+                break;
+              case AuthStatus.unknown:
+                break;
+            }
+          },
+        ),
+        BlocListener<BrandSuscriptionCubit, BrandSuscriptionState>(
+          listener: (context, state) async {
+            if (state is BrandSuscriptionLoadedFalse) {
+              await navigateToPayWall(context);
+            }
+          },
+        ),
+        BlocListener<HomeManager, HomeManagerState>(
+          listener: (BuildContext context, state) {
+            // Jump To Correct Home Page
+            setState(() {
+              _pageController.jumpToPage(state.pageIndex);
+            });
+            if (navigationDrawerKey.currentState != null &&
+                navigationDrawerKey.currentState!.isDrawerOpen) {
+              // Close Drawer
+              Navigator.of(context).pop();
+            }
+          },
+        ),
+      ],
       child: ResponsiveMenu(
         child: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
             // Gestión
-            const Calendar(),
+            const CalendarMain(),
             BrandPurchaseHistory(
               brandId: currentBrand.id!,
             ),

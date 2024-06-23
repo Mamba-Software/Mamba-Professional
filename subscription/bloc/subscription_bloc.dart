@@ -7,14 +7,15 @@ import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
+import 'package:mamba/data/Models/Subscription.dart';
 import 'package:mamba/user/data/user_repository.dart';
 import 'package:mamba/user/models/users/user.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-part 'user_state.dart';
+part 'subscription_state.dart';
 
-class UserBloc extends Cubit<UserState> {
-  UserBloc({
+class SubscriptionBloc extends Cubit<SubscriptionState> {
+  SubscriptionBloc({
     //required AnalyticsRepository analyticsRepository, TODO
     required UserRepository userRepository,
     //required ActivityRepository activityRepository, TODO
@@ -23,7 +24,7 @@ class UserBloc extends Cubit<UserState> {
         //_analyticsRepository = analyticsRepository,
         _userRepository = userRepository,
         //_activityRepository = activityRepository,
-        super(UserState(user: Usuario.empty));
+        super(SubscriptionState(subscription: Subscription()));
 
   //final AnalyticsRepository _analyticsRepository;
   final UserRepository _userRepository;
@@ -32,32 +33,35 @@ class UserBloc extends Cubit<UserState> {
   //final ActivityRepository _activityRepository;
   String userId;
   String brandId;
-  StreamSubscription<Usuario>? _userSubscription;
+  StreamSubscription<Subscription>? _userSubscription;
   //StreamSubscription<List<GroupPreview>>? _groupsSubscription;
   //StreamSubscription<List<ActivityPreview>>? _activitiesSubscription;
 
   void initUser({required String userId}) {
+    return null;
+    /*
     this.userId = userId;
     _userSubscription = _userRepository.getUserStream(uid: userId).listen(
-      (user) async {
-        if (state.user != user && user != AuthUser.empty) {
+      (subsription) async {
+        if (state.subscription != subsription &&
+            subsription != AuthUser.empty) {
           List<Brand> brands =
               await _brandDataService.getAllBrandsFromUser(userId);
           if (brands.isNotEmpty) {
-            user.brandID = brands[0].id!;
+            subsription.brandID = brands[0].id!;
             currentUser.setBrandList = brands;
-            getBrandUser(userId, user.brandID!);
+            getBrandUser(userId, subsription.brandID!);
           } else {
-            user.brandID = 'none';
+            subsription.brandID = 'none';
           }
           currentUser.setBasicData =
               await _userDataService.getUserDetails(userId);
 
-          brandId = user.brandID!;
-          emit(state.copyWith(user: user));
+          brandId = subsription.brandID!;
+          emit(state.copyWith(subsription: subsription));
         }
       },
-    );
+    );*/
   }
 
   Future<void> getBrandUser(String userId, String brandId) async {

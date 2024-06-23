@@ -20,20 +20,6 @@ class AuthLoading extends AuthState {
   List<Object?> get props => [provider];
 }
 
-class AuthNotLoged extends AuthState {
-  const AuthNotLoged();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class AuthLoaded extends AuthState {
-  const AuthLoaded();
-
-  @override
-  List<Object?> get props => [];
-}
-
 class AuthRegistered extends AuthState {
   final String email;
   const AuthRegistered({required this.email});
@@ -57,48 +43,4 @@ class AuthError extends AuthState {
 
   @override
   List<Object?> get props => [error];
-}
-
-class AuthMaintenance extends AuthState {
-  const AuthMaintenance();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class AuthAdmin extends AuthState {
-  const AuthAdmin();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class AuthUserBrand extends AuthState {
-  final Brand brand;
-
-  const AuthUserBrand(this.brand);
-
-  @override
-  List<Object?> get props => [brand];
-}
-
-class AuthUserNoBrand extends AuthState {
-  const AuthUserNoBrand();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class AuthNewUser extends AuthState {
-  const AuthNewUser();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class AuthLogOut extends AuthState {
-  const AuthLogOut();
-
-  @override
-  List<Object?> get props => [];
 }

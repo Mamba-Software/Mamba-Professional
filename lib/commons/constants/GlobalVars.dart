@@ -48,8 +48,8 @@ bool isExecuted = false; // Initialize the flag as a member variable.
 var dynamicLinkBrandId;
 
 //JMF 18042023 REVENUECAT
-void setBrandActive() {
-  // Se trata de revenueCat
+bool setBrandActive() {
+  //Se trata de revenueCat
   if (currentBrand.subscription != null) {
     if (currentBrand.subscription?['brandIsActive'] == true) {
       brandIsActive = true;
@@ -67,6 +67,7 @@ void setBrandActive() {
   } else {
     brandIsActive = false;
   }
+  return brandIsActive;
 }
 
 Future<void> navigateToPayWall(BuildContext context,
@@ -91,7 +92,10 @@ Future<void> navigateToPayWall(BuildContext context,
           },
         ),
       ).whenComplete(() {
-        Navigator.pop(context);
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
+        // Navigator.pop(context);
       });
     } else {
       await Navigator.push(

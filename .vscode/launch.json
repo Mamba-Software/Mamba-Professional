@@ -20,6 +20,7 @@
             "name": "production",
             "request": "launch",            
             "type": "dart",
+            "flutterMode": "debug",
             "program": "lib/main_production.dart",
             "args": ["--flavor", "production", "--target", "lib/main_production.dart", "--web-port=61999", "--web-renderer", "html"]
         },
