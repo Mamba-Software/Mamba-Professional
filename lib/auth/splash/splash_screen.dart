@@ -7,7 +7,7 @@ import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/auth/views/login.dart';
 import 'package:mamba/data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-import 'package:mamba/auth/splash/SplashScreenView.dart';
+import 'package:mamba/auth/splash/splash_screen_view.dart';
 import 'package:mamba/home/views/home.dart';
 import 'package:mamba/user/data/user_repository.dart';
 import 'package:mamba/brand/data/brand_repository.dart';
@@ -49,6 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    /*
     context.read<AuthCubit>().checkAndGetUserDetails(context);
     final authBloc = context.read<AuthBloc>();
 
@@ -60,56 +61,32 @@ class _SplashScreenState extends State<SplashScreen> {
         userId: currentState.user.id,
       );
     }
+    */
 
     return BlocListener<AuthBloc, AuthStateS>(
-        listener: (context, state) {
-          switch (state.status) {
-            case AuthStatus.authenticated:              
-              userAutenticatedRedirection(
-                context: context,
-                userId: state.user.id,
-              );
-              break;
-            case AuthStatus.unauthenticated:
-              context.goNamed(Login.routeName);
-              break;
-            case AuthStatus.unknown:
-              break;
-          }
-        },
-        child: Scaffold(
-          appBar: null,
-          body: SplashScreenView(
-            isMaintenance: false,
-            //isMaintenance: state is AuthMaintenance ? true : false,
-          ),
-        )
-
-        /*BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state is AuthNotLoged) {
+      listener: (context, state) {
+        switch (state.status) {
+          case AuthStatus.authenticated:
+            userAutenticatedRedirection(
+              context: context,
+              userId: state.user.id,
+            );
+            break;
+          case AuthStatus.unauthenticated:
             context.goNamed(Login.routeName);
-          }
-          if (state is AuthAdmin) {
-            context.goNamed(Admin.routeName);
-          }
-          if (state is AuthUserBrand || state is AuthUserNoBrand) {
-            context.goNamed(HomePage.routeName);
-          }
-          if (state is AuthNewUser) {
-            context.goNamed(OnboardingScreen.routeName);
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            appBar: null,
-            body: SplashScreenView(
-              isMaintenance: state is AuthMaintenance ? true : false,
-            ),
-          );
-        },
-      ),*/
-        );
+            break;
+          case AuthStatus.unknown:
+            break;
+        }
+      },
+      child: Scaffold(
+        appBar: null,
+        body: SplashScreenView(
+          isMaintenance: false,
+          //isMaintenance: state is AuthMaintenance ? true : false,
+        ),
+      ),
+    );
   }
 
   Future<void> userAutenticatedRedirection({
@@ -118,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }) async {
     final hasToCompleteProfile =
         await RepositoryProvider.of<UserRepository>(context)
-            .hasToCompleteProfile(uid: userId);
+            .hasToCompleteProfile(userId: userId);
     if (hasToCompleteProfile) {
       final hasBrand = await RepositoryProvider.of<BrandRepository>(context)
           .hasBrand(userId: userId);

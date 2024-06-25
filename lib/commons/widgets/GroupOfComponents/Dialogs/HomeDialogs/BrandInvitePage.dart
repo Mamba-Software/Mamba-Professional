@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba/auth/splash/SplashScreen.dart';
+import 'package:mamba/auth/splash/splash_screen.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/brand/CreateBrand/widgets/BrandImagesContainer.dart';
 import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';

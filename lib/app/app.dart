@@ -28,64 +28,84 @@ import 'package:mamba/snackbar/views/snackbar_manager.dart';
 import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
 import 'package:mamba/user/bloc/user_bloc.dart';
-import 'package:mamba/user/data/firebase_user_repository.dart';
 import 'package:mamba/user/data/user_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// ignore: must_be_immutable
 class App extends StatelessWidget {
+  // App Constructor
   App({super.key});
 
-  final UserRepository userRepository = FirebaseUserRepository();
-  final BrandRepository brandRepository = BrandRepository();
+  // Define Main Data Repositories
   final AuthRepository authRepository = AuthRepository();
+  final UserRepository userRepository = UserRepository();
+  final BrandRepository brandRepository = BrandRepository();
+  // Define Main Helper Repositories  
+  final AnalyticsRepository analyticsRepository = AnalyticsRepository(
+    isRelease: flavor != Flavor.development || flavor != Flavor.staging,
+  );
+  final SettingsRepository settingsRepository = SettingsRepository();
 
   @override
   Widget build(BuildContext context) {
+    // Define Main Blocs
     final userBloc = UserBloc(
       userRepository: userRepository,
+      settingsRepository: settingsRepository,
     );
     final brandBloc = BrandBloc(
       brandRepository: brandRepository,
       userBloc: userBloc,
-    );
-    final eventBloc = EventsBloc(
-      brandRepository: brandRepository,
-      brandBloc: brandBloc,
     );
     final authBloc = AuthBloc(
       authRepository: authRepository,
       userBloc: userBloc,
       brandBloc: brandBloc,
     );
+    final authCubit = AuthCubit(
+      authBloc: authBloc,
+    );
+    final eventBloc = EventsBloc(
+      brandRepository: brandRepository,
+      brandBloc: brandBloc,
+    );
+
     final calendarBloc = CalendarBloc(
-      isDesktop: context.isDesktop,
       userBloc: userBloc,
       brandBloc: brandBloc,
       eventBloc: eventBloc,
     );
+
+    // Return Bloc Provider
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<AnalyticsRepository>(
-          create: (context) => AnalyticsRepository(
-            isRelease: flavor != Flavor.development || flavor != Flavor.staging,
-          ),
+        // Main Data Repositories
+        RepositoryProvider<AuthRepository>(
+          create: (context) => authRepository,
         ),
         RepositoryProvider<UserRepository>(
           create: (context) => userRepository,
         ),
+        RepositoryProvider<BrandRepository>(
+          create: (context) => brandRepository,
+        ),
+        // Main Helper Repositories
+        RepositoryProvider<AnalyticsRepository>(
+          create: (context) => analyticsRepository,
+        ),
         RepositoryProvider<SettingsRepository>(
-          create: (context) => SettingsRepository(),
+          create: (context) => settingsRepository,
         ),
       ],
       child: MultiBlocProvider(
         providers: [
-          // Refactor Done
+          // Main Aplication Blocs
+          // Blocs that manage the main features of the application
           BlocProvider<AuthBloc>(
             create: (_) => authBloc,
           ),
           BlocProvider<AuthCubit>(
-            create: (context) => AuthCubit(BlocProvider.of<AuthBloc>(context)),
-            lazy: false,
+            create: (_) => authCubit,
           ),
           BlocProvider<UserBloc>(
             create: (_) => userBloc,
@@ -96,28 +116,32 @@ class App extends StatelessWidget {
           BlocProvider<EventsBloc>(
             create: (_) => eventBloc,
           ),
-          BlocProvider<HomeManager>(
-            create: (context) => HomeManager(),
-          ),
           BlocProvider<CalendarBloc>(
             create: (_) => calendarBloc,
+          ),
+
+          // Top Level Helper Blocs
+          // Blocs that need to be top-level to manage features throught the app
+          BlocProvider<HomeManager>(
+            create: (context) => HomeManager(),
           ),
           BlocProvider<ThemeManager>(
             create: (context) => ThemeManager(),
           ),
           BlocProvider<LanguageManager>(
             create: (context) => LanguageManager(
-              settingsRepository: context.read<SettingsRepository>(),
+              settingsRepository: settingsRepository,
             ),
           ),
           BlocProvider<PopupsCubit>(
             create: (context) => PopupsCubit(
-              settingsRepository: context.read<SettingsRepository>(),
+              settingsRepository: settingsRepository,
             ),
           ),
           BlocProvider<SnackbarCubit>(
             create: (context) => SnackbarCubit(),
           ),
+
           // To Be Refactored
           BlocProvider<ClientSessionsCubit>(
             create: (_) => ClientSessionsCubit([]),
@@ -140,7 +164,7 @@ class App extends StatelessWidget {
             lazy: false,
           ),
         ],
-        child: const AppView(), 
+        child: const AppView(),
       ),
     );
   }
@@ -205,9 +229,9 @@ class AppViewState extends State<AppView> with WidgetsBindingObserver {
             ],
             builder: (context, child) {
               return PopupManager(
-                navigatorKey: AppRouter.navigatorKey, 
+                navigatorKey: AppRouter.navigatorKey,
                 child: SnackbarManager(
-                  navigatorKey: AppRouter.navigatorKey, 
+                  navigatorKey: AppRouter.navigatorKey,
                   child: child!,
                 ),
               );

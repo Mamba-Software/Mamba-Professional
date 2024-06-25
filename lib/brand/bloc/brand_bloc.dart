@@ -25,7 +25,7 @@ class BrandBloc extends Cubit<BrandState> {
   void initBrand({required String brandId, required String userId}) {
     this.brandId = brandId;
     this.userId = userId;
-    _brandSubscription = _brandRepository.getBrandStream(uid: brandId).listen(
+    _brandSubscription = _brandRepository.getBrandStream(brandId: brandId).listen(
       (brand) async {
         if (state.brand != brand && brand != Brand()) {
           await getBrandUser(brand.id!, userId);

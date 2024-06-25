@@ -31,4 +31,11 @@ class SettingsRepository {
   Future<String> getProductUpdatesHTML() async {
     return _firebaseService.getProductUpdatesHTML();
   }
+
+  // Get Product Update HTML
+  Future<bool> checkIfIsMaintenance() async {
+    return _firebaseService.checkIfIsMaintenance();
+  }
+
+
 }

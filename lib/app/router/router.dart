@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/admin/Admin.dart';
-import 'package:mamba/auth/splash/SplashScreen.dart';
+import 'package:mamba/auth/splash/splash_screen.dart';
 import 'package:mamba/auth/views/login.dart';
 import 'package:mamba/home/views/home.dart';
 import 'package:mamba/user/onboarding/OnboardingScreen.dart';

@@ -8,7 +8,6 @@ class FirebaseSettingsService {
 
   Future<List<bool>> checkAppVersion() async {
     // Get Current Build Number
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
     final int buildNumber = int.parse("25"); //TODO DELTE
     // Get Minimum and Max Version from Settings Collection
     DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
@@ -40,4 +39,13 @@ class FirebaseSettingsService {
     String emailHTML = documentSnapshot.get("emailContentPro");
     return emailHTML;
   }
+
+  Future<bool> checkIfIsMaintenance() async {
+    // Get Minimum and Max Version from Settings Collection
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await _settingsCollection.doc("MinimumAppVersion").get();
+    bool isMaintenance = documentSnapshot.get("isMaintenance");
+    return isMaintenance;
+  }
+
 }

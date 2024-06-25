@@ -21,7 +21,6 @@ part 'calendar_state.dart';
 
 class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   // Blocs
-  final bool isDesktop;
   final UserBloc userBloc;
   final BrandBloc brandBloc;
   final EventsBloc eventBloc;
@@ -33,12 +32,15 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   Brand _brand = Brand();
   DateTime dateJoined = DateTime.now();
   // Acceso a Base de Datos
-  final _userDataService = UserDataService();
+  
   final _brandDataService = BrandDataService();
   List<Usuario> _brandTrainers = [];
   List<Usuario> selectedTrainers = [];
+  
   Future<void> getBrandInformation() async {
     // Get Brand Details
+
+    
     _brand = await _brandDataService.getBrandDetails(brandBloc.brandId);
     // Get Brand Trainers
     _brandTrainers =
@@ -47,6 +49,8 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   }
   // Brand Information (To be substituted by Brand CUBIT)
 
+  final _userDataService = UserDataService();
+  
   // Calendar View
   CalendarView calendarView = CalendarView.week;
   // Horari
@@ -58,7 +62,6 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   double userZoomScale = 1.5;
 
   CalendarBloc({
-    required this.isDesktop,
     required this.userBloc,
     required this.brandBloc,
     required this.eventBloc,
@@ -91,8 +94,6 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     await getBrandInformation();
     // TO DO: Remove this by using Brand Bloc
 
-    print("aqui este");
-
     // Initial Date Time
     DateTime now = DateTime.now();
     int currentDay = now.weekday;
@@ -111,18 +112,13 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     double difference = _endHour - _startHour;
     difference = _startHour != 0 ? difference + 1 : difference;
     difference = _endHour != 24 ? difference + 1 : difference;
-    
-    print("aqui este111");
 
     // Get Brand Events
     await eventBloc.getInitialBrandEvents(_brandTrainers);
 
-    // User Variables
-    if (isDesktop == false) {
-      userZoomScale = await getUserZoomScale();
-    }
-
-    print("aqui estem");
+    // Get User Zoom Scale Events
+    userZoomScale = await getUserZoomScale();
+    
     // Emit New State
     emit(
       CalendarLoaded(

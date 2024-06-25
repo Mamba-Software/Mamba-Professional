@@ -1,8 +1,6 @@
 import 'dart:async';
-
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/auth/models/auth_user.dart';
 import 'package:mamba/auth/models/enum_auth.dart';
@@ -21,7 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
   })  : _authRepository = authRepository,
         _userBloc = userBloc,
         _brandBloc = brandBloc,
-        super(const AuthStateS.unknown(),) {    
+  super(const AuthStateS.unknown()) {    
     on<AuthUserChanged>(_onUserChanged);
     on<AuthLogoutRequested>(_onLogoutRequested);
     _userSubscription = _authRepository.authUser.listen(
@@ -32,6 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
   final UserBloc _userBloc;
   final BrandBloc _brandBloc;
   //final AnalyticsRepository _analyticsRepository;
+
   final AuthRepository _authRepository;
   late StreamSubscription<AuthUser> _userSubscription;
 
@@ -41,8 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
     return super.close();
   }
 
-  Future<void> _onUserChanged(
-      AuthUserChanged event, Emitter<AuthStateS> emit) async {
+  Future<void> _onUserChanged(AuthUserChanged event, Emitter<AuthStateS> emit) async {
     if (event.user == AuthUser.empty) {
       emit(const AuthStateS.unauthenticated());
       _userBloc.resetUser();
