@@ -67,11 +67,7 @@ class SignInCubit extends Cubit<SignInState> {
             provider: provider,
           );
           break;
-        case SignInProvider.register:
-          // TODO: Handle this case.
-          break;
-        case SignInProvider.forgot:
-          // TODO: Handle this case.
+        default:
           break;
       }
       await _authBloc.checkUserType(checkTrainer: true);

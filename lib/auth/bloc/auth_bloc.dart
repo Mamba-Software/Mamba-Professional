@@ -71,7 +71,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
   Future<void> logInWithCredentials(
       {required String? email,
       required String? password,
-      required SignInProvider provider}) async {
+      required SignInProvider provider,}) async {
     return provider == SignInProvider.google
         ? _authRepository.logInWithGoogle()
         : provider == SignInProvider.apple

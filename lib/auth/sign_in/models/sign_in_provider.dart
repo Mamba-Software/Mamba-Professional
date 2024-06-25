@@ -1,5 +1,5 @@
 enum SignInProvider {
-  normal, // Default
+  normal,
   google,
   apple,
   register,

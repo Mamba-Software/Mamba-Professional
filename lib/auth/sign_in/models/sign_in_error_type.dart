@@ -1,5 +1,5 @@
 enum SignInErrorType {
-  wrongAppUser, // Default
+  wrongAppUser,
   loginError,
   validateError,
   registerError,
