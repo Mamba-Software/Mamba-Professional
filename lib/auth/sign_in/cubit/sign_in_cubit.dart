@@ -3,30 +3,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
-import 'package:mamba/auth/models/enum_auth.dart';
-import 'package:mamba/auth/models/exceptions.dart';
+import 'package:mamba/auth/models/auth_exceptions.dart';
+import 'package:mamba/auth/sign_in/models/sign_in_error_type.dart';
+import 'package:mamba/auth/sign_in/models/sign_in_provider.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
-part 'AuthState.dart';
+part 'sign_in_state.dart';
 
-class AuthCubit extends Cubit<AuthState> {
+class SignInCubit extends Cubit<SignInState> {
   final AuthBloc _authBloc;
   StreamSubscription? authBlocSubscription;
 
-  AuthCubit({
+  SignInCubit({
     required AuthBloc authBloc,
   })  : _authBloc = authBloc,
-        super(const AuthInitial());
+        super(const SignInInitial());
 
   final _userDataService = UserDataService();
 
   String email = "";
   final googleSignIn = GoogleSignIn();
 
-  bool checkIfIsLoading(AuthProviderEnum provider) {
-    if (state is AuthLoading) {
-      final authLoadingState = state as AuthLoading; // Cast to AuthLoading
+  bool checkIfIsLoading(SignInProvider provider) {
+    if (state is SignInLoading) {
+      final authLoadingState = state as SignInLoading; // Cast to AuthLoading
       if (authLoadingState.provider == provider) {
         return true;
       }
@@ -34,16 +35,16 @@ class AuthCubit extends Cubit<AuthState> {
     return false;
   }
 
-  Future<void> generalSignIn(AuthProviderEnum provider, BuildContext context,
+  Future<void> generalSignIn(SignInProvider provider, BuildContext context,
       [String? email, String? password]) async {
     try {
-      emit(AuthLoading(provider));
+      emit(SignInLoading(provider));
       switch (provider) {
-        case AuthProviderEnum.normal:
+        case SignInProvider.normal:
           if (email == null) {
-            emit(const AuthError(AuthErrorEnum.loginError));
+            emit(const SignInError(SignInErrorType.loginError));
           } else if (password == null) {
-            emit(const AuthError(AuthErrorEnum.loginError));
+            emit(const SignInError(SignInErrorType.loginError));
           } else {
             await _authBloc.logInWithCredentials(
               email: email.trim(),
@@ -52,49 +53,49 @@ class AuthCubit extends Cubit<AuthState> {
             );
           }
           break;
-        case AuthProviderEnum.google:
+        case SignInProvider.google:
           await _authBloc.logInWithCredentials(
             email: null,
             password: null,
             provider: provider,
           );
           break;
-        case AuthProviderEnum.apple:
+        case SignInProvider.apple:
           await _authBloc.logInWithCredentials(
             email: null,
             password: null,
             provider: provider,
           );
           break;
-        case AuthProviderEnum.register:
+        case SignInProvider.register:
           // TODO: Handle this case.
           break;
-        case AuthProviderEnum.forgot:
+        case SignInProvider.forgot:
           // TODO: Handle this case.
           break;
       }
       await _authBloc.checkUserType(checkTrainer: true);
       mixpanel!.track('mamba_login_completed');
-      emit(const AuthInitial());
+      emit(const SignInInitial());
     } on EmailNotVerified {
       mixpanel!.track('mamba_login_validate_email_error');
-      emit(const AuthError(AuthErrorEnum.validateError));
+      emit(const SignInError(SignInErrorType.validateError));
     } on EmailNotValid {
-      emit(const AuthError(AuthErrorEnum.loginError));
+      emit(const SignInError(SignInErrorType.loginError));
     } on WrongCredentials {
       mixpanel!.track('mamba_login_notfound_error');
-      emit(const AuthError(AuthErrorEnum.loginError));
+      emit(const SignInError(SignInErrorType.loginError));
     } on RegisterError {
-      emit(const AuthError(AuthErrorEnum.registerError));
+      emit(const SignInError(SignInErrorType.registerError));
     } on WrongAppUser {
-      emit(const AuthError(AuthErrorEnum.wrongAppUser));
+      emit(const SignInError(SignInErrorType.wrongAppUser));
     } on Exception {
-      emit(const AuthError(AuthErrorEnum.loginError));
+      emit(const SignInError(SignInErrorType.loginError));
     }
   }
 
   void signUp(String email, String password1, BuildContext context) async {
-    emit(const AuthLoading(AuthProviderEnum.register));
+    emit(const SignInLoading(SignInProvider.register));
 
     if (emailValidator(email)) {
       FocusScopeNode currentFocus = FocusScope.of(context);
@@ -105,15 +106,15 @@ class AuthCubit extends Cubit<AuthState> {
           Localizations.localeOf(context).languageCode, true);
       if (result == 0) {
         mixpanel!.track('mamba_register_completed');
-        emit(AuthRegistered(email: email));
+        emit(SignInRegistered(email: email));
       } else if (result == -1) {
         mixpanel!.track('mamba_register_existing_email_error');
-        emit(const AuthError(AuthErrorEnum.sameEmail));
+        emit(const SignInError(SignInErrorType.sameEmail));
       } else {
-        emit(const AuthError(AuthErrorEnum.manualRegisterError));
+        emit(const SignInError(SignInErrorType.manualRegisterError));
       }
     } else {
-      emit(const AuthError(AuthErrorEnum.validateErrorRegister));
+      emit(const SignInError(SignInErrorType.validateErrorRegister));
     }
   }
 
@@ -122,25 +123,25 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> forgotPassword(String email, BuildContext context) async {
-    emit(const AuthLoading(AuthProviderEnum.forgot));
+    emit(const SignInLoading(SignInProvider.forgot));
     if (email.isEmpty) {
-      emit(const AuthError(AuthErrorEnum.forgotEmailError));
+      emit(const SignInError(SignInErrorType.forgotEmailError));
     } else {
       if (emailValidator(email)) {
-        emit(const AuthLoading(AuthProviderEnum.forgot));
+        emit(const SignInLoading(SignInProvider.forgot));
         FocusScopeNode currentFocus = FocusScope.of(context);
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.unfocus();
         }
         try {
           await _authBloc.resetPassword(email: email);
-          emit(AuthCorrectForget(email: email));
-        } on ResetPasswordFailure {
-          emit(const AuthError(AuthErrorEnum.forgotLoginError));
+          emit(SignInForgetPassword(email: email));
+        } on ResetPasswordError {
+          emit(const SignInError(SignInErrorType.forgotLoginError));
         }
         //var result = await _userDataService.resetPassword(email);
       } else {
-        emit(const AuthError(AuthErrorEnum.forgotValidateEmailError));
+        emit(const SignInError(SignInErrorType.forgotValidateEmailError));
       }
     }
   }

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
-import 'package:mamba/auth/cubit/AuthCubit.dart';
-import 'package:mamba/auth/models/enum_auth.dart';
-import 'package:mamba/auth/widgets/responsive_login.dart';
-import 'package:mamba/auth/widgets/signin_button.dart';
+import 'package:mamba/auth/sign_in/cubit/sign_in_cubit.dart';
+import 'package:mamba/auth/sign_in/models/sign_in_error_type.dart';
+import 'package:mamba/auth/sign_in/models/sign_in_provider.dart';
+import 'package:mamba/auth/sign_in/widgets/responsive_login.dart';
+import 'package:mamba/auth/sign_in/widgets/signin_button.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
@@ -73,11 +74,11 @@ class _RegisterState extends State<Register> with PlatformMixin {
                           color: context.theme.primaryColor,
                         ),
                         onTap: () => context
-                            .read<AuthCubit>()
-                            .generalSignIn(AuthProviderEnum.apple, context),
+                            .read<SignInCubit>()
+                            .generalSignIn(SignInProvider.apple, context),
                         isLoading: () => context
-                            .read<AuthCubit>()
-                            .checkIfIsLoading(AuthProviderEnum.apple)),
+                            .read<SignInCubit>()
+                            .checkIfIsLoading(SignInProvider.apple)),
                     const SizedBox(height: 20),
                   ],
                 )
@@ -90,11 +91,11 @@ class _RegisterState extends State<Register> with PlatformMixin {
                 image: AssetImage(Assets.google),
               ),
               onTap: () => context
-                  .read<AuthCubit>()
-                  .generalSignIn(AuthProviderEnum.google, context),
+                  .read<SignInCubit>()
+                  .generalSignIn(SignInProvider.google, context),
               isLoading: () => context
-                  .read<AuthCubit>()
-                  .checkIfIsLoading(AuthProviderEnum.google)),
+                  .read<SignInCubit>()
+                  .checkIfIsLoading(SignInProvider.google)),
           const SizedBox(height: 30),
           Row(children: <Widget>[
             Expanded(
@@ -164,13 +165,13 @@ class _RegisterState extends State<Register> with PlatformMixin {
             onTap: () {
               if (_formKey.currentState!.validate()) {
                 //emailTemp = email;
-                context.read<AuthCubit>().signUp(emailController.text.trim(),
+                context.read<SignInCubit>().signUp(emailController.text.trim(),
                     passwordController.text, context);
               }
             },
             isLoading: () => context
-                .read<AuthCubit>()
-                .checkIfIsLoading(AuthProviderEnum.register),
+                .read<SignInCubit>()
+                .checkIfIsLoading(SignInProvider.register),
           ),
           const SizedBox(height: 10),
           TextButton(
@@ -205,25 +206,25 @@ class _RegisterState extends State<Register> with PlatformMixin {
   @override
   Widget build(BuildContext context) {
     return ResponsiveLogin(
-      child: BlocConsumer<AuthCubit, AuthState>(
+      child: BlocConsumer<SignInCubit, SignInState>(
         listener: (context, state) {
-          if (state is AuthError) {
+          if (state is SignInError) {
             switch (state.error) {
-              case AuthErrorEnum.sameEmail:
+              case SignInErrorType.sameEmail:
                 CustomSnackbar snackbar = CustomSnackbar(
                   type: SnackbarType.error,
                   message: context.l10n.sameEmail,
                 );
                 context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
-              case AuthErrorEnum.manualRegisterError:
+              case SignInErrorType.manualRegisterError:
                 CustomSnackbar snackbar = CustomSnackbar(
                   type: SnackbarType.error,
                   message: context.l10n.registerError,
                 );
                 context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
-              case AuthErrorEnum.validateErrorRegister:
+              case SignInErrorType.validateErrorRegister:
                 CustomSnackbar snackbar = CustomSnackbar(
                   type: SnackbarType.error,
                   message: context.l10n.validateEmail,
@@ -234,7 +235,7 @@ class _RegisterState extends State<Register> with PlatformMixin {
                 break;
             }
           }
-          if (state is AuthRegistered) {
+          if (state is SignInRegistered) {
             CustomSnackbar snackbar = CustomSnackbar(
               type: SnackbarType.success,
               message: context.l10n.validate,

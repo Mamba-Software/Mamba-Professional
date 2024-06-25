@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mamba/auth/widgets/custom_appbar.dart';
+import 'package:mamba/auth/sign_in/widgets/custom_appbar.dart';
 import 'package:mamba/commons/constants/assets.dart';
-import 'package:mamba/commons/extensions/context.dart';
+import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import '../../commons/constants/constants.dart';
 
 class ResponsiveLogin extends StatelessWidget with PlatformMixin {
   final Widget child;

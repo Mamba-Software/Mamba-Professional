@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';

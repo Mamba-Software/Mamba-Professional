@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
-import 'package:mamba/auth/cubit/AuthCubit.dart';
-import 'package:mamba/auth/views/login.dart';
+import 'package:mamba/auth/sign_in/views/login.dart';
 import 'package:mamba/data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/auth/splash/splash_screen_view.dart';
@@ -42,6 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
     initColorsList();
   }
 
+  /* TO DO: Migrate to another part*/
   Future<void> initColorsList() async {
     currentColors = await _libraryDataService.getColors();
     currentDegradates = await _libraryDataService.getDegradates();
@@ -67,13 +67,21 @@ class _SplashScreenState extends State<SplashScreen> {
       listener: (context, state) {
         switch (state.status) {
           case AuthStatus.authenticated:
+            print(AuthStatus.authenticated);
+            /*
             userAutenticatedRedirection(
               context: context,
               userId: state.user.id,
             );
+            */
             break;
           case AuthStatus.unauthenticated:
-            context.goNamed(Login.routeName);
+            print(AuthStatus.unauthenticated);
+            /*
+            userUnautenticatedRedirection(
+              context: context,
+            );
+            */
             break;
           case AuthStatus.unknown:
             break;
@@ -87,6 +95,12 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> userUnautenticatedRedirection({
+    required BuildContext context,
+  }) async {
+    context.goNamed(Login.routeName);
   }
 
   Future<void> userAutenticatedRedirection({

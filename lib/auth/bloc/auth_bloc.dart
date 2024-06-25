@@ -3,7 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/auth/models/auth_user.dart';
-import 'package:mamba/auth/models/enum_auth.dart';
+import 'package:mamba/auth/sign_in/models/sign_in_error_type.dart';
+import 'package:mamba/auth/sign_in/models/sign_in_provider.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:mamba/user/models/users/user.dart';
@@ -19,7 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
   })  : _authRepository = authRepository,
         _userBloc = userBloc,
         _brandBloc = brandBloc,
-  super(const AuthStateS.unknown()) {    
+        super(const AuthStateS.unknown()) {
     on<AuthUserChanged>(_onUserChanged);
     on<AuthLogoutRequested>(_onLogoutRequested);
     _userSubscription = _authRepository.authUser.listen(
@@ -40,7 +41,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
     return super.close();
   }
 
-  Future<void> _onUserChanged(AuthUserChanged event, Emitter<AuthStateS> emit) async {
+  Future<void> _onUserChanged(
+      AuthUserChanged event, Emitter<AuthStateS> emit) async {
     if (event.user == AuthUser.empty) {
       emit(const AuthStateS.unauthenticated());
       _userBloc.resetUser();
@@ -69,10 +71,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
   Future<void> logInWithCredentials(
       {required String? email,
       required String? password,
-      required AuthProviderEnum provider}) async {
-    return provider == AuthProviderEnum.google
+      required SignInProvider provider}) async {
+    return provider == SignInProvider.google
         ? _authRepository.logInWithGoogle()
-        : provider == AuthProviderEnum.apple
+        : provider == SignInProvider.apple
             ? _authRepository.logInWithApple()
             : _authRepository.logInWithEmailAndPassword(
                 email: email!,

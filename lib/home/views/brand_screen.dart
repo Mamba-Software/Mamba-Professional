@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
-import 'package:mamba/auth/views/Login.dart';
+import 'package:mamba/auth/sign_in/views/login.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba/calendar/views/calendar.dart';
@@ -95,7 +95,8 @@ class _BrandScreenState extends State<BrandScreen> {
               _pageController.jumpToPage(state.pageIndex);
             });
             // Close Drawer
-            if (navigationDrawerKey.currentState != null && navigationDrawerKey.currentState!.isDrawerOpen) {              
+            if (navigationDrawerKey.currentState != null &&
+                navigationDrawerKey.currentState!.isDrawerOpen) {
               Navigator.of(context).pop();
             }
           },

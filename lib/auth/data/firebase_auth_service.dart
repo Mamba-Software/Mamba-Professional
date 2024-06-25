@@ -2,12 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/auth/models/auth_user.dart';
-import 'package:mamba/auth/models/exceptions.dart';
-import 'package:mamba/commons/constants/GlobalVars.dart';
+import 'package:mamba/auth/models/auth_exceptions.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/user/models/users/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -27,24 +24,6 @@ class FirebaseAuthService {
   String brands = 'Brands';
   String conversations = 'Conversations';
   String purchases = 'Purchases';
-
-  @override
-  Future<void> createUser({required String email, required String password}) {
-    // TODO: implement createUser
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> existEmail({required String email}) {
-    // TODO: implement existEmail
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> existUsername({required String username}) {
-    // TODO: implement existUsername
-    throw UnimplementedError();
-  }
 
   Future<void> logInWithEmailAndPassword(
       {required String email, required String password}) async {
@@ -138,7 +117,7 @@ class FirebaseAuthService {
       await _firebaseAuth.signOut();
       await googleSignIn.signOut();
     } on Exception {
-      throw LogOutFailure();
+      throw LogOutError();
     }
   }
 
@@ -183,7 +162,7 @@ class FirebaseAuthService {
       );
       bool success = result.data['isSuccessful'];
     } on Exception {
-      throw ResetPasswordFailure();
+      throw ResetPasswordError();
     }
   }
 
@@ -212,6 +191,7 @@ class FirebaseAuthService {
     }
     throw WrongAppUser();
   }
+
 }
 
 extension on auth.User {

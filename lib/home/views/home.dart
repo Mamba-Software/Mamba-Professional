@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
-import 'package:mamba/auth/views/Login.dart';
+import 'package:mamba/auth/sign_in/views/login.dart';
 import 'package:mamba/calendar/views/calendar.dart';
 import 'package:mamba/home/views/brand_screen.dart';
 import 'package:mamba/data/AdminService/SettingsDataService.dart';
@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {
     return const HomePageBody();
     /*
     return MultiBlocProvider(

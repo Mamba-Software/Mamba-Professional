@@ -4,16 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
-import 'package:mamba/auth/cubit/AuthCubit.dart';
-import 'package:mamba/auth/models/enum_auth.dart';
-import 'package:mamba/auth/views/forgot_password.dart';
-import 'package:mamba/auth/views/register.dart';
-import 'package:mamba/auth/splash/SplashScreen.dart';
-import 'package:mamba/auth/widgets/signin_button.dart';
+import 'package:mamba/auth/sign_in/cubit/sign_in_cubit.dart';
+import 'package:mamba/auth/sign_in/models/sign_in_error_type.dart';
+import 'package:mamba/auth/sign_in/models/sign_in_provider.dart';
+import 'package:mamba/auth/sign_in/views/forgot_password.dart';
+import 'package:mamba/auth/sign_in/views/register.dart';
+import 'package:mamba/auth/splash/splash_screen.dart';
+import 'package:mamba/auth/sign_in/widgets/signin_button.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
-import 'package:mamba/auth/widgets/responsive_login.dart';
+import 'package:mamba/auth/sign_in/widgets/responsive_login.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
@@ -60,7 +61,7 @@ class _LoginState extends State<Login> with PlatformMixin {
     context.read<PopupsCubit>().checkIfAppUpdate(false);
   }
 
-  Widget loginForm(AuthState state) {
+  Widget loginForm(SignInState state) {
     return Form(
       key: _formKey,
       child: Column(
@@ -87,11 +88,11 @@ class _LoginState extends State<Login> with PlatformMixin {
                           color: context.theme.primaryColor,
                         ),
                         onTap: () => context
-                            .read<AuthCubit>()
-                            .generalSignIn(AuthProviderEnum.apple, context),
+                            .read<SignInCubit>()
+                            .generalSignIn(SignInProvider.apple, context),
                         isLoading: () => context
-                            .read<AuthCubit>()
-                            .checkIfIsLoading(AuthProviderEnum.apple)),
+                            .read<SignInCubit>()
+                            .checkIfIsLoading(SignInProvider.apple)),
                     const SizedBox(height: 20),
                   ],
                 )
@@ -104,11 +105,11 @@ class _LoginState extends State<Login> with PlatformMixin {
                 image: AssetImage(Assets.google),
               ),
               onTap: () => context
-                  .read<AuthCubit>()
-                  .generalSignIn(AuthProviderEnum.google, context),
+                  .read<SignInCubit>()
+                  .generalSignIn(SignInProvider.google, context),
               isLoading: () => context
-                  .read<AuthCubit>()
-                  .checkIfIsLoading(AuthProviderEnum.google)),
+                  .read<SignInCubit>()
+                  .checkIfIsLoading(SignInProvider.google)),
           const SizedBox(height: 30),
           // Divider
           Row(children: <Widget>[
@@ -208,13 +209,13 @@ class _LoginState extends State<Login> with PlatformMixin {
                 if (!currentFocus.hasPrimaryFocus) {
                   currentFocus.unfocus();
                 }
-                context.read<AuthCubit>().generalSignIn(AuthProviderEnum.normal,
+                context.read<SignInCubit>().generalSignIn(SignInProvider.normal,
                     context, emailController.text, passwordController.text);
               }
             },
             isLoading: () => context
-                .read<AuthCubit>()
-                .checkIfIsLoading(AuthProviderEnum.normal),
+                .read<SignInCubit>()
+                .checkIfIsLoading(SignInProvider.normal),
           ),
           const SizedBox(height: 10),
           // Register
@@ -303,11 +304,11 @@ class _LoginState extends State<Login> with PlatformMixin {
         ),
       ],
       child: ResponsiveLogin(
-        child: BlocConsumer<AuthCubit, AuthState>(
+        child: BlocConsumer<SignInCubit, SignInState>(
           listener: (context, state) {
-            if (state is AuthError) {
+            if (state is SignInError) {
               switch (state.error) {
-                case AuthErrorEnum.wrongAppUser:
+                case SignInErrorType.wrongAppUser:
                   CustomSnackbar snackbar = CustomSnackbar(
                     type: SnackbarType.error,
                     message:
@@ -331,25 +332,25 @@ class _LoginState extends State<Login> with PlatformMixin {
                   );
                   context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                   break;
-                case AuthErrorEnum.loginError:
+                case SignInErrorType.loginError:
                   CustomSnackbar snackbar = CustomSnackbar(
                     type: SnackbarType.error,
                     message: context.l10n.loginError,
                   );
                   context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                   break;
-                case AuthErrorEnum.validateError:
+                case SignInErrorType.validateError:
                   CustomSnackbar snackbar = CustomSnackbar(
                     type: SnackbarType.error,
                     message: context.l10n.validateError,
                     onAccept: () => context
-                        .read<AuthCubit>()
+                        .read<SignInCubit>()
                         .resendVerificationEmail(emailController.text.trim()),
                     actionText: "${context.l10n.resend} ${context.l10n.email}",
                   );
                   context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                   break;
-                case AuthErrorEnum.registerError:
+                case SignInErrorType.registerError:
                   CustomSnackbar snackbar = CustomSnackbar(
                     type: SnackbarType.error,
                     message: context.l10n.registerError,
@@ -360,17 +361,14 @@ class _LoginState extends State<Login> with PlatformMixin {
                   break;
               }
             }
-            if (state is AuthRegistered) {
-              AuthRegistered castedState = state;
+            if (state is SignInRegistered) {
+              SignInRegistered castedState = state;
               emailController.text = castedState.email;
             }
-            if (state is AuthCorrectForget) {
-              AuthCorrectForget castedState = state;
+            if (state is SignInForgetPassword) {
+              SignInForgetPassword castedState = state;
               emailController.text = castedState.email;
             }
-            /*if (state is AuthLoaded) {
-              context.goNamed(SplashScreen.routeName);
-            }*/
           },
           builder: (context, state) {
             return loginForm(state);

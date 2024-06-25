@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/brand/data/brand_repository.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';

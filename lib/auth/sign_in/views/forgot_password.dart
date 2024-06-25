@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
-import 'package:mamba/auth/cubit/AuthCubit.dart';
-import 'package:mamba/auth/models/enum_auth.dart';
-import 'package:mamba/auth/widgets/responsive_login.dart';
-import 'package:mamba/auth/widgets/signin_button.dart';
+import 'package:mamba/auth/sign_in/cubit/sign_in_cubit.dart';
+import 'package:mamba/auth/sign_in/models/sign_in_error_type.dart';
+import 'package:mamba/auth/sign_in/models/sign_in_provider.dart';
+import 'package:mamba/auth/sign_in/widgets/responsive_login.dart';
+import 'package:mamba/auth/sign_in/widgets/signin_button.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
@@ -70,13 +71,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             onTap: () {
               if (_formKey.currentState!.validate()) {
                 context
-                    .read<AuthCubit>()
+                    .read<SignInCubit>()
                     .forgotPassword(emailController.text.trim(), context);
               }
             },
             isLoading: () => context
-                .read<AuthCubit>()
-                .checkIfIsLoading(AuthProviderEnum.forgot),
+                .read<SignInCubit>()
+                .checkIfIsLoading(SignInProvider.forgot),
           ),
           const SizedBox(height: 10),
           TextButton(
@@ -111,25 +112,25 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveLogin(
-      child: BlocConsumer<AuthCubit, AuthState>(
+      child: BlocConsumer<SignInCubit, SignInState>(
         listener: (context, state) {
-          if (state is AuthError) {
+          if (state is SignInError) {
             switch (state.error) {
-              case AuthErrorEnum.forgotEmailError:
+              case SignInErrorType.forgotEmailError:
                 CustomSnackbar snackbar = CustomSnackbar(
                   type: SnackbarType.error,
                   message: context.l10n.emailError,
                 );
                 context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
-              case AuthErrorEnum.forgotLoginError:
+              case SignInErrorType.forgotLoginError:
                 CustomSnackbar snackbar = CustomSnackbar(
                   type: SnackbarType.error,
                   message: context.l10n.loginError,
                 );
                 context.read<SnackbarCubit>().enqueueSnackbarAction(snackbar);
                 break;
-              case AuthErrorEnum.forgotValidateEmailError:
+              case SignInErrorType.forgotValidateEmailError:
                 CustomSnackbar snackbar = CustomSnackbar(
                   type: SnackbarType.error,
                   message: context.l10n.validateEmail,
@@ -140,7 +141,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 break;
             }
           }
-          if (state is AuthCorrectForget) {
+          if (state is SignInForgetPassword) {
             CustomSnackbar snackbar = CustomSnackbar(
               type: SnackbarType.success,
               message: context.l10n.validatePassword,

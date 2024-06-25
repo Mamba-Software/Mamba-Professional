@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
-import 'package:mamba/auth/views/login.dart';
+import 'package:mamba/auth/sign_in/views/login.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -33,9 +33,8 @@ import 'SettingsTheme.dart';
 import 'SettingsYourData.dart';
 
 class Settings extends StatefulWidget {
-  
   static String routeName = 'setings';
-  
+
   static GoRoute route = GoRoute(
     name: routeName,
     path: 'setings',
@@ -45,9 +44,9 @@ class Settings extends StatefulWidget {
       child: const Settings(),
     ),
   );
-  
+
   const Settings({super.key});
-  
+
   @override
   _SettingsState createState() => _SettingsState();
 }

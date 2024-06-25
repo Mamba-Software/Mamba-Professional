@@ -7,15 +7,14 @@ import 'package:mamba/analytics/data/analytics_repository.dart';
 import 'package:mamba/app/router/router.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
+import 'package:mamba/auth/sign_in/cubit/sign_in_cubit.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/brand/data/brand_repository.dart';
 import 'package:mamba/calendar/cubit/calendar_bloc.dart';
-import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/managers/language_manager.dart';
 import 'package:mamba/commons/managers/theme_manager.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'package:mamba/auth/cubit/AuthCubit.dart';
 import 'package:mamba/events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
@@ -40,7 +39,7 @@ class App extends StatelessWidget {
   final AuthRepository authRepository = AuthRepository();
   final UserRepository userRepository = UserRepository();
   final BrandRepository brandRepository = BrandRepository();
-  // Define Main Helper Repositories  
+  // Define Main Helper Repositories
   final AnalyticsRepository analyticsRepository = AnalyticsRepository(
     isRelease: flavor != Flavor.development || flavor != Flavor.staging,
   );
@@ -62,7 +61,7 @@ class App extends StatelessWidget {
       userBloc: userBloc,
       brandBloc: brandBloc,
     );
-    final authCubit = AuthCubit(
+    final authCubit = SignInCubit(
       authBloc: authBloc,
     );
     final eventBloc = EventsBloc(
@@ -104,7 +103,7 @@ class App extends StatelessWidget {
           BlocProvider<AuthBloc>(
             create: (_) => authBloc,
           ),
-          BlocProvider<AuthCubit>(
+          BlocProvider<SignInCubit>(
             create: (_) => authCubit,
           ),
           BlocProvider<UserBloc>(
