@@ -48,40 +48,22 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    /*
-    context.read<AuthCubit>().checkAndGetUserDetails(context);
-    final authBloc = context.read<AuthBloc>();
+  Widget build(BuildContext context) {   
 
-    // Verifica el estado actual inmediatamente al construir el widget
-    final currentState = authBloc.state;
-    if (currentState.status == AuthStatus.authenticated) {
-      userAutenticatedRedirection(
-        context: context,
-        userId: currentState.user.id,
-      );
-    }
-    */
-
-    return BlocListener<AuthBloc, AuthStateS>(
+    return BlocListener<AuthBloc, AuthStates>(
       listener: (context, state) {
         switch (state.status) {
           case AuthStatus.authenticated:
-            print(AuthStatus.authenticated);
-            /*
             userAutenticatedRedirection(
               context: context,
               userId: state.user.id,
             );
-            */
             break;
           case AuthStatus.unauthenticated:
             print(AuthStatus.unauthenticated);
-            /*
             userUnautenticatedRedirection(
               context: context,
             );
-            */
             break;
           case AuthStatus.unknown:
             break;

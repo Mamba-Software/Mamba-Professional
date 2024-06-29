@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba/auth/models/auth_user.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -39,7 +38,11 @@ class UserBloc extends Cubit<UserState> {
   StreamSubscription<Usuario>? _userSubscription;
 
   void initUser({required String userId}) {
+    // Set User Id
     this.userId = userId;
+    // Check and Get User Details
+    checkAndGetUserDetails();
+    // Open User Subscription
     _userSubscription = _userRepository.getUserStream(userId: userId).listen(
       (user) async {
         if (state.user != user && user != AuthUser.empty) {
@@ -48,22 +51,17 @@ class UserBloc extends Cubit<UserState> {
           if (brands.isNotEmpty) {
             user.brandID = brands[0].id!;
             currentUser.setBrandList = brands;
-            getBrandUser(userId, user.brandID!);
           } else {
             user.brandID = 'none';
           }
-          currentUser.setBasicData =
-              await _userDataService.getUserDetails(userId);
+          currentUser.setBasicData = await _userDataService.getUserDetails(userId);
 
           brandId = user.brandID!;
           emit(state.copyWith(user: user));
         }
       },
     );
-  }
 
-  Future<void> getBrandUser(String userId, String brandId) async {
-    // Get Role in Brand
   }
 
   void resetUser() {
@@ -72,7 +70,7 @@ class UserBloc extends Cubit<UserState> {
     _userSubscription = null;
   }
 
-  void checkAndGetUserDetails(BuildContext context) async {
+  void checkAndGetUserDetails() async {
     //_userDataService.signOut();
     // 1. We get the Firebase User
     User? firebaseUser = await _userDataService.getCurrentUser();
@@ -98,7 +96,7 @@ class UserBloc extends Cubit<UserState> {
           // 5. Load Users Data
           String userId = firebaseUser.uid;
           //String userId = "GFrVbdR5WNSuFydb8i32g620Rle2";
-          await _getUserData(userId, context);
+          await _getUserData(userId);
           // 6. Get Token for FirebaseMessaging
           FirebaseMessaging.instance.getToken().then((token) {
             print("Token: $token");
@@ -134,7 +132,7 @@ class UserBloc extends Cubit<UserState> {
     }
   }
 
-  Future<void> _getUserData(String userId, BuildContext context) async {
+  Future<void> _getUserData(String userId) async {
     // Get Current User Main Data from Document
     try {
       currentUser = await _userDataService.getUserDetails(userId);
@@ -149,9 +147,6 @@ class UserBloc extends Cubit<UserState> {
     // Set App Theme To User Preferred Theme Settings - TO Do once user cubit is implemented
     // context.read<ThemeManager>().personalizeAccentColor(AppColors.stripe);
 
-    // Get Current User Brand, if any.
-    // WAIT TO AVOID PROBLEMS DUE TO CLOUD FUNCTIONS NOT BEING INSTANTANEOUS.
-    await Future.delayed(const Duration(seconds: 3));
     List<Brand> brands = await _brandDataService.getAllBrandsFromUser(userId);
     // Set the Brand List
     currentUser.setBrandList = brands;

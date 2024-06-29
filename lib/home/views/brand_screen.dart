@@ -68,7 +68,7 @@ class _BrandScreenState extends State<BrandScreen> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<AuthBloc, AuthStateS>(
+        BlocListener<AuthBloc, AuthStates>(
           listener: (context, state) {
             switch (state.status) {
               case AuthStatus.unauthenticated:

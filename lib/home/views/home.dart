@@ -220,7 +220,7 @@ class _HomePageBodyState extends State<HomePageBody> {
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<AuthBloc, AuthStateS>(
+        BlocListener<AuthBloc, AuthStates>(
           listener: (context, state) {
             switch (state.status) {
               case AuthStatus.unauthenticated:

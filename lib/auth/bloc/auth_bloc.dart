@@ -12,7 +12,7 @@ import 'package:mamba/user/models/users/user.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
-class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
+class AuthBloc extends Bloc<AuthEvent, AuthStates> {
   AuthBloc({
     required AuthRepository authRepository,
     required UserBloc userBloc,
@@ -20,7 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
   })  : _authRepository = authRepository,
         _userBloc = userBloc,
         _brandBloc = brandBloc,
-        super(const AuthStateS.unknown()) {
+        super(const AuthStates.unknown()) {
     on<AuthUserChanged>(_onUserChanged);
     on<AuthLogoutRequested>(_onLogoutRequested);
     _userSubscription = _authRepository.authUser.listen(
@@ -42,19 +42,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
   }
 
   Future<void> _onUserChanged(
-      AuthUserChanged event, Emitter<AuthStateS> emit) async {
+      AuthUserChanged event, Emitter<AuthStates> emit) async {
     if (event.user == AuthUser.empty) {
-      emit(const AuthStateS.unauthenticated());
+      emit(const AuthStates.unauthenticated());
       _userBloc.resetUser();
       _brandBloc.resetBrand();
     } else {
       if (event.user.error) {
         _authRepository.logOut();
-        emit(const AuthStateS.unauthenticated());
+        emit(const AuthStates.unauthenticated());
         _userBloc.resetUser();
         _brandBloc.resetBrand();
       } else {
-        emit(AuthStateS.authenticated(event.user));
+        emit(AuthStates.authenticated(event.user));
         _userBloc.initUser(userId: event.user.id);
       }
     }
@@ -64,14 +64,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthStateS> {
     return await _authRepository.checkUserType(checkTrainer: checkTrainer);
   }
 
-  void _onLogoutRequested(AuthLogoutRequested event, Emitter<AuthStateS> emit) {
+  void _onLogoutRequested(AuthLogoutRequested event, Emitter<AuthStates> emit) {
     unawaited(_authRepository.logOut());
   }
 
-  Future<void> logInWithCredentials(
-      {required String? email,
-      required String? password,
-      required SignInProvider provider,}) async {
+  Future<void> logInWithCredentials({
+    required String? email,
+    required String? password,
+    required SignInProvider provider,
+  }) async {
     return provider == SignInProvider.google
         ? _authRepository.logInWithGoogle()
         : provider == SignInProvider.apple

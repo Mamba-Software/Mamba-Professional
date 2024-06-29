@@ -53,7 +53,6 @@ class _LoginState extends State<Login> with PlatformMixin {
   var passwordController = TextEditingController();
   FocusNode focusNodePassword = FocusNode();
   bool _passwordVisible = false;
-  static const delayedRedirectionTime = Duration(milliseconds: 300);
 
   @override
   initState() {
@@ -288,7 +287,7 @@ class _LoginState extends State<Login> with PlatformMixin {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<AuthBloc, AuthStateS>(
+        BlocListener<AuthBloc, AuthStates>(
           listener: (context, state) {
             switch (state.status) {
               case AuthStatus.unauthenticated:

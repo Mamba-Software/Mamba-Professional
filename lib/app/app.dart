@@ -64,7 +64,7 @@ class App extends StatelessWidget {
     final authCubit = SignInCubit(
       authBloc: authBloc,
     );
-    final eventBloc = EventsBloc(
+    final eventsBloc = EventsBloc(
       brandRepository: brandRepository,
       brandBloc: brandBloc,
     );
@@ -72,7 +72,7 @@ class App extends StatelessWidget {
     final calendarBloc = CalendarBloc(
       userBloc: userBloc,
       brandBloc: brandBloc,
-      eventBloc: eventBloc,
+      eventsBloc: eventsBloc,
     );
 
     // Return Bloc Provider
@@ -113,7 +113,7 @@ class App extends StatelessWidget {
             create: (_) => brandBloc,
           ),
           BlocProvider<EventsBloc>(
-            create: (_) => eventBloc,
+            create: (_) => eventsBloc,
           ),
           BlocProvider<CalendarBloc>(
             create: (_) => calendarBloc,

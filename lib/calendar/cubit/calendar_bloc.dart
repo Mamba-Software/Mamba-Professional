@@ -9,10 +9,8 @@ import 'package:mamba/Events/cubit/events_bloc.dart';
 import 'package:mamba/calendar/models/appointment.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/mixins/string.dart';
-import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
-import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
 import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -21,36 +19,14 @@ part 'calendar_state.dart';
 
 class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   // Blocs
-  final UserBloc userBloc;
-  final BrandBloc brandBloc;
-  final EventsBloc eventBloc;
+  final UserBloc _userBloc;
+  final BrandBloc _brandBloc;
+  final EventsBloc _eventsBloc;
 
   StreamSubscription? eventBlocSubscription;
 
-  // Brand Information (To be substituted by Brand CUBIT)
-  // All the information that we have here, should be taken from the Brand State
-  Brand _brand = Brand();
-  DateTime dateJoined = DateTime.now();
-  // Acceso a Base de Datos
-  
-  final _brandDataService = BrandDataService();
-  List<Usuario> _brandTrainers = [];
-  List<Usuario> selectedTrainers = [];
-  
-  Future<void> getBrandInformation() async {
-    // Get Brand Details
-
-    
-    _brand = await _brandDataService.getBrandDetails(brandBloc.brandId);
-    // Get Brand Trainers
-    _brandTrainers =
-        await _brandDataService.getBrandTrainers(brandBloc.brandId);
-    selectedTrainers = List.from(_brandTrainers);
-  }
-  // Brand Information (To be substituted by Brand CUBIT)
-
   final _userDataService = UserDataService();
-  
+
   // Calendar View
   CalendarView calendarView = CalendarView.week;
   // Horari
@@ -62,37 +38,22 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   double userZoomScale = 1.5;
 
   CalendarBloc({
-    required this.userBloc,
-    required this.brandBloc,
-    required this.eventBloc,
-  }) : super(const CalendarInitial()) {
-    
-    _initialize(); 
-    
-    /*
-    eventBlocSubscription = eventBloc.stream.listen((eventState) {
-      if (eventState is EventsLoaded) {
-        _initialize(); 
-      } else {
-        resetCalendar();
-      }
-    });
-    */
-
-  }
+    required UserBloc userBloc,
+    required BrandBloc brandBloc,
+    required EventsBloc eventsBloc,
+  })  : _userBloc = userBloc,
+        _brandBloc = brandBloc,
+        _eventsBloc = eventsBloc,
+        super(const CalendarInitial());
 
   void resetCalendar() {
     eventBlocSubscription?.cancel();
     eventBlocSubscription = null;
   }
 
-  Future<void> _initialize() async {
+  Future<void> initialize() async {
     // Emit Loading State
     emit(const CalendarLoading());
-
-    // TO DO: Remove this by using Brand Bloc
-    await getBrandInformation();
-    // TO DO: Remove this by using Brand Bloc
 
     // Initial Date Time
     DateTime now = DateTime.now();
@@ -103,28 +64,28 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     String calendarTitle = getCalendarTitle(calendarView, visibleDates);
 
     // Date Joined Information
-    dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
+    //DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(_brandBloc.getBrand.dateJoined!);
     _startHour =
-        double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+        double.parse(_brandBloc.getBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour =
-        double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+        double.parse(_brandBloc.getBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
     // Diferencia de Hores
     double difference = _endHour - _startHour;
     difference = _startHour != 0 ? difference + 1 : difference;
     difference = _endHour != 24 ? difference + 1 : difference;
 
     // Get Brand Events
-    await eventBloc.getInitialBrandEvents(_brandTrainers);
+    await _eventsBloc.getInitialBrandEvents(_brandBloc.getBrandTrainers);
 
     // Get User Zoom Scale Events
     userZoomScale = await getUserZoomScale();
-    
+
     // Emit New State
     emit(
       CalendarLoaded(
         canEdit: _checkUserCanEditCalendar(),
-        brand: _brand,
-        events: eventBloc.eventsList,
+        brand: _brandBloc.getBrand,
+        events: _eventsBloc.eventsList,
         displayDate: DateTime.now(),
         visibleDates: visibleDates,
         calendarView: calendarView,
@@ -196,7 +157,7 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   }
 
   void getMoreBrandEvents(List<DateTime> visibleDates) async {
-    List<Event> eventsList = eventBloc.eventsList;
+    List<Event> eventsList = _eventsBloc.eventsList;
     if (eventsList.isNotEmpty) {
       var startDateLastEvent = DateTime(
         int.parse(eventsList.first.year!),
@@ -208,22 +169,22 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
       DateTime firstVisibleDate = visibleDates.first;
       int difference = firstVisibleDate.difference(startDateLastEvent).inDays;
       if (difference < 60) {
-        await eventBloc.getMoreBrandEvents(
-            eventsList.first.id!, _brandTrainers);
+        await _eventsBloc.getMoreBrandEvents(
+            eventsList.first.id!, _brandBloc.getBrandTrainers);
       }
     }
   }
 
   Future<double> getUserZoomScale() async {
     return await _userDataService.getUserZoomScale(
-      brandBloc.brandId,
-      userBloc.userId,
+      _brandBloc.brandId,
+      _userBloc.userId,
     );
   }
 
   void updateUserZoomScale(double timeSlotViewScale) {
     _userDataService.updateUserZoomScale(
-      brandBloc.brandId,
+      _brandBloc.brandId,
       currentUser.id!,
       timeSlotViewScale,
     );
@@ -232,11 +193,11 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   AppointmentDataSource getCalendarDataSource() {
     List<Appointment> tempAllAppointments = [];
     List<String> selectedTrainersIDs = [];
-    for (var trainer in selectedTrainers) {
+    for (var trainer in _brandBloc.getBrandTrainers) {
       selectedTrainersIDs.add(trainer.id!);
     }
-    for (var i = 0; i < eventBloc.eventsList.length; i++) {
-      var event = eventBloc.eventsList[i];
+    for (var i = 0; i < _eventsBloc.eventsList.length; i++) {
+      var event = _eventsBloc.eventsList[i];
       // Date Time
       DateTime startDate = DateTime(
         int.parse(event.year!),
@@ -320,12 +281,12 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   List<TimeRegion> getTimeRegions() {
     final List<TimeRegion> regions = <TimeRegion>[];
     // BrandDate Joined
-    DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
+    DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(_brandBloc.getBrand.dateJoined!);
     // Hora Inactiva Matí
     var startHourWS =
-        int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+        int.parse(_brandBloc.getBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
     var startMinWS =
-        int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[1]);
+        int.parse(_brandBloc.getBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
     regions.add(TimeRegion(
       enablePointerInteraction: false,
       startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
@@ -337,9 +298,9 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     ));
     // Hora Inactiva Nit
     var endHourWS =
-        int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+        int.parse(_brandBloc.getBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
     var endMinWS =
-        int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[1]);
+        int.parse(_brandBloc.getBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
     regions.add(TimeRegion(
       enablePointerInteraction: false,
       startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
