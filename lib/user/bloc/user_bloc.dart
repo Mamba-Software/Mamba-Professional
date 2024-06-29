@@ -3,8 +3,11 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba/auth/models/auth_user.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
@@ -16,28 +19,41 @@ import 'package:mamba/user/models/users/user.dart';
 part 'user_state.dart';
 
 class UserBloc extends Cubit<UserState> {
+  // BuildContext
+  final BuildContext buildContext;
+
+  // Data Repositories
+  final UserRepository _userRepository;
+  final SettingsRepository _settingsRepository;
+
+  // To be Replaced
+  final _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
+  // To be Replaced
+
+  // Other Vars
+  late StreamSubscription<Usuario>? _userSubscription;
+
   UserBloc({
-    //required AnalyticsRepository analyticsRepository, TODO
+    // BuildContext
+    required BuildContext context,
+    // Data Repositories
     required UserRepository userRepository,
     required SettingsRepository settingsRepository,
-    //required ActivityRepository activityRepository, TODO
+    // State Blocs
   })  : userId = '',
         brandId = '',
-        //_analyticsRepository = analyticsRepository,
+        buildContext = context,
         _userRepository = userRepository,
         _settingsRepository = settingsRepository,
         //_activityRepository = activityRepository,
         super(UserState(user: Usuario.empty));
 
-  final UserRepository _userRepository;
-  final SettingsRepository _settingsRepository;
-  final _userDataService = UserDataService();
-  final _brandDataService = BrandDataService();
   String userId;
   String brandId;
-  StreamSubscription<Usuario>? _userSubscription;
 
-  void initUser({required String userId}) {
+  void initializeUser({required String userId}) {
+    print(buildContext.read<BrandBloc>().state);
     // Set User Id
     this.userId = userId;
     // Check and Get User Details
@@ -54,24 +70,24 @@ class UserBloc extends Cubit<UserState> {
           } else {
             user.brandID = 'none';
           }
-          currentUser.setBasicData = await _userDataService.getUserDetails(userId);
+          currentUser.setBasicData =
+              await _userDataService.getUserDetails(userId);
 
           brandId = user.brandID!;
           emit(state.copyWith(user: user));
         }
       },
     );
-
   }
 
-  void resetUser() {
+  void restoreUser() {
+    // Restore User
     userId = '';
     _userSubscription?.cancel();
     _userSubscription = null;
   }
 
   void checkAndGetUserDetails() async {
-    //_userDataService.signOut();
     // 1. We get the Firebase User
     User? firebaseUser = await _userDataService.getCurrentUser();
     // 2. Check if we have a user logged in.

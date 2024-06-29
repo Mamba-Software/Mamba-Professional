@@ -248,6 +248,10 @@ class EventsBloc extends Cubit<EventsState> {
     }
   }
 
+  void restoreEvents() {
+    // Restore Evets Bloc
+  }
+  
   @override
   Future<void> close() {
     _subscription.cancel();

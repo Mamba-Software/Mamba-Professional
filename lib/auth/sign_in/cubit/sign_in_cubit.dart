@@ -46,7 +46,7 @@ class SignInCubit extends Cubit<SignInState> {
           } else if (password == null) {
             emit(const SignInError(SignInErrorType.loginError));
           } else {
-            await _authBloc.logInWithCredentials(
+            await _authBloc.logIn(
               email: email.trim(),
               password: password,
               provider: provider,
@@ -54,14 +54,14 @@ class SignInCubit extends Cubit<SignInState> {
           }
           break;
         case SignInProvider.google:
-          await _authBloc.logInWithCredentials(
+          await _authBloc.logIn(
             email: null,
             password: null,
             provider: provider,
           );
           break;
         case SignInProvider.apple:
-          await _authBloc.logInWithCredentials(
+          await _authBloc.logIn(
             email: null,
             password: null,
             provider: provider,
@@ -145,6 +145,8 @@ class SignInCubit extends Cubit<SignInState> {
   Future<void> resendVerificationEmail(String email) async {
     await _userDataService.resendEmail(email);
   }
+
+ 
 
   // Validate email and pwd format
   bool emailValidator(String value) {

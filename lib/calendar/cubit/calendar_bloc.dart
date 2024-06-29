@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba/Events/cubit/events_bloc.dart';
+import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/calendar/models/appointment.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/commons/mixins/string.dart';

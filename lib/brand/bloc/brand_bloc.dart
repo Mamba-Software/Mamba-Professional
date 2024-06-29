@@ -41,7 +41,7 @@ class BrandBloc extends Cubit<BrandState> {
           );
         } // Assuming user has a brandId attribute
       } else {
-        resetBrand();
+        restoreBrand();
       }
     });
   }
@@ -78,7 +78,7 @@ class BrandBloc extends Cubit<BrandState> {
     mixpanel!.getPeople().set("Brands Roles", [role]);
   }
 
-  void resetBrand() {
+  void restoreBrand() {
     brandId = '';
     brandSubscription?.cancel();
     brandSubscription = null;

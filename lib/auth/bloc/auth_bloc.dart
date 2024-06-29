@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/auth/models/auth_user.dart';
-import 'package:mamba/auth/sign_in/models/sign_in_error_type.dart';
 import 'package:mamba/auth/sign_in/models/sign_in_provider.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
+import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/user/bloc/user_bloc.dart';
 import 'package:mamba/user/models/users/user.dart';
 
@@ -13,62 +13,68 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthStates> {
+  // Data Repositories
+  final AuthRepository _authRepository;
+  // State Blocs
+  final UserBloc _userBloc;
+  final BrandBloc _brandBloc;
+  final EventsBloc _eventsBloc;
+  // Other Vars
+  late StreamSubscription<AuthUser> _authUserSubscription;
+
   AuthBloc({
+    // Data Repositories
     required AuthRepository authRepository,
+    // State Blocs
     required UserBloc userBloc,
     required BrandBloc brandBloc,
+    required EventsBloc eventsBloc,
   })  : _authRepository = authRepository,
         _userBloc = userBloc,
         _brandBloc = brandBloc,
+        _eventsBloc = eventsBloc,
         super(const AuthStates.unknown()) {
+    initializeAuth();
+  }
+
+  // Init Bloc Function
+  void initializeAuth() {
     on<AuthUserChanged>(_onUserChanged);
     on<AuthLogoutRequested>(_onLogoutRequested);
-    _userSubscription = _authRepository.authUser.listen(
+    _authUserSubscription = _authRepository.authUser.listen(
       (user) => add(AuthUserChanged(user)),
     );
   }
 
-  final UserBloc _userBloc;
-  final BrandBloc _brandBloc;
-  //final AnalyticsRepository _analyticsRepository;
-
-  final AuthRepository _authRepository;
-  late StreamSubscription<AuthUser> _userSubscription;
-
-  @override
-  Future<void> close() {
-    _userSubscription.cancel();
-    return super.close();
-  }
-
+  // Bloc Event onUserChanged Function
   Future<void> _onUserChanged(
       AuthUserChanged event, Emitter<AuthStates> emit) async {
     if (event.user == AuthUser.empty) {
       emit(const AuthStates.unauthenticated());
-      _userBloc.resetUser();
-      _brandBloc.resetBrand();
+      _userBloc.restoreUser();
+      _brandBloc.restoreBrand();
+      _eventsBloc.restoreEvents();
     } else {
       if (event.user.error) {
         _authRepository.logOut();
         emit(const AuthStates.unauthenticated());
-        _userBloc.resetUser();
-        _brandBloc.resetBrand();
+        _userBloc.restoreUser();
+        _brandBloc.restoreBrand();
+        _eventsBloc.restoreEvents();
       } else {
         emit(AuthStates.authenticated(event.user));
-        _userBloc.initUser(userId: event.user.id);
+        _userBloc.initializeUser(userId: event.user.id);
       }
     }
   }
 
-  Future<bool> checkUserType({required bool checkTrainer}) async {
-    return await _authRepository.checkUserType(checkTrainer: checkTrainer);
-  }
-
+  // Bloc Event onLogoutRequested Function
   void _onLogoutRequested(AuthLogoutRequested event, Emitter<AuthStates> emit) {
     unawaited(_authRepository.logOut());
   }
 
-  Future<void> logInWithCredentials({
+  // Auth Repository Functions
+  Future<void> logIn({
     required String? email,
     required String? password,
     required SignInProvider provider,
@@ -110,18 +116,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthStates> {
     );
   }
 
-  Future<void> createUser({
-    required String email,
-    required String password,
-  }) async {
-    await _authRepository.createUser(
-      email: email,
-      password: password,
-    );
-  }
-
   Future<void> resetPassword({required String email}) {
     return _authRepository.resetPassword(email: email);
+  }
+
+  // Auxiliar Checking Functions
+  Future<bool> checkUserType({required bool checkTrainer}) async {
+    return await _authRepository.checkUserType(checkTrainer: checkTrainer);
   }
 
   Future<bool> checkIfEmailExists({required String email}) {
@@ -130,5 +131,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthStates> {
 
   Future<bool> checkIfUsernameExists({required String username}) {
     return _authRepository.existUsername(username: username);
+  }
+
+  @override
+  Future<void> close() {
+    _authUserSubscription.cancel();
+    return super.close();
   }
 }

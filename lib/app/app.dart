@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mamba/Events/cubit/events_bloc.dart';
+import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/analytics/data/analytics_repository.dart';
 import 'package:mamba/app/router/router.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
@@ -49,6 +49,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     // Define Main Blocs
     final userBloc = UserBloc(
+      context: context,
       userRepository: userRepository,
       settingsRepository: settingsRepository,
     );
@@ -56,19 +57,19 @@ class App extends StatelessWidget {
       brandRepository: brandRepository,
       userBloc: userBloc,
     );
+    final eventsBloc = EventsBloc(
+      brandRepository: brandRepository,
+      brandBloc: brandBloc,
+    );    
     final authBloc = AuthBloc(
       authRepository: authRepository,
       userBloc: userBloc,
       brandBloc: brandBloc,
-    );
-    final authCubit = SignInCubit(
+      eventsBloc: eventsBloc,
+    );    
+    final signInCubit = SignInCubit(
       authBloc: authBloc,
     );
-    final eventsBloc = EventsBloc(
-      brandRepository: brandRepository,
-      brandBloc: brandBloc,
-    );
-
     final calendarBloc = CalendarBloc(
       userBloc: userBloc,
       brandBloc: brandBloc,
@@ -104,7 +105,7 @@ class App extends StatelessWidget {
             create: (_) => authBloc,
           ),
           BlocProvider<SignInCubit>(
-            create: (_) => authCubit,
+            create: (_) => signInCubit,
           ),
           BlocProvider<UserBloc>(
             create: (_) => userBloc,
