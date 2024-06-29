@@ -3,12 +3,12 @@ import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class SignInCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
   final double? maxWidth;
   final bool? isDesktop;
 
-  const CustomAppBar({
+  const SignInCustomAppBar({
     super.key,
     required this.height,
     this.maxWidth,

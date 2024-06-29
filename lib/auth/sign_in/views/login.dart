@@ -10,11 +10,11 @@ import 'package:mamba/auth/sign_in/models/sign_in_provider.dart';
 import 'package:mamba/auth/sign_in/views/forgot_password.dart';
 import 'package:mamba/auth/sign_in/views/register.dart';
 import 'package:mamba/auth/splash/splash_screen.dart';
-import 'package:mamba/auth/sign_in/widgets/signin_button.dart';
+import 'package:mamba/auth/sign_in/widgets/sign_in_button.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
 import 'package:mamba/commons/mixins/platform.dart';
-import 'package:mamba/auth/sign_in/widgets/responsive_login.dart';
+import 'package:mamba/auth/sign_in/widgets/responsive_sign_in.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/popups/cubit/popups_cubit.dart';
 import 'package:mamba/snackbar/cubit/snackbar_cubit.dart';
@@ -303,7 +303,7 @@ class _LoginState extends State<Login> with PlatformMixin {
           },
         ),
       ],
-      child: ResponsiveLogin(
+      child: ResponsiveSignIn(
         child: BlocConsumer<SignInCubit, SignInState>(
           listener: (context, state) {
             if (state is SignInError) {

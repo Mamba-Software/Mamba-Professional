@@ -5,8 +5,8 @@ import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/sign_in/cubit/sign_in_cubit.dart';
 import 'package:mamba/auth/sign_in/models/sign_in_error_type.dart';
 import 'package:mamba/auth/sign_in/models/sign_in_provider.dart';
-import 'package:mamba/auth/sign_in/widgets/responsive_login.dart';
-import 'package:mamba/auth/sign_in/widgets/signin_button.dart';
+import 'package:mamba/auth/sign_in/widgets/responsive_sign_in.dart';
+import 'package:mamba/auth/sign_in/widgets/sign_in_button.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
@@ -205,7 +205,7 @@ class _RegisterState extends State<Register> with PlatformMixin {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLogin(
+    return ResponsiveSignIn(
       child: BlocConsumer<SignInCubit, SignInState>(
         listener: (context, state) {
           if (state is SignInError) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba/auth/sign_in/widgets/custom_appbar.dart';
+import 'package:mamba/auth/sign_in/widgets/sign_in_custom_appbar.dart';
 import 'package:mamba/commons/constants/assets.dart';
 import 'package:mamba/commons/constants/constants.dart';
 import 'package:mamba/commons/extensions/context.dart';
@@ -7,10 +7,10 @@ import 'package:mamba/commons/mixins/platform.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class ResponsiveLogin extends StatelessWidget with PlatformMixin {
+class ResponsiveSignIn extends StatelessWidget with PlatformMixin {
   final Widget child;
 
-  const ResponsiveLogin({super.key, required this.child});
+  const ResponsiveSignIn({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class ResponsiveLogin extends StatelessWidget with PlatformMixin {
               ),
               child: ListView(
                 children: [
-                  const CustomAppBar(
+                  const SignInCustomAppBar(
                     height: kToolbarHeight,
                   ),
                   Container(
@@ -75,7 +75,7 @@ class ResponsiveLogin extends StatelessWidget with PlatformMixin {
               ),
               child: ListView(
                 children: [
-                  const CustomAppBar(
+                  const SignInCustomAppBar(
                     height: kToolbarHeight,
                   ),
                   Center(
@@ -93,7 +93,7 @@ class ResponsiveLogin extends StatelessWidget with PlatformMixin {
           return Scaffold(
             body: ListView(
               children: [
-                const CustomAppBar(
+                const SignInCustomAppBar(
                   isDesktop: true,
                   height: kToolbarHeight,
                   maxWidth: 1250,
