@@ -1032,10 +1032,10 @@ class _PayWallState extends State<PayWall> with PlatformMixin {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-              context.l10n.anyDoubt,
-              style: context.textTheme.headlineMedium,
-              textAlign: TextAlign.center,
-            ),
+            context.l10n.anyDoubt,
+            style: context.textTheme.headlineMedium,
+            textAlign: TextAlign.center,
+          ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           Padding(
             padding: EdgeInsets.symmetric(

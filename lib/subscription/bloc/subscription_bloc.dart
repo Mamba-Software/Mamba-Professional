@@ -2,15 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba/auth/models/auth_user.dart';
-import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
-import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Subscription.dart';
 import 'package:mamba/user/data/user_repository.dart';
-import 'package:mamba/user/models/users/user.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 
 part 'subscription_state.dart';
 

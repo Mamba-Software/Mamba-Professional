@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba/user/models/users/user.dart';
 import 'dart:async';
+
+import 'package:mamba/data/Models/Usuario.dart';
 
 //Singleton
 class FirebaseUserRepository {

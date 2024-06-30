@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,10 +64,10 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
 
     // Date Joined Information
     //DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(_brandBloc.getBrand.dateJoined!);
-    _startHour =
-        double.parse(_brandBloc.getBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
-    _endHour =
-        double.parse(_brandBloc.getBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    _startHour = double.parse(
+        _brandBloc.brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+    _endHour = double.parse(
+        _brandBloc.brand.workShift[1].toStringAsFixed(2).split(".")[0]);
     // Diferencia de Hores
     double difference = _endHour - _startHour;
     difference = _startHour != 0 ? difference + 1 : difference;
@@ -84,7 +83,7 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
     emit(
       CalendarLoaded(
         canEdit: _checkUserCanEditCalendar(),
-        brand: _brandBloc.getBrand,
+        brand: _brandBloc.brand,
         events: _eventsBloc.eventsList,
         displayDate: DateTime.now(),
         visibleDates: visibleDates,
@@ -281,12 +280,13 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
   List<TimeRegion> getTimeRegions() {
     final List<TimeRegion> regions = <TimeRegion>[];
     // BrandDate Joined
-    DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(_brandBloc.getBrand.dateJoined!);
+    DateTime dateJoined =
+        DateFormat('dd-MM-yyyy').parse(_brandBloc.brand.dateJoined!);
     // Hora Inactiva Matí
-    var startHourWS =
-        int.parse(_brandBloc.getBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
-    var startMinWS =
-        int.parse(_brandBloc.getBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
+    var startHourWS = int.parse(
+        _brandBloc.brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+    var startMinWS = int.parse(
+        _brandBloc.brand.workShift[0].toStringAsFixed(2).split(".")[1]);
     regions.add(TimeRegion(
       enablePointerInteraction: false,
       startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,
@@ -297,10 +297,10 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
       recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));
     // Hora Inactiva Nit
-    var endHourWS =
-        int.parse(_brandBloc.getBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
-    var endMinWS =
-        int.parse(_brandBloc.getBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
+    var endHourWS = int.parse(
+        _brandBloc.brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    var endMinWS = int.parse(
+        _brandBloc.brand.workShift[1].toStringAsFixed(2).split(".")[1]);
     regions.add(TimeRegion(
       enablePointerInteraction: false,
       startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day - 7,

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mamba/auth/data/firebase_auth_service.dart';
 import 'package:mamba/auth/models/auth_user.dart';
-import 'package:mamba/user/models/users/user.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 
 class AuthRepository {
   final FirebaseAuthService _firebaseService;

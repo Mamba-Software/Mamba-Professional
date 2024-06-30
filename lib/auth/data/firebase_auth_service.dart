@@ -6,8 +6,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba/auth/models/auth_user.dart';
 import 'package:mamba/auth/models/auth_exceptions.dart';
 import 'package:mamba/commons/constants/constants.dart';
-import 'package:mamba/user/models/users/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:mamba/data/Models/Usuario.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class FirebaseAuthService {

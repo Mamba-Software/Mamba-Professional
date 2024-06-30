@@ -41,10 +41,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   @override
   void initState() {
-    super.initState();
-    if (context.read<BrandBloc>().brandId == '') {
-      context.goNamed(Login.routeName);
-    }
+    super.initState();    
     paywallFunc();
   }
 

@@ -49,7 +49,6 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     // Define Main Blocs
     final userBloc = UserBloc(
-      context: context,
       userRepository: userRepository,
       settingsRepository: settingsRepository,
     );

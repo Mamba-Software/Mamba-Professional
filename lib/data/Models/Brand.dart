@@ -1,7 +1,7 @@
 // Model for a Brand in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba/events/crud_events/models/Event.dart';
-import 'package:mamba/data/Models/Location.dart';
+import 'package:mamba/data/models/Location.dart';
 import 'package:mamba/data/Models/Usuario.dart';
 
 import 'ImageObject.dart';

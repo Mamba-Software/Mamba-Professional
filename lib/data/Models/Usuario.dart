@@ -60,10 +60,48 @@ class Usuario {
     this.brandID,
     this.sessions,
     this.active,
-    this.purchaseId,
+    this.purchaseId, 
+    this.lastEventAt,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
+
+  static Usuario fromDocument(DocumentSnapshot documentSnapshot) {
+    final data = documentSnapshot.data() as Map<String, dynamic>?;
+
+    if (data == null) {
+      throw StateError('missing data for userId: ${documentSnapshot.id}');
+    }
+
+    return Usuario(
+      id: documentSnapshot.id,
+      notificationToken: data['notificationToken']?.toString(),
+      email: data['email']?.toString(),
+      name: data['name']?.toString(),
+      firstName: data['firstName']?.toString(),
+      lastName: data['lastName']?.toString(),
+      nick: data['nick']?.toString(),
+      imageUrl: data['imageUrl']?.toString(),
+      noImageUrl: data['noImageUrl']?.toString(),
+      isFirst: data['isFirst'],
+      isTrainer: data['isTrainer'],
+      isPrivate: data['isPrivate'],
+      freeSession: data['freeSession'],
+      isAdmin: data['isAdmin'],
+      isDark: data['isDark'],
+      gender: data['gender'],
+      dateJoined: data['dateJoined']?.toString(),
+      dateOfBirth: data['dateOfBirth']?.toString(),
+      testGroup: data['testGroup']?.toString(),
+      idioma: data['idioma']?.toString(),
+      brandID: data['brandID']?.toString(),
+      sessions: data['sessions']?.toString(),
+      active: data['active'],
+      lastEventAt: data['lastEventAt'],
+      purchaseId: data['purchaseId']?.toString(),
+    );
+  }
+
 
   Usuario.fromObjectAllData(
       String documentId, DocumentSnapshot documentSnapshot) {

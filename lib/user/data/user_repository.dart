@@ -1,4 +1,4 @@
-import 'package:mamba/user/models/users/user.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/user/data/firebase_user_repository.dart';
 class UserRepository {
   final FirebaseUserRepository _firebaseService;

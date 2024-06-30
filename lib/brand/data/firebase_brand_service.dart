@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'dart:async';
+
 class FirebaseBrandService {
   // Collections
-  static final _brandsCollection = FirebaseFirestore.instance.collection('Brands');
+  static final _brandsCollection =
+      FirebaseFirestore.instance.collection('Brands');
   static final _brandDataService = BrandDataService();
 
   Stream<Brand> getBrandStream({required String brandId}) {

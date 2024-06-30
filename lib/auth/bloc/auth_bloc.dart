@@ -5,14 +5,14 @@ import 'package:mamba/auth/data/auth_repository.dart';
 import 'package:mamba/auth/models/auth_user.dart';
 import 'package:mamba/auth/sign_in/models/sign_in_provider.dart';
 import 'package:mamba/brand/bloc/brand_bloc.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/events/cubit/events_bloc.dart';
 import 'package:mamba/user/bloc/user_bloc.dart';
-import 'package:mamba/user/models/users/user.dart';
-
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthStates> {
+  
   // Data Repositories
   final AuthRepository _authRepository;
   // State Blocs

@@ -11,60 +11,66 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 part 'brand_state.dart';
 
 class BrandBloc extends Cubit<BrandState> {
-  
-  final UserBloc userBloc;
-  StreamSubscription? userBlocSubscription;
+  // Data Repositories
   final BrandRepository _brandRepository;
-  String brandId = ''; 
-  Brand brand = Brand(); 
-  String userId = '';
+
+  // State Blocs
+  final UserBloc _userBloc;
+
+  // Other Vars
+
+  StreamSubscription? userBlocSubscription;
+
   StreamSubscription<Brand>? brandSubscription;
 
   final _brandDataService = BrandDataService();
 
   BrandBloc({
+    // Data Repositories
     required BrandRepository brandRepository,
-    required this.userBloc,
+    // State Blocs
+    required UserBloc userBloc,
   })  : _brandRepository = brandRepository,
+        _userBloc = userBloc,
         super(BrandState(brand: Brand())) {
+    initializeBrand();
+  }
+
+  // Getters
+  Usuario get user => _userBloc.state.user!;
+  String get brandId => state.brand.id!;
+
+  Brand get brand => state.brand;
+
+  List<Usuario> get getBrandTrainers => [];
+
+  // Init Bloc Function
+
+  void initializeBrand() {
     // Assuming Brand.empty() is a valid initializer for an empty Brand
     // Listen to changes in the UserBloc
-    userBlocSubscription = userBloc.stream.listen((userState) {
+    userBlocSubscription = _userBloc.stream.listen((userState) {
       if (userState.user.id != '') {
         if (userState.user.brandID == '') {
           emit(state.copyWith(brand: Brand()));
         } else {
-          // Assuming there is a UserAuthenticated state
-          initBrand(
-            brandId: userState.user.brandID!,
-            userId: userState.user.id!,
+          brandSubscription =
+              _brandRepository.getBrandStream(brandId: brandId).listen(
+            (brand) async {
+              if (state.brand != brand && brand != Brand()) {
+                await getBrandUser(brand.id!, user.id!);
+                currentBrand.id = brand.id!;
+                currentBrand.setBasicData = brand;
+                currentBrand.brandActive = setBrandActive();
+                emit(state.copyWith(brand: brand));
+              }
+            },
           );
-        } // Assuming user has a brandId attribute
+        }
       } else {
         restoreBrand();
       }
     });
-  }
-
-  String get getBrandId => brandId;
-  
-  Brand get getBrand => brand;
-  List<Usuario> get getBrandTrainers => [];
-
-  void initBrand({required String brandId, required String userId}) {
-    this.brandId = brandId;
-    this.userId = userId;
-    brandSubscription = _brandRepository.getBrandStream(brandId: brandId).listen(
-      (brand) async {
-        if (state.brand != brand && brand != Brand()) {
-          await getBrandUser(brand.id!, userId);
-          currentBrand.id = brand.id!;
-          currentBrand.setBasicData = brand;
-          currentBrand.brandActive = setBrandActive();
-          emit(state.copyWith(brand: brand));
-        }
-      },
-    );
   }
 
   Future<void> getBrandUser(String brandId, String userId) async {
@@ -79,7 +85,6 @@ class BrandBloc extends Cubit<BrandState> {
   }
 
   void restoreBrand() {
-    brandId = '';
     brandSubscription?.cancel();
     brandSubscription = null;
   }
