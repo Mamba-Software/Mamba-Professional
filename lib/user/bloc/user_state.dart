@@ -1,23 +1,20 @@
 part of 'user_bloc.dart';
 
 abstract class UserState extends Equatable {
-  final Usuario user;
-
-  const UserState({this.user = const Usuario()});
-
-  @override
-  List<Object?> get props => [user];
+  const UserState();
 }
 
 class UserInitial extends UserState {
-  const UserInitial() : super();
+  const UserInitial();
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [];
 }
 
 class UserLoaded extends UserState {  
-  const UserLoaded({required super.user});
+  final Usuario user;
+  
+  const UserLoaded({required this.user});
 
   @override
   List<Object?> get props => [user];
@@ -31,10 +28,8 @@ class UserLoaded extends UserState {
 
 class UserError extends UserState {
   final String message;
-
-  const UserError({required this.message, Usuario user = const Usuario()})
-      : super(user: user);
+  const UserError(this.message);
 
   @override
-  List<Object?> get props => [message, user];
+  List<Object?> get props => [message];
 }

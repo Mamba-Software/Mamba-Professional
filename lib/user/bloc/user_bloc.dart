@@ -82,7 +82,7 @@ class UserBloc extends Cubit<UserState> {
     _userSubscription = _userRepository.getUserStream(userId: userId).listen(
       (Usuario user) async {        
         // Stream Usuario from Database
-        if (state.user != user && user != Usuario()) {
+        if (user != user && user != Usuario()) {
           // Get Brand List
           List<Brand> brands = await _brandDataService.getAllBrandsFromUser(userId);
           // Set User Brand Id
@@ -93,7 +93,8 @@ class UserBloc extends Cubit<UserState> {
           // Update Current User
           currentUser.setBasicData = await _userDataService.getUserDetails(userId);
           // Emit New State
-          emit(state.copyWith(user: user));
+          UserLoaded loadedState = state as UserLoaded;
+          emit(loadedState.copyWith(user: user));
         }
       },
     );

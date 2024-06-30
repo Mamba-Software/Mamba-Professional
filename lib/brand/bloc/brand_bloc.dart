@@ -35,7 +35,7 @@ class BrandBloc extends Cubit<BrandState> {
   }
 
   // Getters
-  Usuario get user => _userBloc.state.user;
+  Usuario get user => _userBloc.user;
   Brand get brand => state.brand;
   List<Usuario> get getBrandTrainers => [];
 
@@ -44,7 +44,7 @@ class BrandBloc extends Cubit<BrandState> {
     // Listen to changes in the UserBlocState
     userBlocStateSubscription = _userBloc.stream.listen((userState) {
       // Check User Is Loaded
-      if (userState.user.id != null) {
+      if (userState is UserLoaded) {
         // Get Brand Id
         String userId = userState.user.id!;
         String brandId = userState.user.brandID!;

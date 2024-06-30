@@ -98,7 +98,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> userAutenticatedRedirection({
     required BuildContext context,
   }) async {
-    Usuario usuario = context.read<UserBloc>().state.user;
+    
+    Usuario usuario = context.read<UserBloc>().user;
     if (usuario.isFirst == true) {
       Future.delayed(delayedRedirectionTime, () {
         // Assuming you are using go_router and context.goNamed is available

@@ -24,7 +24,7 @@ class UnreadNotChatsCubit extends Cubit<List<int>> {
     try {
       userBloc.stream.distinct().listen((state) {
         // Handle the state change
-        if (!isExecuted && state.user.id != null && state.user.id != '') {
+        if (!isExecuted && userBloc.user.id != null && userBloc.user.id != '') {
           //TODO COMPROBAR QUE HI HAGI USUARI
           isExecuted = true;
           _combinedStreamSubscription =
