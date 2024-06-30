@@ -7,9 +7,10 @@ import 'package:mamba/auth/sign_in/views/login.dart';
 import 'package:mamba/data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/auth/splash/splash_screen_view.dart';
+import 'package:mamba/data/Models/Usuario.dart';
 import 'package:mamba/home/views/home.dart';
-import 'package:mamba/user/data/user_repository.dart';
-import 'package:mamba/brand/data/brand_repository.dart';
+import 'package:mamba/user/bloc/user_bloc.dart';
+import 'package:mamba/user/onboarding/OnboardingScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   static String routeName = '/loading';
@@ -42,21 +43,30 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   /* TO DO: Migrate to another part*/
-  Future<void> initColorsList() async {
+  Future<void> initColorsList() async {    
+    // Check If Maintenance
+    // var result = await _settingsRepository.checkIfIsMaintenance();
+    // if (result) {}
+    
+    // Set App Locale To User Preferred Language - TO Do once user cubit is implemented
+    // context.read<LanguageManager>().setLocale();
+    
+    // Set App Theme To User Preferred Theme Settings - TO Do once user cubit is implemented
+    // context.read<ThemeManager>().personalizeAccentColor(AppColors.stripe);
+
+    // TO DO: Migrate to another part
     currentColors = await _libraryDataService.getColors();
     currentDegradates = await _libraryDataService.getDegradates();
   }
 
   @override
   Widget build(BuildContext context) {   
-
     return BlocListener<AuthBloc, AuthStates>(
       listener: (context, state) {
         switch (state.status) {
           case AuthStatus.authenticated:
             userAutenticatedRedirection(
               context: context,
-              userId: state.user.id,
             );
             break;
           case AuthStatus.unauthenticated:
@@ -87,28 +97,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> userAutenticatedRedirection({
     required BuildContext context,
-    required String userId,
   }) async {
-    final hasToCompleteProfile =
-        await RepositoryProvider.of<UserRepository>(context)
-            .hasToCompleteProfile(userId: userId);
-    if (hasToCompleteProfile) {
-      final hasBrand = await RepositoryProvider.of<BrandRepository>(context)
-          .hasBrand(userId: userId);
-      if (hasBrand) {
-        Future.delayed(delayedRedirectionTime, () {
-          context.goNamed(HomePage.routeName);
-          // Assuming you are using go_router and context.goNamed is available
-          /* context.goNamed(OnboardingScreen
-              .routeName);*/ // Replace 'onboarding' with your route name
-        });
-      } else {
-        Future.delayed(delayedRedirectionTime, () {
-          // Assuming you are using go_router and context.goNamed is available
-          context.goNamed(
-              HomePage.routeName); // Replace 'onboarding' with your route name
-        });
-      }
+    Usuario usuario = context.read<UserBloc>().state.user;
+    if (usuario.isFirst == true) {
+      Future.delayed(delayedRedirectionTime, () {
+        // Assuming you are using go_router and context.goNamed is available
+        context.goNamed(
+            Onboarding.routeName); // Replace 'onboarding' with your route name
+      });
     } else {
       Future.delayed(delayedRedirectionTime, () {
         // Assuming you are using go_router and context.goNamed is available

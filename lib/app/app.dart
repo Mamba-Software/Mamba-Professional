@@ -50,7 +50,6 @@ class App extends StatelessWidget {
     // Define Main Blocs
     final userBloc = UserBloc(
       userRepository: userRepository,
-      settingsRepository: settingsRepository,
     );
     final brandBloc = BrandBloc(
       brandRepository: brandRepository,

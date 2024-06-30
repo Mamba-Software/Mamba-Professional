@@ -176,14 +176,14 @@ class CalendarBloc extends Cubit<CalendarState> with StringMixin {
 
   Future<double> getUserZoomScale() async {
     return await _userDataService.getUserZoomScale(
-      _brandBloc.brandId,
-      _userBloc.userId,
+      _brandBloc.brand.id!,
+      _userBloc.user.id!,
     );
   }
 
   void updateUserZoomScale(double timeSlotViewScale) {
     _userDataService.updateUserZoomScale(
-      _brandBloc.brandId,
+      _brandBloc.brand.id!,
       currentUser.id!,
       timeSlotViewScale,
     );

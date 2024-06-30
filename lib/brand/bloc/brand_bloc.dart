@@ -18,9 +18,7 @@ class BrandBloc extends Cubit<BrandState> {
   final UserBloc _userBloc;
 
   // Other Vars
-
-  StreamSubscription? userBlocSubscription;
-
+  StreamSubscription? userBlocStateSubscription;
   StreamSubscription<Brand>? brandSubscription;
 
   final _brandDataService = BrandDataService();
@@ -37,61 +35,50 @@ class BrandBloc extends Cubit<BrandState> {
   }
 
   // Getters
-  Usuario get user => _userBloc.state.user!;
-  String get brandId => state.brand.id!;
-
+  Usuario get user => _userBloc.state.user;
   Brand get brand => state.brand;
-
   List<Usuario> get getBrandTrainers => [];
 
   // Init Bloc Function
-
   void initializeBrand() {
-    // Assuming Brand.empty() is a valid initializer for an empty Brand
-    // Listen to changes in the UserBloc
-    userBlocSubscription = _userBloc.stream.listen((userState) {
-      if (userState.user.id != '') {
-        if (userState.user.brandID == '') {
-          emit(state.copyWith(brand: Brand()));
-        } else {
-          brandSubscription =
-              _brandRepository.getBrandStream(brandId: brandId).listen(
-            (brand) async {
-              if (state.brand != brand && brand != Brand()) {
-                await getBrandUser(brand.id!, user.id!);
-                currentBrand.id = brand.id!;
-                currentBrand.setBasicData = brand;
-                currentBrand.brandActive = setBrandActive();
-                emit(state.copyWith(brand: brand));
+    // Listen to changes in the UserBlocState
+    userBlocStateSubscription = _userBloc.stream.listen((userState) {
+      // Check User Is Loaded
+      if (userState.user.id != null) {
+        // Get Brand Id
+        String userId = userState.user.id!;
+        String brandId = userState.user.brandID!;
+        // Open Brand Subcription
+        brandSubscription = _brandRepository.getBrandStream(brandId: brandId).listen(
+          (Brand brand) async {
+            if (state.brand != brand && brand != Brand()) {
+              // Get Brand Users
+              currentBrand.setUserList =
+                  await _brandDataService.getBrandUsers(brandId);
+              // Load Current Role
+              int role = await _brandDataService.getUserBrandRole(brandId, userId);
+              currentUser.setBrandRole = role;
+              // Purchases Role
+              if (currentUser.id == currentBrand.adminID) {
+                Purchases.logIn(currentBrand.id!);
               }
-            },
-          );
-        }
+              // Define Current Brand
+              currentBrand.id = brand.id!;
+              currentBrand.setBasicData = brand;
+              currentBrand.brandActive = setBrandActive();
+              // Emit Neww Brand State
+              emit(state.copyWith(brand: brand));
+            }
+          },
+        );
       } else {
         restoreBrand();
       }
     });
   }
 
-  Future<void> getBrandUser(String brandId, String userId) async {
-    currentBrand.setUserList = await _brandDataService.getBrandUsers(brandId);
-
-    int role = await _brandDataService.getUserBrandRole(brandId, userId);
-    currentUser.setBrandRole = role;
-    if (currentUser.id == currentBrand.adminID) {
-      Purchases.logIn(currentBrand.id!);
-    }
-    mixpanel!.getPeople().set("Brands Roles", [role]);
-  }
-
   void restoreBrand() {
     brandSubscription?.cancel();
     brandSubscription = null;
-  }
-
-  @override
-  Future<void> close() {
-    brandSubscription?.cancel();
-    return super.close();
   }
 }
