@@ -47,23 +47,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthStates> {
   }
 
   // Bloc Event onUserChanged Function
-  Future<void> _onUserChanged(
-      AuthUserChanged event, Emitter<AuthStates> emit) async {
+  Future<void> _onUserChanged(AuthUserChanged event, Emitter<AuthStates> emit) async {
+    // User Not Found
     if (event.user == AuthUser.empty) {
       emit(const AuthStates.unauthenticated());
       _userBloc.restoreUser();
       _brandBloc.restoreBrand();
       _eventsBloc.restoreEvents();
     } else {
+      // User Error
       if (event.user.error) {
         _authRepository.logOut();
         emit(const AuthStates.unauthenticated());
         _userBloc.restoreUser();
         _brandBloc.restoreBrand();
-        _eventsBloc.restoreEvents();
+        _eventsBloc.restoreEvents();      
       } else {
-        emit(AuthStates.authenticated(event.user));
-        _userBloc.initializeUser(userId: event.user.id);
+        // User Found
+        emit(AuthStates.authenticated(event.user));               
+        // Load User
+        _userBloc.initializeUser(userId: event.user.id);        
       }
     }
   }

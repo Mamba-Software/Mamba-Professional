@@ -31,15 +31,13 @@ class UserBloc extends Cubit<UserState> {
         super(const UserInitial());
 
   // Getters
-  Usuario get user => state is UserLoaded ? (state as UserLoaded).user : Usuario();
+  Usuario get user =>
+      state is UserLoaded ? (state as UserLoaded).user : Usuario();
 
   // Init Bloc Function
   Future<void> initializeUser({required String userId}) async {
     // Identidy Mix Panel User
     mixpanel?.identify(userId);
-
-    // Get User Data
-    currentUser = await _userDataService.getUserDetails(userId);
 
     // Define Prod Config for FirebaseChatCore
     FirebaseChatCore.instance.setConfig(const FirebaseChatCoreConfig(
@@ -52,50 +50,28 @@ class UserBloc extends Cubit<UserState> {
     FirebaseMessaging.instance.getToken().then((token) {
       print("Token: $token");
       if (token != currentUser.notificationToken) {
+        _userDataService.updateUserNotificationToken(userId, token!);
         print("New token updated");
-        _userDataService.updateUserNotificationToken(currentUser.id!, token!);
       }
     });
 
-    /*
-    // Get Brand List
-    List<Brand> brands = await _brandDataService.getAllBrandsFromUser(userId);
-    // Set the Brand List
-    currentUser.setBrandList = brands;
-    if (currentUser.brandsList.isNotEmpty) {
-      // Put first brand to Current Brand
-      Brand brand = currentUser.brandsList[0];
-      currentBrand = await _brandDataService.getBrandDetails(brand.id!);
-      hasBrand = true;
-      print("This user has a Brand");
-      mixpanel!.getPeople().set("Brands", [currentBrand.id!]);
-    } else {
-      // Empty Current Brand
-      currentBrand = Brand();
-      hasBrand = false;
-      print("User with NO Brand");
-      mixpanel!.getPeople().set("Brands", []);
-    }
-    */
-
-    // Open User Subscription
+    // Open User Details Subscription
     _userSubscription = _userRepository.getUserStream(userId: userId).listen(
-      (Usuario user) async {        
-        // Stream Usuario from Database
-        if (user != user && user != Usuario()) {
-          // Get Brand List
-          List<Brand> brands = await _brandDataService.getAllBrandsFromUser(userId);
-          // Set User Brand Id
-          if (brands.isNotEmpty) {
-            user.brandID = brands[0].id!;
-            currentUser.setBrandList = brands;
-          }
-          // Update Current User
-          currentUser.setBasicData = await _userDataService.getUserDetails(userId);
-          // Emit New State
-          UserLoaded loadedState = state as UserLoaded;
-          emit(loadedState.copyWith(user: user));
+      (Usuario user) async {
+        // Get Brand List
+        List<Brand> brands = await _brandDataService.getAllBrandsFromUser(userId);
+        // Set User Brand Id
+        if (brands.isNotEmpty) {
+          String brandId = brands[0].id!;
+          user.brandId = brandId;
         }
+        // Emit Loaded State
+        emit(UserLoaded(user: user));
+        
+        // To Be Refactored
+        // Global Vars CurrentUser and CurrentBrand should not be used
+        updateCurrentUserGlobalVar(user,brands);
+        // To Be Refactored
       },
     );
   }
@@ -104,6 +80,18 @@ class UserBloc extends Cubit<UserState> {
     // Restore User
     _userSubscription?.cancel();
     _userSubscription = null;
+  }
+
+  void updateCurrentUserGlobalVar(Usuario user, List<Brand> brands) {
+    // Update Current User
+    currentUser = user;
+    // Set User Brand Id
+    if (brands.isNotEmpty) {
+      currentUser.setBrandList = brands;
+      hasBrand = true;
+    } else {
+      hasBrand = false;
+    }
   }
 
   void sendMixPanelDataUsers() {

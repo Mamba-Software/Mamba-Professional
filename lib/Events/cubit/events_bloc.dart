@@ -31,14 +31,13 @@ class EventsBloc extends Cubit<EventsState> {
     emit(const EventsLoading());
     brandBloc.stream.distinct().listen((state) async {
       // Handle the state change
-      if (state.brand.id != null) {
+      if (brandBloc.brand.id != null) {
         if (isStreamActive) _subscription.cancel();
         // Set the State to Loading
         emit(const EventsLoading());
 
         isStreamActive = true;
-        _brandTrainers =
-            await _brandDataService.getBrandTrainers(state.brand.id!);
+        _brandTrainers = await _brandDataService.getBrandTrainers(brandBloc.brand.id!);
         getInitialBrandEvents(_brandTrainers);
       } else {
         if (isStreamActive) {

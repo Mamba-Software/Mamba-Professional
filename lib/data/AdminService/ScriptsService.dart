@@ -307,9 +307,9 @@ class ScriptsDatabaseService {
           print('\n');
           print('Adding "Brands" subcollection');
           print('-----------------------------\n');
-          if (user.brandID != "null") {
+          if (user.brandId != "null") {
             DocumentSnapshot document =
-                await _firestore.collection(brands).doc(user.brandID).get();
+                await _firestore.collection(brands).doc(user.brandId).get();
             Brand brand = Brand.fromObjectAllData(document.id, document);
             print('Brand with ID : ${brand.id!}');
             final DateTime now = DateTime.now();

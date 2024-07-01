@@ -1,16 +1,35 @@
 part of 'brand_bloc.dart';
 
-class BrandState extends Equatable {
-  const BrandState({required this.brand});
+abstract class BrandState extends Equatable {
+  const BrandState();
+}
 
-  final Brand brand;
+class BrandInitial extends BrandState {
+  const BrandInitial();
 
   @override
-  List<Object> get props => [brand];
+  List<Object?> get props => [];
+}
 
-  BrandState copyWith({Brand? brand}) {
-    return BrandState(
+class BrandLoaded extends BrandState {  
+  final Brand brand;
+  
+  const BrandLoaded({required this.brand});
+
+  @override
+  List<Object?> get props => [brand];
+
+  BrandLoaded copyWith({Brand? brand}) {
+    return BrandLoaded(
       brand: brand ?? this.brand,
     );
   }
+}
+
+class BrandError extends BrandState {
+  final String message;
+  const BrandError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

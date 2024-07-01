@@ -23,7 +23,7 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState>
       initialize();
       brandBloc.stream.distinct().listen((state) {
         // Handle the state change
-        if (state.brand.id != null && state.brand.id != '') {
+        if (brandBloc.brand.id != null && brandBloc.brand.id != '') {
           // Listen to Subscription Change
           getBrandSubscriptionStream(currentBrand.id!).listen(
             (querySnapshot) async {

@@ -13,10 +13,8 @@ part 'brand_state.dart';
 class BrandBloc extends Cubit<BrandState> {
   // Data Repositories
   final BrandRepository _brandRepository;
-
   // State Blocs
   final UserBloc _userBloc;
-
   // Other Vars
   StreamSubscription? userBlocStateSubscription;
   StreamSubscription<Brand>? brandSubscription;
@@ -30,13 +28,14 @@ class BrandBloc extends Cubit<BrandState> {
     required UserBloc userBloc,
   })  : _brandRepository = brandRepository,
         _userBloc = userBloc,
-        super(BrandState(brand: Brand())) {
+        super(const BrandInitial()) {
     initializeBrand();
   }
 
   // Getters
   Usuario get user => _userBloc.user;
-  Brand get brand => state.brand;
+  Brand get brand =>
+      state is BrandLoaded ? (state as BrandLoaded).brand : Brand();
   List<Usuario> get getBrandTrainers => [];
 
   // Init Bloc Function
@@ -47,34 +46,49 @@ class BrandBloc extends Cubit<BrandState> {
       if (userState is UserLoaded) {
         // Get Brand Id
         String userId = userState.user.id!;
-        String brandId = userState.user.brandID!;
+        String brandId = userState.user.brandId!;
         // Open Brand Subcription
-        brandSubscription = _brandRepository.getBrandStream(brandId: brandId).listen(
+        brandSubscription =
+            _brandRepository.getBrandStream(brandId: brandId).listen(
           (Brand brand) async {
-            if (state.brand != brand && brand != Brand()) {
-              // Get Brand Users
-              currentBrand.setUserList =
-                  await _brandDataService.getBrandUsers(brandId);
-              // Load Current Role
-              int role = await _brandDataService.getUserBrandRole(brandId, userId);
-              currentUser.setBrandRole = role;
-              // Purchases Role
-              if (currentUser.id == currentBrand.adminID) {
-                Purchases.logIn(currentBrand.id!);
-              }
-              // Define Current Brand
-              currentBrand.id = brand.id!;
-              currentBrand.setBasicData = brand;
-              currentBrand.brandActive = setBrandActive();
-              // Emit Neww Brand State
-              emit(state.copyWith(brand: brand));
+            // Load User Role
+            int role = await getUserBrandRole(userId, brandId);
+            currentUser.setBrandRole = role;
+            // Purchases Role
+            if (currentUser.id == currentBrand.adminID) {
+              Purchases.logIn(currentBrand.id!);
             }
+            // Define Current Brand
+            brand.setUserList = await getBrandUsers(brandId);
+            brand.brandActive = setBrandActive();
+            // Emit Neww Brand State
+            emit(BrandLoaded(brand: brand));
+
+            // To Be Refactored
+            // Global Vars CurrentUser and CurrentBrand should not be used
+            updateCurrentUserGlobalVar(brand, role);
+            // To Be Refactored
           },
         );
-      } else {
-        restoreBrand();
       }
     });
+  }
+
+  Future<int> getUserBrandRole(String userId, String brandId) async {
+    int role = await _brandDataService.getUserBrandRole(brandId, userId);
+    return role;
+  }
+
+  Future<List<Usuario>> getBrandUsers(String brandId) async {
+    List<Usuario> brandUsers = await _brandDataService.getBrandUsers(brandId);
+    return brandUsers;
+  }
+
+  void updateCurrentUserGlobalVar(Brand brand, int role) {
+    // Update Current User
+    currentBrand = brand;
+    // Update Current User Role
+    currentUser.brandRole = role;
   }
 
   void restoreBrand() {

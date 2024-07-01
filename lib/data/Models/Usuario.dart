@@ -25,7 +25,7 @@ class Usuario {
   String? dateOfBirth;
   String? testGroup;
   String? idioma;
-  String? brandID;
+  String? brandId;
   String? sessions;
   bool? active;
   Timestamp? lastEventAt;
@@ -57,7 +57,7 @@ class Usuario {
     this.dateOfBirth,
     this.testGroup,
     this.idioma,
-    this.brandID,
+    this.brandId,
     this.sessions,
     this.active,
     this.purchaseId, 
@@ -94,7 +94,7 @@ class Usuario {
       dateOfBirth: data['dateOfBirth']?.toString(),
       testGroup: data['testGroup']?.toString(),
       idioma: data['idioma']?.toString(),
-      brandID: data['brandID']?.toString(),
+      brandId: data['brandId']?.toString(),
       sessions: data['sessions']?.toString(),
       active: data['active'],
       lastEventAt: data['lastEventAt'],
@@ -177,8 +177,8 @@ class Usuario {
       idioma = documentSnapshot.get("idioma").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
-        .containsKey('brandID')) {
-      brandID = documentSnapshot.get("brandID").toString();
+        .containsKey('brandId')) {
+      brandId = documentSnapshot.get("brandId").toString();
     }
     if ((documentSnapshot.data() as Map<String, dynamic>)
         .containsKey('sessions')) {
@@ -286,7 +286,7 @@ class Usuario {
     dateOfBirth = user.dateOfBirth;
     testGroup = user.testGroup;
     idioma = user.idioma;
-    brandID = user.brandID;
+    brandId = user.brandId;
     sessions = user.sessions;
     active = user.active;
     freeSession = user.freeSession;

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mamba/app/router/custom_transitions.dart';
 import 'package:mamba/auth/bloc/auth_bloc.dart';
 import 'package:mamba/auth/sign_in/views/login.dart';
+import 'package:mamba/brand/bloc/brand_bloc.dart';
 import 'package:mamba/data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/auth/splash/splash_screen_view.dart';
@@ -43,14 +44,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   /* TO DO: Migrate to another part*/
-  Future<void> initColorsList() async {    
+  Future<void> initColorsList() async {
     // Check If Maintenance
     // var result = await _settingsRepository.checkIfIsMaintenance();
     // if (result) {}
-    
+
     // Set App Locale To User Preferred Language - TO Do once user cubit is implemented
     // context.read<LanguageManager>().setLocale();
-    
+
     // Set App Theme To User Preferred Theme Settings - TO Do once user cubit is implemented
     // context.read<ThemeManager>().personalizeAccentColor(AppColors.stripe);
 
@@ -60,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {   
+  Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthStates>(
       listener: (context, state) {
         switch (state.status) {
@@ -89,28 +90,38 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  Future<void> userUnautenticatedRedirection({
-    required BuildContext context,
-  }) async {
+  Future<void> userUnautenticatedRedirection(
+      {required BuildContext context}) async {
     context.goNamed(Login.routeName);
   }
 
   Future<void> userAutenticatedRedirection({
     required BuildContext context,
   }) async {
+    // Variables
+    bool statesLoaded = false;
+
+  do {
+    UserState userState = context.read<UserBloc>().state;
+    BrandState brandState = context.read<BrandBloc>().state;
+
+    if (userState is UserLoaded && brandState is BrandLoaded) {
+      statesLoaded = true;
+    } else {
+      // Delay to prevent tight loop
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+  } while (!statesLoaded);
     
+    // Variables
     Usuario usuario = context.read<UserBloc>().user;
     if (usuario.isFirst == true) {
       Future.delayed(delayedRedirectionTime, () {
-        // Assuming you are using go_router and context.goNamed is available
-        context.goNamed(
-            Onboarding.routeName); // Replace 'onboarding' with your route name
+        context.goNamed(Onboarding.routeName);
       });
     } else {
       Future.delayed(delayedRedirectionTime, () {
-        // Assuming you are using go_router and context.goNamed is available
-        context.goNamed(
-            HomePage.routeName); // Replace 'onboarding' with your route name
+        context.goNamed(HomePage.routeName);
       });
     }
   }
