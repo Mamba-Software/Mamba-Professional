@@ -3911,7 +3911,7 @@ for (const doc of snapshot.docs) {
     cancelTime: bonoSelected.cancelTime,
     expirationTime: exirationDays,
     paymentMethod: purchase.paymentMethod,
-    directPurchase: true, // Asumiendo que el nuevo purchase no es una compra directa
+    directPurchase: false, // Asumiendo que el nuevo purchase no es una compra directa //Cuando se cree el nuevo purchase siempre sera como aprovada
     isActive: true,
     purchasedAt: admin.firestore.Timestamp.fromDate(new Date()), // La fecha actual
     isRecurrent: true,
