@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
@@ -59,7 +60,8 @@ class UserBloc extends Cubit<UserState> {
     _userSubscription = _userRepository.getUserStream(userId: userId).listen(
       (Usuario user) async {
         // Get Brand List
-        List<Brand> brands = await _brandDataService.getAllBrandsFromUser(userId);
+        List<Brand> brands =
+            await _brandDataService.getAllBrandsFromUser(userId);
         // Set User Brand Id
         if (brands.isNotEmpty) {
           String brandId = brands[0].id!;
@@ -67,10 +69,10 @@ class UserBloc extends Cubit<UserState> {
         }
         // Emit Loaded State
         emit(UserLoaded(user: user));
-        
+
         // To Be Refactored
         // Global Vars CurrentUser and CurrentBrand should not be used
-        updateCurrentUserGlobalVar(user,brands);
+        updateCurrentUserGlobalVar(user, brands);
         // To Be Refactored
       },
     );
@@ -92,6 +94,10 @@ class UserBloc extends Cubit<UserState> {
     } else {
       hasBrand = false;
     }
+  }
+
+  void updateUserProfile({required String userId, required Usuario user}) {
+    _userRepository.updateUserProfile(userId: userId, user: user);
   }
 
   void sendMixPanelDataUsers() {

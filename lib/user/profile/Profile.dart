@@ -21,6 +21,7 @@ import 'package:mamba/commons/widgets/Components/Images/CircularImage.dart';
 import 'package:mamba/commons/widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba/commons/widgets/GroupOfComponents/Stats/SessionsMade.dart';
 import 'package:mamba/home/widgets/responsive_menu.dart';
+import 'package:mamba/user/mixin/user.dart';
 import 'package:mamba/user/profile/views/Feedback/Help.dart';
 import 'package:mamba/user/profile/views/settings/Settings.dart';
 import 'package:mamba/user/profile/views/settings/SettingsYourData.dart';
@@ -51,7 +52,7 @@ class Profile extends StatefulWidget {
   _ProfileState createState() => _ProfileState();
 }
 
-class _ProfileState extends State<Profile> with PlatformMixin {
+class _ProfileState extends State<Profile> with PlatformMixin, UserBlocMixin {
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _eventDataService = EventDataService();
@@ -82,7 +83,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
 
   // Init for Brand 000-Home
   initProfileHome() async {
-    getUser();
+    //getUser();
     await getUserEventsFinished();
     buildProfileCarousel = [
       buildShareAppContainer(),
@@ -100,14 +101,14 @@ class _ProfileState extends State<Profile> with PlatformMixin {
 
   // Gets the user info from firebase.
   void getUser() async {
-    currentUser.setBasicData =
-        await _userDataService.getUserDetails(currentUser.id!);
-    dateJoined = DateFormat('dd-MM-yyyy').parse(currentUser.dateJoined!);
+    myUser(context).setBasicData =
+        await _userDataService.getUserDetails(myUser(context).id!);
+    dateJoined = DateFormat('dd-MM-yyyy').parse(myUser(context).dateJoined!);
   }
 
   // Gets the events passed by the trainer.
   Future<void> getUserEventsFinished() async {
-    List res = await _eventDataService.getUserEventsStats(currentUser.id!);
+    List res = await _eventDataService.getUserEventsStats(myUser(context).id!);
     totalEvents = res[0];
     totalTime = res[1];
     averageTime = res[2] * 60;
@@ -163,7 +164,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
             builder: (context) => FullScreenPage(
                   dark: false,
                   child: Image.network(
-                    currentUser.imageUrl!,
+                    myUser(context).imageUrl!,
                     loadingBuilder: (BuildContext context, Widget child,
                         ImageChunkEvent? loadingProgress) {
                       if (loadingProgress == null) return child;
@@ -236,7 +237,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(currentUser.name!,
+              Text(myUser(context).name!,
                   style: context.textTheme.headlineLarge,
                   textAlign: TextAlign.center),
               const SizedBox(height: 6),
@@ -284,7 +285,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                 height: MediaQuery.of(context).size.height * 0.13,
                 child: CircularImage(
                   size: MediaQuery.of(context).size.height * 0.13,
-                  image: currentUser.imageUrl,
+                  image: myUser(context).imageUrl,
                   color: AppColors.lightGrey,
                   borderWidth: 1,
                 ),
@@ -349,7 +350,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                                   ),
                             const SizedBox(height: 4),
                             Text(
-                              currentUser.isTrainer!
+                              myUser(context).isTrainer!
                                   ? context.l10n.averageTimeWorked
                                   : context.l10n.averageTimeTrained,
                               style: context.textTheme.bodyMedium,
@@ -383,7 +384,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              currentUser.isTrainer!
+                              myUser(context).isTrainer!
                                   ? context.l10n.totalTimeWorked
                                   : context.l10n.totalTimeTrained,
                               style: context.textTheme.bodyMedium,
@@ -571,7 +572,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              currentUser.isTrainer!
+              myUser(context).isTrainer!
                   ? context.l10n.sesionsCompleted
                   : StringUtils()
                       .toCapitalized(context.l10n.myProgress.split(" ")[1]),
@@ -882,7 +883,7 @@ class _ProfileState extends State<Profile> with PlatformMixin {
               child: ElevatedButton(
                 onPressed: () {
                   mixpanel!.track('user_profile_share_app');
-                  _sharePlusUtils.shareMambaLink(currentUser.firstName!);
+                  _sharePlusUtils.shareMambaLink(myUser(context).firstName!);
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 4,

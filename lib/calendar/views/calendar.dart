@@ -66,6 +66,7 @@ class _CalendarState extends State<Calendar> with PlatformMixin, StringMixin {
 
   @override
   void initState() {
+    context.read<CalendarBloc>().initialize();
     super.initState();
     // Scroll Controller for Mobile App Bar
     _scrollController = ScrollController()
