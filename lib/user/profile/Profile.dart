@@ -147,7 +147,7 @@ class _ProfileState extends State<Profile> with PlatformMixin, UserBlocMixin {
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => const SettingsYourData(),
+          builder: (context) => SettingsYourData(),
         )).whenComplete(() {
       setState(() {
         initProfileHome();

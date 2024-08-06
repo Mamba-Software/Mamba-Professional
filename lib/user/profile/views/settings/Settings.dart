@@ -81,7 +81,7 @@ class _SettingsState extends State<Settings> {
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => const SettingsYourData(),
+          builder: (context) => SettingsYourData(),
         ));
   }
 
