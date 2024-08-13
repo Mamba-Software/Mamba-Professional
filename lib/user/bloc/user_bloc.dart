@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba/commons/constants/GlobalVars.dart';
 import 'package:mamba/data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba/data/DataService/Event/EventDataService.dart';
 import 'package:mamba/data/DataService/User/UserDataService.dart';
 import 'package:mamba/data/Models/Brand.dart';
 import 'package:mamba/data/Models/Usuario.dart';
@@ -20,10 +21,13 @@ class UserBloc extends Cubit<UserState> {
   // To be Deleted
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
+  final _eventDataService = EventDataService();
   // To be Deleted
 
   // Other Vars
   late StreamSubscription<Usuario>? _userSubscription;
+
+  List userEventStats = [];
 
   UserBloc({
     // Data Repositories
@@ -68,6 +72,10 @@ class UserBloc extends Cubit<UserState> {
           user.brandId = brandId;
         }
         // Emit Loaded State
+        emit(UserLoaded(user: user));
+
+        user.eventStats = await _eventDataService.getUserEventsStats(user.id!);
+
         emit(UserLoaded(user: user));
 
         // To Be Refactored

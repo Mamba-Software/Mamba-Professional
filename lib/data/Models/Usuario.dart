@@ -30,6 +30,7 @@ class Usuario {
   bool? active;
   Timestamp? lastEventAt;
   String? purchaseId = "";
+  List eventStats = [];
 
   List<RequestToBrand> requestsList = [];
   List<Brand> brandsList = [];
@@ -60,7 +61,7 @@ class Usuario {
     this.brandId,
     this.sessions,
     this.active,
-    this.purchaseId, 
+    this.purchaseId,
     this.lastEventAt,
   });
 
@@ -101,7 +102,6 @@ class Usuario {
       purchaseId: data['purchaseId']?.toString(),
     );
   }
-
 
   Usuario.fromObjectAllData(
       String documentId, DocumentSnapshot documentSnapshot) {
