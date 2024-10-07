@@ -977,8 +977,13 @@ class BrandFirebaseCalls {
     if (!revenueCatSub) {
       DateTime now = DateTime.now();
       initTime = Timestamp.fromDate(DateTime.now());
-      var temp = now.add(Duration(days: time));
-      endTime = Timestamp.fromDate(temp);
+      //JMF FREEMIUM
+      if (time == -1) {
+        endTime = Timestamp.fromDate(DateTime(2010, 1, 1, 00, 00));
+      } else {
+        var temp = now.add(Duration(days: time));
+        endTime = Timestamp.fromDate(temp);
+      }
       await _firestore
           .collection(brands)
           .doc(brandID)

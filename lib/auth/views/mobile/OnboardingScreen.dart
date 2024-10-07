@@ -133,8 +133,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       // Setting the Brand to the User
       hasBrand = true;
       //TODO ADD 7DAYS
-      await _brandDataService.updateBrandPay(brands[0].id!, 8, '7DAYSTRIAL',
-          '7 Days Trial', DateTime.now(), false);
+      /* await _brandDataService.updateBrandPay(brands[0].id!, 8, '7DAYSTRIAL',
+          '7 Days Trial', DateTime.now(), false); */
+      //JMF FREEMIUM
+      await _brandDataService.updateBrandPay(
+          brands[0].id!, -1, 'FREEMIUM', 'Freemium', DateTime.now(), false);
     }
     bool? brandCreated;
     if (dynamicLinkBrandId == null && hasBrand == false) {

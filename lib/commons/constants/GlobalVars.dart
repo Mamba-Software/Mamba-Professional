@@ -92,7 +92,10 @@ void setBrandActive() {
   }
   //Se trata de una antigua suscripción
   else if (currentBrand.endDatePay != null) {
-    if (DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0) {
+    if (currentBrand.endDatePay!.toDate().year == 2010) {
+      brandIsActive = true;
+    } else if (DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) <
+        0) {
       brandIsActive = true;
     } else {
       brandIsActive = false;

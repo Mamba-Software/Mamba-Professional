@@ -225,6 +225,10 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                 BrandSuscriptionCubit(context.read<AuthCubit>()),
             lazy: false,
           ),
+          BlocProvider<EventsWeekCubit>(
+            create: (context) => EventsWeekCubit(context.read<AuthCubit>()),
+            lazy: false,
+          ),
           BlocProvider(
             create: (_) => StripeConnectCubit(),
           ),

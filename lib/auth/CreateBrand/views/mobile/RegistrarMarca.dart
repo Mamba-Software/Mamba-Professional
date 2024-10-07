@@ -154,8 +154,12 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
         name: nameBrandController.text.trim(),
         users: []);
     await _brandDataService.updateBrandRoom(result, room.id);
+    /* subscritionPromo =
+        await _promotionDataService.getValidSubscription('7DAYSTRIAL', result); */
+    //JMF CAMBIO LA SUBSCRIPCIÓN DE 7 DIAS GRATIS POR LA FREEMIUM
     subscritionPromo =
-        await _promotionDataService.getValidSubscription('7DAYSTRIAL', result);
+        await _promotionDataService.getValidSubscription('FREEMIUM', result);
+
     await _brandDataService.updateBrandPay(result, subscritionPromo.duration!,
         subscritionPromo.id!, subscritionPromo.title!, DateTime.now(), false);
     brandIsActive = false;

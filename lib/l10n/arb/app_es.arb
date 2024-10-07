@@ -3294,7 +3294,7 @@
   "@statsMinimumSessionBrand": {
     "description": "statsMinimumSessionBrand message"
     },
-  "subscriptionExpired": "Tu plan ha caducado, pulsa para renovar",
+  "subscriptionExpired": "Mejora tu plan",
   "@subscriptionExpired": {
     "description": "subscriptionExpired message"
   },
@@ -3520,7 +3520,7 @@
   "@shareInvitationText": {
     "description": "shareInvitationText message"
   },
-  "freeTrialDaysLeft":  "Quedan {daysLeft} días para escoger tu plan",
+  "freeTrialDaysLeft":  "Mejora ahora tu plan",
   "@freeTrialDaysLeft": {
     "description": "freeTrialDaysLeft message",
     "placeholders": {
@@ -3529,7 +3529,7 @@
       }
     }
   },  
-  "freeTrial":  "Prueba Gratuita",
+  "freeTrial":  "Versión gratuita",
   "@freeTrial": {
     "description": "chooseYourPlan message"
   },

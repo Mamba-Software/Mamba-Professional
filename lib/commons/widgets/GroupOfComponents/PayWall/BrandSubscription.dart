@@ -228,7 +228,9 @@ class _BrandInfoState extends State<BrandSubscription>
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03),
                       suscriptionState.subscription.subscriptionId ==
-                              '7DAYSTRIAL'
+                                  '7DAYSTRIAL' ||
+                              suscriptionState.subscription.subscriptionId ==
+                                  'FREEMIUM'
                           ? GestureDetector(
                               onTap: navigateToPaywallScreen,
                               child: Material(
@@ -330,9 +332,7 @@ class _BrandInfoState extends State<BrandSubscription>
                                                     .height *
                                                 0.015),
                                         child: Text(
-                                          AppLocalizations.of(context)!
-                                              .freeTrialDaysLeft(
-                                                  difference.toString()),
+                                          'Mejora tu plan  a ofertas escandalosas',
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium

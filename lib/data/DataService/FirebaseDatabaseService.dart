@@ -144,7 +144,7 @@ class FirebaseDatabaseService {
       return false;
     }
   }
-  
+
   Future<bool> checkIfIsMaintenance() async {
     // Get Minimum and Max Version from Settings Collection
     DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
@@ -3785,5 +3785,24 @@ class FirebaseDatabaseService {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Future<Stream<QuerySnapshot>> getAllUsers() async {
     return _firestore.collection(users).snapshots();
+  }
+
+  Stream<int> getBrandsEventsWeek(String brandId) {
+    DateTime today = DateTime.now();
+
+    // Calculate the start of the current week (Assuming week starts from Monday)
+    DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+
+// Calculate the end of the current week (Sunday)
+    DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
+
+    return _firestore
+        .collection('brands')
+        .doc(brandId)
+        .collection("Events")
+        .where("day", isGreaterThanOrEqualTo: startOfWeek.day.toString())
+        .where("day", isLessThanOrEqualTo: endOfWeek.day.toString())
+        .snapshots()
+        .map((QuerySnapshot snapshot) => snapshot.size);
   }
 }

@@ -256,7 +256,8 @@ class _BrandScreenState extends State<BrandScreen> {
               .inDays;
           String date = DateTimeUtils().formatDateTimeToStringDDMMYY(
               state.subscription.endDate!.toDate());
-          return suscriptionState.subscription.subscriptionId == "7DAYSTRIAL"
+          return suscriptionState.subscription.subscriptionId == "7DAYSTRIAL" ||
+                  suscriptionState.subscription.subscriptionId == "FREEMIUM"
               ? Container(
                   height: MediaQuery.of(context).size.height * 0.1,
                   padding: const EdgeInsets.only(left: 4.0),
