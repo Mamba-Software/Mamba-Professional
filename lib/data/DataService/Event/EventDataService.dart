@@ -137,6 +137,6 @@ class EventDataService {
   Stream<QuerySnapshot> getBrandsEventsTodayStream(String brandId) =>
       _firebase.getBrandsEventsTodayStream(brandId);
 
-  Stream<int> getBrandsEventsWeek(String brandId) =>
-      _firebase.getBrandsEventsWeek(brandId);
+  Stream<int> getBrandsEventsWeek(String brandId, DateTime weekDay) =>
+      _firebase.getBrandsEventsWeek(brandId, weekDay);
 }

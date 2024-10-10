@@ -3787,21 +3787,33 @@ class FirebaseDatabaseService {
     return _firestore.collection(users).snapshots();
   }
 
-  Stream<int> getBrandsEventsWeek(String brandId) {
-    DateTime today = DateTime.now();
+  Stream<int> getBrandsEventsWeek(String brandId, DateTime weekDay) {
+    DateTime today = weekDay;
 
-    // Calculate the start of the current week (Assuming week starts from Monday)
-    DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+    // Calculate the start of the current week (Monday at 00:00:00)
+    DateTime startOfWeek = DateTime(today.year, today.month, today.day)
+        .subtract(Duration(days: today.weekday - 1)); // Set to Monday 00:00
 
-// Calculate the end of the current week (Sunday)
-    DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
+    // Calculate the end of the current week (Sunday at 23:59:59)
+    DateTime endOfWeek = DateTime(today.year, today.month, today.day)
+        .subtract(Duration(days: today.weekday - 1))
+        .add(const Duration(
+            days: 6,
+            hours: 23,
+            minutes: 59,
+            seconds: 59)); // Set to Sunday 23:59:59
+
+    // Convert DateTime to Firestore Timestamps
+    Timestamp startTimestamp = Timestamp.fromDate(startOfWeek);
+    Timestamp endTimestamp = Timestamp.fromDate(endOfWeek);
 
     return _firestore
-        .collection('brands')
+        .collection('Brands')
         .doc(brandId)
         .collection("Events")
-        .where("day", isGreaterThanOrEqualTo: startOfWeek.day.toString())
-        .where("day", isLessThanOrEqualTo: endOfWeek.day.toString())
+        .where("doneAt",
+            isGreaterThanOrEqualTo: startTimestamp) // Start of the week
+        .where("doneAt", isLessThanOrEqualTo: endTimestamp) // End of the week
         .snapshots()
         .map((QuerySnapshot snapshot) => snapshot.size);
   }

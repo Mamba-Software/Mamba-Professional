@@ -35,6 +35,7 @@ import 'package:mamba/settings/data/settings_repository.dart';
 import 'package:mamba/user/chat/ChatCore.dart';
 import 'package:mamba/notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mamba/stripe/bloc/stripe_connect_bloc/stripe_connect_cubit.dart';
+import 'package:mamba/subscriptions/subscription_checker/cubit/eventsWeek_cubit.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba/commons/constants/constants.dart';
