@@ -1,16 +1,17 @@
-# mamba_castelldefels
+# Mamba Professional
 
-MambaCastelldefels
+Professional fitness management platform empowering trainers and studios with business tools. Built with Flutter for cross-platform access (iOS/Android/web), powered by Firebase for scalable operations. Designed for business trainers and studio owners to streamline client bookings and operations.
 
-## Getting Started
+## Features
+- Advanced class scheduling and real-time availability for trainers
+- Client management with automated notifications and payment processing
+- Business analytics dashboard tracking bookings, revenue, and attendance
+- Custom workout plans, progress tracking, and client communication hub
+  
+## Tech Stack
+- **Frontend**: Flutter (Dart) for responsive iOS/Android/web
+- **Backend**: Firebase (Firestore, Cloud Functions, Authentication)
+- **Business Tools**: Payment gateways, push notifications, analytics APIs
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Production Impact
+Deployed for professional trainers serving thousands of daily bookings. Optimized for studio-scale operations with reliable real-time sync.
